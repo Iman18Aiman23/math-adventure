@@ -50,10 +50,10 @@ export default function GameMenu({ onStart }) {
 
     return (
         <div className="card fade-in" style={{ maxWidth: '600px', margin: '0 auto' }}>
-            <h1 style={{ fontSize: '3rem', marginBottom: '1rem', color: 'var(--color-primary)' }}>
+            <h1 className="game-title">
                 Math Adventure With Iman
             </h1>
-            <p style={{ fontSize: '1.2rem', marginBottom: '2rem' }}>
+            <p className="game-subtitle">
                 Select your challenge!
             </p>
 
@@ -125,24 +125,17 @@ export default function GameMenu({ onStart }) {
                         </div>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div className="menu-grid">
                         {operations.map((op) => (
                             <button
                                 key={op.id}
                                 onClick={() => handleOpClick(op.id)}
-                                className="btn-primary"
+                                className="btn-primary btn-menu-item"
                                 style={{
                                     backgroundColor: op.color,
-                                    color: 'var(--color-dark)',
-                                    fontSize: '1.2rem',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    height: '120px'
                                 }}
                             >
-                                <span style={{ fontSize: '2.5rem', fontWeight: 'bold' }}>
+                                <span className="btn-icon">
                                     {op.id === 'add' ? '+' : op.id === 'subtract' ? '-' : op.id === 'multiply' ? '×' : '÷'}
                                 </span>
                                 {op.label.split(' ')[0]}
