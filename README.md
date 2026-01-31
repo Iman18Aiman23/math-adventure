@@ -1,10 +1,41 @@
-# React + Vite
+# Math Adventure
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A fun math game for kids!
 
-Currently, two official plugins are available:
+## Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+1.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+2.  **Start the development server:**
+    ```bash
+    npm run dev
+    ```
+
+3.  **Build for production:**
+    ```bash
+    npm run build
+    npm run preview
+    ```
+
+## Troubleshooting
+
+### "File cannot be loaded because running scripts is disabled"
+
+If you see this error when running `npm` commands on Windows PowerShell, it is due to the execution policy.
+
+**Fix:**
+Run the following command in PowerShell to allow scripts for your user:
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+### Blank Screen when opening index.html
+
+Modern web apps like this one cannot be run by double-clicking `index.html`. You **must** use a local server (like `npm run dev`) to view the application.
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
 ## React Compiler
