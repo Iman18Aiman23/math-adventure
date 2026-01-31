@@ -11,6 +11,7 @@ export default function GameMenu({ onStart }) {
         { id: 'subtract', label: 'Subtraction (-)', color: '#4ECDC4' },
         { id: 'multiply', label: 'Multiplication (×)', color: '#FFE66D' },
         { id: 'divide', label: 'Division (÷)', color: '#6BCB77' },
+        { id: 'random', label: 'Random (?)', color: '#9D4EDD' },
     ];
 
     const handleOpClick = (opId) => {
@@ -133,10 +134,11 @@ export default function GameMenu({ onStart }) {
                                 className="btn-primary btn-menu-item"
                                 style={{
                                     backgroundColor: op.color,
+                                    gridColumn: op.id === 'random' ? '1 / -1' : 'auto', // Span full width for random
                                 }}
                             >
                                 <span className="btn-icon">
-                                    {op.id === 'add' ? '+' : op.id === 'subtract' ? '-' : op.id === 'multiply' ? '×' : '÷'}
+                                    {op.id === 'add' ? '+' : op.id === 'subtract' ? '-' : op.id === 'multiply' ? '×' : op.id === 'divide' ? '÷' : '?'}
                                 </span>
                                 {op.label.split(' ')[0]}
                             </button>

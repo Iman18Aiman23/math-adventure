@@ -1,4 +1,10 @@
 export const generateProblem = (operation, difficulty, availableNumbers = []) => {
+  if (operation === 'random') {
+    const ops = ['add', 'subtract', 'multiply', 'divide'];
+    const randomOp = ops[Math.floor(Math.random() * ops.length)];
+    return generateProblem(randomOp, difficulty, availableNumbers);
+  }
+
   let min, max;
 
   // Define range based on difficulty
