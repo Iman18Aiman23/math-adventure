@@ -1,10 +1,11 @@
+import React, { useState } from 'react';
 import { Play, Star, Settings, Volume2, VolumeX, Home } from 'lucide-react';
 
 export default function GameMenu({ onStart, isMuted, onToggleMute, onBack }) {
-    const [difficulty, setDifficulty] = React.useState('easy');
-    const [quizType, setQuizType] = React.useState('multiple');
-    const [selectedOperation, setSelectedOperation] = React.useState(null);
-    const [selectedNumbers, setSelectedNumbers] = React.useState([]);
+    const [difficulty, setDifficulty] = useState('easy');
+    const [quizType, setQuizType] = useState('multiple');
+    const [selectedOperation, setSelectedOperation] = useState(null);
+    const [selectedNumbers, setSelectedNumbers] = useState([]);
 
     const operations = [
         { id: 'add', label: 'Addition (+)', color: '#FF6B6B' },

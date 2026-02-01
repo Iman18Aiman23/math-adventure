@@ -29,7 +29,7 @@ export default function HomePage({ onSelectSubject }) {
     return (
         <div className="fade-in" style={{ padding: '2rem', textAlign: 'center' }}>
             <h1 className="game-title" style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>
-                Iman's Learning Hub
+                Iman Learning Hub
             </h1>
             <p className="game-subtitle" style={{ fontSize: '1.5rem', marginBottom: '3rem' }}>
                 Pilih subjek kegemaran anda! ✨
