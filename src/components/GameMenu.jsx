@@ -1,7 +1,6 @@
-import React from 'react';
-import { Play, Star, Settings, Volume2, VolumeX } from 'lucide-react';
+import { Play, Star, Settings, Volume2, VolumeX, Home } from 'lucide-react';
 
-export default function GameMenu({ onStart, isMuted, onToggleMute }) {
+export default function GameMenu({ onStart, isMuted, onToggleMute, onBack }) {
     const [difficulty, setDifficulty] = React.useState('easy');
     const [quizType, setQuizType] = React.useState('multiple');
     const [selectedOperation, setSelectedOperation] = React.useState(null);
@@ -52,6 +51,29 @@ export default function GameMenu({ onStart, isMuted, onToggleMute }) {
 
     return (
         <div className="card fade-in" style={{ maxWidth: '600px', margin: '0 auto', position: 'relative' }}>
+            {/* Home/Back Button */}
+            <button
+                onClick={onBack}
+                style={{
+                    position: 'absolute',
+                    top: '1rem',
+                    left: '1rem',
+                    background: 'rgba(0,0,0,0.1)',
+                    border: 'none',
+                    borderRadius: '50%',
+                    width: '48px',
+                    height: '48px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                }}
+                title="Go to Subject Selection"
+            >
+                <Home size={24} color="var(--color-dark)" />
+            </button>
+
             {/* Mute Button */}
             <button
                 onClick={onToggleMute}
