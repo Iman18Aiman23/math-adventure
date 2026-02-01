@@ -32,18 +32,19 @@ export const generateProblem = (operation, difficulty, availableNumbers = []) =>
 
   const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-  let num1 = getRandomInt(min, max);
-  let num2 = getRandomInt(min, max);
-  let answer;
-  let symbol;
+  let num1, num2, answer, symbol;
 
   switch (operation) {
     case 'add':
       symbol = '+';
+      num1 = getRandomInt(min, max);
+      num2 = getRandomInt(min, max);
       answer = num1 + num2;
       break;
     case 'subtract':
       symbol = '-';
+      num1 = getRandomInt(min, max);
+      num2 = getRandomInt(min, max);
       // Ensure positive result for younger kids (swap if needed)
       if (num1 < num2) [num1, num2] = [num2, num1];
       answer = num1 - num2;
@@ -63,12 +64,7 @@ export const generateProblem = (operation, difficulty, availableNumbers = []) =>
         }
       } else {
         // Standard random multiplication
-        // To keep it mental-math friendly:
-        // Easy: 1-digit x 1-digit
-        // Medium: 2-digit x 1-digit (mostly)
-        // Hard: 3-digit x 1-digit
         num1 = getRandomInt(min, max);
-
         if (difficulty === 'easy') {
           num2 = getRandomInt(1, 9);
         } else if (difficulty === 'medium') {
@@ -81,25 +77,19 @@ export const generateProblem = (operation, difficulty, availableNumbers = []) =>
       break;
     case 'divide':
       symbol = '÷';
-      // Inverse of multiplication logic
-      // Answer (quotient) should be the "difficulty" size? 
-      // Or Dividend should be? Usually Dividend is the large number.
-      // Let's make the Answer (Quotient) the size of the difficulty range, 
-      // and the Divisor relatively small (1-12) so it's a "division by X" drill.
-
       const divisorMax = difficulty === 'easy' ? 9 : 12;
-      num2 = getRandomInt(2, divisorMax); // Divisor
+      num2 = getRandomInt(2, divisorMax); // Divisor (2-9 or 2-12)
 
       // Quotient (Answer) comes from the difficulty range
-      // e.g. Hard: Quotient 100-999. Problem: 5000 / 5 = 1000? 
-      // Let's stick to the requested "using 3 digits" -> Quotient is 3 digits.
       const quotient = getRandomInt(min, max);
 
-      num1 = num2 * quotient; // Dividend
+      num1 = num2 * quotient; // Dividend is guaranteed multiple
       answer = quotient;
       break;
     default:
       symbol = '?';
+      num1 = 0;
+      num2 = 0;
       answer = 0;
   }
 
