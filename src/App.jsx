@@ -5,7 +5,7 @@ import { getMuted, setMuted } from './utils/soundManager';
 
 function App() {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [gameConfig, setGameConfig] = useState({ operation: 'add', difficulty: 'medium', selectedNumbers: [], quizType: 'multiple' });
+  const [gameConfig, setGameConfig] = useState({ operation: 'add', difficulty: 'easy', selectedNumbers: [], quizType: 'multiple' });
   const [isMuted, setIsMuted] = useState(getMuted());
 
   const handleStartGame = (operation, difficulty, selectedNumbers = [], quizType = 'multiple') => {

@@ -2,7 +2,7 @@ import React from 'react';
 import { Play, Star, Settings, Volume2, VolumeX } from 'lucide-react';
 
 export default function GameMenu({ onStart, isMuted, onToggleMute }) {
-    const [difficulty, setDifficulty] = React.useState('medium');
+    const [difficulty, setDifficulty] = React.useState('easy');
     const [quizType, setQuizType] = React.useState('multiple');
     const [selectedOperation, setSelectedOperation] = React.useState(null);
     const [selectedNumbers, setSelectedNumbers] = React.useState([]);
