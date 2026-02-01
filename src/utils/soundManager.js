@@ -1,8 +1,31 @@
-export const playSound = (type, baseUrl = '') => {
+// Get the base URL from Vite's environment
+const BASE_URL = import.meta.env.BASE_URL || '/';
+
+// Mute state
+let isMuted = false;
+
+// Get mute state
+export const getMuted = () => isMuted;
+
+// Set mute state
+export const setMuted = (muted) => {
+    isMuted = muted;
+};
+
+// Toggle mute state
+export const toggleMute = () => {
+    isMuted = !isMuted;
+    return isMuted;
+};
+
+export const playSound = (type) => {
+    // Don't play if muted
+    if (isMuted) return;
+
     const sounds = {
-        correct: `${baseUrl}/sounds/correct.mp3`,
-        wrong: `${baseUrl}/sounds/wrong.mp3`,
-        streak: `${baseUrl}/sounds/streak.mp3`
+        correct: `${BASE_URL}sounds/correct.mp3`,
+        wrong: `${BASE_URL}sounds/wrong.mp3`,
+        streak: `${BASE_URL}sounds/streak.mp3`
     };
 
     const file = sounds[type];

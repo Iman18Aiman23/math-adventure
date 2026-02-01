@@ -1,11 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { ArrowLeft, RefreshCw, Trophy, ArrowRight } from 'lucide-react';
+import { ArrowLeft, RefreshCw, Trophy, ArrowRight, Volume2, VolumeX } from 'lucide-react';
 import { generateProblem } from '../utils/mathLogic';
 import { playSound } from '../utils/soundManager';
 import clsx from 'clsx';
 
-export default function QuizArena({ operation, difficulty, selectedNumbers, onBack }) {
+// Streak celebration messages - escalates with higher streaks!
+const STREAK_MESSAGES = [
+    { min: 5, text: "You're Good!", emoji: "🌟", color: "#FFD700" },
+    { min: 10, text: "Brilliant!", emoji: "💫", color: "#FF6B6B" },
+    { min: 15, text: "Awesome!", emoji: "🔥", color: "#FF4500" },
+    { min: 20, text: "Fantastic!", emoji: "⚡", color: "#9B59B6" },
+    { min: 25, text: "Incredible!", emoji: "🚀", color: "#3498DB" },
+    { min: 30, text: "SUPERSTAR!", emoji: "⭐", color: "#E74C3C" },
+    { min: 35, text: "UNSTOPPABLE!", emoji: "💪", color: "#1ABC9C" },
+    { min: 40, text: "GENIUS!", emoji: "🧠", color: "#8E44AD" },
+    { min: 45, text: "MATH WIZARD!", emoji: "🧙‍♂️", color: "#2ECC71" },
+    { min: 50, text: "LEGENDARY!", emoji: "👑", color: "#F39C12" },
+];
+
+// Get the appropriate message for the current streak
+const getStreakMessage = (streak) => {
+    // Find the highest matching message for this streak
+    for (let i = STREAK_MESSAGES.length - 1; i >= 0; i--) {
+        if (streak >= STREAK_MESSAGES[i].min) {
+            return STREAK_MESSAGES[i];
+        }
+    }
+    return STREAK_MESSAGES[0]; // Default to first message
+};
+
+export default function QuizArena({ operation, difficulty, selectedNumbers, onBack, isMuted, onToggleMute, quizType }) {
     const [problem, setProblem] = useState(null);
     const [score, setScore] = useState(0);
     const [streak, setStreak] = useState(0);
@@ -13,6 +38,7 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
     const [selectedOption, setSelectedOption] = useState(null); // Track what user clicked
     const [isAnimating, setIsAnimating] = useState(false);
     const [showStreakPopup, setShowStreakPopup] = useState(false);
+    const [typedAnswer, setTypedAnswer] = useState(''); // For typing quiz mode
 
     // Initialize first problem
     useEffect(() => {
@@ -23,6 +49,7 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
         setProblem(generateProblem(operation, difficulty, selectedNumbers));
         setFeedback(null);
         setSelectedOption(null);
+        setTypedAnswer('');
         setIsAnimating(false);
         setShowStreakPopup(false);
     };
@@ -58,11 +85,21 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
             }
         } else {
             // Wrong Answer Logic
+            setFeedback('wrong');
             playSound('wrong'); // Wrong Sound
             setStreak(0);
             setIsAnimating(true); // Locks buttons, but we stay on this screen
-            // No auto-advance. precise "Next" button appears.
+            // No auto-advance. "Next" button appears.
         }
+    };
+
+    // Handle typed answer submission (for typing quiz mode)
+    const handleTypedSubmit = (e) => {
+        if (e) e.preventDefault();
+        if (isAnimating || typedAnswer.trim() === '') return;
+
+        const numericAnswer = parseInt(typedAnswer.trim(), 10);
+        handleAnswer(numericAnswer);
     };
 
     if (!problem) return <div>Loading...</div>;
@@ -74,13 +111,32 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
                 <button onClick={onBack} style={{ background: 'none', padding: '0.5rem' }}>
                     <ArrowLeft size={32} />
                 </button>
-                <div style={{ display: 'flex', gap: '1rem', fontSize: '1.2rem' }}>
+                <div style={{ display: 'flex', gap: '1rem', fontSize: '1.2rem', alignItems: 'center' }}>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         <Trophy color="gold" /> {score}
                     </span>
                     <span style={{ color: streak > 2 ? 'orange' : 'inherit' }}>
                         Streak: {streak} 🔥
                     </span>
+                    {/* Mute Button */}
+                    <button
+                        onClick={onToggleMute}
+                        style={{
+                            background: 'rgba(0,0,0,0.1)',
+                            border: 'none',
+                            borderRadius: '50%',
+                            width: '40px',
+                            height: '40px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            marginLeft: '0.5rem'
+                        }}
+                        title={isMuted ? 'Unmute sounds' : 'Mute sounds'}
+                    >
+                        {isMuted ? <VolumeX size={20} color="#888" /> : <Volume2 size={20} color="#4ECDC4" />}
+                    </button>
                 </div>
             </div>
 
@@ -92,41 +148,105 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
                 <div style={{ fontSize: '2rem', color: '#666' }}>= ?</div>
             </div>
 
-            {/* Options */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', justifyItems: 'center' }}>
-                {problem.options.map((option, idx) => {
-                    let extraClass = '';
-
-                    if (feedback === 'correct') {
-                        if (option === problem.answer) extraClass = 'correct-anim';
-                    }
-                    else if (feedback === 'wrong') {
-                        if (option === problem.answer) extraClass = 'correct-static'; // New static class needed or reuse style
-                        if (option === selectedOption) extraClass = 'wrong-anim';
-                    }
-
-                    return (
-                        <button
-                            key={idx}
-                            onClick={() => handleAnswer(option)}
-                            className={clsx(
-                                'btn-option',
-                                extraClass,
-                                isAnimating && 'disabled' // Disable all buttons once an answer is picked
-                            )}
+            {/* Answer Area - Multiple Choice or Typing */}
+            {quizType === 'typing' ? (
+                /* Typing Mode */
+                <div style={{ marginBottom: '1rem' }}>
+                    <form onSubmit={handleTypedSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                        <input
+                            type="number"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            enterKeyHint="go"
+                            value={typedAnswer}
+                            onChange={(e) => setTypedAnswer(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    handleTypedSubmit();
+                                }
+                            }}
+                            placeholder="Type your answer..."
                             disabled={isAnimating}
-                            style={
-                                // Inline override for static correct answer display
-                                feedback === 'wrong' && option === problem.answer
-                                    ? { backgroundColor: 'var(--color-success)', color: 'white', borderColor: 'var(--color-success)' }
-                                    : {}
-                            }
-                        >
-                            {option}
-                        </button>
-                    );
-                })}
-            </div>
+                            autoFocus
+                            style={{
+                                fontSize: '2.5rem',
+                                padding: '1rem 2rem',
+                                borderRadius: '15px',
+                                border: feedback === 'correct'
+                                    ? '3px solid var(--color-success)'
+                                    : feedback === 'wrong'
+                                        ? '3px solid #FF6B6B'
+                                        : '3px solid #ddd',
+                                textAlign: 'center',
+                                width: '200px',
+                                fontFamily: 'var(--font-heading)',
+                                backgroundColor: feedback === 'correct'
+                                    ? 'rgba(107, 203, 119, 0.1)'
+                                    : feedback === 'wrong'
+                                        ? 'rgba(255, 107, 107, 0.1)'
+                                        : 'white',
+                                outline: 'none',
+                                transition: 'all 0.3s ease'
+                            }}
+                        />
+                        {!isAnimating && (
+                            <button
+                                type="submit"
+                                className="btn-primary"
+                                disabled={typedAnswer.trim() === ''}
+                                style={{
+                                    padding: '0.8rem 3rem',
+                                    fontSize: '1.2rem',
+                                    opacity: typedAnswer.trim() === '' ? 0.5 : 1
+                                }}
+                            >
+                                Submit ✓
+                            </button>
+                        )}
+                    </form>
+                    {feedback === 'correct' && (
+                        <div style={{ marginTop: '1rem', color: 'var(--color-success)', fontSize: '1.5rem', fontWeight: 'bold' }}>
+                            ✓ Correct!
+                        </div>
+                    )}
+                </div>
+            ) : (
+                /* Multiple Choice Mode (default) */
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', justifyItems: 'center' }}>
+                    {problem.options.map((option, idx) => {
+                        let extraClass = '';
+
+                        if (feedback === 'correct') {
+                            if (option === problem.answer) extraClass = 'correct-anim';
+                        }
+                        else if (feedback === 'wrong') {
+                            if (option === problem.answer) extraClass = 'correct-static';
+                            if (option === selectedOption) extraClass = 'wrong-anim';
+                        }
+
+                        return (
+                            <button
+                                key={idx}
+                                onClick={() => handleAnswer(option)}
+                                className={clsx(
+                                    'btn-option',
+                                    extraClass,
+                                    isAnimating && 'disabled'
+                                )}
+                                disabled={isAnimating}
+                                style={
+                                    feedback === 'wrong' && option === problem.answer
+                                        ? { backgroundColor: 'var(--color-success)', color: 'white', borderColor: 'var(--color-success)' }
+                                        : {}
+                                }
+                            >
+                                {option}
+                            </button>
+                        );
+                    })}
+                </div>
+            )}
 
             {/* Next Button for Wrong Answers */}
             {feedback === 'wrong' && (
@@ -152,27 +272,35 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
             )}
 
             {/* Streak Popup */}
-            {showStreakPopup && (
-                <div className="fade-in" style={{
-                    position: 'absolute',
-                    top: '0', left: '0', right: '0', bottom: '0',
-                    backgroundColor: 'rgba(255,255,255,0.95)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderRadius: '20px',
-                    zIndex: 10
-                }}>
-                    <h2 style={{ fontSize: '3rem', color: 'var(--color-primary)', marginBottom: '1rem' }} className="animate-bounce">
-                        AMAZING!
-                    </h2>
-                    <p style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>
-                        {streak} in a row!
-                    </p>
-                    <span style={{ fontSize: '5rem' }}>🌟</span>
-                </div>
-            )}
+            {showStreakPopup && (() => {
+                const streakInfo = getStreakMessage(streak);
+                return (
+                    <div className="fade-in" style={{
+                        position: 'absolute',
+                        top: '0', left: '0', right: '0', bottom: '0',
+                        backgroundColor: 'rgba(255,255,255,0.95)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: '20px',
+                        zIndex: 10
+                    }}>
+                        <h2 style={{
+                            fontSize: '3rem',
+                            color: streakInfo.color,
+                            marginBottom: '1rem',
+                            textShadow: `0 0 20px ${streakInfo.color}40`
+                        }} className="animate-bounce">
+                            {streakInfo.text}
+                        </h2>
+                        <p style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#666' }}>
+                            🔥 {streak} in a row! 🔥
+                        </p>
+                        <span style={{ fontSize: '5rem' }}>{streakInfo.emoji}</span>
+                    </div>
+                );
+            })()}
         </div>
     );
 }

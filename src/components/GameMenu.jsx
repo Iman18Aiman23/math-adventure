@@ -1,8 +1,9 @@
 import React from 'react';
-import { Play, Star, Settings } from 'lucide-react';
+import { Play, Star, Settings, Volume2, VolumeX } from 'lucide-react';
 
-export default function GameMenu({ onStart }) {
+export default function GameMenu({ onStart, isMuted, onToggleMute }) {
     const [difficulty, setDifficulty] = React.useState('medium');
+    const [quizType, setQuizType] = React.useState('multiple');
     const [selectedOperation, setSelectedOperation] = React.useState(null);
     const [selectedNumbers, setSelectedNumbers] = React.useState([]);
 
@@ -27,7 +28,7 @@ export default function GameMenu({ onStart }) {
         } else {
             setSelectedOperation(null);
             // Start immediately for others
-            onStart(opId, difficulty, []);
+            onStart(opId, difficulty, [], quizType);
         }
     };
 
@@ -50,7 +51,30 @@ export default function GameMenu({ onStart }) {
     };
 
     return (
-        <div className="card fade-in" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div className="card fade-in" style={{ maxWidth: '600px', margin: '0 auto', position: 'relative' }}>
+            {/* Mute Button */}
+            <button
+                onClick={onToggleMute}
+                style={{
+                    position: 'absolute',
+                    top: '1rem',
+                    right: '1rem',
+                    background: 'rgba(0,0,0,0.1)',
+                    border: 'none',
+                    borderRadius: '50%',
+                    width: '48px',
+                    height: '48px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                }}
+                title={isMuted ? 'Unmute sounds' : 'Mute sounds'}
+            >
+                {isMuted ? <VolumeX size={24} color="#888" /> : <Volume2 size={24} color="#4ECDC4" />}
+            </button>
+
             <h1 className="game-title">
                 Math Adventure With Iman
             </h1>
@@ -88,7 +112,7 @@ export default function GameMenu({ onStart }) {
                                 padding: '0.8rem 3rem',
                                 margin: 0
                             }}
-                            onClick={() => onStart('multiply', difficulty, selectedNumbers)}
+                            onClick={() => onStart('multiply', difficulty, selectedNumbers, quizType)}
                             disabled={selectedNumbers.length === 0}
                         >
                             Start Game!
@@ -123,6 +147,42 @@ export default function GameMenu({ onStart }) {
                                     {level}
                                 </button>
                             ))}
+                        </div>
+                    </div>
+
+                    <div style={{ marginBottom: '2rem' }}>
+                        <h3>Quiz Type</h3>
+                        <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '0.5rem' }}>
+                            <button
+                                onClick={() => setQuizType('multiple')}
+                                style={{
+                                    padding: '0.5rem 1rem',
+                                    borderRadius: '20px',
+                                    background: quizType === 'multiple' ? '#9D4EDD' : 'white',
+                                    color: quizType === 'multiple' ? 'white' : 'var(--color-dark)',
+                                    border: '2px solid #9D4EDD',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem'
+                                }}
+                            >
+                                🔘 Multiple Choice
+                            </button>
+                            <button
+                                onClick={() => setQuizType('typing')}
+                                style={{
+                                    padding: '0.5rem 1rem',
+                                    borderRadius: '20px',
+                                    background: quizType === 'typing' ? '#9D4EDD' : 'white',
+                                    color: quizType === 'typing' ? 'white' : 'var(--color-dark)',
+                                    border: '2px solid #9D4EDD',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem'
+                                }}
+                            >
+                                ⌨️ Type Answer
+                            </button>
                         </div>
                     </div>
 
