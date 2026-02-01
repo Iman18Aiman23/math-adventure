@@ -54,14 +54,15 @@ function App() {
             selectedNumbers={gameConfig.selectedNumbers}
             quizType={gameConfig.quizType}
             onBack={handleBackToMenu}
+            onHome={handleBackToHome}
             isMuted={isMuted}
             onToggleMute={handleToggleMute}
           />
         );
       case 'bm':
-        return <BMPage onBack={handleBackToHome} />;
+        return <BMPage onBack={handleBackToHome} onHome={handleBackToHome} />;
       case 'jawi':
-        return <JawiPage onBack={handleBackToHome} />;
+        return <JawiPage onBack={handleBackToHome} onHome={handleBackToHome} />;
       default:
         return <HomePage onSelectSubject={setCurrentSubject} />;
     }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { ArrowLeft, RefreshCw, Trophy, ArrowRight, Volume2, VolumeX } from 'lucide-react';
+import { ArrowLeft, RefreshCw, Trophy, ArrowRight, Volume2, VolumeX, Home } from 'lucide-react';
 import { generateProblem } from '../utils/mathLogic';
 import { playSound } from '../utils/soundManager';
 import clsx from 'clsx';
@@ -30,7 +30,7 @@ const getStreakMessage = (streak) => {
     return STREAK_MESSAGES[0]; // Default to first message
 };
 
-export default function QuizArena({ operation, difficulty, selectedNumbers, onBack, isMuted, onToggleMute, quizType }) {
+export default function QuizArena({ operation, difficulty, selectedNumbers, onBack, onHome, isMuted, onToggleMute, quizType }) {
     const [problem, setProblem] = useState(null);
     const [score, setScore] = useState(0);
     const [streak, setStreak] = useState(0);
@@ -108,9 +108,14 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
         <div className="card fade-in" style={{ position: 'relative' }}>
             {/* Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <button onClick={onBack} style={{ background: 'none', padding: '0.5rem' }}>
-                    <ArrowLeft size={32} />
-                </button>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <button onClick={onBack} style={{ background: 'none', padding: '0.5rem' }} title="Back to Game Menu">
+                        <ArrowLeft size={32} />
+                    </button>
+                    <button onClick={onHome} style={{ background: 'none', padding: '0.5rem' }} title="Home">
+                        <Home size={28} />
+                    </button>
+                </div>
                 <div style={{ display: 'flex', gap: '1rem', fontSize: '1.2rem', alignItems: 'center' }}>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         <Trophy color="gold" /> {score}

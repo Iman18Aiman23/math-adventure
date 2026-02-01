@@ -1,23 +1,33 @@
 import React from 'react';
-import { ArrowLeft, Construction } from 'lucide-react';
+import { ArrowLeft, Construction, Home } from 'lucide-react';
 
-export default function BMPage({ onBack }) {
+export default function BMPage({ onBack, onHome }) {
     return (
         <div className="card fade-in" style={{ padding: '3rem', textAlign: 'center' }}>
-            <button
-                onClick={onBack}
-                style={{
-                    position: 'absolute',
-                    top: '1rem',
-                    left: '1rem',
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    color: 'var(--color-dark)'
-                }}
-            >
-                <ArrowLeft size={32} />
-            </button>
+            <div style={{ position: 'absolute', top: '1rem', left: '1rem', display: 'flex', gap: '0.5rem' }}>
+                <button
+                    onClick={onBack}
+                    style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        color: 'var(--color-dark)'
+                    }}
+                >
+                    <ArrowLeft size={32} />
+                </button>
+                <button
+                    onClick={onHome}
+                    style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        color: 'var(--color-dark)'
+                    }}
+                >
+                    <Home size={28} />
+                </button>
+            </div>
 
             <Construction size={80} color="#4ECDC4" style={{ marginBottom: '2rem' }} />
             <h1 className="game-title" style={{ color: '#4ECDC4' }}>Bahasa Melayu</h1>

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { ArrowLeft, BookOpen, GraduationCap } from 'lucide-react';
+import { ArrowLeft, BookOpen, GraduationCap, Star, Home } from 'lucide-react';
 import { JAWI_ALPHABET } from '../utils/jawiData';
+import JawiMatchGame from './JawiMatchGame';
 
-export default function JawiPage({ onBack }) {
-    const [mode, setMode] = useState('menu'); // 'menu' | 'alphabet'
+export default function JawiPage({ onBack, onHome }) {
+    const [mode, setMode] = useState('menu'); // 'menu' | 'alphabet' | 'match'
 
     const handleBack = () => {
-        if (mode === 'alphabet') {
+        if (mode === 'alphabet' || mode === 'match') {
             setMode('menu');
         } else {
             onBack();
@@ -39,58 +40,11 @@ export default function JawiPage({ onBack }) {
                     </h1>
                 </div>
 
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-                    gap: '1.5rem',
-                    maxWidth: '1200px',
-                    margin: '0 auto'
-                }}>
+                <div className="jawi-alphabet-grid">
                     {JAWI_ALPHABET.map((item, idx) => (
-                        <div
-                            key={idx}
-                            className="card"
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                padding: '1.5rem',
-                                background: 'white',
-                                borderRadius: '20px',
-                                boxShadow: '0 8px 20px rgba(157, 78, 221, 0.1)',
-                                border: '2px solid rgba(157, 78, 221, 0.1)',
-                                transition: 'all 0.3s ease',
-                                cursor: 'default'
-                            }}
-                            onMouseOver={(e) => {
-                                e.currentTarget.style.transform = 'translateY(-5px)';
-                                e.currentTarget.style.borderColor = '#9D4EDD';
-                                e.currentTarget.style.backgroundColor = 'rgba(157, 78, 221, 0.05)';
-                            }}
-                            onMouseOut={(e) => {
-                                e.currentTarget.style.transform = 'none';
-                                e.currentTarget.style.borderColor = 'rgba(157, 78, 221, 0.1)';
-                                e.currentTarget.style.backgroundColor = 'white';
-                            }}
-                        >
-                            <span style={{
-                                fontSize: '4rem',
-                                color: '#9D4EDD',
-                                marginBottom: '0.5rem',
-                                fontWeight: 'bold'
-                            }}>
-                                {item.jawi}
-                            </span>
-                            <span style={{
-                                fontSize: '1.2rem',
-                                color: '#666',
-                                fontWeight: 'bold',
-                                textTransform: 'uppercase',
-                                letterSpacing: '1px'
-                            }}>
-                                {item.rumi}
-                            </span>
+                        <div key={idx} className="jawi-card">
+                            <span className="jawi-text">{item.jawi}</span>
+                            <span className="rumi-text">{item.rumi}</span>
                         </div>
                     ))}
                 </div>
@@ -98,28 +52,47 @@ export default function JawiPage({ onBack }) {
         );
     }
 
+    if (mode === 'match') {
+        return <JawiMatchGame onBack={handleBack} onHome={onHome} />;
+    }
+
     return (
         <div className="card fade-in" style={{ padding: '3rem', textAlign: 'center', maxWidth: '800px', margin: '0 auto', position: 'relative' }}>
-            <button
-                onClick={onBack}
-                className="btn-back"
-                style={{
-                    position: 'absolute',
-                    top: '1rem',
-                    left: '1rem',
-                    background: 'rgba(0,0,0,0.05)',
-                    border: 'none',
-                    borderRadius: '50%',
-                    width: '40px',
-                    height: '40px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer'
-                }}
-            >
-                <ArrowLeft size={24} color="var(--color-dark)" />
-            </button>
+            <div style={{ position: 'absolute', top: '1rem', left: '1rem', display: 'flex', gap: '0.5rem' }}>
+                <button
+                    onClick={onBack}
+                    className="btn-back"
+                    style={{
+                        background: 'rgba(0,0,0,0.05)',
+                        border: 'none',
+                        borderRadius: '50%',
+                        width: '40px',
+                        height: '40px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer'
+                    }}
+                >
+                    <ArrowLeft size={24} color="var(--color-dark)" />
+                </button>
+                <button
+                    onClick={onHome}
+                    style={{
+                        background: 'rgba(0,0,0,0.05)',
+                        border: 'none',
+                        borderRadius: '50%',
+                        width: '40px',
+                        height: '40px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer'
+                    }}
+                >
+                    <Home size={24} color="var(--color-dark)" />
+                </button>
+            </div>
 
             <div style={{
                 color: '#9D4EDD',
@@ -153,6 +126,24 @@ export default function JawiPage({ onBack }) {
                 >
                     <GraduationCap size={28} />
                     Learn Jawi Alphabet
+                </button>
+
+                <button
+                    className="btn-primary"
+                    onClick={() => setMode('match')}
+                    style={{
+                        backgroundColor: '#FF8C42', // Different color for test
+                        padding: '1.5rem',
+                        fontSize: '1.4rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '1rem',
+                        border: '3px dashed white' // Dashed border for test
+                    }}
+                >
+                    <Star size={28} />
+                    [TEST] Play Jawi Match
                 </button>
 
                 <p style={{ color: '#888', fontStyle: 'italic', marginTop: '1rem' }}>
