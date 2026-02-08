@@ -23,7 +23,7 @@ const CARD_COLORS = [
 const JawiSelectionGrid = ({ selected, onToggle, onSelectAll, onClearAll }) => {
     return (
         <div className="fade-in">
-            <p style={{ marginBottom: '1rem', fontSize: '1.2rem' }}>Select characters to practice matching:</p>
+            <p style={{ marginBottom: '1rem', fontSize: '1.2rem' }}>Select up to 6 characters to practice matching:</p>
 
             <div style={{
                 display: 'grid',
@@ -37,7 +37,13 @@ const JawiSelectionGrid = ({ selected, onToggle, onSelectAll, onClearAll }) => {
                         key={idx}
                         onClick={() => onToggle(item)}
                         className={clsx('btn-number', selected.some(s => s.jawi === item.jawi) && 'selected')}
-                        style={{ width: '60px', height: '60px', fontSize: '1.5rem' }}
+                        style={{
+                            width: '60px',
+                            height: '60px',
+                            fontSize: '1.5rem',
+                            opacity: (!selected.some(s => s.jawi === item.jawi) && selected.length >= 6) ? 0.5 : 1,
+                            cursor: (!selected.some(s => s.jawi === item.jawi) && selected.length >= 6) ? 'not-allowed' : 'pointer'
+                        }}
                     >
                         {item.jawi}
                     </button>
@@ -45,7 +51,7 @@ const JawiSelectionGrid = ({ selected, onToggle, onSelectAll, onClearAll }) => {
             </div>
 
             <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-                <button onClick={onSelectAll} className="btn-secondary">Select All</button>
+                <button onClick={onSelectAll} className="btn-secondary">Random 6</button>
                 <button onClick={onClearAll} className="btn-secondary">Clear All</button>
             </div>
         </div>
@@ -66,6 +72,7 @@ export default function JawiMatchGame({ onBack, onHome, isMuted }) {
             if (prev.some(s => s.jawi === item.jawi)) {
                 return prev.filter(s => s.jawi !== item.jawi);
             } else {
+                if (prev.length >= 6) return prev;
                 return [...prev, item];
             }
         });
@@ -162,7 +169,10 @@ export default function JawiMatchGame({ onBack, onHome, isMuted }) {
                 <JawiSelectionGrid
                     selected={selectedAlphabets}
                     onToggle={toggleAlphabet}
-                    onSelectAll={() => setSelectedAlphabets([...JAWI_ALPHABET])}
+                    onSelectAll={() => {
+                        const random = [...JAWI_ALPHABET].sort(() => Math.random() - 0.5).slice(0, 6);
+                        setSelectedAlphabets(random);
+                    }}
                     onClearAll={() => setSelectedAlphabets([])}
                 />
 
