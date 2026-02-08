@@ -6,13 +6,14 @@ import { SUKU_KATA_DATA } from '../utils/jawiSukuKataData';
 import JawiMatchGame from './JawiMatchGame';
 import JawiWordsPage from './JawiWordsPage';
 import JawiSyllablesGame from './JawiSyllablesGame';
+import Jawi100WordsGame from './Jawi100WordsGame';
 
 export default function JawiPage({ onBack, onHome }) {
-    const [mode, setMode] = useState('menu'); // 'menu' | 'alphabet' | 'match' | 'words' | 'syllables'
+    const [mode, setMode] = useState('menu'); // 'menu' | 'alphabet' | 'match' | 'words' | 'syllables' | 'spelling_game'
     const [selectedAlphabet, setSelectedAlphabet] = useState(null);
 
     const handleBack = () => {
-        if (mode === 'alphabet' || mode === 'match' || mode === 'words' || mode === 'syllables') {
+        if (mode === 'alphabet' || mode === 'match' || mode === 'words' || mode === 'syllables' || mode === 'spelling_game') {
             setMode('menu');
         } else {
             onBack();
@@ -207,6 +208,10 @@ export default function JawiPage({ onBack, onHome }) {
         return <JawiSyllablesGame onBack={handleBack} onHome={onHome} />;
     }
 
+    if (mode === 'spelling_game') {
+        return <Jawi100WordsGame onBack={handleBack} onHome={onHome} />;
+    }
+
     return (
         <div className="card fade-in" style={{ padding: '3rem', textAlign: 'center', maxWidth: '800px', margin: '0 auto', position: 'relative' }}>
             <div style={{ position: 'absolute', top: '1rem', left: '1rem', display: 'flex', gap: '0.5rem' }}>
@@ -311,7 +316,24 @@ export default function JawiPage({ onBack, onHome }) {
                     }}
                 >
                     <BookOpen size={28} />
-                    1st 100 Words
+                    100 Jawi Words
+                </button>
+
+                <button
+                    className="btn-primary"
+                    onClick={() => setMode('spelling_game')}
+                    style={{
+                        backgroundColor: '#4ECDC4',
+                        padding: '1.5rem',
+                        fontSize: '1.4rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '1rem'
+                    }}
+                >
+                    <Keyboard size={28} />
+                    100 Words Spelling Game
                 </button>
 
                 <button
