@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
-import { ArrowLeft, Check, RefreshCw, Trophy, Home, Keyboard, Volume2, VolumeX, ArrowRight, Grid, Shuffle } from 'lucide-react';
+import { ArrowLeft, RefreshCw, Trophy, Home, Keyboard, Volume2, VolumeX, ArrowRight, Grid, Shuffle } from 'lucide-react';
 import { JAWI_TOPICS } from '../utils/jawiWordsData';
 import { playSound, toggleMute, getMuted } from '../utils/soundManager';
 
@@ -37,6 +37,7 @@ export default function Jawi100WordsGame({ onBack, onHome }) {
     const [isMuted, setIsMuted] = useState(getMuted());
     const [showStreakPopup, setShowStreakPopup] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
+    const inputRef = useRef(null);
 
     // --- Helpers ---
 
@@ -44,6 +45,13 @@ export default function Jawi100WordsGame({ onBack, onHome }) {
         const muted = toggleMute();
         setIsMuted(muted);
     };
+
+    // Auto-focus input when question changes
+    useEffect(() => {
+        if (currentWord && inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [currentWord]);
 
     const generateRandomWord = (topicId) => {
         let pool = [];
@@ -309,8 +317,9 @@ export default function Jawi100WordsGame({ onBack, onHome }) {
 
             {/* Typing Area */}
             <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                <form onSubmit={(e) => { e.preventDefault(); handleAnswer(userAnswer); }} style={{ display: 'flex', gap: '0.5rem', width: '100%', maxWidth: '400px' }}>
+                <form onSubmit={(e) => { e.preventDefault(); handleAnswer(userAnswer); }} style={{ display: 'flex', width: '100%', maxWidth: '400px' }}>
                     <input
+                        ref={inputRef}
                         type="text"
                         value={userAnswer}
                         onChange={(e) => setUserAnswer(e.target.value)}
@@ -328,22 +337,6 @@ export default function Jawi100WordsGame({ onBack, onHome }) {
                             background: feedback === 'correct' ? '#e8f5e9' : (feedback === 'incorrect' ? '#ffebee' : 'white')
                         }}
                     />
-                    <button
-                        type="submit"
-                        disabled={!userAnswer || isAnimating}
-                        style={{
-                            padding: '0 2rem',
-                            background: topicColor || '#FF6B6B',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '15px',
-                            cursor: 'pointer',
-                            fontSize: '1.2rem',
-                            opacity: !userAnswer || isAnimating ? 0.5 : 1
-                        }}
-                    >
-                        <Check size={32} />
-                    </button>
                 </form>
                 {feedback === 'correct' && (
                     <div style={{ marginTop: '1rem', color: '#6BCB77', fontSize: '1.5rem', fontWeight: 'bold' }}>

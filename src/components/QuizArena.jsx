@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
 import { ArrowLeft, RefreshCw, Trophy, ArrowRight, Volume2, VolumeX, Home } from 'lucide-react';
 import { generateProblem } from '../utils/mathLogic';
@@ -39,11 +39,19 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
     const [isAnimating, setIsAnimating] = useState(false);
     const [showStreakPopup, setShowStreakPopup] = useState(false);
     const [typedAnswer, setTypedAnswer] = useState(''); // For typing quiz mode
+    const inputRef = useRef(null); // Ref for typing input field
 
     // Initialize first problem
     useEffect(() => {
         nextProblem();
     }, [operation, difficulty, selectedNumbers]);
+
+    // Auto-focus input when problem changes (for typing mode)
+    useEffect(() => {
+        if (problem && quizType === 'typing' && inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [problem, quizType]);
 
     const nextProblem = () => {
         setProblem(generateProblem(operation, difficulty, selectedNumbers));
@@ -159,6 +167,7 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
                 <div style={{ marginBottom: '1rem' }}>
                     <form onSubmit={handleTypedSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
                         <input
+                            ref={inputRef}
                             type="number"
                             inputMode="numeric"
                             pattern="[0-9]*"
@@ -195,20 +204,6 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
                                 transition: 'all 0.3s ease'
                             }}
                         />
-                        {!isAnimating && (
-                            <button
-                                type="submit"
-                                className="btn-primary"
-                                disabled={typedAnswer.trim() === ''}
-                                style={{
-                                    padding: '0.8rem 3rem',
-                                    fontSize: '1.2rem',
-                                    opacity: typedAnswer.trim() === '' ? 0.5 : 1
-                                }}
-                            >
-                                Submit ✓
-                            </button>
-                        )}
                     </form>
                     {feedback === 'correct' && (
                         <div style={{ marginTop: '1rem', color: 'var(--color-success)', fontSize: '1.5rem', fontWeight: 'bold' }}>

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
-import { ArrowLeft, Check, X, RefreshCw, Trophy, Home, Settings, Keyboard, MousePointerClick, Volume2, VolumeX, ArrowRight } from 'lucide-react';
+import { ArrowLeft, X, RefreshCw, Trophy, Home, Settings, Keyboard, MousePointerClick, Volume2, VolumeX, ArrowRight } from 'lucide-react';
 import { JAWI_ALPHABET } from '../utils/jawiData';
 import { SUKU_KATA_DATA } from '../utils/jawiSukuKataData';
 import { playSound, toggleMute, getMuted } from '../utils/soundManager';
@@ -46,6 +46,7 @@ export default function JawiSyllablesGame({ onBack, onHome }) {
     const [isMuted, setIsMuted] = useState(getMuted());
     const [showStreakPopup, setShowStreakPopup] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
+    const inputRef = useRef(null); // Ref for typing input field
 
     // --- Setup Logic ---
 
@@ -69,6 +70,13 @@ export default function JawiSyllablesGame({ onBack, onHome }) {
         const muted = toggleMute();
         setIsMuted(muted);
     };
+
+    // Auto-focus input when question changes (for typing mode)
+    useEffect(() => {
+        if (currentQuestion && gameMode === 'type' && inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [currentQuestion, gameMode]);
 
     // Helper to pick a random question from selected alphabets
     const generateRandomQuestion = () => {
@@ -103,13 +111,21 @@ export default function JawiSyllablesGame({ onBack, onHome }) {
         setCurrentQuestion(generateRandomQuestion());
     };
 
-    const getCardStyle = (bunyi) => {
+    const getCardStyle = (bunyi, mode) => {
         const isPepet = bunyi.toLowerCase().includes('pepet');
         const isTaling = bunyi.toLowerCase().includes('taling');
 
-        if (isPepet) return { background: '#FFD93D', color: '#000', label: 'E-Pepet' }; // Yellow
-        if (isTaling) return { background: '#FF6B6B', color: '#FFF', label: 'E-Taling' }; // Red
-        return { background: '#4ECDC4', color: '#000', label: null }; // Teal default
+        // In typing mode, always show the bunyi as a label
+        if (mode === 'type') {
+            if (isPepet) return { background: '#FFD93D', color: '#000', label: bunyi };
+            if (isTaling) return { background: '#FF6B6B', color: '#FFF', label: bunyi };
+            return { background: '#4ECDC4', color: '#000', label: bunyi };
+        }
+
+        // In multiple choice mode, only show special labels
+        if (isPepet) return { background: '#FFD93D', color: '#000', label: 'E-Pepet' };
+        if (isTaling) return { background: '#FF6B6B', color: '#FFF', label: 'E-Taling' };
+        return { background: '#4ECDC4', color: '#000', label: null };
     };
 
     useEffect(() => {
@@ -324,7 +340,7 @@ export default function JawiSyllablesGame({ onBack, onHome }) {
 
     if (!currentQuestion) return <div>Loading...</div>;
 
-    const style = getCardStyle(currentQuestion.bunyi);
+    const style = getCardStyle(currentQuestion.bunyi, gameMode);
 
     return (
         <div style={{ maxWidth: '600px', margin: '0 auto', padding: '1rem' }}>
@@ -395,7 +411,6 @@ export default function JawiSyllablesGame({ onBack, onHome }) {
                 <div style={{ fontSize: '5rem', fontFamily: 'serif', fontWeight: 'bold', lineHeight: 1 }}>
                     {currentQuestion.jawi}
                 </div>
-                {/* Removed the hint provided by bunyi here to make it a quiz, but keep unique card color as hint */}
             </div>
 
             {/* Answer Section */}
@@ -441,6 +456,7 @@ export default function JawiSyllablesGame({ onBack, onHome }) {
                 <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
                     <form onSubmit={(e) => { e.preventDefault(); handleAnswer(userAnswer); }} style={{ display: 'flex', gap: '0.5rem', width: '100%', maxWidth: '400px' }}>
                         <input
+                            ref={inputRef}
                             type="text"
                             value={userAnswer}
                             onChange={(e) => setUserAnswer(e.target.value)}
@@ -458,22 +474,6 @@ export default function JawiSyllablesGame({ onBack, onHome }) {
                                 background: feedback === 'correct' ? '#e8f5e9' : (feedback === 'incorrect' ? '#ffebee' : 'white')
                             }}
                         />
-                        <button
-                            type="submit"
-                            disabled={!userAnswer || isAnimating}
-                            style={{
-                                padding: '0 2rem',
-                                background: '#9D4EDD',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '15px',
-                                cursor: 'pointer',
-                                fontSize: '1.2rem',
-                                opacity: !userAnswer ? 0.5 : 1
-                            }}
-                        >
-                            <Check size={32} />
-                        </button>
                     </form>
                     {feedback === 'correct' && (
                         <div style={{ marginTop: '1rem', color: '#6BCB77', fontSize: '1.5rem', fontWeight: 'bold' }}>
