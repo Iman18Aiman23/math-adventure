@@ -2,12 +2,18 @@ import React, { useState } from 'react';
 import HomePage from './components/HomePage';
 import BMPage from './components/BMPage';
 import JawiPage from './components/JawiPage';
+import MathHome from './components/MathHome';
 import GameMenu from './components/GameMenu';
+import TimeGameMenu from './components/TimeGameMenu';
+import MonthsGame from './components/MonthsGame';
+import ClockGame from './components/ClockGame';
 import QuizArena from './components/QuizArena';
 import { getMuted, setMuted } from './utils/soundManager';
 
 function App() {
   const [currentSubject, setCurrentSubject] = useState(null); // null, 'math', 'bm', 'jawi'
+  const [mathSubGame, setMathSubGame] = useState(null); // null, 'operations', 'datetime'
+  const [dateTimeSubGame, setDateTimeSubGame] = useState(null); // null, 'months', 'clock'
   const [isPlaying, setIsPlaying] = useState(false);
   const [gameConfig, setGameConfig] = useState({
     operation: 'add',
@@ -26,8 +32,15 @@ function App() {
     setIsPlaying(false);
   };
 
+  const handleStartTimeGame = (gameId) => {
+    setDateTimeSubGame(gameId);
+    setIsPlaying(true);
+  };
+
   const handleBackToHome = () => {
     setIsPlaying(false);
+    setMathSubGame(null);
+    setDateTimeSubGame(null);
     setCurrentSubject(null);
   };
 
@@ -40,25 +53,42 @@ function App() {
   const renderSubjectContent = () => {
     switch (currentSubject) {
       case 'math':
-        return !isPlaying ? (
-          <GameMenu
-            onStart={handleStartGame}
-            isMuted={isMuted}
-            onToggleMute={handleToggleMute}
-            onBack={handleBackToHome}
-          />
-        ) : (
-          <QuizArena
-            operation={gameConfig.operation}
-            difficulty={gameConfig.difficulty}
-            selectedNumbers={gameConfig.selectedNumbers}
-            quizType={gameConfig.quizType}
-            onBack={handleBackToMenu}
-            onHome={handleBackToHome}
-            isMuted={isMuted}
-            onToggleMute={handleToggleMute}
-          />
-        );
+        if (!mathSubGame) {
+          return <MathHome onSelectSubGame={setMathSubGame} onBack={handleBackToHome} />;
+        }
+        if (mathSubGame === 'operations') {
+          return !isPlaying ? (
+            <GameMenu
+              onStart={handleStartGame}
+              isMuted={isMuted}
+              onToggleMute={handleToggleMute}
+              onBack={() => setMathSubGame(null)}
+            />
+          ) : (
+            <QuizArena
+              operation={gameConfig.operation}
+              difficulty={gameConfig.difficulty}
+              selectedNumbers={gameConfig.selectedNumbers}
+              quizType={gameConfig.quizType}
+              onBack={handleBackToMenu}
+              onHome={handleBackToHome}
+              isMuted={isMuted}
+              onToggleMute={handleToggleMute}
+            />
+          );
+        }
+        if (mathSubGame === 'datetime') {
+          if (!isPlaying) {
+            return <TimeGameMenu onBack={() => setMathSubGame(null)} onStart={handleStartTimeGame} onHome={handleBackToHome} />;
+          }
+          if (dateTimeSubGame === 'months') {
+            return <MonthsGame onBack={handleBackToMenu} onHome={handleBackToHome} />;
+          }
+          if (dateTimeSubGame === 'clock') {
+            return <ClockGame onBack={handleBackToMenu} onHome={handleBackToHome} />;
+          }
+        }
+        return <MathHome onSelectSubGame={setMathSubGame} onBack={handleBackToHome} />;
       case 'bm':
         return <BMPage onBack={handleBackToHome} onHome={handleBackToHome} />;
       case 'jawi':

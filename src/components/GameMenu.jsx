@@ -70,7 +70,7 @@ export default function GameMenu({ onStart, isMuted, onToggleMute, onBack }) {
                     cursor: 'pointer',
                     transition: 'all 0.2s ease'
                 }}
-                title="Go to Subject Selection"
+                title="Go Back"
             >
                 <Home size={24} color="var(--color-dark)" />
             </button>

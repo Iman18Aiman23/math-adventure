@@ -3,6 +3,8 @@ import confetti from 'canvas-confetti';
 import { ArrowLeft, RefreshCw, Trophy, Home, Keyboard, Volume2, VolumeX, ArrowRight, Grid, Shuffle } from 'lucide-react';
 import { JAWI_TOPICS } from '../utils/jawiWordsData';
 import { playSound, toggleMute, getMuted } from '../utils/soundManager';
+import clsx from 'clsx';
+import GameHeader from './GameHeader';
 
 // Streak celebration messages
 const STREAK_MESSAGES = [
@@ -136,83 +138,80 @@ export default function Jawi100WordsGame({ onBack, onHome }) {
 
     if (gameState === 'setup') {
         return (
-            <div className="card fade-in" style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1.5rem' }}>
-                    <button onClick={onBack} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: '1rem' }}>
-                        <ArrowLeft size={32} />
-                    </button>
-                    <h1 className="game-title" style={{ margin: 0, fontSize: '2rem', color: '#FF6B6B' }}>1st 100 Words Game</h1>
-                </div>
+            <div className="game-container">
+                <GameHeader onBack={onBack} onHome={onHome} title="Jawi Words" />
 
-                <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                    <h3 style={{ marginBottom: '1rem', color: '#666' }}>Choose a Topic</h3>
+                <div className="card fade-in" style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem' }}>
+                    <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                        <h3 style={{ marginBottom: '1rem', color: '#666' }}>Choose a Topic</h3>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
-                        {/* Random Option */}
-                        <button
-                            onClick={() => startGame('random')}
-                            className="btn-topic"
-                            style={{
-                                background: 'linear-gradient(135deg, #FF9966 0%, #FF5E62 100%)',
-                                color: 'white',
-                                padding: '1.5rem',
-                                borderRadius: '15px',
-                                border: 'none',
-                                cursor: 'pointer',
-                                fontSize: '1.2rem',
-                                fontWeight: 'bold',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                gap: '0.5rem',
-                                boxShadow: '0 4px 15px rgba(255, 94, 98, 0.3)'
-                            }}
-                        >
-                            <Shuffle size={32} />
-                            Random Mix
-                        </button>
-
-                        {/* Topics from Data */}
-                        {JAWI_TOPICS.map(topic => (
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                            {/* Random Option */}
                             <button
-                                key={topic.id}
-                                onClick={() => startGame(topic.id)}
+                                onClick={() => startGame('random')}
                                 className="btn-topic"
                                 style={{
-                                    background: 'white',
-                                    color: '#333',
+                                    background: 'linear-gradient(135deg, #FF9966 0%, #FF5E62 100%)',
+                                    color: 'white',
                                     padding: '1.5rem',
                                     borderRadius: '15px',
-                                    border: `2px solid ${topic.color || '#eee'}`,
+                                    border: 'none',
                                     cursor: 'pointer',
-                                    fontSize: '1.1rem',
+                                    fontSize: '1.2rem',
                                     fontWeight: 'bold',
                                     display: 'flex',
                                     flexDirection: 'column',
                                     alignItems: 'center',
                                     gap: '0.5rem',
-                                    transition: 'transform 0.2s',
-                                    boxShadow: '0 4px 6px rgba(0,0,0,0.05)'
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(-5px)';
-                                    e.currentTarget.style.background = topic.color || '#eee';
-                                    e.currentTarget.style.color = 'white';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.background = 'white';
-                                    e.currentTarget.style.color = '#333';
+                                    boxShadow: '0 4px 15px rgba(255, 94, 98, 0.3)'
                                 }}
                             >
-                                <span style={{ fontSize: '2rem' }}>
-                                    {/* Use a meaningful icon or just first char if no icon provided in data, but we have emoji in words. 
-                                        Let's just use a generic icon or the first emoji from the topic for visual flair */}
-                                    {topic.words[0]?.emoji || '📚'}
-                                </span>
-                                {topic.title}
+                                <Shuffle size={32} />
+                                Random Mix
                             </button>
-                        ))}
+
+                            {/* Topics from Data */}
+                            {JAWI_TOPICS.map(topic => (
+                                <button
+                                    key={topic.id}
+                                    onClick={() => startGame(topic.id)}
+                                    className="btn-topic"
+                                    style={{
+                                        background: 'white',
+                                        color: '#333',
+                                        padding: '1.5rem',
+                                        borderRadius: '15px',
+                                        border: `2px solid ${topic.color || '#eee'}`,
+                                        cursor: 'pointer',
+                                        fontSize: '1.1rem',
+                                        fontWeight: 'bold',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        gap: '0.5rem',
+                                        transition: 'transform 0.2s',
+                                        boxShadow: '0 4px 6px rgba(0,0,0,0.05)'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.transform = 'translateY(-5px)';
+                                        e.currentTarget.style.background = topic.color || '#eee';
+                                        e.currentTarget.style.color = 'white';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.transform = 'translateY(0)';
+                                        e.currentTarget.style.background = 'white';
+                                        e.currentTarget.style.color = '#333';
+                                    }}
+                                >
+                                    <span style={{ fontSize: '2rem' }}>
+                                        {/* Use a meaningful icon or just first char if no icon provided in data, but we have emoji in words. 
+                                        Let's just use a generic icon or the first emoji from the topic for visual flair */}
+                                        {topic.words[0]?.emoji || '📚'}
+                                    </span>
+                                    {topic.title}
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -257,50 +256,21 @@ export default function Jawi100WordsGame({ onBack, onHome }) {
         : '#FF6B6B';
 
     return (
-        <div style={{ maxWidth: '600px', margin: '0 auto', padding: '1rem' }}>
-            {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <button onClick={finishGame} style={{ background: '#eee', border: 'none', cursor: 'pointer', padding: '0.5rem 1rem', borderRadius: '10px', fontSize: '0.9rem', fontWeight: 'bold', color: '#666' }}>
-                    Finish
-                </button>
-
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', fontSize: '1.2rem', fontWeight: 'bold' }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <Trophy color="gold" size={20} /> {score}
-                    </span>
-                    <span style={{ color: streak > 2 ? 'orange' : 'inherit' }}>
-                        Streak: {streak} 🔥
-                    </span>
-                    <button
-                        onClick={handleToggleMute}
-                        style={{
-                            background: 'rgba(0,0,0,0.1)',
-                            border: 'none',
-                            borderRadius: '50%',
-                            width: '40px',
-                            height: '40px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        {isMuted ? <VolumeX size={20} color="#888" /> : <Volume2 size={20} color="#4ECDC4" />}
-                    </button>
-                </div>
-            </div>
+        <div className="game-container">
+            <GameHeader
+                onBack={onBack}
+                onHome={onHome}
+                onToggleMute={handleToggleMute}
+                isMuted={isMuted}
+                score={score}
+                streak={streak}
+                title="100 Words"
+            />
 
             {/* Question Card */}
-            <div className="card fade-in" style={{
+            <div className="question-card fade-in" style={{
                 background: topicColor || '#FF6B6B',
                 color: 'white',
-                padding: '3rem',
-                borderRadius: '30px',
-                textAlign: 'center',
-                marginBottom: '2rem',
-                boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
-                position: 'relative',
-                transition: 'transform 0.3s'
             }}>
                 <div style={{ fontSize: '1.2rem', opacity: 0.9, marginBottom: '1rem' }}>
                     Type the Rumi spelling
@@ -310,14 +280,14 @@ export default function Jawi100WordsGame({ onBack, onHome }) {
                     {currentWord.emoji}
                 </div>
 
-                <div style={{ fontSize: '5rem', fontFamily: 'serif', fontWeight: 'bold', lineHeight: 1, textShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+                <div className="question-text-lg" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
                     {currentWord.jawi}
                 </div>
             </div>
 
             {/* Typing Area */}
-            <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                <form onSubmit={(e) => { e.preventDefault(); handleAnswer(userAnswer); }} style={{ display: 'flex', width: '100%', maxWidth: '400px' }}>
+            <div className="fade-in" style={{ width: '100%' }}>
+                <form onSubmit={(e) => { e.preventDefault(); handleAnswer(userAnswer); }} className="input-wrapper">
                     <input
                         ref={inputRef}
                         type="text"
@@ -326,16 +296,11 @@ export default function Jawi100WordsGame({ onBack, onHome }) {
                         disabled={isAnimating}
                         placeholder="Type answer..."
                         autoFocus
-                        style={{
-                            flex: 1,
-                            padding: '1.5rem',
-                            fontSize: '1.5rem',
-                            borderRadius: '15px',
-                            border: feedback === 'incorrect' ? '3px solid #FF6B6B' : (feedback === 'correct' ? '3px solid #6BCB77' : '3px solid #eee'),
-                            outline: 'none',
-                            textAlign: 'center',
-                            background: feedback === 'correct' ? '#e8f5e9' : (feedback === 'incorrect' ? '#ffebee' : 'white')
-                        }}
+                        className={clsx(
+                            "standard-input",
+                            feedback === 'correct' && 'correct-input',
+                            feedback === 'incorrect' && 'incorrect-input'
+                        )}
                     />
                 </form>
                 {feedback === 'correct' && (

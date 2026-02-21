@@ -4,6 +4,8 @@ import { ArrowLeft, X, RefreshCw, Trophy, Home, Settings, Keyboard, MousePointer
 import { JAWI_ALPHABET } from '../utils/jawiData';
 import { SUKU_KATA_DATA } from '../utils/jawiSukuKataData';
 import { playSound, toggleMute, getMuted } from '../utils/soundManager';
+import clsx from 'clsx';
+import GameHeader from './GameHeader';
 
 // Streak celebration messages
 const STREAK_MESSAGES = [
@@ -33,15 +35,12 @@ export default function JawiSyllablesGame({ onBack, onHome }) {
     const [gameMode, setGameMode] = useState('abcd'); // 'abcd', 'type'
     const [selectedAlphabets, setSelectedAlphabets] = useState([]);
 
-    // In unlimited mode, we don't need a pre-generated array of questions.
-    // We just need the "current" question and a way to generate the next one.
     const [currentQuestion, setCurrentQuestion] = useState(null);
-    const [questionCount, setQuestionCount] = useState(0); // Track how many served
-
+    const [questionCount, setQuestionCount] = useState(0);
     const [score, setScore] = useState(0);
     const [streak, setStreak] = useState(0);
     const [userAnswer, setUserAnswer] = useState('');
-    const [feedback, setFeedback] = useState(null); // 'correct', 'incorrect'
+    const [feedback, setFeedback] = useState(null);
     const [shuffledOptions, setShuffledOptions] = useState([]);
     const [isMuted, setIsMuted] = useState(getMuted());
     const [showStreakPopup, setShowStreakPopup] = useState(false);
@@ -343,52 +342,20 @@ export default function JawiSyllablesGame({ onBack, onHome }) {
     const style = getCardStyle(currentQuestion.bunyi, gameMode);
 
     return (
-        <div style={{ maxWidth: '600px', margin: '0 auto', padding: '1rem' }}>
-            {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                    <button onClick={finishGame} style={{ background: '#eee', border: 'none', cursor: 'pointer', padding: '0.5rem', borderRadius: '10px', fontSize: '0.8rem', fontWeight: 'bold', color: '#666' }}>
-                        Finish
-                    </button>
-                </div>
-
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', fontSize: '1.2rem', fontWeight: 'bold' }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <Trophy color="gold" size={20} /> {score}
-                    </span>
-                    <span style={{ color: streak > 2 ? 'orange' : 'inherit' }}>
-                        Streak: {streak} 🔥
-                    </span>
-                    <button
-                        onClick={handleToggleMute}
-                        style={{
-                            background: 'rgba(0,0,0,0.1)',
-                            border: 'none',
-                            borderRadius: '50%',
-                            width: '40px',
-                            height: '40px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        {isMuted ? <VolumeX size={20} color="#888" /> : <Volume2 size={20} color="#4ECDC4" />}
-                    </button>
-                </div>
-            </div>
+        <div className="game-container">
+            <GameHeader
+                onBack={onBack}
+                onHome={onHome}
+                onToggleMute={handleToggleMute}
+                isMuted={isMuted}
+                score={score}
+                streak={streak}
+            />
 
             {/* Question Card */}
-            <div className="card fade-in" style={{
+            <div className="question-card fade-in" style={{
                 background: style.background,
                 color: style.color,
-                padding: '3rem',
-                borderRadius: '30px',
-                textAlign: 'center',
-                marginBottom: '2rem',
-                boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
-                position: 'relative',
-                transition: 'transform 0.3s'
             }}>
                 {style.label && (
                     <div style={{
@@ -408,7 +375,7 @@ export default function JawiSyllablesGame({ onBack, onHome }) {
                 <div style={{ fontSize: '1.2rem', opacity: 0.8, marginBottom: '1rem' }}>
                     What is this syllable in Rumi?
                 </div>
-                <div style={{ fontSize: '5rem', fontFamily: 'serif', fontWeight: 'bold', lineHeight: 1 }}>
+                <div className="question-text-lg">
                     {currentQuestion.jawi}
                 </div>
             </div>
@@ -453,8 +420,8 @@ export default function JawiSyllablesGame({ onBack, onHome }) {
                     })}
                 </div>
             ) : (
-                <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                    <form onSubmit={(e) => { e.preventDefault(); handleAnswer(userAnswer); }} style={{ display: 'flex', gap: '0.5rem', width: '100%', maxWidth: '400px' }}>
+                <div className="fade-in" style={{ width: '100%' }}>
+                    <form onSubmit={(e) => { e.preventDefault(); handleAnswer(userAnswer); }} className="input-wrapper">
                         <input
                             ref={inputRef}
                             type="text"
@@ -463,16 +430,11 @@ export default function JawiSyllablesGame({ onBack, onHome }) {
                             disabled={isAnimating}
                             placeholder="Type answer..."
                             autoFocus
-                            style={{
-                                flex: 1,
-                                padding: '1.5rem',
-                                fontSize: '1.5rem',
-                                borderRadius: '15px',
-                                border: feedback === 'incorrect' ? '3px solid #FF6B6B' : (feedback === 'correct' ? '3px solid #6BCB77' : '3px solid #eee'),
-                                outline: 'none',
-                                textAlign: 'center',
-                                background: feedback === 'correct' ? '#e8f5e9' : (feedback === 'incorrect' ? '#ffebee' : 'white')
-                            }}
+                            className={clsx(
+                                "standard-input",
+                                feedback === 'correct' && 'correct-input',
+                                feedback === 'incorrect' && 'incorrect-input'
+                            )}
                         />
                     </form>
                     {feedback === 'correct' && (

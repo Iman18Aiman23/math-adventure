@@ -320,13 +320,15 @@ button {
     padding: 1.5rem 1rem;
   }
 }
+
 /* Jawi Alphabet Grid Styles */
 .jawi-alphabet-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 1.5rem;
-  max-width: 1200px;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 0.8rem;
+  max-width: 1000px;
   margin: 0 auto;
+  padding: 10px;
 }
 
 .jawi-card {
@@ -334,57 +336,271 @@ button {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
+  padding: 0.8rem 0.5rem;
   background: white;
-  border-radius: 20px;
-  box-shadow: 0 8px 20px rgba(157, 78, 221, 0.1);
-  border: 4px solid rgba(157, 78, 221, 0.1);
-  transition: all 0.3s ease;
-  cursor: default;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 3px solid transparent;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
 
 .jawi-card:hover {
-  transform: translateY(-5px);
-  border-color: #9D4EDD;
-  background-color: rgba(157, 78, 221, 0.05);
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  z-index: 10;
 }
 
 .jawi-card .jawi-text {
-  font-size: 4rem;
-  color: #9D4EDD;
-  margin-bottom: 0.5rem;
+  font-size: 2.2rem;
+  color: #333;
+  margin-bottom: 0.2rem;
   font-weight: bold;
+  font-family: 'serif';
 }
 
 .jawi-card .rumi-text {
-  font-size: 1.2rem;
-  color: #666;
-  font-weight: bold;
+  font-size: 0.8rem;
+  color: rgba(0, 0, 0, 0.6);
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
-/* Force 4 columns on mobile */
+/* Force 6 columns on larger screens to keep it in a single page if possible */
+@media (min-width: 900px) {
+  .jawi-alphabet-grid {
+    grid-template-columns: repeat(9, 1fr);
+  }
+}
+
+/* Tablet adjustments */
+@media (max-width: 899px) and (min-width: 601px) {
+  .jawi-alphabet-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Mobile Responsiveness */
 @media (max-width: 600px) {
   .jawi-alphabet-grid {
-    grid-template-columns: repeat(4, 1fr) !important;
-    gap: 0.5rem !important;
-    padding: 0.5rem;
+    grid-template-columns: repeat(6, 1fr) !important;
+    gap: 0.3rem !important;
+    padding: 0.2rem;
   }
 
   .jawi-card {
-    padding: 0.5rem !important;
-    border-radius: 10px !important;
+    padding: 0.5rem 0.2rem !important;
+    border-radius: 12px !important;
     border-width: 2px !important;
   }
 
   .jawi-card .jawi-text {
-    font-size: 2rem !important;
-    margin-bottom: 0.2rem !important;
+    font-size: 1.8rem !important;
+    margin-bottom: 0.1rem !important;
   }
 
   .jawi-card .rumi-text {
-    font-size: 0.7rem !important;
+    font-size: 0.65rem !important;
     letter-spacing: 0 !important;
+  }
+}
+
+/* Game Header Styles */
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  z-index: 100;
+}
+
+.header-section {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.header-section.left {
+  justify-content: flex-start;
+}
+
+.header-section.middle {
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.header-section.right {
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.header-btn {
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--color-dark);
+}
+
+.header-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
+}
+
+.home-btn {
+  background: rgba(78, 205, 196, 0.1);
+  color: #4ECDC4;
+  border-radius: 15px;
+}
+
+.header-title {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: var(--color-primary);
+}
+
+.header-stats {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+@media (max-width: 600px) {
+  .game-header {
+    padding: 0.8rem 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 15px;
+  }
+
+  .header-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .header-stats {
+    font-size: 0.9rem;
+    gap: 0.5rem;
+  }
+}
+
+/* Standardized Game Styles */
+.game-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.question-card {
+  padding: 2.5rem 1.5rem;
+  border-radius: 30px;
+  text-align: center;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  position: relative;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.question-text-lg {
+  font-size: 5rem;
+  font-family: 'serif';
+  font-weight: bold;
+  line-height: 1;
+}
+
+.question-text-math {
+  font-size: 5rem;
+  font-weight: bold;
+  font-family: var(--font-heading);
+}
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.standard-input {
+  width: 100%;
+  padding: 1.2rem;
+  font-size: 1.8rem;
+  border-radius: 15px;
+  border: 3px solid #eee;
+  outline: none;
+  text-align: center;
+  font-family: var(--font-heading);
+  background: white;
+  transition: all 0.3s ease;
+}
+
+.standard-input:focus {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 10px rgba(78, 205, 196, 0.2);
+}
+
+.standard-input.correct-input {
+  border-color: var(--color-success);
+  background-color: rgba(107, 203, 119, 0.1);
+}
+
+.standard-input.incorrect-input {
+  border-color: var(--color-error);
+  background-color: rgba(255, 107, 107, 0.1);
+}
+
+/* Mobile scaling for large question text and inputs */
+@media (max-width: 600px) {
+
+  .question-text-lg,
+  .question-text-math {
+    font-size: 3.5rem;
+  }
+
+  .standard-input {
+    font-size: 1.5rem;
+    padding: 1rem;
+  }
+
+  .question-card {
+    padding: 2rem 1rem;
+  }
+}
+
+@media (max-width: 400px) {
+
+  .question-text-lg,
+  .question-text-math {
+    font-size: 2.8rem;
   }
 }

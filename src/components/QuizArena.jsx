@@ -30,6 +30,8 @@ const getStreakMessage = (streak) => {
     return STREAK_MESSAGES[0]; // Default to first message
 };
 
+import GameHeader from './GameHeader';
+
 export default function QuizArena({ operation, difficulty, selectedNumbers, onBack, onHome, isMuted, onToggleMute, quizType }) {
     const [problem, setProblem] = useState(null);
     const [score, setScore] = useState(0);
@@ -112,50 +114,22 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
 
     if (!problem) return <div>Loading...</div>;
 
+    const streakMessage = getStreakMessage(streak);
+
     return (
-        <div className="card fade-in" style={{ position: 'relative' }}>
-            {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                    <button onClick={onBack} style={{ background: 'none', padding: '0.5rem' }} title="Back to Game Menu">
-                        <ArrowLeft size={32} />
-                    </button>
-                    <button onClick={onHome} style={{ background: 'none', padding: '0.5rem' }} title="Home">
-                        <Home size={28} />
-                    </button>
-                </div>
-                <div style={{ display: 'flex', gap: '1rem', fontSize: '1.2rem', alignItems: 'center' }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <Trophy color="gold" /> {score}
-                    </span>
-                    <span style={{ color: streak > 2 ? 'orange' : 'inherit' }}>
-                        Streak: {streak} 🔥
-                    </span>
-                    {/* Mute Button */}
-                    <button
-                        onClick={onToggleMute}
-                        style={{
-                            background: 'rgba(0,0,0,0.1)',
-                            border: 'none',
-                            borderRadius: '50%',
-                            width: '40px',
-                            height: '40px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: 'pointer',
-                            marginLeft: '0.5rem'
-                        }}
-                        title={isMuted ? 'Unmute sounds' : 'Mute sounds'}
-                    >
-                        {isMuted ? <VolumeX size={20} color="#888" /> : <Volume2 size={20} color="#4ECDC4" />}
-                    </button>
-                </div>
-            </div>
+        <div className="game-container">
+            <GameHeader
+                onBack={onBack}
+                onHome={onHome}
+                onToggleMute={onToggleMute}
+                isMuted={isMuted}
+                score={score}
+                streak={streak}
+            />
 
             {/* Question */}
             <div style={{ marginBottom: '3rem' }}>
-                <div style={{ fontSize: '5rem', fontWeight: 'bold', color: 'var(--color-dark)', fontFamily: 'var(--font-heading)' }}>
+                <div className="question-text-math">
                     {problem.num1} {problem.symbol} {problem.num2}
                 </div>
                 <div style={{ fontSize: '2rem', color: '#666' }}>= ?</div>
@@ -164,8 +138,8 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
             {/* Answer Area - Multiple Choice or Typing */}
             {quizType === 'typing' ? (
                 /* Typing Mode */
-                <div style={{ marginBottom: '1rem' }}>
-                    <form onSubmit={handleTypedSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                <div style={{ marginBottom: '1rem', width: '100%' }}>
+                    <form onSubmit={handleTypedSubmit} className="input-wrapper">
                         <input
                             ref={inputRef}
                             type="number"
@@ -183,26 +157,11 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
                             placeholder="Type your answer..."
                             disabled={isAnimating}
                             autoFocus
-                            style={{
-                                fontSize: '2.5rem',
-                                padding: '1rem 2rem',
-                                borderRadius: '15px',
-                                border: feedback === 'correct'
-                                    ? '3px solid var(--color-success)'
-                                    : feedback === 'wrong'
-                                        ? '3px solid #FF6B6B'
-                                        : '3px solid #ddd',
-                                textAlign: 'center',
-                                width: '200px',
-                                fontFamily: 'var(--font-heading)',
-                                backgroundColor: feedback === 'correct'
-                                    ? 'rgba(107, 203, 119, 0.1)'
-                                    : feedback === 'wrong'
-                                        ? 'rgba(255, 107, 107, 0.1)'
-                                        : 'white',
-                                outline: 'none',
-                                transition: 'all 0.3s ease'
-                            }}
+                            className={clsx(
+                                "standard-input",
+                                feedback === 'correct' && 'correct-input',
+                                feedback === 'wrong' && 'incorrect-input'
+                            )}
                         />
                     </form>
                     {feedback === 'correct' && (
