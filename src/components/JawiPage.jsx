@@ -114,9 +114,9 @@ export default function JawiPage({ onBack, onHome, language }) {
                                 background: 'white',
                                 zIndex: 10
                             }}>
-                                <h2 style={{ margin: 0, fontSize: '1.5rem', color: '#9D4EDD', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <h2 style={{ margin: 0, fontSize: '1.5rem', color: '#9D4EDD', display: 'flex', alignItems: 'center', gap: '0.5rem', direction: 'rtl' }}>
                                     <span style={{ fontSize: '2rem', fontFamily: 'serif' }}>{selectedAlphabet.jawi}</span>
-                                    <span style={{ color: '#666', fontSize: '1rem' }}>- {selectedAlphabet.rumi}</span>
+                                    <span style={{ color: '#666', fontSize: '1rem', direction: 'ltr' }}>- {selectedAlphabet.rumi}</span>
                                 </h2>
                                 <button
                                     onClick={() => setSelectedAlphabet(null)}
@@ -162,12 +162,12 @@ export default function JawiPage({ onBack, onHome, language }) {
                                                 gap: '0.5rem',
                                                 border: '2px solid rgba(0,0,0,0.05)'
                                             }}>
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                    <div style={{ textAlign: 'center', flex: 1, borderRight: '1px solid rgba(255,255,255,0.3)' }}>
-                                                        <div style={{ fontSize: '0.8rem', opacity: 0.9 }}>{row.rumi}</div>
-                                                    </div>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', direction: 'rtl' }}>
                                                     <div style={{ textAlign: 'center', flex: 1 }}>
                                                         <div style={{ fontSize: '2rem', fontFamily: 'serif', lineHeight: '1', fontWeight: 'bold' }}>{row.jawi}</div>
+                                                    </div>
+                                                    <div style={{ textAlign: 'center', flex: 1, borderLeft: '1px solid rgba(255,255,255,0.3)', direction: 'ltr' }}>
+                                                        <div style={{ fontSize: '0.8rem', opacity: 0.9 }}>{row.rumi}</div>
                                                     </div>
                                                 </div>
 
