@@ -238,15 +238,16 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
 
             <div style={{
                 display: 'grid',
-                gridTemplateColumns: `repeat(${getColumns()}, 1fr)`,
-                gap: '0.8rem',
-                maxWidth: getColumns() > 4 ? '1000px' : '650px',
-                margin: '2rem auto',
+                gridTemplateColumns: cards.length > 12 ? 'repeat(auto-fit, minmax(80px, 1fr))' : 'repeat(auto-fit, minmax(100px, 1fr))',
+                gap: 'clamp(0.4rem, 2vw, 0.8rem)',
+                maxWidth: '800px',
+                margin: '1.5rem auto',
                 perspective: '1000px',
                 padding: '0 1rem'
             }}>
                 {cards.map((card, idx) => {
                     const isFlipped = flipped.includes(idx) || matched.includes(card.pairId);
+                    const cardHeight = cards.length > 12 ? 'clamp(80px, 15vh, 100px)' : 'clamp(100px, 20vh, 130px)';
 
                     return (
                         <div
@@ -254,7 +255,7 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
                             onClick={() => handleCardClick(idx)}
                             style={{
                                 cursor: isFlipped ? 'default' : 'pointer',
-                                height: getColumns() > 6 ? '80px' : '110px',
+                                height: cardHeight,
                                 position: 'relative',
                                 transformStyle: 'preserve-3d',
                                 transition: 'transform 0.6s',
@@ -291,8 +292,8 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 border: `3px solid ${matched.includes(card.pairId) ? '#6BCB77' : card.color}`,
-                                boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-                                fontSize: card.type === 'jawi' ? '2.8rem' : '1.4rem',
+                                boxShadow: '0 0.25rem 0.6rem rgba(0,0,0,0.1)',
+                                fontSize: card.type === 'jawi' ? 'clamp(1.8rem, 8vw, 2.8rem)' : 'clamp(1rem, 4vw, 1.4rem)',
                                 color: matched.includes(card.pairId) ? 'white' : '#333',
                                 fontWeight: 'bold',
                                 padding: '5px',

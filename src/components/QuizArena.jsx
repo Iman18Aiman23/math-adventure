@@ -168,15 +168,25 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
                 </div>
             ) : (
                 /* Multiple Choice Mode (default) */
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', justifyItems: 'center' }}>
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(2, 1fr)',
+                    gap: '1rem',
+                    width: '100%',
+                    maxWidth: '500px',
+                    margin: '0 auto'
+                }}>
                     {problem.options.map((option, idx) => {
                         let extraClass = '';
+                        let style = {};
 
                         if (feedback === 'correct') {
                             if (option === problem.answer) extraClass = 'correct-anim';
                         }
                         else if (feedback === 'wrong') {
-                            if (option === problem.answer) extraClass = 'correct-static';
+                            if (option === problem.answer) {
+                                style = { backgroundColor: 'var(--color-success)', color: 'white', borderColor: 'var(--color-success)' };
+                            }
                             if (option === selectedOption) extraClass = 'wrong-anim';
                         }
 
@@ -190,11 +200,7 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
                                     isAnimating && 'disabled'
                                 )}
                                 disabled={isAnimating}
-                                style={
-                                    feedback === 'wrong' && option === problem.answer
-                                        ? { backgroundColor: 'var(--color-success)', color: 'white', borderColor: 'var(--color-success)' }
-                                        : {}
-                                }
+                                style={style}
                             >
                                 {option}
                             </button>

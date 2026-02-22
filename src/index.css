@@ -123,12 +123,15 @@ button {
   background-color: white;
   color: var(--color-dark);
   border: 3px solid var(--color-secondary);
-  font-size: 2rem;
-  padding: 1rem;
+  font-size: 1.8rem;
+  padding: 1rem 0.5rem;
   border-radius: 15px;
   width: 100%;
-  max-width: 150px;
   box-shadow: var(--shadow-btn);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
 }
 
 .btn-option:hover {
@@ -581,26 +584,41 @@ button {
 
 /* Mobile scaling for large question text and inputs */
 @media (max-width: 600px) {
-
   .question-text-lg,
   .question-text-math {
-    font-size: 3.5rem;
+    font-size: clamp(2.5rem, 15vw, 4rem) !important;
   }
 
   .standard-input {
-    font-size: 1.5rem;
-    padding: 1rem;
+    font-size: 1.4rem;
+    padding: 0.8rem;
   }
 
   .question-card {
-    padding: 2rem 1rem;
+    padding: 1.5rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .btn-option {
+    font-size: 1.4rem;
+    padding: 0.8rem 0.4rem;
+    min-height: 70px;
   }
 }
 
 @media (max-width: 400px) {
-
   .question-text-lg,
   .question-text-math {
-    font-size: 2.8rem;
+    font-size: clamp(2rem, 12vw, 3rem) !important;
+  }
+
+  .btn-option {
+    font-size: 1.2rem;
+    padding: 0.6rem 0.3rem;
+    min-height: 60px;
+  }
+
+  .header-title {
+    font-size: 1rem;
   }
 }

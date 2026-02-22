@@ -241,31 +241,31 @@ export default function MonthsGame({ onBack, onHome, language }) {
 
             {/* Answer Section */}
             {quizType === 'multiple' ? (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '1rem',
+                    width: '100%',
+                    maxWidth: '500px',
+                    margin: '0 auto'
+                }}>
                     {shuffledOptions.map((opt, idx) => {
-                        let btnStyle = {
-                            padding: '1.5rem',
-                            borderRadius: '15px',
-                            fontSize: '1.3rem',
-                            fontWeight: 'bold',
-                            cursor: 'pointer',
-                            transition: '0.2s',
-                            background: 'white',
-                            border: '3px solid rgb(238, 238, 238)',
-                            color: 'rgb(51, 51, 51)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        };
+                        let btnStyle = {};
 
                         if (feedback && opt === currentQuestion.answer) {
-                            btnStyle = { ...btnStyle, background: '#6BCB77', border: '3px solid #6BCB77', color: 'white' };
+                            btnStyle = { background: '#6BCB77', border: '3px solid #6BCB77', color: 'white' };
                         } else if (feedback === 'incorrect' && opt === selectedOption) {
-                            btnStyle = { ...btnStyle, background: '#FF6B6B', border: '3px solid #FF6B6B', color: 'white', animation: 'shake 0.5s' };
+                            btnStyle = { background: '#FF6B6B', border: '3px solid #FF6B6B', color: 'white', animation: 'shake 0.5s' };
                         }
 
                         return (
-                            <button key={idx} onClick={() => handleAnswer(opt)} disabled={isAnimating} style={btnStyle}>
+                            <button
+                                key={idx}
+                                onClick={() => handleAnswer(opt)}
+                                disabled={isAnimating}
+                                className="btn-option"
+                                style={btnStyle}
+                            >
                                 {opt}
                             </button>
                         );

@@ -373,7 +373,14 @@ export default function JawiSyllablesGame({ onBack, onHome, language }) {
 
             {/* Answer Section */}
             {gameMode === 'abcd' ? (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', width: '100%', maxWidth: '600px' }}>
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '1rem',
+                    width: '100%',
+                    maxWidth: '600px',
+                    margin: '0 auto'
+                }}>
                     {shuffledOptions.map((opt, idx) => {
                         let btnStyle = {
                             background: 'white',
@@ -392,15 +399,8 @@ export default function JawiSyllablesGame({ onBack, onHome, language }) {
                                 key={idx}
                                 onClick={() => handleAnswer(opt)}
                                 disabled={isAnimating}
-                                style={{
-                                    padding: '1.5rem',
-                                    borderRadius: '15px',
-                                    fontSize: '1.8rem',
-                                    fontWeight: 'bold',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s',
-                                    ...btnStyle
-                                }}
+                                className="btn-option"
+                                style={btnStyle}
                             >
                                 {opt}
                             </button>
