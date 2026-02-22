@@ -196,47 +196,56 @@ export default function MonthsGame({ onBack, onHome, language }) {
                 color: 'white',
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'relative'
+                position: 'relative',
+                padding: '1rem',
+                minHeight: '180px'
             }}>
-                {/* Reference Button */}
-                <button
-                    onClick={() => setShowReference(true)}
-                    style={{
-                        position: 'absolute',
-                        top: '1rem',
-                        right: '1rem',
-                        background: 'rgba(255,255,255,0.2)',
-                        border: 'none',
-                        borderRadius: '50%',
-                        width: '40px',
-                        height: '40px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        color: 'white',
-                        transition: 'all 0.2s ease'
-                    }}
-                    title="Show Months Reference"
-                    onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
-                    onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
-                >
-                    <HelpCircle size={24} />
-                </button>
+                {/* Reference Button Row */}
+                <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+                    <button
+                        onClick={() => setShowReference(true)}
+                        style={{
+                            background: 'rgba(255,255,255,0.2)',
+                            border: 'none',
+                            borderRadius: '50%',
+                            width: '36px',
+                            height: '36px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            color: 'white',
+                            transition: 'all 0.2s ease'
+                        }}
+                        title="Show Months Reference"
+                        onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
+                        onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
+                    >
+                        <HelpCircle size={20} />
+                    </button>
+                </div>
 
-                <div style={{ fontSize: '1.2rem', opacity: 0.9, marginBottom: '1rem' }}>
-                    {currentQuestion.prompt}
-                </div>
-                <div className="question-text-lg" style={{ lineHeight: 1.2 }}>
-                    {currentQuestion.display}
-                </div>
-                {currentQuestion.subtitle && (
-                    <div style={{ fontSize: '1.8rem', marginTop: '1rem', fontStyle: 'italic', background: 'rgba(255,255,255,0.2)', padding: '0.5rem 1.5rem', borderRadius: '15px' }}>
-                        {currentQuestion.subtitle}
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+                    <div style={{ fontSize: '1.1rem', opacity: 0.9, marginBottom: '0.8rem' }}>
+                        {currentQuestion.prompt}
                     </div>
-                )}
+                    <div className="question-text-lg" style={{ lineHeight: 1.2, width: '100%' }}>
+                        {currentQuestion.display}
+                    </div>
+                    {currentQuestion.subtitle && (
+                        <div style={{
+                            fontSize: 'clamp(1.2rem, 5vw, 1.8rem)',
+                            marginTop: '0.8rem',
+                            fontStyle: 'italic',
+                            background: 'rgba(255,255,255,0.2)',
+                            padding: '0.4rem 1.2rem',
+                            borderRadius: '12px',
+                            maxWidth: '90%'
+                        }}>
+                            {currentQuestion.subtitle}
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* Answer Section */}
