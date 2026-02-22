@@ -96,9 +96,10 @@ export default function MonthLearning({ onBack, onHome, language }) {
                     onClick={closeModal}
                 >
                     <div
+                        className="card"
                         style={{
                             background: 'white',
-                            padding: '2.5rem',
+                            padding: 'clamp(1.5rem, 5vw, 2.5rem)',
                             borderRadius: '30px',
                             width: '100%',
                             maxWidth: '450px',
@@ -113,17 +114,17 @@ export default function MonthLearning({ onBack, onHome, language }) {
                             onClick={closeModal}
                             style={{
                                 position: 'absolute',
-                                top: '1.5rem',
-                                right: '1.5rem',
+                                top: '1rem',
+                                right: '1rem',
                                 border: 'none',
                                 background: '#f0f0f0',
                                 borderRadius: '50%',
-                                padding: '0.5rem',
+                                padding: '0.4rem',
                                 cursor: 'pointer',
                                 color: '#666'
                             }}
                         >
-                            <X size={24} />
+                            <X size={20} />
                         </button>
 
                         <div style={{
@@ -132,61 +133,73 @@ export default function MonthLearning({ onBack, onHome, language }) {
                             display: 'inline-block',
                             padding: '0.5rem 1.5rem',
                             borderRadius: '50px',
-                            fontSize: '1.2rem',
+                            fontSize: 'clamp(1rem, 4vw, 1.2rem)',
                             fontWeight: 'bold',
-                            marginBottom: '1.5rem'
+                            marginBottom: '1.5rem',
+                            marginTop: '0.5rem'
                         }}>
                             {t.monthPrefix} {selectedMonth.id}
                         </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 'min(2rem, 5vh)' }}>
                             <div>
-                                <label style={{ display: 'block', color: '#888', fontSize: '0.9rem', marginBottom: '0.3rem', textTransform: 'uppercase', letterSpacing: '1px' }}>{t.labelEng}</label>
-                                <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#333' }}>{selectedMonth.name}</div>
+                                <label style={{ display: 'block', color: '#888', fontSize: '0.8rem', marginBottom: '0.2rem', textTransform: 'uppercase', letterSpacing: '1px' }}>{t.labelEng}</label>
+                                <div style={{ fontSize: 'clamp(1.8rem, 8vw, 2.5rem)', fontWeight: 'bold', color: '#333' }}>{selectedMonth.name}</div>
                             </div>
 
-                            <div style={{ height: '2px', background: '#f0f0f0', width: '50%', margin: '0 auto' }}></div>
+                            <div style={{ height: '2px', background: '#f0f0f0', width: '40%', margin: '0 auto' }}></div>
 
                             <div>
-                                <label style={{ display: 'block', color: '#888', fontSize: '0.9rem', marginBottom: '0.3rem', textTransform: 'uppercase', letterSpacing: '1px' }}>{t.labelMalay}</label>
-                                <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#9D4EDD' }}>{selectedMonth.malay}</div>
+                                <label style={{ display: 'block', color: '#888', fontSize: '0.8rem', marginBottom: '0.2rem', textTransform: 'uppercase', letterSpacing: '1px' }}>{t.labelMalay}</label>
+                                <div style={{ fontSize: 'clamp(1.8rem, 8vw, 2.5rem)', fontWeight: 'bold', color: '#9D4EDD' }}>{selectedMonth.malay}</div>
                             </div>
 
-                            <div style={{ height: '2px', background: '#f0f0f0', width: '50%', margin: '0 auto' }}></div>
+                            <div style={{ height: '2px', background: '#f0f0f0', width: '40%', margin: '0 auto' }}></div>
 
                             <div>
-                                <label style={{ display: 'block', color: '#888', fontSize: '0.9rem', marginBottom: '0.3rem', textTransform: 'uppercase', letterSpacing: '1px' }}>{t.labelIslamic}</label>
-                                <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#4ECDC4' }}>{selectedMonth.islamic}</div>
+                                <label style={{ display: 'block', color: '#888', fontSize: '0.8rem', marginBottom: '0.2rem', textTransform: 'uppercase', letterSpacing: '1px' }}>{t.labelIslamic}</label>
+                                <div style={{ fontSize: 'clamp(1.8rem, 8vw, 2.5rem)', fontWeight: 'bold', color: '#4ECDC4' }}>{selectedMonth.islamic}</div>
                             </div>
                         </div>
 
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', width: '100%', marginTop: '2.5rem' }}>
+                        <div style={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            width: '100%',
+                            marginTop: '2rem'
+                        }}>
                             <button
                                 onClick={handlePrevMonth}
                                 className="btn-primary"
                                 style={{
-                                    flex: 1,
-                                    padding: '1rem',
+                                    flex: '1 1 auto',
+                                    minWidth: '80px',
+                                    padding: '0.8rem 0.5rem',
                                     background: '#f0f0f0',
                                     color: '#333',
                                     border: 'none',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    gap: '0.5rem'
+                                    gap: '0.3rem',
+                                    fontSize: '0.9rem'
                                 }}
                             >
-                                <ChevronLeft size={20} /> {t.prev}
+                                <ChevronLeft size={18} /> {t.prev}
                             </button>
 
                             <button
                                 className="btn-primary"
                                 onClick={closeModal}
                                 style={{
-                                    flex: 2,
-                                    padding: '1rem',
+                                    flex: '2 1 120px',
+                                    padding: '0.8rem 1rem',
                                     background: '#9D4EDD',
-                                    border: 'none'
+                                    border: 'none',
+                                    fontSize: '1rem',
+                                    order: language === 'bm' ? 3 : 0 // Ensure close is prominent
                                 }}
                             >
                                 {t.close}
@@ -196,18 +209,20 @@ export default function MonthLearning({ onBack, onHome, language }) {
                                 onClick={handleNextMonth}
                                 className="btn-primary"
                                 style={{
-                                    flex: 1,
-                                    padding: '1rem',
+                                    flex: '1 1 auto',
+                                    minWidth: '80px',
+                                    padding: '0.8rem 0.5rem',
                                     background: '#f0f0f0',
                                     color: '#333',
                                     border: 'none',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    gap: '0.5rem'
+                                    gap: '0.3rem',
+                                    fontSize: '0.9rem'
                                 }}
                             >
-                                {t.next} <ChevronRight size={20} />
+                                {language === 'bm' ? 'Seterusnya' : 'Next'} <ChevronRight size={18} />
                             </button>
                         </div>
                     </div>
