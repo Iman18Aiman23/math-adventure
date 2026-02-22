@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { ArrowLeft, BookOpen, Star, Home } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 import { JAWI_TOPICS } from '../utils/jawiWordsData';
+import { LOCALIZATION } from '../utils/localization';
+import GameHeader from './GameHeader';
 
-const TopicCard = ({ topic, onClick }) => {
+const TopicCard = ({ topic, onClick, language }) => {
     return (
         <button
             onClick={onClick}
@@ -46,7 +48,7 @@ const TopicCard = ({ topic, onClick }) => {
                 textAlign: 'center',
                 margin: 0
             }}>
-                {topic.title}
+                {language === 'bm' ? topic.title : topic.titleEng || topic.title}
             </h2>
             <div style={{
                 background: `${topic.color}20`, // 20% opacity
@@ -55,7 +57,7 @@ const TopicCard = ({ topic, onClick }) => {
                 borderRadius: '10px',
                 fontWeight: 'bold'
             }}>
-                {topic.words.length} Words
+                {topic.words.length} {language === 'bm' ? 'Perkataan' : 'Words'}
             </div>
         </button>
     );
@@ -103,62 +105,30 @@ const WordCard = ({ word, color }) => {
     );
 };
 
-export default function JawiWordsPage({ onBack, onHome }) {
+export default function JawiWordsPage({ onBack, onHome, language }) {
+    const t = LOCALIZATION[language].jawiGames;
     const [selectedTopic, setSelectedTopic] = useState(null);
 
     // Topic Selection View
     if (!selectedTopic) {
         return (
-            <div className="fade-in" style={{ padding: '2rem', maxWidth: '1000px', margin: '0 auto' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
-                    <button
-                        onClick={onBack}
-                        style={{
-                            background: 'rgba(0,0,0,0.1)',
-                            border: 'none',
-                            borderRadius: '50%',
-                            width: '48px',
-                            height: '48px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        <ArrowLeft size={32} />
-                    </button>
-                    <button
-                        onClick={onHome}
-                        style={{
-                            background: 'rgba(0,0,0,0.1)',
-                            border: 'none',
-                            borderRadius: '50%',
-                            width: '48px',
-                            height: '48px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        <Home size={32} />
-                    </button>
-                    <h1 className="game-title" style={{ margin: 0, fontSize: '2.5rem', color: '#9D4EDD' }}>
-                        1st 100 Words
-                    </h1>
-                </div>
+            <div className="game-container fade-in">
+                <GameHeader onBack={onBack} onHome={onHome} title={t.wordsTitle} language={language} />
 
                 <div style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
                     gap: '1.5rem',
-                    padding: '1rem'
+                    padding: '2rem',
+                    maxWidth: '1000px',
+                    margin: '0 auto'
                 }}>
                     {JAWI_TOPICS.map(topic => (
                         <TopicCard
                             key={topic.id}
                             topic={topic}
                             onClick={() => setSelectedTopic(topic)}
+                            language={language}
                         />
                     ))}
                 </div>
@@ -168,50 +138,22 @@ export default function JawiWordsPage({ onBack, onHome }) {
 
     // Word List View
     return (
-        <div className="fade-in" style={{ padding: '2rem', maxWidth: '1000px', margin: '0 auto' }}>
-            <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: '2rem',
-                flexWrap: 'wrap',
-                gap: '1rem'
-            }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <button
-                        onClick={() => setSelectedTopic(null)}
-                        style={{
-                            background: selectedTopic.color, // Theme color back button
-                            border: 'none',
-                            borderRadius: '50%',
-                            width: '48px',
-                            height: '48px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: 'pointer',
-                            color: 'white'
-                        }}
-                    >
-                        <ArrowLeft size={32} />
-                    </button>
-
-                    <h1 style={{
-                        margin: 0,
-                        fontSize: '2rem',
-                        color: selectedTopic.color,
-                        fontWeight: 'bold'
-                    }}>
-                        {selectedTopic.title}
-                    </h1>
-                </div>
-            </div>
+        <div className="game-container fade-in">
+            <GameHeader
+                onBack={() => setSelectedTopic(null)}
+                onHome={onHome}
+                title={language === 'bm' ? selectedTopic.title : selectedTopic.titleEng || selectedTopic.title}
+                language={language}
+            />
 
             <div style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
                 gap: '1.5rem',
-                paddingBottom: '2rem'
+                padding: '2rem',
+                maxWidth: '1000px',
+                margin: '0 auto',
+                paddingBottom: '4rem'
             }}>
                 {selectedTopic.words.map((word, idx) => (
                     <WordCard

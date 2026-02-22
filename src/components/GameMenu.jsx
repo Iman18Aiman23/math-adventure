@@ -1,18 +1,21 @@
-import React, { useState } from 'react';
-import { Play, Star, Settings, Volume2, VolumeX, Home } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calculator, Star, Trophy, ArrowLeft, Volume2, VolumeX, MousePointerClick, Keyboard, Hash, Home, Play, Settings } from 'lucide-react';
+import GameHeader from './GameHeader';
+import { LOCALIZATION } from '../utils/localization';
 
-export default function GameMenu({ onStart, isMuted, onToggleMute, onBack }) {
+export default function GameMenu({ onStart, isMuted, onToggleMute, onBack, onHome, language }) {
+    const t = LOCALIZATION[language].opsDetails;
     const [difficulty, setDifficulty] = useState('easy');
     const [quizType, setQuizType] = useState('multiple');
     const [selectedOperation, setSelectedOperation] = useState(null);
     const [selectedNumbers, setSelectedNumbers] = useState([]);
 
     const operations = [
-        { id: 'add', label: 'Addition (+)', color: '#FF6B6B' },
-        { id: 'subtract', label: 'Subtraction (-)', color: '#4ECDC4' },
-        { id: 'multiply', label: 'Multiplication (×)', color: '#FFE66D' },
-        { id: 'divide', label: 'Division (÷)', color: '#6BCB77' },
-        { id: 'random', label: 'Random (?)', color: '#9D4EDD' },
+        { id: 'add', label: `${t.add} (+)`, color: '#FF6B6B' },
+        { id: 'subtract', label: `${t.sub} (-)`, color: '#4ECDC4' },
+        { id: 'multiply', label: `${t.mul} (×)`, color: '#FFE66D' },
+        { id: 'divide', label: `${t.div} (÷)`, color: '#6BCB77' },
+        { id: 'random', label: `${t.ran} (?)`, color: '#9D4EDD' },
     ];
 
     const handleOpClick = (opId) => {
@@ -51,184 +54,150 @@ export default function GameMenu({ onStart, isMuted, onToggleMute, onBack }) {
     };
 
     return (
-        <div className="card fade-in" style={{ maxWidth: '600px', margin: '0 auto', position: 'relative' }}>
-            {/* Home/Back Button */}
-            <button
-                onClick={onBack}
-                style={{
-                    position: 'absolute',
-                    top: '1rem',
-                    left: '1rem',
-                    background: 'rgba(0,0,0,0.1)',
-                    border: 'none',
-                    borderRadius: '50%',
-                    width: '48px',
-                    height: '48px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
-                }}
-                title="Go Back"
-            >
-                <Home size={24} color="var(--color-dark)" />
-            </button>
+        <div className="game-container fade-in">
+            <GameHeader
+                onBack={onBack}
+                onHome={onHome}
+                onToggleMute={onToggleMute}
+                isMuted={isMuted}
+                title={t.title}
+                language={language}
+            />
 
-            {/* Mute Button */}
-            <button
-                onClick={onToggleMute}
-                style={{
-                    position: 'absolute',
-                    top: '1rem',
-                    right: '1rem',
-                    background: 'rgba(0,0,0,0.1)',
-                    border: 'none',
-                    borderRadius: '50%',
-                    width: '48px',
-                    height: '48px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
-                }}
-                title={isMuted ? 'Unmute sounds' : 'Mute sounds'}
-            >
-                {isMuted ? <VolumeX size={24} color="#888" /> : <Volume2 size={24} color="#4ECDC4" />}
-            </button>
+            <div className="card" style={{ maxWidth: '600px', margin: '0 auto', position: 'relative' }}>
 
-            <h1 className="game-title">
-                Math Adventure With Iman
-            </h1>
-            <p className="game-subtitle">
-                Select your challenge!
-            </p>
+                <h1 className="game-title">
+                    {t.title}
+                </h1>
+                <p className="game-subtitle">
+                    {t.subtitle}
+                </p>
 
-            {selectedOperation === 'multiply' ? (
-                <div className="fade-in">
-                    <h2 style={{ color: '#FFE66D', marginBottom: '1rem' }}>Practice Times Tables</h2>
-                    <p style={{ marginBottom: '1rem' }}>Select numbers to practice:</p>
+                {selectedOperation === 'multiply' ? (
+                    <div className="fade-in">
+                        <h2 style={{ color: '#FFE66D', marginBottom: '1rem' }}>{t.practiceTitle}</h2>
+                        <p style={{ marginBottom: '1rem' }}>{t.practicePick}</p>
 
-                    <div className="number-grid">
-                        {Array.from({ length: 12 }, (_, i) => i + 1).map(num => (
-                            <button
-                                key={num}
-                                onClick={() => toggleNumber(num)}
-                                className={`btn-number ${selectedNumbers.includes(num) ? 'selected' : ''}`}
-                            >
-                                {num}
-                            </button>
-                        ))}
-                    </div>
-
-                    <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-                        <button onClick={toggleAll} className="btn-secondary">
-                            {selectedNumbers.length === 12 ? 'Clear All' : 'Select All'}
-                        </button>
-                        <button
-                            className="btn-primary"
-                            style={{
-                                backgroundColor: '#FFE66D',
-                                color: 'var(--color-dark)',
-                                width: 'auto',
-                                padding: '0.8rem 3rem',
-                                margin: 0
-                            }}
-                            onClick={() => onStart('multiply', difficulty, selectedNumbers, quizType)}
-                            disabled={selectedNumbers.length === 0}
-                        >
-                            Start Game!
-                        </button>
-                    </div>
-
-                    <button
-                        onClick={() => setSelectedOperation(null)}
-                        style={{ marginTop: '1.5rem', background: 'none', border: 'none', color: '#888', textDecoration: 'underline', fontSize: '1rem', cursor: 'pointer' }}
-                    >
-                        Cancel
-                    </button>
-                </div>
-            ) : (
-                <>
-                    <div style={{ marginBottom: '2rem' }}>
-                        <h3>Difficulty</h3>
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '0.5rem' }}>
-                            {['easy', 'medium', 'hard'].map((level) => (
+                        <div className="number-grid">
+                            {Array.from({ length: 12 }, (_, i) => i + 1).map(num => (
                                 <button
-                                    key={level}
-                                    onClick={() => setDifficulty(level)}
-                                    style={{
-                                        padding: '0.5rem 1rem',
-                                        borderRadius: '20px',
-                                        background: difficulty === level ? 'var(--color-dark)' : 'white',
-                                        color: difficulty === level ? 'white' : 'var(--color-dark)',
-                                        border: '2px solid var(--color-dark)',
-                                        textTransform: 'capitalize'
-                                    }}
+                                    key={num}
+                                    onClick={() => toggleNumber(num)}
+                                    className={`btn-number ${selectedNumbers.includes(num) ? 'selected' : ''}`}
                                 >
-                                    {level}
+                                    {num}
                                 </button>
                             ))}
                         </div>
-                    </div>
 
-                    <div style={{ marginBottom: '2rem' }}>
-                        <h3>Quiz Type</h3>
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '0.5rem' }}>
-                            <button
-                                onClick={() => setQuizType('multiple')}
-                                style={{
-                                    padding: '0.5rem 1rem',
-                                    borderRadius: '20px',
-                                    background: quizType === 'multiple' ? '#9D4EDD' : 'white',
-                                    color: quizType === 'multiple' ? 'white' : 'var(--color-dark)',
-                                    border: '2px solid #9D4EDD',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.5rem'
-                                }}
-                            >
-                                🔘 Multiple Choice
+                        <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                            <button onClick={toggleAll} className="btn-secondary">
+                                {selectedNumbers.length === 12 ? t.clearAll : t.selectAll}
                             </button>
                             <button
-                                onClick={() => setQuizType('typing')}
+                                className="btn-primary"
                                 style={{
-                                    padding: '0.5rem 1rem',
-                                    borderRadius: '20px',
-                                    background: quizType === 'typing' ? '#9D4EDD' : 'white',
-                                    color: quizType === 'typing' ? 'white' : 'var(--color-dark)',
-                                    border: '2px solid #9D4EDD',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.5rem'
+                                    backgroundColor: '#FFE66D',
+                                    color: 'var(--color-dark)',
+                                    width: 'auto',
+                                    padding: '0.8rem 3rem',
+                                    margin: 0
                                 }}
+                                onClick={() => onStart('multiply', difficulty, selectedNumbers, quizType)}
+                                disabled={selectedNumbers.length === 0}
                             >
-                                ⌨️ Type Answer
+                                {t.startGame}
                             </button>
                         </div>
-                    </div>
 
-                    <div className="menu-grid">
-                        {operations.map((op) => (
-                            <button
-                                key={op.id}
-                                onClick={() => handleOpClick(op.id)}
-                                className="btn-primary btn-menu-item"
-                                style={{
-                                    backgroundColor: op.color,
-                                    gridColumn: op.id === 'random' ? '1 / -1' : 'auto', // Span full width for random
-                                }}
-                            >
-                                <span className="btn-icon">
-                                    {op.id === 'add' ? '+' : op.id === 'subtract' ? '-' : op.id === 'multiply' ? '×' : op.id === 'divide' ? '÷' : '?'}
-                                </span>
-                                {op.label.split(' ')[0]}
-                            </button>
-                        ))}
+                        <button
+                            onClick={() => setSelectedOperation(null)}
+                            style={{ marginTop: '1.5rem', background: 'none', border: 'none', color: '#888', textDecoration: 'underline', fontSize: '1rem', cursor: 'pointer' }}
+                        >
+                            {t.cancel}
+                        </button>
                     </div>
-                </>
-            )}
+                ) : (
+                    <>
+                        <div style={{ marginBottom: '2rem' }}>
+                            <h3>{t.diffLabel}</h3>
+                            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '0.5rem' }}>
+                                {['easy', 'medium', 'hard'].map((level) => (
+                                    <button
+                                        key={level}
+                                        onClick={() => setDifficulty(level)}
+                                        style={{
+                                            padding: '0.5rem 1rem',
+                                            borderRadius: '20px',
+                                            background: difficulty === level ? 'var(--color-dark)' : 'white',
+                                            color: difficulty === level ? 'white' : 'var(--color-dark)',
+                                            border: '2px solid var(--color-dark)',
+                                            textTransform: 'capitalize'
+                                        }}
+                                    >
+                                        {level === 'easy' ? t.diffEasy : level === 'medium' ? t.diffMedium : t.diffHard}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div style={{ marginBottom: '2rem' }}>
+                            <h3>{t.quizLabel}</h3>
+                            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '0.5rem' }}>
+                                <button
+                                    onClick={() => setQuizType('multiple')}
+                                    style={{
+                                        padding: '0.5rem 1rem',
+                                        borderRadius: '20px',
+                                        background: quizType === 'multiple' ? '#9D4EDD' : 'white',
+                                        color: quizType === 'multiple' ? 'white' : 'var(--color-dark)',
+                                        border: '2px solid #9D4EDD',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.5rem'
+                                    }}
+                                >
+                                    {t.quizMulti}
+                                </button>
+                                <button
+                                    onClick={() => setQuizType('typing')}
+                                    style={{
+                                        padding: '0.5rem 1rem',
+                                        borderRadius: '20px',
+                                        background: quizType === 'typing' ? '#9D4EDD' : 'white',
+                                        color: quizType === 'typing' ? 'white' : 'var(--color-dark)',
+                                        border: '2px solid #9D4EDD',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.5rem'
+                                    }}
+                                >
+                                    {t.quizType}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="menu-grid">
+                            {operations.map((op) => (
+                                <button
+                                    key={op.id}
+                                    onClick={() => handleOpClick(op.id)}
+                                    className="btn-primary btn-menu-item"
+                                    style={{
+                                        backgroundColor: op.color,
+                                        gridColumn: op.id === 'random' ? '1 / -1' : 'auto', // Span full width for random
+                                    }}
+                                >
+                                    <span className="btn-icon">
+                                        {op.id === 'add' ? '+' : op.id === 'subtract' ? '-' : op.id === 'multiply' ? '×' : op.id === 'divide' ? '÷' : '?'}
+                                    </span>
+                                    {op.label.split(' ')[0]}
+                                </button>
+                            ))}
+                        </div>
+                    </>
+                )}
+            </div>
         </div>
     );
 }

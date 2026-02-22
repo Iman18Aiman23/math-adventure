@@ -1,38 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
-import { ArrowLeft, RefreshCw, Trophy, ArrowRight, Volume2, VolumeX, Home } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { generateProblem } from '../utils/mathLogic';
 import { playSound } from '../utils/soundManager';
 import clsx from 'clsx';
-
-// Streak celebration messages - escalates with higher streaks!
-const STREAK_MESSAGES = [
-    { min: 5, text: "You're Good!", emoji: "🌟", color: "#FFD700" },
-    { min: 10, text: "Brilliant!", emoji: "💫", color: "#FF6B6B" },
-    { min: 15, text: "Awesome!", emoji: "🔥", color: "#FF4500" },
-    { min: 20, text: "Fantastic!", emoji: "⚡", color: "#9B59B6" },
-    { min: 25, text: "Incredible!", emoji: "🚀", color: "#3498DB" },
-    { min: 30, text: "SUPERSTAR!", emoji: "⭐", color: "#E74C3C" },
-    { min: 35, text: "UNSTOPPABLE!", emoji: "💪", color: "#1ABC9C" },
-    { min: 40, text: "GENIUS!", emoji: "🧠", color: "#8E44AD" },
-    { min: 45, text: "MATH WIZARD!", emoji: "🧙‍♂️", color: "#2ECC71" },
-    { min: 50, text: "LEGENDARY!", emoji: "👑", color: "#F39C12" },
-];
-
-// Get the appropriate message for the current streak
-const getStreakMessage = (streak) => {
-    // Find the highest matching message for this streak
-    for (let i = STREAK_MESSAGES.length - 1; i >= 0; i--) {
-        if (streak >= STREAK_MESSAGES[i].min) {
-            return STREAK_MESSAGES[i];
-        }
-    }
-    return STREAK_MESSAGES[0]; // Default to first message
-};
-
+import { LOCALIZATION } from '../utils/localization';
 import GameHeader from './GameHeader';
 
-export default function QuizArena({ operation, difficulty, selectedNumbers, onBack, onHome, isMuted, onToggleMute, quizType }) {
+export default function QuizArena({ operation, difficulty, selectedNumbers, onBack, onHome, isMuted, onToggleMute, quizType, language }) {
+    const t = LOCALIZATION[language].quizArena;
     const [problem, setProblem] = useState(null);
     const [score, setScore] = useState(0);
     const [streak, setStreak] = useState(0);
@@ -42,6 +18,25 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
     const [showStreakPopup, setShowStreakPopup] = useState(false);
     const [typedAnswer, setTypedAnswer] = useState(''); // For typing quiz mode
     const inputRef = useRef(null); // Ref for typing input field
+
+    // Get the appropriate message for the current streak
+    const getStreakMessage = (streakValue) => {
+        const messages = t.streakMessages;
+        // Icons and colors for streaks
+        const EMOJIS = ["🌟", "💫", "🔥", "⚡", "🚀", "⭐", "💪", "🧠", "🧙‍♂️", "👑"];
+        const COLORS = ["#FFD700", "#FF6B6B", "#FF4500", "#9B59B6", "#3498DB", "#E74C3C", "#1ABC9C", "#8E44AD", "#2ECC71", "#F39C12"];
+
+        for (let i = messages.length - 1; i >= 0; i--) {
+            if (streakValue >= messages[i].min) {
+                return {
+                    text: messages[i].text,
+                    emoji: EMOJIS[i] || "🌟",
+                    color: COLORS[i] || "#FFD700"
+                };
+            }
+        }
+        return { text: messages[0].text, emoji: EMOJIS[0], color: COLORS[0] };
+    };
 
     // Initialize first problem
     useEffect(() => {
@@ -112,7 +107,7 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
         handleAnswer(numericAnswer);
     };
 
-    if (!problem) return <div>Loading...</div>;
+    if (!problem) return <div>{t.loading}</div>;
 
     const streakMessage = getStreakMessage(streak);
 
@@ -125,6 +120,7 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
                 isMuted={isMuted}
                 score={score}
                 streak={streak}
+                language={language}
             />
 
             {/* Question */}
@@ -154,7 +150,7 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
                                     handleTypedSubmit();
                                 }
                             }}
-                            placeholder="Type your answer..."
+                            placeholder={t.typePlaceholder}
                             disabled={isAnimating}
                             autoFocus
                             className={clsx(
@@ -166,7 +162,7 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
                     </form>
                     {feedback === 'correct' && (
                         <div style={{ marginTop: '1rem', color: 'var(--color-success)', fontSize: '1.5rem', fontWeight: 'bold' }}>
-                            ✓ Correct!
+                            {t.correct}
                         </div>
                     )}
                 </div>
@@ -215,10 +211,10 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
                         onClick={nextProblem}
                         style={{ padding: '0.8rem 2rem', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: '0 auto' }}
                     >
-                        Next Question <ArrowRight size={24} />
+                        {t.nextQuestion} <ArrowRight size={24} />
                     </button>
                     <p style={{ marginTop: '1rem', color: '#666' }}>
-                        Oops! The correct answer was <b>{problem.answer}</b>.
+                        {t.incorrectLabel} <b>{problem.answer}</b>.
                     </p>
                 </div>
             )}
@@ -254,7 +250,7 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
                             {streakInfo.text}
                         </h2>
                         <p style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#666' }}>
-                            🔥 {streak} in a row! 🔥
+                            🔥 {streak} {t.streakInRow} 🔥
                         </p>
                         <span style={{ fontSize: '5rem' }}>{streakInfo.emoji}</span>
                     </div>

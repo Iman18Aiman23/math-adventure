@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ArrowLeft, BookOpen, GraduationCap, Star, Home, Keyboard } from 'lucide-react';
+import { BookOpen, GraduationCap, Star, Keyboard, ChevronLeft, ChevronRight, Languages, Brain, ArrowLeft, Home } from 'lucide-react';
+import { LOCALIZATION } from '../utils/localization';
 import { JAWI_ALPHABET } from '../utils/jawiData';
 import { SUKU_KATA_DATA } from '../utils/jawiSukuKataData';
 import JawiMatchGame from './JawiMatchGame';
@@ -9,8 +10,9 @@ import JawiSyllablesGame from './JawiSyllablesGame';
 import Jawi100WordsGame from './Jawi100WordsGame';
 import GameHeader from './GameHeader';
 
-export default function JawiPage({ onBack, onHome }) {
-    const [mode, setMode] = useState('menu'); // 'menu' | 'alphabet' | 'match' | 'words' | 'syllables' | 'spelling_game'
+export default function JawiPage({ onBack, onHome, language }) {
+    const t = LOCALIZATION[language].jawi;
+    const [mode, setMode] = useState(null); // null, 'alphabet' | 'match' | 'words' | 'syllables' | 'spelling_game'
     const [selectedAlphabet, setSelectedAlphabet] = useState(null);
 
     const handleBack = () => {
@@ -21,12 +23,24 @@ export default function JawiPage({ onBack, onHome }) {
         }
     };
 
+    const handleNextAlphabet = () => {
+        const currentIndex = JAWI_ALPHABET.findIndex(item => item.jawi === selectedAlphabet.jawi);
+        const nextIndex = (currentIndex + 1) % JAWI_ALPHABET.length;
+        setSelectedAlphabet(JAWI_ALPHABET[nextIndex]);
+    };
+
+    const handlePrevAlphabet = () => {
+        const currentIndex = JAWI_ALPHABET.findIndex(item => item.jawi === selectedAlphabet.jawi);
+        const prevIndex = (currentIndex - 1 + JAWI_ALPHABET.length) % JAWI_ALPHABET.length;
+        setSelectedAlphabet(JAWI_ALPHABET[prevIndex]);
+    };
+
     if (mode === 'alphabet') {
         const COLORS = ['#FF6B6B', '#4ECDC4', '#FFD93D', '#FF8C42', '#9D4EDD', '#6BCB77', '#A06CD5', '#EF476F', '#4361EE', '#F72585', '#4CC9F0'];
 
         return (
             <div className="game-container fade-in">
-                <GameHeader onBack={handleBack} onHome={onHome} title="Jawi Alphabet" />
+                <GameHeader onBack={handleBack} onHome={onHome} title={t.alphabetTitle} language={language} />
 
                 <div className="jawi-alphabet-grid">
                     {JAWI_ALPHABET.map((item, idx) => {
@@ -171,9 +185,64 @@ export default function JawiPage({ onBack, onHome }) {
                                 </div>
                             ) : (
                                 <p style={{ textAlign: 'center', color: '#888' }}>
-                                    No detailed Suku Kata data available for this alphabet.
+                                    {t.noSyllableData}
                                 </p>
                             )}
+
+                            {/* Navigation Buttons */}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', width: '100%', marginTop: '1.5rem', borderTop: '2px solid #eee', paddingTop: '1rem' }}>
+                                <button
+                                    onClick={handlePrevAlphabet}
+                                    className="btn-primary"
+                                    style={{
+                                        flex: 1,
+                                        padding: '0.8rem',
+                                        background: '#f0f0f0',
+                                        color: '#333',
+                                        border: 'none',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: '0.5rem',
+                                        fontSize: '1rem'
+                                    }}
+                                >
+                                    <ChevronLeft size={20} /> {t.prev}
+                                </button>
+
+                                <button
+                                    className="btn-primary"
+                                    onClick={() => setSelectedAlphabet(null)}
+                                    style={{
+                                        flex: 2,
+                                        padding: '0.8rem',
+                                        background: '#9D4EDD',
+                                        border: 'none',
+                                        fontSize: '1rem'
+                                    }}
+                                >
+                                    {t.close}
+                                </button>
+
+                                <button
+                                    onClick={handleNextAlphabet}
+                                    className="btn-primary"
+                                    style={{
+                                        flex: 1,
+                                        padding: '0.8rem',
+                                        background: '#f0f0f0',
+                                        color: '#333',
+                                        border: 'none',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: '0.5rem',
+                                        fontSize: '1rem'
+                                    }}
+                                >
+                                    {t.next} <ChevronRight size={20} />
+                                </button>
+                            </div>
                         </div>
                     </div>,
                     document.body
@@ -182,25 +251,14 @@ export default function JawiPage({ onBack, onHome }) {
         );
     }
 
-    if (mode === 'match') {
-        return <JawiMatchGame onBack={handleBack} onHome={onHome} />;
-    }
-
-    if (mode === 'words') {
-        return <JawiWordsPage onBack={handleBack} onHome={onHome} />;
-    }
-
-    if (mode === 'syllables') {
-        return <JawiSyllablesGame onBack={handleBack} onHome={onHome} />;
-    }
-
-    if (mode === 'spelling_game') {
-        return <Jawi100WordsGame onBack={handleBack} onHome={onHome} />;
-    }
+    if (mode === 'match') return <JawiMatchGame onBack={handleBack} onHome={onHome} language={language} />;
+    if (mode === 'words') return <JawiWordsPage onBack={handleBack} onHome={onHome} language={language} />;
+    if (mode === 'syllables') return <JawiSyllablesGame onBack={handleBack} onHome={onHome} language={language} />;
+    if (mode === 'spelling_game') return <Jawi100WordsGame onBack={handleBack} onHome={onHome} language={language} />;
 
     return (
         <div className="game-container fade-in">
-            <GameHeader onBack={onBack} onHome={onHome} title="Jawi Learning" />
+            <GameHeader onBack={onBack} onHome={onHome} title={t.title} language={language} />
 
             <div className="card" style={{ padding: '3rem', textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
 
@@ -215,9 +273,9 @@ export default function JawiPage({ onBack, onHome }) {
                     <BookOpen size={64} />
                 </div>
 
-                <h1 className="game-title" style={{ color: '#9D4EDD', fontSize: '3rem' }}>Jawi Learning</h1>
+                <h1 className="game-title" style={{ color: '#9D4EDD', fontSize: '3rem' }}>{t.title}</h1>
                 <p className="game-subtitle" style={{ fontSize: '1.4rem', marginBottom: '3rem' }}>
-                    Mari belajar mengenal Jawi bersama Iman! ✨
+                    {t.subtitle}
                 </p>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '400px', margin: '0 auto' }}>
@@ -235,7 +293,7 @@ export default function JawiPage({ onBack, onHome }) {
                         }}
                     >
                         <GraduationCap size={28} />
-                        Learn Jawi Alphabet
+                        {t.learnAlphabet}
                     </button>
 
                     <button
@@ -253,7 +311,7 @@ export default function JawiPage({ onBack, onHome }) {
                         }}
                     >
                         <Keyboard size={28} />
-                        Alphabet Syllables Game
+                        {t.learnSyllables}
                     </button>
 
                     <button
@@ -270,7 +328,7 @@ export default function JawiPage({ onBack, onHome }) {
                         }}
                     >
                         <BookOpen size={28} />
-                        100 Jawi Words
+                        {t.learn100Words}
                     </button>
 
                     <button
@@ -287,7 +345,7 @@ export default function JawiPage({ onBack, onHome }) {
                         }}
                     >
                         <Keyboard size={28} />
-                        100 Words Spelling Game
+                        {t.learnSpelling}
                     </button>
 
                     <button
@@ -304,11 +362,11 @@ export default function JawiPage({ onBack, onHome }) {
                         }}
                     >
                         <Star size={28} />
-                        [TEST] Play Jawi Match
+                        {t.testMatch}
                     </button>
 
                     <p style={{ color: '#888', fontStyle: 'italic', marginTop: '1rem' }}>
-                        More modules coming soon!
+                        {t.comingSoon}
                     </p>
                 </div>
             </div>

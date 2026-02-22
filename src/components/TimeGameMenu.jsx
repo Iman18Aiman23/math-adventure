@@ -1,31 +1,40 @@
 import React from 'react';
 import { Calendar, Clock } from 'lucide-react';
 import GameHeader from './GameHeader';
+import { LOCALIZATION } from '../utils/localization';
 
-export default function TimeGameMenu({ onStart, onBack, onHome }) {
+export default function TimeGameMenu({ onStart, onBack, onHome, language }) {
+    const t = LOCALIZATION[language].time;
     const games = [
         {
+            id: 'month-learning',
+            label: t.monthLearning,
+            icon: <Calendar size={32} />,
+            color: '#9D4EDD',
+            description: t.monthLearningDesc
+        },
+        {
             id: 'months',
-            label: 'Month Learning',
+            label: t.monthQuiz,
             icon: <Calendar size={32} />,
             color: '#FF6B6B',
-            description: 'Learn the 12 months in order!'
+            description: t.monthQuizDesc
         },
         {
             id: 'clock',
-            label: 'Time Adventure',
+            label: t.timeAdventure,
             icon: <Clock size={32} />,
             color: '#4ECDC4',
-            description: 'Learn to read analog and digital clocks!'
+            description: t.timeAdventureDesc
         },
     ];
 
     return (
         <div className="game-container fade-in">
-            <GameHeader onBack={onBack} onHome={onHome} title="Date & Time" />
+            <GameHeader onBack={onBack} onHome={onHome} title={t.title} language={language} />
 
             <p className="game-subtitle" style={{ fontSize: '1.2rem', marginBottom: '2rem', textAlign: 'center' }}>
-                Pilih permainan anda! ✨
+                {t.selectGame}
             </p>
 
             <div style={{ display: 'grid', gap: '1rem', maxWidth: '500px', margin: '0 auto', width: '100%' }}>

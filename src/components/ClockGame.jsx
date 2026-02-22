@@ -5,8 +5,10 @@ import { generateClockProblem } from '../utils/timeData';
 import { playSound, toggleMute, getMuted } from '../utils/soundManager';
 import AnalogClock from './AnalogClock';
 import GameHeader from './GameHeader';
+import { LOCALIZATION } from '../utils/localization';
 
-export default function ClockGame({ onBack, onHome }) {
+export default function ClockGame({ onBack, onHome, language }) {
+    const t = LOCALIZATION[language].clockGame;
     const [clockMode, setClockMode] = useState('analog-to-digital'); // user-selectable
     const [currentQuestion, setCurrentQuestion] = useState(null);
     const [score, setScore] = useState(0);
@@ -110,7 +112,7 @@ export default function ClockGame({ onBack, onHome }) {
         fontWeight: 'bold'
     });
 
-    if (!currentQuestion) return <div className="game-container" style={{ textAlign: 'center', padding: '5rem' }}>Loading Clock...</div>;
+    if (!currentQuestion) return <div className="game-container" style={{ textAlign: 'center', padding: '5rem' }}>{t.loading}</div>;
 
     return (
         <div className="game-container">
@@ -121,22 +123,23 @@ export default function ClockGame({ onBack, onHome }) {
                 isMuted={isMuted}
                 score={score}
                 streak={streak}
+                language={language}
             />
 
             {/* Mode Toggle */}
             <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
                 <button onClick={() => handleModeChange('analog-to-digital')} style={toggleBtnStyle(clockMode === 'analog-to-digital')}>
-                    🕒 Analog → Digital
+                    {t.modeAnalogDigital}
                 </button>
                 <button onClick={() => handleModeChange('digital-to-analog')} style={toggleBtnStyle(clockMode === 'digital-to-analog')}>
-                    🔟 Digital → Analog
+                    {t.modeDigitalAnalog}
                 </button>
             </div>
 
             {/* Question Card */}
             <div className="question-card fade-in" style={{ background: '#4ECDC4', color: 'white' }}>
                 <div style={{ fontSize: '1.2rem', opacity: 0.9, marginBottom: '1rem' }}>
-                    {clockMode === 'analog-to-digital' ? 'What time is it?' : 'Find the matching clock!'}
+                    {clockMode === 'analog-to-digital' ? t.promptAnalog : t.promptDigital}
                 </div>
 
                 {clockMode === 'analog-to-digital' ? (
@@ -214,10 +217,10 @@ export default function ClockGame({ onBack, onHome }) {
             {feedback === 'incorrect' && (
                 <div className="fade-in" style={{ marginTop: '2rem', textAlign: 'center' }}>
                     <p style={{ marginBottom: '1rem', color: '#FF6B6B', fontSize: '1.2rem' }}>
-                        Oops! The correct time was <b>{currentQuestion.displayTime}</b>.
+                        {t.correctTimeLabel} <b>{currentQuestion.displayTime}</b>.
                     </p>
                     <button className="btn-primary" onClick={generateQuestion} style={{ padding: '0.8rem 2rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
-                        Next Question <ArrowRight size={24} />
+                        {t.nextQuestion} <ArrowRight size={24} />
                     </button>
                 </div>
             )}

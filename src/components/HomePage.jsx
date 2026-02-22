@@ -1,38 +1,40 @@
 import React from 'react';
 import { BookOpen, Calculator, Languages } from 'lucide-react';
+import { LOCALIZATION } from '../utils/localization';
 
-export default function HomePage({ onSelectSubject }) {
+export default function HomePage({ onSelectSubject, language }) {
+    const t = LOCALIZATION[language].home;
     const subjects = [
         {
             id: 'bm',
-            title: 'Bahasa Melayu',
+            title: t.bmTitle,
             icon: <Languages size={48} />,
             color: '#4ECDC4',
-            description: 'Belajar suku kata dan kosa kata!'
+            description: t.bmDesc
         },
         {
             id: 'math',
-            title: 'Mathematic',
+            title: t.mathTitle,
             icon: <Calculator size={48} />,
             color: '#FF6B6B',
-            description: 'Adventure dengan nombor dan kira-kira!'
+            description: t.mathDesc
         },
         {
             id: 'jawi',
-            title: 'Jawi',
+            title: t.jawiTitle,
             icon: <BookOpen size={48} />,
             color: '#9D4EDD',
-            description: 'Mari mengenal huruf Jawi!'
+            description: t.jawiDesc
         }
     ];
 
     return (
         <div className="fade-in" style={{ padding: '2rem', textAlign: 'center' }}>
             <h1 className="game-title" style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>
-                Iman Learning Hub
+                {t.title}
             </h1>
             <p className="game-subtitle" style={{ fontSize: '1.5rem', marginBottom: '3rem' }}>
-                Pilih subjek kegemaran anda! ✨
+                {t.subtitle}
             </p>
 
             <div style={{
@@ -112,7 +114,7 @@ export default function HomePage({ onSelectSubject }) {
                             marginTop: '1rem',
                             fontSize: '1.1rem'
                         }}>
-                            Mula Belajar!
+                            {t.startButton}
                         </div>
                     </button>
                 ))}

@@ -1,31 +1,33 @@
 import React from 'react';
 import { Calculator, Clock } from 'lucide-react';
 import GameHeader from './GameHeader';
+import { LOCALIZATION } from '../utils/localization';
 
-export default function MathHome({ onSelectSubGame, onBack }) {
+export default function MathHome({ onSelectSubGame, onBack, onHome, language }) {
+    const t = LOCALIZATION[language].math;
     const subGames = [
         {
             id: 'operations',
-            title: 'Mathematic Operations',
+            title: t.opsTitle,
             icon: <Calculator size={48} />,
             color: '#FF6B6B',
-            description: 'Tambah, tolak, darab dan bahagi!'
+            description: t.opsDesc
         },
         {
             id: 'datetime',
-            title: 'Date / Time',
+            title: t.timeTitle,
             icon: <Clock size={48} />,
             color: '#4ECDC4',
-            description: 'Belajar jam dan kalendar!',
+            description: t.timeDesc,
         }
     ];
 
     return (
         <div className="game-container fade-in">
-            <GameHeader onBack={onBack} onHome={onBack} title="Mathematic Adventure" />
+            <GameHeader onBack={onBack} onHome={onHome} title={t.hubTitle} language={language} />
 
             <p className="game-subtitle" style={{ fontSize: '1.2rem', marginBottom: '3rem' }}>
-                Pilih jenis permainan matematik anda! ✨
+                {t.hubSubtitle}
             </p>
 
             <div style={{
@@ -100,7 +102,7 @@ export default function MathHome({ onSelectSubGame, onBack }) {
                                 marginTop: '0.5rem',
                                 fontSize: '1rem'
                             }}>
-                                Main Sekarang!
+                                {t.playNow}
                             </div>
                         )}
 
@@ -114,7 +116,7 @@ export default function MathHome({ onSelectSubGame, onBack }) {
                                 marginTop: '0.5rem',
                                 fontSize: '1rem'
                             }}>
-                                Akan Datang
+                                {t.comingSoon}
                             </div>
                         )}
                     </button>

@@ -12,13 +12,16 @@ import { ArrowLeft, Home, Trophy, Volume2, VolumeX } from 'lucide-react';
  * @param {Number} [props.streak] - Optional streak display
  * @param {String} [props.title] - Optional title
  */
-export default function GameHeader({ onBack, onHome, onToggleMute, isMuted, score, streak, title }) {
+export default function GameHeader({ onBack, onHome, onToggleMute, isMuted, score, streak, title, language = 'bm' }) {
+    const backTip = language === 'bm' ? 'Kembali' : 'Go Back';
+    const homeTip = language === 'bm' ? 'Menu Utama' : 'Back to Home';
+
     return (
         <div className="game-header">
             {/* Left Section: Back Button */}
             <div className="header-section left">
                 {onBack && (
-                    <button onClick={onBack} className="header-btn" title="Go Back">
+                    <button onClick={onBack} className="header-btn" title={backTip}>
                         <ArrowLeft size={24} />
                     </button>
                 )}
@@ -27,7 +30,7 @@ export default function GameHeader({ onBack, onHome, onToggleMute, isMuted, scor
             {/* Middle Section: Home Button & Optional Title */}
             <div className="header-section middle">
                 {onHome && (
-                    <button onClick={onHome} className="header-btn home-btn" title="Back to Home">
+                    <button onClick={onHome} className="header-btn home-btn" title={homeTip}>
                         <Home size={24} />
                     </button>
                 )}

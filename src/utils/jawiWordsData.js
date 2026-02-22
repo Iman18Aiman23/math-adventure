@@ -2,6 +2,7 @@ export const JAWI_TOPICS = [
     {
         id: 1,
         title: "Kata Kerja & Perbuatan",
+        titleEng: "Verbs & Actions",
         words: [
             { rumi: "Baca", jawi: "باچا", emoji: "📖" },
             { rumi: "Tulis", jawi: "توليس", emoji: "✍️" },
@@ -29,6 +30,7 @@ export const JAWI_TOPICS = [
     {
         id: 2,
         title: "Anggota Badan & Manusia",
+        titleEng: "Body Parts & People",
         words: [
             { rumi: "Mata", jawi: "مات", emoji: "👁️" },
             { rumi: "Kaki", jawi: "كاكي", emoji: "🦶" },
@@ -56,6 +58,7 @@ export const JAWI_TOPICS = [
     {
         id: 3,
         title: "Objek & Alatan",
+        titleEng: "Objects & Tools",
         words: [
             { rumi: "Buku", jawi: "بوكو", emoji: "📕" },
             { rumi: "Pensel", jawi: "ڤنسيل", emoji: "✏️" },
@@ -83,6 +86,7 @@ export const JAWI_TOPICS = [
     {
         id: 4,
         title: "Alam & Haiwan",
+        titleEng: "Nature & Animals",
         words: [
             { rumi: "Bumi", jawi: "بومي", emoji: "🌍" },
             { rumi: "Bulan", jawi: "بولن", emoji: "🌙" },
@@ -110,6 +114,7 @@ export const JAWI_TOPICS = [
     {
         id: 5,
         title: "Sifat, Keadaan & Rasa",
+        titleEng: "Qualities & Feelings",
         words: [
             { rumi: "Baik", jawi: "باءيق", emoji: "👍" },
             { rumi: "Jahat", jawi: "جاهت", emoji: "😈" },

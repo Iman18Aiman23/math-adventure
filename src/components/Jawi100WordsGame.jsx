@@ -1,31 +1,33 @@
 import React, { useState, useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
 import { ArrowLeft, RefreshCw, Trophy, Home, Keyboard, Volume2, VolumeX, ArrowRight, Grid, Shuffle } from 'lucide-react';
+import clsx from 'clsx';
 import { JAWI_TOPICS } from '../utils/jawiWordsData';
 import { playSound, toggleMute, getMuted } from '../utils/soundManager';
-import clsx from 'clsx';
+import { LOCALIZATION } from '../utils/localization';
 import GameHeader from './GameHeader';
 
-// Streak celebration messages
-const STREAK_MESSAGES = [
-    { min: 5, text: "Keep it up!", emoji: "👍", color: "#FFD700" },
-    { min: 10, text: "Great Job!", emoji: "🌟", color: "#FF6B6B" },
-    { min: 15, text: "Awesome!", emoji: "🔥", color: "#FF4500" },
-    { min: 20, text: "Fantastic!", emoji: "⚡", color: "#9B59B6" },
-    { min: 25, text: "Amazing!", emoji: "🚀", color: "#3498DB" },
-    { min: 30, text: "SUPERSTAR!", emoji: "⭐", color: "#E74C3C" },
-];
+export default function Jawi100WordsGame({ onBack, onHome, language }) {
+    const t = LOCALIZATION[language].jawiGames;
 
-const getStreakMessage = (streak) => {
-    for (let i = STREAK_MESSAGES.length - 1; i >= 0; i--) {
-        if (streak >= STREAK_MESSAGES[i].min) {
-            return STREAK_MESSAGES[i];
+    // Get the appropriate message for the current streak
+    const getStreakMessage = (streakValue) => {
+        const messages = t.streakMessages;
+        // Icons and colors for streaks
+        const EMOJIS = ["👍", "🌟", "🔥", "⚡", "🚀", "⭐"];
+        const COLORS = ["#FFD700", "#FF6B6B", "#FF4500", "#9B59B6", "#3498DB", "#E74C3C"];
+
+        for (let i = messages.length - 1; i >= 0; i--) {
+            if (streakValue >= messages[i].min) {
+                return {
+                    text: messages[i].text,
+                    emoji: EMOJIS[i] || "👍",
+                    color: COLORS[i] || "#FFD700"
+                };
+            }
         }
-    }
-    return STREAK_MESSAGES[0];
-};
-
-export default function Jawi100WordsGame({ onBack, onHome }) {
+        return { text: messages[0].text, emoji: EMOJIS[0], color: COLORS[0] };
+    };
     const [gameState, setGameState] = useState('setup'); // 'setup', 'playing', 'summary'
     const [selectedTopicId, setSelectedTopicId] = useState(null); // null means random/all
 
@@ -139,11 +141,11 @@ export default function Jawi100WordsGame({ onBack, onHome }) {
     if (gameState === 'setup') {
         return (
             <div className="game-container">
-                <GameHeader onBack={onBack} onHome={onHome} title="Jawi Words" />
+                <GameHeader onBack={onBack} onHome={onHome} title={t.wordsTitle} language={language} />
 
                 <div className="card fade-in" style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem' }}>
                     <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                        <h3 style={{ marginBottom: '1rem', color: '#666' }}>Choose a Topic</h3>
+                        <h3 style={{ marginBottom: '1rem', color: '#666' }}>{t.chooseTopic}</h3>
 
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
                             {/* Random Option */}
@@ -167,7 +169,7 @@ export default function Jawi100WordsGame({ onBack, onHome }) {
                                 }}
                             >
                                 <Shuffle size={32} />
-                                Random Mix
+                                {t.randomMix}
                             </button>
 
                             {/* Topics from Data */}
@@ -204,11 +206,9 @@ export default function Jawi100WordsGame({ onBack, onHome }) {
                                     }}
                                 >
                                     <span style={{ fontSize: '2rem' }}>
-                                        {/* Use a meaningful icon or just first char if no icon provided in data, but we have emoji in words. 
-                                        Let's just use a generic icon or the first emoji from the topic for visual flair */}
                                         {topic.words[0]?.emoji || '📚'}
                                     </span>
-                                    {topic.title}
+                                    {language === 'bm' ? topic.title : topic.titleEng || topic.title}
                                 </button>
                             ))}
                         </div>
@@ -223,33 +223,37 @@ export default function Jawi100WordsGame({ onBack, onHome }) {
         const percentage = totalPossibleScore > 0 ? Math.round((score / totalPossibleScore) * 100) : 0;
 
         return (
-            <div className="card fade-in" style={{ textAlign: 'center', padding: '3rem', maxWidth: '600px', margin: '2rem auto' }}>
-                <Trophy size={80} color="#FFD93D" style={{ marginBottom: '1rem' }} />
-                <h1 style={{ color: '#FF6B6B', fontSize: '2.5rem', marginBottom: '0.5rem' }}>Game Over!</h1>
-                <p style={{ fontSize: '1.5rem', color: '#666', marginBottom: '2rem' }}>
-                    {percentage === 100 ? "Perfect Score!" : "Well Done!"}
-                </p>
+            <div className="game-container fade-in">
+                <GameHeader onBack={onBack} onHome={onHome} title={t.wordsTitle} language={language} />
 
-                <div style={{ fontSize: '4rem', fontWeight: 'bold', color: '#4ECDC4', marginBottom: '0.5rem' }}>
-                    {score}
-                </div>
-                <div style={{ fontSize: '1.2rem', color: '#888', marginBottom: '2rem' }}>
-                    Total Score ({questionCount} words)
-                </div>
+                <div className="card" style={{ textAlign: 'center', padding: '3rem', maxWidth: '600px', margin: '2rem auto' }}>
+                    <Trophy size={80} color="#FFD93D" style={{ marginBottom: '1rem' }} />
+                    <h1 style={{ color: '#FF6B6B', fontSize: '2.5rem', marginBottom: '0.5rem' }}>{t.gameOver}</h1>
+                    <p style={{ fontSize: '1.5rem', color: '#666', marginBottom: '2rem' }}>
+                        {percentage === 100 ? t.perfectScore : t.wellDone}
+                    </p>
 
-                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-                    <button className="btn-primary" onClick={() => setGameState('setup')} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                        <RefreshCw /> New Game
-                    </button>
-                    <button className="btn-secondary" onClick={onHome} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                        <Home /> Home
-                    </button>
+                    <div style={{ fontSize: '4rem', fontWeight: 'bold', color: '#4ECDC4', marginBottom: '0.5rem' }}>
+                        {score}
+                    </div>
+                    <div style={{ fontSize: '1.2rem', color: '#888', marginBottom: '2rem' }}>
+                        {t.totalScore} ({questionCount} {language === 'bm' ? 'perkataan' : 'words'})
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                        <button className="btn-primary" onClick={() => setGameState('setup')} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                            <RefreshCw /> {t.newGame}
+                        </button>
+                        <button className="btn-secondary" onClick={onHome} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                            <Home /> {language === 'bm' ? 'Utama' : 'Home'}
+                        </button>
+                    </div>
                 </div>
             </div>
         );
     }
 
-    if (!currentWord) return <div>Loading...</div>;
+    if (!currentWord) return <div>{t.loading}</div>;
 
     const topicColor = selectedTopicId && selectedTopicId !== 'random'
         ? JAWI_TOPICS.find(t => t.id === selectedTopicId)?.color
@@ -264,7 +268,8 @@ export default function Jawi100WordsGame({ onBack, onHome }) {
                 isMuted={isMuted}
                 score={score}
                 streak={streak}
-                title="100 Words"
+                title={t.wordsTitle}
+                language={language}
             />
 
             {/* Question Card */}
@@ -273,7 +278,7 @@ export default function Jawi100WordsGame({ onBack, onHome }) {
                 color: 'white',
             }}>
                 <div style={{ fontSize: '1.2rem', opacity: 0.9, marginBottom: '1rem' }}>
-                    Type the Rumi spelling
+                    {t.typeRumi}
                 </div>
 
                 <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>
@@ -294,7 +299,7 @@ export default function Jawi100WordsGame({ onBack, onHome }) {
                         value={userAnswer}
                         onChange={(e) => setUserAnswer(e.target.value)}
                         disabled={isAnimating}
-                        placeholder="Type answer..."
+                        placeholder={t.typeAnswer}
                         autoFocus
                         className={clsx(
                             "standard-input",
@@ -305,7 +310,7 @@ export default function Jawi100WordsGame({ onBack, onHome }) {
                 </form>
                 {feedback === 'correct' && (
                     <div style={{ marginTop: '1rem', color: '#6BCB77', fontSize: '1.5rem', fontWeight: 'bold' }}>
-                        ✓ Correct!
+                        {t.correct}
                     </div>
                 )}
             </div>
@@ -314,14 +319,14 @@ export default function Jawi100WordsGame({ onBack, onHome }) {
             {feedback === 'incorrect' && (
                 <div className="fade-in" style={{ marginTop: '2rem', textAlign: 'center' }}>
                     <p style={{ marginBottom: '1rem', color: '#FF6B6B', fontSize: '1.2rem' }}>
-                        Oops! The answer is <b>{currentWord.rumi}</b>.
+                        {t.incorrectLabel} <b>{currentWord.rumi}</b>.
                     </p>
                     <button
                         className="btn-primary"
                         onClick={nextProblem}
                         style={{ padding: '0.8rem 2rem', fontSize: '1.2rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}
                     >
-                        Next Word <ArrowRight size={24} />
+                        {t.nextWord} <ArrowRight size={24} />
                     </button>
                 </div>
             )}
@@ -350,7 +355,7 @@ export default function Jawi100WordsGame({ onBack, onHome }) {
                             {streakInfo.text}
                         </h2>
                         <p style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#666' }}>
-                            🔥 {streak} in a row! 🔥
+                            🔥 {streak} {t.streakInRow} 🔥
                         </p>
                         <span style={{ fontSize: '5rem' }}>{streakInfo.emoji}</span>
                     </div>
