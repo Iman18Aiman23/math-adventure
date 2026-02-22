@@ -505,6 +505,7 @@ button {
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  white-space: nowrap;
 }
 
 @media (max-width: 600px) {
@@ -522,6 +523,7 @@ button {
   .header-stats {
     font-size: 0.9rem;
     gap: 0.5rem;
+    flex-wrap: nowrap;
   }
 }
 

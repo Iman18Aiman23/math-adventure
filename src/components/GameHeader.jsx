@@ -48,7 +48,7 @@ export default function GameHeader({ onBack, onHome, onToggleMute, isMuted, scor
                         )}
                         {streak !== undefined && (
                             <span className="stat-item streak">
-                                {streak} 🔥
+                                <span style={{ fontSize: '1.2rem', lineHeight: 1 }}>🔥</span> {streak}
                             </span>
                         )}
                     </div>
