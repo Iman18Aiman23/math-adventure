@@ -41,6 +41,16 @@ export default function MonthsGame({ onBack, onHome, language }) {
         let question;
         if (questionMode === 'name') {
             // Show Name + Malay → answer is Islamic
+            let islamicAnswer = month.islamic;
+            // Add common variants for typing flexibility
+            if (month.id === 3) islamicAnswer = 'Rabiulawal/Rabiul Awal';
+            if (month.id === 4) islamicAnswer = 'Rabiulakhir/Rabiul Akhir';
+            if (month.id === 5) islamicAnswer = 'Jamadilawal/Jamadil Awal';
+            if (month.id === 6) islamicAnswer = 'Jamadilakhir/Jamadil Akhir';
+            if (month.id === 9) islamicAnswer = 'Ramadan/Ramadhan';
+            if (month.id === 11) islamicAnswer = 'Zulkaedah/Zulkaidah/Dzulkaedah';
+            if (month.id === 12) islamicAnswer = 'Zulhijjah/Zulhijah/Dzulhijjah';
+
             const distractors = MONTHS
                 .filter(m => m.id !== month.id)
                 .sort(() => 0.5 - Math.random())
@@ -50,7 +60,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
                 prompt: t.promptName,
                 display: month.name,
                 subtitle: month.malay,
-                answer: month.islamic,
+                answer: islamicAnswer,
                 options: [month.islamic, ...distractors].sort(() => 0.5 - Math.random()),
                 correctInfo: `${month.name} (${month.malay}) → ${month.islamic}`
             };
@@ -60,13 +70,14 @@ export default function MonthsGame({ onBack, onHome, language }) {
                 .filter(m => m.id !== month.id)
                 .sort(() => 0.5 - Math.random())
                 .slice(0, 3)
-                .map(m => m.name);
+                .map(m => `${m.name}/${m.malay}`);
+            const correctAnswer = `${month.name}/${month.malay}`;
             question = {
                 prompt: t.promptIslamic,
                 display: month.islamic,
                 subtitle: null,
-                answer: month.name,
-                options: [month.name, ...distractors].sort(() => 0.5 - Math.random()),
+                answer: correctAnswer,
+                options: [correctAnswer, ...distractors].sort(() => 0.5 - Math.random()),
                 correctInfo: `${month.islamic} → ${month.name} (${month.malay})`
             };
         } else {
@@ -107,7 +118,10 @@ export default function MonthsGame({ onBack, onHome, language }) {
 
         // Multi-answer support (e.g. "January/Januari")
         const isCorrect = input === expected ||
-            (expected.includes('/') && expected.split('/').some(part => part.trim().toLowerCase() === input));
+            (expected.includes('/') && expected.split('/').some(part => {
+                const p = part.trim().toLowerCase();
+                return input === p;
+            }));
 
         setSelectedOption(answer);
 
