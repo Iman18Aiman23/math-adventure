@@ -584,6 +584,7 @@ button {
 
 /* Mobile scaling for large question text and inputs */
 @media (max-width: 600px) {
+
   .question-text-lg,
   .question-text-math {
     font-size: clamp(2.5rem, 15vw, 4rem) !important;
@@ -607,6 +608,7 @@ button {
 }
 
 @media (max-width: 400px) {
+
   .question-text-lg,
   .question-text-math {
     font-size: clamp(2rem, 12vw, 3rem) !important;

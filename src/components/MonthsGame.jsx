@@ -251,6 +251,12 @@ export default function MonthsGame({ onBack, onHome, language }) {
                 }}>
                     {shuffledOptions.map((opt, idx) => {
                         let btnStyle = {};
+                        // Scale font size for long strings (e.g., September/September)
+                        if (opt.length > 15) {
+                            btnStyle.fontSize = 'clamp(0.7rem, 3vw, 0.9rem)';
+                        } else if (opt.length > 10) {
+                            btnStyle.fontSize = 'clamp(0.8rem, 3.5vw, 1.1rem)';
+                        }
 
                         if (feedback && opt === currentQuestion.answer) {
                             btnStyle = { background: '#6BCB77', border: '3px solid #6BCB77', color: 'white' };

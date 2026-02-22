@@ -52,7 +52,7 @@ export const LOCALIZATION = {
             selectGame: 'Pilih permainan anda! ✨'
         },
         monthsGame: {
-            modeNumber: '🔢 No. → Nama',
+            modeNumber: '🔢 No → Nama',
             modeName: '🗓️ Nama → Islam',
             modeIslamic: '☪️ Islam → Nama',
             quizABCD: 'ABCD',
@@ -240,7 +240,7 @@ export const LOCALIZATION = {
             selectGame: 'Select your game! ✨'
         },
         monthsGame: {
-            modeNumber: '🔢 No. → Name',
+            modeNumber: '🔢 No → Name',
             modeName: '🗓️ Name → Islamic',
             modeIslamic: '☪️ Islamic → Name',
             quizABCD: 'ABCD',
