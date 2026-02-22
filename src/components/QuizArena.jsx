@@ -57,6 +57,10 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
         setTypedAnswer('');
         setIsAnimating(false);
         setShowStreakPopup(false);
+        // Clear any active focus to prevent persistent colors on mobile
+        if (typeof document !== 'undefined') {
+            document.activeElement?.blur();
+        }
     };
 
     const handleAnswer = (option) => {
@@ -192,7 +196,7 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
 
                         return (
                             <button
-                                key={idx}
+                                key={`${problem.num1}${problem.symbol}${problem.num2}-${option}`}
                                 onClick={() => handleAnswer(option)}
                                 className={clsx(
                                     'btn-option',

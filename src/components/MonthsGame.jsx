@@ -93,6 +93,10 @@ export default function MonthsGame({ onBack, onHome, language }) {
         setUserAnswer('');
         setSelectedOption(null);
         setIsAnimating(false);
+        // Clear any active focus to prevent persistent colors on mobile
+        if (typeof document !== 'undefined') {
+            document.activeElement?.blur();
+        }
     };
 
     const handleAnswer = (answer) => {
@@ -275,7 +279,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
 
                         return (
                             <button
-                                key={idx}
+                                key={`${currentQuestion.display}-${opt}`}
                                 onClick={() => handleAnswer(opt)}
                                 disabled={isAnimating}
                                 className="btn-option"

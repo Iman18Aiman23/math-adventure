@@ -142,6 +142,17 @@ button {
   transform: scale(1.05);
 }
 
+.btn-option:active {
+  transform: scale(0.95);
+  box-shadow: var(--shadow-btn-active);
+}
+
+.btn-option:focus {
+  outline: none;
+  /* Ensure focus doesn't look like an answer state */
+  box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.3);
+}
+
 /* Number Grid */
 .number-grid {
   display: grid;

@@ -151,6 +151,10 @@ export default function JawiSyllablesGame({ onBack, onHome, language }) {
         setUserAnswer('');
         setIsAnimating(false);
         setShowStreakPopup(false);
+        // Clear any active focus to prevent persistent colors on mobile
+        if (typeof document !== 'undefined') {
+            document.activeElement?.blur();
+        }
     };
 
     const handleAnswer = (answer) => {
@@ -396,7 +400,7 @@ export default function JawiSyllablesGame({ onBack, onHome, language }) {
 
                         return (
                             <button
-                                key={idx}
+                                key={`${currentQuestion.jawi}-${opt}`}
                                 onClick={() => handleAnswer(opt)}
                                 disabled={isAnimating}
                                 className="btn-option"

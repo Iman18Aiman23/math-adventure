@@ -61,6 +61,10 @@ export default function ClockGame({ onBack, onHome, language }) {
         setFeedback(null);
         setSelectedOption(null);
         setIsAnimating(false);
+        // Clear any active focus to prevent persistent colors on mobile
+        if (typeof document !== 'undefined') {
+            document.activeElement?.blur();
+        }
     };
 
     const handleAnswer = (option) => {
@@ -179,7 +183,18 @@ export default function ClockGame({ onBack, onHome, language }) {
                         }
 
                         return (
-                            <button key={idx} onClick={() => handleAnswer(opt)} disabled={isAnimating} style={btnStyle}>
+                            <button
+                                key={`${currentQuestion.answer}-${opt}`}
+                                onClick={() => handleAnswer(opt)}
+                                disabled={isAnimating}
+                                style={btnStyle}
+                                onMouseOver={(e) => {
+                                    if (!feedback) e.currentTarget.style.backgroundColor = 'var(--color-accent)';
+                                }}
+                                onMouseOut={(e) => {
+                                    if (!feedback) e.currentTarget.style.backgroundColor = 'white';
+                                }}
+                            >
                                 {opt}
                             </button>
                         );
@@ -206,7 +221,7 @@ export default function ClockGame({ onBack, onHome, language }) {
                         }
 
                         return (
-                            <button key={idx} onClick={() => handleAnswer(opt)} disabled={isAnimating} style={btnStyle}>
+                            <button key={`${currentQuestion.answer}-${opt.hour}-${opt.minute}`} onClick={() => handleAnswer(opt)} disabled={isAnimating} style={btnStyle}>
                                 <AnalogClock hour={opt.hour} minute={opt.minute} size={110} showNumbers={true} />
                             </button>
                         );
