@@ -123,8 +123,8 @@ button {
   background-color: white;
   color: var(--color-dark);
   border: 3px solid var(--color-secondary);
-  font-size: 1.8rem;
-  padding: 1rem 0.5rem;
+  font-size: clamp(0.9rem, 4vw, 1.3rem);
+  padding: clamp(0.5rem, 2vw, 1rem);
   border-radius: 15px;
   width: 100%;
   box-shadow: var(--shadow-btn);
@@ -132,6 +132,8 @@ button {
   align-items: center;
   justify-content: center;
   min-height: 80px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .btn-option:hover {
