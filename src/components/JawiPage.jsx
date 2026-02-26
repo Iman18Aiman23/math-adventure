@@ -51,16 +51,8 @@ export default function JawiPage({ onBack, onHome, language }) {
                                 className="jawi-card"
                                 onClick={() => setSelectedAlphabet(item)}
                                 style={{
-                                    borderColor: `${color}44`, // 44 is hex alpha for ~27% opacity
+                                    borderColor: `${color}44`,
                                     '--hover-color': color
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.borderColor = color;
-                                    e.currentTarget.style.backgroundColor = `${color}08`;
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.borderColor = `${color}44`;
-                                    e.currentTarget.style.backgroundColor = 'white';
                                 }}
                             >
                                 <span className="jawi-text" style={{ color: color }}>{item.jawi}</span>
@@ -84,17 +76,17 @@ export default function JawiPage({ onBack, onHome, language }) {
                         alignItems: 'center',
                         justifyContent: 'center',
                         zIndex: 9999,
-                        padding: '1rem'
+                        padding: '0.5rem'
                     }} onClick={() => setSelectedAlphabet(null)}>
                         <div
                             className="card fade-in"
                             style={{
                                 background: 'white',
                                 padding: '1rem',
-                                borderRadius: '25px',
-                                maxWidth: '650px', // slightly wider for 2 cols
-                                width: '95%',
-                                maxHeight: '90vh',
+                                borderRadius: '1.5rem',
+                                maxWidth: '650px',
+                                width: '98%',
+                                maxHeight: '95vh',
                                 overflowY: 'auto',
                                 position: 'relative',
                                 border: '4px solid #9D4EDD',
@@ -111,12 +103,14 @@ export default function JawiPage({ onBack, onHome, language }) {
                                 marginBottom: '1rem',
                                 borderBottom: '2px solid #eee',
                                 paddingBottom: '0.8rem',
+                                position: 'sticky',
+                                top: 0,
                                 background: 'white',
                                 zIndex: 10
                             }}>
-                                <h2 style={{ margin: 0, fontSize: '1.5rem', color: '#9D4EDD', display: 'flex', alignItems: 'center', gap: '0.5rem', direction: 'rtl' }}>
-                                    <span style={{ fontSize: '2rem', fontFamily: 'serif' }}>{selectedAlphabet.jawi}</span>
-                                    <span style={{ color: '#666', fontSize: '1rem', direction: 'ltr' }}>- {selectedAlphabet.rumi}</span>
+                                <h2 style={{ margin: 0, fontSize: '1.25rem', color: '#9D4EDD', display: 'flex', alignItems: 'center', gap: '0.5rem', direction: 'rtl' }}>
+                                    <span style={{ fontSize: '1.8rem', fontFamily: 'serif' }}>{selectedAlphabet.jawi}</span>
+                                    <span style={{ color: '#666', fontSize: '0.9rem', direction: 'ltr' }}>- {selectedAlphabet.rumi}</span>
                                 </h2>
                                 <button
                                     onClick={() => setSelectedAlphabet(null)}
@@ -125,10 +119,10 @@ export default function JawiPage({ onBack, onHome, language }) {
                                         color: 'white',
                                         border: 'none',
                                         borderRadius: '50%',
-                                        width: '32px',
-                                        height: '32px',
+                                        width: '2rem',
+                                        height: '2rem',
                                         cursor: 'pointer',
-                                        fontSize: '1.2rem',
+                                        fontSize: '1rem',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
@@ -142,8 +136,8 @@ export default function JawiPage({ onBack, onHome, language }) {
                             {SUKU_KATA_DATA[selectedAlphabet.jawi] ? (
                                 <div style={{
                                     display: 'grid',
-                                    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                                    gap: '0.8rem',
+                                    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                                    gap: '0.75rem',
                                     padding: '0.2rem'
                                 }}>
                                     {SUKU_KATA_DATA[selectedAlphabet.jawi].map((row, idx) => {
@@ -153,31 +147,31 @@ export default function JawiPage({ onBack, onHome, language }) {
                                         return (
                                             <div key={idx} className="fade-in" style={{
                                                 background: color,
-                                                borderRadius: '15px',
-                                                padding: '0.8rem',
+                                                borderRadius: '1rem',
+                                                padding: '0.75rem',
                                                 color: 'white',
                                                 boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
                                                 display: 'flex',
                                                 flexDirection: 'column',
-                                                gap: '0.5rem',
+                                                gap: '0.4rem',
                                                 border: '2px solid rgba(0,0,0,0.05)'
                                             }}>
                                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', direction: 'rtl' }}>
                                                     <div style={{ textAlign: 'center', flex: 1 }}>
-                                                        <div style={{ fontSize: '2rem', fontFamily: 'serif', lineHeight: '1', fontWeight: 'bold' }}>{row.jawi}</div>
+                                                        <div style={{ fontSize: '1.8rem', fontFamily: 'serif', lineHeight: '1', fontWeight: 'bold' }}>{row.jawi}</div>
                                                     </div>
                                                     <div style={{ textAlign: 'center', flex: 1, borderLeft: '1px solid rgba(255,255,255,0.3)', direction: 'ltr' }}>
-                                                        <div style={{ fontSize: '0.8rem', opacity: 0.9 }}>{row.rumi}</div>
+                                                        <div style={{ fontSize: '0.75rem', opacity: 0.9 }}>{row.rumi}</div>
                                                     </div>
                                                 </div>
 
                                                 <div style={{
                                                     background: 'rgba(0,0,0,0.1)',
-                                                    padding: '0.4rem',
-                                                    borderRadius: '10px',
+                                                    padding: '0.3rem',
+                                                    borderRadius: '0.75rem',
                                                     textAlign: 'center'
                                                 }}>
-                                                    <div style={{ fontSize: '0.85rem', fontWeight: '600' }}>{row.bunyi}</div>
+                                                    <div style={{ fontSize: '0.8rem', fontWeight: '600' }}>{row.bunyi}</div>
                                                 </div>
                                             </div>
                                         );
@@ -190,35 +184,37 @@ export default function JawiPage({ onBack, onHome, language }) {
                             )}
 
                             {/* Navigation Buttons */}
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', width: '100%', marginTop: '1.5rem', borderTop: '2px solid #eee', paddingTop: '1rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%', marginTop: '1.5rem', borderTop: '2px solid #eee', paddingTop: '1rem' }}>
                                 <button
                                     onClick={handlePrevAlphabet}
                                     className="btn-primary"
                                     style={{
                                         flex: 1,
-                                        padding: '0.8rem',
+                                        padding: '0.6rem',
                                         background: '#f0f0f0',
                                         color: '#333',
                                         border: 'none',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        gap: '0.5rem',
-                                        fontSize: '1rem'
+                                        gap: '0.25rem',
+                                        fontSize: '0.9rem',
+                                        borderRadius: '0.75rem'
                                     }}
                                 >
-                                    <ChevronLeft size={20} /> {t.prev}
+                                    <ChevronLeft size={16} /> {t.prev}
                                 </button>
 
                                 <button
                                     className="btn-primary"
                                     onClick={() => setSelectedAlphabet(null)}
                                     style={{
-                                        flex: 2,
-                                        padding: '0.8rem',
+                                        flex: 1.5,
+                                        padding: '0.6rem',
                                         background: '#9D4EDD',
                                         border: 'none',
-                                        fontSize: '1rem'
+                                        fontSize: '0.9rem',
+                                        borderRadius: '0.75rem'
                                     }}
                                 >
                                     {t.close}
@@ -229,18 +225,19 @@ export default function JawiPage({ onBack, onHome, language }) {
                                     className="btn-primary"
                                     style={{
                                         flex: 1,
-                                        padding: '0.8rem',
+                                        padding: '0.6rem',
                                         background: '#f0f0f0',
                                         color: '#333',
                                         border: 'none',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        gap: '0.5rem',
-                                        fontSize: '1rem'
+                                        gap: '0.25rem',
+                                        fontSize: '0.9rem',
+                                        borderRadius: '0.75rem'
                                     }}
                                 >
-                                    {t.next} <ChevronRight size={20} />
+                                    {t.next} <ChevronRight size={16} />
                                 </button>
                             </div>
                         </div>
@@ -260,39 +257,41 @@ export default function JawiPage({ onBack, onHome, language }) {
         <div className="game-container fade-in">
             <GameHeader onBack={onBack} onHome={onHome} title={t.title} language={language} />
 
-            <div className="card" style={{ padding: '3rem', textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
+            <div className="card" style={{ padding: '2rem 1rem', textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
 
                 <div style={{
                     color: '#9D4EDD',
                     background: 'rgba(157, 78, 221, 0.1)',
-                    padding: '2rem',
-                    borderRadius: '30px',
+                    padding: '1.5rem',
+                    borderRadius: '2rem',
                     display: 'inline-flex',
-                    marginBottom: '2rem'
+                    marginBottom: '1.5rem'
                 }}>
-                    <BookOpen size={64} />
+                    <BookOpen size={48} />
                 </div>
 
-                <h1 className="game-title" style={{ color: '#9D4EDD', fontSize: '3rem' }}>{t.title}</h1>
-                <p className="game-subtitle" style={{ fontSize: '1.4rem', marginBottom: '3rem' }}>
+                <h1 className="game-title" style={{ color: '#9D4EDD', marginBottom: '0.5rem' }}>{t.title}</h1>
+                <p className="game-subtitle" style={{ marginBottom: '2rem' }}>
                     {t.subtitle}
                 </p>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '400px', margin: '0 auto' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '100%', margin: '0 auto' }}>
                     <button
                         className="btn-primary"
                         onClick={() => setMode('alphabet')}
                         style={{
                             backgroundColor: '#9D4EDD',
-                            padding: '1.5rem',
-                            fontSize: '1.4rem',
+                            padding: '1.2rem',
+                            fontSize: '1.2rem',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            gap: '1rem'
+                            gap: '0.75rem',
+                            margin: '0',
+                            borderRadius: '1rem'
                         }}
                     >
-                        <GraduationCap size={28} />
+                        <GraduationCap size={24} />
                         {t.learnAlphabet}
                     </button>
 
@@ -301,16 +300,18 @@ export default function JawiPage({ onBack, onHome, language }) {
                         onClick={() => setMode('syllables')}
                         style={{
                             backgroundColor: '#FFD93D',
-                            padding: '1.5rem',
-                            fontSize: '1.4rem',
+                            padding: '1.2rem',
+                            fontSize: '1.2rem',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            gap: '1rem',
-                            color: '#333'
+                            gap: '0.75rem',
+                            color: '#333',
+                            margin: '0',
+                            borderRadius: '1rem'
                         }}
                     >
-                        <Keyboard size={28} />
+                        <Keyboard size={24} />
                         {t.learnSyllables}
                     </button>
 
@@ -319,15 +320,17 @@ export default function JawiPage({ onBack, onHome, language }) {
                         onClick={() => setMode('words')}
                         style={{
                             backgroundColor: '#FF6B6B',
-                            padding: '1.5rem',
-                            fontSize: '1.4rem',
+                            padding: '1.2rem',
+                            fontSize: '1.2rem',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            gap: '1rem'
+                            gap: '0.75rem',
+                            margin: '0',
+                            borderRadius: '1rem'
                         }}
                     >
-                        <BookOpen size={28} />
+                        <BookOpen size={24} />
                         {t.learn100Words}
                     </button>
 
@@ -336,15 +339,17 @@ export default function JawiPage({ onBack, onHome, language }) {
                         onClick={() => setMode('spelling_game')}
                         style={{
                             backgroundColor: '#4ECDC4',
-                            padding: '1.5rem',
-                            fontSize: '1.4rem',
+                            padding: '1.2rem',
+                            fontSize: '1.2rem',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            gap: '1rem'
+                            gap: '0.75rem',
+                            margin: '0',
+                            borderRadius: '1rem'
                         }}
                     >
-                        <Keyboard size={28} />
+                        <Keyboard size={24} />
                         {t.learnSpelling}
                     </button>
 
@@ -352,20 +357,22 @@ export default function JawiPage({ onBack, onHome, language }) {
                         className="btn-primary"
                         onClick={() => setMode('match')}
                         style={{
-                            backgroundColor: '#FF8C42', // Different color for test
-                            padding: '1.5rem',
-                            fontSize: '1.4rem',
+                            backgroundColor: '#FF8C42',
+                            padding: '1.2rem',
+                            fontSize: '1.2rem',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            gap: '1rem'
+                            gap: '0.75rem',
+                            margin: '0',
+                            borderRadius: '1rem'
                         }}
                     >
-                        <Star size={28} />
+                        <Star size={24} />
                         {t.testMatch}
                     </button>
 
-                    <p style={{ color: '#888', fontStyle: 'italic', marginTop: '1rem' }}>
+                    <p style={{ color: '#888', fontStyle: 'italic', marginTop: '0.5rem', fontSize: '0.9rem' }}>
                         {t.comingSoon}
                     </p>
                 </div>

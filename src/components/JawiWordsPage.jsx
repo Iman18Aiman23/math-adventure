@@ -12,50 +12,48 @@ const TopicCard = ({ topic, onClick, language }) => {
             style={{
                 background: 'white',
                 border: `3px solid ${topic.color}`,
-                borderRadius: '20px',
-                padding: '2rem',
+                borderRadius: '1.5rem',
+                padding: '1.5rem 1rem',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                gap: '1rem',
+                gap: '0.75rem',
                 cursor: 'pointer',
                 transition: 'transform 0.2s, box-shadow 0.2s',
                 width: '100%',
-                minHeight: '200px',
+                minHeight: '160px',
                 justifyContent: 'center',
-                boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
-            }}
-            onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-5px)';
-                e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.15)';
-            }}
-            onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'none';
-                e.currentTarget.style.boxShadow = '0 4px 10px rgba(0,0,0,0.1)';
+                boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+                margin: 0
             }}
         >
             <div style={{
                 background: topic.color,
-                padding: '1rem',
+                padding: '0.75rem',
                 borderRadius: '50%',
-                color: 'white'
+                color: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
             }}>
-                <BookOpen size={40} />
+                <BookOpen size={30} />
             </div>
             <h2 style={{
-                fontSize: '1.5rem',
+                fontSize: '1.25rem',
                 color: '#333',
                 textAlign: 'center',
-                margin: 0
+                margin: 0,
+                lineHeight: '1.2'
             }}>
                 {language === 'bm' ? topic.title : topic.titleEng || topic.title}
             </h2>
             <div style={{
-                background: `${topic.color}20`, // 20% opacity
+                background: `${topic.color}20`,
                 color: topic.color,
-                padding: '0.2rem 0.8rem',
-                borderRadius: '10px',
-                fontWeight: 'bold'
+                padding: '0.2rem 0.6rem',
+                borderRadius: '0.75rem',
+                fontWeight: 'bold',
+                fontSize: '0.85rem'
             }}>
                 {topic.words.length} {language === 'bm' ? 'Perkataan' : 'Words'}
             </div>
@@ -70,32 +68,34 @@ const WordCard = ({ word, color }) => {
             style={{
                 background: 'white',
                 border: `2px solid ${color}`,
-                borderRadius: '15px',
-                padding: '1rem',
+                borderRadius: '1rem',
+                padding: '0.75rem',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: '0.5rem',
+                gap: '0.4rem',
                 boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
                 aspectRatio: '1',
                 transition: 'transform 0.2s',
-                cursor: 'default'
+                cursor: 'default',
+                width: '100%'
             }}
         >
-            <span style={{ fontSize: '3rem', lineHeight: '1', marginBottom: '0.5rem' }}>
+            <span style={{ fontSize: 'clamp(2.5rem, 8vw, 3.5rem)', lineHeight: '1', marginBottom: '0.2rem' }}>
                 {word.emoji}
             </span>
             <span style={{
-                fontSize: '2.5rem',
+                fontSize: 'clamp(1.8rem, 6vw, 2.5rem)',
                 fontWeight: 'bold',
                 color: '#333',
-                fontFamily: 'serif'
+                fontFamily: 'serif',
+                lineHeight: '1.2'
             }}>
                 {word.jawi}
             </span>
             <span style={{
-                fontSize: '1.2rem',
+                fontSize: 'clamp(0.85rem, 3vw, 1.1rem)',
                 color: '#666',
                 fontWeight: '500'
             }}>
@@ -117,10 +117,11 @@ export default function JawiWordsPage({ onBack, onHome, language }) {
 
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                    gap: '1.5rem',
-                    padding: '2rem',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                    gap: '1rem',
+                    padding: '1rem',
                     maxWidth: '1000px',
+                    width: '100%',
                     margin: '0 auto'
                 }}>
                     {JAWI_TOPICS.map(topic => (
@@ -148,12 +149,13 @@ export default function JawiWordsPage({ onBack, onHome, language }) {
 
             <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-                gap: '1.5rem',
-                padding: '2rem',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
+                gap: '1rem',
+                padding: '1rem',
                 maxWidth: '1000px',
+                width: '100%',
                 margin: '0 auto',
-                paddingBottom: '4rem'
+                paddingBottom: '3rem'
             }}>
                 {selectedTopic.words.map((word, idx) => (
                     <WordCard

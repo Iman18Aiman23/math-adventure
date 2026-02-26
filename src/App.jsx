@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import HomePage from './components/HomePage';
 import BMPage from './components/BMPage';
 import JawiPage from './components/JawiPage';
@@ -9,11 +9,20 @@ import MonthsGame from './components/MonthsGame';
 import ClockGame from './components/ClockGame';
 import MonthLearning from './components/MonthLearning';
 import QuizArena from './components/QuizArena';
-import { getMuted, setMuted } from './utils/soundManager';
+import { getMuted, setMuted, preloadSounds, unlockAudio } from './utils/soundManager';
 import { LOCALIZATION } from './utils/localization';
 import { Languages } from 'lucide-react';
 
 function App() {
+  useEffect(() => {
+    preloadSounds();
+    const handleFirstClick = () => {
+      unlockAudio();
+      document.removeEventListener('click', handleFirstClick);
+    };
+    document.addEventListener('click', handleFirstClick);
+    return () => document.removeEventListener('click', handleFirstClick);
+  }, []);
   const [currentSubject, setCurrentSubject] = useState(null); // null, 'math', 'bm', 'jawi'
   const [mathSubGame, setMathSubGame] = useState(null); // null, 'operations', 'datetime'
   const [dateTimeSubGame, setDateTimeSubGame] = useState(null); // null, 'months', 'clock'

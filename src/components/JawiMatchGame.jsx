@@ -226,90 +226,112 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
     };
 
     return (
-        <div className="game-container">
+        <div className="game-container fade-in">
             <GameHeader
-                onBack={() => setGameState('setup')}
+                onBack={onBack}
                 onHome={onHome}
-                title={`${t.matches}: ${matched.length}/${selectedAlphabets.length} | ${t.moves}: ${moves}`}
+                title={t.matchTitle}
                 language={language}
-                onToggleMute={null} // Optional: add if needed
-                isMuted={isMuted}
+                score={moves}
             />
 
-            <div style={{
-                display: 'grid',
-                gridTemplateColumns: cards.length > 12 ? 'repeat(auto-fit, minmax(80px, 1fr))' : 'repeat(auto-fit, minmax(100px, 1fr))',
-                gap: 'clamp(0.4rem, 2vw, 0.8rem)',
+            <div className="card" style={{
                 maxWidth: '800px',
-                margin: '1.5rem auto',
-                perspective: '1000px',
-                padding: '0 1rem'
+                margin: '0 auto',
+                padding: '1rem 0.5rem',
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column'
             }}>
-                {cards.map((card, idx) => {
-                    const isFlipped = flipped.includes(idx) || matched.includes(card.pairId);
-                    const cardHeight = cards.length > 12 ? 'clamp(80px, 15vh, 100px)' : 'clamp(100px, 20vh, 130px)';
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3, 1fr)',
+                    gap: '0.5rem',
+                    flex: 1,
+                    alignContent: 'center'
+                }}>
+                    {cards.map((card, idx) => {
+                        const isCardFlipped = flipped.includes(idx);
+                        const isCardMatched = matched.includes(card.pairId);
 
-                    return (
-                        <div
-                            key={card.id}
-                            onClick={() => handleCardClick(idx)}
-                            style={{
-                                cursor: isFlipped ? 'default' : 'pointer',
-                                height: cardHeight,
-                                position: 'relative',
-                                transformStyle: 'preserve-3d',
-                                transition: 'transform 0.6s',
-                                transform: isFlipped ? 'rotateY(180deg)' : 'none'
-                            }}
-                        >
-                            {/* Card Front (Hidden) */}
-                            <div style={{
-                                position: 'absolute',
-                                width: '100%',
-                                height: '100%',
-                                backfaceVisibility: 'hidden',
-                                backgroundColor: card.color, // Colorful front
-                                borderRadius: '15px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                border: '3px solid white',
-                                boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
-                            }}>
-                                <Star color="white" fill="white" size={32} opacity={0.3} />
+                        return (
+                            <div
+                                key={card.id}
+                                onClick={() => handleCardClick(idx)}
+                                style={{
+                                    height: 'clamp(5rem, 15vh, 8rem)',
+                                    borderRadius: '1rem',
+                                    padding: '0.25rem',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                    transform: isCardFlipped || isCardMatched ? 'rotateY(180deg)' : 'rotateY(0)',
+                                    transformStyle: 'preserve-3d',
+                                    position: 'relative',
+                                    background: isCardMatched ? '#6BCB77' : 'white',
+                                    border: `3px solid ${isCardMatched ? '#6BCB77' : (isCardFlipped ? '#9D4EDD' : '#eee')}`,
+                                    boxShadow: isCardFlipped ? '0 10px 20px rgba(157, 78, 221, 0.2)' : '0 4px 10px rgba(0,0,0,0.05)'
+                                }}
+                            >
+                                <div style={{
+                                    position: 'absolute',
+                                    width: '100%',
+                                    height: '100%',
+                                    backfaceVisibility: 'hidden',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '2rem',
+                                    top: 0,
+                                    left: 0
+                                }}>
+                                    <Star size={32} color={card.color} opacity={0.3} />
+                                </div>
+
+                                <div style={{
+                                    position: 'absolute',
+                                    width: '100%',
+                                    height: '100%',
+                                    backfaceVisibility: 'hidden',
+                                    transform: 'rotateY(180deg)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontWeight: 'bold',
+                                    fontSize: card.type === 'jawi' ? 'clamp(1.5rem, 4vw, 2.2rem)' : 'clamp(0.9rem, 3vw, 1.2rem)',
+                                    color: isCardMatched ? 'white' : '#333',
+                                    textAlign: 'center',
+                                    top: 0,
+                                    left: 0,
+                                    padding: '0.25rem'
+                                }}>
+                                    {card.content}
+                                </div>
                             </div>
+                        );
+                    })}
+                </div>
 
-                            {/* Card Back (Content) */}
-                            <div style={{
-                                position: 'absolute',
-                                width: '100%',
-                                height: '100%',
-                                backfaceVisibility: 'hidden',
-                                transform: 'rotateY(180deg)',
-                                backgroundColor: matched.includes(card.pairId) ? '#6BCB77' : 'white',
-                                borderRadius: '15px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                border: `3px solid ${matched.includes(card.pairId) ? '#6BCB77' : card.color}`,
-                                boxShadow: '0 0.25rem 0.6rem rgba(0,0,0,0.1)',
-                                fontSize: card.type === 'jawi' ? 'clamp(1.8rem, 8vw, 2.8rem)' : 'clamp(1rem, 4vw, 1.4rem)',
-                                color: matched.includes(card.pairId) ? 'white' : '#333',
-                                fontWeight: 'bold',
-                                padding: '5px',
-                                textAlign: 'center'
-                            }}>
-                                {card.content}
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
-
-            <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-                <button onClick={initGame} className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <RefreshCw size={20} /> {t.restart}
-                </button>
+                <div style={{
+                    marginTop: '1.5rem',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    gap: '1rem'
+                }}>
+                    <button
+                        className="btn-primary"
+                        onClick={initGame}
+                        style={{
+                            padding: '0.8rem 1.5rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            margin: 0
+                        }}
+                    >
+                        <RefreshCw size={20} />
+                        {t.restart}
+                    </button>
+                </div>
             </div>
         </div>
     );

@@ -182,17 +182,20 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
                                         background: 'white',
                                         color: '#333',
                                         padding: '1.5rem',
-                                        borderRadius: '15px',
+                                        padding: '1.25rem 0.75rem',
+                                        borderRadius: '1rem',
                                         border: `2px solid ${topic.color || '#eee'}`,
                                         cursor: 'pointer',
-                                        fontSize: '1.1rem',
+                                        fontSize: '1rem',
                                         fontWeight: 'bold',
                                         display: 'flex',
                                         flexDirection: 'column',
                                         alignItems: 'center',
+                                        justifyContent: 'center',
                                         gap: '0.5rem',
                                         transition: 'transform 0.2s',
-                                        boxShadow: '0 4px 6px rgba(0,0,0,0.05)'
+                                        boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
+                                        minHeight: '4.5rem'
                                     }}
                                     onMouseEnter={(e) => {
                                         e.currentTarget.style.transform = 'translateY(-5px)';
@@ -205,7 +208,7 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
                                         e.currentTarget.style.color = '#333';
                                     }}
                                 >
-                                    <span style={{ fontSize: '2rem' }}>
+                                    <span style={{ fontSize: '1.5rem' }}>
                                         {topic.words[0]?.emoji || '📚'}
                                     </span>
                                     {language === 'bm' ? topic.title : topic.titleEng || topic.title}
@@ -226,26 +229,26 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
             <div className="game-container fade-in">
                 <GameHeader onBack={onBack} onHome={onHome} title={t.wordsTitle} language={language} />
 
-                <div className="card" style={{ textAlign: 'center', padding: '3rem', maxWidth: '600px', margin: '2rem auto' }}>
-                    <Trophy size={80} color="#FFD93D" style={{ marginBottom: '1rem' }} />
-                    <h1 style={{ color: '#FF6B6B', fontSize: '2.5rem', marginBottom: '0.5rem' }}>{t.gameOver}</h1>
-                    <p style={{ fontSize: '1.5rem', color: '#666', marginBottom: '2rem' }}>
+                <div className="card" style={{ textAlign: 'center', padding: '2rem 1.5rem', maxWidth: '600px', margin: '1rem auto' }}>
+                    <Trophy size={64} color="#FFD93D" style={{ marginBottom: '1rem' }} />
+                    <h1 style={{ color: '#FF6B6B', fontSize: '2rem', marginBottom: '0.5rem' }}>{t.gameOver}</h1>
+                    <p style={{ fontSize: '1.1rem', color: '#666', marginBottom: '2rem' }}>
                         {percentage === 100 ? t.perfectScore : t.wellDone}
                     </p>
 
-                    <div style={{ fontSize: '4rem', fontWeight: 'bold', color: '#4ECDC4', marginBottom: '0.5rem' }}>
+                    <div style={{ fontSize: '3rem', fontWeight: 'bold', color: '#4ECDC4', marginBottom: '0.5rem' }}>
                         {score}
                     </div>
                     <div style={{ fontSize: '1.2rem', color: '#888', marginBottom: '2rem' }}>
                         {t.totalScore} ({questionCount} {language === 'bm' ? 'perkataan' : 'words'})
                     </div>
 
-                    <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-                        <button className="btn-primary" onClick={() => setGameState('setup')} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                            <RefreshCw /> {t.newGame}
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', justifyContent: 'center' }}>
+                        <button className="btn-primary" onClick={() => setGameState('setup')} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', margin: 0, padding: '0.8rem 1.5rem' }}>
+                            <RefreshCw size={20} /> {t.newGame}
                         </button>
-                        <button className="btn-secondary" onClick={onHome} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                            <Home /> {language === 'bm' ? 'Utama' : 'Home'}
+                        <button className="btn-secondary" onClick={onHome} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', margin: 0, padding: '0.8rem 1.5rem' }}>
+                            <Home size={20} /> {language === 'bm' ? 'Utama' : 'Home'}
                         </button>
                     </div>
                 </div>
@@ -262,7 +265,7 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
     return (
         <div className="game-container">
             <GameHeader
-                onBack={onBack}
+                onBack={() => setGameState('setup')}
                 onHome={onHome}
                 onToggleMute={handleToggleMute}
                 isMuted={isMuted}
@@ -276,16 +279,17 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
             <div className="question-card fade-in" style={{
                 background: topicColor || '#FF6B6B',
                 color: 'white',
+                padding: '2rem 1rem'
             }}>
-                <div style={{ fontSize: '1.2rem', opacity: 0.9, marginBottom: '1rem' }}>
+                <div style={{ fontSize: '1rem', opacity: 0.9, marginBottom: '0.75rem' }}>
                     {t.typeRumi}
                 </div>
 
-                <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>
+                <div style={{ fontSize: 'clamp(2.5rem, 10vw, 4rem)', marginBottom: '1rem' }}>
                     {currentWord.emoji}
                 </div>
 
-                <div className="question-text-lg" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+                <div className="question-text-lg" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.1)', fontSize: 'clamp(2.5rem, 10vw, 4rem)' }}>
                     {currentWord.jawi}
                 </div>
             </div>
@@ -306,10 +310,15 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
                             feedback === 'correct' && 'correct-input',
                             feedback === 'incorrect' && 'incorrect-input'
                         )}
+                        style={{
+                            textAlign: 'center',
+                            fontSize: '1.75rem',
+                            padding: '1rem'
+                        }}
                     />
                 </form>
                 {feedback === 'correct' && (
-                    <div style={{ marginTop: '1rem', color: '#6BCB77', fontSize: '1.5rem', fontWeight: 'bold' }}>
+                    <div style={{ marginTop: '0.75rem', color: '#6BCB77', fontSize: '1.25rem', fontWeight: 'bold', textAlign: 'center' }}>
                         {t.correct}
                     </div>
                 )}
@@ -317,16 +326,16 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
 
             {/* Next Button for Wrong Answers */}
             {feedback === 'incorrect' && (
-                <div className="fade-in" style={{ marginTop: '2rem', textAlign: 'center' }}>
-                    <p style={{ marginBottom: '1rem', color: '#FF6B6B', fontSize: '1.2rem' }}>
+                <div className="fade-in" style={{ marginTop: '1.5rem', textAlign: 'center', width: '100%' }}>
+                    <p style={{ marginBottom: '0.75rem', color: '#FF6B6B', fontSize: '1.1rem' }}>
                         {t.incorrectLabel} <b>{currentWord.rumi}</b>.
                     </p>
                     <button
                         className="btn-primary"
                         onClick={nextProblem}
-                        style={{ padding: '0.8rem 2rem', fontSize: '1.2rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}
+                        style={{ padding: '0.8rem 2rem', fontSize: '1.1rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}
                     >
-                        {t.nextWord} <ArrowRight size={24} />
+                        {t.nextWord} <ArrowRight size={20} />
                     </button>
                 </div>
             )}
