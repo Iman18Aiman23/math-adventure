@@ -260,18 +260,16 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
                                 onClick={() => handleCardClick(idx)}
                                 style={{
                                     height: 'clamp(5rem, 15vh, 8rem)',
-                                    borderRadius: '1rem',
-                                    padding: '0.25rem',
                                     cursor: 'pointer',
                                     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                                     transform: isCardFlipped || isCardMatched ? 'rotateY(180deg)' : 'rotateY(0)',
                                     transformStyle: 'preserve-3d',
                                     position: 'relative',
-                                    background: isCardMatched ? '#6BCB77' : 'white',
-                                    border: `3px solid ${isCardMatched ? '#6BCB77' : (isCardFlipped ? '#9D4EDD' : '#eee')}`,
-                                    boxShadow: isCardFlipped ? '0 10px 20px rgba(157, 78, 221, 0.2)' : '0 4px 10px rgba(0,0,0,0.05)'
+                                    boxShadow: isCardFlipped || isCardMatched ? '0 10px 20px rgba(0,0,0,0.1)' : '0 4px 10px rgba(0,0,0,0.05)',
+                                    borderRadius: '1rem'
                                 }}
                             >
+                                {/* Front Face */}
                                 <div style={{
                                     position: 'absolute',
                                     width: '100%',
@@ -282,11 +280,15 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
                                     justifyContent: 'center',
                                     fontSize: '2rem',
                                     top: 0,
-                                    left: 0
+                                    left: 0,
+                                    background: card.color,
+                                    border: `3px solid ${card.color}`,
+                                    borderRadius: '1rem'
                                 }}>
-                                    <Star size={32} color={card.color} opacity={0.3} />
+                                    <Star size={32} color="white" opacity={0.5} />
                                 </div>
 
+                                {/* Back Face */}
                                 <div style={{
                                     position: 'absolute',
                                     width: '100%',
@@ -298,11 +300,14 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
                                     justifyContent: 'center',
                                     fontWeight: 'bold',
                                     fontSize: card.type === 'jawi' ? 'clamp(1.5rem, 4vw, 2.2rem)' : 'clamp(0.9rem, 3vw, 1.2rem)',
-                                    color: isCardMatched ? 'white' : '#333',
+                                    color: 'white',
                                     textAlign: 'center',
                                     top: 0,
                                     left: 0,
-                                    padding: '0.25rem'
+                                    padding: '0.25rem',
+                                    background: isCardMatched ? '#6BCB77' : card.color,
+                                    border: `3px solid ${isCardMatched ? '#6BCB77' : card.color}`,
+                                    borderRadius: '1rem'
                                 }}>
                                     {card.content}
                                 </div>

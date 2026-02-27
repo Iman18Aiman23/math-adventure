@@ -27,13 +27,8 @@ export default function GameHeader({ onBack, onHome, onToggleMute, isMuted, scor
                 )}
             </div>
 
-            {/* Middle Section: Home Button & Optional Title */}
+            {/* Middle Section: Optional Title */}
             <div className="header-section middle">
-                {onHome && (
-                    <button onClick={onHome} className="header-btn home-btn" title={homeTip}>
-                        <Home size={24} />
-                    </button>
-                )}
                 {title && <span className="header-title">{title}</span>}
             </div>
 

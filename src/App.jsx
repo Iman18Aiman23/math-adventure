@@ -11,7 +11,8 @@ import MonthLearning from './components/MonthLearning';
 import QuizArena from './components/QuizArena';
 import { getMuted, setMuted, preloadSounds, unlockAudio } from './utils/soundManager';
 import { LOCALIZATION } from './utils/localization';
-import { Languages } from 'lucide-react';
+import { Languages, Home } from 'lucide-react';
+
 
 function App() {
   useEffect(() => {
@@ -21,7 +22,16 @@ function App() {
       document.removeEventListener('click', handleFirstClick);
     };
     document.addEventListener('click', handleFirstClick);
-    return () => document.removeEventListener('click', handleFirstClick);
+
+    const handleToggleLanguageEvent = () => {
+      setLanguage(l => l === 'bm' ? 'eng' : 'bm');
+    };
+    window.addEventListener('toggle-language', handleToggleLanguageEvent);
+
+    return () => {
+      document.removeEventListener('click', handleFirstClick);
+      window.removeEventListener('toggle-language', handleToggleLanguageEvent);
+    };
   }, []);
   const [currentSubject, setCurrentSubject] = useState(null); // null, 'math', 'bm', 'jawi'
   const [mathSubGame, setMathSubGame] = useState(null); // null, 'operations', 'datetime'
@@ -119,45 +129,67 @@ function App() {
     }
   };
 
+  const getPageTitle = () => {
+    if (!currentSubject) return '';
+    if (currentSubject === 'bm') return t.bmPage.title;
+    if (currentSubject === 'jawi') return t.jawi.title;
+    if (currentSubject === 'math') {
+      if (!mathSubGame) return t.math.hubTitle;
+      if (mathSubGame === 'operations') {
+        return !isPlaying ? t.opsDetails.title : t.math.opsTitle;
+      }
+      if (mathSubGame === 'datetime') {
+        if (!dateTimeSubGame) return t.time.title;
+        if (dateTimeSubGame === 'months') return t.time.monthQuiz;
+        if (dateTimeSubGame === 'clock') return t.time.timeAdventure;
+        if (dateTimeSubGame === 'month-learning') return t.time.monthLearning;
+      }
+    }
+    return '';
+  };
+
   return (
     <div className="app-container">
-      {/* Global Language Toggle */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        padding: '1rem',
-        zIndex: 1000
-      }}>
-        <button
-          onClick={() => setLanguage(l => l === 'bm' ? 'eng' : 'bm')}
-          className="card"
-          style={{
-            padding: '0.6rem 2rem',
-            borderRadius: '25px',
-            background: 'white',
-            border: '3px solid #9D4EDD',
-            color: '#9D4EDD',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.8rem',
-            transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-            boxShadow: '0 4px 15px rgba(157, 78, 221, 0.2)',
-            fontSize: '1rem'
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.transform = 'scale(1.05)';
-            e.currentTarget.style.boxShadow = '0 6px 20px rgba(157, 78, 221, 0.3)';
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.transform = 'scale(1)';
-            e.currentTarget.style.boxShadow = '0 4px 15px rgba(157, 78, 221, 0.2)';
-          }}
-        >
-          <Languages size={20} />
-          {t.global.bmEng}
-        </button>
+      {/* Global Navigation (Game Header Template) */}
+      <div className="game-header" style={{ marginBottom: currentSubject ? '1rem' : '2rem', marginTop: '1rem' }}>
+        {/* Left Section: Home Button */}
+        <div className="header-section left">
+          {currentSubject && (
+            <button onClick={handleBackToHome} className="header-btn home-btn" title={t.global.home}>
+              <Home size={24} />
+            </button>
+          )}
+        </div>
+
+        {/* Middle Section: Page Information */}
+        <div className="header-section middle">
+          <span className="header-title" style={{ fontSize: '1.2rem', textAlign: 'center' }}>
+            {getPageTitle()}
+          </span>
+        </div>
+
+        {/* Right Section: Language Toggle */}
+        <div className="header-section right">
+          <button
+            onClick={() => setLanguage(l => l === 'bm' ? 'eng' : 'bm')}
+            className="header-btn lang-btn"
+            title="Toggle Language"
+            style={{
+              width: 'auto',
+              padding: '0 12px',
+              borderRadius: '15px',
+              background: 'rgba(157, 78, 221, 0.1)',
+              color: '#9D4EDD',
+              fontWeight: 'bold',
+              display: 'flex',
+              gap: '6px',
+              fontSize: '0.9rem'
+            }}
+          >
+            <Languages size={18} />
+            <span>BM / ENG</span>
+          </button>
+        </div>
       </div>
 
       {/* Subject Content */}

@@ -41,6 +41,7 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
     const [isMuted, setIsMuted] = useState(getMuted());
     const [showStreakPopup, setShowStreakPopup] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
+    const [showImage, setShowImage] = useState(false);
     const inputRef = useRef(null);
 
     // --- Helpers ---
@@ -85,6 +86,7 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
         setUserAnswer('');
         setIsAnimating(false);
         setShowStreakPopup(false);
+        setShowImage(false);
         setCurrentWord(generateRandomWord(topicId));
     };
 
@@ -95,6 +97,7 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
         setUserAnswer('');
         setIsAnimating(false);
         setShowStreakPopup(false);
+        setShowImage(false);
     };
 
     const finishGame = () => {
@@ -278,14 +281,41 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
             <div className="question-card fade-in" style={{
                 background: topicColor || '#FF6B6B',
                 color: 'white',
-                padding: '2rem 1rem'
+                padding: '2rem 1rem',
+                position: 'relative'
             }}>
+                <button
+                    onClick={() => setShowImage(!showImage)}
+                    style={{
+                        position: 'absolute',
+                        top: '1rem',
+                        right: '1rem',
+                        background: 'rgba(255, 255, 255, 0.2)',
+                        color: 'white',
+                        border: '1px solid rgba(255, 255, 255, 0.4)',
+                        padding: '0.4rem 0.8rem',
+                        borderRadius: '20px',
+                        cursor: 'pointer',
+                        fontSize: '0.8rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.4rem',
+                        fontWeight: 'bold',
+                        zIndex: 10
+                    }}
+                >
+                    {showImage ? (language === 'bm' ? 'Sembunyikan Imej' : 'Hide Image') : (language === 'bm' ? 'Papar Imej' : 'Show Image')}
+                </button>
                 <div style={{ fontSize: '1rem', opacity: 0.9, marginBottom: '0.75rem' }}>
                     {t.typeRumi}
                 </div>
 
-                <div style={{ fontSize: 'clamp(2.5rem, 10vw, 4rem)', marginBottom: '1rem' }}>
-                    {currentWord.emoji}
+                <div style={{ marginBottom: '1rem', minHeight: 'clamp(2.5rem, 10vw, 4rem)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {showImage && (
+                        <div style={{ fontSize: 'clamp(2.5rem, 10vw, 4rem)', marginBottom: '0.5rem' }}>
+                            {currentWord.emoji}
+                        </div>
+                    )}
                 </div>
 
                 <div className="question-text-lg" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.1)', fontSize: 'clamp(2.5rem, 10vw, 4rem)' }}>
