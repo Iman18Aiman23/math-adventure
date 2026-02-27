@@ -181,7 +181,6 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
                                     style={{
                                         background: 'white',
                                         color: '#333',
-                                        padding: '1.5rem',
                                         padding: '1.25rem 0.75rem',
                                         borderRadius: '1rem',
                                         border: `2px solid ${topic.color || '#eee'}`,
