@@ -1,56 +1,46 @@
 import React from 'react';
-import { ArrowLeft, Home, Trophy, Volume2, VolumeX } from 'lucide-react';
+import { ArrowLeft, Volume2, VolumeX, Trophy } from 'lucide-react';
 
-/**
- * Standardized Game Header
- * @param {Object} props
- * @param {Function} props.onBack - Left action
- * @param {Function} props.onHome - Middle action
- * @param {Function} [props.onToggleMute] - Optional mute toggle
- * @param {Boolean} [props.isMuted] - Mute state
- * @param {Number} [props.score] - Optional score display
- * @param {Number} [props.streak] - Optional streak display
- * @param {String} [props.title] - Optional title
- */
 export default function GameHeader({ onBack, onHome, onToggleMute, isMuted, score, streak, title, language = 'bm' }) {
     const backTip = language === 'bm' ? 'Kembali' : 'Go Back';
-    const homeTip = language === 'bm' ? 'Menu Utama' : 'Back to Home';
 
     return (
-        <div className="game-header">
-            {/* Left Section: Back Button */}
+        <div className="game-header" style={{ marginBottom: '0.6rem' }}>
+            {/* Left: Back */}
             <div className="header-section left">
                 {onBack && (
-                    <button onClick={onBack} className="header-btn" title={backTip}>
-                        <ArrowLeft size={24} />
+                    <button onClick={onBack} className="header-btn" title={backTip}
+                        style={{ background: 'rgba(244,63,94,0.10)', color: '#F43F5E' }}>
+                        <ArrowLeft size={20} />
                     </button>
                 )}
             </div>
 
-            {/* Middle Section: Optional Title */}
+            {/* Middle: Title */}
             <div className="header-section middle">
                 {title && <span className="header-title">{title}</span>}
             </div>
 
-            {/* Right Section: Stats & Audio Control */}
+            {/* Right: Stats + Mute */}
             <div className="header-section right">
                 {(score !== undefined || streak !== undefined) && (
                     <div className="header-stats">
                         {score !== undefined && (
-                            <span className="stat-item score">
-                                <Trophy size={18} color="gold" /> {score}
+                            <span className="stat-item" style={{ color: '#F59E0B' }}>
+                                <Trophy size={16} /> {score}
                             </span>
                         )}
                         {streak !== undefined && (
-                            <span className="stat-item streak">
-                                <span style={{ fontSize: '1.2rem', lineHeight: 1 }}>🔥</span> {streak}
+                            <span className="stat-item">
+                                <span style={{ fontSize: '1rem' }}>🔥</span> {streak}
                             </span>
                         )}
                     </div>
                 )}
                 {onToggleMute && (
-                    <button onClick={onToggleMute} className="header-btn mute-btn">
-                        {isMuted ? <VolumeX size={20} color="#888" /> : <Volume2 size={20} color="#4ECDC4" />}
+                    <button onClick={onToggleMute} className="header-btn"
+                        style={{ background: isMuted ? 'rgba(156,163,175,0.15)' : 'rgba(16,185,129,0.12)', color: isMuted ? '#9ca3af' : '#10B981' }}>
+                        {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
                     </button>
                 )}
             </div>

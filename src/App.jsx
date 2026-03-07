@@ -13,7 +13,6 @@ import { getMuted, setMuted, preloadSounds, unlockAudio } from './utils/soundMan
 import { LOCALIZATION } from './utils/localization';
 import { Languages, Home } from 'lucide-react';
 
-
 function App() {
   useEffect(() => {
     preloadSounds();
@@ -33,9 +32,10 @@ function App() {
       window.removeEventListener('toggle-language', handleToggleLanguageEvent);
     };
   }, []);
-  const [currentSubject, setCurrentSubject] = useState(null); // null, 'math', 'bm', 'jawi'
-  const [mathSubGame, setMathSubGame] = useState(null); // null, 'operations', 'datetime'
-  const [dateTimeSubGame, setDateTimeSubGame] = useState(null); // null, 'months', 'clock'
+
+  const [currentSubject, setCurrentSubject] = useState(null);
+  const [mathSubGame, setMathSubGame] = useState(null);
+  const [dateTimeSubGame, setDateTimeSubGame] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [gameConfig, setGameConfig] = useState({
     operation: 'add',
@@ -44,7 +44,7 @@ function App() {
     quizType: 'multiple'
   });
   const [isMuted, setIsMuted] = useState(getMuted());
-  const [language, setLanguage] = useState('bm'); // 'bm' or 'eng'
+  const [language, setLanguage] = useState('bm');
 
   const t = LOCALIZATION[language];
 
@@ -53,9 +53,7 @@ function App() {
     setIsPlaying(true);
   };
 
-  const handleBackToMenu = () => {
-    setIsPlaying(false);
-  };
+  const handleBackToMenu = () => { setIsPlaying(false); };
 
   const handleStartTimeGame = (gameId) => {
     setDateTimeSubGame(gameId);
@@ -109,15 +107,9 @@ function App() {
           if (!isPlaying) {
             return <TimeGameMenu onBack={() => setMathSubGame(null)} onStart={handleStartTimeGame} onHome={handleBackToHome} language={language} />;
           }
-          if (dateTimeSubGame === 'months') {
-            return <MonthsGame onBack={handleBackToMenu} onHome={handleBackToHome} language={language} />;
-          }
-          if (dateTimeSubGame === 'clock') {
-            return <ClockGame onBack={handleBackToMenu} onHome={handleBackToHome} language={language} />;
-          }
-          if (dateTimeSubGame === 'month-learning') {
-            return <MonthLearning onBack={handleBackToMenu} onHome={handleBackToHome} language={language} />;
-          }
+          if (dateTimeSubGame === 'months') return <MonthsGame onBack={handleBackToMenu} onHome={handleBackToHome} language={language} />;
+          if (dateTimeSubGame === 'clock')  return <ClockGame onBack={handleBackToMenu} onHome={handleBackToHome} language={language} />;
+          if (dateTimeSubGame === 'month-learning') return <MonthLearning onBack={handleBackToMenu} onHome={handleBackToHome} language={language} />;
         }
         return <MathHome onSelectSubGame={setMathSubGame} onBack={handleBackToHome} onHome={handleBackToHome} language={language} />;
       case 'bm':
@@ -130,14 +122,12 @@ function App() {
   };
 
   const getPageTitle = () => {
-    if (!currentSubject) return '';
+    if (!currentSubject) return '✨ ' + (language === 'bm' ? "Iman's Adventure" : "Iman's Adventure");
     if (currentSubject === 'bm') return t.bmPage.title;
     if (currentSubject === 'jawi') return t.jawi.title;
     if (currentSubject === 'math') {
       if (!mathSubGame) return t.math.hubTitle;
-      if (mathSubGame === 'operations') {
-        return !isPlaying ? t.opsDetails.title : t.math.opsTitle;
-      }
+      if (mathSubGame === 'operations') return !isPlaying ? t.opsDetails.title : t.math.opsTitle;
       if (mathSubGame === 'datetime') {
         if (!dateTimeSubGame) return t.time.title;
         if (dateTimeSubGame === 'months') return t.time.monthQuiz;
@@ -150,54 +140,40 @@ function App() {
 
   return (
     <div className="app-container">
-      {/* Global Navigation (Game Header Template) */}
-      <div className="game-header" style={{ marginBottom: currentSubject ? '1rem' : '2rem', marginTop: '1rem' }}>
-        {/* Left Section: Home Button */}
+      {/* Global Header */}
+      <div className="game-header">
+        {/* Left: Home */}
         <div className="header-section left">
           {currentSubject && (
             <button onClick={handleBackToHome} className="header-btn home-btn" title={t.global.home}>
-              <Home size={24} />
+              <Home size={18} />
+              <span style={{ fontSize: '0.82rem', fontWeight: 700 }}>{language === 'bm' ? 'Utama' : 'Home'}</span>
             </button>
           )}
         </div>
 
-        {/* Middle Section: Page Information */}
+        {/* Middle: Title */}
         <div className="header-section middle">
-          <span className="header-title" style={{ fontSize: '1.2rem', textAlign: 'center' }}>
-            {getPageTitle()}
-          </span>
+          <span className="header-title">{getPageTitle()}</span>
         </div>
 
-        {/* Right Section: Language Toggle */}
+        {/* Right: Language */}
         <div className="header-section right">
           <button
             onClick={() => setLanguage(l => l === 'bm' ? 'eng' : 'bm')}
             className="header-btn lang-btn"
             title="Toggle Language"
-            style={{
-              width: 'auto',
-              padding: '0 12px',
-              borderRadius: '15px',
-              background: 'rgba(157, 78, 221, 0.1)',
-              color: '#9D4EDD',
-              fontWeight: 'bold',
-              display: 'flex',
-              gap: '6px',
-              fontSize: '0.9rem'
-            }}
           >
-            <Languages size={18} />
-            <span>BM / ENG</span>
+            <Languages size={16} />
+            <span>BM / EN</span>
           </button>
         </div>
       </div>
 
-      {/* Subject Content */}
-      {renderSubjectContent()}
-
-      <footer style={{ marginTop: '2rem', color: '#888', fontSize: '0.8rem', textAlign: 'center' }}>
-        Iman's Learning Adventure • Version 2.0
-      </footer>
+      {/* Page Content */}
+      <div className="app-content">
+        {renderSubjectContent()}
+      </div>
     </div>
   );
 }
