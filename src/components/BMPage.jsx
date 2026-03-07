@@ -21,9 +21,6 @@ export default function BMPage({ onBack, onHome, language }) {
                 <div style={{ fontSize: 'clamp(3rem,12vw,5rem)', marginBottom: '1rem' }} className="animate-bounce">
                     🚧
                 </div>
-                <h1 className="game-title" style={{ color: '#0EA5E9', marginBottom: '0.5rem' }}>
-                    {t.title}
-                </h1>
                 <p style={{ fontSize: 'clamp(1rem, 4vw, 1.25rem)', color: '#0284c7', fontWeight: 700, marginBottom: '0.75rem' }}>
                     {t.comingSoon}
                 </p>

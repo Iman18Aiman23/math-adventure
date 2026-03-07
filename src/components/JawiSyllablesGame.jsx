@@ -342,12 +342,10 @@ export default function JawiSyllablesGame({ onBack, onHome, language }) {
             <GameHeader
                 onBack={onBack}
                 onHome={onHome}
-                onToggleMute={handleToggleMute}
-                isMuted={isMuted}
                 score={score}
                 streak={streak}
-                language={language}
                 title={t.syllablesTitle}
+                language={language}
             />
 
             {/* Question Card */}

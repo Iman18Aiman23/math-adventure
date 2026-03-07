@@ -108,7 +108,7 @@ function App() {
             return <TimeGameMenu onBack={() => setMathSubGame(null)} onStart={handleStartTimeGame} onHome={handleBackToHome} language={language} />;
           }
           if (dateTimeSubGame === 'months') return <MonthsGame onBack={handleBackToMenu} onHome={handleBackToHome} language={language} />;
-          if (dateTimeSubGame === 'clock')  return <ClockGame onBack={handleBackToMenu} onHome={handleBackToHome} language={language} />;
+          if (dateTimeSubGame === 'clock') return <ClockGame onBack={handleBackToMenu} onHome={handleBackToHome} language={language} />;
           if (dateTimeSubGame === 'month-learning') return <MonthLearning onBack={handleBackToMenu} onHome={handleBackToHome} language={language} />;
         }
         return <MathHome onSelectSubGame={setMathSubGame} onBack={handleBackToHome} onHome={handleBackToHome} language={language} />;

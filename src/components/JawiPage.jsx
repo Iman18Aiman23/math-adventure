@@ -270,8 +270,7 @@ export default function JawiPage({ onBack, onHome, language }) {
                     <BookOpen size={48} />
                 </div>
 
-                <h1 className="game-title" style={{ color: '#9D4EDD', marginBottom: '0.5rem' }}>{t.title}</h1>
-                <p className="game-subtitle" style={{ marginBottom: '2rem' }}>
+                <p className="game-subtitle" style={{ color: '#6b7280', fontWeight: 600, fontSize: '1rem', marginBottom: '2rem', textAlign: 'center' }}>
                     {t.subtitle}
                 </p>
 

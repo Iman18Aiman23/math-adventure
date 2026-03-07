@@ -124,11 +124,12 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
                 isMuted={isMuted}
                 score={score}
                 streak={streak}
+                title={LOCALIZATION[language].math.opsTitle}
                 language={language}
             />
 
             {/* Question */}
-            <div style={{ marginBottom: '3rem' }}>
+            <div style={{ marginBottom: '3rem', textAlign: 'center' }}>
                 <div className="question-text-math">
                     {problem.num1} {problem.symbol} {problem.num2}
                 </div>

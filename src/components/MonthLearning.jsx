@@ -30,7 +30,12 @@ export default function MonthLearning({ onBack, onHome, language }) {
 
     return (
         <div className="game-container fade-in">
-            <GameHeader onBack={onBack} onHome={onHome} title={t.title} language={language} />
+            <GameHeader
+                onBack={onBack}
+                onHome={onHome}
+                title={t.monthLearning}
+                language={language}
+            />
 
             <p className="game-subtitle" style={{ fontSize: '1.2rem', marginBottom: '2rem', textAlign: 'center' }}>
                 {t.subtitle}

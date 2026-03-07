@@ -179,6 +179,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
                 isMuted={isMuted}
                 score={score}
                 streak={streak}
+                title={t.monthQuiz}
                 language={language}
             />
 

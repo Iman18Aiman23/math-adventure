@@ -273,7 +273,7 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
                 isMuted={isMuted}
                 score={score}
                 streak={streak}
-                title={t.wordsTitle}
+                title={t.words100Title}
                 language={language}
             />
 

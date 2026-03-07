@@ -230,9 +230,10 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
             <GameHeader
                 onBack={onBack}
                 onHome={onHome}
-                title={t.matchTitle}
-                language={language}
                 score={moves}
+                // streak={streak} // streak is not defined in this component
+                title={t.matchGameTitle}
+                language={language}
             />
 
             <div className="card" style={{

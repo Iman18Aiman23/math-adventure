@@ -53,15 +53,7 @@ export default function GameMenu({ onStart, isMuted, onToggleMute, onBack, onHom
     ];
 
     return (
-        <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            width: '100%',
-            height: '100%',
-            overflow: 'hidden',
-            padding: '0.5rem',
-        }} className="fade-in">
+        <div className="game-container fade-in">
             <GameHeader onBack={onBack} onHome={onHome} onToggleMute={onToggleMute} isMuted={isMuted} title={t.title} language={language} />
 
             <div style={{ width: '100%', maxWidth: '560px', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem', overflow: 'hidden' }}>

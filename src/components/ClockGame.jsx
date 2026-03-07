@@ -127,6 +127,7 @@ export default function ClockGame({ onBack, onHome, language }) {
                 isMuted={isMuted}
                 score={score}
                 streak={streak}
+                title={t.timeAdventure}
                 language={language}
             />
 
