@@ -17,9 +17,9 @@ export default function MathHome({ onSelectSubGame, onBack, onHome, language }) 
 
     return (
         <div className="game-container fade-in">
-            <GameHeader onBack={onBack} onHome={onHome} title={<p style={{ color: '#6b7280', fontWeight: 600, fontSize: '1rem', marginBottom: '1.25rem', textAlign: 'center' }}>
-                {t.hubSubtitle}
-            </p>} language={language} />
+            <GameHeader onBack={onBack} onHome={onHome}
+                title={<p className="hub-subtitle">{t.hubSubtitle}</p>}
+                language={language} />
 
 
             <p style={{ color: '#6b7280', fontWeight: 600, fontSize: '1rem', marginBottom: '1.25rem', textAlign: 'center' }}>
@@ -53,6 +53,6 @@ export default function MathHome({ onSelectSubGame, onBack, onHome, language }) 
                     </button>
                 ))}
             </div>
-        </div>
+        </div >
     );
 }

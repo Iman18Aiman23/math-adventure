@@ -164,7 +164,7 @@ function App() {
             className="header-btn lang-btn"
             title="Toggle Language"
           >
-            <Languages size={16} />
+
             <span>BM / EN</span>
           </button>
         </div>
