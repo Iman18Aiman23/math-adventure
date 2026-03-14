@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import confetti from 'canvas-confetti';
 import { ArrowLeft, RefreshCw, Trophy, Home, Keyboard, Volume2, VolumeX, ArrowRight, Grid, Shuffle } from 'lucide-react';
 import clsx from 'clsx';
@@ -6,9 +6,11 @@ import { JAWI_TOPICS } from '../utils/jawiWordsData';
 import { playSound, toggleMute, getMuted } from '../utils/soundManager';
 import { LOCALIZATION } from '../utils/localization';
 import GameHeader from './GameHeader';
+import { GameStateContext } from '../App';
 
 export default function Jawi100WordsGame({ onBack, onHome, language }) {
     const t = LOCALIZATION[language].jawiGames;
+    const gameState = useContext(GameStateContext);
 
     // Get the appropriate message for the current streak
     const getStreakMessage = (streakValue) => {
@@ -28,7 +30,7 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
         }
         return { text: messages[0].text, emoji: EMOJIS[0], color: COLORS[0] };
     };
-    const [gameState, setGameState] = useState('setup'); // 'setup', 'playing', 'summary'
+    const [localGameState, setLocalGameState] = useState('setup'); // 'setup', 'playing', 'summary'
     const [selectedTopicId, setSelectedTopicId] = useState(null); // null means random/all
 
     // Game State
@@ -81,7 +83,7 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
         setQuestionCount(1);
         setScore(0);
         setStreak(0);
-        setGameState('playing');
+        setLocalGameState('playing');
         setFeedback(null);
         setUserAnswer('');
         setIsAnimating(false);
@@ -101,7 +103,7 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
     };
 
     const finishGame = () => {
-        setGameState('summary');
+        setLocalGameState('summary');
     };
 
     const handleAnswer = (answer) => {
@@ -114,6 +116,7 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
             setIsAnimating(true);
             setScore(s => s + 10);
             setFeedback('correct');
+            if (gameState?.addWin) gameState.addWin(10);
             const newStreak = streak + 1;
             setStreak(newStreak);
 
@@ -141,7 +144,7 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
 
     // --- Render ---
 
-    if (gameState === 'setup') {
+    if (localGameState === 'setup') {
         return (
             <div className="game-container">
                 <GameHeader onBack={onBack} onHome={onHome} title={t.wordsTitle} language={language} />
@@ -223,7 +226,7 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
         );
     }
 
-    if (gameState === 'summary') {
+    if (localGameState === 'summary') {
         const totalPossibleScore = questionCount * 10;
         const percentage = totalPossibleScore > 0 ? Math.round((score / totalPossibleScore) * 100) : 0;
 
@@ -246,7 +249,7 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
                     </div>
 
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', justifyContent: 'center' }}>
-                        <button className="btn-primary" onClick={() => setGameState('setup')} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', margin: 0, padding: '0.8rem 1.5rem' }}>
+                        <button className="btn-primary" onClick={() => setLocalGameState('setup')} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', margin: 0, padding: '0.8rem 1.5rem' }}>
                             <RefreshCw size={20} /> {t.newGame}
                         </button>
                         <button className="btn-secondary" onClick={onHome} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', margin: 0, padding: '0.8rem 1.5rem' }}>
@@ -267,7 +270,7 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
     return (
         <div className="game-container">
             <GameHeader
-                onBack={() => setGameState('setup')}
+                onBack={() => setLocalGameState('setup')}
                 onHome={onHome}
                 onToggleMute={handleToggleMute}
                 isMuted={isMuted}

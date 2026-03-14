@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { playSound } from '../utils/soundManager';
 import clsx from 'clsx';
 import confetti from 'canvas-confetti';
@@ -6,6 +6,7 @@ import { LOCALIZATION } from '../utils/localization';
 import GameHeader from './GameHeader';
 import { JAWI_ALPHABET } from '../utils/jawiData';
 import { Trophy, Star, RefreshCw, ArrowLeft } from 'lucide-react';
+import { GameStateContext } from '../App';
 
 const CARD_COLORS = [
     '#FF6B6B', // Red
@@ -62,7 +63,8 @@ const JawiSelectionGrid = ({ selected, onToggle, onSelectAll, onClearAll, t }) =
 
 export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
     const t = LOCALIZATION[language].jawiGames;
-    const [gameState, setGameState] = useState('setup'); // 'setup' | 'playing' | 'won'
+    const gameState = useContext(GameStateContext);
+    const [localGameState, setLocalGameState] = useState('setup'); // 'setup' | 'playing' | 'won'
     const [selectedAlphabets, setSelectedAlphabets] = useState([]);
     const [cards, setCards] = useState([]);
     const [flipped, setFlipped] = useState([]); // indices of flipped cards
@@ -113,7 +115,7 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
         setFlipped([]);
         setMatched([]);
         setMoves(0);
-        setGameState('playing');
+        setLocalGameState('playing');
         setIsLock(false);
     }, [selectedAlphabets]);
 
@@ -137,9 +139,10 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
                 setFlipped([]);
                 setIsLock(false);
                 playSound('correct');
+                if (gameState?.addWin) gameState.addWin(10);
 
                 if (matched.length + 1 === selectedAlphabets.length) {
-                    setGameState('won');
+                    setLocalGameState('won');
                     confetti({
                         particleCount: 150,
                         spread: 70,
@@ -156,7 +159,7 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
         }
     };
 
-    if (gameState === 'setup') {
+    if (localGameState === 'setup') {
         return (
             <div className="game-container fade-in">
                 <GameHeader onBack={onBack} onHome={onHome} title={t.matchTitle} language={language} />
@@ -194,17 +197,17 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
         );
     }
 
-    if (gameState === 'won') {
+    if (localGameState === 'won') {
         return (
             <div className="game-container fade-in">
-                <GameHeader onBack={() => setGameState('setup')} onHome={onHome} title={t.matchTitle} language={language} />
+                <GameHeader onBack={() => setLocalGameState('setup')} onHome={onHome} title={t.matchTitle} language={language} />
                 <div className="card" style={{ textAlign: 'center', padding: '4rem', maxWidth: '600px', margin: '2rem auto' }}>
                     <Trophy size={100} color="gold" style={{ marginBottom: '2rem' }} />
                     <h1 className="game-title" style={{ color: '#9D4EDD' }}>{t.great}</h1>
                     <p style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>{t.matchSummary.replace('{count}', selectedAlphabets.length).replace('{moves}', moves)}</p>
 
                     <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-                        <button className="btn-secondary" onClick={() => setGameState('setup')} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <button className="btn-secondary" onClick={() => setLocalGameState('setup')} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                             <ArrowLeft size={20} /> {t.selection}
                         </button>
                         <button className="btn-primary" onClick={initGame} style={{ backgroundColor: '#FF8C42', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>

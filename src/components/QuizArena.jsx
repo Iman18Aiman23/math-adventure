@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import confetti from 'canvas-confetti';
 import { ArrowRight } from 'lucide-react';
 import { generateProblem } from '../utils/mathLogic';
@@ -6,9 +6,11 @@ import { playSound } from '../utils/soundManager';
 import clsx from 'clsx';
 import { LOCALIZATION } from '../utils/localization';
 import GameHeader from './GameHeader';
+import { GameStateContext } from '../App';
 
 export default function QuizArena({ operation, difficulty, selectedNumbers, onBack, onHome, isMuted, onToggleMute, quizType, language }) {
     const t = LOCALIZATION[language].quizArena;
+    const gameState = useContext(GameStateContext);
     const [problem, setProblem] = useState(null);
     const [score, setScore] = useState(0);
     const [streak, setStreak] = useState(0);
@@ -73,6 +75,8 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
             setIsAnimating(true);
             setFeedback('correct');
             setScore(s => s + 10);
+            // Award XP + coin via gamification system
+            if (gameState?.addWin) gameState.addWin(10);
             const newStreak = streak + 1;
             setStreak(newStreak);
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { createPortal } from 'react-dom';
 import confetti from 'canvas-confetti';
 import { RefreshCw, Trophy, ArrowRight, MousePointerClick, Keyboard, HelpCircle, X, Languages } from 'lucide-react';
@@ -7,6 +7,7 @@ import { playSound, toggleMute, getMuted } from '../utils/soundManager';
 import clsx from 'clsx';
 import GameHeader from './GameHeader';
 import { LOCALIZATION } from '../utils/localization';
+import { GameStateContext } from '../App';
 
 export default function MonthsGame({ onBack, onHome, language }) {
     const [quizType, setQuizType] = useState('multiple'); // 'multiple' or 'typing'
@@ -24,6 +25,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
     const inputRef = useRef(null);
 
     const t = LOCALIZATION[language].monthsGame;
+    const gameState = useContext(GameStateContext);
 
     useEffect(() => {
         generateQuestion();
@@ -129,6 +131,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
             setIsAnimating(true);
             setScore(s => s + 10);
             setFeedback('correct');
+            if (gameState?.addWin) gameState.addWin(10);
             const newStreak = streak + 1;
             setStreak(newStreak);
 

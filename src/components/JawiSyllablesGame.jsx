@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import confetti from 'canvas-confetti';
 import { Trophy, Home, MousePointerClick, Keyboard, ArrowRight, RefreshCw } from 'lucide-react';
 import { JAWI_ALPHABET } from '../utils/jawiData';
@@ -7,6 +7,7 @@ import { playSound, toggleMute, getMuted } from '../utils/soundManager';
 import clsx from 'clsx';
 import { LOCALIZATION } from '../utils/localization';
 import GameHeader from './GameHeader';
+import { GameStateContext } from '../App';
 
 export default function JawiSyllablesGame({ onBack, onHome, language }) {
     const t = LOCALIZATION[language].jawiGames;
@@ -29,7 +30,8 @@ export default function JawiSyllablesGame({ onBack, onHome, language }) {
         }
         return { text: messages[0].text, emoji: EMOJIS[0], color: COLORS[0] };
     };
-    const [gameState, setGameState] = useState('setup'); // 'setup', 'playing', 'summary'
+    const gameState = useContext(GameStateContext);
+    const [localGameState, setLocalGameState] = useState('setup'); // 'setup', 'playing', 'summary'
     const [gameMode, setGameMode] = useState('abcd'); // 'abcd', 'type'
     const [selectedAlphabets, setSelectedAlphabets] = useState([]);
 
@@ -100,7 +102,7 @@ export default function JawiSyllablesGame({ onBack, onHome, language }) {
         setQuestionCount(1);
         setScore(0);
         setStreak(0);
-        setGameState('playing');
+        setLocalGameState('playing');
         setFeedback(null);
         setUserAnswer('');
         setIsAnimating(false);
@@ -126,7 +128,7 @@ export default function JawiSyllablesGame({ onBack, onHome, language }) {
     };
 
     useEffect(() => {
-        if (gameState === 'playing' && gameMode === 'abcd' && currentQuestion) {
+        if (localGameState === 'playing' && gameMode === 'abcd' && currentQuestion) {
             const correct = currentQuestion.rumi;
             let distractorPool = [];
             Object.values(SUKU_KATA_DATA).forEach(list => {
@@ -142,7 +144,7 @@ export default function JawiSyllablesGame({ onBack, onHome, language }) {
             const options = [correct, ...distractors].sort(() => 0.5 - Math.random());
             setShuffledOptions(options);
         }
-    }, [currentQuestion, gameState, gameMode]);
+    }, [currentQuestion, localGameState, gameMode]);
 
     const nextProblem = () => {
         setCurrentQuestion(generateRandomQuestion());
@@ -166,6 +168,7 @@ export default function JawiSyllablesGame({ onBack, onHome, language }) {
             setIsAnimating(true);
             setScore(s => s + 10);
             setFeedback('correct');
+            if (gameState?.addWin) gameState.addWin(10);
             const newStreak = streak + 1;
             setStreak(newStreak);
 
@@ -190,7 +193,7 @@ export default function JawiSyllablesGame({ onBack, onHome, language }) {
         }
     };
 
-    if (gameState === 'setup') {
+    if (localGameState === 'setup') {
         return (
             <div className="game-container fade-in">
                 <GameHeader onBack={onBack} onHome={onHome} title={t.syllablesTitle} language={language} />
@@ -298,7 +301,7 @@ export default function JawiSyllablesGame({ onBack, onHome, language }) {
         );
     }
 
-    if (gameState === 'summary') {
+    if (localGameState === 'summary') {
         const totalPossibleScore = questionCount * 10;
         const percentage = totalPossibleScore > 0 ? Math.round((score / totalPossibleScore) * 100) : 0;
 
@@ -321,7 +324,7 @@ export default function JawiSyllablesGame({ onBack, onHome, language }) {
                     </div>
 
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', justifyContent: 'center' }}>
-                        <button className="btn-primary" onClick={() => setGameState('setup')} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', margin: 0, padding: '0.8rem 1.5rem', fontSize: '1.1rem' }}>
+                        <button className="btn-primary" onClick={() => setLocalGameState('setup')} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', margin: 0, padding: '0.8rem 1.5rem', fontSize: '1.1rem' }}>
                             <RefreshCw size={20} /> {t.playAgain}
                         </button>
                         <button className="btn-secondary" onClick={onHome} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', margin: 0, padding: '0.8rem 1.5rem', fontSize: '1.1rem' }}>

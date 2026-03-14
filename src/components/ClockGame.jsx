@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import confetti from 'canvas-confetti';
 import { ArrowRight } from 'lucide-react';
 import { generateClockProblem } from '../utils/timeData';
@@ -6,9 +6,11 @@ import { playSound, toggleMute, getMuted } from '../utils/soundManager';
 import AnalogClock from './AnalogClock';
 import GameHeader from './GameHeader';
 import { LOCALIZATION } from '../utils/localization';
+import { GameStateContext } from '../App';
 
 export default function ClockGame({ onBack, onHome, language }) {
     const t = LOCALIZATION[language].clockGame;
+    const gameState = useContext(GameStateContext);
     const [clockMode, setClockMode] = useState('analog-to-digital'); // user-selectable
     const [currentQuestion, setCurrentQuestion] = useState(null);
     const [score, setScore] = useState(0);
@@ -79,6 +81,7 @@ export default function ClockGame({ onBack, onHome, language }) {
             setIsAnimating(true);
             setScore(s => s + 10);
             setFeedback('correct');
+            if (gameState?.addWin) gameState.addWin(10);
             const newStreak = streak + 1;
             setStreak(newStreak);
 
