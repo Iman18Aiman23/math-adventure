@@ -158,10 +158,7 @@ function App() {
             )}
           </div>
 
-          {/* Middle: Title */}
-          <div className="header-section middle">
-            <span className="header-title">{getPageTitle()}</span>
-          </div>
+          {/* Middle removed per request */}
 
           {/* Right: Stats + Language */}
           <div className="header-section right">
