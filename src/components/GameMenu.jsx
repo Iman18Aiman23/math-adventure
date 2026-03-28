@@ -101,7 +101,7 @@ export default function GameMenu({ onStart, isMuted, onToggleMute, onBack, onHom
                             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center' }}>
                                 {/* Difficulty */}
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-                                    <span style={{ fontFamily: 'var(--font-heading)', fontSize: '0.85rem', color: '#374151', whiteSpace: 'nowrap' }}>{t.diffLabel}:</span>
+                                    <span className="mobile-wrap-label" style={{ fontFamily: 'var(--font-heading)', fontSize: '0.85rem', color: '#374151', whiteSpace: 'nowrap' }}>{t.diffLabel}:</span>
                                     {DIFF.map(d => (
                                         <button key={d.id} onClick={() => setDifficulty(d.id)}
                                             style={{
@@ -120,12 +120,9 @@ export default function GameMenu({ onStart, isMuted, onToggleMute, onBack, onHom
                                     ))}
                                 </div>
 
-                                {/* Separator */}
-                                <div style={{ width: '1px', height: '28px', background: '#e5e7eb' }} />
-
                                 {/* Quiz Type */}
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-                                    <span style={{ fontFamily: 'var(--font-heading)', fontSize: '0.85rem', color: '#374151', whiteSpace: 'nowrap' }}>{t.quizLabel}:</span>
+                                    <span className="mobile-wrap-label" style={{ fontFamily: 'var(--font-heading)', fontSize: '0.85rem', color: '#374151', whiteSpace: 'nowrap' }}>{t.quizLabel}:</span>
                                     {QUIZ.map(q => (
                                         <button key={q.id} onClick={() => setQuizType(q.id)}
                                             style={{
