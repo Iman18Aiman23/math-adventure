@@ -1355,6 +1355,8 @@ button {
   background: #f0f9ff;
   min-height: 400px;
   position: relative;
+  touch-action: none; /* Prevent accidental scroll during game */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .bm-game-canvas canvas {

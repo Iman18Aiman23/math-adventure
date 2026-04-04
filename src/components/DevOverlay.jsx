@@ -22,6 +22,11 @@ export default function DevOverlay({ visible, transcriptData, onClose }) {
       </div>
 
       <div className="dev-overlay-row">
+        <span className="dev-label">Platform:</span>
+        <span className="dev-value">{/Mobile|Android|iPhone/i.test(navigator.userAgent) ? '📱 Mobile' : '💻 Desktop'}</span>
+      </div>
+
+      <div className="dev-overlay-row">
         <span className="dev-label">Lang:</span>
         <span className="dev-value">{data.lang || '—'}</span>
       </div>
@@ -41,6 +46,15 @@ export default function DevOverlay({ visible, transcriptData, onClose }) {
             : '—'}
         </span>
       </div>
+
+      {data.alternatives && (
+        <div className="dev-overlay-row">
+          <span className="dev-label">Alts:</span>
+          <span className="dev-value" style={{ fontSize: '0.6rem' }}>
+            {data.alternatives}
+          </span>
+        </div>
+      )}
 
       <div className="dev-overlay-row">
         <span className="dev-label">Final:</span>

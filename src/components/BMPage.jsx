@@ -52,6 +52,7 @@ export default function BMPage({ onBack, onHome, language }) {
   const [showDevOverlay, setShowDevOverlay] = useState(false);
   const [transcriptData, setTranscriptData] = useState({});
   const [isSupported, setIsSupported] = useState(true);
+  const [micDenied, setMicDenied] = useState(false);
 
   const phaserRef = useRef(null);
   const gameInstanceRef = useRef(null);
@@ -60,6 +61,21 @@ export default function BMPage({ onBack, onHome, language }) {
   useEffect(() => {
     setIsSupported(SpeechManager.isSupported());
   }, []);
+
+  /**
+   * Handle category selection — request mic permission first (user gesture!).
+   * Mobile browsers REQUIRE a user gesture to grant mic access.
+   */
+  const handleCategorySelect = async (categoryKey) => {
+    // Request mic permission on this user tap/click
+    const granted = await SpeechManager.requestMicPermission();
+    if (!granted) {
+      setMicDenied(true);
+      return;
+    }
+    setMicDenied(false);
+    setSelectedCategory(categoryKey);
+  };
 
   // Handle score from Phaser → React gamification
   const handleScore = useCallback(
@@ -143,6 +159,14 @@ export default function BMPage({ onBack, onHome, language }) {
             </div>
           )}
 
+          {/* Mic Permission Denied Warning */}
+          {micDenied && (
+            <div className="bm-warning-card" style={{ borderColor: '#ef4444', background: '#fee2e2' }}>
+              <span style={{ fontSize: '1.5rem' }}>🎤</span>
+              <p style={{ color: '#991b1b' }}>{t.micDenied || 'Microphone access was denied. Please allow microphone access in your browser settings and try again.'}</p>
+            </div>
+          )}
+
           {/* Category Cards */}
           <div className="bm-category-grid">
             {CATEGORIES.map((cat, i) => (
@@ -154,7 +178,7 @@ export default function BMPage({ onBack, onHome, language }) {
                   '--card-shadow': cat.shadow,
                   animationDelay: `${i * 0.08}s`,
                 }}
-                onClick={() => setSelectedCategory(cat.key)}
+                onClick={() => handleCategorySelect(cat.key)}
                 disabled={!isSupported}
               >
                 <span className="bm-cat-emoji">{cat.emoji}</span>
