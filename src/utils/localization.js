@@ -126,9 +126,20 @@ export const LOCALIZATION = {
         },
         bmPage: {
             title: 'Bahasa Melayu',
-            comingSoon: 'Akan datang tidak lama lagi! 🚀',
-            desc: 'Kami sedang menyiapkan modul pembelajaran suku kata dan kosa kata yang menyeronokkan untuk anda.',
-            backHome: 'Kembali ke Menu Utama'
+            heroTitle: 'Sebut & Main! 🎤',
+            heroSubtitle: 'Bercakap untuk bermain! Pilih kategori di bawah.',
+            notSupported: 'Pelayar anda tidak menyokong Speech Recognition. Sila gunakan Chrome atau Edge.',
+            backHome: 'Kembali ke Menu Utama',
+            categories: {
+                bm_kv: { title: 'Suku Kata KV', desc: 'ba · bi · bu · be · bo' },
+                bm_kvk: { title: 'Suku Kata KVK', desc: 'ban · bin · bun · ben · bon' },
+                en_phonics: { title: 'English Phonics', desc: 'Lake · Kite · Rope · Tune' },
+                math: { title: 'Math 1-100', desc: 'Sebut nombor 0 hingga 100!' },
+            },
+            howToPlayTitle: 'Cara Bermain',
+            howToStep1: 'Pilih kategori',
+            howToStep2: 'Dengar arahan suara',
+            howToStep3: 'Sebut jawapan anda dengan kuat!',
         },
         clockGame: {
             loading: 'Memuatkan Jam...',
@@ -314,9 +325,20 @@ export const LOCALIZATION = {
         },
         bmPage: {
             title: 'Bahasa Melayu',
-            comingSoon: 'Coming Soon! 🚀',
-            desc: 'We are preparing fun modules for syllables and vocabulary for you.',
-            backHome: 'Back to Home'
+            heroTitle: 'Speak & Play! 🎤',
+            heroSubtitle: 'Speak to play! Choose a category below.',
+            notSupported: 'Your browser does not support Speech Recognition. Please use Chrome or Edge.',
+            backHome: 'Back to Home',
+            categories: {
+                bm_kv: { title: 'Syllables KV', desc: 'ba · bi · bu · be · bo' },
+                bm_kvk: { title: 'Syllables KVK', desc: 'ban · bin · bun · ben · bon' },
+                en_phonics: { title: 'English Phonics', desc: 'Lake · Kite · Rope · Tune' },
+                math: { title: 'Math 1-100', desc: 'Say numbers 0 to 100!' },
+            },
+            howToPlayTitle: 'How to Play',
+            howToStep1: 'Choose a category',
+            howToStep2: 'Listen to the voice prompt',
+            howToStep3: 'Say your answer out loud!',
         },
         clockGame: {
             loading: 'Loading Clock...',
