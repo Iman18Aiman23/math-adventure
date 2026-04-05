@@ -153,7 +153,7 @@ function App() {
             {currentSubject && (
               <button onClick={handleBackToHome} className="header-btn home-btn" title={t.global.home}>
                 <Home size={18} />
-                <span style={{ fontSize: '0.82rem', fontWeight: 700 }}>{language === 'bm' ? 'Utama' : 'Home'}</span>
+                <span className="home-btn-text" style={{ fontSize: '0.82rem', fontWeight: 700 }}>{language === 'bm' ? 'Utama' : 'Home'}</span>
               </button>
             )}
           </div>

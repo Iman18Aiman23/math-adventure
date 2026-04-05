@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import GameHeader from './GameHeader';
 import DevOverlay from './DevOverlay';
+import ThemeSelectorOverlay from './ThemeSelectorOverlay';
 import { LOCALIZATION } from '../utils/localization';
 import { useGameStateContext } from '../App';
 import SpeechManager from '../services/SpeechManager';
@@ -57,6 +58,7 @@ export default function BMPage({ onBack, onHome, language }) {
 
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showDevOverlay, setShowDevOverlay] = useState(false);
+  const [showThemeOverlay, setShowThemeOverlay] = useState(false);
   const [transcriptData, setTranscriptData] = useState({});
   const [isSupported, setIsSupported] = useState(true);
   const [micDenied, setMicDenied] = useState(false);
@@ -67,6 +69,10 @@ export default function BMPage({ onBack, onHome, language }) {
   // Check speech API support
   useEffect(() => {
     setIsSupported(SpeechManager.isSupported());
+
+    const handleOpenTheme = () => setShowThemeOverlay(true);
+    window.addEventListener('open-theme-selector', handleOpenTheme);
+    return () => window.removeEventListener('open-theme-selector', handleOpenTheme);
   }, []);
 
   /**
@@ -270,6 +276,21 @@ export default function BMPage({ onBack, onHome, language }) {
         visible={showDevOverlay}
         transcriptData={transcriptData}
         onClose={() => setShowDevOverlay(false)}
+      />
+
+      {/* Theme Selector Overlay */}
+      <ThemeSelectorOverlay 
+        visible={showThemeOverlay}
+        language={language}
+        onClose={() => setShowThemeOverlay(false)}
+        onSelect={(subtheme) => {
+          setShowThemeOverlay(false);
+          // Fetch specifically the GameScene instead of assuming index 0
+          const scene = gameInstanceRef.current?.scene?.getScene('GameScene');
+          if (scene && typeof scene.setSubtheme === 'function') {
+            scene.setSubtheme(subtheme);
+          }
+        }}
       />
     </div>
   );

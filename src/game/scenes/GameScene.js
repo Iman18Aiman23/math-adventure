@@ -75,7 +75,7 @@ export default class GameScene extends Phaser.Scene {
       })
       .setOrigin(1, 0);
 
-    this.add
+    this.catLabel = this.add
       .text(width / 2, this._layout.headerY, this._getCategoryLabel(), {
         fontFamily: '"Fredoka One", cursive',
         fontSize: isSmall ? '11px' : '13px',
@@ -83,14 +83,42 @@ export default class GameScene extends Phaser.Scene {
       })
       .setOrigin(0.5, 0);
 
+    if (this.category === 'common_objects') {
+      const themesBtn = this.add.text(width / 2, this._layout.headerY + 22, 'Themes 🗂️', {
+        fontFamily: '"Nunito", sans-serif',
+        fontSize: '11px',
+        color: '#0ea5e9',
+        backgroundColor: '#e0f2fe',
+        padding: { x: 8, y: 4 }
+      })
+      .setOrigin(0.5, 0)
+      .setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => {
+        this.tweens.add({ targets: themesBtn, scale: 0.95, duration: 50, yoyo: true });
+        window.dispatchEvent(new Event('open-theme-selector'));
+      });
+    }
+
     // ─── Language Toggle ────────────────────────────────────────────────────
-    this._createLangToggle(width, isSmall);
+    this._createLangToggle();
 
     // ─── Icon area (card background) ───────────────────────────────────────
     const cardW = Math.min(width - 40, 340);
     const cardH = this._layout.iconSize + 40;
     this.card = this.add.graphics();
     this._drawCard(0xffffff, 0x0ea5e9);
+
+    // Hint button (Top Right of the card)
+    this.hintBtn = this.add.text((width / 2) + (cardW / 2) - 10, this._layout.iconY - (cardH / 2) + 10, '💡 Hint', {
+      fontFamily: '"Nunito", sans-serif',
+      fontSize: '11px',
+      color: '#64748b',
+      backgroundColor: '#f8fafc',
+      padding: { x: 8, y: 4 }
+    })
+    .setOrigin(1, 0)
+    .setInteractive({ useHandCursor: true })
+    .on('pointerdown', () => this._showHint());
 
     // Icon sprite placeholder — will be set per item
     this.iconSprite = null;
@@ -229,87 +257,83 @@ export default class GameScene extends Phaser.Scene {
     this.time.delayedCall(600, () => this._showItem());
   }
 
+
+  setSubtheme(subtheme) {
+    SpeechManager.stop();
+    SpeechManager.stopSpeaking();
+    
+    // Refresh items with subtheme
+    const limit = ['numbers', 'common_objects', 'en_long_vowels'].includes(this.category) ? 10 : 0;
+    this.items = getShuffledItems(this.category, limit, subtheme);
+    this.currentIndex = 0;
+    this.score = 0;
+    this.streak = 0;
+    
+    this.scoreText.setText('⭐ 0');
+    this.streakText.setText('🔥 0');
+    this.catLabel.setText(this._getCategoryLabel() + (subtheme ? ` - ${subtheme}` : ''));
+    
+    this._showItem();
+  }
+
   // ═══════════════════════════════════════════════════════════════════════════
   //  LANGUAGE TOGGLE
   // ═══════════════════════════════════════════════════════════════════════════
 
-  _createLangToggle(width, isSmall) {
-    const y = this._layout.headerY + 12;
-    const btnW = 40, btnH = 24, gap = 2;
-    const totalW = btnW * 2 + gap;
-    const x = 16 + totalW / 2;
-
-    this.langToggleContainer = this.add.container(x, y);
-
-    // BM button
-    this.langBmBg = this.add.graphics();
-    this.langBmText = this.add.text(-btnW / 2 - gap / 2, 0, 'BM', {
-      fontFamily: '"Fredoka One", cursive', fontSize: '11px', color: '#ffffff',
-    }).setOrigin(0.5);
-
-    // EN button
-    this.langEnBg = this.add.graphics();
-    this.langEnText = this.add.text(btnW / 2 + gap / 2, 0, 'EN', {
-      fontFamily: '"Fredoka One", cursive', fontSize: '11px', color: '#64748b',
-    }).setOrigin(0.5);
-
-    this.langToggleContainer.add([this.langBmBg, this.langEnBg, this.langBmText, this.langEnText]);
-    this._drawLangToggle();
-
-    // Hitbox for BM
-    const bmHit = this.add.rectangle(-btnW / 2 - gap / 2, 0, btnW, btnH, 0x000000, 0)
-      .setInteractive({ useHandCursor: true });
-    bmHit.on('pointerdown', () => this._switchLang('ms'));
-    this.langToggleContainer.add(bmHit);
-
-    // Hitbox for EN
-    const enHit = this.add.rectangle(btnW / 2 + gap / 2, 0, btnW, btnH, 0x000000, 0)
-      .setInteractive({ useHandCursor: true });
-    enHit.on('pointerdown', () => this._switchLang('en'));
-    this.langToggleContainer.add(enHit);
+  _createLangToggle() {
+    const { width } = this.scale;
+    const paddingX = 16;
+    
+    this.langBtn = this.add.container(paddingX, this._layout.headerY);
+    
+    // Background pill
+    const bg = this.add.graphics();
+    bg.fillStyle(0xf1f5f9, 1);
+    bg.fillRoundedRect(0, 0, 56, 24, 12);
+    
+    // Toggle nub
+    this.langNub = this.add.graphics();
+    this.langNub.fillStyle(0x0ea5e9, 1);
+    this.langNub.fillRoundedRect(2, 2, 26, 20, 10);
+    
+    // Labels
+    this.langLabelBM = this.add.text(15, 12, 'BM', { fontFamily: '"Fredoka One", cursive', fontSize: '10px', color: '#fff' }).setOrigin(0.5);
+    this.langLabelEN = this.add.text(41, 12, 'EN', { fontFamily: '"Fredoka One", cursive', fontSize: '10px', color: '#94a3b8' }).setOrigin(0.5);
+    
+    this.langBtn.add([bg, this.langNub, this.langLabelBM, this.langLabelEN]);
+    this.langBtn.setSize(56, 24);
+    
+    this.langBtn.setInteractive({ 
+      hitArea: new Phaser.Geom.Rectangle(0, 0, 56, 24), 
+      hitAreaCallback: Phaser.Geom.Rectangle.Contains, 
+      useHandCursor: true 
+    });
+    
+    this.langBtn.on('pointerdown', () => this._switchLang());
   }
 
-  _drawLangToggle() {
-    const btnW = 40, btnH = 24, gap = 2, r = 12;
-    this.langBmBg.clear();
-    this.langEnBg.clear();
+  _switchLang() {
+    if (this._isSwitchingLang) return;
+    this._isSwitchingLang = true;
+    this.time.delayedCall(350, () => { this._isSwitchingLang = false; });
 
-    if (this.currentLang === 'ms') {
-      this.langBmBg.fillStyle(0x0ea5e9, 1);
-      this.langBmBg.fillRoundedRect(-btnW - gap / 2, -btnH / 2, btnW, btnH, { tl: r, bl: r, tr: 0, br: 0 });
-      this.langEnBg.fillStyle(0xe2e8f0, 1);
-      this.langEnBg.fillRoundedRect(gap / 2, -btnH / 2, btnW, btnH, { tl: 0, bl: 0, tr: r, br: r });
-      this.langBmText.setColor('#ffffff');
-      this.langEnText.setColor('#64748b');
-    } else {
-      this.langBmBg.fillStyle(0xe2e8f0, 1);
-      this.langBmBg.fillRoundedRect(-btnW - gap / 2, -btnH / 2, btnW, btnH, { tl: r, bl: r, tr: 0, br: 0 });
-      this.langEnBg.fillStyle(0x0ea5e9, 1);
-      this.langEnBg.fillRoundedRect(gap / 2, -btnH / 2, btnW, btnH, { tl: 0, bl: 0, tr: r, br: r });
-      this.langBmText.setColor('#64748b');
-      this.langEnText.setColor('#ffffff');
-    }
-  }
-
-  _switchLang(lang) {
-    if (this.currentLang === lang) return;
-    this.currentLang = lang;
-    this._drawLangToggle();
-
-    // Stop any ongoing speech/listening
     SpeechManager.stop();
     SpeechManager.stopSpeaking();
-
-    // Update prompt for current item
-    const item = this.items[this.currentIndex];
-    if (item && item[lang]) {
-      this.promptText.setText(item[lang].prompt);
-      // Re-speak with new language
-      const ttsLang = lang === 'ms' ? 'ms-MY' : 'en-US';
-      if (SpeechManager.isTTSSupported()) {
-        SpeechManager.speak(item[lang].prompt, ttsLang);
-      }
-    }
+    
+    this.currentLang = this.currentLang === 'ms' ? 'en' : 'ms';
+    const isMs = this.currentLang === 'ms';
+    
+    this.tweens.add({
+      targets: this.langNub,
+      x: isMs ? 0 : 26,
+      duration: 250,
+      ease: 'Back.easeOut'
+    });
+    
+    this.langLabelBM.setColor(isMs ? '#fff' : '#94a3b8');
+    this.langLabelEN.setColor(isMs ? '#94a3b8' : '#fff');
+    
+    this.time.delayedCall(50, () => this._showItem());
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -526,6 +550,48 @@ export default class GameScene extends Phaser.Scene {
   //  GAME FLOW
   // ═══════════════════════════════════════════════════════════════════════════
 
+  _showHint() {
+    this.tweens.add({ targets: this.hintBtn, scale: 0.9, duration: 50, yoyo: true });
+    
+    if (this.currentIndex >= this.items.length) return;
+    const item = this.items[this.currentIndex];
+    const langData = item[this.currentLang];
+    if (!langData) return;
+
+    const targetWord = langData.word || langData.syllable || '';
+    
+    // Highlight the answer visually on top of the card
+    const { width } = this.scale;
+    const answerTxt = this.add.text(width / 2, this._layout.iconY + 15, targetWord.toUpperCase(), {
+      fontFamily: '"Fredoka One", cursive',
+      fontSize: '28px',
+      color: '#ffffff',
+      backgroundColor: '#f43f5e',
+      padding: { x: 16, y: 6 }
+    }).setOrigin(0.5).setAlpha(0);
+    
+    this.tweens.add({
+      targets: answerTxt,
+      y: answerTxt.y - 20,
+      alpha: 1,
+      duration: 300,
+      ease: 'Back.easeOut',
+      onComplete: () => {
+        this.time.delayedCall(2000, () => {
+          if (this.scene.isActive()) {
+            this.tweens.add({ targets: answerTxt, alpha: 0, y: answerTxt.y - 10, duration: 400, onComplete: () => answerTxt.destroy() });
+          }
+        });
+      }
+    });
+
+    // Speak it out!
+    if (SpeechManager.isTTSSupported()) {
+      const ttsLang = this.currentLang === 'ms' ? 'ms-MY' : 'en-US';
+      SpeechManager.speak(targetWord, ttsLang);
+    }
+  }
+
   async _showItem() {
     if (this.currentIndex >= this.items.length) {
       this._showComplete();
@@ -537,10 +603,7 @@ export default class GameScene extends Phaser.Scene {
 
     // 1. Text or Icon logic
     if (this.category === 'common_objects') {
-      // Use vibrant colors for the object icons
-      const colors = ['#0ea5e9', '#f43f5e', '#10b981', '#7c3aed', '#f59e0b', '#ec4899'];
-      const iconColor = colors[this.currentIndex % colors.length];
-      this._renderIcon(item.icon, iconColor);
+      this._renderText(item.icon);
     } else {
       const langData = item[this.currentLang];
       const displayTxt = item.text || (langData && (langData.word || langData.syllable)) || '?';

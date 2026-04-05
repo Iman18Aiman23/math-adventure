@@ -22,11 +22,16 @@ export const CURRICULUM = {
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
-/** Get a shuffled copy of items for a category, optionally limited */
-export function getShuffledItems(categoryKey, limit = 0) {
+/** Get a shuffled copy of items for a category, optionally limited and filtered by subtheme */
+export function getShuffledItems(categoryKey, limit = 0, subtheme = null) {
   const items = CURRICULUM[categoryKey];
   if (!items) return [];
-  const copy = [...items];
+  
+  // Filter by subtheme if requested
+  const pool = subtheme ? items.filter(item => item.subtheme === subtheme) : items;
+  if (!pool.length) return [];
+  
+  const copy = [...pool];
   for (let i = copy.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [copy[i], copy[j]] = [copy[j], copy[i]];
