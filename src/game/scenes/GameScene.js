@@ -417,80 +417,6 @@ export default class GameScene extends Phaser.Scene {
     this.emitter.explode(12);
   }
 
-  // ── Applause Sound via Web Audio API ────────────────────────────────────────
-
-  _playApplauseSound() {
-    try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-
-      // Create applause: layered filtered noise bursts to simulate clapping
-      const duration = 2.5;
-      const sampleRate = ctx.sampleRate;
-      const bufferSize = sampleRate * duration;
-      const buffer = ctx.createBuffer(2, bufferSize, sampleRate);
-
-      for (let channel = 0; channel < 2; channel++) {
-        const data = buffer.getChannelData(channel);
-        for (let i = 0; i < bufferSize; i++) {
-          const t = i / sampleRate;
-
-          // Multiple clap "bursts" with slight randomization
-          let sample = 0;
-          const numClaps = 30;
-          for (let c = 0; c < numClaps; c++) {
-            const clapTime = (c / numClaps) * duration * 0.6 + Math.sin(c * 7.3) * 0.08;
-            const clapDuration = 0.03 + Math.sin(c * 3.7) * 0.015;
-            const dt = t - clapTime;
-            if (dt > 0 && dt < clapDuration) {
-              // Noise burst shaped by a sharp envelope
-              const env = Math.exp(-dt * 60) * (0.3 + Math.random() * 0.7);
-              sample += (Math.random() * 2 - 1) * env * 0.15;
-            }
-          }
-
-          // Overall envelope: fade in quickly, sustain, fade out
-          const envelope = Math.min(t * 4, 1) * Math.max(0, 1 - (t - duration + 0.8) / 0.8);
-
-          // Add crowd murmur (low-frequency noise)
-          sample += (Math.random() * 2 - 1) * 0.03 * envelope;
-
-          data[i] = sample * envelope;
-        }
-      }
-
-      // Play the buffer
-      const source = ctx.createBufferSource();
-      source.buffer = buffer;
-
-      // Bandpass filter to make it sound more natural
-      const filter = ctx.createBiquadFilter();
-      filter.type = 'bandpass';
-      filter.frequency.value = 2500;
-      filter.Q.value = 0.7;
-
-      // Gain control
-      const gainNode = ctx.createGain();
-      gainNode.gain.value = 0.6;
-
-      source.connect(filter);
-      filter.connect(gainNode);
-      gainNode.connect(ctx.destination);
-
-      // Fade out the gain
-      gainNode.gain.setValueAtTime(0.6, ctx.currentTime);
-      gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + duration);
-
-      source.start(0);
-
-      // Cleanup after playback
-      source.onended = () => {
-        ctx.close().catch(() => {});
-      };
-    } catch (err) {
-      console.warn('[GameScene] Could not play applause sound:', err);
-    }
-  }
-
   // ── Celebration Confetti Particles ──────────────────────────────────────────
 
   _celebrationParticles() {
@@ -746,6 +672,15 @@ export default class GameScene extends Phaser.Scene {
     this.streak++;
     this.attempts = 0;
 
+    // ─── JUICE: TTS Praise ────────────────────────────────────────────────────
+    if (SpeechManager.isTTSSupported()) {
+      const msPraises = ['Bagus!', 'Hebat!', 'Cemerlang!', 'Bijak!', 'Terbaik!'];
+      const enPraises = ['Good job!', 'Excellent!', 'Brilliant!', 'Awesome!', 'Perfect!'];
+      const praises = item.lang === 'ms-MY' ? msPraises : enPraises;
+      const praise = praises[Math.floor(Math.random() * praises.length)];
+      SpeechManager.speak(praise, item.lang);
+    }
+
     this.scoreText.setText(`⭐ ${this.score}`);
     this.streakText.setText(`🔥 ${this.streak}`);
 
@@ -845,8 +780,12 @@ export default class GameScene extends Phaser.Scene {
     // ─── JUICE: Camera shake ──────────────────────────────────────────────────
     this.cameras.main.shake(400, 0.008);
 
-    // ─── JUICE: Applause sound (Web Audio API) ────────────────────────────────
-    this._playApplauseSound();
+    // ─── JUICE: TTS Celebration (100% Web Speech API) ─────────────────────────
+    if (SpeechManager.isTTSSupported()) {
+      const isMs = this.category !== 'en_phonics';
+      const text = isMs ? 'Tahniah! Anda berjaya!' : 'Congratulations! You did it!';
+      SpeechManager.speak(text, isMs ? 'ms-MY' : 'en-US');
+    }
 
     // ─── JUICE: Confetti celebration particles ────────────────────────────────
     this._celebrationParticles();

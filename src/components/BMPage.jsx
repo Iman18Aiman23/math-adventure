@@ -98,6 +98,12 @@ export default function BMPage({ onBack, onHome, language }) {
     setTranscriptData(data);
   }, []);
 
+  // Use a ref for callbacks to prevent Phaser recreation on every React render
+  const callbacksRef = useRef({ onScore: handleScore, onTranscriptUpdate: handleTranscriptUpdate });
+  useEffect(() => {
+    callbacksRef.current = { onScore: handleScore, onTranscriptUpdate: handleTranscriptUpdate };
+  }, [handleScore, handleTranscriptUpdate]);
+
   // Mount / unmount Phaser game
   useEffect(() => {
     if (!selectedCategory || !phaserRef.current) return;
@@ -109,8 +115,8 @@ export default function BMPage({ onBack, onHome, language }) {
       if (!phaserRef.current) return;
 
       game = createBMGame(phaserRef.current, selectedCategory, {
-        onScore: handleScore,
-        onTranscriptUpdate: handleTranscriptUpdate,
+        onScore: (data) => callbacksRef.current.onScore(data),
+        onTranscriptUpdate: (data) => callbacksRef.current.onTranscriptUpdate(data),
       });
 
       gameInstanceRef.current = game;
@@ -124,7 +130,7 @@ export default function BMPage({ onBack, onHome, language }) {
       }
       gameInstanceRef.current = null;
     };
-  }, [selectedCategory, handleScore, handleTranscriptUpdate]);
+  }, [selectedCategory]); // Only re-instantiate when category changes
 
   // Cleanup on unmount
   useEffect(() => {
