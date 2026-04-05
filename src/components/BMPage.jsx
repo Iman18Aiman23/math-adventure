@@ -29,18 +29,25 @@ const CATEGORIES = [
     shadow: 'rgba(124,58,237,0.35)',
   },
   {
-    key: 'en_phonics',
+    key: 'en_long_vowels',
     emoji: '📖',
     color: '#F43F5E',
     gradient: 'linear-gradient(135deg, #F43F5E, #fb7185)',
     shadow: 'rgba(244,63,94,0.35)',
   },
   {
-    key: 'math',
+    key: 'numbers',
     emoji: '🔢',
     color: '#F59E0B',
     gradient: 'linear-gradient(135deg, #F59E0B, #fbbf24)',
     shadow: 'rgba(245,158,11,0.35)',
+  },
+  {
+    key: 'common_objects',
+    emoji: '🎯',
+    color: '#10B981',
+    gradient: 'linear-gradient(135deg, #10B981, #34d399)',
+    shadow: 'rgba(16,185,129,0.35)',
   },
 ];
 

@@ -130,6 +130,21 @@ export default class MascotSprite {
     });
   }
 
+  /** Gentle wobble for cross-language hint */
+  wobble() {
+    this.scene.tweens.add({
+      targets: this.container,
+      angle: -12,
+      duration: 120,
+      yoyo: true,
+      repeat: 2,
+      ease: 'Sine.easeInOut',
+      onComplete: () => {
+        this.container.angle = 0;
+      },
+    });
+  }
+
   /** Set visibility */
   setVisible(val) {
     this.container.setVisible(val);

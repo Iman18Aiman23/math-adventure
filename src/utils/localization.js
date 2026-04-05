@@ -134,8 +134,9 @@ export const LOCALIZATION = {
             categories: {
                 bm_kv: { title: 'Suku Kata KV', desc: 'ba · bi · bu · be · bo' },
                 bm_kvk: { title: 'Suku Kata KVK', desc: 'ban · bin · bun · ben · bon' },
-                en_phonics: { title: 'English Phonics', desc: 'Lake · Kite · Rope · Tune' },
-                math: { title: 'Math 1-100', desc: 'Sebut nombor 0 hingga 100!' },
+                en_long_vowels: { title: 'English Phonics', desc: 'Cake · Bike · Home · Tune' },
+                numbers: { title: 'Nombor 1-100', desc: 'Sebut nombor 1 hingga 100!' },
+                common_objects: { title: 'Objek Biasa', desc: 'Kucing · Bunga · Buku · Cawan' },
             },
             howToPlayTitle: 'Cara Bermain',
             howToStep1: 'Pilih kategori',
@@ -334,8 +335,9 @@ export const LOCALIZATION = {
             categories: {
                 bm_kv: { title: 'Syllables KV', desc: 'ba · bi · bu · be · bo' },
                 bm_kvk: { title: 'Syllables KVK', desc: 'ban · bin · bun · ben · bon' },
-                en_phonics: { title: 'English Phonics', desc: 'Lake · Kite · Rope · Tune' },
-                math: { title: 'Math 1-100', desc: 'Say numbers 0 to 100!' },
+                en_long_vowels: { title: 'English Phonics', desc: 'Cake · Bike · Home · Tune' },
+                numbers: { title: 'Numbers 1-100', desc: 'Say numbers 1 to 100!' },
+                common_objects: { title: 'Common Objects', desc: 'Cat · Flower · Book · Cup' },
             },
             howToPlayTitle: 'How to Play',
             howToStep1: 'Choose a category',
