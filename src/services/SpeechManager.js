@@ -8,6 +8,9 @@
  *  - Chrome mobile SpeechSynthesis voice-loading workaround
  *  - Microphone permission pre-request via getUserMedia
  *  - interimResults disabled on mobile for reliability
+ *  - TTS cancelled before mic start to avoid audio pipeline conflicts
+ *  - Startup delay on mobile to let audio settle after TTS
+ *  - audiostart tracking for better silence detection
  */
 
 class SpeechManagerClass {
@@ -166,9 +169,17 @@ class SpeechManagerClass {
 
     this.stop(); // Stop any previous session
 
-    const maxRetries = options.retries ?? 2;
+    // MOBILE FIX: Cancel any ongoing TTS to free the audio pipeline
+    // On mobile, TTS and mic share the same audio hardware — if TTS
+    // is still finishing, the mic will capture silence or fail.
+    if (this._synth) {
+      this._synth.cancel();
+    }
+
+    const maxRetries = options.retries ?? (this._isMobile ? 3 : 2);
     let retriesLeft = maxRetries;
     this._gotResult = false;
+    this._audioStarted = false; // Track if mic actually started capturing
 
     const startRecognition = () => {
       const recognition = new this._RecognitionClass();
@@ -177,6 +188,16 @@ class SpeechManagerClass {
       // Disable interimResults on mobile for reliability
       recognition.interimResults = !this._isMobile;
       recognition.maxAlternatives = 5;
+
+      // MOBILE FIX: Track when mic actually starts capturing audio
+      recognition.onaudiostart = () => {
+        this._audioStarted = true;
+        console.log('[SpeechManager] Audio capture started');
+      };
+
+      recognition.onsoundstart = () => {
+        console.log('[SpeechManager] Sound detected');
+      };
 
       recognition.onresult = (event) => {
         this._gotResult = true;
@@ -208,11 +229,20 @@ class SpeechManagerClass {
             alternatives: allAlts.join(' | '),
           });
 
+          // MOBILE FIX: On some mobile browsers, the first result IS final
+          // but was being skipped. Always process final results.
           if (result.isFinal) {
             this._listening = false;
             onResult?.(bestTranscript, bestConfidence);
             return; // Done — don't process more
           }
+        }
+
+        // MOBILE FIX: If no results were isFinal but we got results,
+        // use the best transcript anyway (some mobile browsers never set isFinal)
+        if (this._isMobile && bestTranscript && event.results.length > 0) {
+          this._listening = false;
+          onResult?.(bestTranscript, bestConfidence);
         }
       };
 
@@ -227,7 +257,9 @@ class SpeechManagerClass {
         ) {
           retriesLeft--;
           console.log(`[SpeechManager] Auto-retry (${maxRetries - retriesLeft}/${maxRetries})...`);
-          setTimeout(() => startRecognition(), 300);
+          // Longer delay on mobile to let audio pipeline recover
+          const delay = this._isMobile ? 500 : 300;
+          setTimeout(() => startRecognition(), delay);
           return;
         }
 
@@ -244,9 +276,12 @@ class SpeechManagerClass {
         // (common on Android/iOS), auto-retry
         if (!this._gotResult && retriesLeft > 0) {
           retriesLeft--;
-          console.log(`[SpeechManager] Silent end, auto-retry (${maxRetries - retriesLeft}/${maxRetries})...`);
+          // If audio never even started, use a longer delay
+          const delay = this._audioStarted ? 400 : 600;
+          console.log(`[SpeechManager] Silent end (audioStarted=${this._audioStarted}), auto-retry (${maxRetries - retriesLeft}/${maxRetries})...`);
           this._gotResult = false;
-          setTimeout(() => startRecognition(), 300);
+          this._audioStarted = false;
+          setTimeout(() => startRecognition(), delay);
           return;
         }
 
@@ -259,19 +294,25 @@ class SpeechManagerClass {
       this._recognition = recognition;
       this._listening = true;
       this._gotResult = false;
+      this._audioStarted = false;
 
-      try {
-        recognition.start();
-      } catch (e) {
-        this._listening = false;
-        // "already started" happens on some mobile browsers
-        if (e.message?.includes('already started')) {
-          this.stop();
-          setTimeout(() => startRecognition(), 200);
-        } else {
-          onError?.(e.message);
+      // MOBILE FIX: Brief delay before starting recognition on mobile
+      // to let the audio pipeline fully settle after TTS cancellation
+      const startDelay = this._isMobile ? 250 : 0;
+      setTimeout(() => {
+        try {
+          recognition.start();
+        } catch (e) {
+          this._listening = false;
+          // "already started" happens on some mobile browsers
+          if (e.message?.includes('already started')) {
+            this.stop();
+            setTimeout(() => startRecognition(), 300);
+          } else {
+            onError?.(e.message);
+          }
         }
-      }
+      }, startDelay);
     };
 
     startRecognition();

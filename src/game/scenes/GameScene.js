@@ -6,6 +6,8 @@
  *  - Mobile: "Tap to Speak" button (user gesture required for mic)
  *  - Retry on no-speech for both platforms
  *  - Visual feedback: pulsing ear, mascot bounce/shake, particles
+ *  - Level-complete "juice": applause SFX + confetti celebration
+ *  - Responsive layout for small phone screens
  */
 import Phaser from 'phaser';
 import MascotSprite from '../sprites/MascotSprite';
@@ -36,18 +38,36 @@ export default class GameScene extends Phaser.Scene {
     this.attempts = 0;
     this._isMobile = SpeechManager.isMobile();
 
+    // ─── Responsive layout calculations ──────────────────────────────────────
+    // Adjust positions based on screen dimensions to prevent overlap on phones
+    const isSmallScreen = height < 500 || width < 380;
+    this._layout = {
+      headerY: 12,
+      cardY: isSmallScreen ? height * 0.26 : height * 0.22,
+      cardH: isSmallScreen ? 80 : 100,
+      cardW: Math.min(width - 40, 340),
+      earY: isSmallScreen ? height * 0.54 : height * 0.50,
+      tapBtnY: isSmallScreen ? height * 0.56 : height * 0.52,
+      feedbackY: isSmallScreen ? height * 0.72 : height * 0.67,
+      mascotY: isSmallScreen ? height * 0.87 : height * 0.84,
+      targetFontSize: isSmallScreen
+        ? Math.min(42, width * 0.12) + 'px'
+        : Math.min(56, width * 0.14) + 'px',
+      promptFontSize: isSmallScreen ? '11px' : '13px',
+    };
+
     // Background
     this.cameras.main.setBackgroundColor(0xf0f9ff);
 
     // ─── UI Elements ────────────────────────────────────────────────────────────
     // Back button
     const backBtn = this.add
-      .text(16, 12, '← Back', {
+      .text(16, this._layout.headerY, '← Back', {
         fontFamily: '"Fredoka One", cursive',
-        fontSize: '14px',
+        fontSize: isSmallScreen ? '12px' : '14px',
         color: '#f43f5e',
         backgroundColor: 'rgba(244,63,94,0.1)',
-        padding: { x: 10, y: 6 },
+        padding: { x: 8, y: 5 },
       })
       .setInteractive({ useHandCursor: true });
 
@@ -59,18 +79,18 @@ export default class GameScene extends Phaser.Scene {
 
     // Score display
     this.scoreText = this.add
-      .text(width - 16, 14, '⭐ 0', {
+      .text(width - 16, this._layout.headerY, '⭐ 0', {
         fontFamily: '"Fredoka One", cursive',
-        fontSize: '16px',
+        fontSize: isSmallScreen ? '14px' : '16px',
         color: '#f59e0b',
       })
       .setOrigin(1, 0);
 
     // Streak display
     this.streakText = this.add
-      .text(width - 16, 36, '🔥 0', {
+      .text(width - 16, this._layout.headerY + 22, '🔥 0', {
         fontFamily: '"Nunito", sans-serif',
-        fontSize: '13px',
+        fontSize: isSmallScreen ? '11px' : '13px',
         color: '#ef4444',
         fontStyle: 'bold',
       })
@@ -78,17 +98,15 @@ export default class GameScene extends Phaser.Scene {
 
     // Category label
     this.add
-      .text(width / 2, 14, this._getCategoryLabel(), {
+      .text(width / 2, this._layout.headerY, this._getCategoryLabel(), {
         fontFamily: '"Fredoka One", cursive',
-        fontSize: '13px',
+        fontSize: isSmallScreen ? '11px' : '13px',
         color: '#64748b',
       })
       .setOrigin(0.5, 0);
 
     // ─── Target text area ───────────────────────────────────────────────────────
-    const cardY = height * 0.22;
-    const cardW = Math.min(width - 40, 340);
-    const cardH = 100;
+    const { cardY, cardW, cardH } = this._layout;
 
     this.card = this.add.graphics();
     this._drawCard(0xffffff, 0x0ea5e9);
@@ -97,7 +115,7 @@ export default class GameScene extends Phaser.Scene {
     this.targetText = this.add
       .text(width / 2, cardY, '', {
         fontFamily: '"Fredoka One", cursive',
-        fontSize: Math.min(56, width * 0.14) + 'px',
+        fontSize: this._layout.targetFontSize,
         color: '#1e1b4b',
         align: 'center',
       })
@@ -105,9 +123,9 @@ export default class GameScene extends Phaser.Scene {
 
     // Prompt text
     this.promptText = this.add
-      .text(width / 2, cardY + cardH / 2 + 14, '', {
+      .text(width / 2, cardY + cardH / 2 + 10, '', {
         fontFamily: '"Nunito", sans-serif',
-        fontSize: '13px',
+        fontSize: this._layout.promptFontSize,
         color: '#64748b',
         align: 'center',
         fontStyle: 'bold',
@@ -115,7 +133,7 @@ export default class GameScene extends Phaser.Scene {
       .setOrigin(0.5, 0);
 
     // ─── Pulsing Ear / Mic Indicator ────────────────────────────────────────────
-    const earY = height * 0.50;
+    const earY = this._layout.earY;
 
     this.pulseRing1 = this.add.circle(width / 2, earY, 38, 0x0ea5e9, 0.15);
     this.pulseRing2 = this.add.circle(width / 2, earY, 38, 0x0ea5e9, 0.08);
@@ -136,9 +154,9 @@ export default class GameScene extends Phaser.Scene {
     this._setMicVisible(false);
 
     // ─── Tap-to-Speak Button (Mobile) ───────────────────────────────────────────
-    const tapBtnY = height * 0.52;
-    const tapBtnW = 180;
-    const tapBtnH = 50;
+    const tapBtnY = this._layout.tapBtnY;
+    const tapBtnW = isSmallScreen ? 160 : 180;
+    const tapBtnH = isSmallScreen ? 44 : 50;
 
     this.tapBtnContainer = this.add.container(width / 2, tapBtnY);
 
@@ -154,7 +172,7 @@ export default class GameScene extends Phaser.Scene {
     const tapLabel = this.add
       .text(0, 0, '🎤 Tap to Speak', {
         fontFamily: '"Fredoka One", cursive',
-        fontSize: '15px',
+        fontSize: isSmallScreen ? '13px' : '15px',
         color: '#ffffff',
       })
       .setOrigin(0.5);
@@ -193,9 +211,9 @@ export default class GameScene extends Phaser.Scene {
 
     // ─── Feedback area ──────────────────────────────────────────────────────────
     this.feedbackText = this.add
-      .text(width / 2, height * 0.67, '', {
+      .text(width / 2, this._layout.feedbackY, '', {
         fontFamily: '"Fredoka One", cursive',
-        fontSize: '18px',
+        fontSize: isSmallScreen ? '15px' : '18px',
         color: '#10b981',
         align: 'center',
         wordWrap: { width: width - 40 },
@@ -205,7 +223,7 @@ export default class GameScene extends Phaser.Scene {
 
     // ─── Mascot ─────────────────────────────────────────────────────────────────
     const mascotX = width * 0.82;
-    const mascotY = height * 0.84;
+    const mascotY = this._layout.mascotY;
     this.mascot = new MascotSprite(this, mascotX, mascotY, Math.min(30, width * 0.07));
 
     // ─── Progress bar ───────────────────────────────────────────────────────────
@@ -238,9 +256,7 @@ export default class GameScene extends Phaser.Scene {
 
   _drawCard(fill, stroke) {
     const { width } = this.scale;
-    const cardY = this.scale.height * 0.22;
-    const cardW = Math.min(width - 40, 340);
-    const cardH = 100;
+    const { cardY, cardW, cardH } = this._layout;
 
     this.card.clear();
     this.card.fillStyle(fill, 0.92);
@@ -312,11 +328,26 @@ export default class GameScene extends Phaser.Scene {
   }
 
   _setupParticles() {
+    // Star particle
     const gfx = this.add.graphics();
     gfx.fillStyle(0xfbbf24, 1);
     gfx.fillCircle(8, 8, 8);
     gfx.generateTexture('particle_star', 16, 16);
     gfx.destroy();
+
+    // Square confetti particle
+    const gfx2 = this.add.graphics();
+    gfx2.fillStyle(0xffffff, 1);
+    gfx2.fillRect(0, 0, 10, 10);
+    gfx2.generateTexture('particle_confetti', 10, 10);
+    gfx2.destroy();
+
+    // Tiny circle particle
+    const gfx3 = this.add.graphics();
+    gfx3.fillStyle(0xffffff, 1);
+    gfx3.fillCircle(4, 4, 4);
+    gfx3.generateTexture('particle_dot', 8, 8);
+    gfx3.destroy();
 
     this.emitter = this.add.particles(0, 0, 'particle_star', {
       speed: { min: 100, max: 250 },
@@ -333,6 +364,157 @@ export default class GameScene extends Phaser.Scene {
   _emitParticles(x, y) {
     this.emitter.setPosition(x, y);
     this.emitter.explode(12);
+  }
+
+  // ── Applause Sound via Web Audio API ────────────────────────────────────────
+
+  _playApplauseSound() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+      // Create applause: layered filtered noise bursts to simulate clapping
+      const duration = 2.5;
+      const sampleRate = ctx.sampleRate;
+      const bufferSize = sampleRate * duration;
+      const buffer = ctx.createBuffer(2, bufferSize, sampleRate);
+
+      for (let channel = 0; channel < 2; channel++) {
+        const data = buffer.getChannelData(channel);
+        for (let i = 0; i < bufferSize; i++) {
+          const t = i / sampleRate;
+
+          // Multiple clap "bursts" with slight randomization
+          let sample = 0;
+          const numClaps = 30;
+          for (let c = 0; c < numClaps; c++) {
+            const clapTime = (c / numClaps) * duration * 0.6 + Math.sin(c * 7.3) * 0.08;
+            const clapDuration = 0.03 + Math.sin(c * 3.7) * 0.015;
+            const dt = t - clapTime;
+            if (dt > 0 && dt < clapDuration) {
+              // Noise burst shaped by a sharp envelope
+              const env = Math.exp(-dt * 60) * (0.3 + Math.random() * 0.7);
+              sample += (Math.random() * 2 - 1) * env * 0.15;
+            }
+          }
+
+          // Overall envelope: fade in quickly, sustain, fade out
+          const envelope = Math.min(t * 4, 1) * Math.max(0, 1 - (t - duration + 0.8) / 0.8);
+
+          // Add crowd murmur (low-frequency noise)
+          sample += (Math.random() * 2 - 1) * 0.03 * envelope;
+
+          data[i] = sample * envelope;
+        }
+      }
+
+      // Play the buffer
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+
+      // Bandpass filter to make it sound more natural
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = 2500;
+      filter.Q.value = 0.7;
+
+      // Gain control
+      const gainNode = ctx.createGain();
+      gainNode.gain.value = 0.6;
+
+      source.connect(filter);
+      filter.connect(gainNode);
+      gainNode.connect(ctx.destination);
+
+      // Fade out the gain
+      gainNode.gain.setValueAtTime(0.6, ctx.currentTime);
+      gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + duration);
+
+      source.start(0);
+
+      // Cleanup after playback
+      source.onended = () => {
+        ctx.close().catch(() => {});
+      };
+    } catch (err) {
+      console.warn('[GameScene] Could not play applause sound:', err);
+    }
+  }
+
+  // ── Celebration Confetti Particles ──────────────────────────────────────────
+
+  _celebrationParticles() {
+    const { width, height } = this.scale;
+    const colors = [0xfbbf24, 0x0ea5e9, 0xf43f5e, 0x10b981, 0x7c3aed, 0xec4899, 0xf59e0b];
+
+    // Wave 1: Big burst from center top
+    const emitter1 = this.add.particles(width / 2, height * 0.1, 'particle_star', {
+      speed: { min: 150, max: 400 },
+      angle: { min: 200, max: 340 },
+      scale: { start: 0.8, end: 0 },
+      lifespan: { min: 1200, max: 2000 },
+      gravityY: 200,
+      quantity: 0,
+      emitting: false,
+      tint: colors,
+      rotate: { min: 0, max: 360 },
+    });
+    emitter1.explode(25);
+
+    // Wave 2: Confetti squares from sides (delayed)
+    this.time.delayedCall(200, () => {
+      const emitter2 = this.add.particles(width * 0.15, height * 0.05, 'particle_confetti', {
+        speed: { min: 80, max: 300 },
+        angle: { min: 250, max: 350 },
+        scale: { start: 1.0, end: 0.2 },
+        lifespan: { min: 1500, max: 2500 },
+        gravityY: 150,
+        quantity: 0,
+        emitting: false,
+        tint: colors,
+        rotate: { min: 0, max: 360 },
+      });
+      emitter2.explode(18);
+
+      const emitter3 = this.add.particles(width * 0.85, height * 0.05, 'particle_confetti', {
+        speed: { min: 80, max: 300 },
+        angle: { min: 190, max: 290 },
+        scale: { start: 1.0, end: 0.2 },
+        lifespan: { min: 1500, max: 2500 },
+        gravityY: 150,
+        quantity: 0,
+        emitting: false,
+        tint: colors,
+        rotate: { min: 0, max: 360 },
+      });
+      emitter3.explode(18);
+    });
+
+    // Wave 3: Small dots raining from top (delayed more)
+    this.time.delayedCall(500, () => {
+      for (let i = 0; i < 5; i++) {
+        this.time.delayedCall(i * 120, () => {
+          const x = Phaser.Math.Between(width * 0.1, width * 0.9);
+          const emitter4 = this.add.particles(x, -10, 'particle_dot', {
+            speed: { min: 50, max: 180 },
+            angle: { min: 250, max: 290 },
+            scale: { start: 0.8, end: 0 },
+            lifespan: { min: 1000, max: 1800 },
+            gravityY: 250,
+            quantity: 0,
+            emitting: false,
+            tint: colors,
+          });
+          emitter4.explode(10);
+        });
+      }
+    });
+
+    // Wave 4: Final big explosion (delayed)
+    this.time.delayedCall(800, () => {
+      this._emitParticles(width / 2, height * 0.25);
+      this._emitParticles(width * 0.3, height * 0.3);
+      this._emitParticles(width * 0.7, height * 0.3);
+    });
   }
 
   // ── Game flow ───────────────────────────────────────────────────────────────
@@ -369,7 +551,9 @@ export default class GameScene extends Phaser.Scene {
     }
 
     // After TTS finishes — begin listening
-    this.time.delayedCall(300, () => {
+    // MOBILE FIX: Use a longer delay on mobile to let audio pipeline settle
+    const postTTSDelay = this._isMobile ? 600 : 300;
+    this.time.delayedCall(postTTSDelay, () => {
       if (!this.scene.isActive()) return;
 
       if (this._isMobile) {
@@ -391,6 +575,9 @@ export default class GameScene extends Phaser.Scene {
   _startListening(item) {
     this._setMicVisible(true);
     this.tapBtnContainer.setVisible(false);
+
+    // MOBILE FIX: Explicitly cancel TTS before starting mic
+    SpeechManager.stopSpeaking();
 
     SpeechManager.listen(
       item.lang,
@@ -435,7 +622,8 @@ export default class GameScene extends Phaser.Scene {
           });
         }
       },
-      { retries: this._isMobile ? 1 : 2 } // Fewer auto-retries on mobile since we have tap button
+      // MOBILE FIX: More retries on mobile (handled by SpeechManager default now)
+      { retries: this._isMobile ? 3 : 2 }
     );
   }
 
@@ -541,83 +729,241 @@ export default class GameScene extends Phaser.Scene {
     this.tapBtnContainer.setVisible(false);
     this.feedbackText.setAlpha(0);
 
-    // Celebration screen
+    // ─── JUICE: Camera shake ──────────────────────────────────────────────────
+    this.cameras.main.shake(400, 0.008);
+
+    // ─── JUICE: Applause sound (Web Audio API) ────────────────────────────────
+    this._playApplauseSound();
+
+    // ─── JUICE: Confetti celebration particles ────────────────────────────────
+    this._celebrationParticles();
+
+    // Celebration screen overlay (fade in)
     const overlay = this.add.graphics();
-    overlay.fillStyle(0xf0f9ff, 0.95);
+    overlay.fillStyle(0xf0f9ff, 0);
     overlay.fillRect(0, 0, width, height);
+    overlay.setAlpha(0);
 
-    this.add
-      .text(width / 2, height * 0.15, '🎉', { fontSize: '56px' })
-      .setOrigin(0.5);
+    this.tweens.add({
+      targets: overlay,
+      alpha: 0.95,
+      duration: 500,
+      ease: 'Sine.easeOut',
+      onUpdate: () => {
+        overlay.clear();
+        overlay.fillStyle(0xf0f9ff, overlay.alpha);
+        overlay.fillRect(0, 0, width, height);
+      },
+    });
 
-    this.add
+    // 🎉 Big emoji — bounce in with delay
+    const celebEmoji = this.add
+      .text(width / 2, height * 0.13, '🎉', { fontSize: '56px' })
+      .setOrigin(0.5)
+      .setScale(0)
+      .setAlpha(0);
+
+    this.time.delayedCall(300, () => {
+      this.tweens.add({
+        targets: celebEmoji,
+        scaleX: 1.3, scaleY: 1.3, alpha: 1,
+        duration: 400, ease: 'Back.easeOut',
+        onComplete: () => {
+          // Bounce loop
+          this.tweens.add({
+            targets: celebEmoji,
+            scaleX: 1.0, scaleY: 1.0,
+            duration: 200, ease: 'Sine.easeInOut',
+            onComplete: () => {
+              this.tweens.add({
+                targets: celebEmoji,
+                y: celebEmoji.y - 6,
+                duration: 1200,
+                yoyo: true,
+                repeat: -1,
+                ease: 'Sine.easeInOut',
+              });
+            },
+          });
+        },
+      });
+    });
+
+    // Title — slide in
+    const titleText = this.add
       .text(width / 2, height * 0.28, 'Tahniah! / Well Done!', {
         fontFamily: '"Fredoka One", cursive',
         fontSize: '22px',
         color: '#7c3aed',
         align: 'center',
       })
-      .setOrigin(0.5);
+      .setOrigin(0.5)
+      .setAlpha(0)
+      .setScale(0.5);
 
-    this.add
-      .text(width / 2, height * 0.38, `Skor Anda: ${this.score} / ${this.items.length}`, {
+    this.time.delayedCall(500, () => {
+      this.tweens.add({
+        targets: titleText,
+        alpha: 1, scaleX: 1, scaleY: 1,
+        duration: 400, ease: 'Back.easeOut',
+      });
+    });
+
+    // Score — count up animation
+    const scoreLabel = this.add
+      .text(width / 2, height * 0.38, `Skor Anda: 0 / ${this.items.length}`, {
         fontFamily: '"Nunito", sans-serif',
         fontSize: '18px',
         color: '#1e1b4b',
         fontStyle: 'bold',
         align: 'center',
       })
-      .setOrigin(0.5);
+      .setOrigin(0.5)
+      .setAlpha(0);
 
-    // Play Again button
-    const btnW = 200;
-    const btnH = 48;
+    this.time.delayedCall(700, () => {
+      scoreLabel.setAlpha(1);
 
-    const playBtn = this.add.container(width / 2, height * 0.54);
-    const playBg = this.add.graphics();
-    playBg.fillStyle(0x0ea5e9, 1);
-    playBg.fillRoundedRect(-btnW / 2, -btnH / 2, btnW, btnH, 24);
-    const playText = this.add
-      .text(0, 0, '🔄 Main Lagi', {
-        fontFamily: '"Fredoka One", cursive',
-        fontSize: '16px',
-        color: '#ffffff',
-      })
-      .setOrigin(0.5);
-    playBtn.add([playBg, playText]);
-    playBtn.setSize(btnW, btnH);
-    playBtn.setInteractive({ useHandCursor: true });
-    playBtn.on('pointerdown', () => {
-      this.scene.restart({
-        category: this.category,
-        onScore: this._onScore,
-        onTranscriptUpdate: this._onTranscriptUpdate,
+      // Animated counter
+      const counter = { val: 0 };
+      this.tweens.add({
+        targets: counter,
+        val: this.score,
+        duration: 800,
+        ease: 'Sine.easeOut',
+        onUpdate: () => {
+          scoreLabel.setText(`Skor Anda: ${Math.round(counter.val)} / ${this.items.length}`);
+        },
+        onComplete: () => {
+          // Pop the score when done counting
+          this.tweens.add({
+            targets: scoreLabel,
+            scaleX: 1.15, scaleY: 1.15,
+            duration: 150,
+            yoyo: true,
+            ease: 'Back.easeOut',
+          });
+        },
       });
     });
 
-    // Menu button
-    const menuBtn = this.add.container(width / 2, height * 0.66);
-    const menuBg = this.add.graphics();
-    menuBg.fillStyle(0x7c3aed, 1);
-    menuBg.fillRoundedRect(-btnW / 2, -btnH / 2, btnW, btnH, 24);
-    const menuText = this.add
-      .text(0, 0, '🏠 Menu Utama', {
-        fontFamily: '"Fredoka One", cursive',
-        fontSize: '16px',
-        color: '#ffffff',
-      })
-      .setOrigin(0.5);
-    menuBtn.add([menuBg, menuText]);
-    menuBtn.setSize(btnW, btnH);
-    menuBtn.setInteractive({ useHandCursor: true });
-    menuBtn.on('pointerdown', () => {
-      this.game.destroy(true);
-    });
+    // Star rating based on score
+    const starCount = this.score >= this.items.length ? 3
+      : this.score >= this.items.length * 0.7 ? 2
+      : this.score >= this.items.length * 0.4 ? 1 : 0;
 
-    // Particles
-    this._emitParticles(width / 2, height * 0.2);
-    this.time.delayedCall(200, () => this._emitParticles(width * 0.3, height * 0.25));
-    this.time.delayedCall(400, () => this._emitParticles(width * 0.7, height * 0.25));
+    if (starCount > 0) {
+      this.time.delayedCall(1200, () => {
+        const starStr = '⭐'.repeat(starCount);
+        const starsText = this.add
+          .text(width / 2, height * 0.46, starStr, {
+            fontSize: '32px',
+            align: 'center',
+          })
+          .setOrigin(0.5)
+          .setScale(0)
+          .setAlpha(0);
+
+        this.tweens.add({
+          targets: starsText,
+          scaleX: 1.2, scaleY: 1.2, alpha: 1,
+          duration: 400, ease: 'Back.easeOut',
+          onComplete: () => {
+            this.tweens.add({
+              targets: starsText,
+              scaleX: 1.0, scaleY: 1.0,
+              duration: 200, ease: 'Sine.easeInOut',
+            });
+          },
+        });
+      });
+    }
+
+    // Play Again button (delayed entrance)
+    const btnW = 200;
+    const btnH = 48;
+
+    this.time.delayedCall(1500, () => {
+      const playBtn = this.add.container(width / 2, height * 0.58);
+      const playBg = this.add.graphics();
+      playBg.fillStyle(0x0ea5e9, 1);
+      playBg.fillRoundedRect(-btnW / 2, -btnH / 2, btnW, btnH, 24);
+
+      // Glass effect
+      const playHighlight = this.add.graphics();
+      playHighlight.fillStyle(0xffffff, 0.15);
+      playHighlight.fillRoundedRect(-btnW / 2, -btnH / 2, btnW, btnH * 0.45, { tl: 24, tr: 24, bl: 0, br: 0 });
+
+      const playText = this.add
+        .text(0, 0, '🔄 Main Lagi', {
+          fontFamily: '"Fredoka One", cursive',
+          fontSize: '16px',
+          color: '#ffffff',
+        })
+        .setOrigin(0.5);
+      playBtn.add([playBg, playHighlight, playText]);
+      playBtn.setSize(btnW, btnH);
+      playBtn.setInteractive({ useHandCursor: true });
+      playBtn.setScale(0).setAlpha(0);
+
+      this.tweens.add({
+        targets: playBtn,
+        scaleX: 1, scaleY: 1, alpha: 1,
+        duration: 350, ease: 'Back.easeOut',
+      });
+
+      // Hover pulse
+      this.tweens.add({
+        targets: playBtn,
+        scaleX: 1.04, scaleY: 1.04,
+        duration: 800,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut',
+        delay: 400,
+      });
+
+      playBtn.on('pointerdown', () => {
+        this.scene.restart({
+          category: this.category,
+          onScore: this._onScore,
+          onTranscriptUpdate: this._onTranscriptUpdate,
+        });
+      });
+
+      // Menu button
+      const menuBtn = this.add.container(width / 2, height * 0.70);
+      const menuBg = this.add.graphics();
+      menuBg.fillStyle(0x7c3aed, 1);
+      menuBg.fillRoundedRect(-btnW / 2, -btnH / 2, btnW, btnH, 24);
+
+      const menuHighlight = this.add.graphics();
+      menuHighlight.fillStyle(0xffffff, 0.15);
+      menuHighlight.fillRoundedRect(-btnW / 2, -btnH / 2, btnW, btnH * 0.45, { tl: 24, tr: 24, bl: 0, br: 0 });
+
+      const menuText = this.add
+        .text(0, 0, '🏠 Menu Utama', {
+          fontFamily: '"Fredoka One", cursive',
+          fontSize: '16px',
+          color: '#ffffff',
+        })
+        .setOrigin(0.5);
+      menuBtn.add([menuBg, menuHighlight, menuText]);
+      menuBtn.setSize(btnW, btnH);
+      menuBtn.setInteractive({ useHandCursor: true });
+      menuBtn.setScale(0).setAlpha(0);
+
+      this.tweens.add({
+        targets: menuBtn,
+        scaleX: 1, scaleY: 1, alpha: 1,
+        duration: 350, ease: 'Back.easeOut',
+        delay: 150,
+      });
+
+      menuBtn.on('pointerdown', () => {
+        this.game.destroy(true);
+      });
+    });
   }
 
   // ── Cleanup ─────────────────────────────────────────────────────────────────

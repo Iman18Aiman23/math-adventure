@@ -19,7 +19,7 @@ import GameScene from './scenes/GameScene';
  */
 export function createBMGame(parent, category, callbacks = {}) {
   const width = Math.min(parent.clientWidth || 480, 480);
-  const height = Math.min(parent.clientHeight || 600, 640);
+  const height = Math.min(parent.clientHeight || 640, 700);
 
   // Direct-launch scene that skips boot/menu and goes to GameScene
   class DirectLaunchScene extends Phaser.Scene {

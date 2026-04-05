@@ -1492,7 +1492,7 @@ button {
     margin-bottom: 0.2rem;
   }
   .bm-game-canvas {
-    min-height: 350px;
+    min-height: 420px;
     border-radius: 0.75rem;
   }
   .dev-overlay {
