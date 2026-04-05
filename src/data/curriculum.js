@@ -85,7 +85,7 @@ export const CURRICULUM = {
       id: 'bm_kvk_03',
       text: 'bun',
       audioPrompt: 'Sebut: bun',
-      validMatches: ['bun', 'ban', 'bone', 'boon', 'bung', 'bunny'],
+      validMatches: ['bun', 'ban', 'bone', 'boon', 'bung', 'bunny', 'pine', 'pan'],
       lang: 'ms-MY',
       category: 'bm_kvk',
     },
@@ -101,7 +101,7 @@ export const CURRICULUM = {
       id: 'bm_kvk_05',
       text: 'bon',
       audioPrompt: 'Sebut: bon',
-      validMatches: ['bon', 'bone', 'born', 'bong', 'bond', 'bonn'],
+      validMatches: ['bon', 'bone', 'born', 'bong', 'bond', 'bonn', 'porn'],
       lang: 'ms-MY',
       category: 'bm_kvk',
     },
@@ -178,29 +178,29 @@ export const CURRICULUM = {
   // ─── Math 1–100 ─────────────────────────────────────────────────────────────
   math: (() => {
     const englishWords = [
-      'zero','one','two','three','four','five','six','seven','eight','nine','ten',
-      'eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen','twenty',
-      'twenty one','twenty two','twenty three','twenty four','twenty five','twenty six','twenty seven','twenty eight','twenty nine','thirty',
-      'thirty one','thirty two','thirty three','thirty four','thirty five','thirty six','thirty seven','thirty eight','thirty nine','forty',
-      'forty one','forty two','forty three','forty four','forty five','forty six','forty seven','forty eight','forty nine','fifty',
-      'fifty one','fifty two','fifty three','fifty four','fifty five','fifty six','fifty seven','fifty eight','fifty nine','sixty',
-      'sixty one','sixty two','sixty three','sixty four','sixty five','sixty six','sixty seven','sixty eight','sixty nine','seventy',
-      'seventy one','seventy two','seventy three','seventy four','seventy five','seventy six','seventy seven','seventy eight','seventy nine','eighty',
-      'eighty one','eighty two','eighty three','eighty four','eighty five','eighty six','eighty seven','eighty eight','eighty nine','ninety',
-      'ninety one','ninety two','ninety three','ninety four','ninety five','ninety six','ninety seven','ninety eight','ninety nine','one hundred',
+      'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
+      'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty',
+      'twenty one', 'twenty two', 'twenty three', 'twenty four', 'twenty five', 'twenty six', 'twenty seven', 'twenty eight', 'twenty nine', 'thirty',
+      'thirty one', 'thirty two', 'thirty three', 'thirty four', 'thirty five', 'thirty six', 'thirty seven', 'thirty eight', 'thirty nine', 'forty',
+      'forty one', 'forty two', 'forty three', 'forty four', 'forty five', 'forty six', 'forty seven', 'forty eight', 'forty nine', 'fifty',
+      'fifty one', 'fifty two', 'fifty three', 'fifty four', 'fifty five', 'fifty six', 'fifty seven', 'fifty eight', 'fifty nine', 'sixty',
+      'sixty one', 'sixty two', 'sixty three', 'sixty four', 'sixty five', 'sixty six', 'sixty seven', 'sixty eight', 'sixty nine', 'seventy',
+      'seventy one', 'seventy two', 'seventy three', 'seventy four', 'seventy five', 'seventy six', 'seventy seven', 'seventy eight', 'seventy nine', 'eighty',
+      'eighty one', 'eighty two', 'eighty three', 'eighty four', 'eighty five', 'eighty six', 'eighty seven', 'eighty eight', 'eighty nine', 'ninety',
+      'ninety one', 'ninety two', 'ninety three', 'ninety four', 'ninety five', 'ninety six', 'ninety seven', 'ninety eight', 'ninety nine', 'one hundred',
     ];
 
     const malayWords = [
-      'kosong','satu','dua','tiga','empat','lima','enam','tujuh','lapan','sembilan','sepuluh',
-      'sebelas','dua belas','tiga belas','empat belas','lima belas','enam belas','tujuh belas','lapan belas','sembilan belas','dua puluh',
-      'dua puluh satu','dua puluh dua','dua puluh tiga','dua puluh empat','dua puluh lima','dua puluh enam','dua puluh tujuh','dua puluh lapan','dua puluh sembilan','tiga puluh',
-      'tiga puluh satu','tiga puluh dua','tiga puluh tiga','tiga puluh empat','tiga puluh lima','tiga puluh enam','tiga puluh tujuh','tiga puluh lapan','tiga puluh sembilan','empat puluh',
-      'empat puluh satu','empat puluh dua','empat puluh tiga','empat puluh empat','empat puluh lima','empat puluh enam','empat puluh tujuh','empat puluh lapan','empat puluh sembilan','lima puluh',
-      'lima puluh satu','lima puluh dua','lima puluh tiga','lima puluh empat','lima puluh lima','lima puluh enam','lima puluh tujuh','lima puluh lapan','lima puluh sembilan','enam puluh',
-      'enam puluh satu','enam puluh dua','enam puluh tiga','enam puluh empat','enam puluh lima','enam puluh enam','enam puluh tujuh','enam puluh lapan','enam puluh sembilan','tujuh puluh',
-      'tujuh puluh satu','tujuh puluh dua','tujuh puluh tiga','tujuh puluh empat','tujuh puluh lima','tujuh puluh enam','tujuh puluh tujuh','tujuh puluh lapan','tujuh puluh sembilan','lapan puluh',
-      'lapan puluh satu','lapan puluh dua','lapan puluh tiga','lapan puluh empat','lapan puluh lima','lapan puluh enam','lapan puluh tujuh','lapan puluh lapan','lapan puluh sembilan','sembilan puluh',
-      'sembilan puluh satu','sembilan puluh dua','sembilan puluh tiga','sembilan puluh empat','sembilan puluh lima','sembilan puluh enam','sembilan puluh tujuh','sembilan puluh lapan','sembilan puluh sembilan','seratus',
+      'kosong', 'satu', 'dua', 'tiga', 'empat', 'lima', 'enam', 'tujuh', 'lapan', 'sembilan', 'sepuluh',
+      'sebelas', 'dua belas', 'tiga belas', 'empat belas', 'lima belas', 'enam belas', 'tujuh belas', 'lapan belas', 'sembilan belas', 'dua puluh',
+      'dua puluh satu', 'dua puluh dua', 'dua puluh tiga', 'dua puluh empat', 'dua puluh lima', 'dua puluh enam', 'dua puluh tujuh', 'dua puluh lapan', 'dua puluh sembilan', 'tiga puluh',
+      'tiga puluh satu', 'tiga puluh dua', 'tiga puluh tiga', 'tiga puluh empat', 'tiga puluh lima', 'tiga puluh enam', 'tiga puluh tujuh', 'tiga puluh lapan', 'tiga puluh sembilan', 'empat puluh',
+      'empat puluh satu', 'empat puluh dua', 'empat puluh tiga', 'empat puluh empat', 'empat puluh lima', 'empat puluh enam', 'empat puluh tujuh', 'empat puluh lapan', 'empat puluh sembilan', 'lima puluh',
+      'lima puluh satu', 'lima puluh dua', 'lima puluh tiga', 'lima puluh empat', 'lima puluh lima', 'lima puluh enam', 'lima puluh tujuh', 'lima puluh lapan', 'lima puluh sembilan', 'enam puluh',
+      'enam puluh satu', 'enam puluh dua', 'enam puluh tiga', 'enam puluh empat', 'enam puluh lima', 'enam puluh enam', 'enam puluh tujuh', 'enam puluh lapan', 'enam puluh sembilan', 'tujuh puluh',
+      'tujuh puluh satu', 'tujuh puluh dua', 'tujuh puluh tiga', 'tujuh puluh empat', 'tujuh puluh lima', 'tujuh puluh enam', 'tujuh puluh tujuh', 'tujuh puluh lapan', 'tujuh puluh sembilan', 'lapan puluh',
+      'lapan puluh satu', 'lapan puluh dua', 'lapan puluh tiga', 'lapan puluh empat', 'lapan puluh lima', 'lapan puluh enam', 'lapan puluh tujuh', 'lapan puluh lapan', 'lapan puluh sembilan', 'sembilan puluh',
+      'sembilan puluh satu', 'sembilan puluh dua', 'sembilan puluh tiga', 'sembilan puluh empat', 'sembilan puluh lima', 'sembilan puluh enam', 'sembilan puluh tujuh', 'sembilan puluh lapan', 'sembilan puluh sembilan', 'seratus',
     ];
 
     // Special mishearings for common problem numbers
@@ -365,7 +365,7 @@ function _getPhoneticHelper() {
       _phoneticHelperCache = window.__PhoneticHelper;
       return _phoneticHelperCache;
     }
-  } catch (_) {}
+  } catch (_) { }
   return null;
 }
 
