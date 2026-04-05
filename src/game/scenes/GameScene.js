@@ -67,39 +67,24 @@ export default class GameScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor(0xf0f9ff);
 
     // ─── UI Elements ────────────────────────────────────────────────────────────
-    // Back button
-    const backBtn = this.add
-      .text(16, this._layout.headerY, '← Back', {
-        fontFamily: '"Fredoka One", cursive',
+    // (Back button removed)
+
+    // Streak display (far right)
+    this.streakText = this.add
+      .text(width - 16, this._layout.headerY, '🔥 0', {
+        fontFamily: '"Nunito", sans-serif',
         fontSize: isSmallScreen ? '12px' : '14px',
-        color: '#f43f5e',
-        backgroundColor: 'rgba(244,63,94,0.1)',
-        padding: { x: 8, y: 5 },
-      })
-      .setInteractive({ useHandCursor: true });
-
-    backBtn.on('pointerdown', () => {
-      SpeechManager.stop();
-      SpeechManager.stopSpeaking();
-      this.game.destroy(true);
-    });
-
-    // Score display
-    this.scoreText = this.add
-      .text(width - 16, this._layout.headerY, '⭐ 0', {
-        fontFamily: '"Fredoka One", cursive',
-        fontSize: isSmallScreen ? '14px' : '16px',
-        color: '#f59e0b',
+        color: '#ef4444',
+        fontStyle: 'bold',
       })
       .setOrigin(1, 0);
 
-    // Streak display
-    this.streakText = this.add
-      .text(width - 16, this._layout.headerY + 22, '🔥 0', {
-        fontFamily: '"Nunito", sans-serif',
-        fontSize: isSmallScreen ? '11px' : '13px',
-        color: '#ef4444',
-        fontStyle: 'bold',
+    // Score display (to the left of streak)
+    this.scoreText = this.add
+      .text(width - (isSmallScreen ? 60 : 70), this._layout.headerY, '⭐ 0', {
+        fontFamily: '"Fredoka One", cursive',
+        fontSize: isSmallScreen ? '13px' : '15px',
+        color: '#f59e0b',
       })
       .setOrigin(1, 0);
 
