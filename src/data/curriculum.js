@@ -255,13 +255,125 @@ export function getShuffled(categoryKey) {
 }
 
 /**
- * The "Xero" Fix — fuzzy match checker.
- * Uses .some() against validMatches instead of strict equality.
+ * The "Phonetic Engine" — Smart match checker.
+ *
+ * Uses PhoneticHelper's 5-stage pipeline:
+ *   1. Direct match (heard === target)
+ *   2. validMatches check (curriculum-defined mishearings)
+ *   3. Phonetic bridge (consonant swaps, hallucination map)
+ *   4. Substring/fuzzy containment
+ *   5. Word-level phonetic bridge
+ *
+ * Also applies confidence gating (0.45 desktop, 0.30 mobile).
+ *
+ * @param {object} item — { text, validMatches }
+ * @param {string} transcript — raw AI transcript
+ * @param {number} confidence — 0.0–1.0 from speech API (optional)
+ * @param {boolean} isMobile — mobile device flag (optional)
+ * @returns {boolean} — true if matched
  */
-export function checkSpeechMatch(item, transcript) {
-  const clean = transcript.toLowerCase().trim();
-  return item.validMatches.some(v => {
-    const target = v.toLowerCase();
-    return clean === target || clean.includes(target) || target.includes(clean);
-  });
+export function checkSpeechMatch(item, transcript, confidence = 1.0, isMobile = false) {
+  // Lazy-import PhoneticHelper to avoid circular dependencies
+  // since PhoneticHelper doesn't import curriculum
+  const result = checkSpeechMatchDetailed(item, transcript, confidence, isMobile);
+  return result.matched;
+}
+
+/**
+ * Detailed version that returns the match method for debugging.
+ * Used by DevOverlay to show how a match was found.
+ *
+ * @returns {{ matched: boolean, method: string }}
+ */
+export function checkSpeechMatchDetailed(item, transcript, confidence = 1.0, isMobile = false) {
+  if (!transcript || !item) {
+    return { matched: false, method: 'none' };
+  }
+
+  const heard = transcript.toLowerCase().trim();
+  const target = item.text.toLowerCase().trim();
+
+  // ── Confidence gate ──────────────────────────────────────────────────────
+  const minConfidence = isMobile ? 0.30 : 0.45;
+  if (confidence > 0 && confidence < minConfidence) {
+    return { matched: false, method: 'low-confidence' };
+  }
+
+  // ── Stage 1: Direct match ────────────────────────────────────────────────
+  if (heard === target) {
+    return { matched: true, method: 'direct' };
+  }
+
+  // ── Stage 2: validMatches (curriculum-defined mishearings) ───────────────
+  if (item.validMatches) {
+    for (const v of item.validMatches) {
+      const vm = v.toLowerCase();
+      if (heard === vm) {
+        return { matched: true, method: 'validMatch' };
+      }
+    }
+  }
+
+  // ── Stage 3: Phonetic bridge (PhoneticHelper global map) ─────────────────
+  // Dynamic import to avoid circular dependency
+  try {
+    // We import synchronously since PhoneticHelper is a plain object
+    const PhoneticHelper = _getPhoneticHelper();
+    if (PhoneticHelper) {
+      const resolved = PhoneticHelper.resolve(heard);
+      if (resolved && resolved === target) {
+        return { matched: true, method: 'phonetic' };
+      }
+
+      // Check each word in the transcript against the phonetic bridge
+      const words = heard.split(/\s+/);
+      for (const word of words) {
+        const wordResolved = PhoneticHelper.resolve(word);
+        if (wordResolved && wordResolved === target) {
+          return { matched: true, method: 'phonetic-word' };
+        }
+      }
+    }
+  } catch (_) {
+    // PhoneticHelper not loaded yet, skip this stage
+  }
+
+  // ── Stage 4: Substring / fuzzy containment ──────────────────────────────
+  if (item.validMatches) {
+    for (const v of item.validMatches) {
+      const vm = v.toLowerCase();
+      if (heard.length > 1 && vm.length > 1) {
+        if (heard.includes(vm) || vm.includes(heard)) {
+          return { matched: true, method: 'substring' };
+        }
+      }
+    }
+  }
+
+  return { matched: false, method: 'none' };
+}
+
+// ── PhoneticHelper lazy loader ────────────────────────────────────────────────
+let _phoneticHelperCache = null;
+
+function _getPhoneticHelper() {
+  if (_phoneticHelperCache) return _phoneticHelperCache;
+  try {
+    // Dynamic require won't work in ESM, so we use a global reference
+    // that gets set when PhoneticHelper is imported elsewhere
+    if (window.__PhoneticHelper) {
+      _phoneticHelperCache = window.__PhoneticHelper;
+      return _phoneticHelperCache;
+    }
+  } catch (_) {}
+  return null;
+}
+
+/**
+ * Register PhoneticHelper globally so curriculum.js can access it
+ * without circular imports. Called from any module that imports PhoneticHelper.
+ */
+export function registerPhoneticHelper(helper) {
+  window.__PhoneticHelper = helper;
+  _phoneticHelperCache = helper;
 }

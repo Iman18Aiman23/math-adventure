@@ -8,11 +8,18 @@
  *  - Visual feedback: pulsing ear, mascot bounce/shake, particles
  *  - Level-complete "juice": applause SFX + confetti celebration
  *  - Responsive layout for small phone screens
+ *  - Phonetic Engine: 5-stage matching with consonant swap bridge
+ *  - 300ms mic gate: prevents early speech capture
+ *  - JSGF Grammar: curriculum word prioritization
  */
 import Phaser from 'phaser';
 import MascotSprite from '../sprites/MascotSprite';
-import { CURRICULUM, getShuffled, checkSpeechMatch } from '../../data/curriculum';
+import { CURRICULUM, getShuffled, checkSpeechMatch, checkSpeechMatchDetailed, registerPhoneticHelper } from '../../data/curriculum';
 import SpeechManager from '../../services/SpeechManager';
+import PhoneticHelper from '../../utils/PhoneticHelper';
+
+// Register PhoneticHelper globally so curriculum.js can access it
+registerPhoneticHelper(PhoneticHelper);
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -151,6 +158,16 @@ export default class GameScene extends Phaser.Scene {
       })
       .setOrigin(0.5, 0);
 
+    // "Get Ready" indicator — shown during the 300ms gate
+    this.getReadyText = this.add
+      .text(width / 2, earY, '⏳ Get Ready...', {
+        fontFamily: '"Fredoka One", cursive',
+        fontSize: '14px',
+        color: '#94a3b8',
+      })
+      .setOrigin(0.5)
+      .setVisible(false);
+
     this._setMicVisible(false);
 
     // ─── Tap-to-Speak Button (Mobile) ───────────────────────────────────────────
@@ -245,6 +262,10 @@ export default class GameScene extends Phaser.Scene {
 
     // ─── Set up transcript listener for DevOverlay ──────────────────────────────
     SpeechManager.onTranscript((data) => {
+      // Update recording indicator when mic becomes active
+      if (data && data.micActive === true) {
+        this._showRecordingState();
+      }
       this._onTranscriptUpdate(data);
     });
 
@@ -282,7 +303,15 @@ export default class GameScene extends Phaser.Scene {
       (o) => o.setVisible(val)
     );
 
+    // Always hide getReadyText when we toggle mic visibility
+    if (this.getReadyText) this.getReadyText.setVisible(false);
+
     if (val) {
+      // Default to 'Listening...' state — will switch to 'Recording' on audiostart
+      this.micLabel.setText('Listening...');
+      this.micLabel.setColor('#0ea5e9');
+      this.earBg.setFillStyle(0x0ea5e9, 1);
+
       this.tweens.add({
         targets: this.pulseRing1,
         scaleX: 1.8, scaleY: 1.8, alpha: 0,
@@ -299,6 +328,28 @@ export default class GameScene extends Phaser.Scene {
       this.pulseRing1.setScale(1).setAlpha(0.15);
       this.pulseRing2.setScale(1).setAlpha(0.08);
     }
+  }
+
+  /**
+   * Switch mic indicator to '🔴 Recording' state.
+   * Called when onaudiostart fires (mic is physically capturing).
+   */
+  _showRecordingState() {
+    if (!this.micLabel || !this.micLabel.visible) return;
+    this.micLabel.setText('🔴 Recording');
+    this.micLabel.setColor('#ef4444');
+    this.earBg.setFillStyle(0xef4444, 1);
+    this.earText.setText('🎤');
+
+    // Extra pulse for recording state
+    this.tweens.add({
+      targets: this.earBg,
+      scaleX: 1.15, scaleY: 1.15,
+      duration: 400,
+      yoyo: true,
+      repeat: 2,
+      ease: 'Sine.easeInOut',
+    });
   }
 
   _drawProgress() {
@@ -550,11 +601,27 @@ export default class GameScene extends Phaser.Scene {
       await SpeechManager.speak(item.audioPrompt, item.lang);
     }
 
-    // After TTS finishes — begin listening
-    // MOBILE FIX: Use a longer delay on mobile to let audio pipeline settle
-    const postTTSDelay = this._isMobile ? 600 : 300;
-    this.time.delayedCall(postTTSDelay, () => {
+    // ─── 300ms MIC GATE ────────────────────────────────────────────────────
+    // Children often speak the moment they see a prompt, but the mic takes
+    // time to open. We add a visual "Get Ready..." state before recording.
+    const gateDelay = this._isMobile ? 600 : 300;
+
+    // Show "Get Ready" indicator during the gate
+    if (!this._isMobile) {
+      this.getReadyText.setVisible(true);
+      this.getReadyText.setAlpha(0);
+      this.tweens.add({
+        targets: this.getReadyText,
+        alpha: 1,
+        duration: 200,
+      });
+    }
+
+    this.time.delayedCall(gateDelay, () => {
       if (!this.scene.isActive()) return;
+
+      // Hide "Get Ready" indicator
+      this.getReadyText.setVisible(false);
 
       if (this._isMobile) {
         // MOBILE: Show "Tap to Speak" button (requires user gesture)
@@ -566,7 +633,7 @@ export default class GameScene extends Phaser.Scene {
           duration: 300, ease: 'Back.easeOut',
         });
       } else {
-        // DESKTOP: Auto-start listening
+        // DESKTOP: Auto-start listening (gate complete)
         this._startListening(item);
       }
     });
@@ -576,20 +643,67 @@ export default class GameScene extends Phaser.Scene {
     this._setMicVisible(true);
     this.tapBtnContainer.setVisible(false);
 
+    // Reset ear icon for new listening session
+    this.earText.setText('👂');
+
     // MOBILE FIX: Explicitly cancel TTS before starting mic
     SpeechManager.stopSpeaking();
 
+    // Build grammar words from the current item's validMatches + target
+    const grammarWords = [
+      item.text,
+      ...(item.validMatches || []),
+    ];
+
+    // Send target to DevOverlay
+    this._onTranscriptUpdate({
+      targetWord: item.text,
+      transcript: '',
+      confidence: 0,
+      matchMethod: '',
+      lang: item.lang,
+    });
+
     SpeechManager.listen(
       item.lang,
-      // onResult
-      (transcript, confidence) => {
+      // onResult — now receives allAlternatives as 3rd arg
+      (transcript, confidence, allAlternatives) => {
         this._setMicVisible(false);
-        const isCorrect = checkSpeechMatch(item, transcript);
 
-        if (isCorrect) {
-          this._handleCorrect(item, transcript);
+        // Use the Phonetic Engine with confidence gating
+        const matchResult = checkSpeechMatchDetailed(
+          item, transcript, confidence, this._isMobile
+        );
+
+        // Also check all alternatives from the speech API
+        // If primary transcript didn't match, maybe an alternative did
+        if (!matchResult.matched && allAlternatives && allAlternatives.length > 1) {
+          for (const alt of allAlternatives) {
+            const altResult = checkSpeechMatchDetailed(
+              item, alt.transcript, alt.confidence, this._isMobile
+            );
+            if (altResult.matched) {
+              matchResult.matched = true;
+              matchResult.method = altResult.method + '-alt';
+              break;
+            }
+          }
+        }
+
+        // Update DevOverlay with match details
+        this._onTranscriptUpdate({
+          targetWord: item.text,
+          transcript,
+          confidence,
+          matchMethod: matchResult.method,
+          matched: matchResult.matched,
+          lang: item.lang,
+        });
+
+        if (matchResult.matched) {
+          this._handleCorrect(item, transcript, matchResult.method);
         } else {
-          this._handleWrong(item, transcript);
+          this._handleWrong(item, transcript, matchResult.method);
         }
       },
       // onError
@@ -598,7 +712,6 @@ export default class GameScene extends Phaser.Scene {
         console.warn('[GameScene] speech error:', error);
 
         if (this.attempts < 3) {
-          // Show tap button on mobile, auto-retry on desktop
           if (this._isMobile) {
             this.feedbackText
               .setText('🎤 Tap again to try')
@@ -611,7 +724,6 @@ export default class GameScene extends Phaser.Scene {
             });
           }
         } else {
-          // After max retries, skip the item
           this.feedbackText
             .setText(`Jawapan: ${item.text}`)
             .setColor('#7c3aed')
@@ -622,12 +734,14 @@ export default class GameScene extends Phaser.Scene {
           });
         }
       },
-      // MOBILE FIX: More retries on mobile (handled by SpeechManager default now)
-      { retries: this._isMobile ? 3 : 2 }
+      {
+        retries: this._isMobile ? 3 : 2,
+        grammarWords,  // JSGF grammar injection
+      }
     );
   }
 
-  _handleCorrect(item, transcript) {
+  _handleCorrect(item, transcript, method = '') {
     this.score++;
     this.streak++;
     this.attempts = 0;
@@ -635,7 +749,7 @@ export default class GameScene extends Phaser.Scene {
     this.scoreText.setText(`⭐ ${this.score}`);
     this.streakText.setText(`🔥 ${this.streak}`);
 
-    // Feedback
+    // Feedback — show match method in dev-friendly format
     this.feedbackText
       .setText('✅ Betul! / Correct!')
       .setColor('#10b981')
@@ -648,14 +762,14 @@ export default class GameScene extends Phaser.Scene {
       duration: 300, ease: 'Back.easeOut',
     });
 
-    // Mascot celebration
+    // Kancilik celebrate! (mascot celebration)
     this.mascot.bounce();
 
     // Particles from target text
     this._emitParticles(this.targetText.x, this.targetText.y);
 
     // Notify React (for XP)
-    this._onScore({ correct: true, item, transcript, score: this.score, streak: this.streak });
+    this._onScore({ correct: true, item, transcript, score: this.score, streak: this.streak, method });
 
     // Card flash green
     this._drawCard(0xd1fae5, 0x10b981);
@@ -667,7 +781,7 @@ export default class GameScene extends Phaser.Scene {
     });
   }
 
-  _handleWrong(item, transcript) {
+  _handleWrong(item, transcript, method = '') {
     this.streak = 0;
     this.attempts++;
     this.streakText.setText('🔥 0');
@@ -685,14 +799,14 @@ export default class GameScene extends Phaser.Scene {
       duration: 250,
     });
 
-    // Mascot shake
+    // Kancilik encourage! (mascot sad shake)
     this.mascot.shake();
 
     // Card flash red
     this._drawCard(0xffe4e6, 0xf43f5e);
 
     // Notify React
-    this._onScore({ correct: false, item, transcript, score: this.score, streak: this.streak });
+    this._onScore({ correct: false, item, transcript, score: this.score, streak: this.streak, method });
 
     // Retry after delay
     this.time.delayedCall(1500, () => {
@@ -708,11 +822,10 @@ export default class GameScene extends Phaser.Scene {
       } else {
         // Retry same item
         if (this._isMobile) {
-          // Show tap button again
           this.tapBtnContainer.setVisible(true);
           this.feedbackText.setText('🎤 Tap to try again').setColor('#0ea5e9').setAlpha(1);
         } else {
-          this._showItem(); // Auto-retry on desktop
+          this._showItem();
         }
       }
     });

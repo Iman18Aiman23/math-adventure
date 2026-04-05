@@ -11,6 +11,7 @@
  *  - TTS cancelled before mic start to avoid audio pipeline conflicts
  *  - Startup delay on mobile to let audio settle after TTS
  *  - audiostart tracking for better silence detection
+ *  - JSGF Grammar injection for curriculum word prioritization
  */
 
 class SpeechManagerClass {
@@ -28,6 +29,10 @@ class SpeechManagerClass {
     if (SpeechRecognition) {
       this._RecognitionClass = SpeechRecognition;
     }
+
+    // JSGF Grammar support (Chrome/Chromium only)
+    this._GrammarListClass =
+      window.SpeechGrammarList || window.webkitSpeechGrammarList || null;
 
     // Detect mobile
     this._isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
@@ -66,6 +71,20 @@ class SpeechManagerClass {
    */
   onTranscript(cb) {
     this._onTranscript = cb;
+  }
+
+  /**
+   * Build a JSGF grammar string from an array of words.
+   * The grammar tells the speech engine to prioritize these words.
+   * @param {string[]} words — curriculum words to prioritize
+   * @returns {string} — JSGF grammar string
+   */
+  _buildGrammar(words) {
+    if (!words || words.length === 0) return null;
+    // Deduplicate and clean
+    const unique = [...new Set(words.map((w) => w.toLowerCase().trim()).filter(Boolean))];
+    // JSGF format: #JSGF V1.0; grammar curriculum; public <target> = word1 | word2 | ...;
+    return `#JSGF V1.0; grammar curriculum; public <target> = ${unique.join(' | ')} ;`;
   }
 
   /**
@@ -156,10 +175,11 @@ class SpeechManagerClass {
    * or after requestMicPermission() has been granted.
    *
    * @param {string} lang – 'ms-MY' or 'en-US'
-   * @param {(transcript: string, confidence: number) => void} onResult
+   * @param {(transcript: string, confidence: number, allAlternatives: Array) => void} onResult
    * @param {(error: string) => void} onError
    * @param {object} options
-   * @param {number} options.retries – auto-retry count on no-speech/silent-end (default 2)
+   * @param {number} options.retries – auto-retry count on no-speech/silent-end
+   * @param {string[]} options.grammarWords – words to inject into JSGF grammar
    */
   listen(lang = 'en-US', onResult, onError, options = {}) {
     if (!this._RecognitionClass) {
@@ -170,8 +190,6 @@ class SpeechManagerClass {
     this.stop(); // Stop any previous session
 
     // MOBILE FIX: Cancel any ongoing TTS to free the audio pipeline
-    // On mobile, TTS and mic share the same audio hardware — if TTS
-    // is still finishing, the mic will capture silence or fail.
     if (this._synth) {
       this._synth.cancel();
     }
@@ -179,7 +197,23 @@ class SpeechManagerClass {
     const maxRetries = options.retries ?? (this._isMobile ? 3 : 2);
     let retriesLeft = maxRetries;
     this._gotResult = false;
-    this._audioStarted = false; // Track if mic actually started capturing
+    this._audioStarted = false;
+
+    // Pre-build JSGF grammar if words provided and browser supports it
+    const grammarWords = options.grammarWords || null;
+    let grammarList = null;
+    if (grammarWords && this._GrammarListClass) {
+      try {
+        const grammarStr = this._buildGrammar(grammarWords);
+        if (grammarStr) {
+          grammarList = new this._GrammarListClass();
+          grammarList.addFromString(grammarStr, 1.0); // weight 1.0 = highest priority
+          console.log(`[SpeechManager] JSGF grammar loaded: ${grammarWords.length} words`);
+        }
+      } catch (e) {
+        console.warn('[SpeechManager] JSGF grammar not supported:', e.message);
+      }
+    }
 
     const startRecognition = () => {
       const recognition = new this._RecognitionClass();
@@ -189,9 +223,27 @@ class SpeechManagerClass {
       recognition.interimResults = !this._isMobile;
       recognition.maxAlternatives = 5;
 
+      // Inject JSGF grammar to bias recognition toward curriculum words
+      if (grammarList) {
+        try {
+          recognition.grammars = grammarList;
+        } catch (e) {
+          // Silently fail — grammars property may not be settable
+        }
+      }
+
       // MOBILE FIX: Track when mic actually starts capturing audio
       recognition.onaudiostart = () => {
         this._audioStarted = true;
+        // Notify listeners that mic is physically active
+        this._onTranscript?.({
+          micActive: true,
+          transcript: '',
+          confidence: 0,
+          lang,
+          isFinal: false,
+          alternatives: '',
+        });
         console.log('[SpeechManager] Audio capture started');
       };
 
@@ -203,12 +255,17 @@ class SpeechManagerClass {
         this._gotResult = true;
         let bestTranscript = '';
         let bestConfidence = 0;
+        const allAlternatives = [];
 
         for (let i = 0; i < event.results.length; i++) {
           const result = event.results[i];
           // Check ALL alternatives for the best match
           for (let j = 0; j < result.length; j++) {
             const alt = result[j];
+            allAlternatives.push({
+              transcript: alt.transcript,
+              confidence: alt.confidence,
+            });
             if (alt.confidence > bestConfidence || !bestTranscript) {
               bestTranscript = alt.transcript;
               bestConfidence = alt.confidence;
@@ -216,33 +273,31 @@ class SpeechManagerClass {
           }
 
           // Notify DevOverlay with ALL alternatives for debugging
-          const allAlts = [];
-          for (let j = 0; j < result.length; j++) {
-            allAlts.push(`${result[j].transcript} (${(result[j].confidence * 100).toFixed(0)}%)`);
-          }
+          const allAltsStr = allAlternatives
+            .map((a) => `${a.transcript} (${(a.confidence * 100).toFixed(0)}%)`)
+            .join(' | ');
 
           this._onTranscript?.({
             transcript: bestTranscript,
             confidence: bestConfidence,
             lang,
             isFinal: result.isFinal,
-            alternatives: allAlts.join(' | '),
+            alternatives: allAltsStr,
+            micActive: false,
           });
 
-          // MOBILE FIX: On some mobile browsers, the first result IS final
-          // but was being skipped. Always process final results.
           if (result.isFinal) {
             this._listening = false;
-            onResult?.(bestTranscript, bestConfidence);
-            return; // Done — don't process more
+            onResult?.(bestTranscript, bestConfidence, allAlternatives);
+            return;
           }
         }
 
         // MOBILE FIX: If no results were isFinal but we got results,
-        // use the best transcript anyway (some mobile browsers never set isFinal)
+        // use the best transcript anyway
         if (this._isMobile && bestTranscript && event.results.length > 0) {
           this._listening = false;
-          onResult?.(bestTranscript, bestConfidence);
+          onResult?.(bestTranscript, bestConfidence, allAlternatives);
         }
       };
 
@@ -250,20 +305,17 @@ class SpeechManagerClass {
         console.warn('[SpeechManager] recognition error:', event.error);
         this._listening = false;
 
-        // On mobile, 'no-speech' and 'audio-capture' are common transient errors
         if (
           (event.error === 'no-speech' || event.error === 'audio-capture' || event.error === 'network') &&
           retriesLeft > 0
         ) {
           retriesLeft--;
           console.log(`[SpeechManager] Auto-retry (${maxRetries - retriesLeft}/${maxRetries})...`);
-          // Longer delay on mobile to let audio pipeline recover
           const delay = this._isMobile ? 500 : 300;
           setTimeout(() => startRecognition(), delay);
           return;
         }
 
-        // 'aborted' = we manually stopped, don't report to caller
         if (event.error === 'aborted') return;
 
         onError?.(event.error);
@@ -272,11 +324,11 @@ class SpeechManagerClass {
       recognition.onend = () => {
         this._listening = false;
 
-        // CRITICAL MOBILE FIX: If recognition ended without ANY result
-        // (common on Android/iOS), auto-retry
+        // Notify that mic is no longer active
+        this._onTranscript?.({ micActive: false });
+
         if (!this._gotResult && retriesLeft > 0) {
           retriesLeft--;
-          // If audio never even started, use a longer delay
           const delay = this._audioStarted ? 400 : 600;
           console.log(`[SpeechManager] Silent end (audioStarted=${this._audioStarted}), auto-retry (${maxRetries - retriesLeft}/${maxRetries})...`);
           this._gotResult = false;
@@ -285,7 +337,6 @@ class SpeechManagerClass {
           return;
         }
 
-        // If still no result after all retries, call onError
         if (!this._gotResult) {
           onError?.('no-speech');
         }
@@ -296,15 +347,13 @@ class SpeechManagerClass {
       this._gotResult = false;
       this._audioStarted = false;
 
-      // MOBILE FIX: Brief delay before starting recognition on mobile
-      // to let the audio pipeline fully settle after TTS cancellation
+      // Brief delay before starting recognition on mobile
       const startDelay = this._isMobile ? 250 : 0;
       setTimeout(() => {
         try {
           recognition.start();
         } catch (e) {
           this._listening = false;
-          // "already started" happens on some mobile browsers
           if (e.message?.includes('already started')) {
             this.stop();
             setTimeout(() => startRecognition(), 300);
