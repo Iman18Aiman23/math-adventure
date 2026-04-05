@@ -156,25 +156,41 @@ export default class GameScene extends Phaser.Scene {
     });
 
     // ─── Play Controls (Repeat & Skip) ──────────────────────────────────────
-    const auxBtnSize = 40;
+    const auxBtnR = 26; // Radius for the new play buttons
+    const btnOffset = 100; // Distance from center
     
-    // Repeat Button (Left side)
-    this.repeatBtn = this.add.container(width / 2 - 95, earY);
-    const repBg = this.add.circle(0, 0, auxBtnSize / 2, 0xffffff);
-    repBg.setStrokeStyle(2, 0xe2e8f0);
-    const repIcon = this.add.text(0, 0, '🔄', { fontSize: '20px' }).setOrigin(0.5);
-    this.repeatBtn.add([repBg, repIcon]);
-    this.repeatBtn.setSize(auxBtnSize, auxBtnSize).setInteractive({ useHandCursor: true });
+    // Repeat Button (Left side) - Playful Orange
+    this.repeatBtn = this.add.container(width / 2 - btnOffset, earY);
+    const repShadow = this.add.circle(0, 4, auxBtnR, 0xc2410c);
+    const repBg = this.add.circle(0, 0, auxBtnR, 0xf97316);
+    const repHighlight = this.add.graphics();
+    repHighlight.fillStyle(0xffffff, 0.3);
+    repHighlight.fillEllipse(0, -auxBtnR * 0.45, auxBtnR * 1.3, auxBtnR * 0.7);
+    const repIcon = this.add.graphics({ x: 0, y: -1 });
+    repIcon.lineStyle(4, 0xffffff, 1);
+    repIcon.beginPath();
+    repIcon.arc(0, 0, 10, Math.PI * 1.5 + 0.6, Math.PI * 1.5, false);
+    repIcon.strokePath();
+    repIcon.fillStyle(0xffffff, 1);
+    repIcon.fillTriangle(-4, -15, -4, -5, 5, -10);
+    this.repeatBtn.add([repShadow, repBg, repHighlight, repIcon]);
+    this.repeatBtn.setSize(auxBtnR * 2, auxBtnR * 2).setInteractive({ useHandCursor: true });
     this.repeatBtn.on('pointerdown', () => this._repeatPrompt());
     this.repeatBtn.setVisible(false);
 
-    // Skip Button (Right side)
-    this.skipBtn = this.add.container(width / 2 + 95, earY);
-    const skipBg = this.add.circle(0, 0, auxBtnSize / 2, 0xffffff);
-    skipBg.setStrokeStyle(2, 0xe2e8f0);
-    const skipIcon = this.add.text(0, 0, '⏭️', { fontSize: '20px' }).setOrigin(0.5);
-    this.skipBtn.add([skipBg, skipIcon]);
-    this.skipBtn.setSize(auxBtnSize, auxBtnSize).setInteractive({ useHandCursor: true });
+    // Skip Button (Right side) - Playful Rose
+    this.skipBtn = this.add.container(width / 2 + btnOffset, earY);
+    const skipShadow = this.add.circle(0, 4, auxBtnR, 0xbe123c);
+    const skipBg = this.add.circle(0, 0, auxBtnR, 0xf43f5e);
+    const skipHighlight = this.add.graphics();
+    skipHighlight.fillStyle(0xffffff, 0.3);
+    skipHighlight.fillEllipse(0, -auxBtnR * 0.45, auxBtnR * 1.3, auxBtnR * 0.7);
+    const skipIcon = this.add.graphics({ x: -1, y: -1 });
+    skipIcon.fillStyle(0xffffff, 1);
+    skipIcon.fillTriangle(-8, -8, -8, 8, 4, 0); // Triangle
+    skipIcon.fillRect(6, -8, 4, 16); // Bar
+    this.skipBtn.add([skipShadow, skipBg, skipHighlight, skipIcon]);
+    this.skipBtn.setSize(auxBtnR * 2, auxBtnR * 2).setInteractive({ useHandCursor: true });
     this.skipBtn.on('pointerdown', () => this._handleSkip());
     this.skipBtn.setVisible(false);
 
@@ -300,10 +316,11 @@ export default class GameScene extends Phaser.Scene {
   //  SVG ICON RENDERING
   // ═══════════════════════════════════════════════════════════════════════════
 
-  _renderIcon(iconKey) {
+  _renderIcon(iconKey, customColor = '#1e1b4b') {
     const { width } = this.scale;
     const size = this._layout.iconSize;
-    const texKey = `icon_${iconKey}_${size}`;
+    const colorId = customColor.replace('#', '');
+    const texKey = `icon_${iconKey}_${size}_${colorId}`;
 
     // Destroy previous icon sprite
     if (this.iconSprite) {
@@ -319,7 +336,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
     // Render SVG to off-screen canvas
-    const svgString = getIcon(iconKey, { size, color: '#1e1b4b' });
+    const svgString = getIcon(iconKey, { size, color: customColor });
     const canvas = document.createElement('canvas');
     canvas.width = size;
     canvas.height = size;
@@ -366,6 +383,40 @@ export default class GameScene extends Phaser.Scene {
       duration: 350, ease: 'Back.easeOut',
       onComplete: () => {
         // Floating animation
+        this.tweens.add({
+          targets: this.iconSprite,
+          y: this._layout.iconY + 10,
+          duration: 1500,
+          yoyo: true,
+          repeat: -1,
+          ease: 'Sine.easeInOut',
+        });
+      },
+    });
+  }
+
+  _renderText(text) {
+    const { width } = this.scale;
+    const size = this._layout.iconSize;
+    if (this.iconSprite) {
+      this.tweens.killTweensOf(this.iconSprite);
+      this.iconSprite.destroy();
+      this.iconSprite = null;
+    }
+
+    this.iconSprite = this.add.text(width / 2, this._layout.iconY, text, {
+      fontFamily: '"Fredoka One", cursive',
+      fontSize: `${Math.round(size * 0.7)}px`,
+      color: '#1e1b4b',
+      align: 'center'
+    }).setOrigin(0.5);
+
+    this.iconSprite.setScale(0.5).setAlpha(0);
+    this.tweens.add({
+      targets: this.iconSprite,
+      scaleX: 1, scaleY: 1, alpha: 1,
+      duration: 350, ease: 'Back.easeOut',
+      onComplete: () => {
         this.tweens.add({
           targets: this.iconSprite,
           y: this._layout.iconY + 10,
@@ -484,16 +535,31 @@ export default class GameScene extends Phaser.Scene {
     const item = this.items[this.currentIndex];
     this.attempts = 0;
 
-    // Render the SVG icon
-    this._renderIcon(item.icon);
+    // 1. Text or Icon logic
+    if (this.category === 'common_objects') {
+      // Use vibrant colors for the object icons
+      const colors = ['#0ea5e9', '#f43f5e', '#10b981', '#7c3aed', '#f59e0b', '#ec4899'];
+      const iconColor = colors[this.currentIndex % colors.length];
+      this._renderIcon(item.icon, iconColor);
+    } else {
+      const langData = item[this.currentLang];
+      const displayTxt = item.text || (langData && (langData.word || langData.syllable)) || '?';
+      this._renderText(displayTxt);
+    }
 
     // Update prompt for current language
     const langData = item[this.currentLang];
     this.promptText.setText(langData ? langData.prompt : '');
     this.feedbackText.setAlpha(0);
     this.tapBtnContainer.setVisible(false);
-    this.repeatBtn.setVisible(true);
-    this.skipBtn.setVisible(true);
+    this.repeatBtn.setVisible(true).setScale(0);
+    this.skipBtn.setVisible(true).setScale(0);
+    this.tweens.add({
+      targets: [this.repeatBtn, this.skipBtn],
+      scaleX: 1, scaleY: 1,
+      duration: 350,
+      ease: 'Back.easeOut'
+    });
     this._drawProgress();
     this._drawCard(0xffffff, 0x0ea5e9);
 
