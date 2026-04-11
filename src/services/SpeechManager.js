@@ -23,7 +23,25 @@ class SpeechManagerClass {
     this._micPermission = 'prompt'; // 'prompt' | 'granted' | 'denied'
     this._gotResult = false; // Track if we received any result before onend
 
+    // VAD & Silence tracking
+    this._audioCtx = null;
+    this._analyser = null;
+    this._micStream = null;
+    this._vadRafId = null;
+    this._lastSpeechTime = 0;
+    this._isSpeaking = false;
+    this._aggregateTranscript = '';
+    this._aggregateConfidence = 0;
+    this._aggregateAlternatives = [];
+    
     // Feature detection
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (AudioContextClass) {
+      try {
+        this._audioCtx = new AudioContextClass();
+      } catch (e) {}
+    }
+
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
@@ -95,6 +113,12 @@ class SpeechManagerClass {
    */
   async requestMicPermission() {
     try {
+      // iOS Fix: Resume AudioContext strictly inside user interaction
+      if (this._audioCtx && this._audioCtx.state === 'suspended') {
+        await this._audioCtx.resume();
+        console.log('[SpeechManager] AudioContext resumed via user gesture');
+      }
+
       // Check Permissions API first (Chrome/Edge)
       if (navigator.permissions) {
         try {
@@ -181,6 +205,80 @@ class SpeechManagerClass {
    * @param {number} options.retries – auto-retry count on no-speech/silent-end
    * @param {string[]} options.grammarWords – words to inject into JSGF grammar
    */
+  /**
+   * Start custom Voice Activity Detection to enforce trailing silence
+   */
+  async _startVAD(onFinalize) {
+    this._stopVAD();
+    try {
+      if (this._audioCtx && this._audioCtx.state === 'suspended') {
+        await this._audioCtx.resume();
+      }
+      this._micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      
+      if (!this._audioCtx) return; // Fallback if Web Audio not supported
+
+      const source = this._audioCtx.createMediaStreamSource(this._micStream);
+      this._analyser = this._audioCtx.createAnalyser();
+      this._analyser.fftSize = 256;
+      this._analyser.smoothingTimeConstant = 0.5;
+      source.connect(this._analyser);
+
+      const dataArray = new Uint8Array(this._analyser.frequencyBinCount);
+      const THRESHOLD = 10; // Volume threshold out of 255
+      const TRAILING_SILENCE_MS = 1800; // 1.8 seconds trailing silence config
+
+      this._isSpeaking = false;
+      this._lastSpeechTime = Date.now();
+
+      const monitorAudio = () => {
+        if (!this._listening) return;
+
+        this._analyser.getByteFrequencyData(dataArray);
+        let sum = 0;
+        for (let i = 0; i < dataArray.length; i++) {
+          sum += dataArray[i];
+        }
+        const average = sum / dataArray.length;
+
+        if (average > THRESHOLD) {
+          this._isSpeaking = true;
+          this._lastSpeechTime = Date.now();
+        } else if (this._isSpeaking) {
+          // Monitor trailing silence
+          if (Date.now() - this._lastSpeechTime > TRAILING_SILENCE_MS) {
+            console.log('[SpeechManager] VAD detected 1.8s silence. Manually finalizing.');
+            this._isSpeaking = false;
+            onFinalize();
+            return;
+          }
+        }
+
+        this._vadRafId = requestAnimationFrame(monitorAudio);
+      };
+      
+      monitorAudio();
+    } catch (e) {
+      console.warn('[SpeechManager] VAD initialization failed:', e.message);
+    }
+  }
+
+  _stopVAD() {
+    if (this._vadRafId) cancelAnimationFrame(this._vadRafId);
+    this._vadRafId = null;
+    if (this._micStream) {
+      this._micStream.getTracks().forEach(track => track.stop());
+      this._micStream = null;
+    }
+    if (this._analyser) {
+      try {
+        this._analyser.disconnect();
+      } catch(e) {}
+      this._analyser = null;
+    }
+    this._isSpeaking = false;
+  }
+
   listen(lang = 'en-US', onResult, onError, options = {}) {
     if (!this._RecognitionClass) {
       onError?.('Speech recognition not supported');
@@ -199,6 +297,36 @@ class SpeechManagerClass {
     this._gotResult = false;
     this._audioStarted = false;
 
+    // Reset aggregation
+    this._aggregateTranscript = '';
+    this._aggregateConfidence = 0;
+    this._aggregateAlternatives = [];
+    
+    // Establishing a persistent manual end state
+    let finalizeTriggered = false;
+    this._listening = true;
+
+    // VAD finalizing callback
+    const handleManualFinalize = () => {
+      if (finalizeTriggered) return;
+      finalizeTriggered = true;
+      this.stop(); // stop VAD and underlying recognition
+
+      // Commit whatever we aggregated
+      if (this._aggregateTranscript) {
+        onResult?.(
+          this._aggregateTranscript.trim(),
+          this._aggregateConfidence,
+          this._aggregateAlternatives
+        );
+      } else {
+        onError?.('no-speech');
+      }
+    };
+
+    // Initialize custom VAD for iOS / continuous detection
+    this._startVAD(handleManualFinalize);
+
     // Pre-build JSGF grammar if words provided and browser supports it
     const grammarWords = options.grammarWords || null;
     let grammarList = null;
@@ -216,6 +344,8 @@ class SpeechManagerClass {
     }
 
     const startRecognition = () => {
+      if (!this._listening || finalizeTriggered) return;
+
       const recognition = new this._RecognitionClass();
       recognition.lang = lang;
       recognition.continuous = false;
@@ -232,13 +362,12 @@ class SpeechManagerClass {
         }
       }
 
-      // MOBILE FIX: Track when mic actually starts capturing audio
       recognition.onaudiostart = () => {
         this._audioStarted = true;
         // Notify listeners that mic is physically active
         this._onTranscript?.({
           micActive: true,
-          transcript: '',
+          transcript: this._aggregateTranscript,
           confidence: 0,
           lang,
           isFinal: false,
@@ -259,7 +388,6 @@ class SpeechManagerClass {
 
         for (let i = 0; i < event.results.length; i++) {
           const result = event.results[i];
-          // Check ALL alternatives for the best match
           for (let j = 0; j < result.length; j++) {
             const alt = result[j];
             allAlternatives.push({
@@ -272,13 +400,14 @@ class SpeechManagerClass {
             }
           }
 
-          // Notify DevOverlay with ALL alternatives for debugging
           const allAltsStr = allAlternatives
             .map((a) => `${a.transcript} (${(a.confidence * 100).toFixed(0)}%)`)
             .join(' | ');
 
+          const combinedTranscript = (this._aggregateTranscript + ' ' + bestTranscript).trim();
+
           this._onTranscript?.({
-            transcript: bestTranscript,
+            transcript: combinedTranscript,
             confidence: bestConfidence,
             lang,
             isFinal: result.isFinal,
@@ -287,23 +416,24 @@ class SpeechManagerClass {
           });
 
           if (result.isFinal) {
-            this._listening = false;
-            onResult?.(bestTranscript, bestConfidence, allAlternatives);
+            this._aggregateTranscript = combinedTranscript;
+            this._aggregateConfidence = Math.max(this._aggregateConfidence || 0, bestConfidence);
+            this._aggregateAlternatives = this._aggregateAlternatives.concat(allAlternatives);
             return;
           }
         }
 
-        // MOBILE FIX: If no results were isFinal but we got results,
-        // use the best transcript anyway
+        // MOBILE FIX: If no results were isFinal but we got results, use the best transcript anyway
         if (this._isMobile && bestTranscript && event.results.length > 0) {
-          this._listening = false;
-          onResult?.(bestTranscript, bestConfidence, allAlternatives);
+          this._aggregateTranscript = (this._aggregateTranscript + ' ' + bestTranscript).trim();
+          this._aggregateConfidence = Math.max(this._aggregateConfidence || 0, bestConfidence);
+          this._aggregateAlternatives = this._aggregateAlternatives.concat(allAlternatives);
         }
       };
 
       recognition.onerror = (event) => {
         console.warn('[SpeechManager] recognition error:', event.error);
-        this._listening = false;
+        if (event.error === 'aborted' || finalizeTriggered) return;
 
         if (
           (event.error === 'no-speech' || event.error === 'audio-capture' || event.error === 'network') &&
@@ -316,49 +446,44 @@ class SpeechManagerClass {
           return;
         }
 
-        if (event.error === 'aborted') return;
+        // Yield aggregated results instead of error if we already captured speech
+        if (this._aggregateTranscript) {
+          handleManualFinalize();
+          return;
+        }
 
+        this.stop();
         onError?.(event.error);
       };
 
       recognition.onend = () => {
-        this._listening = false;
+        // Recognition stopped (perhaps prematurely cut off by browser)
+        if (!this._listening || finalizeTriggered) return;
 
-        // Notify that mic is no longer active
-        this._onTranscript?.({ micActive: false });
-
+        console.log(`[SpeechManager] Native recognition ended. Rebooting for aggregation...`);
         if (!this._gotResult && retriesLeft > 0) {
           retriesLeft--;
-          const delay = this._audioStarted ? 400 : 600;
-          console.log(`[SpeechManager] Silent end (audioStarted=${this._audioStarted}), auto-retry (${maxRetries - retriesLeft}/${maxRetries})...`);
-          this._gotResult = false;
-          this._audioStarted = false;
-          setTimeout(() => startRecognition(), delay);
-          return;
         }
 
-        if (!this._gotResult) {
-          onError?.('no-speech');
-        }
+        // Restart recognition seamlessly to fulfill VAD trailing silence duration
+        setTimeout(() => startRecognition(), 50);
       };
 
       this._recognition = recognition;
-      this._listening = true;
-      this._gotResult = false;
-      this._audioStarted = false;
-
-      // Brief delay before starting recognition on mobile
+      
       const startDelay = this._isMobile ? 250 : 0;
       setTimeout(() => {
         try {
-          recognition.start();
+          if (this._listening && !finalizeTriggered) {
+             recognition.start();
+          }
         } catch (e) {
-          this._listening = false;
           if (e.message?.includes('already started')) {
-            this.stop();
+            try { this._recognition.abort(); } catch(_) {}
             setTimeout(() => startRecognition(), 300);
           } else {
-            onError?.(e.message);
+             if (this._aggregateTranscript) { handleManualFinalize(); } 
+             else { onError?.(e.message); }
           }
         }
       }, startDelay);
@@ -369,13 +494,14 @@ class SpeechManagerClass {
 
   /** Stop recognition */
   stop() {
+    this._listening = false;
+    this._stopVAD();
     if (this._recognition) {
       try {
         this._recognition.abort();
       } catch (_) { /* ignore */ }
       this._recognition = null;
     }
-    this._listening = false;
   }
 
   /** Stop synthesis */
