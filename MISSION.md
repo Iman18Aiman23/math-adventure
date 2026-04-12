@@ -83,3 +83,21 @@
   - [x] **Verified** — Desktop: sidebar, two-column quiz, saga decorations, centered content, hover states, interactions.
   - [x] **Verified** — Mobile: sidebar hidden, bottom tab bar shows, single-column layout, haptics.
 
+- [x] Phase 7: Desktop Content Overflow & Hidden Button Fixes
+  - [x] **7A: CSS Desktop Compact Rules** (`index.css`)
+    - [x] `.question-card` — reduced padding `1rem`, min-height `auto` on desktop.
+    - [x] `.question-text-lg` — shrunk from `clamp(2.8rem, 14vw, 5rem)` → `clamp(2rem, 6vw, 3.2rem)` on desktop.
+    - [x] `.btn-option` — reduced `min-height: 3.5rem`, `font-size: 1.1rem`, added `word-break: break-word` + `overflow-wrap: anywhere`.
+    - [x] `.game-container` — `padding-bottom: 0` on desktop to recover vertical space.
+  - [x] **7B: MonthsGame.jsx**
+    - [x] Mode toggles — gap `0.8rem → 0.5rem`, margin-bottom `1.5rem → 0.75rem`.
+    - [x] Question card — `minHeight: 180px → 140px`.
+    - [x] Answer grid — gap `1rem → 0.75rem`, maxWidth `500px → 600px` for wider buttons.
+  - [x] **7C: BMSpeakGame.jsx** (Numbers 1-100, Suku Kata KV/KVK, etc.)
+    - [x] Root container — `overflow: 'hidden' → overflow: 'auto'` so bottom buttons aren't clipped.
+    - [x] Inner content div — `overflow: 'hidden' → overflow: 'visible'` so repeat/skip buttons are visible.
+  - [x] **Verified** — Production build passes (`vite build` — 8.17s, 0 errors).
+  - [x] **Verified** — Months Quiz: "November/November", "June/Jun" etc. fully visible in answer boxes on desktop 100% zoom.
+  - [x] **Verified** — Numbers 1-100: Repeat/Skip/Tap-to-Speak buttons all visible on desktop 100% zoom.
+  - [x] **Verified** — Jawi Suku Kata, ClockGame, MonthLearning — all content fits within viewport.
+  - [x] **Verified** — Mobile layout unaffected (bottom tab bar, single-column, scrolling all work).

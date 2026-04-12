@@ -187,7 +187,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
             />
 
             {/* Mode Toggles */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.8rem', marginBottom: '1.5rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
                 {/* Row 1: Logic Modes */}
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
                     <button onClick={() => setQuestionMode('number')} style={toggleBtnStyle(questionMode === 'number')}>
@@ -220,7 +220,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
                 flexDirection: 'column',
                 position: 'relative',
                 padding: '1rem',
-                minHeight: '180px'
+                minHeight: '140px'
             }}>
                 {/* Reference Button Row */}
                 <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
@@ -275,9 +275,9 @@ export default function MonthsGame({ onBack, onHome, language }) {
                 <div style={{
                     display: 'grid',
                     gridTemplateColumns: '1fr 1fr',
-                    gap: '1rem',
+                    gap: '0.75rem',
                     width: '100%',
-                    maxWidth: '500px',
+                    maxWidth: '600px',
                     margin: '0 auto'
                 }}>
                     {shuffledOptions.map((opt, idx) => {

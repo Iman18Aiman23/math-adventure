@@ -330,7 +330,7 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
   const cardBg     = isCorrect ? '#F0FFF0' : isWrong ? '#FFF0F0' : '#FFFFFF';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#fff', position: 'relative' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'auto', background: '#fff', position: 'relative' }}>
 
       {/* ── Header ── */}
       <div className="game-header">
@@ -361,7 +361,7 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
       </div>
 
       {/* ── Scrollable content ── */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '1.5rem 1rem', gap: '1rem', overflow: 'hidden' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '1.5rem 1rem', gap: '1rem', overflow: 'visible' }}>
 
         {/* Item card */}
         <div style={{
@@ -371,7 +371,7 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
           padding: '2rem 1.5rem',
           textAlign: 'center',
           width: '100%',
-          maxWidth: '340px',
+          maxWidth: '480px',
           transition: 'background 0.3s, border-color 0.3s',
           boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
         }}>
@@ -384,13 +384,16 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
 
           {/* Big display text / emoji */}
           <div style={{
-            fontSize: category === 'common_objects' ? '5rem' : 'clamp(2.5rem, 14vw, 4.5rem)',
-            lineHeight: 1.1,
+            fontSize: category === 'common_objects' ? '5rem' : category === 'numbers' ? 'clamp(1.8rem, 6vw, 2.8rem)' : 'clamp(2.5rem, 14vw, 4.5rem)',
+            lineHeight: 1.2,
             fontWeight: 900,
             color: isCorrect ? '#46A302' : isWrong ? '#CC3B3B' : '#3C3C3C',
             animation: phase === PHASE_IDLE || phase === PHASE_SPEAKING ? 'bounce 2.5s ease-in-out infinite' : 'none',
             fontFamily: category === 'numbers' ? '"Nunito", sans-serif' : 'inherit',
             transition: 'color 0.3s',
+            overflowWrap: 'break-word',
+            wordBreak: 'break-word',
+            maxWidth: '100%',
           }}>
             {displayText || '⏳'}
           </div>
