@@ -1,49 +1,58 @@
 import React from 'react';
-import { ArrowLeft, Volume2, VolumeX, Trophy } from 'lucide-react';
+import { ArrowLeft, Heart, Volume2, VolumeX } from 'lucide-react';
 
-export default function GameHeader({ onBack, onHome, onToggleMute, isMuted, score, streak, title, language = 'bm' }) {
-    const backTip = language === 'bm' ? 'Kembali' : 'Go Back';
+export default function GameHeader({
+  onBack, onHome, onToggleMute, isMuted,
+  streak, progress, lives, title, language = 'bm',
+}) {
+  const MAX_LIVES = 3;
+  const backTip = language === 'bm' ? 'Kembali' : 'Go Back';
 
-    return (
-        <div className="game-header" style={{ marginBottom: '0.6rem' }}>
-            {/* Left: Back */}
-            <div className="header-section left">
-                {onBack && (
-                    <button onClick={onBack} className="header-btn" title={backTip}
-                        style={{ background: 'rgba(244,63,94,0.10)', color: '#F43F5E' }}>
-                        <ArrowLeft size={20} />
-                    </button>
-                )}
-            </div>
+  return (
+    <div className="game-header">
+      {/* Left: Back */}
+      <div className="header-section left" style={{ flex: '0 0 auto', marginRight: '0.5rem' }}>
+        {onBack && (
+          <button onClick={onBack} title={backTip}
+            style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
+            <ArrowLeft size={22} />
+          </button>
+        )}
+      </div>
 
-            {/* Middle: Title */}
-            <div className="header-section middle">
-                {title && <span className="header-title">{title}</span>}
-            </div>
+      {/* Middle: Progress bar (or title) */}
+      <div className="header-section middle" style={{ flex: 1, gap: '0.5rem' }}>
+        {progress !== undefined ? (
+          <div className="lesson-progress-track" style={{ width: '100%' }}>
+            <div className="lesson-progress-fill" style={{ width: `${Math.max(0, Math.min(progress, 100))}%` }} />
+          </div>
+        ) : (
+          title && <span className="header-title">{title}</span>
+        )}
+      </div>
 
-            {/* Right: Stats + Mute */}
-            <div className="header-section right">
-                {(score !== undefined || streak !== undefined) && (
-                    <div className="header-stats">
-                        {score !== undefined && (
-                            <span className="stat-item" style={{ color: '#F59E0B' }}>
-                                <Trophy size={16} /> {score}
-                            </span>
-                        )}
-                        {streak !== undefined && (
-                            <span className="stat-item">
-                                <span style={{ fontSize: '1rem' }}>🔥</span> {streak}
-                            </span>
-                        )}
-                    </div>
-                )}
-                {onToggleMute && (
-                    <button onClick={onToggleMute} className="header-btn"
-                        style={{ background: isMuted ? 'rgba(156,163,175,0.15)' : 'rgba(16,185,129,0.12)', color: isMuted ? '#9ca3af' : '#10B981' }}>
-                        {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
-                    </button>
-                )}
-            </div>
-        </div>
-    );
+      {/* Right: Hearts + streak + mute */}
+      <div className="header-section right" style={{ flex: '0 0 auto', marginLeft: '0.5rem', gap: '8px' }}>
+        {lives !== undefined && (
+          <div className="stat-item" style={{ color: '#FF4B4B' }}>
+            {Array.from({ length: MAX_LIVES }).map((_, i) => (
+              <span key={i} style={{ fontSize: '1.1rem', opacity: i < lives ? 1 : 0.2, transition: 'opacity 0.3s' }}>❤️</span>
+            ))}
+          </div>
+        )}
+        {streak !== undefined && (
+          <div className="stat-item" style={{ color: '#FF9600', fontWeight: 800 }}>
+            <span style={{ fontSize: '1.1rem' }}>🔥</span>
+            <span style={{ fontSize: '0.95rem' }}>{streak}</span>
+          </div>
+        )}
+        {onToggleMute && (
+          <button onClick={onToggleMute}
+            style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
+            {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+          </button>
+        )}
+      </div>
+    </div>
+  );
 }

@@ -254,128 +254,65 @@ export default function JawiPage({ onBack, onHome, language }) {
     if (mode === 'spelling_game') return <Jawi100WordsGame onBack={handleBack} onHome={onHome} language={language} />;
 
     return (
-        <div className="game-container fade-in">
-            <GameHeader onBack={onBack} onHome={onHome} title={t.title} language={language} />
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
+            {/* Duolingo sub-header */}
+            <div style={{
+                background: '#fff', borderBottom: '2px solid #E5E5E5',
+                padding: '0 1rem', height: '56px',
+                display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0,
+            }}>
+                <button onClick={onBack} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
+                    <ArrowLeft size={24} />
+                </button>
+                <div style={{ flex: 1, textAlign: 'center', fontWeight: 900, fontSize: '1rem', color: '#3C3C3C' }}>
+                    📖 {t.title}
+                </div>
+                <div style={{ width: 24 }} />
+            </div>
 
-            <div className="card" style={{ padding: '2rem 1rem', textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
-
-                <div style={{
-                    color: '#9D4EDD',
-                    background: 'rgba(157, 78, 221, 0.1)',
-                    padding: '1.5rem',
-                    borderRadius: '2rem',
-                    display: 'inline-flex',
-                    marginBottom: '1.5rem'
-                }}>
-                    <BookOpen size={48} />
+            {/* Scrollable content */}
+            <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem 1rem' }}>
+                {/* Jawi hero */}
+                <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
+                    <div style={{ fontSize: '3.5rem', marginBottom: '0.25rem', animation: 'bounce 2s ease-in-out infinite' }}>📖</div>
+                    <p style={{ fontWeight: 600, color: '#777', fontSize: '0.9rem' }}>{t.subtitle}</p>
                 </div>
 
-                <p className="game-subtitle" style={{ color: '#6b7280', fontWeight: 600, fontSize: '1rem', marginBottom: '2rem', textAlign: 'center' }}>
-                    {t.subtitle}
+                <p style={{ fontSize: '0.8rem', fontWeight: 800, color: '#AFAFAF', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.75rem' }}>
+                    {language === 'bm' ? 'PILIH AKTIVITI' : 'CHOOSE ACTIVITY'}
                 </p>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '100%', margin: '0 auto' }}>
-                    <button
-                        className="btn-primary"
-                        onClick={() => setMode('alphabet')}
-                        style={{
-                            backgroundColor: '#9D4EDD',
-                            padding: '1.2rem',
-                            fontSize: '1.2rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '0.75rem',
-                            margin: '0',
-                            borderRadius: '1rem'
-                        }}
-                    >
-                        <GraduationCap size={24} />
-                        {t.learnAlphabet}
-                    </button>
-
-                    <button
-                        className="btn-primary"
-                        onClick={() => setMode('syllables')}
-                        style={{
-                            backgroundColor: '#FFD93D',
-                            padding: '1.2rem',
-                            fontSize: '1.2rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '0.75rem',
-                            color: '#333',
-                            margin: '0',
-                            borderRadius: '1rem'
-                        }}
-                    >
-                        <Keyboard size={24} />
-                        {t.learnSyllables}
-                    </button>
-
-                    <button
-                        className="btn-primary"
-                        onClick={() => setMode('words')}
-                        style={{
-                            backgroundColor: '#FF6B6B',
-                            padding: '1.2rem',
-                            fontSize: '1.2rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '0.75rem',
-                            margin: '0',
-                            borderRadius: '1rem'
-                        }}
-                    >
-                        <BookOpen size={24} />
-                        {t.learn100Words}
-                    </button>
-
-                    <button
-                        className="btn-primary"
-                        onClick={() => setMode('spelling_game')}
-                        style={{
-                            backgroundColor: '#4ECDC4',
-                            padding: '1.2rem',
-                            fontSize: '1.2rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '0.75rem',
-                            margin: '0',
-                            borderRadius: '1rem'
-                        }}
-                    >
-                        <Keyboard size={24} />
-                        {t.learnSpelling}
-                    </button>
-
-                    <button
-                        className="btn-primary"
-                        onClick={() => setMode('match')}
-                        style={{
-                            backgroundColor: '#FF8C42',
-                            padding: '1.2rem',
-                            fontSize: '1.2rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '0.75rem',
-                            margin: '0',
-                            borderRadius: '1rem'
-                        }}
-                    >
-                        <Star size={24} />
-                        {t.testMatch}
-                    </button>
-
-                    <p style={{ color: '#888', fontStyle: 'italic', marginTop: '0.5rem', fontSize: '0.9rem' }}>
-                        {t.comingSoon}
-                    </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                    {[
+                        { mode: 'alphabet',     emoji: '🔤', iconBg: '#EDD9FF', color: '#CE82FF', title: t.learnAlphabet,  desc: language === 'bm' ? 'Pelajari 36 huruf Jawi' : 'Learn 36 Jawi letters' },
+                        { mode: 'syllables',    emoji: '🅰️', iconBg: '#FFF0CC', color: '#FFC800', title: t.learnSyllables, desc: language === 'bm' ? 'Suku kata KV & KVK' : 'KV & KVK syllables' },
+                        { mode: 'words',        emoji: '📝', iconBg: '#FFE0E0', color: '#FF4B4B', title: t.learn100Words,  desc: language === 'bm' ? '100 perkataan asas' : '100 basic words' },
+                        { mode: 'spelling_game',emoji: '🎮', iconBg: '#D0F0FF', color: '#1CB0F6', title: t.learnSpelling,  desc: language === 'bm' ? 'Cabaran ejaan interaktif' : 'Interactive spelling challenge' },
+                        { mode: 'match',        emoji: '⭐', iconBg: '#FFE8CC', color: '#FF9600', title: t.testMatch,      desc: language === 'bm' ? 'Padankan huruf & perkataan' : 'Match letters & words' },
+                    ].map((item, i) => (
+                        <button
+                            key={item.mode}
+                            className="duo-lesson-row fade-in"
+                            onClick={() => setMode(item.mode)}
+                            style={{ animationDelay: `${i * 0.06}s` }}
+                        >
+                            <div className="duo-lesson-icon" style={{ background: item.iconBg }}>
+                                {item.emoji}
+                            </div>
+                            <div className="duo-lesson-info">
+                                <div className="duo-lesson-title" style={{ color: item.color }}>{item.title}</div>
+                                <div className="duo-lesson-desc">{item.desc}</div>
+                            </div>
+                            <div className="duo-lesson-arrow">›</div>
+                        </button>
+                    ))}
                 </div>
+
+                <p style={{ color: '#AFAFAF', fontStyle: 'italic', marginTop: '1rem', fontSize: '0.85rem', textAlign: 'center' }}>
+                    {t.comingSoon}
+                </p>
             </div>
         </div>
     );
 }
+

@@ -1,68 +1,64 @@
 import React from 'react';
-import GameHeader from './GameHeader';
+import { ArrowLeft } from 'lucide-react';
 import { LOCALIZATION } from '../utils/localization';
 
-const TIME_COLORS = [
-    { main: '#7C3AED', bg: 'linear-gradient(135deg,#ede9fe,#ddd6fe)', emoji: '📅' },
-    { main: '#F43F5E', bg: 'linear-gradient(135deg,#ffe4e6,#fecdd3)', emoji: '🗓️' },
-    { main: '#0EA5E9', bg: 'linear-gradient(135deg,#e0f2fe,#bae6fd)', emoji: '⏰' },
+const TIME_GAMES = [
+  { id: 'month-learning', emoji: '📅', iconBg: '#EDD9FF', iconColor: '#CE82FF', titleKey: 'monthLearning', descKey: 'monthLearningDesc' },
+  { id: 'months',         emoji: '🗓️', iconBg: '#FFE0E0', iconColor: '#FF4B4B', titleKey: 'monthQuiz',     descKey: 'monthQuizDesc'     },
+  { id: 'clock',          emoji: '⏰', iconBg: '#D0F0FF', iconColor: '#1CB0F6', titleKey: 'timeAdventure', descKey: 'timeAdventureDesc' },
 ];
 
 export default function TimeGameMenu({ onStart, onBack, onHome, language }) {
-    const t = LOCALIZATION[language].time;
+  const t = LOCALIZATION[language].time;
 
-    const games = [
-        { id: 'month-learning', label: t.monthLearning, desc: t.monthLearningDesc, ...TIME_COLORS[0] },
-        { id: 'months', label: t.monthQuiz, desc: t.monthQuizDesc, ...TIME_COLORS[1] },
-        { id: 'clock', label: t.timeAdventure, desc: t.timeAdventureDesc, ...TIME_COLORS[2] },
-    ];
-
-    return (
-        <div className="game-container fade-in">
-            <GameHeader onBack={onBack} onHome={onHome} title={t.title} language={language} />
-
-            <p style={{ color: '#6b7280', fontWeight: 600, fontSize: '1rem', marginBottom: '1rem', textAlign: 'center' }}>
-                {t.selectGame}
-            </p>
-
-            <div style={{ display: 'grid', gap: '0.75rem', maxWidth: '480px', width: '100%' }}>
-                {games.map((game, i) => (
-                    <button
-                        key={game.id}
-                        className="subject-card fade-in"
-                        onClick={() => onStart(game.id)}
-                        style={{
-                            flexDirection: 'row',
-                            justifyContent: 'flex-start',
-                            gap: '1rem',
-                            padding: '1rem 1.25rem',
-                            border: `3px solid ${game.main}30`,
-                            background: game.bg,
-                            textAlign: 'left',
-                            animationDelay: `${i * 0.08}s`,
-                        }}
-                    >
-                        <span style={{
-                            fontSize: '2rem',
-                            background: game.bg,
-                            border: `2px solid ${game.main}25`,
-                            borderRadius: '1rem',
-                            padding: '0.5rem 0.7rem',
-                            lineHeight: 1,
-                            flexShrink: 0,
-                        }}>{game.emoji}</span>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(0.95rem,3.5vw,1.15rem)', color: game.main, marginBottom: '0.2rem' }}>
-                                {game.label}
-                            </div>
-                            <div style={{ fontFamily: 'var(--font-body)', fontSize: 'clamp(0.78rem,2.5vw,0.88rem)', color: '#6b7280', fontWeight: 600, lineHeight: 1.3 }}>
-                                {game.desc}
-                            </div>
-                        </div>
-                        <span style={{ fontFamily: 'var(--font-heading)', color: game.main, fontSize: '1.1rem', flexShrink: 0 }}>→</span>
-                    </button>
-                ))}
-            </div>
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
+      {/* Header */}
+      <div style={{
+        background: '#fff',
+        borderBottom: '2px solid #E5E5E5',
+        padding: '0 1rem',
+        height: '56px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.75rem',
+        flexShrink: 0,
+      }}>
+        <button onClick={onBack} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
+          <ArrowLeft size={24} />
+        </button>
+        <div style={{ flex: 1, textAlign: 'center', fontWeight: 900, fontSize: '1rem', color: '#3C3C3C' }}>
+          🕐 {t.title}
         </div>
-    );
+        <div style={{ width: 24 }} />
+      </div>
+
+      {/* Content */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem 1rem' }}>
+        <p style={{ fontSize: '0.8rem', fontWeight: 800, color: '#AFAFAF', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.75rem' }}>
+          {t.selectGame}
+        </p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+          {TIME_GAMES.map((game, i) => (
+            <button
+              key={game.id}
+              className="duo-lesson-row fade-in"
+              onClick={() => onStart(game.id)}
+              style={{ animationDelay: `${i * 0.07}s` }}
+            >
+              <div className="duo-lesson-icon" style={{ background: game.iconBg }}>
+                {game.emoji}
+              </div>
+              <div className="duo-lesson-info">
+                <div className="duo-lesson-title" style={{ color: game.iconColor }}>{t[game.titleKey]}</div>
+                <div className="duo-lesson-desc">{t[game.descKey]}</div>
+              </div>
+              <div className="duo-lesson-arrow">›</div>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }

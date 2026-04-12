@@ -1,118 +1,129 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { LOCALIZATION } from '../utils/localization';
+import { GameStateContext } from '../App';
 
-const SUBJECTS = [
-    {
-        id: 'bm',
-        emoji: '📝',
-        colorMain: '#0EA5E9',
-        colorBg: 'linear-gradient(135deg,#e0f2fe,#bae6fd)',
-        colorBadge: '#0EA5E9',
-        stars: '⭐⭐',
-    },
-    {
-        id: 'math',
-        emoji: '🔢',
-        colorMain: '#F43F5E',
-        colorBg: 'linear-gradient(135deg,#ffe4e6,#fecdd3)',
-        colorBadge: '#F43F5E',
-        stars: '⭐⭐⭐',
-    },
-    {
-        id: 'jawi',
-        emoji: '📖',
-        colorMain: '#7C3AED',
-        colorBg: 'linear-gradient(135deg,#ede9fe,#ddd6fe)',
-        colorBadge: '#7C3AED',
-        stars: '⭐⭐',
-    },
+const COURSES = [
+  {
+    id: 'math',
+    emoji: '🔢',
+    iconBg: '#FFF0CC',
+    title: { bm: 'Matematik', eng: 'Mathematics' },
+    desc: { bm: 'Tambah, tolak, darab & bahagi', eng: 'Addition, subtraction, multiply & divide' },
+    color: '#FFC800',
+    progress: 35,
+  },
+  {
+    id: 'bm',
+    emoji: '🗣️',
+    iconBg: '#D0F0FF',
+    title: { bm: 'Bahasa Melayu', eng: 'Bahasa Melayu' },
+    desc: { bm: 'Fonik & sebutan BM', eng: 'BM phonics & pronunciation' },
+    color: '#1CB0F6',
+    progress: 60,
+  },
+  {
+    id: 'jawi',
+    emoji: '📖',
+    iconBg: '#EDD9FF',
+    title: { bm: 'Jawi', eng: 'Jawi Script' },
+    desc: { bm: 'Huruf & suku kata Jawi', eng: 'Jawi letters & syllables' },
+    color: '#CE82FF',
+    progress: 15,
+  },
 ];
 
-export default function HomePage({ onSelectSubject, language }) {
-    const t = LOCALIZATION[language].home;
+export default function HomePage({ onSelectSubject, language, playerName, gameState }) {
+  const streak = gameState?.streak ?? 0;
+  const hearts = 5;
 
-    const subjectData = [
-        { ...SUBJECTS[0], title: t.bmTitle, desc: t.bmDesc },
-        { ...SUBJECTS[1], title: t.mathTitle, desc: t.mathDesc },
-        { ...SUBJECTS[2], title: t.jawiTitle, desc: t.jawiDesc },
-    ];
-
-    return (
-        <div className="fade-in" style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'space-evenly',
-            height: '100%',
-            padding: 'clamp(0.5rem, 2vw, 1.5rem) clamp(0.75rem, 3vw, 2rem)',
-            boxSizing: 'border-box',
-            overflow: 'hidden',
-        }}>
-            {/* Hero */}
-            <div style={{ textAlign: 'center', lineHeight: 1.15 }}>
-                <div style={{ fontSize: 'clamp(2.5rem, 10vw, 4rem)', marginBottom: '0.15rem' }} className="animate-bounce">
-                    🚀
-                </div>
-                <h1 style={{
-                    fontFamily: 'var(--font-heading)',
-                    fontSize: 'clamp(1.6rem, 7vw, 2.8rem)',
-                    background: 'linear-gradient(135deg, #7C3AED, #F43F5E, #F59E0B)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                    marginBottom: '0.25rem',
-                    letterSpacing: '0.5px',
-                }}>
-                    {t.title}
-                </h1>
-                <p style={{
-                    fontFamily: 'var(--font-body)',
-                    fontSize: 'clamp(0.88rem, 3.5vw, 1.1rem)',
-                    color: '#6b7280',
-                    fontWeight: 600,
-                }}>
-                    {t.subtitle}
-                </p>
-            </div>
-
-            {/* Subject Cards */}
-            <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: 'clamp(0.6rem, 2.5vw, 1.25rem)',
-                width: '100%',
-                maxWidth: '680px',
-            }}>
-                {subjectData.map((s, i) => (
-                    <button
-                        key={s.id}
-                        className="subject-card fade-in"
-                        onClick={() => onSelectSubject(s.id)}
-                        style={{
-                            background: s.colorBg,
-                            border: `3px solid ${s.colorMain}25`,
-                            animationDelay: `${i * 0.08}s`,
-                        }}
-                    >
-                        <span className="card-emoji">{s.emoji}</span>
-                        <h2 className="card-title" style={{ color: s.colorMain }}>{s.title}</h2>
-                        <p className="card-desc">{s.desc}</p>
-                        <span className="card-badge" style={{ background: s.colorMain }}>
-                            {t.startButton} →
-                        </span>
-                    </button>
-                ))}
-            </div>
-
-            {/* Footer tag */}
-            <p style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: 'clamp(0.72rem, 2.5vw, 0.82rem)',
-                color: '#9ca3af',
-                fontWeight: 600,
-            }}>
-                Iman's Learning Adventure • v2.0 ✨
-            </p>
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#fff' }}>
+      {/* Duolingo-style Top Header */}
+      <div className="duo-home-header">
+        <div className="duo-home-flag">
+          🇲🇾 <span>{language === 'bm' ? 'Bahasa Malaysia' : 'Malaysia'}</span>
         </div>
-    );
+        <div className="duo-home-stats">
+          <div className="duo-home-stat" style={{ color: '#FF9600' }}>
+            <span style={{ fontSize: '1.4rem' }}>🔥</span>
+            <span>{streak}</span>
+          </div>
+          <div className="duo-home-stat" style={{ color: '#FF4B4B' }}>
+            <span style={{ fontSize: '1.4rem' }}>❤️</span>
+            <span>{hearts}</span>
+          </div>
+          <div className="duo-home-stat" style={{ color: '#CE82FF' }}>
+            <span style={{ fontSize: '1.4rem' }}>💎</span>
+            <span>{gameState?.mathCoins ?? 0}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Scrollable content */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem 1rem' }}>
+        {/* Greeting */}
+        <div style={{ marginBottom: '1.5rem' }}>
+          <p style={{ fontSize: '0.85rem', fontWeight: 700, color: '#AFAFAF', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px' }}>
+            {language === 'bm' ? 'Selamat Datang' : "Good day!"}
+          </p>
+          <h1 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#3C3C3C', lineHeight: 1.2 }}>
+            {playerName ? `Hei, ${playerName}! 👋` : (language === 'bm' ? 'Mula Belajar!' : 'Start Learning!')}
+          </h1>
+        </div>
+
+        {/* Daily streak card */}
+        <div style={{
+          background: 'linear-gradient(135deg, #FF9600, #FF6200)',
+          borderRadius: '16px',
+          padding: '1rem 1.25rem',
+          marginBottom: '1.5rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '1rem',
+          color: 'white',
+        }}>
+          <span style={{ fontSize: '2.5rem' }}>🔥</span>
+          <div>
+            <div style={{ fontSize: '1.2rem', fontWeight: 900 }}>
+              {streak} {language === 'bm' ? 'Hari Berturut' : 'Day Streak'}
+            </div>
+            <div style={{ fontSize: '0.82rem', fontWeight: 600, opacity: 0.9 }}>
+              {language === 'bm' ? 'Terus belajar hari ini!' : 'Keep learning today!'}
+            </div>
+          </div>
+        </div>
+
+        {/* Course section header */}
+        <p style={{ fontSize: '0.8rem', fontWeight: 800, color: '#AFAFAF', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.75rem' }}>
+          {language === 'bm' ? 'KURSUS ANDA' : 'YOUR COURSES'}
+        </p>
+
+        {/* Course cards */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', paddingBottom: '1rem' }}>
+          {COURSES.map((course, i) => (
+            <button
+              key={course.id}
+              className="duo-course-card fade-in"
+              onClick={() => onSelectSubject(course.id)}
+              style={{ animationDelay: `${i * 0.06}s` }}
+            >
+              <div className="duo-course-icon" style={{ background: course.iconBg }}>
+                {course.emoji}
+              </div>
+              <div className="duo-course-info">
+                <div className="duo-course-title">{course.title[language] || course.title.bm}</div>
+                <div className="duo-course-desc">{course.desc[language] || course.desc.bm}</div>
+                <div className="duo-course-progress-bar">
+                  <div className="duo-course-progress-fill" style={{ width: `${course.progress}%`, background: course.color }} />
+                </div>
+              </div>
+              <div className="duo-course-cta" style={{ color: course.color }}>
+                {language === 'bm' ? 'Mula →' : 'Start →'}
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }

@@ -1,20 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-/**
- * WelcomeModal
- *
- * Full-screen first-launch modal asking the player for their name.
- *
- * Props:
- *  onSave(name) – callback when user submits a valid name
- */
 export default function WelcomeModal({ onSave }) {
   const [name, setName] = useState('');
   const inputRef = useRef(null);
 
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
+  useEffect(() => { inputRef.current?.focus(); }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,30 +15,44 @@ export default function WelcomeModal({ onSave }) {
 
   return (
     <div className="welcome-overlay">
-      <div className="welcome-modal bounce-in">
-        <div className="welcome-emoji">🚀</div>
-        <h1 className="welcome-title">Selamat Datang!</h1>
-        <p className="welcome-subtitle">Masukkan nama anda untuk memulakan petualangan!</p>
+      {/* Full-screen Duolingo onboarding */}
+      <div className="welcome-emoji">🦉</div>
 
-        <form onSubmit={handleSubmit} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
-          <input
-            ref={inputRef}
-            type="text"
-            maxLength={24}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Nama anda..."
-            className="welcome-input"
-            autoComplete="off"
-          />
-          <button
-            type="submit"
-            disabled={!name.trim()}
-            className="btn-primary welcome-btn"
-          >
-            Mula Petualangan! ✨
-          </button>
-        </form>
+      <div style={{ textAlign: 'center', maxWidth: '360px', width: '100%' }}>
+        <h1 className="welcome-title">Selamat Datang!</h1>
+        <p className="welcome-subtitle" style={{ marginTop: '0.5rem', marginBottom: '2rem' }}>
+          Masukkan nama anda untuk memulakan petualangan matematik! 🚀
+        </p>
+      </div>
+
+      <form
+        onSubmit={handleSubmit}
+        style={{ width: '100%', maxWidth: '360px', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}
+      >
+        <input
+          ref={inputRef}
+          type="text"
+          maxLength={24}
+          value={name}
+          onChange={e => setName(e.target.value)}
+          placeholder="Nama anda..."
+          className="welcome-input"
+          autoComplete="off"
+        />
+        <button
+          type="submit"
+          disabled={!name.trim()}
+          className="btn-primary welcome-btn"
+        >
+          Mula Petualangan! ✨
+        </button>
+      </form>
+
+      {/* Decorative dots */}
+      <div style={{ display: 'flex', gap: '6px', marginTop: '1rem' }}>
+        {[0,1,2].map(i => (
+          <div key={i} style={{ width: 8, height: 8, borderRadius: '50%', background: i === 0 ? '#58CC02' : '#E5E5E5' }} />
+        ))}
       </div>
     </div>
   );

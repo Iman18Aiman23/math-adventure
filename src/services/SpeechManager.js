@@ -1,17 +1,20 @@
 /**
  * SpeechManager — Singleton wrapping the Web Speech API
  *
- * Cross-platform fixes (Desktop + Mobile iOS/Android):
- *  - User-gesture-gated mic access for mobile browsers
- *  - Retry on silent `onend` (no results received)
- *  - Handle `no-speech` error with auto-retry
- *  - Chrome mobile SpeechSynthesis voice-loading workaround
- *  - Microphone permission pre-request via getUserMedia
- *  - interimResults disabled on mobile for reliability
- *  - TTS cancelled before mic start to avoid audio pipeline conflicts
- *  - Startup delay on mobile to let audio settle after TTS
- *  - audiostart tracking for better silence detection
- *  - JSGF Grammar injection for curriculum word prioritization
+ * Cross-platform support matrix:
+ *  ✅ Windows Chrome/Edge  — Full STT + TTS
+ *  ✅ macOS Chrome         — Full STT + TTS
+ *  ✅ macOS Safari 16+     — STT via webkitSpeechRecognition, TTS
+ *  ✅ Android Chrome       — Full STT + TTS
+ *  ⚠️ iOS Safari           — STT via webkitSpeechRecognition (gesture-only, per-tap)
+ *  ❌ Firefox any platform — No STT, only TTS
+ *
+ * iOS-specific rules (enforced below):
+ *  1. recognition.start() MUST be called synchronously inside the user gesture handler — no await before it
+ *  2. continuous = false (crashes on iOS)
+ *  3. interimResults = false (unreliable on iOS)
+ *  4. Must create a new SpeechRecognition object every session (cannot reuse)
+ *  5. VAD (getUserMedia) must NOT be called during the same gesture chain as .start()
  */
 
 class SpeechManagerClass {
@@ -20,42 +23,24 @@ class SpeechManagerClass {
     this._synth = window.speechSynthesis || null;
     this._listening = false;
     this._onTranscript = null;
-    this._micPermission = 'prompt'; // 'prompt' | 'granted' | 'denied'
-    this._gotResult = false; // Track if we received any result before onend
+    this._micPermission = 'prompt';
 
-    // VAD & Silence tracking
-    this._audioCtx = null;
-    this._analyser = null;
-    this._micStream = null;
-    this._vadRafId = null;
-    this._lastSpeechTime = 0;
-    this._isSpeaking = false;
-    this._aggregateTranscript = '';
-    this._aggregateConfidence = 0;
-    this._aggregateAlternatives = [];
-    
-    // Feature detection
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    if (AudioContextClass) {
-      try {
-        this._audioCtx = new AudioContextClass();
-      } catch (e) {}
-    }
+    // Platform detection
+    this._isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    this._isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    this._isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    // On iOS, ALL browsers use WebKit under the hood
+    this._isIOSSafari = this._isIOS;
 
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      this._RecognitionClass = SpeechRecognition;
-    }
+    // Speech Recognition class
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    this._RecognitionClass = SR || null;
 
-    // JSGF Grammar support (Chrome/Chromium only)
+    // JSGF Grammar (Chrome/Chromium only)
     this._GrammarListClass =
       window.SpeechGrammarList || window.webkitSpeechGrammarList || null;
 
-    // Detect mobile
-    this._isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-
-    // Pre-load voices (Chrome workaround)
+    // TTS voice pre-load (Chrome workaround)
     if (this._synth) {
       this._synth.getVoices();
       if (typeof this._synth.onvoiceschanged !== 'undefined') {
@@ -64,62 +49,69 @@ class SpeechManagerClass {
     }
   }
 
-  /** Check if the browser supports speech recognition */
+  // ── Feature detection ──────────────────────────────────────────────────────
+
+  /** True if STT is available at all */
   isSupported() {
     return !!this._RecognitionClass;
   }
 
-  /** Check if TTS is supported */
+  /** True if TTS is available */
   isTTSSupported() {
     return !!this._synth;
   }
 
-  /** Check if currently listening */
+  /** True if currently listening */
   isListening() {
     return this._listening;
   }
 
-  /** Whether running on a mobile device */
+  /** True on any mobile device */
   isMobile() {
     return this._isMobile;
   }
 
+  /** True on iOS (requires per-tap gesture) */
+  isIOS() {
+    return this._isIOS;
+  }
+
   /**
-   * Set a callback that receives every raw transcript for debugging.
+   * Returns a human-readable reason why STT might be unavailable.
+   * Empty string = fully supported.
    */
+  getUnsupportedReason() {
+    if (!this._RecognitionClass) {
+      if (this._isIOS && !this._isSafari) {
+        return 'On iPhone/iPad, please use Safari to enable voice features.';
+      }
+      return 'Your browser does not support voice recognition. Please use Chrome, Edge or Safari.';
+    }
+    return '';
+  }
+
+  /** Set a callback for raw transcript data (used by Dev overlay) */
   onTranscript(cb) {
     this._onTranscript = cb;
   }
 
-  /**
-   * Build a JSGF grammar string from an array of words.
-   * The grammar tells the speech engine to prioritize these words.
-   * @param {string[]} words — curriculum words to prioritize
-   * @returns {string} — JSGF grammar string
-   */
-  _buildGrammar(words) {
-    if (!words || words.length === 0) return null;
-    // Deduplicate and clean
-    const unique = [...new Set(words.map((w) => w.toLowerCase().trim()).filter(Boolean))];
-    // JSGF format: #JSGF V1.0; grammar curriculum; public <target> = word1 | word2 | ...;
-    return `#JSGF V1.0; grammar curriculum; public <target> = ${unique.join(' | ')} ;`;
-  }
+  // ── Microphone permission ──────────────────────────────────────────────────
 
   /**
-   * Request microphone permission explicitly.
-   * Mobile browsers need this before SpeechRecognition will work.
-   * MUST be called from a user gesture (click/tap handler).
-   * @returns {Promise<boolean>} true if permission granted
+   * Request mic permission. On iOS, this is a no-op (permission is granted
+   * implicitly when recognition.start() is called inside a gesture).
+   * On other platforms, use getUserMedia to pre-warm the permission.
+   * MUST be called from a user gesture handler.
    */
   async requestMicPermission() {
-    try {
-      // iOS Fix: Resume AudioContext strictly inside user interaction
-      if (this._audioCtx && this._audioCtx.state === 'suspended') {
-        await this._audioCtx.resume();
-        console.log('[SpeechManager] AudioContext resumed via user gesture');
-      }
+    // iOS: don't call getUserMedia here — that breaks the gesture chain
+    // The permission is handled when recognition.start() fires
+    if (this._isIOSSafari) {
+      this._micPermission = 'granted';
+      return true;
+    }
 
-      // Check Permissions API first (Chrome/Edge)
+    try {
       if (navigator.permissions) {
         try {
           const result = await navigator.permissions.query({ name: 'microphone' });
@@ -127,13 +119,11 @@ class SpeechManagerClass {
             this._micPermission = 'granted';
             return true;
           }
-        } catch (_) { /* Permissions API may not support 'microphone' query */ }
+        } catch (_) { /* permissions API may not support 'microphone' */ }
       }
 
-      // Actually request the microphone via getUserMedia
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      // Immediately stop the stream — we just needed permission
-      stream.getTracks().forEach(track => track.stop());
+      stream.getTracks().forEach(t => t.stop());
       this._micPermission = 'granted';
       return true;
     } catch (err) {
@@ -143,17 +133,18 @@ class SpeechManagerClass {
     }
   }
 
+  // ── TTS ────────────────────────────────────────────────────────────────────
+
   /**
-   * Speak text aloud via SpeechSynthesis.
+   * Speak text aloud.
    * @param {string} text
-   * @param {string} lang – 'ms-MY' or 'en-US'
+   * @param {string} lang  'ms-MY' | 'en-US'
    * @returns {Promise<void>}
    */
   speak(text, lang = 'en-US') {
     return new Promise((resolve) => {
       if (!this._synth) { resolve(); return; }
 
-      // Cancel any ongoing speech
       this._synth.cancel();
 
       const utterance = new SpeechSynthesisUtterance(text);
@@ -162,20 +153,12 @@ class SpeechManagerClass {
       utterance.pitch = 1.1;
       utterance.volume = 1;
 
-      // Timeout safety — some mobile browsers never fire onend
       let settled = false;
-      const timeout = setTimeout(() => {
-        if (!settled) { settled = true; resolve(); }
-      }, 8000);
+      const timeout = setTimeout(() => { if (!settled) { settled = true; resolve(); } }, 8000);
 
-      utterance.onend = () => {
-        if (!settled) { settled = true; clearTimeout(timeout); resolve(); }
-      };
-      utterance.onerror = () => {
-        if (!settled) { settled = true; clearTimeout(timeout); resolve(); }
-      };
+      utterance.onend   = () => { if (!settled) { settled = true; clearTimeout(timeout); resolve(); } };
+      utterance.onerror = () => { if (!settled) { settled = true; clearTimeout(timeout); resolve(); } };
 
-      // Try to match a voice for the language
       const voices = this._synth.getVoices();
       const matched = voices.find(v => v.lang === lang) ||
                       voices.find(v => v.lang.startsWith(lang.split('-')[0]));
@@ -183,205 +166,89 @@ class SpeechManagerClass {
 
       this._synth.speak(utterance);
 
-      // Chrome mobile workaround: synthesis sometimes pauses silently
-      if (this._isMobile) {
-        const resumeInterval = setInterval(() => {
-          if (settled) { clearInterval(resumeInterval); return; }
+      // Chrome Android: synthesis may silently pause
+      if (this._isMobile && !this._isIOS) {
+        const iv = setInterval(() => {
+          if (settled) { clearInterval(iv); return; }
           if (this._synth.paused) this._synth.resume();
         }, 300);
       }
     });
   }
 
+  stopSpeaking() {
+    this._synth?.cancel();
+  }
+
+  // ── STT ───────────────────────────────────────────────────────────────────
+
   /**
-   * Start listening for speech.
-   * On mobile, this should be called from within a user gesture chain
-   * or after requestMicPermission() has been granted.
+   * Build a JSGF grammar string (Chrome/Chromium only).
+   */
+  _buildGrammar(words) {
+    if (!words?.length) return null;
+    const unique = [...new Set(words.map(w => w.toLowerCase().trim()).filter(Boolean))];
+    return `#JSGF V1.0; grammar curriculum; public <target> = ${unique.join(' | ')} ;`;
+  }
+
+  /**
+   * Start listening.
    *
-   * @param {string} lang – 'ms-MY' or 'en-US'
-   * @param {(transcript: string, confidence: number, allAlternatives: Array) => void} onResult
-   * @param {(error: string) => void} onError
-   * @param {object} options
-   * @param {number} options.retries – auto-retry count on no-speech/silent-end
-   * @param {string[]} options.grammarWords – words to inject into JSGF grammar
+   * ⚠️ iOS CRITICAL: This function must be invoked directly inside the
+   *    user's tap/click handler with NO preceding await calls.
+   *    The caller must use the `isIOS()` flag to decide whether to chain
+   *    async operations before calling this.
+   *
+   * @param {string} lang  'ms-MY' | 'en-US'
+   * @param {function} onResult  (transcript, confidence, allAlternatives) => void
+   * @param {function} onError   (errorString) => void
+   * @param {object}   options   { retries, grammarWords }
    */
-  /**
-   * Start custom Voice Activity Detection to enforce trailing silence
-   */
-  async _startVAD(onFinalize) {
-    this._stopVAD();
-    try {
-      if (this._audioCtx && this._audioCtx.state === 'suspended') {
-        await this._audioCtx.resume();
-      }
-      this._micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      
-      if (!this._audioCtx) return; // Fallback if Web Audio not supported
-
-      const source = this._audioCtx.createMediaStreamSource(this._micStream);
-      this._analyser = this._audioCtx.createAnalyser();
-      this._analyser.fftSize = 256;
-      this._analyser.smoothingTimeConstant = 0.5;
-      source.connect(this._analyser);
-
-      const dataArray = new Uint8Array(this._analyser.frequencyBinCount);
-      const THRESHOLD = 10; // Volume threshold out of 255
-      const TRAILING_SILENCE_MS = 1800; // 1.8 seconds trailing silence config
-
-      this._isSpeaking = false;
-      this._lastSpeechTime = Date.now();
-
-      const monitorAudio = () => {
-        if (!this._listening) return;
-
-        this._analyser.getByteFrequencyData(dataArray);
-        let sum = 0;
-        for (let i = 0; i < dataArray.length; i++) {
-          sum += dataArray[i];
-        }
-        const average = sum / dataArray.length;
-
-        if (average > THRESHOLD) {
-          this._isSpeaking = true;
-          this._lastSpeechTime = Date.now();
-        } else if (this._isSpeaking) {
-          // Monitor trailing silence
-          if (Date.now() - this._lastSpeechTime > TRAILING_SILENCE_MS) {
-            console.log('[SpeechManager] VAD detected 1.8s silence. Manually finalizing.');
-            this._isSpeaking = false;
-            onFinalize();
-            return;
-          }
-        }
-
-        this._vadRafId = requestAnimationFrame(monitorAudio);
-      };
-      
-      monitorAudio();
-    } catch (e) {
-      console.warn('[SpeechManager] VAD initialization failed:', e.message);
-    }
-  }
-
-  _stopVAD() {
-    if (this._vadRafId) cancelAnimationFrame(this._vadRafId);
-    this._vadRafId = null;
-    if (this._micStream) {
-      this._micStream.getTracks().forEach(track => track.stop());
-      this._micStream = null;
-    }
-    if (this._analyser) {
-      try {
-        this._analyser.disconnect();
-      } catch(e) {}
-      this._analyser = null;
-    }
-    this._isSpeaking = false;
-  }
-
   listen(lang = 'en-US', onResult, onError, options = {}) {
     if (!this._RecognitionClass) {
-      onError?.('Speech recognition not supported');
+      onError?.('not-supported');
       return;
     }
 
-    this.stop(); // Stop any previous session
+    this.stop(); // Abort any previous session
 
-    // MOBILE FIX: Cancel any ongoing TTS to free the audio pipeline
-    if (this._synth) {
-      this._synth.cancel();
-    }
+    // Stop TTS so it doesn't conflict with the mic
+    this._synth?.cancel();
 
-    const maxRetries = options.retries ?? (this._isMobile ? 3 : 2);
+    const maxRetries = options.retries ?? (this._isMobile ? 2 : 1);
     let retriesLeft = maxRetries;
-    this._gotResult = false;
-    this._audioStarted = false;
-
-    // Reset aggregation
-    this._aggregateTranscript = '';
-    this._aggregateConfidence = 0;
-    this._aggregateAlternatives = [];
-    
-    // Establishing a persistent manual end state
-    let finalizeTriggered = false;
     this._listening = true;
 
-    // VAD finalizing callback
-    const handleManualFinalize = () => {
-      if (finalizeTriggered) return;
-      finalizeTriggered = true;
-      this.stop(); // stop VAD and underlying recognition
-
-      // Commit whatever we aggregated
-      if (this._aggregateTranscript) {
-        onResult?.(
-          this._aggregateTranscript.trim(),
-          this._aggregateConfidence,
-          this._aggregateAlternatives
-        );
-      } else {
-        onError?.('no-speech');
-      }
-    };
-
-    // Initialize custom VAD for iOS / continuous detection
-    this._startVAD(handleManualFinalize);
-
-    // Pre-build JSGF grammar if words provided and browser supports it
-    const grammarWords = options.grammarWords || null;
+    // Build JSGF grammar for non-iOS
     let grammarList = null;
-    if (grammarWords && this._GrammarListClass) {
+    if (!this._isIOSSafari && options.grammarWords && this._GrammarListClass) {
       try {
-        const grammarStr = this._buildGrammar(grammarWords);
+        const grammarStr = this._buildGrammar(options.grammarWords);
         if (grammarStr) {
           grammarList = new this._GrammarListClass();
-          grammarList.addFromString(grammarStr, 1.0); // weight 1.0 = highest priority
-          console.log(`[SpeechManager] JSGF grammar loaded: ${grammarWords.length} words`);
+          grammarList.addFromString(grammarStr, 1.0);
         }
-      } catch (e) {
-        console.warn('[SpeechManager] JSGF grammar not supported:', e.message);
-      }
+      } catch (_) {}
     }
 
     const startRecognition = () => {
-      if (!this._listening || finalizeTriggered) return;
+      if (!this._listening) return;
 
       const recognition = new this._RecognitionClass();
       recognition.lang = lang;
-      recognition.continuous = false;
-      // Disable interimResults on mobile for reliability
-      recognition.interimResults = !this._isMobile;
-      recognition.maxAlternatives = 5;
+      recognition.continuous = false; // false is REQUIRED on iOS
+      recognition.interimResults = this._isIOSSafari ? false : !this._isMobile;
+      recognition.maxAlternatives = this._isIOSSafari ? 1 : 5;
 
-      // Inject JSGF grammar to bias recognition toward curriculum words
       if (grammarList) {
-        try {
-          recognition.grammars = grammarList;
-        } catch (e) {
-          // Silently fail — grammars property may not be settable
-        }
+        try { recognition.grammars = grammarList; } catch (_) {}
       }
 
       recognition.onaudiostart = () => {
-        this._audioStarted = true;
-        // Notify listeners that mic is physically active
-        this._onTranscript?.({
-          micActive: true,
-          transcript: this._aggregateTranscript,
-          confidence: 0,
-          lang,
-          isFinal: false,
-          alternatives: '',
-        });
-        console.log('[SpeechManager] Audio capture started');
-      };
-
-      recognition.onsoundstart = () => {
-        console.log('[SpeechManager] Sound detected');
+        this._onTranscript?.({ micActive: true, transcript: '', confidence: 0, lang, isFinal: false });
       };
 
       recognition.onresult = (event) => {
-        this._gotResult = true;
         let bestTranscript = '';
         let bestConfidence = 0;
         const allAlternatives = [];
@@ -390,126 +257,92 @@ class SpeechManagerClass {
           const result = event.results[i];
           for (let j = 0; j < result.length; j++) {
             const alt = result[j];
-            allAlternatives.push({
-              transcript: alt.transcript,
-              confidence: alt.confidence,
-            });
+            allAlternatives.push({ transcript: alt.transcript, confidence: alt.confidence });
             if (alt.confidence > bestConfidence || !bestTranscript) {
               bestTranscript = alt.transcript;
               bestConfidence = alt.confidence;
             }
           }
 
-          const allAltsStr = allAlternatives
-            .map((a) => `${a.transcript} (${(a.confidence * 100).toFixed(0)}%)`)
-            .join(' | ');
-
-          const combinedTranscript = (this._aggregateTranscript + ' ' + bestTranscript).trim();
-
           this._onTranscript?.({
-            transcript: combinedTranscript,
-            confidence: bestConfidence,
-            lang,
-            isFinal: result.isFinal,
-            alternatives: allAltsStr,
-            micActive: false,
+            transcript: bestTranscript, confidence: bestConfidence,
+            lang, isFinal: result.isFinal, micActive: false,
           });
 
           if (result.isFinal) {
-            this._aggregateTranscript = combinedTranscript;
-            this._aggregateConfidence = Math.max(this._aggregateConfidence || 0, bestConfidence);
-            this._aggregateAlternatives = this._aggregateAlternatives.concat(allAlternatives);
+            this._listening = false;
+            onResult?.(bestTranscript.trim(), bestConfidence, allAlternatives);
             return;
           }
         }
 
-        // MOBILE FIX: If no results were isFinal but we got results, use the best transcript anyway
-        if (this._isMobile && bestTranscript && event.results.length > 0) {
-          this._aggregateTranscript = (this._aggregateTranscript + ' ' + bestTranscript).trim();
-          this._aggregateConfidence = Math.max(this._aggregateConfidence || 0, bestConfidence);
-          this._aggregateAlternatives = this._aggregateAlternatives.concat(allAlternatives);
+        // iOS / mobile: results may not be marked isFinal — use them anyway
+        if ((this._isIOSSafari || this._isMobile) && bestTranscript) {
+          this._listening = false;
+          onResult?.(bestTranscript.trim(), bestConfidence, allAlternatives);
         }
       };
 
       recognition.onerror = (event) => {
-        console.warn('[SpeechManager] recognition error:', event.error);
-        if (event.error === 'aborted' || finalizeTriggered) return;
+        console.warn('[SpeechManager] error:', event.error);
+        if (!this._listening) return;
 
-        if (
-          (event.error === 'no-speech' || event.error === 'audio-capture' || event.error === 'network') &&
-          retriesLeft > 0
-        ) {
+        if (['no-speech', 'audio-capture', 'network'].includes(event.error) && retriesLeft > 0) {
           retriesLeft--;
-          console.log(`[SpeechManager] Auto-retry (${maxRetries - retriesLeft}/${maxRetries})...`);
-          const delay = this._isMobile ? 500 : 300;
-          setTimeout(() => startRecognition(), delay);
+          setTimeout(() => startRecognition(), this._isMobile ? 500 : 300);
           return;
         }
 
-        // Yield aggregated results instead of error if we already captured speech
-        if (this._aggregateTranscript) {
-          handleManualFinalize();
-          return;
-        }
-
-        this.stop();
+        this._listening = false;
         onError?.(event.error);
       };
 
       recognition.onend = () => {
-        // Recognition stopped (perhaps prematurely cut off by browser)
-        if (!this._listening || finalizeTriggered) return;
-
-        console.log(`[SpeechManager] Native recognition ended. Rebooting for aggregation...`);
-        if (!this._gotResult && retriesLeft > 0) {
+        if (!this._listening) return;
+        // Silently ended without result — retry
+        if (retriesLeft > 0) {
           retriesLeft--;
+          setTimeout(() => startRecognition(), this._isIOSSafari ? 300 : 100);
+        } else {
+          this._listening = false;
+          onError?.('no-speech');
         }
-
-        // Restart recognition seamlessly to fulfill VAD trailing silence duration
-        setTimeout(() => startRecognition(), 50);
       };
 
       this._recognition = recognition;
-      
-      const startDelay = this._isMobile ? 250 : 0;
-      setTimeout(() => {
-        try {
-          if (this._listening && !finalizeTriggered) {
-             recognition.start();
-          }
-        } catch (e) {
-          if (e.message?.includes('already started')) {
-            try { this._recognition.abort(); } catch(_) {}
-            setTimeout(() => startRecognition(), 300);
-          } else {
-             if (this._aggregateTranscript) { handleManualFinalize(); } 
-             else { onError?.(e.message); }
-          }
+
+      try {
+        recognition.start();
+      } catch (e) {
+        if (e.message?.includes('already started')) {
+          try { recognition.abort(); } catch (_) {}
+          setTimeout(() => startRecognition(), 400);
+        } else {
+          this._listening = false;
+          onError?.(e.message);
         }
-      }, startDelay);
+      }
     };
 
-    startRecognition();
+    // iOS: must start synchronously (no setTimeout) to stay in gesture context
+    if (this._isIOSSafari) {
+      startRecognition();
+    } else {
+      // Small delay on Android/desktop to let TTS audio pipeline clear
+      setTimeout(() => startRecognition(), this._isMobile ? 250 : 0);
+    }
   }
 
-  /** Stop recognition */
+  // ── Cleanup ────────────────────────────────────────────────────────────────
+
   stop() {
     this._listening = false;
-    this._stopVAD();
     if (this._recognition) {
-      try {
-        this._recognition.abort();
-      } catch (_) { /* ignore */ }
+      try { this._recognition.abort(); } catch (_) {}
       this._recognition = null;
     }
   }
 
-  /** Stop synthesis */
-  stopSpeaking() {
-    this._synth?.cancel();
-  }
-
-  /** Clean up everything */
   destroy() {
     this.stop();
     this.stopSpeaking();
@@ -517,6 +350,5 @@ class SpeechManagerClass {
   }
 }
 
-// Singleton export
 const SpeechManager = new SpeechManagerClass();
 export default SpeechManager;
