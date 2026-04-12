@@ -11,15 +11,30 @@ import MonthLearning from './components/MonthLearning';
 import QuizArena from './components/QuizArena';
 import LevelUpToast from './components/LevelUpToast';
 import WelcomeModal from './components/WelcomeModal';
+import DesktopSidebar from './components/DesktopSidebar';
 import { getMuted, setMuted, preloadSounds, unlockAudio } from './utils/soundManager';
-import { LOCALIZATION } from './utils/localization';
-import { Map, User, Trophy, Settings, ChevronDown, Check } from 'lucide-react';
+import { Map, ChevronDown, Check } from 'lucide-react';
 import { useGameState } from './hooks/useGameState';
 import { loadPlayerName, savePlayerName } from './services/storageService';
 
 // ── Context ──────────────────────────────────────────────────────────────────
 export const GameStateContext = createContext(null);
 export const useGameStateContext = () => useContext(GameStateContext);
+
+// ── Desktop detection hook ───────────────────────────────────────────────────
+function useIsDesktop(breakpoint = 768) {
+  const [isDesktop, setIsDesktop] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth >= breakpoint : false
+  );
+  useEffect(() => {
+    const mql = window.matchMedia(`(min-width: ${breakpoint}px)`);
+    const handler = (e) => setIsDesktop(e.matches);
+    mql.addEventListener('change', handler);
+    setIsDesktop(mql.matches);
+    return () => mql.removeEventListener('change', handler);
+  }, [breakpoint]);
+  return isDesktop;
+}
 
 // ── Game ID mapping ───────────────────────────────────────────────────────────
 function getActiveGameId(currentSubject, mathSubGame) {
@@ -33,7 +48,7 @@ function getActiveGameId(currentSubject, mathSubGame) {
   return 'home';
 }
 
-// Tab definitions
+// Tab definitions (mobile bottom bar)
 const TABS = [
   { id: 'learn',       icon: '📚', label: { bm: 'Belajar',  eng: 'Learn'    } },
   { id: 'leaderboard', icon: '🏆', label: { bm: 'Ranking',  eng: 'Ranking'  } },
@@ -41,6 +56,7 @@ const TABS = [
 ];
 
 export default function App() {
+  const isDesktop = useIsDesktop();
   const [playerName,     setPlayerName]     = useState(() => loadPlayerName());
   const [currentSubject, setCurrentSubject] = useState(null);
   const [mathSubGame,    setMathSubGame]    = useState(null);
@@ -74,13 +90,10 @@ export default function App() {
   const handleStartTimeGame= (gameId) => { setDateTimeSubGame(gameId); setIsPlaying(true); };
   const handleBackToHome   = () => { setIsPlaying(false); setMathSubGame(null); setDateTimeSubGame(null); setCurrentSubject(null); };
   const handleToggleMute   = () => { const m = !isMuted; setIsMuted(m); setMuted(m); };
-
   const handleQuickSwitch  = (subject) => { setShowQuickSwitch(false); setIsPlaying(false); setMathSubGame(null); setDateTimeSubGame(null); setCurrentSubject(subject); };
+  const handleToggleLang   = () => setLanguage(l => l === 'bm' ? 'eng' : 'bm');
 
-  // Whether we are inside a live quiz (should hide tab bar)
   const inActiveQuiz = isPlaying;
-
-  // Unique key drives GPU swipe animation
   const viewKey = `${activeTab}-${currentSubject}-${mathSubGame}-${dateTimeSubGame}-${isPlaying}`;
 
   // ── Content renderer ──────────────────────────────────────────────────────
@@ -88,14 +101,13 @@ export default function App() {
     if (activeTab === 'leaderboard') return <LeaderboardPlaceholder language={language} />;
     if (activeTab === 'profile')     return <ProfilePlaceholder playerName={playerName} gameState={gameState} language={language} />;
 
-    // Learn tab
     switch (currentSubject) {
       case 'math':
         if (!mathSubGame) return <MathHome onSelectSubGame={setMathSubGame} onBack={handleBackToHome} onHome={handleBackToHome} language={language} />;
         if (mathSubGame === 'operations') {
           return !isPlaying
             ? <GameMenu onStart={handleStartGame} isMuted={isMuted} onToggleMute={handleToggleMute} onBack={() => setMathSubGame(null)} onHome={handleBackToHome} language={language} />
-            : <QuizArena operation={gameConfig.operation} difficulty={gameConfig.difficulty} selectedNumbers={gameConfig.selectedNumbers} quizType={gameConfig.quizType} onBack={handleBackToMenu} onHome={handleBackToHome} isMuted={isMuted} onToggleMute={handleToggleMute} language={language} />;
+            : <QuizArena operation={gameConfig.operation} difficulty={gameConfig.difficulty} selectedNumbers={gameConfig.selectedNumbers} quizType={gameConfig.quizType} onBack={handleBackToMenu} onHome={handleBackToHome} isMuted={isMuted} onToggleMute={handleToggleMute} language={language} isDesktop={isDesktop} />;
         }
         if (mathSubGame === 'datetime') {
           if (!isPlaying) return <TimeGameMenu onBack={() => setMathSubGame(null)} onStart={handleStartTimeGame} onHome={handleBackToHome} language={language} />;
@@ -115,11 +127,23 @@ export default function App() {
 
   return (
     <GameStateContext.Provider value={gameState}>
+      {/* Desktop Sidebar — rendered outside .app-container, inside #root row */}
+      {isDesktop && (
+        <DesktopSidebar
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          language={language}
+          onToggleLanguage={handleToggleLang}
+          playerName={playerName}
+          gameState={gameState}
+        />
+      )}
+
       <div className="app-container">
         {!playerName && <WelcomeModal onSave={handleSaveName} />}
         <LevelUpToast level={levelUpInfo?.newLevel} onDismiss={clearLevelUp} />
 
-        {/* Quick Switch Dropdown Overlay (click outside to close) */}
+        {/* Quick Switch overlay */}
         {showQuickSwitch && (
           <div
             onClick={() => setShowQuickSwitch(false)}
@@ -127,21 +151,14 @@ export default function App() {
           />
         )}
 
-        {/* Global Nav Header — only on Learn tab, not inside live quiz */}
-        {activeTab === 'learn' && !inActiveQuiz && (
+        {/* Mobile-only top nav header — hidden on desktop (sidebar replaces it) */}
+        {!isDesktop && activeTab === 'learn' && !inActiveQuiz && (
           <div style={{
-            background: '#fff',
-            borderBottom: '2px solid #E5E5E5',
-            padding: '0 1rem',
-            height: '56px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem',
-            flexShrink: 0,
-            zIndex: 50,
-            position: 'relative',
+            background: '#fff', borderBottom: '2px solid #E5E5E5',
+            padding: '0 1rem', height: '56px',
+            display: 'flex', alignItems: 'center', gap: '0.75rem',
+            flexShrink: 0, zIndex: 50, position: 'relative',
           }}>
-            {/* Left: Home / Back */}
             <div style={{ flex: '0 0 auto' }}>
               {currentSubject ? (
                 <button onClick={handleBackToHome} style={{ background: 'transparent', color: '#AFAFAF', fontSize: '1.3rem', display: 'flex', alignItems: 'center', padding: '4px' }}>
@@ -152,7 +169,6 @@ export default function App() {
               )}
             </div>
 
-            {/* Centre: Subject Quick Switch or App Title */}
             <div style={{ flex: 1, display: 'flex', justifyContent: 'center', position: 'relative' }}>
               {currentSubject ? (
                 <>
@@ -191,12 +207,57 @@ export default function App() {
               )}
             </div>
 
-            {/* Right: Language toggle */}
             <div style={{ flex: '0 0 auto' }}>
-              <button onClick={() => setLanguage(l => l === 'bm' ? 'eng' : 'bm')} className="lang-btn">
+              <button onClick={handleToggleLang} className="lang-btn">
                 {language === 'bm' ? 'EN' : 'BM'}
               </button>
             </div>
+          </div>
+        )}
+
+        {/* Desktop top bar — simplified breadcrumb when inside a subject */}
+        {isDesktop && activeTab === 'learn' && currentSubject && !inActiveQuiz && (
+          <div style={{
+            background: '#fff', borderBottom: '2px solid #E5E5E5',
+            padding: '0 var(--sp-3)', height: '48px',
+            display: 'flex', alignItems: 'center', gap: 'var(--sp-2)',
+            flexShrink: 0,
+          }}>
+            <button onClick={handleBackToHome} style={{ background: 'transparent', color: '#AFAFAF', fontSize: '1.1rem', display: 'flex', alignItems: 'center' }}>
+              ←
+            </button>
+            <button
+              onClick={() => setShowQuickSwitch(v => !v)}
+              style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#f7f7f7', border: '2px solid #E5E5E5', borderRadius: '999px', padding: '6px 14px', fontWeight: 800, fontSize: '0.85rem', color: '#3C3C3C' }}
+            >
+              <Map size={14} color="#1CB0F6" />
+              {currentSubject === 'math' ? '🔢 Matematik' : currentSubject === 'bm' ? '🗣️ Bahasa Melayu' : '📖 Jawi'}
+              <ChevronDown size={14} />
+            </button>
+            {showQuickSwitch && (
+              <div className="fade-in" style={{
+                position: 'absolute', top: '48px', left: 'var(--sp-3)',
+                background: '#fff', borderRadius: '16px', boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                width: '210px', overflow: 'hidden', border: '2px solid #E5E5E5', zIndex: 100,
+              }}>
+                {[
+                  { id: 'math',  emoji: '🔢', label: 'Matematik' },
+                  { id: 'bm',    emoji: '🗣️', label: 'Bahasa Melayu' },
+                  { id: 'jawi',  emoji: '📖', label: 'Jawi' },
+                ].map(s => (
+                  <button key={s.id} onClick={() => handleQuickSwitch(s.id)}
+                    style={{ padding: '0.85rem 1rem', display: 'flex', alignItems: 'center', gap: '0.75rem', width: '100%', background: currentSubject === s.id ? '#F0FFF0' : '#fff', borderBottom: '1px solid #f0f0f0', fontWeight: 700, color: '#3C3C3C', fontSize: '0.92rem' }}>
+                    <span style={{ fontSize: '1.2rem' }}>{s.emoji}</span>
+                    <span style={{ flex: 1, textAlign: 'left' }}>{s.label}</span>
+                    {currentSubject === s.id && <Check size={16} color="#58CC02" />}
+                  </button>
+                ))}
+              </div>
+            )}
+            <div style={{ flex: 1 }} />
+            <button onClick={handleToggleLang} className="lang-btn">
+              {language === 'bm' ? 'EN' : 'BM'}
+            </button>
           </div>
         )}
 
@@ -207,14 +268,14 @@ export default function App() {
           </div>
         </div>
 
-        {/* Bottom Tab Bar — hidden during active quiz */}
+        {/* Mobile Bottom Tab Bar — hidden on desktop via CSS */}
         {!inActiveQuiz && (
           <div className="duo-tab-bar">
             {TABS.map(tab => (
               <button
                 key={tab.id}
                 className={`duo-tab-item${activeTab === tab.id ? ' active' : ''}`}
-                onClick={() => { setActiveTab(tab.id); if (tab.id === 'learn') { /* stay on current subject */ } }}
+                onClick={() => setActiveTab(tab.id)}
               >
                 <span className="duo-tab-icon">{tab.icon}</span>
                 <span>{tab.label[language] || tab.label.bm}</span>
@@ -241,15 +302,12 @@ function LeaderboardPlaceholder({ language }) {
 function ProfilePlaceholder({ playerName, gameState, language }) {
   return (
     <div style={{ flex: 1, overflowY: 'auto', background: '#f7f7f7' }}>
-      {/* Profile header */}
       <div style={{ background: '#fff', padding: '2rem 1.5rem', textAlign: 'center', borderBottom: '2px solid #E5E5E5' }}>
         <div style={{ fontSize: '4rem', marginBottom: '0.5rem' }}>🦉</div>
         <h2 style={{ fontWeight: 900, fontSize: '1.4rem', color: '#3C3C3C', marginBottom: '4px' }}>{playerName || 'Player'}</h2>
         <p style={{ color: '#AFAFAF', fontWeight: 600, fontSize: '0.85rem' }}>Level {gameState?.level ?? 1} Explorer</p>
       </div>
-
-      {/* Stats grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', padding: '1.25rem 1rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', padding: '1.25rem 1rem', maxWidth: '700px', margin: '0 auto' }}>
         {[
           { label: 'Total XP', value: gameState?.totalXP ?? 0, color: '#FFC800', emoji: '⭐' },
           { label: language === 'bm' ? 'Syiling' : 'Coins',  value: gameState?.mathCoins ?? 0, color: '#1CB0F6', emoji: '🪙' },

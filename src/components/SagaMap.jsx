@@ -20,6 +20,20 @@ const SECTIONS = [
   { label: 'Section 3',  title: 'Multiplication Volcano 🌋', color: '#FF4B4B', dark: '#CC3B3B' },
 ];
 
+// Desktop-only floating decorations (rendered via .saga-deco which is display:none on mobile)
+const DECORATIONS = [
+  { emoji: '☁️', top: '5%',  left: '8%',  delay: '0s',   size: '2.5rem' },
+  { emoji: '☁️', top: '15%', right: '5%', delay: '2s',   size: '2rem' },
+  { emoji: '🌲', top: '25%', left: '3%',  delay: '1s',   size: '2.2rem' },
+  { emoji: '✨', top: '35%', right: '8%', delay: '3s',   size: '1.8rem' },
+  { emoji: '🌳', top: '45%', left: '6%',  delay: '0.5s', size: '2rem' },
+  { emoji: '☁️', top: '55%', right: '3%', delay: '1.5s', size: '2.5rem' },
+  { emoji: '➕', top: '65%', left: '4%',  delay: '2.5s', size: '1.6rem' },
+  { emoji: '✖️', top: '72%', right: '6%', delay: '0.8s', size: '1.6rem' },
+  { emoji: '🌲', top: '82%', left: '7%',  delay: '3.5s', size: '2rem' },
+  { emoji: '☁️', top: '90%', right: '4%', delay: '1.2s', size: '2.2rem' },
+];
+
 export default function SagaMap({ onSelectLevel }) {
   const gameState = useContext(GameStateContext);
   const userLevel = gameState?.level || 1;
@@ -28,6 +42,23 @@ export default function SagaMap({ onSelectLevel }) {
 
   return (
     <div className="saga-container" style={{ background: '#f7f7f7' }}>
+      {/* Desktop floating decorations */}
+      {DECORATIONS.map((deco, i) => (
+        <div
+          key={i}
+          className="saga-deco"
+          style={{
+            top: deco.top,
+            left: deco.left,
+            right: deco.right,
+            fontSize: deco.size,
+            animationDelay: deco.delay,
+          }}
+        >
+          {deco.emoji}
+        </div>
+      ))}
+
       <div style={{ paddingBottom: '8rem' }}>
         {SAGA_LEVELS.map((lvl) => {
           const isUnlocked  = userLevel >= lvl.id;
@@ -73,7 +104,7 @@ export default function SagaMap({ onSelectLevel }) {
                   </span>
                 </button>
 
-                {/* Tooltip / label under current node */}
+                {/* START callout for current node */}
                 {isCurrent && (
                   <button
                     className="saga-start-btn"
@@ -110,3 +141,4 @@ export default function SagaMap({ onSelectLevel }) {
     </div>
   );
 }
+

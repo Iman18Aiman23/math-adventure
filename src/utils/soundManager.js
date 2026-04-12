@@ -71,3 +71,31 @@ export const playSound = (type) => {
         console.warn(`Could not play sound: ${type}`, e);
     });
 };
+
+/**
+ * Play a subtle hover click sound on desktop.
+ * Uses Web Audio API oscillator — no external file needed.
+ * Call this on mouseenter of buttons/cards.
+ */
+let _audioCtx = null;
+export const playHoverSound = () => {
+    if (isMuted) return;
+    // Only on desktop (no hover on touch)
+    if ('ontouchstart' in window) return;
+
+    try {
+        if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = _audioCtx.createOscillator();
+        const gain = _audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1200, _audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(800, _audioCtx.currentTime + 0.04);
+        gain.gain.setValueAtTime(0.03, _audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, _audioCtx.currentTime + 0.06);
+        osc.connect(gain);
+        gain.connect(_audioCtx.destination);
+        osc.start(_audioCtx.currentTime);
+        osc.stop(_audioCtx.currentTime + 0.06);
+    } catch (_) { /* silent fail */ }
+};
+

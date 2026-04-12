@@ -10,7 +10,7 @@ import { GameStateContext } from '../App';
 const MAX_QUESTIONS = 10;
 const MAX_LIVES = 3;
 
-export default function QuizArena({ operation, difficulty, selectedNumbers, onBack, onHome, isMuted, onToggleMute, quizType, language }) {
+export default function QuizArena({ operation, difficulty, selectedNumbers, onBack, onHome, isMuted, onToggleMute, quizType, language, isDesktop }) {
   const t = LOCALIZATION[language].quizArena;
   const gameState = useContext(GameStateContext);
 
@@ -56,6 +56,8 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
       playSound('wrong');
       setStreak(0);
       setLives(l => l - 1);
+      // Haptic feedback on mobile
+      if (navigator.vibrate) navigator.vibrate(50);
     }
   };
 
@@ -150,14 +152,16 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
         </div>
       </div>
 
-      {/* ── Question Zone (top half) ── */}
-      <div className="question-zone">
-        <p className="question-label">{language === 'bm' ? 'Berapakah hasilnya?' : 'What is the answer?'}</p>
-        <div className="question-text-math">
-          {problem.num1} {problem.symbol} {problem.num2}
+      {/* ── Quiz Body: Two-column on desktop, stacked on mobile ── */}
+      <div className={isDesktop ? 'quiz-split' : ''}>
+        {/* ── Question Zone ── */}
+        <div className="question-zone">
+          <p className="question-label">{language === 'bm' ? 'Berapakah hasilnya?' : 'What is the answer?'}</p>
+          <div className="question-text-math">
+            {problem.num1} {problem.symbol} {problem.num2}
+          </div>
+          <div style={{ fontSize: '2rem', color: '#AFAFAF', marginTop: '0.25rem', fontWeight: 800 }}>= ?</div>
         </div>
-        <div style={{ fontSize: '2rem', color: '#AFAFAF', marginTop: '0.25rem', fontWeight: 800 }}>= ?</div>
-      </div>
 
       {/* ── Answer Thumb Zone (bottom half) ── */}
       <div className="thumb-zone">
@@ -199,9 +203,10 @@ export default function QuizArena({ operation, difficulty, selectedNumbers, onBa
                 </button>
               );
             })}
-          </div>
+        </div>
         )}
       </div>
+      </div> {/* end quiz-split */}
 
       {/* ── Feedback Drawer (slides up) ── */}
       {feedback === 'correct' && (

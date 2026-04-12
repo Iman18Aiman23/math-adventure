@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { LOCALIZATION } from '../utils/localization';
 import { GameStateContext } from '../App';
+import { playHoverSound } from '../utils/soundManager';
 
 const COURSES = [
   {
@@ -105,6 +106,7 @@ export default function HomePage({ onSelectSubject, language, playerName, gameSt
               key={course.id}
               className="duo-course-card fade-in"
               onClick={() => onSelectSubject(course.id)}
+              onMouseEnter={playHoverSound}
               style={{ animationDelay: `${i * 0.06}s` }}
             >
               <div className="duo-course-icon" style={{ background: course.iconBg }}>

@@ -44,6 +44,17 @@
   --header-h: 56px;
   --tab-bar-h: 66px;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --sidebar-w: 0px;
+  --content-max: 700px;
+
+  /* 8pt Spacing System */
+  --sp-1: 8px;
+  --sp-2: 16px;
+  --sp-3: 24px;
+  --sp-4: 32px;
+  --sp-5: 40px;
+  --sp-6: 48px;
+  --sp-8: 64px;
 
   /* Legacy compat */
   --grape:  #CE82FF;
@@ -57,8 +68,6 @@
   --color-error:   var(--duo-red);
   --radius-card:   var(--border-radius-lg);
   --shadow-card:   var(--shadow-sm);
-  --font-heading:  'Nunito', sans-serif;
-  --font-body:     'Nunito', sans-serif;
 }
 
 /* =============================================
@@ -110,6 +119,13 @@ body {
   overflow: hidden;
   box-shadow: 0 0 40px rgba(0,0,0,0.15);
   background: var(--bg-body);
+}
+
+/* =============================================
+   DESKTOP SIDEBAR (hidden on mobile)
+   ============================================= */
+.desktop-sidebar {
+  display: none;
 }
 
 h1, h2, h3 {
@@ -1409,7 +1425,7 @@ button {
 }
 
 /* =============================================
-   RESPONSIVE
+   RESPONSIVE — Small Mobile
    ============================================= */
 @media (max-width: 400px) {
   .btn-option { min-height: 4rem; font-size: 1.25rem; }
@@ -1417,4 +1433,274 @@ button {
   .jawi-card { padding: 0.5rem 0.25rem; }
   .jawi-card .jawi-text { font-size: 1.6rem !important; }
   .question-text-math { font-size: clamp(2rem, 12vw, 3.5rem) !important; }
+}
+
+/* =============================================
+   RESPONSIVE — Desktop (≥ 768px)
+   ============================================= */
+@media (min-width: 768px) {
+  :root {
+    --sidebar-w: 240px;
+  }
+
+  html { font-size: 18px; }
+
+  /* Remove phone-mockup constraint */
+  #root {
+    max-width: 100%;
+    flex-direction: row;
+    box-shadow: none;
+    background: var(--bg-body);
+  }
+
+  /* ── Desktop Sidebar ── */
+  .desktop-sidebar {
+    display: flex;
+    flex-direction: column;
+    width: var(--sidebar-w);
+    min-width: var(--sidebar-w);
+    height: 100%;
+    background: var(--bg-white);
+    border-right: 2px solid var(--border-color);
+    flex-shrink: 0;
+    z-index: 60;
+    padding: var(--sp-3) 0;
+    overflow-y: auto;
+  }
+
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    padding: var(--sp-2) var(--sp-3);
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--duo-green);
+    margin-bottom: var(--sp-3);
+  }
+  .sidebar-logo-owl { font-size: 2rem; }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    padding: 0 var(--sp-2);
+  }
+
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-2) var(--sp-2);
+    border-radius: var(--border-radius-md);
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    background: transparent;
+    transition: background 0.15s, color 0.15s;
+    width: 100%;
+    text-align: left;
+  }
+  .sidebar-item:hover {
+    background: var(--bg-body);
+    color: var(--text-primary);
+  }
+  .sidebar-item.active {
+    background: #E8F5FF;
+    color: var(--duo-blue);
+    font-weight: 800;
+  }
+  .sidebar-item-icon { font-size: 1.4rem; width: 32px; text-align: center; }
+
+  .sidebar-footer {
+    padding: var(--sp-2) var(--sp-3);
+    border-top: 2px solid var(--border-color);
+    margin-top: var(--sp-2);
+  }
+  .sidebar-stat-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    padding: 6px 0;
+  }
+
+  /* ── App container becomes right-side column ── */
+  .app-container {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+  }
+
+  /* ── Hide mobile bottom tab bar on desktop ── */
+  .duo-tab-bar {
+    display: none !important;
+  }
+
+  /* ── Content column centering ── */
+  .view-container > * {
+    max-width: var(--content-max);
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+  }
+
+  /* Full-bleed exceptions (saga map, game pages) */
+  .view-container > .game-container,
+  .view-container > div[style] {
+    max-width: 100%;
+  }
+
+  /* Center content inside game-container too */
+  .game-container > *:not(.game-header):not(.feedback-drawer) {
+    max-width: var(--content-max);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Game header spans full width */
+  .game-header {
+    max-width: 100%;
+  }
+
+  /* ── Desktop Quiz: Two-column layout ── */
+  .quiz-split {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    flex: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .quiz-split .question-zone {
+    flex: 1.2;
+    border-right: 2px solid var(--border-color);
+    min-height: auto;
+  }
+  .quiz-split .thumb-zone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* ── Feedback drawer: centered on desktop ── */
+  .feedback-drawer {
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: var(--content-max);
+    width: 100%;
+    border-radius: var(--border-radius-lg);
+    animation: drawerUpDesktop 0.28s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+  }
+  @keyframes drawerUpDesktop {
+    from { transform: translateX(-50%) translateY(100%); }
+    to   { transform: translateX(-50%) translateY(0); }
+  }
+
+  /* ── Desktop Saga Map: wider path spacing ── */
+  .saga-path {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  .saga-node-wrapper:nth-child(odd)  { padding-right: 120px; }
+  .saga-node-wrapper:nth-child(even) { padding-left: 120px; }
+  .saga-node { width: 80px; height: 80px; font-size: 2rem; }
+
+  /* ── Desktop hover states (not on mobile) ── */
+  .btn-primary:hover {
+    filter: brightness(1.08);
+    box-shadow: 0 4px 12px rgba(88, 204, 2, 0.3);
+  }
+  .btn-secondary:hover {
+    background: #F0F8FF;
+    box-shadow: 0 4px 12px rgba(28, 176, 246, 0.2);
+  }
+  .btn-option:hover:not(.disabled):not(.correct-anim):not(.wrong-anim) {
+    background: #FAFAFA;
+    border-color: var(--duo-blue);
+    box-shadow: 0 2px 8px rgba(28, 176, 246, 0.15);
+  }
+  .duo-course-card:hover {
+    border-color: var(--duo-blue);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+  .duo-lesson-row:hover {
+    border-color: var(--duo-blue);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+  }
+  .bm-category-card:hover {
+    border-color: var(--duo-blue);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+  }
+  .saga-node:hover:not(.locked) {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  }
+
+  /* ── Desktop typography uplift ── */
+  .game-title { font-size: 2.4rem; }
+  .welcome-title { font-size: 2.2rem; }
+  .question-text-math { font-size: 4.5rem; }
+  .lesson-complete-title { font-size: 2.5rem; }
+
+  /* ── Saga Map: Desktop Decorations ── */
+  .saga-container {
+    position: relative;
+  }
+  .saga-deco {
+    position: absolute;
+    font-size: 2rem;
+    opacity: 0.15;
+    pointer-events: none;
+    animation: floatDeco 6s ease-in-out infinite;
+  }
+  @keyframes floatDeco {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-12px) rotate(5deg); }
+  }
+}
+
+/* ── Wide Desktop (≥ 1100px) ── */
+@media (min-width: 1100px) {
+  :root {
+    --content-max: 800px;
+  }
+  .quiz-split {
+    max-width: 1000px;
+  }
+}
+
+/* =============================================
+   SKELETON LOADING
+   ============================================= */
+.skeleton {
+  background: linear-gradient(90deg, #F0F0F0 25%, #E0E0E0 50%, #F0F0F0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--border-radius-sm);
+}
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.skeleton-text {
+  height: 1em;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
+.skeleton-circle {
+  border-radius: 50%;
+}
+.skeleton-card {
+  height: 80px;
+  border-radius: var(--border-radius-md);
+  margin-bottom: 0.75rem;
 }

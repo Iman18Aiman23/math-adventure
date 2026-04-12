@@ -50,3 +50,36 @@
   - [x] Fix `.game-container` — changed `overflow: hidden` → `overflow-y: auto` with `-webkit-overflow-scrolling: touch`.
   - [x] Verified: 100 Perkataan Jawi (topic list + word list), Jawi Alphabet Grid, Match Game selection, Jawi Menu — all scrollable.
   - [x] Verified: QuizArena retains its own `overflow: hidden` (correct for fixed thumb-zone layout).
+
+- [x] Phase 6: Universal Pro — Desktop + Mobile Responsive Overhaul
+  - [x] **6A: CSS Responsive Foundation** (`index.css`)
+    - [x] 8pt spacing system (`--sp-1` through `--sp-8`).
+    - [x] Desktop breakpoint `@media (min-width: 768px)` — font-size 18px, #root `flex-direction: row`.
+    - [x] Desktop sidebar CSS (`.desktop-sidebar`, `.sidebar-item`, `.sidebar-footer`).
+    - [x] Hide bottom tab bar on desktop (`display: none !important`).
+    - [x] Content column centering (`max-width: var(--content-max)`).
+    - [x] Two-column quiz layout (`.quiz-split` with `flex-direction: row`).
+    - [x] Desktop typography uplift (larger headings/question text).
+    - [x] Desktop hover states (brightness, box-shadow, translateY) on buttons, cards, saga nodes.
+    - [x] Feedback drawer centered on desktop (`max-width: 700px, translateX(-50%)`).
+    - [x] Wide desktop breakpoint `@media (min-width: 1100px)` — `--content-max: 800px`.
+    - [ ] Skeleton loading animation — basic CSS (`.skeleton` classes) added, but needs wiring across component transitions to hide layout shifts.
+  - [x] **6B: App Shell** (`App.jsx` + `DesktopSidebar.jsx`)
+    - [x] `useIsDesktop()` hook — `window.matchMedia('(min-width: 768px)')` with resize listener.
+    - [x] `DesktopSidebar.jsx` [NEW] — Left-side nav, 240px, owl logo, Learn/Leaderboard/Profile, language toggle, player stats footer.
+    - [x] Desktop breadcrumb header with Quick Switch dropdown (replaces mobile top header).
+    - [x] `isDesktop` prop passed to `QuizArena` for two-column layout.
+  - [x] **6C: Desktop QuizArena** (`QuizArena.jsx`)
+    - [x] `.quiz-split` wrapper — question left (60%) + answers right (40%) on desktop.
+    - [x] Mobile: remains stacked single-column.
+    - [x] Haptic feedback: `navigator.vibrate(50)` on wrong answers (mobile only).
+  - [x] **6D: Desktop Saga Map** (`SagaMap.jsx`)
+    - [x] Floating decorative elements (clouds, trees, math symbols, stars) via `.saga-deco` class.
+    - [x] Wider Z-path (120px padding vs 80px mobile), larger nodes (80px vs 72px).
+  - [x] **6E: Professional Interactions**
+    - [x] Desktop hover click sounds using Web Audio API (`playHoverSound`).
+    - [x] `localStorage` persistence verified.
+  - [x] **Verified** — Production build passes (`vite build` — 7.41s, 0 errors).
+  - [x] **Verified** — Desktop: sidebar, two-column quiz, saga decorations, centered content, hover states, interactions.
+  - [x] **Verified** — Mobile: sidebar hidden, bottom tab bar shows, single-column layout, haptics.
+
