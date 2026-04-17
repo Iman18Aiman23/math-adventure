@@ -1,248 +1,330 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import confetti from 'canvas-confetti';
-import { ArrowRight } from 'lucide-react';
+import { X, Clock } from 'lucide-react';
 import { generateClockProblem } from '../utils/timeData';
-import { playSound, toggleMute, getMuted } from '../utils/soundManager';
 import AnalogClock from './AnalogClock';
-import GameHeader from './GameHeader';
-import { LOCALIZATION } from '../utils/localization';
-import { GameStateContext } from '../App';
+
+// ─── Web Speech API voice helper ───────────────────────────────────────────────
+function speak(text, { pitch = 1.4, rate = 1.05, volume = 1 } = {}) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.pitch   = pitch;
+  utt.rate    = rate;
+  utt.volume  = volume;
+  const voices = window.speechSynthesis.getVoices();
+  const preferred = voices.find(v =>
+    /Google|Zira|Hazel|Karen|Samantha|Nicky/i.test(v.name)
+  ) || voices[0];
+  if (preferred) utt.voice = preferred;
+  window.speechSynthesis.speak(utt);
+}
+
+const STREAK_MILESTONE = 10;
+const STREAK_CHEERS_BM  = ['Bagus!', 'Cemerlang!', 'Hebat!', 'Luar Biasa!', 'Menakjubkan!', 'BINTANG!', 'GENIUS!', 'PAKAR MASA!'];
+const STREAK_CHEERS_EN  = ['Brilliant!', 'Excellent!', 'Amazing!', 'Fantastic!', 'Incredible!', 'SUPERSTAR!', 'GENIUS!', 'TIME WIZARD!'];
+
+function StreakPopup({ streak, language, onClose }) {
+  const milestoneCount = Math.floor(streak / STREAK_MILESTONE);
+  const cheers = language === 'bm' ? STREAK_CHEERS_BM : STREAK_CHEERS_EN;
+  const cheer = cheers[Math.min(milestoneCount - 1, cheers.length - 1)];
+
+  return (
+    <div className="ops-streak-overlay" onClick={onClose}>
+      <div className="ops-streak-popup" onClick={e => e.stopPropagation()}>
+        <div className="ops-streak-firework">🎉</div>
+        <div className="ops-streak-number">{streak}</div>
+        <div className="ops-streak-label">
+          {language === 'bm' ? 'jawapan betul berturut-turut!' : 'correct answers in a row!'}
+        </div>
+        <div className="ops-streak-cheer">{cheer}</div>
+        <button className="ops-streak-continue" onClick={onClose}>
+          {language === 'bm' ? 'Terus! 🚀' : 'Keep Going! 🚀'}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function ClockGame({ onBack, onHome, language }) {
-    const t = LOCALIZATION[language].clockGame;
-    const gameState = useContext(GameStateContext);
-    const [clockMode, setClockMode] = useState('analog-to-digital'); // user-selectable
-    const [currentQuestion, setCurrentQuestion] = useState(null);
-    const [score, setScore] = useState(0);
-    const [streak, setStreak] = useState(0);
-    const [selectedOption, setSelectedOption] = useState(null);
-    const [feedback, setFeedback] = useState(null);
-    const [isMuted, setIsMuted] = useState(getMuted());
-    const [isAnimating, setIsAnimating] = useState(false);
+  const bm = language === 'bm';
+  
+  const [clockMode, setClockMode] = useState('analog-to-digital'); // 'analog-to-digital' or 'digital-to-analog'
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+  
+  const [streak, setStreak] = useState(0);
+  const [totalAnswered, setTotalAnswered] = useState(0);
+  
+  const [feedback, setFeedback] = useState(null); // 'correct' | 'incorrect'
+  const [selectedOption, setSelectedOption] = useState(null);
+  
+  const [showStreak, setShowStreak] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
-    useEffect(() => {
+  const feedbackTimer = useRef(null);
+
+  // Pre-load voices
+  useEffect(() => {
+    if (window.speechSynthesis) {
+      window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    }
+  }, []);
+
+  const generateQuestion = useCallback(() => {
+    const problem = generateClockProblem();
+
+    if (clockMode === 'digital-to-analog') {
+      const correctTime = { hour: problem.hour, minute: problem.minute, id: 0 };
+      let distractors = [];
+      while (distractors.length < 3) {
+        const h = Math.floor(Math.random() * 12) + 1;
+        const m = Math.floor(Math.random() * 12) * 5;
+        if (h !== correctTime.hour || m !== correctTime.minute) {
+          if (!distractors.some(d => d.hour === h && d.minute === m)) {
+            distractors.push({ hour: h, minute: m, id: distractors.length + 1 });
+          }
+        }
+      }
+      const options = [correctTime, ...distractors].sort(() => 0.5 - Math.random());
+      setCurrentQuestion({ ...problem, analogOptions: options });
+    } else {
+      setCurrentQuestion(problem);
+    }
+
+    setFeedback(null);
+    setSelectedOption(null);
+    setIsAnimating(false);
+  }, [clockMode]);
+
+  useEffect(() => {
+    generateQuestion();
+    return () => { if (feedbackTimer.current) clearTimeout(feedbackTimer.current); };
+  }, [generateQuestion]);
+
+  const handleAnswer = useCallback((opt) => {
+    if (feedback || isAnimating) return;
+    
+    setSelectedOption(opt);
+
+    const isCorrect = clockMode === 'analog-to-digital'
+      ? opt === currentQuestion.answer
+      : (opt.hour === currentQuestion.hour && opt.minute === currentQuestion.minute);
+
+    setFeedback(isCorrect ? 'correct' : 'incorrect');
+    setIsAnimating(true);
+
+    if (isCorrect) {
+      const newStreak = streak + 1;
+      setStreak(newStreak);
+      setTotalAnswered(t => t + 1);
+
+      speak(
+        bm ? `Betul! ${newStreak} berturut-turut!` : `Correct! ${newStreak} in a row!`,
+        { pitch: 1.5, rate: 1.1 }
+      );
+
+      if (newStreak % STREAK_MILESTONE === 0) {
+        confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
+        const milestoneCount = newStreak / STREAK_MILESTONE;
+        const cheers = bm ? STREAK_CHEERS_BM : STREAK_CHEERS_EN;
+        const cheer  = cheers[Math.min(milestoneCount - 1, cheers.length - 1)];
+        setTimeout(() => {
+          speak(
+            bm ? `Wah! ${newStreak} jawapan betul! ${cheer}!` : `Wow! ${newStreak} correct answers! ${cheer}!`,
+            { pitch: 1.6, rate: 1.0 }
+          );
+          setShowStreak(true);
+        }, 400);
+      } else {
+        confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 }, scalar: 0.8 });
+      }
+
+      feedbackTimer.current = setTimeout(() => {
         generateQuestion();
-    }, []);
+      }, 1200);
 
-    const handleModeChange = (mode) => {
-        if (mode === clockMode) return;
-        setCurrentQuestion(null);
-        setClockMode(mode);
-    };
+    } else {
+      setStreak(0);
+      setTotalAnswered(t => t + 1);
+      if (navigator.vibrate) navigator.vibrate([60, 30, 60]);
 
-    // Generate new question when mode changes (skip initial mount)
-    const prevModeRef = React.useRef(clockMode);
-    useEffect(() => {
-        if (prevModeRef.current !== clockMode) {
-            prevModeRef.current = clockMode;
-            generateQuestion();
-        }
-    }, [clockMode]);
+      // State answer out loud
+      speak(
+        bm ? `Cuba lagi! Jawapannya ialah ${currentQuestion.displayTime}` : `Try again! The answer is ${currentQuestion.displayTime}`,
+        { pitch: 1.3, rate: 0.95 }
+      );
+    }
+  }, [feedback, isAnimating, currentQuestion, streak, bm, clockMode, generateQuestion]);
 
-    const generateQuestion = () => {
-        const problem = generateClockProblem();
+  const handleModeChange = () => {
+    setCurrentQuestion(null);
+    setClockMode(prev => prev === 'analog-to-digital' ? 'digital-to-analog' : 'analog-to-digital');
+  };
 
-        if (clockMode === 'digital-to-analog') {
-            const correctTime = { hour: problem.hour, minute: problem.minute, id: 0 };
-            let distractors = [];
-            while (distractors.length < 3) {
-                const h = Math.floor(Math.random() * 12) + 1;
-                const m = Math.floor(Math.random() * 12) * 5;
-                if (h !== correctTime.hour || m !== correctTime.minute) {
-                    if (!distractors.some(d => d.hour === h && d.minute === m)) {
-                        distractors.push({ hour: h, minute: m, id: distractors.length + 1 });
-                    }
-                }
-            }
-            const options = [correctTime, ...distractors].sort(() => 0.5 - Math.random());
-            setCurrentQuestion({ ...problem, analogOptions: options });
-        } else {
-            setCurrentQuestion(problem);
-        }
-
-        setFeedback(null);
-        setSelectedOption(null);
-        setIsAnimating(false);
-        // Clear any active focus to prevent persistent colors on mobile
-        if (typeof document !== 'undefined') {
-            document.activeElement?.blur();
-        }
-    };
-
-    const handleAnswer = (option) => {
-        if (isAnimating) return;
-        setSelectedOption(option);
-
-        const isCorrect = clockMode === 'analog-to-digital'
-            ? option === currentQuestion.answer
-            : (option.hour === currentQuestion.hour && option.minute === currentQuestion.minute);
-
-        if (isCorrect) {
-            setIsAnimating(true);
-            setScore(s => s + 10);
-            setFeedback('correct');
-            if (gameState?.addWin) gameState.addWin(10);
-            const newStreak = streak + 1;
-            setStreak(newStreak);
-
-            if (newStreak > 0 && newStreak % 5 === 0) {
-                playSound('streak');
-                confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } });
-                setTimeout(generateQuestion, 2000);
-            } else {
-                playSound('correct');
-                setTimeout(generateQuestion, 1000);
-            }
-        } else {
-            setFeedback('incorrect');
-            setStreak(0);
-            playSound('wrong');
-            setIsAnimating(true);
-        }
-    };
-
-    const handleToggleMute = () => {
-        const muted = toggleMute();
-        setIsMuted(muted);
-    };
-
-    const toggleBtnStyle = (active) => ({
-        padding: '0.5rem 1rem',
-        borderRadius: '10px',
-        border: active ? '2px solid #4ECDC4' : '2px solid #eee',
-        background: active ? '#e0f7f5' : 'white',
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0.3rem',
-        fontSize: '0.85rem',
-        fontWeight: 'bold'
-    });
-
-    if (!currentQuestion) return <div className="game-container" style={{ textAlign: 'center', padding: '5rem' }}>{t.loading}</div>;
-
+  if (!currentQuestion) {
     return (
-        <div className="game-container">
-            <GameHeader
-                onBack={onBack}
-                onHome={onHome}
-                onToggleMute={handleToggleMute}
-                isMuted={isMuted}
-                score={score}
-                streak={streak}
-                title={t.timeAdventure}
-                language={language}
-            />
-
-            {/* Mode Toggle */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-                <button onClick={() => handleModeChange('analog-to-digital')} style={toggleBtnStyle(clockMode === 'analog-to-digital')}>
-                    {t.modeAnalogDigital}
-                </button>
-                <button onClick={() => handleModeChange('digital-to-analog')} style={toggleBtnStyle(clockMode === 'digital-to-analog')}>
-                    {t.modeDigitalAnalog}
-                </button>
-            </div>
-
-            {/* Question Card */}
-            <div className="question-card fade-in" style={{ background: '#4ECDC4', color: 'white' }}>
-                <div style={{ fontSize: '1.2rem', opacity: 0.9, marginBottom: '1rem' }}>
-                    {clockMode === 'analog-to-digital' ? t.promptAnalog : t.promptDigital}
-                </div>
-
-                {clockMode === 'analog-to-digital' ? (
-                    <div style={{ background: 'white', display: 'inline-block', padding: '1rem', borderRadius: '50%', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }}>
-                        <AnalogClock hour={currentQuestion.hour} minute={currentQuestion.minute} size={220} showNumbers={true} />
-                    </div>
-                ) : (
-                    <div className="question-text-lg">
-                        {currentQuestion.displayTime}
-                    </div>
-                )}
-            </div>
-
-            {/* Answer Section */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', width: '100%' }}>
-                {clockMode === 'analog-to-digital' ? (
-                    currentQuestion.options.map((opt, idx) => {
-                        let btnStyle = {
-                            padding: '1.5rem',
-                            borderRadius: '15px',
-                            fontSize: '1.5rem',
-                            fontWeight: 'bold',
-                            cursor: 'pointer',
-                            transition: '0.2s',
-                            background: 'white',
-                            border: '3px solid rgb(238, 238, 238)',
-                            color: 'rgb(51, 51, 51)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        };
-
-                        if (feedback && opt === currentQuestion.answer) {
-                            btnStyle = { ...btnStyle, background: '#6BCB77', border: '3px solid #6BCB77', color: 'white' };
-                        } else if (feedback === 'incorrect' && opt === selectedOption) {
-                            btnStyle = { ...btnStyle, background: '#FF6B6B', border: '3px solid #FF6B6B', color: 'white', animation: 'shake 0.5s' };
-                        }
-
-                        return (
-                            <button
-                                key={`${currentQuestion.answer}-${opt}`}
-                                onClick={() => handleAnswer(opt)}
-                                disabled={isAnimating}
-                                style={btnStyle}
-                                onMouseOver={(e) => {
-                                    if (!feedback) e.currentTarget.style.backgroundColor = 'var(--color-accent)';
-                                }}
-                                onMouseOut={(e) => {
-                                    if (!feedback) e.currentTarget.style.backgroundColor = 'white';
-                                }}
-                            >
-                                {opt}
-                            </button>
-                        );
-                    })
-                ) : (
-                    currentQuestion.analogOptions.map((opt, idx) => {
-                        let btnStyle = {
-                            padding: '0.8rem',
-                            borderRadius: '15px',
-                            cursor: 'pointer',
-                            transition: '0.2s',
-                            background: 'white',
-                            border: '3px solid rgb(238, 238, 238)',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            minHeight: '120px'
-                        };
-
-                        if (feedback && (opt.hour === currentQuestion.hour && opt.minute === currentQuestion.minute)) {
-                            btnStyle = { ...btnStyle, background: '#6BCB77', border: '3px solid #6BCB77' };
-                        } else if (feedback === 'incorrect' && opt.id === selectedOption?.id) {
-                            btnStyle = { ...btnStyle, background: '#FF6B6B', border: '3px solid #FF6B6B', animation: 'shake 0.5s' };
-                        }
-
-                        return (
-                            <button key={`${currentQuestion.answer}-${opt.hour}-${opt.minute}`} onClick={() => handleAnswer(opt)} disabled={isAnimating} style={btnStyle}>
-                                <AnalogClock hour={opt.hour} minute={opt.minute} size={110} showNumbers={true} />
-                            </button>
-                        );
-                    })
-                )}
-            </div>
-
-            {feedback === 'incorrect' && (
-                <div className="fade-in" style={{ marginTop: '2rem', textAlign: 'center' }}>
-                    <p style={{ marginBottom: '1rem', color: '#FF6B6B', fontSize: '1.2rem' }}>
-                        {t.correctTimeLabel} <b>{currentQuestion.displayTime}</b>.
-                    </p>
-                    <button className="btn-primary" onClick={generateQuestion} style={{ padding: '0.8rem 2rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
-                        {t.nextQuestion} <ArrowRight size={24} />
-                    </button>
-                </div>
-            )}
+      <div className="ops-game-shell">
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="ops-loading-spinner" />
         </div>
+      </div>
     );
+  }
+
+  // Theme colors specifically for the clock game
+  const accentColor = '#4ECDC4';
+  const accentDark  = '#3BAEA5';
+
+  return (
+    <div className="ops-game-shell">
+      {/* Streak popup */}
+      {showStreak && (
+        <StreakPopup streak={streak} language={language} onClose={() => setShowStreak(false)} />
+      )}
+
+      {/* ── Header ── */}
+      <div className="ops-game-header" style={{ borderBottomColor: accentColor + '33' }}>
+        <button onClick={onBack} className="ops-header-btn">
+          <X size={22} color="#AFAFAF" />
+        </button>
+
+        <div className="ops-streak-badge" style={{ background: streak >= 3 ? '#FFF3CD' : '#f7f7f7', borderColor: streak >= 3 ? '#FFC800' : '#E5E5E5' }}>
+          <span style={{ fontSize: '1.1rem' }}>🔥</span>
+          <span style={{ fontWeight: 900, color: streak >= 3 ? '#CC7700' : '#AFAFAF', fontSize: '1rem' }}>{streak}</span>
+        </div>
+
+        {/* Mode pill toggles the gamemode */}
+        <button 
+          onClick={handleModeChange}
+          className="ops-mode-pill" 
+          style={{ cursor: 'pointer', background: accentColor + '15', border: `2px solid ${accentColor}40` }}
+        >
+          <Clock size={14} color={accentColor} />
+          <span style={{ color: accentColor, fontWeight: 800, fontSize: '0.78rem' }}>
+            {clockMode === 'analog-to-digital' ? (bm ? 'Analog → Digital' : 'Analog → Digital') : (bm ? 'Digital → Analog' : 'Digital → Analog')}
+          </span>
+          <span style={{ color: '#AFAFAF', fontSize: '0.7rem', fontWeight: 700 }}>· 🔁</span>
+        </button>
+      </div>
+
+      {/* ── Question Zone ── */}
+      <div className="ops-question-zone">
+        <p className="ops-question-label">
+           {clockMode === 'analog-to-digital' 
+              ? (bm ? 'Pukul berapakah ini?' : 'What time is it?')
+              : (bm ? 'Pilih jam yang betul!' : 'Choose the correct clock!')}
+        </p>
+
+        {clockMode === 'analog-to-digital' ? (
+           <div style={{ margin: '1rem 0' }}>
+             <AnalogClock hour={currentQuestion.hour} minute={currentQuestion.minute} size={150} showNumbers={true} />
+           </div>
+        ) : (
+          <div
+            className="ops-question-expr"
+            style={{ color: feedback === 'correct' ? '#46A302' : feedback === 'incorrect' ? '#CC3B3B' : '#3C3C3C' }}
+          >
+            {currentQuestion.displayTime}
+          </div>
+        )}
+      </div>
+
+      {/* ── Answer Zone ── */}
+      <div className="ops-answer-zone">
+        <div className="ops-choices-grid">
+          {clockMode === 'analog-to-digital' ? (
+            // Render Text Buttons
+            currentQuestion.options.map((opt, idx) => {
+              const labels = ['A', 'B', 'C', 'D'];
+              let state = 'idle';
+              if (feedback === 'correct' && opt === currentQuestion.answer) state = 'correct';
+              else if (feedback === 'incorrect') {
+                if (opt === currentQuestion.answer) state = 'correct';
+                else if (opt === selectedOption) state = 'wrong';
+              }
+
+              return (
+                <button
+                  key={opt}
+                  onClick={() => handleAnswer(opt)}
+                  disabled={!!feedback}
+                  className={`ops-choice-btn ops-choice-${state}`}
+                  style={state === 'idle' ? { '--accent': accentColor, '--accent-dark': accentDark } : undefined}
+                >
+                  <span className="ops-choice-label">{labels[idx]}</span>
+                  <span className="ops-choice-value">{opt}</span>
+                </button>
+              );
+            })
+          ) : (
+            // Render Mini Clock Buttons
+            currentQuestion.analogOptions.map((opt, idx) => {
+              let state = 'idle';
+              if (feedback === 'correct' && (opt.hour === currentQuestion.hour && opt.minute === currentQuestion.minute)) state = 'correct';
+              else if (feedback === 'incorrect') {
+                if (opt.hour === currentQuestion.hour && opt.minute === currentQuestion.minute) state = 'correct';
+                else if (opt.id === selectedOption?.id) state = 'wrong';
+              }
+
+              return (
+                <button
+                  key={`${opt.hour}-${opt.minute}-${opt.id}`}
+                  onClick={() => handleAnswer(opt)}
+                  disabled={!!feedback}
+                  className={`ops-choice-btn ops-choice-${state}`}
+                  style={state === 'idle' ? { '--accent': accentColor, '--accent-dark': accentDark, minHeight: '130px', padding: 0 } : { minHeight: '130px', padding: 0 }}
+                >
+                  <div style={{ pointerEvents: 'none', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                     <AnalogClock hour={opt.hour} minute={opt.minute} size={100} showNumbers={true} />
+                  </div>
+                </button>
+              );
+            })
+          )}
+        </div>
+
+        {/* Wrong answer continue button */}
+        {feedback === 'incorrect' && (
+          <button
+            className="ops-continue-wrong"
+            onClick={generateQuestion}
+          >
+            {bm ? 'Faham, terus →' : 'Got it, next →'}
+          </button>
+        )}
+      </div>
+
+      {/* ── Feedback Bar ── */}
+      {feedback && (
+        <div className={`ops-feedback-bar ops-feedback-${feedback === 'incorrect' ? 'wrong' : 'correct'}`}>
+          {feedback === 'correct' ? (
+            <span>
+              {bm ? '🎉 Betul sekali!' : '🎉 Correct!'}{' '}
+              <strong>{currentQuestion.displayTime}</strong>
+            </span>
+          ) : (
+            <span>
+              {bm ? `💡 Jawapan:` : `💡 Answer:`} <strong>{currentQuestion.displayTime}</strong>
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* ── Footer Stats ── */}
+      <div className="ops-footer-stats">
+        <div className="ops-stat-chip">
+          <span>✅</span>
+          <span>{totalAnswered}</span>
+          <span style={{ color: '#AFAFAF', fontSize: '0.7rem' }}>
+            {bm ? 'dijawab' : 'answered'}
+          </span>
+        </div>
+        <div className="ops-stat-chip ops-stat-chip-highlight">
+          <span>🏆</span>
+          <span style={{ color: '#CC7700' }}>{bm ? 'Seterusnya pada' : 'Next reward at'} {Math.ceil((streak + 1) / STREAK_MILESTONE) * STREAK_MILESTONE}</span>
+        </div>
+      </div>
+    </div>
+  );
 }

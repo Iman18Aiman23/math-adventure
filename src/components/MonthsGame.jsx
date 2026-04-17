@@ -1,415 +1,478 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import confetti from 'canvas-confetti';
-import { RefreshCw, Trophy, ArrowRight, MousePointerClick, Keyboard, HelpCircle, X, Languages } from 'lucide-react';
+import { X, HelpCircle, Layers, Keyboard, MousePointerClick } from 'lucide-react';
 import { MONTHS } from '../utils/timeData';
-import { playSound, toggleMute, getMuted } from '../utils/soundManager';
-import clsx from 'clsx';
-import GameHeader from './GameHeader';
 import { LOCALIZATION } from '../utils/localization';
-import { GameStateContext } from '../App';
+
+// ─── Web Speech API voice helper ───────────────────────────────────────────────
+function speak(text, { pitch = 1.4, rate = 1.05, volume = 1 } = {}) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.pitch   = pitch;
+  utt.rate    = rate;
+  utt.volume  = volume;
+  const voices = window.speechSynthesis.getVoices();
+  const preferred = voices.find(v =>
+    /Google|Zira|Hazel|Karen|Samantha|Nicky/i.test(v.name)
+  ) || voices[0];
+  if (preferred) utt.voice = preferred;
+  window.speechSynthesis.speak(utt);
+}
+
+const STREAK_MILESTONE = 10;
+const STREAK_CHEERS_BM  = ['Bagus!', 'Cemerlang!', 'Hebat!', 'Luar Biasa!', 'Menakjubkan!', 'BINTANG!', 'GENIUS!', 'PAKAR BULAN!'];
+const STREAK_CHEERS_EN  = ['Brilliant!', 'Excellent!', 'Amazing!', 'Fantastic!', 'Incredible!', 'SUPERSTAR!', 'GENIUS!', 'MONTH WIZARD!'];
+
+function StreakPopup({ streak, language, onClose }) {
+  const milestoneCount = Math.floor(streak / STREAK_MILESTONE);
+  const cheers = language === 'bm' ? STREAK_CHEERS_BM : STREAK_CHEERS_EN;
+  const cheer = cheers[Math.min(milestoneCount - 1, cheers.length - 1)];
+
+  return (
+    <div className="ops-streak-overlay" onClick={onClose}>
+      <div className="ops-streak-popup" onClick={e => e.stopPropagation()}>
+        <div className="ops-streak-firework">🎉</div>
+        <div className="ops-streak-number">{streak}</div>
+        <div className="ops-streak-label">
+          {language === 'bm' ? 'jawapan betul berturut-turut!' : 'correct answers in a row!'}
+        </div>
+        <div className="ops-streak-cheer">{cheer}</div>
+        <button className="ops-streak-continue" onClick={onClose}>
+          {language === 'bm' ? 'Terus! 🚀' : 'Keep Going! 🚀'}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function MonthsGame({ onBack, onHome, language }) {
-    const [quizType, setQuizType] = useState('multiple'); // 'multiple' or 'typing'
-    const [questionMode, setQuestionMode] = useState('name'); // 'name' = show Name/Malay → answer Islamic | 'islamic' = show Islamic → answer Name/Malay
-    const [currentQuestion, setCurrentQuestion] = useState(null);
-    const [score, setScore] = useState(0);
-    const [streak, setStreak] = useState(0);
-    const [userAnswer, setUserAnswer] = useState('');
-    const [selectedOption, setSelectedOption] = useState(null);
-    const [feedback, setFeedback] = useState(null);
-    const [shuffledOptions, setShuffledOptions] = useState([]);
-    const [isMuted, setIsMuted] = useState(getMuted());
-    const [isAnimating, setIsAnimating] = useState(false);
-    const [showReference, setShowReference] = useState(false);
-    const inputRef = useRef(null);
+  const t = LOCALIZATION[language].monthsGame;
+  const bm = language === 'bm';
 
-    const t = LOCALIZATION[language].monthsGame;
-    const gameState = useContext(GameStateContext);
+  const [quizType, setQuizType] = useState('multiple');       // 'multiple' | 'typing'
+  const [questionMode, setQuestionMode] = useState('name');   // 'name' | 'islamic' | 'number'
+  
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+  
+  const [streak, setStreak] = useState(0);
+  const [totalAnswered, setTotalAnswered] = useState(0);
+  
+  const [feedback, setFeedback] = useState(null); // 'correct' | 'incorrect'
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [typedAnswer, setTypedAnswer] = useState('');
+  
+  const [showStreak, setShowStreak] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [showReference, setShowReference] = useState(false);
+  
+  const [showLogicDropdown, setShowLogicDropdown] = useState(false);
+  const [showInputDropdown, setShowInputDropdown] = useState(false);
 
-    useEffect(() => {
+  const inputRef = useRef(null);
+  const feedbackTimer = useRef(null);
+
+  // Pre-load voices
+  useEffect(() => {
+    if (window.speechSynthesis) {
+      window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    }
+  }, []);
+
+  const generateQuestion = useCallback(() => {
+    const month = MONTHS[Math.floor(Math.random() * MONTHS.length)];
+    let question;
+
+    if (questionMode === 'name') {
+        let islamicAnswer = month.islamic;
+        if (month.id === 3) islamicAnswer = 'Rabiulawal/Rabiul Awal';
+        if (month.id === 4) islamicAnswer = 'Rabiulakhir/Rabiul Akhir';
+        if (month.id === 5) islamicAnswer = 'Jamadilawal/Jamadil Awal';
+        if (month.id === 6) islamicAnswer = 'Jamadilakhir/Jamadil Akhir';
+        if (month.id === 9) islamicAnswer = 'Ramadan/Ramadhan';
+        if (month.id === 11) islamicAnswer = 'Zulkaedah/Zulkaidah/Dzulkaedah';
+        if (month.id === 12) islamicAnswer = 'Zulhijjah/Zulhijah/Dzulhijjah';
+
+        const distractors = MONTHS
+            .filter(m => m.id !== month.id)
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 3)
+            .map(m => m.islamic);
+            
+        question = {
+            prompt: t.promptName,
+            display: month.name,
+            subtitle: month.malay,
+            answer: islamicAnswer,
+            primaryAnswerDisplay: month.islamic, // To show reliably instead of slashes
+            options: [month.islamic, ...distractors].sort(() => 0.5 - Math.random()),
+            correctInfo: `${month.name} (${month.malay}) → ${month.islamic}`
+        };
+    } else if (questionMode === 'islamic') {
+        const distractors = MONTHS
+            .filter(m => m.id !== month.id)
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 3)
+            .map(m => `${m.name}/${m.malay}`);
+            
+        const correctAnswer = `${month.name}/${month.malay}`;
+        question = {
+            prompt: t.promptIslamic,
+            display: month.islamic,
+            subtitle: null,
+            answer: correctAnswer,
+            primaryAnswerDisplay: bm ? month.malay : month.name,
+            options: [correctAnswer, ...distractors].sort(() => 0.5 - Math.random()),
+            correctInfo: `${month.islamic} → ${month.name} (${month.malay})`
+        };
+    } else {
+        const distractors = MONTHS
+            .filter(m => m.id !== month.id)
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 3)
+            .map(m => `${m.name}/${m.malay}`);
+            
+        const correctAnswer = `${month.name}/${month.malay}`;
+        question = {
+            prompt: t.promptNumber,
+            display: String(month.id),
+            subtitle: null,
+            answer: correctAnswer,
+            primaryAnswerDisplay: bm ? month.malay : month.name,
+            options: [correctAnswer, ...distractors].sort(() => 0.5 - Math.random()),
+            correctInfo: `${t.correctInfoPrefix} ${month.id} ${t.correctInfoSuffix} ${month.name} (${month.malay})`
+        };
+    }
+
+    setCurrentQuestion(question);
+    setFeedback(null);
+    setSelectedOption(null);
+    setTypedAnswer('');
+    setIsAnimating(false);
+  }, [questionMode, t]);
+
+  useEffect(() => {
+    generateQuestion();
+    return () => { if (feedbackTimer.current) clearTimeout(feedbackTimer.current); };
+  }, [generateQuestion]);
+
+  useEffect(() => {
+    if (!feedback && quizType === 'typing' && inputRef.current) {
+        inputRef.current.focus();
+    }
+  }, [feedback, quizType, currentQuestion]);
+
+  const handleAnswer = useCallback((rawInput) => {
+    if (feedback || isAnimating) return;
+    
+    const input = rawInput.toLowerCase().trim();
+    const expected = currentQuestion.answer.toLowerCase().trim();
+
+    const isCorrect = input === expected ||
+        (expected.includes('/') && expected.split('/').some(part => input === part.trim().toLowerCase()));
+
+    setSelectedOption(rawInput);
+    setFeedback(isCorrect ? 'correct' : 'incorrect');
+    setIsAnimating(true);
+
+    if (isCorrect) {
+      const newStreak = streak + 1;
+      setStreak(newStreak);
+      setTotalAnswered(t => t + 1);
+
+      speak(
+        bm ? `Betul! ${newStreak} berturut-turut!` : `Correct! ${newStreak} in a row!`,
+        { pitch: 1.5, rate: 1.1 }
+      );
+
+      if (newStreak % STREAK_MILESTONE === 0) {
+        confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
+        const milestoneCount = newStreak / STREAK_MILESTONE;
+        const cheers = bm ? STREAK_CHEERS_BM : STREAK_CHEERS_EN;
+        const cheer  = cheers[Math.min(milestoneCount - 1, cheers.length - 1)];
+        setTimeout(() => {
+          speak(
+            bm ? `Wah! ${newStreak} jawapan betul! ${cheer}!` : `Wow! ${newStreak} correct answers! ${cheer}!`,
+            { pitch: 1.6, rate: 1.0 }
+          );
+          setShowStreak(true);
+        }, 400);
+      } else {
+        confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 }, scalar: 0.8 });
+      }
+
+      feedbackTimer.current = setTimeout(() => {
         generateQuestion();
-    }, [questionMode, language]);
+      }, 1200);
 
-    useEffect(() => {
-        if (currentQuestion && quizType === 'typing' && inputRef.current) {
-            inputRef.current.focus();
-        }
-    }, [currentQuestion, quizType]);
+    } else {
+      setStreak(0);
+      setTotalAnswered(t => t + 1);
+      if (navigator.vibrate) navigator.vibrate([60, 30, 60]);
 
-    const generateQuestion = () => {
-        const month = MONTHS[Math.floor(Math.random() * MONTHS.length)];
+      speak(
+        bm ? `Cuba lagi! Jawapannya ialah ${currentQuestion.primaryAnswerDisplay}` : `Try again! The answer is ${currentQuestion.primaryAnswerDisplay}`,
+        { pitch: 1.3, rate: 0.95 }
+      );
+    }
+  }, [feedback, isAnimating, currentQuestion, streak, bm, generateQuestion]);
 
-        let question;
-        if (questionMode === 'name') {
-            // Show Name + Malay → answer is Islamic
-            let islamicAnswer = month.islamic;
-            // Add common variants for typing flexibility
-            if (month.id === 3) islamicAnswer = 'Rabiulawal/Rabiul Awal';
-            if (month.id === 4) islamicAnswer = 'Rabiulakhir/Rabiul Akhir';
-            if (month.id === 5) islamicAnswer = 'Jamadilawal/Jamadil Awal';
-            if (month.id === 6) islamicAnswer = 'Jamadilakhir/Jamadil Akhir';
-            if (month.id === 9) islamicAnswer = 'Ramadan/Ramadhan';
-            if (month.id === 11) islamicAnswer = 'Zulkaedah/Zulkaidah/Dzulkaedah';
-            if (month.id === 12) islamicAnswer = 'Zulhijjah/Zulhijah/Dzulhijjah';
+  const handleTypingSubmit = (e) => {
+    e.preventDefault();
+    const val = typedAnswer.trim();
+    if (!val || feedback) return;
+    handleAnswer(val);
+  };
 
-            const distractors = MONTHS
-                .filter(m => m.id !== month.id)
-                .sort(() => 0.5 - Math.random())
-                .slice(0, 3)
-                .map(m => m.islamic);
-            question = {
-                prompt: t.promptName,
-                display: month.name,
-                subtitle: month.malay,
-                answer: islamicAnswer,
-                options: [month.islamic, ...distractors].sort(() => 0.5 - Math.random()),
-                correctInfo: `${month.name} (${month.malay}) → ${month.islamic}`
-            };
-        } else if (questionMode === 'islamic') {
-            // Show Islamic → answer is Name/Malay
-            const distractors = MONTHS
-                .filter(m => m.id !== month.id)
-                .sort(() => 0.5 - Math.random())
-                .slice(0, 3)
-                .map(m => `${m.name}/${m.malay}`);
-            const correctAnswer = `${month.name}/${month.malay}`;
-            question = {
-                prompt: t.promptIslamic,
-                display: month.islamic,
-                subtitle: null,
-                answer: correctAnswer,
-                options: [correctAnswer, ...distractors].sort(() => 0.5 - Math.random()),
-                correctInfo: `${month.islamic} → ${month.name} (${month.malay})`
-            };
-        } else {
-            // Show Number → answer is Name/Malay
-            const distractors = MONTHS
-                .filter(m => m.id !== month.id)
-                .sort(() => 0.5 - Math.random())
-                .slice(0, 3)
-                .map(m => `${m.name}/${m.malay}`);
-            const correctAnswer = `${month.name}/${month.malay}`;
-            question = {
-                prompt: t.promptNumber,
-                display: month.id,
-                subtitle: null,
-                answer: correctAnswer,
-                options: [correctAnswer, ...distractors].sort(() => 0.5 - Math.random()),
-                correctInfo: `${t.correctInfoPrefix} ${month.id} ${t.correctInfoSuffix} ${month.name} (${month.malay})`
-            };
-        }
+  const handleLogicToggle = () => {
+     setCurrentQuestion(null);
+     setQuestionMode(prev => prev === 'name' ? 'islamic' : prev === 'islamic' ? 'number' : 'name');
+  };
 
-        setCurrentQuestion(question);
-        setShuffledOptions(question.options);
-        setFeedback(null);
-        setUserAnswer('');
-        setSelectedOption(null);
-        setIsAnimating(false);
-        // Clear any active focus to prevent persistent colors on mobile
-        if (typeof document !== 'undefined') {
-            document.activeElement?.blur();
-        }
-    };
+  const handleInputToggle = () => {
+     setCurrentQuestion(null);
+     setQuizType(prev => prev === 'multiple' ? 'typing' : 'multiple');
+  };
 
-    const handleAnswer = (answer) => {
-        if (isAnimating) return;
-
-        const input = answer.toLowerCase().trim();
-        const expected = currentQuestion.answer.toLowerCase().trim();
-
-        // Multi-answer support (e.g. "January/Januari")
-        const isCorrect = input === expected ||
-            (expected.includes('/') && expected.split('/').some(part => {
-                const p = part.trim().toLowerCase();
-                return input === p;
-            }));
-
-        setSelectedOption(answer);
-
-        if (isCorrect) {
-            setIsAnimating(true);
-            setScore(s => s + 10);
-            setFeedback('correct');
-            if (gameState?.addWin) gameState.addWin(10);
-            const newStreak = streak + 1;
-            setStreak(newStreak);
-
-            if (newStreak > 0 && newStreak % 5 === 0) {
-                playSound('streak');
-                confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } });
-                setTimeout(generateQuestion, 2000);
-            } else {
-                playSound('correct');
-                setTimeout(generateQuestion, 1000);
-            }
-        } else {
-            setFeedback('incorrect');
-            setStreak(0);
-            playSound('wrong');
-            setIsAnimating(true);
-        }
-    };
-
-    const handleToggleMute = () => {
-        const muted = toggleMute();
-        setIsMuted(muted);
-    };
-
-    if (!currentQuestion) return <div>Loading...</div>;
-
-    const bgColor = questionMode === 'name' ? '#9D4EDD' : '#4ECDC4';
-
-    const toggleBtnStyle = (active) => ({
-        padding: '0.5rem 1rem',
-        borderRadius: '10px',
-        border: active ? '2px solid #9D4EDD' : '2px solid #eee',
-        background: active ? '#f3e5f5' : 'white',
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0.3rem',
-        fontSize: '0.85rem',
-        fontWeight: 'bold'
-    });
-
+  if (!currentQuestion) {
     return (
-        <div className="game-container">
-            <GameHeader
-                onBack={onBack}
-                onHome={onHome}
-                onToggleMute={handleToggleMute}
-                isMuted={isMuted}
-                score={score}
-                streak={streak}
-                title={t.monthQuiz}
-                language={language}
-            />
-
-            {/* Mode Toggles */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                {/* Row 1: Logic Modes */}
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                    <button onClick={() => setQuestionMode('number')} style={toggleBtnStyle(questionMode === 'number')}>
-                        {t.modeNumber}
-                    </button>
-                    <button onClick={() => setQuestionMode('name')} style={toggleBtnStyle(questionMode === 'name')}>
-                        {t.modeName}
-                    </button>
-                    <button onClick={() => setQuestionMode('islamic')} style={toggleBtnStyle(questionMode === 'islamic')}>
-                        {t.modeIslamic}
-                    </button>
-                </div>
-
-                {/* Row 2: Quiz Type */}
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                    <button onClick={() => setQuizType('multiple')} style={toggleBtnStyle(quizType === 'multiple')}>
-                        <MousePointerClick size={16} color="#9D4EDD" /> {t.quizABCD}
-                    </button>
-                    <button onClick={() => setQuizType('typing')} style={toggleBtnStyle(quizType === 'typing')}>
-                        <Keyboard size={16} color="#9D4EDD" /> {t.quizType}
-                    </button>
-                </div>
-            </div>
-
-            {/* Question Card */}
-            <div className="question-card fade-in" style={{
-                background: bgColor,
-                color: 'white',
-                display: 'flex',
-                flexDirection: 'column',
-                position: 'relative',
-                padding: '1rem',
-                minHeight: '140px'
-            }}>
-                {/* Reference Button Row */}
-                <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-                    <button
-                        onClick={() => setShowReference(true)}
-                        style={{
-                            background: 'rgba(255,255,255,0.2)',
-                            border: 'none',
-                            borderRadius: '50%',
-                            width: '36px',
-                            height: '36px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: 'pointer',
-                            color: 'white',
-                            transition: 'all 0.2s ease'
-                        }}
-                        title="Show Months Reference"
-                        onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
-                        onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
-                    >
-                        <HelpCircle size={20} />
-                    </button>
-                </div>
-
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-                    <div style={{ fontSize: '1.1rem', opacity: 0.9, marginBottom: '0.8rem' }}>
-                        {currentQuestion.prompt}
-                    </div>
-                    <div className="question-text-lg" style={{ lineHeight: 1.2, width: '100%' }}>
-                        {currentQuestion.display}
-                    </div>
-                    {currentQuestion.subtitle && (
-                        <div style={{
-                            fontSize: 'clamp(1.2rem, 5vw, 1.8rem)',
-                            marginTop: '0.8rem',
-                            fontStyle: 'italic',
-                            background: 'rgba(255,255,255,0.2)',
-                            padding: '0.4rem 1.2rem',
-                            borderRadius: '12px',
-                            maxWidth: '90%'
-                        }}>
-                            {currentQuestion.subtitle}
-                        </div>
-                    )}
-                </div>
-            </div>
-
-            {/* Answer Section */}
-            {quizType === 'multiple' ? (
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: '0.75rem',
-                    width: '100%',
-                    maxWidth: '600px',
-                    margin: '0 auto'
-                }}>
-                    {shuffledOptions.map((opt, idx) => {
-                        let btnStyle = {};
-                        // Scale font size for long strings (e.g., September/September)
-                        if (opt.length > 15) {
-                            btnStyle.fontSize = 'clamp(0.7rem, 3vw, 0.9rem)';
-                        } else if (opt.length > 10) {
-                            btnStyle.fontSize = 'clamp(0.8rem, 3.5vw, 1.1rem)';
-                        }
-
-                        if (feedback && opt === currentQuestion.answer) {
-                            btnStyle = { background: '#6BCB77', border: '3px solid #6BCB77', color: 'white' };
-                        } else if (feedback === 'incorrect' && opt === selectedOption) {
-                            btnStyle = { background: '#FF6B6B', border: '3px solid #FF6B6B', color: 'white', animation: 'shake 0.5s' };
-                        }
-
-                        return (
-                            <button
-                                key={`${currentQuestion.display}-${opt}`}
-                                onClick={() => handleAnswer(opt)}
-                                disabled={isAnimating}
-                                className="btn-option"
-                                style={btnStyle}
-                            >
-                                {opt}
-                            </button>
-                        );
-                    })}
-                </div>
-            ) : (
-                <div className="fade-in" style={{ width: '100%' }}>
-                    <form onSubmit={(e) => { e.preventDefault(); handleAnswer(userAnswer); }} className="input-wrapper" style={{ width: '100%', maxWidth: '100%' }}>
-                        <input
-                            ref={inputRef}
-                            type="text"
-                            value={userAnswer}
-                            onChange={(e) => setUserAnswer(e.target.value)}
-                            disabled={isAnimating}
-                            placeholder={t.placeholder}
-                            autoFocus
-                            className={clsx(
-                                "standard-input",
-                                feedback === 'correct' && 'correct-input',
-                                feedback === 'incorrect' && 'incorrect-input'
-                            )}
-                            style={{ width: '100%' }}
-                        />
-                    </form>
-                </div>
-            )}
-
-            {feedback === 'incorrect' && (
-                <div className="fade-in" style={{ marginTop: '2rem', textAlign: 'center' }}>
-                    <p style={{ marginBottom: '1rem', color: '#FF6B6B', fontSize: '1.2rem' }}>
-                        {t.incorrectFeedback} <b>{currentQuestion.answer}</b>.
-                    </p>
-                    <p style={{ marginBottom: '1rem', color: '#888', fontSize: '1rem' }}>
-                        {currentQuestion.correctInfo}
-                    </p>
-                    <button className="btn-primary" onClick={generateQuestion} style={{ padding: '0.8rem 2rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
-                        {t.nextQuest} <ArrowRight size={24} />
-                    </button>
-                </div>
-            )}
-            {/* Reference Modal */}
-            {showReference && createPortal(
-                <div style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    backgroundColor: 'rgba(0,0,0,0.6)',
-                    backdropFilter: 'blur(5px)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    zIndex: 9999,
-                    padding: '1rem'
-                }} onClick={() => setShowReference(false)}>
-                    <div
-                        className="card fade-in"
-                        style={{
-                            background: 'white',
-                            padding: '1.5rem',
-                            borderRadius: '25px',
-                            maxWidth: '600px',
-                            width: '100%',
-                            maxHeight: '85vh',
-                            overflowY: 'auto',
-                            position: 'relative'
-                        }}
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '2px solid #eee', paddingBottom: '0.8rem' }}>
-                            <h2 style={{ margin: 0, color: '#9D4EDD' }}>{t.refTitle}</h2>
-                            <button
-                                onClick={() => setShowReference(false)}
-                                style={{ background: '#FF6B6B', color: 'white', border: 'none', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                            >
-                                <X size={20} />
-                            </button>
-                        </div>
-
-                        <div style={{ padding: '0.5rem' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                                <thead>
-                                    <tr style={{ borderBottom: '2px solid #ddd' }}>
-                                        <th style={{ padding: '0.8rem 0.5rem', color: '#666' }}>{t.refNo}</th>
-                                        <th style={{ padding: '0.8rem 0.5rem', color: '#666' }}>{t.refNames}</th>
-                                        <th style={{ padding: '0.8rem 0.5rem', color: '#666' }}>{t.refIslamic}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {MONTHS.map(m => (
-                                        <tr key={m.id} style={{ borderBottom: '1px solid #eee' }}>
-                                            <td style={{ padding: '0.8rem 0.5rem', fontWeight: 'bold', color: '#9D4EDD' }}>{m.id}</td>
-                                            <td style={{ padding: '0.8rem 0.5rem' }}>
-                                                <div style={{ fontWeight: '600' }}>{m.name}</div>
-                                                <div style={{ fontSize: '0.85rem', color: '#666' }}>{m.malay}</div>
-                                            </td>
-                                            <td style={{ padding: '0.8rem 0.5rem', fontWeight: 'bold', color: '#4ECDC4' }}>{m.islamic}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>,
-                document.body
-            )}
+      <div className="ops-game-shell">
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="ops-loading-spinner" />
         </div>
+      </div>
     );
+  }
+
+  // Define accent colors corresponding with moon/night islamic theme
+  const accentColor = '#9D4EDD';
+  const accentDark  = '#7B2CBF';
+
+  return (
+    <div className="ops-game-shell">
+      {/* Streak popup */}
+      {showStreak && (
+        <StreakPopup streak={streak} language={language} onClose={() => setShowStreak(false)} />
+      )}
+
+      {/* ── Header ── */}
+      <div className="ops-game-header" style={{ borderBottomColor: accentColor + '33', position: 'relative', display: 'flex', alignItems: 'center' }}>
+        <button onClick={onBack} className="ops-header-btn" style={{ position: 'relative', zIndex: 2 }}>
+          <X size={22} color="#AFAFAF" />
+        </button>
+
+        <div className="ops-streak-badge" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', background: streak >= 3 ? '#FFF3CD' : '#f7f7f7', borderColor: streak >= 3 ? '#FFC800' : '#E5E5E5' }}>
+          <span style={{ fontSize: '1.1rem' }}>🔥</span>
+          <span style={{ fontWeight: 900, color: streak >= 3 ? '#CC7700' : '#AFAFAF', fontSize: '1rem' }}>{streak}</span>
+        </div>
+      </div>
+
+      {/* ── Secondary Modes Row ── */}
+      <div style={{ display: 'flex', gap: '10px', padding: '0 1rem', margin: '14px 0 8px 0', justifyContent: 'center' }}>
+        <div style={{ position: 'relative' }}>
+          <button onClick={() => { setShowLogicDropdown(v => !v); setShowInputDropdown(false); }} className="ops-mode-pill" style={{ cursor: 'pointer', background: accentColor + '15', border: `2px solid ${accentColor}40` }}>
+              <Layers size={14} color={accentColor} />
+              <span style={{ color: accentColor, fontWeight: 800, fontSize: '0.75rem' }}>Mode Selection</span>
+              <span style={{ color: '#AFAFAF', fontSize: '0.7rem', fontWeight: 700 }}>· 🔁</span>
+          </button>
+          {showLogicDropdown && (
+            <div className="fade-in" style={{ position: 'absolute', top: '120%', left: '50%', transform: 'translateX(-50%)', background: 'white', borderRadius: '12px', border: '2px solid #E5E5E5', zIndex: 10, width: 'max-content', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                {[
+                  { id: 'name', label: bm ? 'Nama → Islam' : 'Name → Islamic' },
+                  { id: 'islamic', label: bm ? 'Islam → Nama' : 'Islamic → Name' },
+                  { id: 'number', label: bm ? 'Nombor → Nama' : 'Number → Name' }
+                ].map(opt => (
+                  <button key={opt.id} onClick={() => { setCurrentQuestion(null); setQuestionMode(opt.id); setShowLogicDropdown(false); }} style={{ padding: '10px 16px', background: questionMode === opt.id ? accentColor + '20' : 'white', borderBottom: '1px solid #f0f0f0', color: questionMode === opt.id ? accentColor : '#3C3C3C', fontWeight: 700, fontSize: '0.85rem' }}>
+                      {opt.label}
+                  </button>
+                ))}
+            </div>
+          )}
+        </div>
+        
+        <div style={{ position: 'relative' }}>
+          <button onClick={() => { setShowInputDropdown(v => !v); setShowLogicDropdown(false); }} className="ops-mode-pill" style={{ cursor: 'pointer', background: '#1CB0F615', border: `2px solid #1CB0F640` }}>
+              {quizType === 'multiple' ? <MousePointerClick size={14} color="#1CB0F6" /> : <Keyboard size={14} color="#1CB0F6" />}
+              <span style={{ color: '#1CB0F6', fontWeight: 800, fontSize: '0.75rem' }}>Answer Selection</span>
+              <span style={{ color: '#AFAFAF', fontSize: '0.7rem', fontWeight: 700 }}>· 🔁</span>
+          </button>
+          {showInputDropdown && (
+            <div className="fade-in" style={{ position: 'absolute', top: '120%', left: '50%', transform: 'translateX(-50%)', background: 'white', borderRadius: '12px', border: '2px solid #E5E5E5', zIndex: 10, width: 'max-content', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                {[
+                  { id: 'multiple', label: bm ? 'Pilihan (ABCD)' : 'Multiple Choice' },
+                  { id: 'typing', label: bm ? 'Menaip' : 'Typing' }
+                ].map(opt => (
+                  <button key={opt.id} onClick={() => { setQuizType(opt.id); setShowInputDropdown(false); }} style={{ padding: '10px 16px', background: quizType === opt.id ? '#1CB0F620' : 'white', borderBottom: '1px solid #f0f0f0', color: quizType === opt.id ? '#1CB0F6' : '#3C3C3C', fontWeight: 700, fontSize: '0.85rem' }}>
+                      {opt.label}
+                  </button>
+                ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── Question Zone ── */}
+      <div className="ops-question-zone" style={{ position: 'relative' }}>
+        <button
+          onClick={() => setShowReference(true)}
+          style={{ position: 'absolute', top: 8, right: 8, background: accentColor + '15', border: 'none', borderRadius: '50%', width: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+        >
+           <HelpCircle size={18} color={accentColor} />
+        </button>
+        
+        <p className="ops-question-label">
+           {currentQuestion.prompt}
+        </p>
+        <div className="ops-question-expr" style={{ color: feedback === 'correct' ? '#46A302' : feedback === 'incorrect' ? '#CC3B3B' : '#3C3C3C' }}>
+          {currentQuestion.display}
+        </div>
+        
+        {currentQuestion.subtitle && (
+            <div style={{ marginTop: '0.2rem', color: '#AFAFAF', fontWeight: 800, fontSize: '1.2rem', textTransform: 'uppercase', letterSpacing: '2px' }}>
+                {currentQuestion.subtitle}
+            </div>
+        )}
+      </div>
+
+      {/* ── Answer Zone ── */}
+      <div className="ops-answer-zone">
+        {quizType === 'typing' ? (
+          <form onSubmit={handleTypingSubmit} className="ops-typing-form">
+            <input
+              ref={inputRef}
+              type="text"
+              enterKeyHint="go"
+              value={typedAnswer}
+              onChange={e => setTypedAnswer(e.target.value)}
+              placeholder={bm ? 'Taip jawapan...' : 'Type answer...'}
+              disabled={!!feedback}
+              className={`ops-typing-input${feedback === 'correct' ? ' ops-input-correct' : feedback === 'incorrect' ? ' ops-input-wrong' : ''}`}
+              autoComplete="off"
+            />
+            <button
+              type="submit"
+              className="ops-submit-btn"
+              style={{ background: accentColor, borderBottomColor: accentDark }}
+              disabled={!typedAnswer.trim() || !!feedback}
+            >
+              {bm ? 'Semak ✓' : 'Check ✓'}
+            </button>
+          </form>
+        ) : (
+          <div className="ops-choices-grid">
+            {currentQuestion.options.map((opt, idx) => {
+              const labels = ['A', 'B', 'C', 'D'];
+              let state = 'idle';
+              if (feedback === 'correct' && opt === currentQuestion.answer) state = 'correct';
+              else if (feedback === 'incorrect') {
+                if (opt === currentQuestion.answer) state = 'correct';
+                else if (opt === selectedOption) state = 'wrong';
+              }
+
+              // Parse display text from the slash-delimited literal block
+              // Example `Zulkaedah/Zulkaidah` renders `Zulkaedah` on UI button.
+              const visibleOpt = opt.split('/')[0];
+
+              let currentFontScale = '1.3rem';
+              if (visibleOpt.length > 15) currentFontScale = '0.9rem';
+              else if (visibleOpt.length > 10) currentFontScale = '1.05rem';
+
+              return (
+                <button
+                  key={opt}
+                  onClick={() => handleAnswer(opt)}
+                  disabled={!!feedback}
+                  className={`ops-choice-btn ops-choice-${state}`}
+                  style={state === 'idle' ? { '--accent': accentColor, '--accent-dark': accentDark } : undefined}
+                >
+                  <span className="ops-choice-label">{labels[idx]}</span>
+                  <span className="ops-choice-value" style={{ fontSize: currentFontScale }}>{visibleOpt}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Wrong answer continue button */}
+        {feedback === 'incorrect' && (
+          <button className="ops-continue-wrong" onClick={generateQuestion}>
+            {bm ? 'Faham, terus →' : 'Got it, next →'}
+          </button>
+        )}
+      </div>
+
+      {/* ── Feedback Bar ── */}
+      {feedback && (
+        <div className={`ops-feedback-bar ops-feedback-${feedback === 'incorrect' ? 'wrong' : 'correct'}`}>
+          {feedback === 'correct' ? (
+            <span>
+              {bm ? '🎉 Betul sekali!' : '🎉 Correct!'}{' '}
+              <strong>{currentQuestion.primaryAnswerDisplay}</strong>
+            </span>
+          ) : (
+            <span>
+              {bm ? `💡 Jawapan:` : `💡 Answer:`} <strong>{currentQuestion.primaryAnswerDisplay}</strong>
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* ── Footer Stats ── */}
+      <div className="ops-footer-stats">
+        <div className="ops-stat-chip">
+          <span>✅</span>
+          <span>{totalAnswered}</span>
+          <span style={{ color: '#AFAFAF', fontSize: '0.7rem' }}>{bm ? 'dijawab' : 'answered'}</span>
+        </div>
+        <div className="ops-stat-chip ops-stat-chip-highlight">
+          <span>🏆</span>
+          <span style={{ color: '#CC7700' }}>{bm ? 'Seterusnya pada' : 'Next reward at'} {Math.ceil((streak + 1) / STREAK_MILESTONE) * STREAK_MILESTONE}</span>
+        </div>
+      </div>
+
+      {/* ── Reference Modal ── */}
+      {showReference && createPortal(
+          <div className="ops-streak-overlay" onClick={() => setShowReference(false)}>
+              <div 
+                  className="ops-streak-popup" 
+                  style={{ background: '#fff', textAlign: 'left', minHeight: '50vh', maxHeight: '90vh', width: '90vw', maxWidth: '700px', display: 'flex', flexDirection: 'column' }} 
+                  onClick={e => e.stopPropagation()}
+              >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                      <h2 style={{ margin: 0, color: accentColor, fontWeight: 900, fontSize: 'clamp(1.1rem, 4vw, 1.8rem)' }}>{t.refTitle || 'Rujukan'}</h2>
+                      <button onClick={() => setShowReference(false)} style={{ background: '#f0f0f0', border: 'none', borderRadius: '50%', padding: '6px', cursor: 'pointer' }}>
+                          <X size={20} color="#666" />
+                      </button>
+                  </div>
+                  <div style={{ overflowY: 'auto', flex: 1, paddingRight: '0.5rem' }}>
+                      <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.95rem' }}>
+                          <thead>
+                              <tr style={{ borderBottom: '2px solid #eee' }}>
+                                  <th style={{ padding: '0.5rem', color: '#AFAFAF' }}>#</th>
+                                  <th style={{ padding: '0.5rem', color: '#AFAFAF' }}>{t.refNames || 'Rumi'}</th>
+                                  <th style={{ padding: '0.5rem', color: '#AFAFAF' }}>{t.refIslamic || 'Hijrah'}</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              {MONTHS.map(m => (
+                                  <tr key={m.id} style={{ borderBottom: '1px solid #f9f9f9' }}>
+                                      <td style={{ padding: '0.6rem 0.5rem', fontWeight: 900, color: accentColor }}>{m.id}</td>
+                                      <td style={{ padding: '0.6rem 0.5rem' }}>
+                                          <div style={{ fontWeight: 800, color: '#3C3C3C' }}>{m.name}</div>
+                                          <div style={{ fontSize: '0.8rem', color: '#AFAFAF', fontWeight: 600 }}>{m.malay}</div>
+                                      </td>
+                                      <td style={{ padding: '0.6rem 0.5rem', fontWeight: 700, color: '#4ECDC4' }}>{m.islamic}</td>
+                                  </tr>
+                              ))}
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
+          </div>,
+          document.body
+      )}
+    </div>
+  );
 }

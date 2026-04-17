@@ -5,109 +5,117 @@ export const generateProblem = (operation, difficulty, availableNumbers = []) =>
     return generateProblem(randomOp, difficulty, availableNumbers);
   }
 
-  let min, max;
-
-  // Define range based on difficulty
-  // Easy: 1-9 (Single digit)
-  // Medium: 1-12 (Multiplication table range)
-  // Define range based on difficulty (Digits)
-  // Easy: Single digit (1-9)
-  // Medium: Two digits (10-99)
-  // Hard: Three digits (100-999)
-  switch (difficulty) {
-    case 'easy':
-      min = 1;
-      max = 9;
-      break;
-    case 'hard':
-      min = 10; // Allow mixing, but focus on higher numbers
-      max = 999;
-      break;
-    case 'medium':
-    default:
-      min = 5; // Start slightly higher to encourage 2-digit usage
-      max = 99;
-      break;
-  }
-
   const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+  // Determine if a specific base number was selected
+  let baseNum = null;
+  if (Array.isArray(availableNumbers) && availableNumbers.length > 0 && !availableNumbers.includes('random')) {
+    baseNum = parseInt(availableNumbers[Math.floor(Math.random() * availableNumbers.length)], 10);
+  }
 
   let num1, num2, answer, symbol;
 
   switch (operation) {
-    case 'add':
+    case 'add': {
       symbol = '+';
-      num1 = getRandomInt(min, max);
-      num2 = getRandomInt(min, max);
+      if (difficulty === 'easy') {
+        num1 = baseNum !== null ? baseNum : getRandomInt(1, 9);
+        num2 = getRandomInt(1, 9);
+      } else if (difficulty === 'medium') {
+        num1 = baseNum !== null ? baseNum : getRandomInt(10, 99);
+        num2 = getRandomInt(10, 99);
+      } else {
+        num1 = baseNum !== null ? baseNum : getRandomInt(100, 999);
+        num2 = getRandomInt(100, 999);
+      }
       answer = num1 + num2;
       break;
-    case 'subtract':
+    }
+    case 'subtract': {
       symbol = '-';
-      num1 = getRandomInt(min, max);
-      num2 = getRandomInt(min, max);
-      // Ensure positive result for younger kids (swap if needed)
-      if (num1 < num2) [num1, num2] = [num2, num1];
+      if (difficulty === 'easy') {
+        num2 = baseNum !== null ? baseNum : getRandomInt(1, 8);
+        num1 = num2 + getRandomInt(1, 9); 
+      } else if (difficulty === 'medium') {
+        num2 = baseNum !== null ? baseNum : getRandomInt(10, 98);
+        num1 = num2 + getRandomInt(10, 89);
+      } else {
+        num2 = baseNum !== null ? baseNum : getRandomInt(100, 998);
+        num1 = num2 + getRandomInt(100, 899);
+      }
       answer = num1 - num2;
       break;
-    case 'multiply':
+    }
+    case 'multiply': {
       symbol = '×';
-      // If specific numbers are selected, force num1 using them
-      if (availableNumbers && availableNumbers.length > 0) {
-        const randomIndex = Math.floor(Math.random() * availableNumbers.length);
-        num1 = availableNumbers[randomIndex];
-
-        // num2 scales with difficulty
-        if (difficulty === 'easy') {
-          num2 = getRandomInt(0, 12); // User requested 0-12 range for easy focus
+      if (difficulty === 'easy') {
+        num1 = baseNum !== null ? baseNum : getRandomInt(1, 9);
+        num2 = getRandomInt(1, 9);
+      } else if (difficulty === 'medium') {
+        if (baseNum !== null) {
+          num1 = baseNum;
+          num2 = getRandomInt(10, 99);
         } else {
-          num2 = getRandomInt(min, max);
+          num1 = getRandomInt(10, 99);
+          num2 = getRandomInt(2, 9);
         }
       } else {
-        // Standard random multiplication
-        num1 = getRandomInt(min, max);
-        if (difficulty === 'easy') {
-          num2 = getRandomInt(1, 9);
-        } else if (difficulty === 'medium') {
-          num2 = getRandomInt(2, 12); // Limit multiplier for mental math
-        } else { // hard
-          num2 = getRandomInt(2, 20); // Harder but solvable
+        if (baseNum !== null) {
+          num1 = baseNum;
+          num2 = getRandomInt(100, 999);
+        } else {
+          num1 = getRandomInt(100, 999);
+          num2 = getRandomInt(10, 12);
         }
       }
       answer = num1 * num2;
       break;
-    case 'divide':
+    }
+    case 'divide': {
       symbol = '÷';
-      const divisorMax = difficulty === 'easy' ? 9 : 12;
-      num2 = getRandomInt(2, divisorMax); // Divisor (2-9 or 2-12)
+      let safeDivisor = baseNum !== null ? baseNum : null;
+      if (safeDivisor === 0) safeDivisor = getRandomInt(1, 9); // Prevent divide by 0
 
-      // Quotient (Answer) comes from the difficulty range
-      const quotient = getRandomInt(min, max);
-
-      num1 = num2 * quotient; // Dividend is guaranteed multiple
-      answer = quotient;
+      if (difficulty === 'easy') {
+        num2 = safeDivisor !== null ? safeDivisor : getRandomInt(1, 9);
+        const quotient = getRandomInt(1, 9);
+        num1 = num2 * quotient;
+        answer = quotient;
+      } else if (difficulty === 'medium') {
+        num2 = safeDivisor !== null ? safeDivisor : getRandomInt(2, 9);
+        const quotient = getRandomInt(10, 99);
+        num1 = num2 * quotient;
+        answer = quotient;
+      } else {
+        num2 = safeDivisor !== null ? safeDivisor : getRandomInt(2, 12);
+        const quotient = getRandomInt(100, 999);
+        num1 = num2 * quotient;
+        answer = quotient;
+      }
       break;
+    }
     default:
-      symbol = '?';
-      num1 = 0;
-      num2 = 0;
-      answer = 0;
+      symbol = '?'; num1 = 0; num2 = 0; answer = 0;
   }
 
-  // Generate strict wrong options (unique and close to answer)
+  // Generate 3 unique wrong options close to the correct answer
   const options = new Set([answer]);
-  while (options.size < 4) {
-    // Generate a wrong answer within a reasonable range of the correct answer
-    // e.g. answer +/- 5 or 10
-    const variance = Math.max(5, Math.floor(answer * 0.5));
+  let attempts = 0;
+  while (options.size < 4 && attempts < 200) {
+    attempts++;
+    const variance = Math.max(3, Math.floor(answer * 0.25));
     const wrong = getRandomInt(Math.max(0, answer - variance), answer + variance);
     if (wrong !== answer) options.add(wrong);
   }
+  // Safety: fill remaining with guaranteed-distinct values
+  let fill = 1;
+  while (options.size < 4) { if (!options.has(answer + fill)) options.add(answer + fill); fill++; }
 
   return {
     num1,
     num2,
     symbol,
     answer,
-    options: Array.from(options).sort(() => Math.random() - 0.5) // Shuffle options
+    options: Array.from(options).sort(() => Math.random() - 0.5),
   };
 };

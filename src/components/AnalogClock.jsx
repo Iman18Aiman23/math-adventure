@@ -14,7 +14,7 @@ export default function AnalogClock({ hour, minute, size = 200, showNumbers = tr
     return (
         <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
             {/* Clock Face */}
-            <circle cx={center} cy={center} r={radius} fill="white" stroke="var(--color-dark)" strokeWidth="4" />
+            <circle cx={center} cy={center} r={radius} fill="white" stroke="#3C3C3C" strokeWidth="4" />
 
             {/* Hour markers/numbers */}
             {showNumbers && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(num => {
@@ -39,7 +39,7 @@ export default function AnalogClock({ hour, minute, size = 200, showNumbers = tr
             <line
                 x1={center} y1={center}
                 x2={center} y2={center - radius * 0.7}
-                stroke="#666" strokeWidth="4" strokeLinecap="round"
+                stroke="#666" strokeWidth="6" strokeLinecap="round"
                 transform={`rotate(${minuteRotation}, ${center}, ${center})`}
             />
 
@@ -47,12 +47,12 @@ export default function AnalogClock({ hour, minute, size = 200, showNumbers = tr
             <line
                 x1={center} y1={center}
                 x2={center} y2={center - radius * 0.5}
-                stroke="var(--color-dark)" strokeWidth="6" strokeLinecap="round"
+                stroke="#FF4B4B" strokeWidth="6" strokeLinecap="round"
                 transform={`rotate(${hourRotation}, ${center}, ${center})`}
             />
 
             {/* Center Pin */}
-            <circle cx={center} cy={center} r="6" fill="var(--color-dark)" />
+            <circle cx={center} cy={center} r="6" fill="#3C3C3C" />
         </svg>
     );
 }

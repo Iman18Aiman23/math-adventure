@@ -8,12 +8,12 @@ const SIDEBAR_TABS = [
 
 export default function DesktopSidebar({
   activeTab, onTabChange, language, onToggleLanguage,
-  playerName, gameState,
+  playerName, gameState, onHome
 }) {
   return (
     <aside className="desktop-sidebar">
       {/* Logo */}
-      <div className="sidebar-logo">
+      <div className="sidebar-logo" onClick={onHome} style={{ cursor: 'pointer' }}>
         <span className="sidebar-logo-owl">🦉</span>
         <span>Iman's Adventure</span>
       </div>
@@ -24,7 +24,13 @@ export default function DesktopSidebar({
           <button
             key={tab.id}
             className={`sidebar-item${activeTab === tab.id ? ' active' : ''}`}
-            onClick={() => onTabChange(tab.id)}
+            onClick={() => {
+              if (tab.id === 'learn') {
+                onHome();
+              } else {
+                onTabChange(tab.id);
+              }
+            }}
           >
             <span className="sidebar-item-icon">{tab.icon}</span>
             <span>{tab.label[language] || tab.label.bm}</span>

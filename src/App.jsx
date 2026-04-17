@@ -8,7 +8,7 @@ import TimeGameMenu from './components/TimeGameMenu';
 import MonthsGame from './components/MonthsGame';
 import ClockGame from './components/ClockGame';
 import MonthLearning from './components/MonthLearning';
-import QuizArena from './components/QuizArena';
+import MathOperationsGame from './components/MathOperationsGame';
 import LevelUpToast from './components/LevelUpToast';
 import WelcomeModal from './components/WelcomeModal';
 import DesktopSidebar from './components/DesktopSidebar';
@@ -62,7 +62,7 @@ export default function App() {
   const [mathSubGame,    setMathSubGame]    = useState(null);
   const [dateTimeSubGame,setDateTimeSubGame]= useState(null);
   const [isPlaying,      setIsPlaying]      = useState(false);
-  const [gameConfig,     setGameConfig]     = useState({ operation: 'add', difficulty: 'easy', selectedNumbers: [], quizType: 'multiple' });
+  const [gameConfig,     setGameConfig]     = useState({ operation: 'add', difficulty: 'easy', nums: [], quizType: 'multiple' });
   const [isMuted,        setIsMuted]        = useState(getMuted());
   const [language,       setLanguage]       = useState('bm');
   const [activeTab,      setActiveTab]      = useState('learn');
@@ -85,10 +85,10 @@ export default function App() {
     };
   }, []);
 
-  const handleStartGame    = (op, diff, nums = [], qType = 'multiple') => { setGameConfig({ operation: op, difficulty: diff, selectedNumbers: nums, quizType: qType }); setIsPlaying(true); };
+  const handleStartGame    = (op, diff, _nums = [], qType = 'multiple') => { setGameConfig({ operation: op, difficulty: diff, nums: _nums, quizType: qType }); setIsPlaying(true); };
   const handleBackToMenu   = () => setIsPlaying(false);
   const handleStartTimeGame= (gameId) => { setDateTimeSubGame(gameId); setIsPlaying(true); };
-  const handleBackToHome   = () => { setIsPlaying(false); setMathSubGame(null); setDateTimeSubGame(null); setCurrentSubject(null); };
+  const handleBackToHome   = () => { setIsPlaying(false); setMathSubGame(null); setDateTimeSubGame(null); setCurrentSubject(null); setActiveTab('learn'); };
   const handleToggleMute   = () => { const m = !isMuted; setIsMuted(m); setMuted(m); };
   const handleQuickSwitch  = (subject) => { setShowQuickSwitch(false); setIsPlaying(false); setMathSubGame(null); setDateTimeSubGame(null); setCurrentSubject(subject); };
   const handleToggleLang   = () => setLanguage(l => l === 'bm' ? 'eng' : 'bm');
@@ -106,8 +106,8 @@ export default function App() {
         if (!mathSubGame) return <MathHome onSelectSubGame={setMathSubGame} onBack={handleBackToHome} onHome={handleBackToHome} language={language} />;
         if (mathSubGame === 'operations') {
           return !isPlaying
-            ? <GameMenu onStart={handleStartGame} isMuted={isMuted} onToggleMute={handleToggleMute} onBack={() => setMathSubGame(null)} onHome={handleBackToHome} language={language} />
-            : <QuizArena operation={gameConfig.operation} difficulty={gameConfig.difficulty} selectedNumbers={gameConfig.selectedNumbers} quizType={gameConfig.quizType} onBack={handleBackToMenu} onHome={handleBackToHome} isMuted={isMuted} onToggleMute={handleToggleMute} language={language} isDesktop={isDesktop} />;
+            ? <GameMenu onStart={handleStartGame} onBack={() => setMathSubGame(null)} onHome={handleBackToHome} language={language} />
+            : <MathOperationsGame operation={gameConfig.operation} difficulty={gameConfig.difficulty} nums={gameConfig.nums} quizType={gameConfig.quizType} onBack={handleBackToMenu} onHome={handleBackToHome} language={language} />;
         }
         if (mathSubGame === 'datetime') {
           if (!isPlaying) return <TimeGameMenu onBack={() => setMathSubGame(null)} onStart={handleStartTimeGame} onHome={handleBackToHome} language={language} />;
@@ -136,6 +136,7 @@ export default function App() {
           onToggleLanguage={handleToggleLang}
           playerName={playerName}
           gameState={gameState}
+          onHome={handleBackToHome}
         />
       )}
 
@@ -203,7 +204,12 @@ export default function App() {
                   )}
                 </>
               ) : (
-                <span style={{ fontWeight: 900, fontSize: '1rem', color: '#3C3C3C' }}>Iman's Adventure 🦉</span>
+                <button
+                  onClick={handleBackToHome}
+                  style={{ background: 'transparent', border: 'none', fontWeight: 900, fontSize: '1rem', color: '#3C3C3C', cursor: 'pointer', padding: 0 }}
+                >
+                  Iman's Adventure 🦉
+                </button>
               )}
             </div>
 
@@ -275,7 +281,13 @@ export default function App() {
               <button
                 key={tab.id}
                 className={`duo-tab-item${activeTab === tab.id ? ' active' : ''}`}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => {
+                  if (tab.id === 'learn') {
+                    handleBackToHome();
+                  } else {
+                    setActiveTab(tab.id);
+                  }
+                }}
               >
                 <span className="duo-tab-icon">{tab.icon}</span>
                 <span>{tab.label[language] || tab.label.bm}</span>
