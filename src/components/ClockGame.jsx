@@ -320,9 +320,14 @@ export default function ClockGame({ onBack, onHome, language }) {
             {bm ? 'dijawab' : 'answered'}
           </span>
         </div>
-        <div className="ops-stat-chip ops-stat-chip-highlight">
+        <div className="ops-stat-chip ops-stat-chip-highlight" style={{ gap: '8px' }}>
           <span>🏆</span>
-          <span style={{ color: '#CC7700' }}>{bm ? 'Seterusnya pada' : 'Next reward at'} {Math.ceil((streak + 1) / STREAK_MILESTONE) * STREAK_MILESTONE}</span>
+          <div style={{ width: '80px', height: '8px', background: 'rgba(204, 119, 0, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
+            <div style={{ width: `${(streak / (Math.ceil((streak + 1) / STREAK_MILESTONE) * STREAK_MILESTONE)) * 100}%`, height: '100%', background: '#FFB800', borderRadius: '4px', transition: 'width 0.3s ease-out' }} />
+          </div>
+          <span style={{ color: '#CC7700', fontSize: '0.9rem', fontWeight: 900, minWidth: '32px', textAlign: 'right' }}>
+            {streak}/{Math.ceil((streak + 1) / STREAK_MILESTONE) * STREAK_MILESTONE}
+          </span>
         </div>
       </div>
     </div>
