@@ -12,6 +12,7 @@ import MathOperationsGame from './components/MathOperationsGame';
 import LevelUpToast from './components/LevelUpToast';
 import WelcomeModal from './components/WelcomeModal';
 import DesktopSidebar from './components/DesktopSidebar';
+import ReadingPage from './components/ReadingPage';
 import { getMuted, setMuted, preloadSounds, unlockAudio } from './utils/soundManager';
 import { Map, ChevronDown, Check } from 'lucide-react';
 import { useGameState } from './hooks/useGameState';
@@ -120,6 +121,8 @@ export default function App() {
         return <BMPage onBack={handleBackToHome} onHome={handleBackToHome} language={language} />;
       case 'jawi':
         return <JawiPage onBack={handleBackToHome} onHome={handleBackToHome} language={language} />;
+      case 'reading':
+        return <ReadingPage onBack={handleBackToHome} language={language} />;
       default:
         return <HomePage onSelectSubject={setCurrentSubject} language={language} playerName={playerName} gameState={gameState} />;
     }
@@ -178,7 +181,7 @@ export default function App() {
                     style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#f7f7f7', border: '2px solid #E5E5E5', borderRadius: '999px', padding: '6px 14px', fontWeight: 800, fontSize: '0.9rem', color: '#3C3C3C' }}
                   >
                     <Map size={16} color="#1CB0F6" />
-                    {currentSubject === 'math' ? '🔢 Matematik' : currentSubject === 'bm' ? '🗣️ Bahasa Melayu' : '📖 Jawi'}
+                    {currentSubject === 'math' ? '🔢 Matematik' : currentSubject === 'bm' ? (language === 'bm' ? '🗣️ Belajar Sebutan' : '🗣️ Speaking') : '📖 Jawi'}
                     <ChevronDown size={16} />
                   </button>
 
@@ -190,7 +193,7 @@ export default function App() {
                     }}>
                       {[
                         { id: 'math',  emoji: '🔢', label: 'Matematik' },
-                        { id: 'bm',    emoji: '🗣️', label: 'Bahasa Melayu' },
+                        { id: 'bm',    emoji: '🗣️', label: language === 'bm' ? 'Belajar Sebutan' : 'Speaking' },
                         { id: 'jawi',  emoji: '📖', label: 'Jawi' },
                       ].map(s => (
                         <button key={s.id} onClick={() => handleQuickSwitch(s.id)}
@@ -237,7 +240,7 @@ export default function App() {
               style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#f7f7f7', border: '2px solid #E5E5E5', borderRadius: '999px', padding: '6px 14px', fontWeight: 800, fontSize: '0.85rem', color: '#3C3C3C' }}
             >
               <Map size={14} color="#1CB0F6" />
-              {currentSubject === 'math' ? '🔢 Matematik' : currentSubject === 'bm' ? '🗣️ Bahasa Melayu' : '📖 Jawi'}
+              {currentSubject === 'math' ? '🔢 Matematik' : currentSubject === 'bm' ? (language === 'bm' ? '🗣️ Belajar Sebutan' : '🗣️ Speaking') : '📖 Jawi'}
               <ChevronDown size={14} />
             </button>
             {showQuickSwitch && (
@@ -248,7 +251,7 @@ export default function App() {
               }}>
                 {[
                   { id: 'math',  emoji: '🔢', label: 'Matematik' },
-                  { id: 'bm',    emoji: '🗣️', label: 'Bahasa Melayu' },
+                  { id: 'bm',    emoji: '🗣️', label: language === 'bm' ? 'Belajar Sebutan' : 'Speaking' },
                   { id: 'jawi',  emoji: '📖', label: 'Jawi' },
                 ].map(s => (
                   <button key={s.id} onClick={() => handleQuickSwitch(s.id)}

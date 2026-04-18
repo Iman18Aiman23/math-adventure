@@ -17,8 +17,8 @@ const COURSES = [
     id: 'bm',
     emoji: '🗣️',
     iconBg: '#D0F0FF',
-    title: { bm: 'Bahasa Melayu', eng: 'Bahasa Melayu' },
-    desc: { bm: 'Fonik & sebutan BM', eng: 'BM phonics & pronunciation' },
+    title: { bm: 'Belajar Sebutan', eng: 'Speaking' },
+    desc: { bm: 'Fonik & sebutan', eng: 'Phonics & pronunciation' },
     color: '#1CB0F6',
     progress: 60,
   },
@@ -30,6 +30,15 @@ const COURSES = [
     desc: { bm: 'Huruf & suku kata Jawi', eng: 'Jawi letters & syllables' },
     color: '#CE82FF',
     progress: 15,
+  },
+  {
+    id: 'reading',
+    emoji: '📚',
+    iconBg: '#E0FFD4',
+    title: { bm: 'Belajar Membaca', eng: 'Reading' },
+    desc: { bm: 'Latihan membaca suku kata', eng: 'Reading syllables practice' },
+    color: '#58CC02',
+    progress: 0,
   },
 ];
 
