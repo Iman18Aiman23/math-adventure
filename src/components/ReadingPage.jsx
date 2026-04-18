@@ -8,7 +8,7 @@ export default function ReadingPage({ onBack, language }) {
   // ── State ─────────────────────────────────────────────────────────────
   const [selectedLevel, setSelectedLevel] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [scriptType, setScriptType] = useState('RUMI'); // 'RUMI' or 'JAWI'
+  const [scriptType, setScriptType] = useState('RUMI'); // 'RUMI', 'JAWI', or 'ENG'
   const [showHelp, setShowHelp] = useState(false);
   const [activeSyllable, setActiveSyllable] = useState(null);
 
@@ -49,13 +49,21 @@ export default function ReadingPage({ onBack, language }) {
 
   const toggleScript = () => {
     playHoverSound();
-    setScriptType(prev => prev === 'RUMI' ? 'JAWI' : 'RUMI');
+    setScriptType(prev => {
+      if (prev === 'RUMI') return 'JAWI';
+      if (prev === 'JAWI') return 'ENG';
+      return 'RUMI';
+    });
     setActiveSyllable(null);
+    setShowHelp(false);
   };
 
-  const toggleHelp = () => {
+  const handleVolumeClick = () => {
     playHoverSound();
-    setShowHelp(prev => !prev);
+    const speakText = scriptType === 'ENG' ? currentItem?.eng : currentItem?.rumi.replace(/-/g, '');
+    const lang = scriptType === 'ENG' ? 'en-US' : 'ms-MY';
+    SpeechManager.speak(speakText, lang);
+    setShowHelp(true);
   };
 
   const handleSyllableClick = (index, text) => {
@@ -126,7 +134,7 @@ export default function ReadingPage({ onBack, language }) {
           Tahap {selectedLevel} 
           <span style={{ color: '#AFAFAF', marginLeft: '8px', fontSize: '0.9rem' }}>{currentIndex + 1}/{currentLevelData.length}</span>
         </div>
-        <button onClick={toggleScript} style={{ background: scriptType === 'JAWI' ? '#CE82FF' : '#1CB0F6', border: 'none', borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', cursor: 'pointer', fontWeight: 800, fontSize: '0.8rem', boxShadow: '0 4px 0 rgba(0,0,0,0.1)' }}>
+        <button onClick={toggleScript} style={{ background: scriptType === 'JAWI' ? '#CE82FF' : scriptType === 'ENG' ? '#FF9600' : '#1CB0F6', border: 'none', borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', cursor: 'pointer', fontWeight: 800, fontSize: '0.8rem', boxShadow: '0 4px 0 rgba(0,0,0,0.1)' }}>
           {scriptType}
         </button>
       </div>
@@ -141,11 +149,15 @@ export default function ReadingPage({ onBack, language }) {
           display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '320px', justifyContent: 'center'
         }}>
           
-          {/* Help Toggle Button */}
+          {/* Help/Sound Toggle Button */}
           <button 
-            onClick={toggleHelp} 
-            title="Translation & Phonetic"
-            style={{ position: 'absolute', top: 16, right: 16, background: '#f0f0f0', border: 'none', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1CB0F6', cursor: 'pointer' }}>
+            onClick={handleVolumeClick} 
+            title="Read Full Text"
+            style={{ position: 'absolute', top: 16, right: 16, background: '#f0f0f0', border: 'none', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1CB0F6', cursor: 'pointer', transition: 'transform 0.1s' }}
+            onMouseDown={e => e.currentTarget.style.transform = 'scale(0.9)'}
+            onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
+            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+          >
             <Volume2 size={22} />
           </button>
 
@@ -154,7 +166,7 @@ export default function ReadingPage({ onBack, language }) {
           </span>
 
           {/* Rumi / Syllables Display */}
-          {scriptType === 'RUMI' ? (
+          {scriptType === 'RUMI' && (
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px' }}>
               {currentItem?.syllables.map((syl, i) => {
                 const cleanSyl = syl.trim();
@@ -183,15 +195,49 @@ export default function ReadingPage({ onBack, language }) {
                 )
               })}
             </div>
-          ) : (
-            // Jawi Display
-            <div style={{
-              fontSize: '3.5rem', fontWeight: 900, color: '#3C3C3C', 
-              direction: 'rtl', fontFamily: '"Lateef", serif', lineHeight: 1.5,
-              textAlign: 'center'
-            }}>
+          )}
+
+          {/* Jawi Display */}
+          {scriptType === 'JAWI' && (
+            <button
+              onClick={() => {
+                playHoverSound();
+                SpeechManager.speak(currentItem?.rumi.replace(/-/g, ''), 'ms-MY');
+              }}
+              style={{
+                fontSize: '3.5rem', fontWeight: 900, color: '#3C3C3C', 
+                direction: 'rtl', fontFamily: '"Lateef", serif', lineHeight: 1.5,
+                textAlign: 'center', background: '#F0F0F0', border: '2px solid #E5E5E5',
+                borderRadius: '16px', padding: '12px 24px', cursor: 'pointer', width: '100%',
+                transition: 'transform 0.1s'
+              }}
+              onMouseDown={e => e.currentTarget.style.transform = 'scale(0.98)'}
+              onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
+              onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+            >
               {currentItem?.jawi}
-            </div>
+            </button>
+          )}
+
+          {/* English Display */}
+          {scriptType === 'ENG' && (
+            <button
+              onClick={() => {
+                playHoverSound();
+                SpeechManager.speak(currentItem?.eng, 'en-US');
+              }}
+              style={{
+                fontSize: '2.5rem', fontWeight: 900, color: '#FF9600', 
+                textAlign: 'center', lineHeight: 1.3, background: '#FFF0CC', border: '2px solid #FFD166',
+                borderRadius: '16px', padding: '12px 24px', cursor: 'pointer', width: '100%',
+                transition: 'transform 0.1s'
+              }}
+              onMouseDown={e => e.currentTarget.style.transform = 'scale(0.98)'}
+              onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
+              onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+            >
+              {currentItem?.eng}
+            </button>
           )}
 
           {/* Helper Drawer (Translation + Phonetics) */}
