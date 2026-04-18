@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import confetti from 'canvas-confetti';
 import { X } from 'lucide-react';
 import { generateProblem } from '../utils/mathLogic';
@@ -27,6 +27,30 @@ const OP_META = {
   multiply: { label: 'Darab',    labelEn: 'Multiplication', emoji: '✖️', color: '#CE82FF', dark: '#9B59B6' },
   divide:   { label: 'Bahagi',   labelEn: 'Division',       emoji: '➗', color: '#FF9600', dark: '#CC7800' },
   random:   { label: 'Rawak',    labelEn: 'Random Mix',     emoji: '🎲', color: '#FF4B4B', dark: '#CC3B3B' },
+};
+
+const getFruitIcon = (num) => {
+  switch(num) {
+    case 1: return '🍎';
+    case 2: return '🍇';
+    case 3: return '🍌';
+    case 4: return '🍉';
+    default: 
+      const extras = ['🍓', '🍒', '🥭', '🍍', '🍊', '🥝', '🫐', '🍑'];
+      return extras[num % extras.length];
+  }
+};
+
+const getAnimalIcon = (num) => {
+  switch(num) {
+    case 1: return '🐱';
+    case 2: return '🐰';
+    case 3: return '🐄';
+    case 4: return '🐐';
+    default: 
+      const extras = ['🐶', '🦊', '🐻', '🐼', '🐨', '🦁', '🐯', '🐸'];
+      return extras[num % extras.length];
+  }
 };
 
 const DIFF_META = {
@@ -111,6 +135,13 @@ export default function MathOperationsGame({
     setTypedAnswer('');
     setIsAnimating(false);
   }, [operation, Math.max(0, ...[difficulty.length, (nums||[]).length])]); // ensure reactivity if nums array reference changes but content same. Actually just `nums` is fine.
+
+  const problemIcon = useMemo(() => {
+    if (!problem) return null;
+    const isFruit = Math.random() < 0.5;
+    const rnd = Math.floor(Math.random() * 10);
+    return isFruit ? getFruitIcon(rnd) : getAnimalIcon(rnd);
+  }, [problem]);
 
   const handleAnswer = useCallback((userAnswer) => {
     if (feedback || isAnimating) return;
@@ -237,13 +268,39 @@ export default function MathOperationsGame({
         <p className="ops-question-label">
           {language === 'bm' ? 'Berapakah hasilnya?' : 'What is the answer?'}
         </p>
+
+        {/* ── Icons Visual ── */}
+        {problem.num1 <= 20 && problem.num2 <= 20 && problemIcon && (
+          <div className="ops-icons-container">
+            {/* Number 1 Icons */}
+            <div className="ops-icon-group">
+              {Array.from({ length: problem.num1 }).map((_, i) => (
+                <span key={`n1-${i}`} className="ops-icon-emoji">{problemIcon}</span>
+             ))}
+              {problem.num1 === 0 && <span className="ops-icon-emoji" style={{ opacity: 0 }}>{problemIcon}</span>}
+            </div>
+
+            {/* Operator */}
+            <div className="ops-icon-operator" style={{ color: accentColor }}>
+              {problem.symbol}
+            </div>
+
+            {/* Number 2 Icons */}
+            <div className="ops-icon-group">
+              {Array.from({ length: problem.num2 }).map((_, i) => (
+                <span key={`n2-${i}`} className="ops-icon-emoji">{problemIcon}</span>
+              ))}
+              {problem.num2 === 0 && <span className="ops-icon-emoji" style={{ opacity: 0 }}>{problemIcon}</span>}
+            </div>
+          </div>
+        )}
+
         <div
-          className="ops-question-expr"
-          style={{ color: feedback === 'correct' ? '#46A302' : feedback === 'wrong' ? '#CC3B3B' : '#3C3C3C' }}
+          className="ops-question-expr ops-question-row"
+          style={{ color: feedback === 'correct' ? '#46A302' : feedback === 'wrong' ? '#CC3B3B' : '#3C3C3C', display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'nowrap' }}
         >
-          {problem.num1} <span className="ops-question-op" style={{ color: accentColor }}>{problem.symbol}</span> {problem.num2}
+          {problem.num1} <span className="ops-question-op" style={{ color: accentColor }}>{problem.symbol}</span> {problem.num2} <span style={{ color: '#3C3C3C', marginLeft: '0.5rem' }}>= ?</span>
         </div>
-        <div className="ops-question-eq">= ?</div>
       </div>
 
       {/* ── Answer Zone ── */}
@@ -338,10 +395,15 @@ export default function MathOperationsGame({
             {language === 'bm' ? 'dijawab' : 'answered'}
           </span>
         </div>
-        <div className="ops-stat-chip ops-stat-chip-highlight">
-          <span>🏆</span>
-          <span style={{ color: '#CC7700' }}>{language === 'bm' ? 'Seterusnya pada' : 'Next reward at'} {Math.ceil((streak + 1) / STREAK_MILESTONE) * STREAK_MILESTONE}</span>
-        </div>
+          <div className="ops-stat-chip ops-stat-chip-highlight" style={{ gap: '8px' }}>
+            <span>🏆</span>
+            <div style={{ width: '80px', height: '8px', background: 'rgba(204, 119, 0, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
+              <div style={{ width: `${(streak / (Math.ceil((streak + 1) / STREAK_MILESTONE) * STREAK_MILESTONE)) * 100}%`, height: '100%', background: '#FFB800', borderRadius: '4px', transition: 'width 0.3s ease-out' }} />
+            </div>
+            <span style={{ color: '#CC7700', fontSize: '0.9rem', fontWeight: 900, minWidth: '32px', textAlign: 'right' }}>
+              {streak}/{Math.ceil((streak + 1) / STREAK_MILESTONE) * STREAK_MILESTONE}
+            </span>
+          </div>
       </div>
     </div>
   );
