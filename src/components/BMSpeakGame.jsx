@@ -38,7 +38,8 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
   const [score,       setScore]       = useState(0);
   const [streak,      setStreak]      = useState(0);
   const [attempts,    setAttempts]    = useState(0);
-  const [lang,        setLang]        = useState('ms');       // 'ms' | 'en'
+  const [lang,        setLang]        = useState(category === 'en_long_vowels' ? 'en' : 'ms');       // 'ms' | 'en'
+  const [showHint,    setShowHint]    = useState(false);
   const [lastHeard,   setLastHeard]   = useState('');
   const [phaseTimers, setPhaseTimers] = useState([]);
 
@@ -63,6 +64,8 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
     setScore(0);
     setStreak(0);
     setAttempts(0);
+    setLang(category === 'en_long_vowels' ? 'en' : 'ms');
+    setShowHint(false);
     setPhase(PHASE_SPEAKING);
     setLastHeard('');
   }, [category]);
@@ -96,6 +99,7 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
     setIndex(ni);
     setAttempts(0);
     setLastHeard('');
+    setShowHint(false);
     setPhase(PHASE_SPEAKING);
   }, []);
 
@@ -374,10 +378,32 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
           maxWidth: '480px',
           transition: 'background 0.3s, border-color 0.3s',
           boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
+          position: 'relative'
         }}>
+          {category === 'common_objects' && (
+            <button
+              onClick={() => setShowHint(h => !h)}
+              style={{
+                position: 'absolute',
+                top: '12px',
+                right: '12px',
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '1.4rem',
+                padding: '4px',
+                color: '#1CB0F6',
+                transition: 'transform 0.1s'
+              }}
+              title="Show Hint"
+            >
+              💡
+            </button>
+          )}
+
           {/* Hint / hint text at top */}
           {langData?.prompt && (
-            <p style={{ fontSize: '0.82rem', fontWeight: 700, color: '#AFAFAF', marginBottom: '0.75rem', letterSpacing: '0.3px' }}>
+            <p style={{ fontSize: '0.82rem', fontWeight: 700, color: '#AFAFAF', marginBottom: '0.75rem', letterSpacing: '0.3px', padding: '0 2rem' }}>
               {langData.prompt}
             </p>
           )}
@@ -398,10 +424,10 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
             {displayText || '⏳'}
           </div>
 
-          {/* Hint: show answer when max attempts reached */}
-          {attempts >= MAX_ATTEMPTS && langData && (
+          {/* Hint: show answer when max attempts reached or showHint is true */}
+          {((attempts >= MAX_ATTEMPTS) || showHint) && langData && (
             <div style={{ marginTop: '0.75rem', background: '#EDD9FF', borderRadius: '12px', padding: '0.5rem 1rem' }}>
-              <span style={{ fontWeight: 800, color: '#9B59B6', fontSize: '1.1rem' }}>
+              <span style={{ fontWeight: 800, color: '#9B59B6', fontSize: '1.2rem' }}>
                 {langData.word || langData.syllable}
               </span>
             </div>

@@ -284,7 +284,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
                   { id: 'islamic', label: bm ? 'Islam → Nama' : 'Islamic → Name' },
                   { id: 'number', label: bm ? 'Nombor → Nama' : 'Number → Name' }
                 ].map(opt => (
-                  <button key={opt.id} onClick={() => { setCurrentQuestion(null); setQuestionMode(opt.id); setShowLogicDropdown(false); }} style={{ padding: '10px 16px', background: questionMode === opt.id ? accentColor + '20' : 'white', borderBottom: '1px solid #f0f0f0', color: questionMode === opt.id ? accentColor : '#3C3C3C', fontWeight: 700, fontSize: '0.85rem' }}>
+                  <button key={opt.id} onClick={() => { if (questionMode !== opt.id) { setCurrentQuestion(null); setQuestionMode(opt.id); } setShowLogicDropdown(false); }} style={{ padding: '10px 16px', background: questionMode === opt.id ? accentColor + '20' : 'white', borderBottom: '1px solid #f0f0f0', color: questionMode === opt.id ? accentColor : '#3C3C3C', fontWeight: 700, fontSize: '0.85rem' }}>
                       {opt.label}
                   </button>
                 ))}
