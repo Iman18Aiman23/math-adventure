@@ -176,10 +176,10 @@ export default function ReadingPage({ onBack, language }) {
                     key={i}
                     onClick={() => handleSyllableClick(i, cleanSyl)}
                     style={{
-                      background: isActive ? '#1CB0F6' : '#F0F0F0',
+                      background: isActive ? '#1CB0F6' : '#D0F0FF',
                       color: isActive ? '#fff' : '#3C3C3C',
                       border: '2px solid',
-                      borderColor: isActive ? '#1899D6' : '#E5E5E5',
+                      borderColor: isActive ? '#1899D6' : '#1CB0F6',
                       borderRadius: '16px',
                       padding: '12px 20px',
                       fontSize: '1.8rem',
@@ -203,17 +203,22 @@ export default function ReadingPage({ onBack, language }) {
               onClick={() => {
                 playHoverSound();
                 SpeechManager.speak(currentItem?.rumi.replace(/-/g, ''), 'ms-MY');
+                setActiveSyllable(0);
               }}
               style={{
-                fontSize: '3.5rem', fontWeight: 900, color: '#3C3C3C', 
+                fontSize: '3.5rem', fontWeight: 900, 
+                color: activeSyllable === 0 ? '#fff' : '#3C3C3C', 
                 direction: 'rtl', fontFamily: '"Lateef", serif', lineHeight: 1.5,
-                textAlign: 'center', background: '#F0F0F0', border: '2px solid #E5E5E5',
+                textAlign: 'center', 
+                background: activeSyllable === 0 ? '#CE82FF' : '#EDD9FF', 
+                border: `2px solid ${activeSyllable === 0 ? '#A451E0' : '#CE82FF'}`,
                 borderRadius: '16px', padding: '12px 24px', cursor: 'pointer', width: '100%',
-                transition: 'transform 0.1s'
+                transition: 'all 0.15s ease',
+                transform: activeSyllable === 0 ? 'scale(1.05)' : 'scale(1)'
               }}
               onMouseDown={e => e.currentTarget.style.transform = 'scale(0.98)'}
-              onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
-              onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+              onMouseUp={e => e.currentTarget.style.transform = activeSyllable === 0 ? 'scale(1.05)' : 'scale(1)'}
+              onMouseLeave={e => e.currentTarget.style.transform = activeSyllable === 0 ? 'scale(1.05)' : 'scale(1)'}
             >
               {currentItem?.jawi}
             </button>
@@ -225,16 +230,21 @@ export default function ReadingPage({ onBack, language }) {
               onClick={() => {
                 playHoverSound();
                 SpeechManager.speak(currentItem?.eng, 'en-US');
+                setActiveSyllable(0);
               }}
               style={{
-                fontSize: '2.5rem', fontWeight: 900, color: '#FF9600', 
-                textAlign: 'center', lineHeight: 1.3, background: '#FFF0CC', border: '2px solid #FFD166',
+                fontSize: '2.5rem', fontWeight: 900, 
+                color: activeSyllable === 0 ? '#fff' : '#FF9600', 
+                textAlign: 'center', lineHeight: 1.3, 
+                background: activeSyllable === 0 ? '#FF9600' : '#FFF0CC', 
+                border: `2px solid ${activeSyllable === 0 ? '#D47A00' : '#FFD166'}`,
                 borderRadius: '16px', padding: '12px 24px', cursor: 'pointer', width: '100%',
-                transition: 'transform 0.1s'
+                transition: 'all 0.15s ease',
+                transform: activeSyllable === 0 ? 'scale(1.05)' : 'scale(1)'
               }}
               onMouseDown={e => e.currentTarget.style.transform = 'scale(0.98)'}
-              onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
-              onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+              onMouseUp={e => e.currentTarget.style.transform = activeSyllable === 0 ? 'scale(1.05)' : 'scale(1)'}
+              onMouseLeave={e => e.currentTarget.style.transform = activeSyllable === 0 ? 'scale(1.05)' : 'scale(1)'}
             >
               {currentItem?.eng}
             </button>
