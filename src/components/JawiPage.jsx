@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { BookOpen, GraduationCap, Star, Keyboard, ChevronLeft, ChevronRight, Languages, Brain, ArrowLeft, Home } from 'lucide-react';
+import { BookOpen, GraduationCap, Star, Keyboard, ChevronLeft, ChevronRight, Languages, Brain, ArrowLeft, Home, Volume2 } from 'lucide-react';
 import { LOCALIZATION } from '../utils/localization';
 import { JAWI_ALPHABET } from '../utils/jawiData';
 import { SUKU_KATA_DATA } from '../utils/jawiSukuKataData';
@@ -14,6 +14,23 @@ export default function JawiPage({ onBack, onHome, language }) {
     const t = LOCALIZATION[language].jawi;
     const [mode, setMode] = useState(null); // null, 'alphabet' | 'match' | 'words' | 'syllables' | 'spelling_game'
     const [selectedAlphabet, setSelectedAlphabet] = useState(null);
+
+    const speakLetter = (text) => {
+        if (!window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        const utt = new SpeechSynthesisUtterance(text);
+        utt.lang = 'ms-MY';
+        const voices = window.speechSynthesis.getVoices();
+        const malayVoice = voices.find(v => v.lang.includes('ms') || v.lang.includes('id'));
+        if (malayVoice) utt.voice = malayVoice;
+        window.speechSynthesis.speak(utt);
+    };
+
+    useEffect(() => {
+        if (selectedAlphabet && selectedAlphabet.rumi) {
+            speakLetter(selectedAlphabet.rumi);
+        }
+    }, [selectedAlphabet]);
 
     const handleBack = () => {
         if (mode === 'alphabet' || mode === 'match' || mode === 'words' || mode === 'syllables' || mode === 'spelling_game') {
@@ -48,15 +65,15 @@ export default function JawiPage({ onBack, onHome, language }) {
                         return (
                             <button
                                 key={idx}
-                                className="jawi-card"
+                                className="jawi-card-3d"
                                 onClick={() => setSelectedAlphabet(item)}
                                 style={{
-                                    borderColor: `${color}44`,
-                                    '--hover-color': color
+                                    '--hover-color': color,
+                                    borderColor: `${color}44`
                                 }}
                             >
-                                <span className="jawi-text" style={{ color: color }}>{item.jawi}</span>
-                                <span className="rumi-text">{item.rumi}</span>
+                                <span className="jawi-text-3d" style={{ color: color }}>{item.jawi}</span>
+                                <span className="rumi-text-3d">{item.rumi}</span>
                             </button>
                         );
                     })}
@@ -64,36 +81,10 @@ export default function JawiPage({ onBack, onHome, language }) {
 
                 {/* Suku Kata Dialog */}
                 {selectedAlphabet && createPortal(
-                    <div style={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: 'rgba(0,0,0,0.6)',
-                        backdropFilter: 'blur(5px)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        zIndex: 9999,
-                        padding: '0.5rem'
-                    }} onClick={() => setSelectedAlphabet(null)}>
+                    <div className="jawi-modal-overlay" onClick={() => setSelectedAlphabet(null)}>
                         <div
-                            className="card fade-in"
-                            style={{
-                                background: 'white',
-                                padding: '1rem',
-                                borderRadius: '1.5rem',
-                                maxWidth: '650px',
-                                width: '98%',
-                                maxHeight: '95vh',
-                                overflowY: 'auto',
-                                position: 'relative',
-                                border: '4px solid #9D4EDD',
-                                boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
-                                display: 'flex',
-                                flexDirection: 'column'
-                            }}
+                            className="jawi-modal-content"
+                            style={{ padding: '1.5rem', border: '5px solid #CE82FF' }}
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div style={{
@@ -110,7 +101,21 @@ export default function JawiPage({ onBack, onHome, language }) {
                             }}>
                                 <h2 style={{ margin: 0, fontSize: '1.25rem', color: '#9D4EDD', display: 'flex', alignItems: 'center', gap: '0.5rem', direction: 'rtl' }}>
                                     <span style={{ fontSize: '1.8rem', fontFamily: 'serif' }}>{selectedAlphabet.jawi}</span>
-                                    <span style={{ color: '#666', fontSize: '0.9rem', direction: 'ltr' }}>- {selectedAlphabet.rumi}</span>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', direction: 'ltr' }}>
+                                        <span style={{ color: '#666', fontSize: '0.9rem' }}>- {selectedAlphabet.rumi}</span>
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); speakLetter(selectedAlphabet.rumi); }}
+                                            className="pulse-audio"
+                                            style={{
+                                                background: '#f0f8ff', border: 'none', cursor: 'pointer',
+                                                color: '#1CB0F6', display: 'flex', alignItems: 'center', padding: '0.5rem',
+                                                borderRadius: '50%', border: '2px solid #D0F0FF'
+                                            }}
+                                            title="Dengar sebutan"
+                                        >
+                                            <Volume2 size={24} />
+                                        </button>
+                                    </div>
                                 </h2>
                                 <button
                                     onClick={() => setSelectedAlphabet(null)}

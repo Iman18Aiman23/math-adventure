@@ -211,7 +211,7 @@ export default function App() {
                   onClick={handleBackToHome}
                   style={{ background: 'transparent', border: 'none', fontWeight: 900, fontSize: '1rem', color: '#3C3C3C', cursor: 'pointer', padding: 0 }}
                 >
-                  Iman's Adventure 🦉
+                  Iman's Learning Hub 🦉
                 </button>
               )}
             </div>

@@ -21,7 +21,7 @@ export default function WelcomeModal({ onSave }) {
       <div style={{ textAlign: 'center', maxWidth: '360px', width: '100%' }}>
         <h1 className="welcome-title">Selamat Datang!</h1>
         <p className="welcome-subtitle" style={{ marginTop: '0.5rem', marginBottom: '2rem' }}>
-          Masukkan nama anda untuk memulakan petualangan matematik! 🚀
+          Masukkan nama anda untuk memulakan pembelajaran! 🚀
         </p>
       </div>
 
@@ -44,13 +44,13 @@ export default function WelcomeModal({ onSave }) {
           disabled={!name.trim()}
           className="btn-primary welcome-btn"
         >
-          Mula Petualangan! ✨
+          Mula Belajar! ✨
         </button>
       </form>
 
       {/* Decorative dots */}
       <div style={{ display: 'flex', gap: '6px', marginTop: '1rem' }}>
-        {[0,1,2].map(i => (
+        {[0, 1, 2].map(i => (
           <div key={i} style={{ width: 8, height: 8, borderRadius: '50%', background: i === 0 ? '#58CC02' : '#E5E5E5' }} />
         ))}
       </div>

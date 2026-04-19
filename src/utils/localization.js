@@ -11,13 +11,13 @@ export const LOCALIZATION = {
             bmTitle: 'Bahasa Melayu',
             bmDesc: 'Belajar suku kata dan kosa kata!',
             mathTitle: 'Matematik',
-            mathDesc: 'Adventure dengan nombor dan kira-kira!',
+            mathDesc: 'Pembelajaran dengan nombor dan kira-kira!',
             jawiTitle: 'Jawi',
             jawiDesc: 'Mari mengenal huruf Jawi!',
             startButton: 'Mula Belajar!'
         },
         math: {
-            hubTitle: 'Adventure Matematik',
+            hubTitle: 'Pembelajaran Matematik',
             hubSubtitle: 'Pilih jenis permainan matematik anda! ✨',
             opsTitle: 'Operasi Matematik',
             opsDesc: 'Tambah, tolak, darab dan bahagi!',
@@ -45,7 +45,7 @@ export const LOCALIZATION = {
             title: 'Masa & Tarikh',
             monthLearning: 'Kenali Nama Bulan',
             monthLearningDesc: 'Belajar nama bulan dalam pelbagai bahasa!',
-            timeAdventure: 'Pengembaraan Masa',
+            timeAdventure: 'Pembelajaran Masa',
             timeAdventureDesc: 'Belajar membaca jam analog dan digital!',
             monthQuiz: 'Permainan Kuiz Bulan',
             monthQuizDesc: 'Belajar 12 bulan mengikut urutan!',
@@ -83,7 +83,7 @@ export const LOCALIZATION = {
             close: 'Tutup'
         },
         opsDetails: {
-            title: 'Math Adventure dengan Iman',
+            title: 'Pembelajaran Matematik dengan Iman',
             subtitle: 'Pilih cabaran anda!',
             diffLabel: 'Tahap Kesukaran',
             diffEasy: 'Senang',
@@ -212,13 +212,13 @@ export const LOCALIZATION = {
             bmTitle: 'Bahasa Melayu',
             bmDesc: 'Learn syllables and vocabulary!',
             mathTitle: 'Mathematics',
-            mathDesc: 'Adventure with numbers and calculations!',
+            mathDesc: 'Learning with numbers and calculations!',
             jawiTitle: 'Jawi',
             jawiDesc: 'Let\'s learn Jawi characters!',
             startButton: 'Start Learning!'
         },
         math: {
-            hubTitle: 'Mathematics Adventure',
+            hubTitle: 'Mathematics Learning',
             hubSubtitle: 'Choose your math game type! ✨',
             opsTitle: 'Math Operations',
             opsDesc: 'Addition, subtraction, multiplication and division!',
@@ -246,7 +246,7 @@ export const LOCALIZATION = {
             title: 'Time & Date',
             monthLearning: 'Learn Month Names',
             monthLearningDesc: 'Learn month names in various languages!',
-            timeAdventure: 'Time Adventure',
+            timeAdventure: 'Time Learning',
             timeAdventureDesc: 'Learn to read analog and digital clocks!',
             monthQuiz: 'Month Quiz Game',
             monthQuizDesc: 'Learn the 12 months in order!',
@@ -284,7 +284,7 @@ export const LOCALIZATION = {
             close: 'Close'
         },
         opsDetails: {
-            title: 'Math Adventure With Iman',
+            title: 'Math Learning With Iman',
             subtitle: 'Select your challenge!',
             diffLabel: 'Difficulty',
             diffEasy: 'Easy',

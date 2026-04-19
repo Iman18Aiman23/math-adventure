@@ -15,7 +15,7 @@ export default function DesktopSidebar({
       {/* Logo */}
       <div className="sidebar-logo" onClick={onHome} style={{ cursor: 'pointer' }}>
         <span className="sidebar-logo-owl">🦉</span>
-        <span>Iman's Adventure</span>
+        <span>Iman's Learning Hub</span>
       </div>
 
       {/* Navigation */}
