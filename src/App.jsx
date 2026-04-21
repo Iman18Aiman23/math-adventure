@@ -16,7 +16,7 @@ import ReadingPage from './components/ReadingPage';
 import { getMuted, setMuted, preloadSounds, unlockAudio } from './utils/soundManager';
 import { Map, ChevronDown, Check } from 'lucide-react';
 import { useGameState } from './hooks/useGameState';
-import { loadPlayerName, savePlayerName } from './services/storageService';
+import { loadPlayerName, savePlayerName, recordLogin, calcStreak } from './services/storageService';
 
 // ── Context ──────────────────────────────────────────────────────────────────
 export const GameStateContext = createContext(null);
@@ -68,6 +68,7 @@ export default function App() {
   const [language,       setLanguage]       = useState('bm');
   const [activeTab,      setActiveTab]      = useState('learn');
   const [showQuickSwitch,setShowQuickSwitch]= useState(false);
+  const [streak,         setStreak]         = useState(0);
 
   const activeGameId = getActiveGameId(currentSubject, mathSubGame);
   const { gameState, levelUpInfo, clearLevelUp } = useGameState(activeGameId);
@@ -76,6 +77,9 @@ export default function App() {
 
   useEffect(() => {
     preloadSounds();
+    // Record today's login and compute streak
+    const dates = recordLogin();
+    setStreak(calcStreak(dates));
     const handleFirstClick = () => { unlockAudio(); document.removeEventListener('click', handleFirstClick); };
     document.addEventListener('click', handleFirstClick);
     const handleToggleLang = () => setLanguage(l => l === 'bm' ? 'eng' : 'bm');
@@ -100,7 +104,7 @@ export default function App() {
   // ── Content renderer ──────────────────────────────────────────────────────
   const renderContent = () => {
     if (activeTab === 'leaderboard') return <LeaderboardPlaceholder language={language} />;
-    if (activeTab === 'profile')     return <ProfilePlaceholder playerName={playerName} gameState={gameState} language={language} />;
+    if (activeTab === 'profile')     return <ProfilePlaceholder playerName={playerName} gameState={gameState} language={language} streak={streak} />;
 
     switch (currentSubject) {
       case 'math':
@@ -314,7 +318,7 @@ function LeaderboardPlaceholder({ language }) {
   );
 }
 
-function ProfilePlaceholder({ playerName, gameState, language }) {
+function ProfilePlaceholder({ playerName, gameState, language, streak = 0 }) {
   return (
     <div style={{ flex: 1, overflowY: 'auto', background: '#f7f7f7' }}>
       <div style={{ background: '#fff', padding: '2rem 1.5rem', textAlign: 'center', borderBottom: '2px solid #E5E5E5' }}>
@@ -327,7 +331,7 @@ function ProfilePlaceholder({ playerName, gameState, language }) {
           { label: 'Total XP', value: gameState?.totalXP ?? 0, color: '#FFC800', emoji: '⭐' },
           { label: language === 'bm' ? 'Syiling' : 'Coins',  value: gameState?.mathCoins ?? 0, color: '#1CB0F6', emoji: '🪙' },
           { label: 'Level',   value: gameState?.level ?? 1,   color: '#CE82FF', emoji: '🏆' },
-          { label: language === 'bm' ? 'Hari Aktif' : 'Streak', value: '0 🔥', color: '#FF9600', emoji: '🔥' },
+          { label: language === 'bm' ? 'Hari Aktif' : 'Streak', value: streak, color: '#FF9600', emoji: '🔥' },
         ].map(stat => (
           <div key={stat.label} style={{ background: '#fff', border: '2px solid #E5E5E5', borderRadius: '16px', padding: '1rem', textAlign: 'center' }}>
             <div style={{ fontSize: '1.8rem', marginBottom: '4px' }}>{stat.emoji}</div>

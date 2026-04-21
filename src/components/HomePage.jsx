@@ -5,13 +5,13 @@ import { playHoverSound } from '../utils/soundManager';
 
 const COURSES = [
   {
-    id: 'math',
-    emoji: '🔢',
-    iconBg: '#FFF0CC',
-    title: { bm: 'Matematik', eng: 'Mathematics' },
-    desc: { bm: 'Tambah, tolak, darab & bahagi', eng: 'Addition, subtraction, multiply & divide' },
-    color: '#FFC800',
-    progress: 35,
+    id: 'reading',
+    emoji: '📚',
+    iconBg: '#E0FFD4',
+    title: { bm: 'Belajar Membaca', eng: 'Reading' },
+    desc: { bm: 'Latihan membaca suku kata', eng: 'Reading syllables practice' },
+    color: '#58CC02',
+    progress: 0,
   },
   {
     id: 'bm',
@@ -32,13 +32,13 @@ const COURSES = [
     progress: 15,
   },
   {
-    id: 'reading',
-    emoji: '📚',
-    iconBg: '#E0FFD4',
-    title: { bm: 'Belajar Membaca', eng: 'Reading' },
-    desc: { bm: 'Latihan membaca suku kata', eng: 'Reading syllables practice' },
-    color: '#58CC02',
-    progress: 0,
+    id: 'math',
+    emoji: '🔢',
+    iconBg: '#FFF0CC',
+    title: { bm: 'Matematik', eng: 'Mathematics' },
+    desc: { bm: 'Tambah, tolak, darab & bahagi', eng: 'Addition, subtraction, multiply & divide' },
+    color: '#FFC800',
+    progress: 35,
   },
 ];
 

@@ -4,7 +4,8 @@
  * Re-exports all curriculum modules + provides bilingual matching utilities.
  */
 
-import bm_kv from './bm_kv.js';
+import bm_kv_complete from './bm_kv.js'; // new systematic BA-ZA dataset
+const bm_kv = bm_kv_complete; // keep 'bm_kv' key working for BMSpeakGame
 import bm_kvk from './bm_kvk.js';
 import en_long_vowels from './en_long_vowels.js';
 import numbers from './numbers.js';

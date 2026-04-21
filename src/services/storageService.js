@@ -81,3 +81,73 @@ export function loadAllGamesData() {
     return JSON.parse(raw).games ?? {};
   } catch { return {}; }
 }
+
+// ── Login streak tracking ───────────────────────────────────────────────────
+
+const toDateStr = (d = new Date()) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+/**
+ * Record today's visit and return updated login data.
+ * Structure stored inside mathAdventureData:
+ *   { loginDates: ["2026-04-19", "2026-04-20", "2026-04-21", ...] }
+ */
+export function recordLogin() {
+  try {
+    const today = toDateStr();
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const all = raw ? JSON.parse(raw) : {};
+    const dates = Array.isArray(all.loginDates) ? all.loginDates : [];
+
+    // Add today if not already present
+    if (!dates.includes(today)) {
+      dates.push(today);
+      all.loginDates = dates;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+    }
+    return dates;
+  } catch (err) {
+    console.warn('[storageService] Failed to record login:', err);
+    return [];
+  }
+}
+
+/**
+ * Load all recorded login dates (sorted ascending).
+ */
+export function loadLoginDates() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const all = JSON.parse(raw);
+    return Array.isArray(all.loginDates) ? [...all.loginDates].sort() : [];
+  } catch { return []; }
+}
+
+/**
+ * Calculate the current consecutive-day streak ending on today (or yesterday).
+ * Returns 0 if the user hasn't logged in recently.
+ */
+export function calcStreak(dates = []) {
+  if (!dates.length) return 0;
+
+  const sorted = [...dates].sort().reverse(); // most recent first
+  const today  = toDateStr();
+  const ONE_DAY_MS = 86400000;
+
+  // streak requires today OR yesterday as the most recent date
+  const mostRecent = sorted[0];
+  const diffFromToday = (new Date(today) - new Date(mostRecent)) / ONE_DAY_MS;
+  if (diffFromToday > 1) return 0; // missed more than 1 day → streak broken
+
+  let streak = 1;
+  for (let i = 1; i < sorted.length; i++) {
+    const diff = (new Date(sorted[i - 1]) - new Date(sorted[i])) / ONE_DAY_MS;
+    if (diff === 1) {
+      streak++;
+    } else {
+      break; // gap found
+    }
+  }
+  return streak;
+}

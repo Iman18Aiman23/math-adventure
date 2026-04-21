@@ -3,6 +3,7 @@ import { readingData } from '../data/curriculum/readingData';
 import { ChevronLeft, ChevronRight, Volume2, HelpCircle, ArrowLeft } from 'lucide-react';
 import { playHoverSound, playSound } from '../utils/soundManager';
 import SpeechManager from '../services/SpeechManager';
+import KVLearningPage from './KVLearningPage';
 
 export default function ReadingPage({ onBack, language }) {
   // ── State ─────────────────────────────────────────────────────────────
@@ -11,6 +12,11 @@ export default function ReadingPage({ onBack, language }) {
   const [scriptType, setScriptType] = useState('RUMI'); // 'RUMI', 'JAWI', or 'ENG'
   const [showHelp, setShowHelp] = useState(false);
   const [activeSyllable, setActiveSyllable] = useState(null);
+
+  // ── Route Tahap 1 → dedicated KV page ─────────────────────────────────
+  if (selectedLevel === 1) {
+    return <KVLearningPage onBack={() => setSelectedLevel(null)} language={language} />;
+  }
 
   // ── Derived Data ──────────────────────────────────────────────────────
   const currentLevelData = selectedLevel 
