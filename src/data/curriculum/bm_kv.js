@@ -4,6 +4,14 @@
  */
 
 const bm_kv_complete = [
+  // --- VOKAL AEIOU SERIES ---
+  { id: 'v_a', kv: 'a', icon: '🦆', ms: { word: 'ayam', prompt: 'Sebut: ayam' }, en: { word: 'chicken', prompt: 'Say: chicken' }, jawi: { word: 'ايم', prompt: 'Sebut: ayam' } },
+  { id: 'v_e_t', kv: 'e', icon: '🍏', ms: { word: 'epal', prompt: 'Sebut: epal' }, en: { word: 'apple', prompt: 'Say: apple' }, jawi: { word: 'ايڤل', prompt: 'Sebut: epal' } },
+  { id: 'v_i', kv: 'i', icon: '🐟', ms: { word: 'ikan', prompt: 'Sebut: ikan' }, en: { word: 'fish', prompt: 'Say: fish' }, jawi: { word: 'ايکن', prompt: 'Sebut: ikan' } },
+  { id: 'v_o', kv: 'o', icon: '🍊', ms: { word: 'oren', prompt: 'Sebut: oren' }, en: { word: 'orange', prompt: 'Say: orange' }, jawi: { word: 'اورين', prompt: 'Sebut: oren' } },
+  { id: 'v_u', kv: 'u', icon: '🐛', ms: { word: 'ulat', prompt: 'Sebut: ulat' }, en: { word: 'caterpillar', prompt: 'Say: caterpillar' }, jawi: { word: 'اولت', prompt: 'Sebut: ulat' } },
+  { id: 'v_e_p', kv: 'e', icon: '👩', ms: { word: 'emak', prompt: 'Sebut: emak' }, en: { word: 'mother', prompt: 'Say: mother' }, jawi: { word: 'امق', prompt: 'Sebut: emak' } },
+
   // --- B SERIES ---
   { id: 'kv_ba', kv: 'ba', icon: '📖', ms: { word: 'baca', prompt: 'Sebut: baca' }, en: { word: 'read', prompt: 'Say: read' }, jawi: { word: 'باچ', prompt: 'Sebut: baca' } },
   { id: 'kv_bi', kv: 'bi', icon: '🔵', ms: { word: 'biru', prompt: 'Sebut: biru' }, en: { word: 'blue', prompt: 'Say: blue' }, jawi: { word: 'بيرو', prompt: 'Sebut: biru' } },

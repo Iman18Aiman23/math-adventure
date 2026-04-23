@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Volume2, HelpCircle, ArrowLeft } from 'lucid
 import { playHoverSound, playSound } from '../utils/soundManager';
 import SpeechManager from '../services/SpeechManager';
 import KVLearningPage from './KVLearningPage';
+import KVKLearningPage from './KVKLearningPage';
 
 export default function ReadingPage({ onBack, language }) {
   // ── State ─────────────────────────────────────────────────────────────
@@ -16,6 +17,11 @@ export default function ReadingPage({ onBack, language }) {
   // ── Route Tahap 1 → dedicated KV page ─────────────────────────────────
   if (selectedLevel === 1) {
     return <KVLearningPage onBack={() => setSelectedLevel(null)} language={language} />;
+  }
+
+  // ── Route Tahap 2 → dedicated KVK page ────────────────────────────────
+  if (selectedLevel === 2) {
+    return <KVKLearningPage onBack={() => setSelectedLevel(null)} language={language} />;
   }
 
   // ── Derived Data ──────────────────────────────────────────────────────
