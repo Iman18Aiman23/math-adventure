@@ -4,6 +4,7 @@ import confetti from 'canvas-confetti';
 import { X, HelpCircle, Layers, Keyboard, MousePointerClick } from 'lucide-react';
 import { MONTHS } from '../utils/timeData';
 import { LOCALIZATION } from '../utils/localization';
+import { playSound } from '../utils/soundManager';
 
 // ─── Web Speech API voice helper ───────────────────────────────────────────────
 function speak(text, { pitch = 1.4, rate = 1.05, volume = 1 } = {}) {
@@ -22,8 +23,8 @@ function speak(text, { pitch = 1.4, rate = 1.05, volume = 1 } = {}) {
 }
 
 const STREAK_MILESTONE = 10;
-const STREAK_CHEERS_BM  = ['Bagus!', 'Cemerlang!', 'Hebat!', 'Luar Biasa!', 'Menakjubkan!', 'BINTANG!', 'GENIUS!', 'PAKAR BULAN!'];
-const STREAK_CHEERS_EN  = ['Brilliant!', 'Excellent!', 'Amazing!', 'Fantastic!', 'Incredible!', 'SUPERSTAR!', 'GENIUS!', 'MONTH WIZARD!'];
+const STREAK_CHEERS_BM  = ['Bagus!', 'Cemerlang!', 'Hebat!', 'Luar Biasa!', 'Menakjubkan!', 'BINTANG!', 'JUARA!', 'PAKAR BULAN!'];
+const STREAK_CHEERS_EN  = ['Great!', 'Excellent!', 'Fantastic!', 'Amazing!', 'Incredible!', 'SUPERSTAR!', 'CHAMPION!', 'MONTH WIZARD!'];
 
 function StreakPopup({ streak, language, onClose }) {
   const milestoneCount = Math.floor(streak / STREAK_MILESTONE);
@@ -182,24 +183,17 @@ export default function MonthsGame({ onBack, onHome, language }) {
       setStreak(newStreak);
       setTotalAnswered(t => t + 1);
 
-      speak(
-        bm ? `Betul! ${newStreak} berturut-turut!` : `Correct! ${newStreak} in a row!`,
-        { pitch: 1.5, rate: 1.1 }
-      );
-
       if (newStreak % STREAK_MILESTONE === 0) {
+        playSound('streak');
         confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
         const milestoneCount = newStreak / STREAK_MILESTONE;
         const cheers = bm ? STREAK_CHEERS_BM : STREAK_CHEERS_EN;
         const cheer  = cheers[Math.min(milestoneCount - 1, cheers.length - 1)];
         setTimeout(() => {
-          speak(
-            bm ? `Wah! ${newStreak} jawapan betul! ${cheer}!` : `Wow! ${newStreak} correct answers! ${cheer}!`,
-            { pitch: 1.6, rate: 1.0 }
-          );
           setShowStreak(true);
         }, 400);
       } else {
+        playSound('correct');
         confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 }, scalar: 0.8 });
       }
 

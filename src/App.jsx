@@ -4,6 +4,7 @@ import BMPage from './components/BMPage';
 import JawiPage from './components/JawiPage';
 import MathHome from './components/MathHome';
 import GameMenu from './components/GameMenu';
+import OpsLandingPage from './components/OpsLandingPage';
 import TimeGameMenu from './components/TimeGameMenu';
 import MonthsGame from './components/MonthsGame';
 import ClockGame from './components/ClockGame';
@@ -111,7 +112,7 @@ export default function App() {
         if (!mathSubGame) return <MathHome onSelectSubGame={setMathSubGame} onBack={handleBackToHome} onHome={handleBackToHome} language={language} />;
         if (mathSubGame === 'operations') {
           return !isPlaying
-            ? <GameMenu onStart={handleStartGame} onBack={() => setMathSubGame(null)} onHome={handleBackToHome} language={language} />
+            ? <OpsLandingPage onStart={handleStartGame} onBack={() => setMathSubGame(null)} onHome={handleBackToHome} language={language} />
             : <MathOperationsGame operation={gameConfig.operation} difficulty={gameConfig.difficulty} nums={gameConfig.nums} quizType={gameConfig.quizType} onBack={handleBackToMenu} onHome={handleBackToHome} language={language} />;
         }
         if (mathSubGame === 'datetime') {

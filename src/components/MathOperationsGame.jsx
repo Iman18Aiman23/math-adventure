@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import confetti from 'canvas-confetti';
 import { X } from 'lucide-react';
 import { generateProblem } from '../utils/mathLogic';
+import { playSound } from '../utils/soundManager';
 
 // ─── Web Speech API voice helper ───────────────────────────────────────────────
 function speak(text, { pitch = 1.4, rate = 1.05, volume = 1 } = {}) {
@@ -61,8 +62,8 @@ const DIFF_META = {
 
 const STREAK_MILESTONE = 10;
 
-const STREAK_CHEERS_BM  = ['Bagus!', 'Cemerlang!', 'Hebat!', 'Luar Biasa!', 'Menakjubkan!', 'BINTANG!', 'GENIUS!', 'PAKAR MATH!'];
-const STREAK_CHEERS_EN  = ['Brilliant!', 'Excellent!', 'Amazing!', 'Fantastic!', 'Incredible!', 'SUPERSTAR!', 'GENIUS!', 'MATH WIZARD!'];
+const STREAK_CHEERS_BM  = ['Bagus!', 'Cemerlang!', 'Hebat!', 'Luar Biasa!', 'Menakjubkan!', 'BINTANG!', 'JUARA!', 'PAKAR MATEMATIK!'];
+const STREAK_CHEERS_EN  = ['Great!', 'Excellent!', 'Fantastic!', 'Amazing!', 'Incredible!', 'SUPERSTAR!', 'CHAMPION!', 'MATH WIZARD!'];
 
 // ─── Streak Popup ──────────────────────────────────────────────────────────────
 function StreakPopup({ streak, language, onClose }) {
@@ -156,31 +157,18 @@ export default function MathOperationsGame({
       setStreak(newStreak);
       setTotalAnswered(t => t + 1);
 
-      // Voice: enthusiastic correct
-      speak(
-        language === 'bm'
-          ? `Betul! ${newStreak} berturut-turut!`
-          : `Correct! ${newStreak} in a row!`,
-        { pitch: 1.5, rate: 1.1 }
-      );
-
       // Confetti + streak milestone
       if (newStreak % STREAK_MILESTONE === 0) {
+        playSound('streak');
         confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
         const milestoneCount = newStreak / STREAK_MILESTONE;
         const cheers = language === 'bm' ? STREAK_CHEERS_BM : STREAK_CHEERS_EN;
         const cheer  = cheers[Math.min(milestoneCount - 1, cheers.length - 1)];
         setTimeout(() => {
-          speak(
-            language === 'bm'
-              ? `Wah! ${newStreak} jawapan betul! ${cheer}!`
-              : `Wow! ${newStreak} correct answers! ${cheer}!`,
-            { pitch: 1.6, rate: 1.0 }
-          );
           setShowStreak(true);
         }, 400);
       } else {
-        // Small sparkle confetti
+        playSound('correct');
         confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 }, scalar: 0.8 });
       }
 
