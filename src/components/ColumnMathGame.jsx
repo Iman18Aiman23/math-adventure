@@ -121,6 +121,48 @@ function computeDisplayInfo(prob, maxLen) {
   return { topRow, struckRow };
 }
 
+function computeMultiplicationInfo(prob, maxLen) {
+  const p1Carries = new Array(maxLen).fill(null);
+  const p2Carries = new Array(maxLen).fill(null);
+  const addCarries = new Array(maxLen).fill(null);
+
+  if (!prob || prob.op !== '×' || !prob.hasPartials) return { p1Carries, p2Carries, addCarries };
+
+  const s1 = String(prob.num1);
+  const m1 = prob.num2 % 10;
+  const m2 = Math.floor(prob.num2 / 10);
+  
+  let c = 0;
+  for (let i = s1.length - 1; i >= 0; i--) {
+    const d = parseInt(s1[i], 10);
+    const prod = d * m1 + c;
+    c = Math.floor(prod / 10);
+    const colIdx = maxLen - s1.length + i;
+    if (c > 0 && i > 0) p1Carries[colIdx - 1] = c;
+  }
+
+  c = 0;
+  for (let i = s1.length - 1; i >= 0; i--) {
+    const d = parseInt(s1[i], 10);
+    const prod = d * m2 + c;
+    c = Math.floor(prod / 10);
+    const colIdx = maxLen - s1.length + i;
+    if (c > 0 && i > 0) p2Carries[colIdx - 1] = c;
+  }
+
+  const pp1 = String(prob.partial1).padStart(maxLen, '0').split('').map(Number);
+  const pp2 = (String(prob.partial2) + '0').padStart(maxLen, '0').split('').map(Number);
+  let ac = 0;
+  for (let r = 0; r < maxLen; r++) {
+    const dc = maxLen - 1 - r;
+    const sum = pp1[dc] + pp2[dc] + ac;
+    ac = Math.floor(sum / 10);
+    if (ac > 0 && dc > 0) addCarries[dc - 1] = ac;
+  }
+
+  return { p1Carries, p2Carries, addCarries };
+}
+
 export default function ColumnMathGame({ onBack, language }) {
   const bm = language === 'bm';
   const isDesktop = useIsDesktop();
@@ -311,14 +353,8 @@ export default function ColumnMathGame({ onBack, language }) {
       for (let i = ml - N1; i <= ml - 1; i++) {
         if (!partial1Inputs[i]) return;
       }
-      for (let i = ml - N1 - 1; i <= ml - 2; i++) {
-        if (!partial1CarryInputs[i] && i < ml - 1) return;
-      }
       for (let i = ml - N2 - 1; i <= ml - 2; i++) {
         if (!partial2Inputs[i]) return;
-      }
-      for (let i = ml - N2 - 2; i <= ml - 3; i++) {
-        if (!partial2CarryInputs[i] && i < ml - 2) return;
       }
     }
 
@@ -546,6 +582,7 @@ export default function ColumnMathGame({ onBack, language }) {
   const totalW = OP_W + CELL_W * maxLen;
 
   const { topRow } = computeDisplayInfo(problem, maxLen);
+  const { p1Carries, p2Carries, addCarries } = computeMultiplicationInfo(problem, maxLen);
   const hasTopRow = topRow.some((v, i) => v !== null && !(p1[i] === ' ' && p2[i] === ' '));
   const showTopRow = problem.op === '+'
     ? hasTopRow && inputDigits.some(d => d !== '')
@@ -771,7 +808,85 @@ export default function ColumnMathGame({ onBack, language }) {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: totalW, margin: '0 auto' }}>
 
-            {/* Carry / Borrow row */}
+
+            {/* Multiplication Carry Row 2 (Top-most) */}
+            {problem.hasPartials && p2Carries.some(v => v !== null) && (
+              <div style={{ display: 'flex', alignItems: 'center', height: isDesktop ? '38px' : '30px', marginBottom: '2px' }}>
+                <div style={{ width: OP_W }} />
+                {Array.from({ length: maxLen }, (_, i) => {
+                  const cInfo = p2Carries[i];
+                  // Visible if there's a carry needed AND user has reached or passed the active column for it
+                  // For partial 2, the ones digit corresponds to index maxLen - 2
+                  // The calculation for digit i+1 might generate carry for i
+                  // Let's just show it if activeSection is partial2/partial2Carry and activeIdx <= i+1
+                  // Actually, just show it when partial1 is done and we are on partial 2
+                  const isP1Done = !partial1Inputs.slice(maxLen - String(problem.partial1).length).includes('');
+                  const isVisible = cInfo !== null && isP1Done;
+                  
+                  if (!isVisible) return <div key={i} style={{ width: CELL_W }} />;
+                  const c = partial2CarryInputs[i] ?? '';
+                  const isActive = status === 'playing' && activeSection === 'partial2Carry' && activePartial2CarryIdx === i;
+                  return (
+                    <div key={i} style={{ width: CELL_W, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                      <input
+                        ref={el => partial2CarryRefs.current[i] = el}
+                        type="text" inputMode="numeric" maxLength={2}
+                        value={c} readOnly={status !== 'playing'} tabIndex={status !== 'playing' ? -1 : 0}
+                        onChange={e => handlePartial2CarryChange(i, e.target.value)}
+                        onKeyDown={e => handlePartial2CarryKeyDown(i, e)}
+                        onFocus={() => { if (status === 'playing') { setActiveSection('partial2Carry'); setActivePartial2CarryIdx(i); } }}
+                        style={{
+                          width: TOP_W1, height: TOP_H, boxSizing: 'border-box',
+                          border: `2px solid ${isActive ? '#1CB0F6' : '#C0C0C0'}`,
+                          borderRadius: '6px', background: isActive ? '#EAF7FF' : '#fafafa',
+                          textAlign: 'center', fontSize: TOP_FS, fontWeight: 900, fontFamily: '"Courier New", monospace',
+                          color: '#1CB0F6', outline: 'none', caretColor: 'transparent', cursor: 'pointer'
+                        }}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Multiplication Carry Row 1 */}
+            {problem.hasPartials && p1Carries.some(v => v !== null) && (
+              <div style={{ display: 'flex', alignItems: 'center', height: isDesktop ? '38px' : '30px', marginBottom: '4px' }}>
+                <div style={{ width: OP_W }} />
+                {Array.from({ length: maxLen }, (_, i) => {
+                  const cInfo = p1Carries[i];
+                  // Visible if there's a carry and we are calculating it or beyond it
+                  // activePartial1Idx goes from maxLen-1 down to maxLen - N1.
+                  // If activePartial1Idx <= i+1, we have reached the point where this carry is generated.
+                  const isVisible = cInfo !== null && (activeSection !== 'answer' && activeSection !== 'topRow') && (activePartial1Idx <= i + 1 || activeSection === 'partial1Carry' || activeSection === 'partial2' || activeSection === 'partial2Carry');
+                  
+                  if (!isVisible) return <div key={i} style={{ width: CELL_W }} />;
+                  const c = partial1CarryInputs[i] ?? '';
+                  const isActive = status === 'playing' && activeSection === 'partial1Carry' && activePartial1CarryIdx === i;
+                  return (
+                    <div key={i} style={{ width: CELL_W, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                      <input
+                        ref={el => partial1CarryRefs.current[i] = el}
+                        type="text" inputMode="numeric" maxLength={2}
+                        value={c} readOnly={status !== 'playing'} tabIndex={status !== 'playing' ? -1 : 0}
+                        onChange={e => handlePartial1CarryChange(i, e.target.value)}
+                        onKeyDown={e => handlePartial1CarryKeyDown(i, e)}
+                        onFocus={() => { if (status === 'playing') { setActiveSection('partial1Carry'); setActivePartial1CarryIdx(i); } }}
+                        style={{
+                          width: TOP_W1, height: TOP_H, boxSizing: 'border-box',
+                          border: `2px solid ${isActive ? '#CE82FF' : '#C0C0C0'}`,
+                          borderRadius: '6px', background: isActive ? '#F3E5FF' : '#fafafa',
+                          textAlign: 'center', fontSize: TOP_FS, fontWeight: 900, fontFamily: '"Courier New", monospace',
+                          color: '#CE82FF', outline: 'none', caretColor: 'transparent', cursor: 'pointer'
+                        }}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Carry / Borrow row for Addition / Subtraction */}
             {showTopRow && (
               <div style={{ display: 'flex', alignItems: 'center', height: isDesktop ? '50px' : '38px' }}>
                 <div style={{ width: OP_W }} />
@@ -779,9 +894,7 @@ export default function ColumnMathGame({ onBack, language }) {
                   const hide = p1[i] === ' ' && p2[i] === ' ';
                   const isSubBorrow = problem.op === '-' && (userStruckRow[i] || userBorrowedTo[i]);
                   const isTwoDigit = (topRowInputs[i] ?? '').length >= 2;
-                  const hasCarry = problem.op === '+'
-                    ? (val !== null && !hide)
-                    : isSubBorrow;
+                  const hasCarry = problem.op === '+' ? (val !== null && !hide) : isSubBorrow;
                   const isTopActive = activeSection === 'topRow' && activeTopIdx === i && status === 'playing' && problem.op === '+';
                   const isReadonly = status !== 'playing' || problem.op === '-';
                   return (
@@ -789,33 +902,17 @@ export default function ColumnMathGame({ onBack, language }) {
                       {hasCarry && (
                         <input
                           ref={el => topRowRefs.current[i] = el}
-                          type="text"
-                          inputMode="numeric"
-                          maxLength={2}
-                          value={topRowInputs[i] ?? ''}
-                          readOnly={isReadonly}
-                          tabIndex={isReadonly ? -1 : 0}
+                          type="text" inputMode="numeric" maxLength={2}
+                          value={topRowInputs[i] ?? ''} readOnly={isReadonly} tabIndex={isReadonly ? -1 : 0}
                           onChange={e => handleTopRowChange(i, e.target.value)}
                           onKeyDown={e => handleTopRowKeyDown(i, e)}
-                          onFocus={() => {
-                            if (isReadonly) { topRowRefs.current[i]?.blur(); return; }
-                            setActiveSection('topRow');
-                            setActiveTopIdx(i);
-                          }}
+                          onFocus={() => { if (!isReadonly) { setActiveSection('topRow'); setActiveTopIdx(i); } }}
                           style={{
-                            width: isTwoDigit ? TOP_W2 : TOP_W1,
-                            height: TOP_H,
-                            boxSizing: 'border-box',
-                            border: `2px solid ${isTopActive ? '#1CB0F6' : '#C0C0C0'}`,
-                            borderRadius: '8px',
+                            width: isTwoDigit ? TOP_W2 : TOP_W1, height: TOP_H, boxSizing: 'border-box',
+                            border: `2px solid ${isTopActive ? '#1CB0F6' : '#C0C0C0'}`, borderRadius: '8px',
                             background: isTopActive ? '#EAF7FF' : isReadonly ? '#F0F0F0' : '#fafafa',
-                            textAlign: 'center',
-                            fontSize: TOP_FS, fontWeight: 900,
-                            fontFamily: '"Courier New", monospace',
-                            color: problem.op === '+' ? '#58CC02' : '#FF4B4B',
-                            outline: 'none',
-                            caretColor: 'transparent',
-                            cursor: isReadonly ? 'default' : 'pointer',
+                            textAlign: 'center', fontSize: TOP_FS, fontWeight: 900, fontFamily: '"Courier New", monospace',
+                            color: problem.op === '+' ? '#58CC02' : '#FF4B4B', outline: 'none', caretColor: 'transparent', cursor: isReadonly ? 'default' : 'pointer',
                           }}
                         />
                       )}
@@ -836,15 +933,10 @@ export default function ColumnMathGame({ onBack, language }) {
                     onClick={() => { if (canBorrow) setConfirmBorrowIdx(i); }}
                     title={canBorrow ? (bm ? 'Klik untuk pinjam' : 'Tap to borrow') : undefined}
                     style={{
-                      width: CELL_W, textAlign: 'center', fontSize: DIGIT_FS, fontWeight: 700,
-                      fontFamily: '"Courier New", monospace',
-                      color: isStruck ? '#C8C8C8' : '#3C3C3C',
-                      textDecoration: isStruck ? 'line-through' : 'none',
-                      textDecorationThickness: isStruck ? '3px' : undefined,
-                      textDecorationColor: isStruck ? '#FF4B4B' : undefined,
-                      cursor: canBorrow ? 'pointer' : 'default',
-                      borderRadius: '10px',
-                      transition: 'background 0.15s, transform 0.12s',
+                      width: CELL_W, textAlign: 'center', fontSize: DIGIT_FS, fontWeight: 700, fontFamily: '"Courier New", monospace',
+                      color: isStruck ? '#C8C8C8' : '#3C3C3C', textDecoration: isStruck ? 'line-through' : 'none',
+                      textDecorationThickness: isStruck ? '3px' : undefined, textDecorationColor: isStruck ? '#FF4B4B' : undefined,
+                      cursor: canBorrow ? 'pointer' : 'default', borderRadius: '10px', transition: 'background 0.15s, transform 0.12s',
                       background: canBorrow ? 'rgba(255, 200, 0, 0.10)' : 'transparent',
                     }}>
                     {d === ' ' ? '' : d}
@@ -871,57 +963,7 @@ export default function ColumnMathGame({ onBack, language }) {
             {/* Partial product rows (multiplication, medium/hard) */}
             {problem.hasPartials && (
               <>
-                {/* Carry row for Partial 1 */}
-                <div style={{ display: 'flex', alignItems: 'center', height: isDesktop ? '50px' : '38px' }}>
-                  <div style={{ width: OP_W, fontSize: '0.65rem', color: '#999', fontWeight: 700 }}>
-                    {bm ? 'Bawa 1' : 'Carry 1'}
-                  </div>
-                  {Array.from({ length: maxLen }, (_, i) => {
-                    const N1 = String(problem.partial1).length;
-                    const inRange = i >= maxLen - N1 && i < maxLen - 1;
-                    if (!inRange) return <div key={i} style={{ width: CELL_W }} />;
-                    const c = partial1CarryInputs[i] ?? '';
-                    const isActive = status === 'playing' && activeSection === 'partial1Carry' && activePartial1CarryIdx === i;
-                    const isTwoDigit = (c ?? '').length >= 2;
-                    return (
-                      <div key={i} style={{ width: CELL_W, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <input
-                          ref={el => partial1CarryRefs.current[i] = el}
-                          type="text"
-                          inputMode="numeric"
-                          maxLength={2}
-                          value={c}
-                          readOnly={status !== 'playing'}
-                          tabIndex={status !== 'playing' ? -1 : 0}
-                          onChange={e => handlePartial1CarryChange(i, e.target.value)}
-                          onKeyDown={e => handlePartial1CarryKeyDown(i, e)}
-                          onFocus={() => {
-                            if (status !== 'playing') return;
-                            setActiveSection('partial1Carry');
-                            setActivePartial1CarryIdx(i);
-                          }}
-                          style={{
-                            width: isTwoDigit ? TOP_W2 : TOP_W1,
-                            height: TOP_H,
-                            boxSizing: 'border-box',
-                            border: `2px solid ${isActive ? '#CE82FF' : '#C0C0C0'}`,
-                            borderRadius: '8px',
-                            background: isActive ? '#F3E5FF' : status !== 'playing' ? '#F0F0F0' : '#fafafa',
-                            textAlign: 'center',
-                            fontSize: TOP_FS, fontWeight: 900,
-                            fontFamily: '"Courier New", monospace',
-                            color: '#CE82FF',
-                            outline: 'none',
-                            caretColor: 'transparent',
-                            cursor: status !== 'playing' ? 'default' : 'pointer',
-                          }}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Partial 1 — num1 × ones digit of num2 */}
+                {/* Partial 1 */}
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <div style={{ width: OP_W }} />
                   {Array.from({ length: maxLen }, (_, i) => {
@@ -929,97 +971,72 @@ export default function ColumnMathGame({ onBack, language }) {
                     const inRange = i >= maxLen - N1;
                     if (!inRange) return <div key={i} style={{ width: CELL_W }} />;
                     const d = partial1Inputs[i] ?? '';
-                    const isActive  = status === 'playing' && activeSection === 'partial1' && activePartial1Idx === i;
-                    const correctD  = String(problem.partial1)[i - (maxLen - N1)];
-                    const isWrong   = status === 'wrong' && d !== correctD;
+                    const isActive = status === 'playing' && activeSection === 'partial1' && activePartial1Idx === i;
+                    const correctD = String(problem.partial1)[i - (maxLen - N1)];
+                    const isWrong = status === 'wrong' && d !== correctD;
                     const isCorrect = status === 'correct';
                     return (
                       <input
-                        key={i}
-                        ref={el => partial1Refs.current[i] = el}
-                        type="text"
-                        inputMode="numeric"
-                        maxLength={2}
-                        value={d}
-                        readOnly={status !== 'playing'}
-                        onChange={e => handlePartial1Change(i, e.target.value)}
-                        onKeyDown={e => handlePartial1KeyDown(i, e)}
-                        onFocus={() => {
-                          if (status !== 'playing') return;
-                          setActiveSection('partial1');
-                          setActivePartial1Idx(i);
-                        }}
+                        key={i} ref={el => partial1Refs.current[i] = el}
+                        type="text" inputMode="numeric" maxLength={2} value={d} readOnly={status !== 'playing'}
+                        onChange={e => handlePartial1Change(i, e.target.value)} onKeyDown={e => handlePartial1KeyDown(i, e)}
+                        onFocus={() => { if (status === 'playing') { setActiveSection('partial1'); setActivePartial1Idx(i); } }}
                         style={{
-                          width: CELL_W - 6, height: ANS_H, margin: '0 3px',
-                          boxSizing: 'border-box',
+                          width: CELL_W - 6, height: ANS_H, margin: '0 3px', boxSizing: 'border-box',
                           border: `3px solid ${isActive ? '#1CB0F6' : isWrong ? '#FF4B4B' : isCorrect ? '#58CC02' : '#ADADAD'}`,
-                          borderRadius: '12px',
-                          background: isActive ? '#EAF7FF' : isWrong ? '#FFEBEB' : isCorrect ? '#EFFFEA' : '#fafafa',
-                          textAlign: 'center',
-                          fontSize: ANS_FS, fontWeight: 700, fontFamily: '"Courier New", monospace',
-                          color: isWrong ? '#FF4B4B' : isCorrect ? '#58CC02' : '#3C3C3C',
-                          outline: 'none',
-                          caretColor: 'transparent',
-                          cursor: 'pointer', transition: 'all 0.12s',
+                          borderRadius: '12px', background: isActive ? '#EAF7FF' : isWrong ? '#FFEBEB' : isCorrect ? '#EFFFEA' : '#fafafa',
+                          textAlign: 'center', fontSize: ANS_FS, fontWeight: 700, fontFamily: '"Courier New", monospace',
+                          color: isWrong ? '#FF4B4B' : isCorrect ? '#58CC02' : '#3C3C3C', outline: 'none', caretColor: 'transparent', cursor: 'pointer', transition: 'all 0.12s',
                         }}
                       />
                     );
                   })}
                 </div>
 
-                {/* Carry row for Partial 2 */}
-                <div style={{ display: 'flex', alignItems: 'center', height: isDesktop ? '50px' : '38px' }}>
-                  <div style={{ width: OP_W, fontSize: '0.65rem', color: '#999', fontWeight: 700 }}>
-                    {bm ? 'Bawa 2' : 'Carry 2'}
+                {/* Addition Carry row for final sum */}
+                {addCarries.some(v => v !== null) && (
+                  <div style={{ display: 'flex', alignItems: 'center', height: isDesktop ? '38px' : '30px', marginTop: '4px' }}>
+                    <div style={{ width: OP_W }} />
+                    {Array.from({ length: maxLen }, (_, i) => {
+                      const cInfo = addCarries[i];
+                      const isP1P2Done = !partial1Inputs.slice(maxLen - String(problem.partial1).length).includes('') && !partial2Inputs.slice(maxLen - String(problem.partial2).length - 1, -1).includes('');
+                      const isVisible = cInfo !== null && isP1P2Done;
+                      
+                      if (!isVisible) return <div key={i} style={{ width: CELL_W }} />;
+                      const c = topRowInputs[i] ?? '';
+                      const isActive = status === 'playing' && activeSection === 'topRow' && activeTopIdx === i;
+                      return (
+                        <div key={i} style={{ width: CELL_W, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                          <input
+                            ref={el => topRowRefs.current[i] = el}
+                            type="text" inputMode="numeric" maxLength={2}
+                            value={c} readOnly={status !== 'playing'} tabIndex={status !== 'playing' ? -1 : 0}
+                            onChange={e => handleTopRowChange(i, e.target.value)}
+                            onKeyDown={e => handleTopRowKeyDown(i, e)}
+                            onFocus={() => { if (status === 'playing') { setActiveSection('topRow'); setActiveTopIdx(i); } }}
+                            style={{
+                              width: TOP_W1, height: TOP_H, boxSizing: 'border-box',
+                              border: `2px solid ${isActive ? '#58CC02' : '#C0C0C0'}`,
+                              borderRadius: '6px', background: isActive ? '#EEFCDD' : '#fafafa',
+                              textAlign: 'center', fontSize: TOP_FS, fontWeight: 900, fontFamily: '"Courier New", monospace',
+                              color: '#58CC02', outline: 'none', caretColor: 'transparent', cursor: 'pointer'
+                            }}
+                          />
+                        </div>
+                      );
+                    })}
                   </div>
-                  {Array.from({ length: maxLen }, (_, i) => {
-                    const N2 = String(problem.partial2).length;
-                    const inRange = i >= maxLen - N2 - 1 && i < maxLen - 2;
-                    if (!inRange) return <div key={i} style={{ width: CELL_W }} />;
-                    const c = partial2CarryInputs[i] ?? '';
-                    const isActive = status === 'playing' && activeSection === 'partial2Carry' && activePartial2CarryIdx === i;
-                    const isTwoDigit = (c ?? '').length >= 2;
-                    return (
-                      <div key={i} style={{ width: CELL_W, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <input
-                          ref={el => partial2CarryRefs.current[i] = el}
-                          type="text"
-                          inputMode="numeric"
-                          maxLength={2}
-                          value={c}
-                          readOnly={status !== 'playing'}
-                          tabIndex={status !== 'playing' ? -1 : 0}
-                          onChange={e => handlePartial2CarryChange(i, e.target.value)}
-                          onKeyDown={e => handlePartial2CarryKeyDown(i, e)}
-                          onFocus={() => {
-                            if (status !== 'playing') return;
-                            setActiveSection('partial2Carry');
-                            setActivePartial2CarryIdx(i);
-                          }}
-                          style={{
-                            width: isTwoDigit ? TOP_W2 : TOP_W1,
-                            height: TOP_H,
-                            boxSizing: 'border-box',
-                            border: `2px solid ${isActive ? '#CE82FF' : '#C0C0C0'}`,
-                            borderRadius: '8px',
-                            background: isActive ? '#F3E5FF' : status !== 'playing' ? '#F0F0F0' : '#fafafa',
-                            textAlign: 'center',
-                            fontSize: TOP_FS, fontWeight: 900,
-                            fontFamily: '"Courier New", monospace',
-                            color: '#CE82FF',
-                            outline: 'none',
-                            caretColor: 'transparent',
-                            cursor: status !== 'playing' ? 'default' : 'pointer',
-                          }}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
+                )}
 
-                {/* Partial 2 — num1 × tens digit of num2, shifted left, prefixed with + */}
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <div style={{ width: OP_W, textAlign: 'center', fontSize: DIGIT_FS, fontWeight: 900, fontFamily: '"Courier New", monospace', color: '#58CC02' }}>+</div>
+                {/* Partial 2 */}
+                <div style={{ display: 'flex', alignItems: 'center', marginTop: addCarries.some(v => v !== null) ? '0px' : '4px' }}>
+                  {/* + sign appears when p1 is done */}
+                  {(() => {
+                    const isP1Done = !partial1Inputs.slice(maxLen - String(problem.partial1).length).includes('');
+                    return (
+                      <div style={{ width: OP_W, textAlign: 'center', fontSize: DIGIT_FS, fontWeight: 900, fontFamily: '"Courier New", monospace', color: isP1Done ? '#58CC02' : 'transparent' }}>+</div>
+                    );
+                  })()}
                   {Array.from({ length: maxLen }, (_, i) => {
                     const N2 = String(problem.partial2).length;
                     const isLastCol = i === maxLen - 1;
@@ -1027,46 +1044,31 @@ export default function ColumnMathGame({ onBack, language }) {
                     if (!inRange && !isLastCol) return <div key={i} style={{ width: CELL_W }} />;
 
                     if (isLastCol) {
+                      const isP1Done = !partial1Inputs.slice(maxLen - String(problem.partial1).length).includes('');
                       return (
-                        <div key={i} style={{ width: CELL_W - 6, height: ANS_H, margin: '0 3px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: ANS_FS, fontWeight: 700, fontFamily: '"Courier New", monospace', color: '#999', background: '#F5F5F5', borderRadius: '12px', border: '3px solid #D0D0D0' }}>
-                          0
+                        <div key={i} style={{ width: CELL_W - 6, height: ANS_H, margin: '0 3px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: ANS_FS, fontWeight: 700, fontFamily: '"Courier New", monospace', color: isP1Done ? '#999' : 'transparent', background: isP1Done ? '#F5F5F5' : 'transparent', borderRadius: '12px', border: `3px solid ${isP1Done ? '#D0D0D0' : 'transparent'}` }}>
+                          {isP1Done ? '0' : ''}
                         </div>
                       );
                     }
 
                     const d = partial2Inputs[i] ?? '';
-                    const isActive  = status === 'playing' && activeSection === 'partial2' && activePartial2Idx === i;
-                    const correctD  = String(problem.partial2)[i - (maxLen - N2 - 1)];
-                    const isWrong   = status === 'wrong' && d !== correctD;
+                    const isActive = status === 'playing' && activeSection === 'partial2' && activePartial2Idx === i;
+                    const correctD = String(problem.partial2)[i - (maxLen - N2 - 1)];
+                    const isWrong = status === 'wrong' && d !== correctD;
                     const isCorrect = status === 'correct';
                     return (
                       <input
-                        key={i}
-                        ref={el => partial2Refs.current[i] = el}
-                        type="text"
-                        inputMode="numeric"
-                        maxLength={2}
-                        value={d}
-                        readOnly={status !== 'playing'}
-                        onChange={e => handlePartial2Change(i, e.target.value)}
-                        onKeyDown={e => handlePartial2KeyDown(i, e)}
-                        onFocus={() => {
-                          if (status !== 'playing') return;
-                          setActiveSection('partial2');
-                          setActivePartial2Idx(i);
-                        }}
+                        key={i} ref={el => partial2Refs.current[i] = el}
+                        type="text" inputMode="numeric" maxLength={2} value={d} readOnly={status !== 'playing'}
+                        onChange={e => handlePartial2Change(i, e.target.value)} onKeyDown={e => handlePartial2KeyDown(i, e)}
+                        onFocus={() => { if (status === 'playing') { setActiveSection('partial2'); setActivePartial2Idx(i); } }}
                         style={{
-                          width: CELL_W - 6, height: ANS_H, margin: '0 3px',
-                          boxSizing: 'border-box',
+                          width: CELL_W - 6, height: ANS_H, margin: '0 3px', boxSizing: 'border-box',
                           border: `3px solid ${isActive ? '#1CB0F6' : isWrong ? '#FF4B4B' : isCorrect ? '#58CC02' : '#ADADAD'}`,
-                          borderRadius: '12px',
-                          background: isActive ? '#EAF7FF' : isWrong ? '#FFEBEB' : isCorrect ? '#EFFFEA' : '#fafafa',
-                          textAlign: 'center',
-                          fontSize: ANS_FS, fontWeight: 700, fontFamily: '"Courier New", monospace',
-                          color: isWrong ? '#FF4B4B' : isCorrect ? '#58CC02' : '#3C3C3C',
-                          outline: 'none',
-                          caretColor: 'transparent',
-                          cursor: 'pointer', transition: 'all 0.12s',
+                          borderRadius: '12px', background: isActive ? '#EAF7FF' : isWrong ? '#FFEBEB' : isCorrect ? '#EFFFEA' : '#fafafa',
+                          textAlign: 'center', fontSize: ANS_FS, fontWeight: 700, fontFamily: '"Courier New", monospace',
+                          color: isWrong ? '#FF4B4B' : isCorrect ? '#58CC02' : '#3C3C3C', outline: 'none', caretColor: 'transparent', cursor: 'pointer', transition: 'all 0.12s',
                         }}
                       />
                     );
@@ -1082,44 +1084,27 @@ export default function ColumnMathGame({ onBack, language }) {
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div style={{ width: OP_W }} />
               {inputDigits.map((d, i) => {
-                const isActive  = status === 'playing' && i === activeIdx && activeSection === 'answer';
-                const correctD  = sa[i];
-                const isWrong   = status === 'wrong' && d !== correctD;
+                const isActive = status === 'playing' && i === activeIdx && activeSection === 'answer';
+                const correctD = sa[i];
+                const isWrong = status === 'wrong' && d !== correctD;
                 const isCorrect = status === 'correct';
                 return (
                   <input
-                    key={i}
-                    ref={el => inputRefs.current[i] = el}
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={2}
-                    value={d}
-                    readOnly={status !== 'playing'}
-                    onChange={e => handleAnswerChange(i, e.target.value)}
-                    onKeyDown={e => handleAnswerKeyDown(i, e)}
-                    onFocus={() => {
-                      if (status !== 'playing') return;
-                      setActiveSection('answer');
-                      setActiveIdx(i);
-                    }}
+                    key={i} ref={el => inputRefs.current[i] = el}
+                    type="text" inputMode="numeric" maxLength={2} value={d} readOnly={status !== 'playing'}
+                    onChange={e => handleAnswerChange(i, e.target.value)} onKeyDown={e => handleAnswerKeyDown(i, e)}
+                    onFocus={() => { if (status === 'playing') { setActiveSection('answer'); setActiveIdx(i); } }}
                     style={{
-                      width: CELL_W - 6, height: ANS_H, margin: '0 3px',
-                      boxSizing: 'border-box',
+                      width: CELL_W - 6, height: ANS_H, margin: '0 3px', boxSizing: 'border-box',
                       border: `3px solid ${isActive ? '#1CB0F6' : isWrong ? '#FF4B4B' : isCorrect ? '#58CC02' : '#ADADAD'}`,
-                      borderRadius: '12px',
-                      background: isActive ? '#EAF7FF' : isWrong ? '#FFEBEB' : isCorrect ? '#EFFFEA' : '#fafafa',
-                      textAlign: 'center',
-                      fontSize: ANS_FS, fontWeight: 700, fontFamily: '"Courier New", monospace',
-                      color: isWrong ? '#FF4B4B' : isCorrect ? '#58CC02' : '#3C3C3C',
-                      outline: 'none',
-                      caretColor: 'transparent',
-                      cursor: 'pointer', transition: 'all 0.12s',
+                      borderRadius: '12px', background: isActive ? '#EAF7FF' : isWrong ? '#FFEBEB' : isCorrect ? '#EFFFEA' : '#fafafa',
+                      textAlign: 'center', fontSize: ANS_FS, fontWeight: 700, fontFamily: '"Courier New", monospace',
+                      color: isWrong ? '#FF4B4B' : isCorrect ? '#58CC02' : '#3C3C3C', outline: 'none', caretColor: 'transparent', cursor: 'pointer', transition: 'all 0.12s',
                     }}
                   />
                 );
               })}
             </div>
-
             {/* Bottom separator */}
             <div style={{ borderTop: '3px solid #3C3C3C', marginTop: '4px' }} />
           </div>
@@ -1142,26 +1127,23 @@ export default function ColumnMathGame({ onBack, language }) {
 
         {/* Submit button (while playing) */}
         {status === 'playing' && (() => {
-          let ready = !inputDigits.includes('');
-          if (ready && problem.hasPartials) {
-            const N1 = String(problem.partial1).length;
-            const N2 = String(problem.partial2).length;
-            for (let i = maxLen - N1; i <= maxLen - 1; i++) {
-              if (!partial1Inputs[i]) { ready = false; break; }
+          let ready = false;
+          if (problem) {
+            const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
+            ready = true;
+            for (let i = 0; i < ml; i++) {
+              if (inputDigits[i] === '') { ready = false; break; }
             }
-            if (ready) {
-              for (let i = maxLen - N1 - 1; i <= maxLen - 2; i++) {
-                if (!partial1CarryInputs[i] && i < maxLen - 1) { ready = false; break; }
+            if (ready && problem.hasPartials) {
+              const N1 = String(problem.partial1).length;
+              const N2 = String(problem.partial2).length;
+              for (let i = ml - N1; i <= ml - 1; i++) {
+                if (!partial1Inputs[i]) { ready = false; break; }
               }
-            }
-            if (ready) {
-              for (let i = maxLen - N2 - 1; i <= maxLen - 2; i++) {
-                if (!partial2Inputs[i]) { ready = false; break; }
-              }
-            }
-            if (ready) {
-              for (let i = maxLen - N2 - 2; i <= maxLen - 3; i++) {
-                if (!partial2CarryInputs[i] && i < maxLen - 2) { ready = false; break; }
+              if (ready) {
+                for (let i = ml - N2 - 1; i <= ml - 2; i++) {
+                  if (!partial2Inputs[i]) { ready = false; break; }
+                }
               }
             }
           }
