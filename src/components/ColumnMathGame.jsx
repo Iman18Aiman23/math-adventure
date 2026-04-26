@@ -49,8 +49,18 @@ function StreakPopup({ streak, language, onClose }) {
   );
 }
 
-const CELL_W = 48;
-const OP_W   = 48;
+function useIsDesktop(bp = 768) {
+  const [isDesk, setIsDesk] = useState(() => typeof window !== 'undefined' ? window.innerWidth >= bp : false);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mql = window.matchMedia(`(min-width: ${bp}px)`);
+    const h = (e) => setIsDesk(e.matches);
+    mql.addEventListener('change', h);
+    setIsDesk(mql.matches);
+    return () => mql.removeEventListener('change', h);
+  }, [bp]);
+  return isDesk;
+}
 
 function computeDisplayInfo(prob, maxLen) {
   const d1 = String(prob.num1).padStart(maxLen, '0').split('').map(Number);
@@ -86,6 +96,19 @@ function computeDisplayInfo(prob, maxLen) {
 
 export default function ColumnMathGame({ onBack, language }) {
   const bm = language === 'bm';
+  const isDesktop = useIsDesktop();
+
+  // Responsive sizing — question box is the focal point and gets larger on desktop
+  const CELL_W   = isDesktop ? 72 : 48;
+  const OP_W     = isDesktop ? 72 : 48;
+  const DIGIT_FS = isDesktop ? '3rem'   : '2.4rem';
+  const ANS_FS   = isDesktop ? '2.8rem' : '2.2rem';
+  const ANS_H    = isDesktop ? '4rem'   : '3.2rem';
+  const TOP_W1   = isDesktop ? '44px'   : '32px';
+  const TOP_W2   = isDesktop ? '56px'   : '42px';
+  const TOP_H    = isDesktop ? '44px'   : '32px';
+  const TOP_FS   = isDesktop ? '1.4rem' : '1.05rem';
+  const CARD_MIN = isDesktop ? 560      : 0;
 
   const [difficulty,      setDifficulty]      = useState('easy');
   const [op,              setOp]              = useState('random');
@@ -99,23 +122,55 @@ export default function ColumnMathGame({ onBack, language }) {
   const [score,           setScore]           = useState(0);
   const [streak,          setStreak]          = useState(0);
   const [showStreak,      setShowStreak]      = useState(false);
-  const [userStruckRow,   setUserStruckRow]   = useState([]);
+  const [userStruckRow,    setUserStruckRow]    = useState([]);
+  const [userBorrowedTo,   setUserBorrowedTo]   = useState([]);
   const [confirmBorrowIdx, setConfirmBorrowIdx] = useState(null);
+  const [lockMessage,      setLockMessage]      = useState('');
 
   const inputRefs   = useRef([]);
   const topRowRefs  = useRef([]);
+
+  const needsBorrowAt = (i) => {
+    if (!problem || problem.op !== '-') return false;
+    const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
+    const sp1 = String(problem.num1).padStart(ml, ' ');
+    const sp2 = String(problem.num2).padStart(ml, ' ');
+    const ch1 = sp1[i];
+    const ch2 = sp2[i];
+    if (ch1 === ' ' && ch2 === ' ') return false;
+    const t = ch1 === ' ' ? 0 : parseInt(ch1, 10);
+    const b = ch2 === ' ' ? 0 : parseInt(ch2, 10);
+    let eff = t;
+    if (userBorrowedTo[i]) eff += 10;
+    if (userStruckRow[i] && !userBorrowedTo[i]) eff -= 1;
+    return eff < b;
+  };
+
+  const triggerLockMessage = (i) => {
+    if (!problem) return;
+    const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
+    const sp1 = String(problem.num1).padStart(ml, ' ');
+    const sp2 = String(problem.num2).padStart(ml, ' ');
+    const tDigit = sp1[i] === ' ' ? '0' : sp1[i];
+    const bDigit = sp2[i] === ' ' ? '0' : sp2[i];
+    setLockMessage(bm
+      ? `${tDigit} lebih kecil daripada ${bDigit}. Anda perlu Pinjam dari Rumah Sebelah!`
+      : `${tDigit} is smaller than ${bDigit}. You need to Borrow from the House Next Door!`);
+  };
 
   const newProblem = useCallback(() => {
     const p = generateProblem(difficulty, op);
     const ml = Math.max(String(p.num1).length, String(p.num2).length, String(p.answer).length);
     setProblem(p);
-    setInputDigits(Array(String(p.answer).length).fill(''));
+    setInputDigits(Array(ml).fill(''));
     setTopRowInputs(Array(ml).fill(''));
     setUserStruckRow(Array(ml).fill(false));
-    setActiveIdx(0);
+    setUserBorrowedTo(Array(ml).fill(false));
+    setActiveIdx(ml - 1);
     setActiveSection('answer');
     setActiveTopIdx(0);
     setConfirmBorrowIdx(null);
+    setLockMessage('');
     setStatus('playing');
     setShowStreak(false);
   }, [difficulty, op]);
@@ -133,7 +188,9 @@ export default function ColumnMathGame({ onBack, language }) {
   }, [activeSection, activeIdx, activeTopIdx, status, problem]);
 
   const checkAnswer = useCallback((digits) => {
-    const correct = digits.join('') === String(problem.answer);
+    const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
+    const padded = String(problem.answer).padStart(ml, '0');
+    const correct = digits.join('') === padded;
     if (correct) {
       setStatus('correct');
       setScore(s => s + 10);
@@ -155,95 +212,193 @@ export default function ColumnMathGame({ onBack, language }) {
     }
   }, [problem, streak]);
 
+  const submitAnswer = () => {
+    if (status !== 'playing') return;
+    if (inputDigits.includes('')) return;
+
+    // Subtraction: every column with top < bottom must have its borrow performed first
+    if (problem.op === '-') {
+      const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
+      for (let i = 0; i < ml; i++) {
+        if (needsBorrowAt(i)) {
+          triggerLockMessage(i);
+          return;
+        }
+      }
+    }
+
+    checkAnswer(inputDigits);
+  };
+
   const handleAnswerChange = (i, rawValue) => {
     if (status !== 'playing') return;
-    const digit = rawValue.replace(/[^0-9]/g, '').slice(-1);
-    if (!digit) return;
+    const cleaned = rawValue.replace(/[^0-9]/g, '');
+    const digit = cleaned.slice(-1); // '' if user cleared the field
     const digits = [...inputDigits];
     digits[i] = digit;
     setInputDigits(digits);
-    if (!digits.includes('')) {
-      checkAnswer(digits);
-    } else if (i < digits.length - 1) {
-      setActiveIdx(i + 1);
+
+    if (!digit) {
+      setLockMessage('');
+      return;
     }
+
+    // Subtraction: if this column still needs a borrow, do not advance to the next column
+    if (problem.op === '-' && needsBorrowAt(i)) {
+      triggerLockMessage(i);
+      return;
+    }
+
+    setLockMessage('');
+    if (i > 0) setActiveIdx(i - 1);
   };
 
   const handleAnswerKeyDown = (i, e) => {
     if (status !== 'playing') return;
-    if (e.key === 'Backspace') {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      submitAnswer();
+      return;
+    }
+    if (e.key === 'Backspace' || e.key === 'Delete') {
       e.preventDefault();
       const digits = [...inputDigits];
       if (digits[i] !== '') {
         digits[i] = '';
         setInputDigits(digits);
-      } else if (i > 0) {
-        digits[i - 1] = '';
+        setLockMessage('');
+      } else if (e.key === 'Backspace' && i < digits.length - 1) {
+        digits[i + 1] = '';
         setInputDigits(digits);
-        setActiveIdx(i - 1);
+        setActiveIdx(i + 1);
+        setLockMessage('');
       }
     }
   };
 
   const handleTopRowChange = (i, rawValue) => {
     if (status !== 'playing') return;
-    const digit = rawValue.replace(/[^0-9]/g, '').slice(-1);
+    if (problem.op === '-') return; // subtraction topRow is auto-filled
+    const cleaned = rawValue.replace(/[^0-9]/g, '');
+    const digit = cleaned.slice(-1);
     const inputs = [...topRowInputs];
     inputs[i] = digit;
     setTopRowInputs(inputs);
+  };
+
+  const handleTopRowKeyDown = (i, e) => {
+    if (status !== 'playing') return;
+    if (problem.op === '-') { e.preventDefault(); return; }
+    if (e.key === 'Backspace') {
+      e.preventDefault();
+      const inputs = [...topRowInputs];
+      inputs[i] = '';
+      setTopRowInputs(inputs);
+    }
   };
 
   if (!problem) return null;
 
   const s1 = String(problem.num1);
   const s2 = String(problem.num2);
-  const sa = String(problem.answer);
-  const maxLen    = Math.max(s1.length, s2.length, sa.length);
-  const p1        = s1.padStart(maxLen, ' ');
-  const p2        = s2.padStart(maxLen, ' ');
-  const answerPad = maxLen - sa.length;
-  const totalW    = OP_W + CELL_W * maxLen;
+  const maxLen = Math.max(s1.length, s2.length, String(problem.answer).length);
+  const p1     = s1.padStart(maxLen, ' ');
+  const p2     = s2.padStart(maxLen, ' ');
+  const sa     = String(problem.answer).padStart(maxLen, '0');
+  const totalW = OP_W + CELL_W * maxLen;
 
   const { topRow } = computeDisplayInfo(problem, maxLen);
   const hasTopRow = topRow.some((v, i) => v !== null && !(p1[i] === ' ' && p2[i] === ' '));
   const showTopRow = problem.op === '+'
     ? hasTopRow && inputDigits.some(d => d !== '')
-    : userStruckRow.some(v => v);
+    : (userStruckRow.some(v => v) || userBorrowedTo.some(v => v));
+
+  const opTheme = problem.op === '-'
+    ? { main: '#FF4B4B', dark: '#CC0000', soft: '#FFEFEF', stripe: 'linear-gradient(90deg, #FFA8A8, #FF4B4B)' }
+    : problem.op === '+'
+      ? { main: '#58CC02', dark: '#46A302', soft: '#EEFCDD', stripe: 'linear-gradient(90deg, #9DE85C, #58CC02)' }
+      : { main: '#1CB0F6', dark: '#0E8FD0', soft: '#E1F4FF', stripe: 'linear-gradient(90deg, #7AD2FF, #1CB0F6)' };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#FAFAFA' }}>
+      <style>{`
+        @keyframes cmg-pop { 0%{transform:scale(0.92);opacity:0;} 60%{transform:scale(1.02);} 100%{transform:scale(1);opacity:1;} }
+        @keyframes cmg-slide { from{opacity:0;transform:translateY(-6px);} to{opacity:1;transform:translateY(0);} }
+        @keyframes cmg-shake { 0%,100%{transform:translateX(0);} 20%{transform:translateX(-6px);} 40%{transform:translateX(6px);} 60%{transform:translateX(-4px);} 80%{transform:translateX(4px);} }
+        @keyframes cmg-bounce-in { 0%{transform:scale(0.7);opacity:0;} 70%{transform:scale(1.04);} 100%{transform:scale(1);opacity:1;} }
+        @keyframes cmg-pulse-glow { 0%,100%{box-shadow:0 0 0 0 rgba(88,204,2,0.4);} 50%{box-shadow:0 0 0 8px rgba(88,204,2,0);} }
+        .cmg-btn { transition: transform 0.08s ease, filter 0.15s ease, background 0.15s ease; }
+        .cmg-btn:hover:not(:disabled) { filter: brightness(1.06); }
+        .cmg-btn:active:not(:disabled) { transform: translateY(2px); }
+        .cmg-card { animation: cmg-pop 0.28s cubic-bezier(.2,.85,.3,1.15) both; }
+        .cmg-banner { animation: cmg-slide 0.22s ease-out both; }
+        .cmg-shake { animation: cmg-shake 0.42s ease-in-out; }
+        .cmg-dialog { animation: cmg-bounce-in 0.32s cubic-bezier(.2,.9,.4,1.3) both; }
+        .cmg-submit-ready { animation: cmg-pulse-glow 1.6s ease-in-out infinite; }
+        .cmg-digit-cell:focus { transform: scale(1.04); }
+      `}</style>
+
       {showStreak && <StreakPopup streak={streak} language={language} onClose={() => { setShowStreak(false); newProblem(); }} />}
 
       {/* Borrow confirmation dialog */}
       {confirmBorrowIdx !== null && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ background: '#fff', borderRadius: '20px', padding: '2rem 1.5rem', textAlign: 'center', maxWidth: '280px', width: '90%', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
-            <div style={{ fontSize: '2.5rem', marginBottom: '0.25rem' }}>🤔</div>
-            <div style={{ fontWeight: 900, fontSize: '1rem', color: '#3C3C3C', marginBottom: '0.5rem' }}>
-              {bm ? 'Pinjam daripada digit ini?' : 'Borrow from this digit?'}
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(28, 32, 40, 0.55)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backdropFilter: 'blur(2px)' }}>
+          <div className="cmg-dialog" style={{ background: '#fff', borderRadius: '24px', padding: '1.75rem 1.5rem 1.5rem', textAlign: 'center', maxWidth: '320px', width: '100%', boxShadow: '0 24px 60px rgba(0,0,0,0.25)', border: '3px solid #FFE0E0', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '6px', background: 'linear-gradient(90deg, #FFA8A8, #FF4B4B)' }} />
+            <div style={{ fontSize: '2.75rem', marginBottom: '0.25rem' }}>🏠</div>
+            <div style={{ fontWeight: 900, fontSize: '1.05rem', color: '#3C3C3C', marginBottom: '0.25rem' }}>
+              {bm ? 'Pinjam dari Rumah Sebelah?' : 'Borrow from this neighbour?'}
             </div>
-            <div style={{ fontSize: '3.5rem', fontWeight: 900, fontFamily: '"Courier New", monospace', color: '#FF4B4B', marginBottom: '1.25rem', lineHeight: 1 }}>
+            <div style={{ fontSize: '0.8rem', color: '#777', fontWeight: 600, marginBottom: '0.85rem' }}>
+              {bm ? 'Tolak 1 dari digit ini' : 'Subtract 1 from this digit'}
+            </div>
+            <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '88px', height: '88px', borderRadius: '20px', background: '#FFF1F1', border: '3px dashed #FF4B4B', fontSize: '3.5rem', fontWeight: 900, fontFamily: '"Courier New", monospace', color: '#FF4B4B', marginBottom: '1.25rem', lineHeight: 1 }}>
               {p1[confirmBorrowIdx]}
             </div>
             <div style={{ display: 'flex', gap: '0.75rem' }}>
               <button
                 onClick={() => {
+                  const idx = confirmBorrowIdx;
                   const newStruck = [...userStruckRow];
-                  newStruck[confirmBorrowIdx] = true;
+                  newStruck[idx] = true;
+                  newStruck[idx + 1] = true;
                   setUserStruckRow(newStruck);
-                  setActiveSection('topRow');
-                  setActiveTopIdx(confirmBorrowIdx);
+
+                  const newBorrowedTo = [...userBorrowedTo];
+                  newBorrowedTo[idx + 1] = true;
+                  setUserBorrowedTo(newBorrowedTo);
+
+                  const newTopInputs = [...topRowInputs];
+                  const srcChar = p1[idx];
+                  if (srcChar && srcChar !== ' ') {
+                    newTopInputs[idx] = String(parseInt(srcChar, 10) - 1);
+                  }
+                  const targetChar = p1[idx + 1];
+                  if (targetChar && targetChar !== ' ') {
+                    newTopInputs[idx + 1] = String(parseInt(targetChar, 10) + 10);
+                  }
+                  setTopRowInputs(newTopInputs);
+
+                  // After borrow: move focus to the next column to be answered.
+                  // If the borrow target (idx+1) already has a typed digit, advance left to idx.
+                  // Otherwise focus stays at idx+1 so the user can answer it now.
+                  const nextIdx = inputDigits[idx + 1] !== '' ? idx : idx + 1;
+                  setActiveIdx(nextIdx);
+                  setActiveSection('answer');
+                  setLockMessage('');
                   setConfirmBorrowIdx(null);
                 }}
-                style={{ flex: 1, padding: '0.75rem', background: '#58CC02', color: '#fff', fontWeight: 900, fontSize: '1rem', borderRadius: '12px', border: 'none', borderBottom: '4px solid #46A302', cursor: 'pointer' }}
+                className="cmg-btn"
+                style={{ flex: 1, padding: '0.85rem', background: '#58CC02', color: '#fff', fontWeight: 900, fontSize: '1rem', borderRadius: '14px', border: 'none', borderBottom: '4px solid #46A302', cursor: 'pointer', letterSpacing: '0.02em' }}
               >
-                {bm ? 'Ya! ✓' : 'Yes! ✓'}
+                {bm ? '✓ Ya, Pinjam' : '✓ Yes, Borrow'}
               </button>
               <button
                 onClick={() => setConfirmBorrowIdx(null)}
-                style={{ flex: 1, padding: '0.75rem', background: '#FF4B4B', color: '#fff', fontWeight: 900, fontSize: '1rem', borderRadius: '12px', border: 'none', borderBottom: '4px solid #CC0000', cursor: 'pointer' }}
+                className="cmg-btn"
+                style={{ flex: 1, padding: '0.85rem', background: '#fff', color: '#9A9A9A', fontWeight: 900, fontSize: '1rem', borderRadius: '14px', border: '2px solid #E5E5E5', borderBottom: '4px solid #C0C0C0', cursor: 'pointer' }}
               >
-                {bm ? 'Tidak' : 'No'}
+                {bm ? 'Batal' : 'Cancel'}
               </button>
             </div>
           </div>
@@ -251,60 +406,141 @@ export default function ColumnMathGame({ onBack, language }) {
       )}
 
       {/* Header */}
-      <div style={{ background: '#fff', borderBottom: '2px solid #E5E5E5', padding: '0 1rem', height: '56px', display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
-        <button onClick={onBack} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
-          <ArrowLeft size={24} />
+      <div style={{ background: '#fff', borderBottom: '2px solid #E5E5E5', padding: '0 0.85rem', height: '60px', display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
+        <button onClick={onBack} className="cmg-btn" style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center', padding: '6px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>
+          <ArrowLeft size={22} />
         </button>
-        <div style={{ flex: 1, textAlign: 'center', fontWeight: 900, fontSize: '1rem', color: '#3C3C3C' }}>
-          ❓ {bm ? 'Soalan Lazim' : 'Practice Problems'}
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+          <span style={{ fontSize: '1.15rem' }}>📐</span>
+          <span style={{ fontWeight: 900, fontSize: '0.98rem', color: '#3C3C3C', letterSpacing: '0.01em' }}>
+            {bm ? 'Soalan Lazim' : 'Practice Problems'}
+          </span>
         </div>
-        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-          <span style={{ fontWeight: 800, color: '#FFC800', fontSize: '0.9rem' }}>⭐ {score}</span>
-          <span style={{ fontWeight: 800, color: '#FF9600', fontSize: '0.9rem' }}>🔥 {streak}</span>
+        <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFF6D6', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#B58800', border: '1.5px solid #FFE08A' }}>
+            <span style={{ fontSize: '0.85rem' }}>⭐</span>
+            <span>{score}</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFEAD0', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#D9610B', border: '1.5px solid #FFC081' }}>
+            <span style={{ fontSize: '0.85rem' }}>🔥</span>
+            <span>{streak}</span>
+          </div>
         </div>
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '1.25rem 1rem', gap: '1.25rem' }}>
+      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: isDesktop ? '1rem 1.5rem 2rem' : '1.25rem 1rem', gap: isDesktop ? '1rem' : '1.25rem' }}>
 
-        {/* Settings */}
-        <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
-          {[
-            { id: 'easy',   label: bm ? '🌱 Senang' : '🌱 Easy',      color: '#58CC02' },
-            { id: 'medium', label: bm ? '⭐ Sederhana' : '⭐ Medium',  color: '#FFC800' },
-            { id: 'hard',   label: bm ? '🔥 Susah' : '🔥 Hard',       color: '#FF4B4B' },
-          ].map(d => (
-            <button key={d.id} onClick={() => setDifficulty(d.id)} style={{
-              padding: '0.35rem 0.9rem', borderRadius: '999px', fontWeight: 700, fontSize: '0.8rem',
-              background: difficulty === d.id ? d.color : '#E5E5E5',
-              color: difficulty === d.id ? '#fff' : '#777', border: 'none', cursor: 'pointer',
-            }}>{d.label}</button>
-          ))}
-          <span style={{ color: '#C0C0C0', fontWeight: 300 }}>│</span>
-          {[
-            { id: 'random', label: '🎲' },
-            { id: '+',      label: '➕' },
-            { id: '-',      label: '➖' },
-          ].map(o => (
-            <button key={o.id} onClick={() => setOp(o.id)} style={{
-              padding: '0.35rem 0.75rem', borderRadius: '999px', fontWeight: 700, fontSize: '1rem',
-              background: op === o.id ? '#1CB0F6' : '#E5E5E5',
-              color: op === o.id ? '#fff' : '#777', border: 'none', cursor: 'pointer',
-            }}>{o.label}</button>
-          ))}
+        {/* Settings panel — secondary, narrower than the question box */}
+        <div style={{
+          display: 'flex', gap: '0.85rem', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'flex-start',
+          background: '#fff', borderRadius: '16px', padding: '0.65rem 0.9rem',
+          border: '2px solid #E5E5E5', boxShadow: '0 3px 0 #E5E5E5',
+          maxWidth: isDesktop ? '440px' : '480px', width: '100%',
+        }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'center' }}>
+            <div style={{ fontSize: '0.62rem', fontWeight: 900, color: '#9A9A9A', letterSpacing: '0.1em' }}>
+              {bm ? 'TAHAP' : 'LEVEL'}
+            </div>
+            <div style={{ display: 'flex', gap: '0.35rem' }}>
+              {[
+                { id: 'easy',   label: bm ? 'Senang'    : 'Easy',   emoji: '🌱', color: '#58CC02', dark: '#46A302' },
+                { id: 'medium', label: bm ? 'Sederhana' : 'Medium', emoji: '⭐', color: '#FFC800', dark: '#C99800' },
+                { id: 'hard',   label: bm ? 'Susah'     : 'Hard',   emoji: '🔥', color: '#FF4B4B', dark: '#CC0000' },
+              ].map(d => {
+                const sel = difficulty === d.id;
+                return (
+                  <button key={d.id} onClick={() => setDifficulty(d.id)} className="cmg-btn" style={{
+                    padding: '0.35rem 0.65rem', borderRadius: '11px',
+                    fontWeight: 800, fontSize: '0.76rem',
+                    background: sel ? d.color : '#F4F4F4',
+                    color: sel ? '#fff' : '#777',
+                    border: 'none',
+                    borderBottom: sel ? `3px solid ${d.dark}` : '3px solid #DCDCDC',
+                    cursor: 'pointer',
+                    display: 'inline-flex', gap: '4px', alignItems: 'center',
+                  }}>
+                    <span style={{ fontSize: '0.85rem' }}>{d.emoji}</span>
+                    <span>{d.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div style={{ width: 1, alignSelf: 'stretch', background: '#E5E5E5' }} />
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'center' }}>
+            <div style={{ fontSize: '0.62rem', fontWeight: 900, color: '#9A9A9A', letterSpacing: '0.1em' }}>
+              {bm ? 'OPERASI' : 'OPERATION'}
+            </div>
+            <div style={{ display: 'flex', gap: '0.35rem' }}>
+              {[
+                { id: 'random', label: '🎲', title: bm ? 'Rawak' : 'Random' },
+                { id: '+',      label: '➕', title: bm ? 'Tambah' : 'Add' },
+                { id: '-',      label: '➖', title: bm ? 'Tolak' : 'Subtract' },
+              ].map(o => {
+                const sel = op === o.id;
+                return (
+                  <button key={o.id} onClick={() => setOp(o.id)} title={o.title} className="cmg-btn" style={{
+                    padding: '0.32rem 0.7rem', borderRadius: '11px',
+                    fontWeight: 800, fontSize: '1rem',
+                    background: sel ? '#1CB0F6' : '#F4F4F4',
+                    border: 'none',
+                    borderBottom: sel ? '3px solid #0E8FD0' : '3px solid #DCDCDC',
+                    cursor: 'pointer',
+                  }}>{o.label}</button>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
-        {/* Column problem card */}
-        <div style={{ background: '#fff', borderRadius: '20px', padding: '1.75rem 2rem', border: '3px solid #E5E5E5', boxShadow: '0 4px 0 #E5E5E5' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: totalW }}>
+        {/* Column problem card — main focus, dominant on desktop */}
+        <div
+          key={`${problem.num1}-${problem.num2}-${problem.op}`}
+          className={`cmg-card ${status === 'wrong' ? 'cmg-shake' : ''}`}
+          style={{
+            position: 'relative',
+            background: '#fff', borderRadius: '24px',
+            padding: isDesktop ? '3rem 3rem 2.25rem' : '2.4rem 2rem 1.85rem',
+            border: '3px solid #E5E5E5', boxShadow: '0 6px 0 #E5E5E5',
+            overflow: 'hidden',
+            minWidth: CARD_MIN ? `${CARD_MIN}px` : undefined,
+            width: isDesktop ? 'auto' : '100%',
+            maxWidth: '720px',
+          }}
+        >
+          {/* Top color stripe themed by operation */}
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: isDesktop ? '8px' : '6px', background: opTheme.stripe }} />
+
+          {/* Operation badge */}
+          <div style={{
+            position: 'absolute', top: isDesktop ? '18px' : '14px', right: isDesktop ? '18px' : '14px',
+            width: isDesktop ? '42px' : '34px', height: isDesktop ? '42px' : '34px', borderRadius: '50%',
+            background: opTheme.main, color: '#fff',
+            fontWeight: 900, fontSize: isDesktop ? '1.35rem' : '1.1rem',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontFamily: '"Courier New", monospace',
+            boxShadow: `0 3px 0 ${opTheme.dark}`,
+          }}>
+            {problem.op}
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: totalW, margin: '0 auto' }}>
 
             {/* Carry / Borrow row */}
             {showTopRow && (
-              <div style={{ display: 'flex', alignItems: 'center', height: '38px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', height: isDesktop ? '50px' : '38px' }}>
                 <div style={{ width: OP_W }} />
                 {topRow.map((val, i) => {
                   const hide = p1[i] === ' ' && p2[i] === ' ';
-                  const hasCarry = problem.op === '+' ? (val !== null && !hide) : userStruckRow[i];
-                  const isTopActive = activeSection === 'topRow' && activeTopIdx === i && status === 'playing';
+                  const isSubBorrow = problem.op === '-' && (userStruckRow[i] || userBorrowedTo[i]);
+                  const isTwoDigit = (topRowInputs[i] ?? '').length >= 2;
+                  const hasCarry = problem.op === '+'
+                    ? (val !== null && !hide)
+                    : isSubBorrow;
+                  const isTopActive = activeSection === 'topRow' && activeTopIdx === i && status === 'playing' && problem.op === '+';
+                  const isReadonly = status !== 'playing' || problem.op === '-';
                   return (
                     <div key={i} style={{ width: CELL_W, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                       {hasCarry && (
@@ -314,21 +550,28 @@ export default function ColumnMathGame({ onBack, language }) {
                           inputMode="numeric"
                           maxLength={2}
                           value={topRowInputs[i] ?? ''}
-                          readOnly={status !== 'playing'}
+                          readOnly={isReadonly}
+                          tabIndex={isReadonly ? -1 : 0}
                           onChange={e => handleTopRowChange(i, e.target.value)}
-                          onFocus={() => { setActiveSection('topRow'); setActiveTopIdx(i); }}
+                          onKeyDown={e => handleTopRowKeyDown(i, e)}
+                          onFocus={() => {
+                            if (isReadonly) { topRowRefs.current[i]?.blur(); return; }
+                            setActiveSection('topRow');
+                            setActiveTopIdx(i);
+                          }}
                           style={{
-                            width: '32px', height: '32px',
+                            width: isTwoDigit ? TOP_W2 : TOP_W1,
+                            height: TOP_H,
                             border: `2px solid ${isTopActive ? '#1CB0F6' : '#C0C0C0'}`,
                             borderRadius: '8px',
-                            background: isTopActive ? '#EAF7FF' : '#fafafa',
+                            background: isTopActive ? '#EAF7FF' : isReadonly ? '#F0F0F0' : '#fafafa',
                             textAlign: 'center',
-                            fontSize: '1.1rem', fontWeight: 900,
+                            fontSize: TOP_FS, fontWeight: 900,
                             fontFamily: '"Courier New", monospace',
                             color: problem.op === '+' ? '#58CC02' : '#FF4B4B',
                             outline: 'none',
                             caretColor: 'transparent',
-                            cursor: status === 'playing' ? 'pointer' : 'default',
+                            cursor: isReadonly ? 'default' : 'pointer',
                           }}
                         />
                       )}
@@ -343,17 +586,22 @@ export default function ColumnMathGame({ onBack, language }) {
               <div style={{ width: OP_W }} />
               {p1.split('').map((d, i) => {
                 const isStruck = userStruckRow[i];
-                const canBorrow = problem.op === '-' && status === 'playing' && d !== ' ' && !isStruck;
+                const canBorrow = problem.op === '-' && status === 'playing' && d !== ' ' && !isStruck && i < maxLen - 1 && !userBorrowedTo[i];
                 return (
                   <div key={i}
                     onClick={() => { if (canBorrow) setConfirmBorrowIdx(i); }}
+                    title={canBorrow ? (bm ? 'Klik untuk pinjam' : 'Tap to borrow') : undefined}
                     style={{
-                      width: CELL_W, textAlign: 'center', fontSize: '2.4rem', fontWeight: 700,
+                      width: CELL_W, textAlign: 'center', fontSize: DIGIT_FS, fontWeight: 700,
                       fontFamily: '"Courier New", monospace',
-                      color: isStruck ? '#AFAFAF' : '#3C3C3C',
+                      color: isStruck ? '#C8C8C8' : '#3C3C3C',
                       textDecoration: isStruck ? 'line-through' : 'none',
+                      textDecorationThickness: isStruck ? '3px' : undefined,
+                      textDecorationColor: isStruck ? '#FF4B4B' : undefined,
                       cursor: canBorrow ? 'pointer' : 'default',
-                      borderRadius: '8px',
+                      borderRadius: '10px',
+                      transition: 'background 0.15s, transform 0.12s',
+                      background: canBorrow ? 'rgba(255, 200, 0, 0.10)' : 'transparent',
                     }}>
                     {d === ' ' ? '' : d}
                   </div>
@@ -363,11 +611,11 @@ export default function ColumnMathGame({ onBack, language }) {
 
             {/* Row 2 — op + num2 */}
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <div style={{ width: OP_W, textAlign: 'center', fontSize: '2.4rem', fontWeight: 900, fontFamily: '"Courier New", monospace', color: '#1CB0F6' }}>
+              <div style={{ width: OP_W, textAlign: 'center', fontSize: DIGIT_FS, fontWeight: 900, fontFamily: '"Courier New", monospace', color: opTheme.main }}>
                 {problem.op}
               </div>
               {p2.split('').map((d, i) => (
-                <div key={i} style={{ width: CELL_W, textAlign: 'center', fontSize: '2.4rem', fontWeight: 700, fontFamily: '"Courier New", monospace', color: '#3C3C3C' }}>
+                <div key={i} style={{ width: CELL_W, textAlign: 'center', fontSize: DIGIT_FS, fontWeight: 700, fontFamily: '"Courier New", monospace', color: '#3C3C3C' }}>
                   {d === ' ' ? '' : d}
                 </div>
               ))}
@@ -379,9 +627,6 @@ export default function ColumnMathGame({ onBack, language }) {
             {/* Row 3 — answer inputs */}
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div style={{ width: OP_W }} />
-              {Array(answerPad).fill(null).map((_, i) => (
-                <div key={`pad-${i}`} style={{ width: CELL_W }} />
-              ))}
               {inputDigits.map((d, i) => {
                 const isActive  = status === 'playing' && i === activeIdx && activeSection === 'answer';
                 const correctD  = sa[i];
@@ -398,14 +643,18 @@ export default function ColumnMathGame({ onBack, language }) {
                     readOnly={status !== 'playing'}
                     onChange={e => handleAnswerChange(i, e.target.value)}
                     onKeyDown={e => handleAnswerKeyDown(i, e)}
-                    onFocus={() => { if (status === 'playing') { setActiveIdx(i); setActiveSection('answer'); } }}
+                    onFocus={() => {
+                      if (status !== 'playing') return;
+                      setActiveSection('answer');
+                      setActiveIdx(i);
+                    }}
                     style={{
-                      width: CELL_W - 6, height: '3.2rem', margin: '0 3px',
+                      width: CELL_W - 6, height: ANS_H, margin: '0 3px',
                       border: `3px solid ${isActive ? '#1CB0F6' : isWrong ? '#FF4B4B' : isCorrect ? '#58CC02' : '#ADADAD'}`,
-                      borderRadius: '10px',
+                      borderRadius: '12px',
                       background: isActive ? '#EAF7FF' : isWrong ? '#FFEBEB' : isCorrect ? '#EFFFEA' : '#fafafa',
                       textAlign: 'center',
-                      fontSize: '2.2rem', fontWeight: 700, fontFamily: '"Courier New", monospace',
+                      fontSize: ANS_FS, fontWeight: 700, fontFamily: '"Courier New", monospace',
                       color: isWrong ? '#FF4B4B' : isCorrect ? '#58CC02' : '#3C3C3C',
                       outline: 'none',
                       caretColor: 'transparent',
@@ -421,25 +670,74 @@ export default function ColumnMathGame({ onBack, language }) {
           </div>
         </div>
 
+        {/* Borrow guidance message */}
+        {lockMessage && status === 'playing' && (
+          <div className="cmg-banner" style={{
+            display: 'flex', gap: '0.6rem', alignItems: 'flex-start',
+            fontWeight: 700, fontSize: '0.92rem', padding: '0.7rem 1rem', borderRadius: '14px',
+            color: '#7A4E00', background: '#FFF8E1',
+            border: '2px solid #FFC800', borderBottom: '4px solid #E0A800',
+            maxWidth: '440px', textAlign: 'left', lineHeight: 1.4,
+            boxShadow: '0 3px 0 #F1D89A',
+          }}>
+            <span style={{ fontSize: '1.4rem', lineHeight: 1 }}>🏠</span>
+            <span>{lockMessage}</span>
+          </div>
+        )}
+
+        {/* Submit button (while playing) */}
+        {status === 'playing' && (() => {
+          const ready = !inputDigits.includes('');
+          return (
+            <button
+              onClick={submitAnswer}
+              disabled={!ready}
+              className={`cmg-btn ${ready ? 'cmg-submit-ready' : ''}`}
+              style={{
+                padding: '0.95rem 3rem',
+                background: ready ? '#58CC02' : '#E5E5E5',
+                color: ready ? '#fff' : '#AFAFAF',
+                fontWeight: 900, fontSize: '1.05rem',
+                letterSpacing: '0.04em', textTransform: 'uppercase',
+                borderRadius: '16px', border: 'none',
+                borderBottom: ready ? '4px solid #46A302' : '4px solid #C0C0C0',
+                cursor: ready ? 'pointer' : 'not-allowed',
+                display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+                minWidth: '180px', justifyContent: 'center',
+              }}
+            >
+              <span style={{ fontSize: '1.1rem' }}>✓</span>
+              <span>{bm ? 'Hantar' : 'Submit'}</span>
+            </button>
+          );
+        })()}
+
         {/* Feedback banner + Next button */}
         {status !== 'playing' && (
           <>
-            <div style={{
-              fontWeight: 800, fontSize: '1.05rem', padding: '0.6rem 1.5rem', borderRadius: '12px',
+            <div className="cmg-banner" style={{
+              display: 'flex', alignItems: 'center', gap: '0.55rem',
+              fontWeight: 800, fontSize: '1rem', padding: '0.7rem 1.4rem', borderRadius: '14px',
               color:      status === 'correct' ? '#2d8a00' : '#c0392b',
               background: status === 'correct' ? '#EFFFEA' : '#FFEBEB',
               border: `2px solid ${status === 'correct' ? '#58CC02' : '#FF4B4B'}`,
+              borderBottom: `4px solid ${status === 'correct' ? '#46A302' : '#CC0000'}`,
             }}>
-              {status === 'correct'
-                ? (bm ? '✅ Betul!' : '✅ Correct!')
-                : (bm ? `❌ Jawapan betul: ${problem.answer}` : `❌ Correct answer: ${problem.answer}`)}
+              <span style={{ fontSize: '1.4rem' }}>{status === 'correct' ? '🎉' : '😅'}</span>
+              <span>
+                {status === 'correct'
+                  ? (bm ? 'Hebat! Jawapan anda betul.' : 'Awesome! Your answer is correct.')
+                  : (bm ? `Jawapan betul ialah ${problem.answer}` : `Correct answer is ${problem.answer}`)}
+              </span>
             </div>
-            <button onClick={newProblem} style={{
-              padding: '1rem 3rem', background: '#58CC02', color: '#fff',
-              fontWeight: 900, fontSize: '1.1rem',
-              borderRadius: '16px', border: 'none', borderBottom: '4px solid #46A302', cursor: 'pointer',
+            <button onClick={newProblem} className="cmg-btn" style={{
+              padding: '1rem 2.6rem', background: '#1CB0F6', color: '#fff',
+              fontWeight: 900, fontSize: '1.05rem', letterSpacing: '0.04em', textTransform: 'uppercase',
+              borderRadius: '16px', border: 'none', borderBottom: '4px solid #0E8FD0', cursor: 'pointer',
+              display: 'inline-flex', alignItems: 'center', gap: '0.5rem', minWidth: '200px', justifyContent: 'center',
             }}>
-              {bm ? 'Soalan Seterusnya →' : 'Next Question →'}
+              <span>{bm ? 'Soalan Seterusnya' : 'Next Question'}</span>
+              <span style={{ fontSize: '1.1rem' }}>→</span>
             </button>
           </>
         )}
