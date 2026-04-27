@@ -158,3 +158,17 @@
     - [x] Right: "Seterusnya" (Next) button - solid orange with darker shadow
   - [x] Maintain playHoverSound feedback on button clicks.
   - [x] Verified: Production build passes (vite build — 12.07s, 0 errors).
+
+- [x] Phase 13: Dynamic Color Theme for ReadingPage by Level
+  - [x] Create LEVEL_THEMES constant with colors for each Tahap:
+    - [x] Tahap 1: Orange (#FF9600)
+    - [x] Tahap 2: Blue (#1CB0F6)
+    - [x] Tahap 3: Purple (#CE82FF)
+    - [x] Tahap 4: Green (#58CC02)
+  - [x] Apply dynamic theme colors to:
+    - [x] Flashcard box shadow (uses theme shadow color)
+    - [x] "Dengar" button (border and text color)
+    - [x] "Seterusnya" button (background and shadow colors)
+    - [x] Progress indicator text color
+  - [x] Each level automatically applies its own color scheme from the Select Level screen.
+  - [x] Verified: Production build passes (vite build — 11.29s, 0 errors).

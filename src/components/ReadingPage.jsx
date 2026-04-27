@@ -13,6 +13,16 @@ const SCRIPTS = [
   { key: 'JAWI', label: 'JAWI', color: '#CE82FF', bg: '#EDD9FF' },
 ];
 
+// ── Level color themes ────────────────────────────────────────────────────────
+const LEVEL_THEMES = {
+  1: { color: '#FF9600', bg: '#FFF0CC', shadow: '#FFD699', darkColor: '#D47A00' },
+  2: { color: '#1CB0F6', bg: '#D0F0FF', shadow: '#98D8FF', darkColor: '#0B8DC0' },
+  3: { color: '#CE82FF', bg: '#EDD9FF', shadow: '#E6B3FF', darkColor: '#9B59B6' },
+  4: { color: '#58CC02', bg: '#E6FFD4', shadow: '#B3E080', darkColor: '#46A302' },
+};
+
+const getTheme = (level) => LEVEL_THEMES[level] || LEVEL_THEMES[1];
+
 export default function ReadingPage({ onBack, language }) {
   // ── State ─────────────────────────────────────────────────────────────
   const [selectedLevel, setSelectedLevel] = useState(null);
@@ -173,18 +183,18 @@ export default function ReadingPage({ onBack, language }) {
           ))}
         </div>
 
-        <div style={{ background: '#fff', border: '2px solid #E5E5E5', borderRadius: '999px', padding: '6px 16px', fontWeight: 800, color: '#FF9600', fontSize: '0.9rem' }}>
+        <div style={{ background: '#fff', border: '2px solid #E5E5E5', borderRadius: '999px', padding: '6px 16px', fontWeight: 800, color: getTheme(selectedLevel).color, fontSize: '0.9rem' }}>
           Tahap {selectedLevel} {currentIndex + 1}/{currentLevelData.length}
         </div>
       </div>
 
       {/* Main Card */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.5rem' }}>
-        
+
         {/* Flashcard Box */}
         <div style={{
           width: '100%', maxWidth: '400px', background: '#fff', borderRadius: '24px',
-          boxShadow: '0 8px 0 #FFD699', padding: '2.5rem 1.5rem', position: 'relative',
+          boxShadow: `0 8px 0 ${getTheme(selectedLevel).shadow}`, padding: '2.5rem 1.5rem', position: 'relative',
           display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '320px', justifyContent: 'center'
         }}>
           
@@ -326,9 +336,10 @@ export default function ReadingPage({ onBack, language }) {
         <button
           onClick={handleVolumeClick}
           style={{
-            flex: 1, padding: '0.9rem 1.2rem', borderRadius: '16px', border: '2px solid #FF9600',
-            background: '#fff', color: '#FF9600', fontWeight: 900, fontSize: '1rem',
-            cursor: 'pointer', boxShadow: '0 4px 0 #FFB84D',
+            flex: 1, padding: '0.9rem 1.2rem', borderRadius: '16px',
+            border: `2px solid ${getTheme(selectedLevel).color}`,
+            background: '#fff', color: getTheme(selectedLevel).color, fontWeight: 900, fontSize: '1rem',
+            cursor: 'pointer', boxShadow: `0 4px 0 ${getTheme(selectedLevel).shadow}`,
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
           }}
         >
@@ -342,10 +353,10 @@ export default function ReadingPage({ onBack, language }) {
           disabled={currentIndex === currentLevelData.length - 1}
           style={{
             flex: 1, padding: '0.9rem 1.2rem', borderRadius: '16px', border: 'none',
-            background: currentIndex === currentLevelData.length - 1 ? '#E5E5E5' : '#FF9600',
+            background: currentIndex === currentLevelData.length - 1 ? '#E5E5E5' : getTheme(selectedLevel).color,
             color: '#fff', fontWeight: 900, fontSize: '1rem',
             cursor: currentIndex === currentLevelData.length - 1 ? 'not-allowed' : 'pointer',
-            boxShadow: currentIndex === currentLevelData.length - 1 ? 'none' : '0 4px 0 #D47A00'
+            boxShadow: currentIndex === currentLevelData.length - 1 ? 'none' : `0 4px 0 ${getTheme(selectedLevel).darkColor}`
           }}
         >
           {language === 'bm' ? 'Seterusnya' : 'Next'} {'>'}
