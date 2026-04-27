@@ -652,9 +652,10 @@ export default function ColumnMathGame({ onBack, language }) {
                   if (srcChar && srcChar !== ' ') {
                     newTopInputs[idx] = String(parseInt(srcChar, 10) - 1);
                   }
-                  const targetChar = p1[idx + 1];
-                  if (targetChar && targetChar !== ' ') {
-                    newTopInputs[idx + 1] = String(parseInt(targetChar, 10) + 10);
+                  // Use current value from topRowInputs if it exists (from cascading borrows), otherwise use original
+                  const currentTargetValue = newTopInputs[idx + 1] ? parseInt(newTopInputs[idx + 1], 10) : parseInt(p1[idx + 1], 10);
+                  if (!isNaN(currentTargetValue)) {
+                    newTopInputs[idx + 1] = String(currentTargetValue + 10);
                   }
                   setTopRowInputs(newTopInputs);
 
@@ -927,7 +928,7 @@ export default function ColumnMathGame({ onBack, language }) {
               <div style={{ width: OP_W }} />
               {p1.split('').map((d, i) => {
                 const isStruck = userStruckRow[i];
-                const canBorrow = problem.op === '-' && status === 'playing' && d !== ' ' && !isStruck && i < maxLen - 1 && !userBorrowedTo[i];
+                const canBorrow = problem.op === '-' && status === 'playing' && d !== ' ' && !isStruck && i < maxLen - 1 && !userBorrowedTo[i] && needsBorrowAt(i + 1);
                 return (
                   <div key={i}
                     onClick={() => { if (canBorrow) setConfirmBorrowIdx(i); }}
