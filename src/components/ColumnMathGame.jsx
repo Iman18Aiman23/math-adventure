@@ -434,6 +434,76 @@ export default function ColumnMathGame({ onBack, language }) {
     setLockMessage('');
   };
 
+  const processPartial1CarryLogic = (i, rawValue) => {
+    if (status !== 'playing' || !problem.hasPartials) return;
+    const cleaned = rawValue.replace(/[^0-9]/g, '');
+
+    if (!cleaned) {
+      const digits = [...partial1Inputs];
+      digits[i] = '';
+      setPartial1Inputs(digits);
+      return;
+    }
+
+    // Handle values >= 10: split and carry
+    if (cleaned.length === 2 && parseInt(cleaned) >= 10) {
+      const value = parseInt(cleaned);
+      const ones = String(value % 10);
+      const tens = String(Math.floor(value / 10));
+
+      // Set the ones digit in the answer field
+      const digits = [...partial1Inputs];
+      digits[i] = ones;
+      setPartial1Inputs(digits);
+
+      // Set the tens digit in the upper carry field (left column)
+      const carryInputs = [...partial1CarryInputs];
+      carryInputs[i - 1] = tens;
+      setPartial1CarryInputs(carryInputs);
+      return;
+    }
+
+    // Single digit - keep as is
+    const digits = [...partial1Inputs];
+    digits[i] = cleaned.slice(-1);
+    setPartial1Inputs(digits);
+  };
+
+  const processPartial2CarryLogic = (i, rawValue) => {
+    if (status !== 'playing' || !problem.hasPartials) return;
+    const cleaned = rawValue.replace(/[^0-9]/g, '');
+
+    if (!cleaned) {
+      const digits = [...partial2Inputs];
+      digits[i] = '';
+      setPartial2Inputs(digits);
+      return;
+    }
+
+    // Handle values >= 10: split and carry
+    if (cleaned.length === 2 && parseInt(cleaned) >= 10) {
+      const value = parseInt(cleaned);
+      const ones = String(value % 10);
+      const tens = String(Math.floor(value / 10));
+
+      // Set the ones digit in the answer field
+      const digits = [...partial2Inputs];
+      digits[i] = ones;
+      setPartial2Inputs(digits);
+
+      // Set the tens digit in the upper carry field (left column)
+      const carryInputs = [...partial2CarryInputs];
+      carryInputs[i - 1] = tens;
+      setPartial2CarryInputs(carryInputs);
+      return;
+    }
+
+    // Single digit - keep as is
+    const digits = [...partial2Inputs];
+    digits[i] = cleaned.slice(-1);
+    setPartial2Inputs(digits);
+  };
+
   const handleAnswerKeyDown = (i, e) => {
     if (status !== 'playing') return;
     if (e.key === 'Enter') {
@@ -520,7 +590,17 @@ export default function ColumnMathGame({ onBack, language }) {
   const handlePartial1KeyDown = (i, e) => {
     if (status !== 'playing') return;
     const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
-    if (e.key === 'Enter') { e.preventDefault(); submitAnswer(); return; }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      processPartial1CarryLogic(i, partial1Refs.current[i].value);
+      if (i > 0) {
+        setTimeout(() => {
+          setActivePartial1Idx(i - 1);
+          partial1Refs.current[i - 1]?.focus();
+        }, 0);
+      }
+      return;
+    }
     if (e.key === 'ArrowLeft') {
       e.preventDefault();
       if (i > 0) {
@@ -563,7 +643,17 @@ export default function ColumnMathGame({ onBack, language }) {
   const handlePartial2KeyDown = (i, e) => {
     if (status !== 'playing') return;
     const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
-    if (e.key === 'Enter') { e.preventDefault(); submitAnswer(); return; }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      processPartial2CarryLogic(i, partial2Refs.current[i].value);
+      if (i > 0) {
+        setTimeout(() => {
+          setActivePartial2Idx(i - 1);
+          partial2Refs.current[i - 1]?.focus();
+        }, 0);
+      }
+      return;
+    }
     if (e.key === 'ArrowLeft') {
       e.preventDefault();
       if (i > 0) {
@@ -1092,6 +1182,7 @@ export default function ColumnMathGame({ onBack, language }) {
                         key={i} ref={el => partial1Refs.current[i] = el}
                         type="text" inputMode="numeric" maxLength={2} value={d} readOnly={status !== 'playing'}
                         onChange={e => handlePartial1Change(i, e.target.value)} onKeyDown={e => handlePartial1KeyDown(i, e)}
+                        onBlur={e => processPartial1CarryLogic(i, e.target.value)}
                         onFocus={() => { if (status === 'playing') { setActiveSection('partial1'); setActivePartial1Idx(i); } }}
                         style={{
                           width: CELL_W - 6, height: ANS_H, margin: '0 3px', boxSizing: 'border-box',
@@ -1174,6 +1265,7 @@ export default function ColumnMathGame({ onBack, language }) {
                         key={i} ref={el => partial2Refs.current[i] = el}
                         type="text" inputMode="numeric" maxLength={2} value={d} readOnly={status !== 'playing'}
                         onChange={e => handlePartial2Change(i, e.target.value)} onKeyDown={e => handlePartial2KeyDown(i, e)}
+                        onBlur={e => processPartial2CarryLogic(i, e.target.value)}
                         onFocus={() => { if (status === 'playing') { setActiveSection('partial2'); setActivePartial2Idx(i); } }}
                         style={{
                           width: CELL_W - 6, height: ANS_H, margin: '0 3px', boxSizing: 'border-box',
