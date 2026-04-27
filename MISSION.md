@@ -142,3 +142,14 @@
     - [x] Eliminates padding gap between sidebar and content area.
   - [x] **Verified:** Both pages now have consistent header styling and true full-width layouts without gaps.
   - [x] Verified: Production build passes (vite build — 9.85s, 0 errors).
+
+- [x] Phase 12: Standardize ReadingPage (Tahap 3 & 4) UI to Match Tahap 2
+  - [x] Add SCRIPTS constant with RUMI | ENG | JAWI button config to ReadingPage.
+  - [x] Replace single script toggle button with three separate SCRIPTS buttons.
+  - [x] Match button styling from KVLearningPage/KVKLearningPage:
+    - [x] RUMI: Blue (#1CB0F6), light blue background (#D0F0FF)
+    - [x] ENG: Orange (#FF9600), light orange background (#FFF0CC)
+    - [x] JAWI: Purple (#CE82FF), light purple background (#EDD9FF)
+  - [x] Update header layout: Back | Scripts | Progress indicator
+  - [x] Maintain playHoverSound feedback on button clicks.
+  - [x] Verified: Production build passes (vite build — 10.74s, 0 errors).

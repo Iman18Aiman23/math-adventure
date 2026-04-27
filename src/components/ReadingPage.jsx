@@ -6,6 +6,13 @@ import SpeechManager from '../services/SpeechManager';
 import KVLearningPage from './KVLearningPage';
 import KVKLearningPage from './KVKLearningPage';
 
+// ── Script button config ──────────────────────────────────────────────────────
+const SCRIPTS = [
+  { key: 'RUMI', label: 'RUMI', color: '#1CB0F6', bg: '#D0F0FF' },
+  { key: 'ENG',  label: 'ENG',  color: '#FF9600', bg: '#FFF0CC' },
+  { key: 'JAWI', label: 'JAWI', color: '#CE82FF', bg: '#EDD9FF' },
+];
+
 export default function ReadingPage({ onBack, language }) {
   // ── State ─────────────────────────────────────────────────────────────
   const [selectedLevel, setSelectedLevel] = useState(null);
@@ -136,19 +143,39 @@ export default function ReadingPage({ onBack, language }) {
   // View: Flashcard Interface
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#F7F7F7', padding: '1rem' }}>
-      
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+
+      {/* Header with Script Buttons */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', gap: '0.75rem', flexWrap: 'wrap' }}>
         <button onClick={() => setSelectedLevel(null)} style={{ background: '#fff', border: '2px solid #E5E5E5', borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#AFAFAF', cursor: 'pointer' }}>
           <ArrowLeft size={24} />
         </button>
-        <div style={{ background: '#fff', border: '2px solid #E5E5E5', borderRadius: '999px', padding: '6px 16px', fontWeight: 800, color: '#FF9600' }}>
-          Tahap {selectedLevel} 
-          <span style={{ color: '#AFAFAF', marginLeft: '8px', fontSize: '0.9rem' }}>{currentIndex + 1}/{currentLevelData.length}</span>
+
+        {/* Script Buttons */}
+        <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', flex: 1 }}>
+          {SCRIPTS.map(script => (
+            <button
+              key={script.key}
+              onClick={() => { playHoverSound(); setScriptType(script.key); setActiveSyllable(null); setShowHelp(false); }}
+              style={{
+                background: scriptType === script.key ? script.color : '#fff',
+                color: scriptType === script.key ? '#fff' : script.color,
+                border: `2px solid ${script.color}`,
+                borderRadius: '12px',
+                padding: '6px 16px',
+                fontWeight: 800,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+              }}
+            >
+              {script.label}
+            </button>
+          ))}
         </div>
-        <button onClick={toggleScript} style={{ background: scriptType === 'JAWI' ? '#CE82FF' : scriptType === 'ENG' ? '#FF9600' : '#1CB0F6', border: 'none', borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', cursor: 'pointer', fontWeight: 800, fontSize: '0.8rem', boxShadow: '0 4px 0 rgba(0,0,0,0.1)' }}>
-          {scriptType}
-        </button>
+
+        <div style={{ background: '#fff', border: '2px solid #E5E5E5', borderRadius: '999px', padding: '6px 16px', fontWeight: 800, color: '#FF9600', fontSize: '0.9rem' }}>
+          Tahap {selectedLevel} {currentIndex + 1}/{currentLevelData.length}
+        </div>
       </div>
 
       {/* Main Card */}
