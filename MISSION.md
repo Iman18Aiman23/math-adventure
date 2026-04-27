@@ -190,4 +190,6 @@
   - [x] Fixed carry position to display in left column (i-1) not same column (i)
   - [x] Added focus movement to left column after pressing Enter on answer field
   - [x] Added arrow key navigation (← → keys) to move between answer columns
-  - [x] Verified: Production build passes (vite build — 10.04s, 0 errors).
+  - [x] Applied same multi-digit input (slice(0,2)) to multiplication partial products & carries
+  - [x] Applied arrow key navigation to all multiplication input handlers (partial1, partial2, carries)
+  - [x] Verified: Production build passes (vite build — 11.31s, 0 errors).
