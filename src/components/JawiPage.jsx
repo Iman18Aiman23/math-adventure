@@ -189,58 +189,50 @@ export default function JawiPage({ onBack, onHome, language }) {
                             )}
 
                             {/* Navigation Buttons */}
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%', marginTop: '1.5rem', borderTop: '2px solid #eee', paddingTop: '1rem' }}>
+                            <div style={{ display: 'flex', gap: '0.5rem', width: '100%', marginTop: '1.5rem', borderTop: '2px solid #eee', paddingTop: '1rem' }}>
                                 <button
                                     onClick={handlePrevAlphabet}
-                                    className="btn-primary"
                                     style={{
-                                        flex: 1,
-                                        padding: '0.6rem',
-                                        background: '#f0f0f0',
-                                        color: '#333',
-                                        border: 'none',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        gap: '0.25rem',
-                                        fontSize: '0.9rem',
-                                        borderRadius: '0.75rem'
+                                        flex: 1, padding: '0.8rem', borderRadius: '12px', border: 'none',
+                                        background: '#fff', color: '#CE82FF', fontWeight: 800, fontSize: '0.9rem',
+                                        cursor: 'pointer', boxShadow: '0 4px 0 #E5E5E5',
+                                        transition: 'transform 0.1s, borderColor 0.2s',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.25rem'
                                     }}
+                                    onMouseDown={e => e.currentTarget.style.transform = 'translateY(2px)'}
+                                    onMouseUp={e => e.currentTarget.style.transform = 'translateY(0)'}
+                                    onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
                                 >
                                     <ChevronLeft size={16} /> {t.prev}
                                 </button>
 
                                 <button
-                                    className="btn-primary"
                                     onClick={() => setSelectedAlphabet(null)}
                                     style={{
-                                        flex: 1.5,
-                                        padding: '0.6rem',
-                                        background: '#9D4EDD',
-                                        border: 'none',
-                                        fontSize: '0.9rem',
-                                        borderRadius: '0.75rem'
+                                        flex: 1.5, padding: '0.8rem', borderRadius: '12px', border: 'none',
+                                        background: '#CE82FF', color: '#fff', fontWeight: 800, fontSize: '0.9rem',
+                                        cursor: 'pointer', boxShadow: '0 4px 0 #A451E0',
+                                        transition: 'transform 0.1s, borderColor 0.2s'
                                     }}
+                                    onMouseDown={e => e.currentTarget.style.transform = 'translateY(2px)'}
+                                    onMouseUp={e => e.currentTarget.style.transform = 'translateY(0)'}
+                                    onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
                                 >
                                     {t.close}
                                 </button>
 
                                 <button
                                     onClick={handleNextAlphabet}
-                                    className="btn-primary"
                                     style={{
-                                        flex: 1,
-                                        padding: '0.6rem',
-                                        background: '#f0f0f0',
-                                        color: '#333',
-                                        border: 'none',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        gap: '0.25rem',
-                                        fontSize: '0.9rem',
-                                        borderRadius: '0.75rem'
+                                        flex: 1, padding: '0.8rem', borderRadius: '12px', border: 'none',
+                                        background: '#fff', color: '#CE82FF', fontWeight: 800, fontSize: '0.9rem',
+                                        cursor: 'pointer', boxShadow: '0 4px 0 #E5E5E5',
+                                        transition: 'transform 0.1s, borderColor 0.2s',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.25rem'
                                     }}
+                                    onMouseDown={e => e.currentTarget.style.transform = 'translateY(2px)'}
+                                    onMouseUp={e => e.currentTarget.style.transform = 'translateY(0)'}
+                                    onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
                                 >
                                     {t.next} <ChevronRight size={16} />
                                 </button>
@@ -297,18 +289,25 @@ export default function JawiPage({ onBack, onHome, language }) {
                     ].map((item, i) => (
                         <button
                             key={item.mode}
-                            className="duo-lesson-row fade-in"
+                            className="fade-in"
                             onClick={() => setMode(item.mode)}
-                            style={{ animationDelay: `${i * 0.06}s` }}
+                            style={{
+                                display: 'flex', alignItems: 'center', padding: '1rem',
+                                background: '#fff', border: '2px solid #E5E5E5', borderRadius: '16px',
+                                cursor: 'pointer', transition: 'transform 0.1s, borderColor 0.2s',
+                                boxShadow: '0 4px 0 #E5E5E5', textAlign: 'left',
+                                gap: '1rem', animationDelay: `${i * 0.06}s`,
+                                width: '100%'
+                            }}
                         >
-                            <div className="duo-lesson-icon" style={{ background: item.iconBg }}>
+                            <div style={{ background: item.iconBg, borderRadius: '50%', width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', flexShrink: 0 }}>
                                 {item.emoji}
                             </div>
-                            <div className="duo-lesson-info">
-                                <div className="duo-lesson-title" style={{ color: item.color }}>{item.title}</div>
-                                <div className="duo-lesson-desc">{item.desc}</div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ fontSize: '1rem', fontWeight: 800, color: item.color, marginBottom: '2px' }}>{item.title}</div>
+                                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#777', lineHeight: 1.3 }}>{item.desc}</div>
                             </div>
-                            <div className="duo-lesson-arrow">›</div>
+                            <div style={{ fontSize: '1.2rem', color: '#AFAFAF', flexShrink: 0 }}>›</div>
                         </button>
                     ))}
                 </div>
