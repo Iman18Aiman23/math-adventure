@@ -451,6 +451,26 @@ export default function ColumnMathGame({ onBack, language }) {
       submitAnswer();
       return;
     }
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      // Move focus to left column (i-1)
+      if (i > 0) {
+        setActiveIdx(i - 1);
+        setActiveSection('answer');
+        inputRefs.current[i - 1]?.focus();
+      }
+      return;
+    }
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      // Move focus to right column (i+1)
+      if (i < inputDigits.length - 1) {
+        setActiveIdx(i + 1);
+        setActiveSection('answer');
+        inputRefs.current[i + 1]?.focus();
+      }
+      return;
+    }
     if (e.key === 'Backspace' || e.key === 'Delete') {
       e.preventDefault();
       const digits = [...inputDigits];
