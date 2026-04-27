@@ -511,27 +511,34 @@ export default function ColumnMathGame({ onBack, language }) {
   const handlePartial1Change = (i, rawValue) => {
     if (status !== 'playing' || !problem.hasPartials) return;
     const cleaned = rawValue.replace(/[^0-9]/g, '');
-    const digit = cleaned.slice(-1);
+    const limited = cleaned.slice(0, 2);
     const inputs = [...partial1Inputs];
-    inputs[i] = digit;
+    inputs[i] = limited;
     setPartial1Inputs(inputs);
-    if (!digit) return;
-    const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
-    const leftmost = ml - String(problem.partial1).length;
-    if (i > leftmost) {
-      setActivePartial1Idx(i - 1);
-    } else {
-      setActiveSection('partial1Carry');
-      setActivePartial1CarryIdx(ml - 2);
-    }
   };
 
   const handlePartial1KeyDown = (i, e) => {
     if (status !== 'playing') return;
+    const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
     if (e.key === 'Enter') { e.preventDefault(); submitAnswer(); return; }
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      if (i > 0) {
+        setActivePartial1Idx(i - 1);
+        partial1Refs.current[i - 1]?.focus();
+      }
+      return;
+    }
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      if (i < ml - 1) {
+        setActivePartial1Idx(i + 1);
+        partial1Refs.current[i + 1]?.focus();
+      }
+      return;
+    }
     if (e.key === 'Backspace' || e.key === 'Delete') {
       e.preventDefault();
-      const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
       const inputs = [...partial1Inputs];
       if (inputs[i] !== '') {
         inputs[i] = '';
@@ -547,28 +554,34 @@ export default function ColumnMathGame({ onBack, language }) {
   const handlePartial2Change = (i, rawValue) => {
     if (status !== 'playing' || !problem.hasPartials) return;
     const cleaned = rawValue.replace(/[^0-9]/g, '');
-    const digit = cleaned.slice(-1);
+    const limited = cleaned.slice(0, 2);
     const inputs = [...partial2Inputs];
-    inputs[i] = digit;
+    inputs[i] = limited;
     setPartial2Inputs(inputs);
-    if (!digit) return;
-    const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
-    const N2 = String(problem.partial2).length;
-    const leftmost = ml - N2 - 1;
-    if (i > leftmost) {
-      setActivePartial2Idx(i - 1);
-    } else {
-      setActiveSection('partial2Carry');
-      setActivePartial2CarryIdx(ml - N2 - 2);
-    }
   };
 
   const handlePartial2KeyDown = (i, e) => {
     if (status !== 'playing') return;
+    const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
     if (e.key === 'Enter') { e.preventDefault(); submitAnswer(); return; }
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      if (i > 0) {
+        setActivePartial2Idx(i - 1);
+        partial2Refs.current[i - 1]?.focus();
+      }
+      return;
+    }
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      if (i < ml - 1) {
+        setActivePartial2Idx(i + 1);
+        partial2Refs.current[i + 1]?.focus();
+      }
+      return;
+    }
     if (e.key === 'Backspace' || e.key === 'Delete') {
       e.preventDefault();
-      const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
       const inputs = [...partial2Inputs];
       if (inputs[i] !== '') {
         inputs[i] = '';
@@ -584,24 +597,32 @@ export default function ColumnMathGame({ onBack, language }) {
   const handlePartial1CarryChange = (i, rawValue) => {
     if (status !== 'playing' || !problem.hasPartials) return;
     const cleaned = rawValue.replace(/[^0-9]/g, '');
-    const digit = cleaned.slice(-1);
+    const limited = cleaned.slice(0, 2);
     const inputs = [...partial1CarryInputs];
-    inputs[i] = digit;
+    inputs[i] = limited;
     setPartial1CarryInputs(inputs);
-    if (!digit) return;
-    const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
-    const N1 = String(problem.partial1).length;
-    const leftmost = ml - N1;
-    if (i > leftmost) {
-      setActivePartial1CarryIdx(i - 1);
-    } else {
-      setActiveSection('partial2');
-      setActivePartial2Idx(ml - 2);
-    }
   };
 
   const handlePartial1CarryKeyDown = (i, e) => {
     if (status !== 'playing') return;
+    if (e.key === 'Enter') { e.preventDefault(); submitAnswer(); return; }
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      if (i > 0) {
+        setActivePartial1CarryIdx(i - 1);
+        partial1CarryRefs.current[i - 1]?.focus();
+      }
+      return;
+    }
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
+      if (i < ml - 1) {
+        setActivePartial1CarryIdx(i + 1);
+        partial1CarryRefs.current[i + 1]?.focus();
+      }
+      return;
+    }
     if (e.key === 'Backspace') {
       e.preventDefault();
       const inputs = [...partial1CarryInputs];
@@ -619,24 +640,32 @@ export default function ColumnMathGame({ onBack, language }) {
   const handlePartial2CarryChange = (i, rawValue) => {
     if (status !== 'playing' || !problem.hasPartials) return;
     const cleaned = rawValue.replace(/[^0-9]/g, '');
-    const digit = cleaned.slice(-1);
+    const limited = cleaned.slice(0, 2);
     const inputs = [...partial2CarryInputs];
-    inputs[i] = digit;
+    inputs[i] = limited;
     setPartial2CarryInputs(inputs);
-    if (!digit) return;
-    const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
-    const N2 = String(problem.partial2).length;
-    const leftmost = ml - N2 - 1;
-    if (i > leftmost) {
-      setActivePartial2CarryIdx(i - 1);
-    } else {
-      setActiveSection('answer');
-      setActiveIdx(ml - 1);
-    }
   };
 
   const handlePartial2CarryKeyDown = (i, e) => {
     if (status !== 'playing') return;
+    if (e.key === 'Enter') { e.preventDefault(); submitAnswer(); return; }
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      if (i > 0) {
+        setActivePartial2CarryIdx(i - 1);
+        partial2CarryRefs.current[i - 1]?.focus();
+      }
+      return;
+    }
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
+      if (i < ml - 1) {
+        setActivePartial2CarryIdx(i + 1);
+        partial2CarryRefs.current[i + 1]?.focus();
+      }
+      return;
+    }
     if (e.key === 'Backspace') {
       e.preventDefault();
       const inputs = [...partial2CarryInputs];
