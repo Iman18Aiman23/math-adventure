@@ -190,6 +190,7 @@ export default function ColumnMathGame({ onBack, language }) {
   const [status,          setStatus]          = useState('playing');
   const [score,           setScore]           = useState(0);
   const [streak,          setStreak]          = useState(0);
+  const [totalAnswered,   setTotalAnswered]   = useState(0);
   const [showStreak,      setShowStreak]      = useState(false);
   const [userStruckRow,    setUserStruckRow]    = useState([]);
   const [userBorrowedTo,   setUserBorrowedTo]   = useState([]);
@@ -210,6 +211,7 @@ export default function ColumnMathGame({ onBack, language }) {
   const partial2Refs         = useRef([]);
   const partial1CarryRefs    = useRef([]);
   const partial2CarryRefs    = useRef([]);
+  const feedbackTimer        = useRef(null);
 
   const needsBorrowAt = (i) => {
     if (!problem || problem.op !== '-') return false;
@@ -274,6 +276,11 @@ export default function ColumnMathGame({ onBack, language }) {
 
   useEffect(() => { newProblem(); }, [newProblem]);
 
+  // Cleanup feedback timer on unmount
+  useEffect(() => {
+    return () => { if (feedbackTimer.current) clearTimeout(feedbackTimer.current); };
+  }, []);
+
   // Focus the active input whenever section or index changes
   useEffect(() => {
     if (status !== 'playing') return;
@@ -313,6 +320,7 @@ export default function ColumnMathGame({ onBack, language }) {
     if (correct) {
       setStatus('correct');
       setScore(s => s + 10);
+      setTotalAnswered(t => t + 1);
       const newStreak = streak + 1;
       setStreak(newStreak);
       if (newStreak % STREAK_MILESTONE === 0) {
@@ -323,13 +331,19 @@ export default function ColumnMathGame({ onBack, language }) {
         playSound('correct');
         confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
       }
+
+      // Auto-advance after short delay
+      feedbackTimer.current = setTimeout(() => {
+        newProblem();
+      }, 1200);
     } else {
       setStatus('wrong');
       setStreak(0);
+      setTotalAnswered(t => t + 1);
       playSound('wrong');
       if (navigator.vibrate) navigator.vibrate([60, 30, 60]);
     }
-  }, [problem, streak, partial1Inputs, partial2Inputs]);
+  }, [problem, streak, partial1Inputs, partial2Inputs, newProblem]);
 
   const submitAnswer = () => {
     if (status !== 'playing') return;
@@ -1172,23 +1186,19 @@ export default function ColumnMathGame({ onBack, language }) {
           );
         })()}
 
-        {/* Feedback banner + Next button */}
-        {status !== 'playing' && (
+        {/* Feedback banner (wrong answer only) */}
+        {status === 'wrong' && (
           <>
             <div className="cmg-banner" style={{
               display: 'flex', alignItems: 'center', gap: '0.55rem',
               fontWeight: 800, fontSize: '1rem', padding: '0.7rem 1.4rem', borderRadius: '14px',
-              color:      status === 'correct' ? '#2d8a00' : '#c0392b',
-              background: status === 'correct' ? '#EFFFEA' : '#FFEBEB',
-              border: `2px solid ${status === 'correct' ? '#58CC02' : '#FF4B4B'}`,
-              borderBottom: `4px solid ${status === 'correct' ? '#46A302' : '#CC0000'}`,
+              color: '#c0392b',
+              background: '#FFEBEB',
+              border: '2px solid #FF4B4B',
+              borderBottom: '4px solid #CC0000',
             }}>
-              <span style={{ fontSize: '1.4rem' }}>{status === 'correct' ? '🎉' : '😅'}</span>
-              <span>
-                {status === 'correct'
-                  ? (bm ? 'Hebat! Jawapan anda betul.' : 'Awesome! Your answer is correct.')
-                  : (bm ? `Jawapan betul ialah ${problem.answer}` : `Correct answer is ${problem.answer}`)}
-              </span>
+              <span style={{ fontSize: '1.4rem' }}>😅</span>
+              <span>{bm ? `Jawapan betul ialah ${problem.answer}` : `Correct answer is ${problem.answer}`}</span>
             </div>
             <button onClick={newProblem} className="cmg-btn" style={{
               padding: isDesktop ? '0.75rem 2.4rem' : '1rem 2.6rem', background: '#1CB0F6', color: '#fff',
@@ -1196,12 +1206,54 @@ export default function ColumnMathGame({ onBack, language }) {
               borderRadius: '16px', border: 'none', borderBottom: '4px solid #0E8FD0', cursor: 'pointer',
               display: 'inline-flex', alignItems: 'center', gap: '0.5rem', minWidth: '200px', justifyContent: 'center',
             }}>
-              <span>{bm ? 'Soalan Seterusnya' : 'Next Question'}</span>
+              <span>{bm ? 'Cuba Lagi' : 'Try Again'}</span>
               <span style={{ fontSize: '1.1rem' }}>→</span>
             </button>
           </>
         )}
 
+      </div>
+
+      {/* Footer stats bar */}
+      <div style={{
+        background: '#fff', borderTop: '2px solid #E5E5E5', padding: '0.75rem 1rem',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem',
+        flexShrink: 0, paddingBottom: `calc(0.75rem + ${0}px)`,
+      }}>
+        {/* Answered count */}
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '6px',
+          padding: '6px 12px', background: '#F0FFF0', borderRadius: '12px',
+          fontWeight: 900, fontSize: '0.9rem', color: '#2d8a00',
+          border: '1.5px solid #58CC02',
+        }}>
+          <span style={{ fontSize: '1rem' }}>✅</span>
+          <span>{totalAnswered}{bm ? ' dijawab' : ' answered'}</span>
+        </div>
+
+        {/* Level progress */}
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '8px',
+          flex: 1, minWidth: '150px',
+        }}>
+          <span style={{ fontSize: '1rem', fontWeight: 800 }}>🏆</span>
+          <div style={{
+            flex: 1, height: '8px', background: '#E5E5E5', borderRadius: '4px',
+            overflow: 'hidden', position: 'relative',
+          }}>
+            <div style={{
+              height: '100%', background: 'linear-gradient(90deg, #58CC02, #FFC800)',
+              width: `${Math.min((totalAnswered / 10) * 100, 100)}%`,
+              transition: 'width 0.4s ease',
+            }} />
+          </div>
+          <span style={{
+            fontSize: '0.85rem', fontWeight: 800, color: '#AFAFAF',
+            minWidth: '40px', textAlign: 'right',
+          }}>
+            {Math.min(totalAnswered, 10)}/10
+          </span>
+        </div>
       </div>
     </div>
   );
