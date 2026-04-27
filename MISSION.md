@@ -192,4 +192,9 @@
   - [x] Added arrow key navigation (← → keys) to move between answer columns
   - [x] Applied same multi-digit input (slice(0,2)) to multiplication partial products & carries
   - [x] Applied arrow key navigation to all multiplication input handlers (partial1, partial2, carries)
-  - [x] Verified: Production build passes (vite build — 11.31s, 0 errors).
+  - [x] Added automatic carry logic to partial products:
+    - [x] processPartial1CarryLogic: splits 2-digit values (e.g., "56" → "6" + "5" carry)
+    - [x] processPartial2CarryLogic: splits 2-digit values with carry to upper field
+    - [x] onBlur and Enter key trigger carry processing
+    - [x] Focus moves left (i-1) after pressing Enter
+  - [x] Verified: Production build passes (vite build — 9.38s, 0 errors).
