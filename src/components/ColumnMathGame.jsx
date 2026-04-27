@@ -418,9 +418,9 @@ export default function ColumnMathGame({ onBack, language }) {
       digits[i] = ones;
       setInputDigits(digits);
 
-      // Set the tens digit in the upper carry field
+      // Set the tens digit in the upper carry field (left column)
       const topInputs = [...topRowInputs];
-      topInputs[i] = tens;
+      topInputs[i - 1] = tens;
       setTopRowInputs(topInputs);
 
       setLockMessage('');
