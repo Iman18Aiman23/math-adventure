@@ -637,7 +637,7 @@ export default function ColumnMathGame({ onBack, language }) {
   const { p1Carries, p2Carries, addCarries } = computeMultiplicationInfo(problem, maxLen);
   const hasTopRow = topRow.some((v, i) => v !== null && !(p1[i] === ' ' && p2[i] === ' '));
   const showTopRow = problem.op === '+'
-    ? hasTopRow && inputDigits.some(d => d !== '')
+    ? hasTopRow && topRowInputs.some(d => d !== '' && d !== undefined)
     : problem.op === '-'
       ? (userStruckRow.some(v => v) || userBorrowedTo.some(v => v))
       : false;
