@@ -188,4 +188,5 @@
   - [x] Fixed handleAnswerChange to use slice(0, 2) for displaying full typed value while user types
   - [x] Fixed carry field visibility to only show after blur/Enter (not while typing)
   - [x] Fixed carry position to display in left column (i-1) not same column (i)
-  - [x] Verified: Production build passes (vite build — 9.49s, 0 errors).
+  - [x] Added focus movement to left column after pressing Enter on answer field
+  - [x] Verified: Production build passes (vite build — 10.54s, 0 errors).
