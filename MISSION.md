@@ -143,7 +143,7 @@
   - [x] **Verified:** Both pages now have consistent header styling and true full-width layouts without gaps.
   - [x] Verified: Production build passes (vite build — 9.85s, 0 errors).
 
-- [x] Phase 12: Standardize ReadingPage (Tahap 3 & 4) UI to Match Tahap 2
+- [x] Phase 12: Standardize ReadingPage (Tahap 3 & 4) UI to Match Tahap 2 Completely
   - [x] Add SCRIPTS constant with RUMI | ENG | JAWI button config to ReadingPage.
   - [x] Replace single script toggle button with three separate SCRIPTS buttons.
   - [x] Match button styling from KVLearningPage/KVKLearningPage:
@@ -151,5 +151,10 @@
     - [x] ENG: Orange (#FF9600), light orange background (#FFF0CC)
     - [x] JAWI: Purple (#CE82FF), light purple background (#EDD9FF)
   - [x] Update header layout: Back | Scripts | Progress indicator
+  - [x] **Update Flashcard Box Shadow**: Changed from gray (#E5E5E5) to orange (#FFD699) to match Tahap 2 design.
+  - [x] **Redesign Footer Navigation**:
+    - [x] Left: Arrow button (<) - white with gray shadow
+    - [x] Middle: "Dengar" (Listen) button - orange outline, white background, orange shadow
+    - [x] Right: "Seterusnya" (Next) button - solid orange with darker shadow
   - [x] Maintain playHoverSound feedback on button clicks.
-  - [x] Verified: Production build passes (vite build — 10.74s, 0 errors).
+  - [x] Verified: Production build passes (vite build — 12.07s, 0 errors).

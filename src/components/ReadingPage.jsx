@@ -183,8 +183,8 @@ export default function ReadingPage({ onBack, language }) {
         
         {/* Flashcard Box */}
         <div style={{
-          width: '100%', maxWidth: '400px', background: '#fff', borderRadius: '24px', 
-          boxShadow: '0 8px 0 #E5E5E5', padding: '2.5rem 1.5rem', position: 'relative',
+          width: '100%', maxWidth: '400px', background: '#fff', borderRadius: '24px',
+          boxShadow: '0 8px 0 #FFD699', padding: '2.5rem 1.5rem', position: 'relative',
           display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '320px', justifyContent: 'center'
         }}>
           
@@ -304,20 +304,51 @@ export default function ReadingPage({ onBack, language }) {
       </div>
 
       {/* Navigation Controls */}
-      <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-        <button 
+      <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem', alignItems: 'center' }}>
+        {/* Previous Button */}
+        <button
           onClick={handlePrev}
           disabled={currentIndex === 0}
-          style={{ flex: 1, padding: '1.1rem', borderRadius: '16px', border: 'none', background: currentIndex === 0 ? '#E5E5E5' : '#fff', color: currentIndex === 0 ? '#AFAFAF' : '#1CB0F6', fontWeight: 800, fontSize: '1.1rem', cursor: currentIndex === 0 ? 'not-allowed' : 'pointer', boxShadow: currentIndex === 0 ? 'none' : '0 4px 0 #E5E5E5' }}
+          style={{
+            width: '44px', height: '44px', borderRadius: '12px', border: 'none',
+            background: currentIndex === 0 ? '#E5E5E5' : '#fff',
+            color: currentIndex === 0 ? '#AFAFAF' : '#AFAFAF',
+            fontWeight: 900, fontSize: '1.2rem', cursor: currentIndex === 0 ? 'not-allowed' : 'pointer',
+            boxShadow: currentIndex === 0 ? 'none' : '0 4px 0 #E5E5E5',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexShrink: 0
+          }}
         >
-          {language === 'bm' ? 'SEBELUM' : 'PREV'}
+          {'<'}
         </button>
-        <button 
+
+        {/* Listen Button */}
+        <button
+          onClick={handleVolumeClick}
+          style={{
+            flex: 1, padding: '0.9rem 1.2rem', borderRadius: '16px', border: '2px solid #FF9600',
+            background: '#fff', color: '#FF9600', fontWeight: 900, fontSize: '1rem',
+            cursor: 'pointer', boxShadow: '0 4px 0 #FFB84D',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
+          }}
+        >
+          <Volume2 size={20} />
+          {language === 'bm' ? 'Dengar' : 'Listen'}
+        </button>
+
+        {/* Next Button */}
+        <button
           onClick={handleNext}
           disabled={currentIndex === currentLevelData.length - 1}
-          style={{ flex: 1, padding: '1.1rem', borderRadius: '16px', border: 'none', background: currentIndex === currentLevelData.length - 1 ? '#E5E5E5' : '#58CC02', color: '#fff', fontWeight: 800, fontSize: '1.1rem', cursor: currentIndex === currentLevelData.length - 1 ? 'not-allowed' : 'pointer', boxShadow: currentIndex === currentLevelData.length - 1 ? 'none' : '0 4px 0 #58A700' }}
+          style={{
+            flex: 1, padding: '0.9rem 1.2rem', borderRadius: '16px', border: 'none',
+            background: currentIndex === currentLevelData.length - 1 ? '#E5E5E5' : '#FF9600',
+            color: '#fff', fontWeight: 900, fontSize: '1rem',
+            cursor: currentIndex === currentLevelData.length - 1 ? 'not-allowed' : 'pointer',
+            boxShadow: currentIndex === currentLevelData.length - 1 ? 'none' : '0 4px 0 #D47A00'
+          }}
         >
-          {language === 'bm' ? 'SETERUSNYA' : 'NEXT'}
+          {language === 'bm' ? 'Seterusnya' : 'Next'} {'>'}
         </button>
       </div>
 
