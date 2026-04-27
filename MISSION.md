@@ -185,4 +185,5 @@
     - [x] Top row (carry fields) only displays once user enters value in answer field
     - [x] Fixed hasCarry condition to show upper field when automatic carry is set
   - [x] Example: User enters 13 → upper field displays [1], answer field shows [3]
-  - [x] Verified: Production build passes (vite build — 10.18s, 0 errors).
+  - [x] Fixed handleAnswerChange to use slice(0, 2) for displaying full typed value while user types
+  - [x] Verified: Production build passes (vite build — 8.91s, 0 errors).
