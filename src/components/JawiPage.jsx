@@ -54,6 +54,7 @@ export default function JawiPage({ onBack, onHome, language }) {
 
     if (mode === 'alphabet') {
         const COLORS = ['#FF6B6B', '#4ECDC4', '#FFD93D', '#FF8C42', '#9D4EDD', '#6BCB77', '#A06CD5', '#EF476F', '#4361EE', '#F72585', '#4CC9F0'];
+        const BG_COLORS = ['#FFE0E0', '#D4F3F0', '#FFFAE0', '#FFE8D4', '#F3DDFF', '#E0FFD4', '#F0E0FF', '#FFE0E8', '#E8E8FF', '#FFE0F0', '#D4F4FF'];
 
         return (
             <div className="game-container fade-in">
@@ -62,18 +63,30 @@ export default function JawiPage({ onBack, onHome, language }) {
                 <div className="jawi-alphabet-grid">
                     {JAWI_ALPHABET.map((item, idx) => {
                         const color = COLORS[idx % COLORS.length];
+                        const bgColor = BG_COLORS[idx % BG_COLORS.length];
                         return (
                             <button
                                 key={idx}
-                                className="jawi-card-3d"
                                 onClick={() => setSelectedAlphabet(item)}
                                 style={{
-                                    '--hover-color': color,
-                                    borderColor: `${color}44`
+                                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                                    background: '#fff',
+                                    border: `3px solid ${bgColor}`,
+                                    borderBottom: `5px solid ${color}`,
+                                    borderRadius: '16px',
+                                    padding: '0.8rem 0.25rem',
+                                    cursor: 'pointer',
+                                    transition: 'transform 0.1s, box-shadow 0.1s',
+                                    boxShadow: '0 4px 0 #E5E5E5',
+                                    fontFamily: 'inherit',
                                 }}
+                                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 6px 0 ${color}`; }}
+                                onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 4px 0 #E5E5E5'; }}
+                                onMouseDown={e => { e.currentTarget.style.transform = 'translateY(2px)'; e.currentTarget.style.boxShadow = '0 1px 0 #E5E5E5'; }}
+                                onMouseUp={e => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
                             >
-                                <span className="jawi-text-3d" style={{ color: color }}>{item.jawi}</span>
-                                <span className="rumi-text-3d">{item.rumi}</span>
+                                <span style={{ fontSize: '2rem', fontWeight: 900, color: color, lineHeight: 1 }}>{item.jawi}</span>
+                                <span style={{ fontSize: '0.62rem', fontWeight: 700, color: '#AFAFAF', marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{item.rumi}</span>
                             </button>
                         );
                     })}
