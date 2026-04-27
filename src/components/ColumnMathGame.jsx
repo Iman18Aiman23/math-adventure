@@ -440,6 +440,14 @@ export default function ColumnMathGame({ onBack, language }) {
       e.preventDefault();
       // Process carry logic when user presses Enter
       processCarryLogic(i, inputRefs.current[i].value);
+      // Move focus to left column if not already at leftmost
+      if (i > 0) {
+        setTimeout(() => {
+          setActiveIdx(i - 1);
+          setActiveSection('answer');
+          inputRefs.current[i - 1]?.focus();
+        }, 0);
+      }
       submitAnswer();
       return;
     }
