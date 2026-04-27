@@ -930,7 +930,9 @@ export default function ColumnMathGame({ onBack, language }) {
                   const hide = p1[i] === ' ' && p2[i] === ' ';
                   const isSubBorrow = problem.op === '-' && (userStruckRow[i] || userBorrowedTo[i]);
                   const isTwoDigit = (topRowInputs[i] ?? '').length >= 2;
-                  const hasCarry = problem.op === '+' ? (val !== null && !hide) : isSubBorrow;
+                  const hasCarry = problem.op === '+'
+                    ? ((val !== null && !hide) || topRowInputs[i])
+                    : isSubBorrow;
                   const isTopActive = activeSection === 'topRow' && activeTopIdx === i && status === 'playing' && problem.op === '+';
                   const isReadonly = status !== 'playing' || problem.op === '-';
                   return (

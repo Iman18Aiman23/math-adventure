@@ -181,5 +181,8 @@
   - [x] **Trigger Points**: Carry logic triggers on:
     - [x] When user types a 2-digit value (onChange event)
     - [x] When user leaves the field (onBlur event)
-  - [x] **Upper Fields Visibility**: Already implemented — top row (carry fields) only displays once user enters value in answer field.
-  - [x] Verified: Production build passes (vite build — 10.86s, 0 errors).
+  - [x] **Upper Fields Visibility**: 
+    - [x] Top row (carry fields) only displays once user enters value in answer field
+    - [x] Fixed hasCarry condition to show upper field when automatic carry is set
+  - [x] Example: User enters 13 → upper field displays [1], answer field shows [3]
+  - [x] Verified: Production build passes (vite build — 10.18s, 0 errors).
