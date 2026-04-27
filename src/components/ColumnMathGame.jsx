@@ -377,6 +377,28 @@ export default function ColumnMathGame({ onBack, language }) {
   const handleAnswerChange = (i, rawValue) => {
     if (status !== 'playing') return;
     const cleaned = rawValue.replace(/[^0-9]/g, '');
+
+    // Handle values >= 10: split and carry
+    if (cleaned.length === 2 && parseInt(cleaned) >= 10) {
+      const value = parseInt(cleaned);
+      const ones = String(value % 10);
+      const tens = String(Math.floor(value / 10));
+
+      // Set the ones digit in the answer field
+      const digits = [...inputDigits];
+      digits[i] = ones;
+      setInputDigits(digits);
+
+      // Set the tens digit in the upper carry field
+      const topInputs = [...topRowInputs];
+      topInputs[i] = tens;
+      setTopRowInputs(topInputs);
+
+      setLockMessage('');
+      if (i > 0) setActiveIdx(i - 1);
+      return;
+    }
+
     const digit = cleaned.slice(-1); // '' if user cleared the field
     const digits = [...inputDigits];
     digits[i] = digit;
@@ -1106,7 +1128,9 @@ export default function ColumnMathGame({ onBack, language }) {
                   <input
                     key={i} ref={el => inputRefs.current[i] = el}
                     type="text" inputMode="numeric" maxLength={2} value={d} readOnly={status !== 'playing'}
-                    onChange={e => handleAnswerChange(i, e.target.value)} onKeyDown={e => handleAnswerKeyDown(i, e)}
+                    onChange={e => handleAnswerChange(i, e.target.value)}
+                    onKeyDown={e => handleAnswerKeyDown(i, e)}
+                    onBlur={e => { const val = e.target.value.replace(/[^0-9]/g, ''); if (val.length === 2 && parseInt(val) >= 10) { handleAnswerChange(i, val); } }}
                     onFocus={() => { if (status === 'playing') { setActiveSection('answer'); setActiveIdx(i); } }}
                     style={{
                       width: CELL_W - 6, height: ANS_H, margin: '0 3px', boxSizing: 'border-box',

@@ -172,3 +172,14 @@
     - [x] Progress indicator text color
   - [x] Each level automatically applies its own color scheme from the Select Level screen.
   - [x] Verified: Production build passes (vite build — 11.29s, 0 errors).
+
+- [x] Phase 14: Enhanced Practice Problems - Multi-digit Entry with Automatic Carry
+  - [x] **Accept Values >= 10**: Answer fields now accept 2-digit values (maxLength: 2).
+  - [x] **Automatic Carry Logic**: When user enters a value >= 10:
+    - [x] Ones digit stays in the answer field (e.g., 10 → 0 stays, 21 → 1 stays)
+    - [x] Tens digit automatically carries to upper field (e.g., 10 → 1 carries, 21 → 2 carries)
+  - [x] **Trigger Points**: Carry logic triggers on:
+    - [x] When user types a 2-digit value (onChange event)
+    - [x] When user leaves the field (onBlur event)
+  - [x] **Upper Fields Visibility**: Already implemented — top row (carry fields) only displays once user enters value in answer field.
+  - [x] Verified: Production build passes (vite build — 10.86s, 0 errors).
