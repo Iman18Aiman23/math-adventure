@@ -1550,6 +1550,7 @@ button {
 
   /* Full-bleed exceptions (saga map, game pages) */
   .view-container > .game-container,
+  .view-container > .ops-game-shell,
   .view-container > div[style] {
     max-width: 100%;
   }
@@ -2104,14 +2105,12 @@ button {
   margin-top: 0.5rem; 
 } 
  
-.ops-answer-zone { 
-  padding: 0 1.5rem 1.5rem; 
-  width: 100%; 
-  max-width: 600px; 
-  margin: 0 auto; 
-  display: flex; 
-  flex-direction: column; 
-  gap: 1rem; 
+.ops-answer-zone {
+  padding: 0 1.5rem 1.5rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 } 
  
 .ops-choices-grid { 

@@ -230,24 +230,25 @@ export default function MathOperationsGame({
       )}
 
       {/* ── Header ── */}
-      <div className="ops-game-header" style={{ borderBottomColor: accentColor + '33' }}>
-        <button onClick={onBack} className="ops-header-btn">
-          <X size={22} color="#AFAFAF" />
+      <div style={{ background: '#fff', borderBottom: '2px solid #E5E5E5', padding: '0 0.85rem', height: '60px', display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
+        <button onClick={onBack} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center', padding: '6px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>
+          <X size={22} />
         </button>
-
-        {/* Streak badge */}
-        <div className="ops-streak-badge" style={{ background: streak >= 3 ? '#FFF3CD' : '#f7f7f7', borderColor: streak >= 3 ? '#FFC800' : '#E5E5E5' }}>
-          <span style={{ fontSize: '1.1rem' }}>🔥</span>
-          <span style={{ fontWeight: 900, color: streak >= 3 ? '#CC7700' : '#AFAFAF', fontSize: '1rem' }}>{streak}</span>
-        </div>
-
-        {/* Op + difficulty pill */}
-        <div className="ops-mode-pill" style={{ background: accentColor + '15', border: `2px solid ${accentColor}40` }}>
-          <span>{opMeta.emoji}</span>
-          <span style={{ color: accentColor, fontWeight: 800, fontSize: '0.78rem' }}>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+          <span style={{ fontSize: '1.15rem' }}>{opMeta.emoji}</span>
+          <span style={{ fontWeight: 900, fontSize: '0.98rem', color: '#3C3C3C', letterSpacing: '0.01em' }}>
             {language === 'bm' ? opMeta.label : opMeta.labelEn}
           </span>
-          <span style={{ color: '#AFAFAF', fontSize: '0.7rem', fontWeight: 700 }}>· {diffMeta.emoji}</span>
+        </div>
+        <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFF6D6', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#B58800', border: '1.5px solid #FFE08A' }}>
+            <span style={{ fontSize: '0.85rem' }}>⭐</span>
+            <span>{Math.floor(streak / STREAK_MILESTONE) * 10}</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFEAD0', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#D9610B', border: '1.5px solid #FFC081' }}>
+            <span style={{ fontSize: '0.85rem' }}>🔥</span>
+            <span>{streak}</span>
+          </div>
         </div>
       </div>
 

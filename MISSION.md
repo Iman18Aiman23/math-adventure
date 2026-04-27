@@ -101,3 +101,44 @@
   - [x] **Verified** — Numbers 1-100: Repeat/Skip/Tap-to-Speak buttons all visible on desktop 100% zoom.
   - [x] **Verified** — Jawi Suku Kata, ClockGame, MonthLearning — all content fits within viewport.
   - [x] **Verified** — Mobile layout unaffected (bottom tab bar, single-column, scrolling all work).
+
+- [x] Phase 8: Math Operations Carry Logic & Layout Fixes
+  - [x] Fix submit validation to ignore empty but unnecessary carry inputs.
+  - [x] Restructure multiplication layout to position partial carry rows correctly above the problem.
+  - [x] Implement dynamic visibility for carry boxes (show only when multiplication result >= 10).
+  - [x] Implement step-by-step phased appearance for partial products, addition carries, and trailing zeros.
+
+- [x] Phase 9: Practice Problems Desktop Layout Optimization
+  - [x] Optimize sizing constants for desktop 100% zoom viewport fit.
+    - [x] Reduce CELL_W and OP_W to 48px (uniform mobile/desktop).
+    - [x] Shrink DIGIT_FS (2.4rem → 2rem desktop), ANS_FS (2.2rem → 1.8rem desktop), ANS_H (3.2rem → 2.8rem desktop).
+    - [x] Reduce carry box dimensions: TOP_W1/W2 (36/46px → 32/40px), TOP_H (34px → 30px), TOP_FS (1.1rem → 0.95rem).
+    - [x] Lower CARD_MIN to 380px on desktop (vs. 480px previously).
+  - [x] Fix progress bar to only increment on correct answers (remove `setTotalAnswered` from wrong-answer branch).
+  - [x] Align footer styling with Operasi Matematik page — use `ops-footer-stats` and `ops-stat-chip` CSS classes instead of inline styles.
+  - [x] Verified: Submit button now visible at 100% zoom without scrolling.
+  - [x] Verified: Production build passes (vite build — 11.94s, 0 errors).
+
+- [x] Phase 10: Remove Navigation Header & Restore Language Setting in Sidebar
+  - [x] Remove mobile top nav header with Quick Switch dropdown (Matematik/Belajar Sebutan/Jawi).
+  - [x] Remove desktop breadcrumb header with subject dropdown.
+  - [x] Clean up unused imports: `Map`, `ChevronDown`, `Check` from lucide-react.
+  - [x] Clean up unused state: `showQuickSwitch`.
+  - [x] Clean up unused functions: `handleQuickSwitch`.
+  - [x] Add language toggle button back to DesktopSidebar (🌐 BM/EN) with divider separator.
+  - [x] Restore `handleToggleLang` function in App.jsx.
+  - [x] Pass `onToggleLanguage` prop to DesktopSidebar.
+  - [x] Verified: Production build passes (vite build — 11.20s, 0 errors).
+
+- [x] Phase 11: Standardize Game Question Page Headers & Full-Width Layout
+  - [x] **MathOperationsGame (Operasi Matematik) Header Redesign:**
+    - [x] Standardize header to match ColumnMathGame layout: Back button | Title | Stats badges.
+    - [x] Replace 3-section layout (X | 🔥 | ➕) with new layout (X | Operation emoji + name | ⭐score 🔥streak).
+    - [x] Match ColumnMathGame styling: height 60px, padding 0 0.85rem, white background.
+    - [x] Use same badge styles for ⭐score (yellow) and 🔥streak (orange).
+  - [x] **Fix Width Constraints:**
+    - [x] Remove `max-width: 600px` and `margin: 0 auto` from `.ops-answer-zone` CSS.
+    - [x] Add `.ops-game-shell` to full-bleed exceptions in `.view-container > *` rule (set max-width: 100%).
+    - [x] Eliminates padding gap between sidebar and content area.
+  - [x] **Verified:** Both pages now have consistent header styling and true full-width layouts without gaps.
+  - [x] Verified: Production build passes (vite build — 9.85s, 0 errors).

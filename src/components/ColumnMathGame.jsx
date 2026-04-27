@@ -167,17 +167,17 @@ export default function ColumnMathGame({ onBack, language }) {
   const bm = language === 'bm';
   const isDesktop = useIsDesktop();
 
-  // Responsive sizing — question box is the focal point and gets larger on desktop
-  const CELL_W   = isDesktop ? 60 : 48;
-  const OP_W     = isDesktop ? 60 : 48;
-  const DIGIT_FS = isDesktop ? '2.4rem' : '2.4rem';
-  const ANS_FS   = isDesktop ? '2.2rem' : '2.2rem';
-  const ANS_H    = isDesktop ? '3.2rem' : '3.2rem';
-  const TOP_W1   = isDesktop ? '36px'   : '32px';
-  const TOP_W2   = isDesktop ? '46px'   : '42px';
-  const TOP_H    = isDesktop ? '34px'   : '32px';
-  const TOP_FS   = isDesktop ? '1.1rem' : '1.05rem';
-  const CARD_MIN = isDesktop ? 480      : 0;
+  // Responsive sizing — compact on desktop to fit without scrolling
+  const CELL_W   = isDesktop ? 48 : 48;
+  const OP_W     = isDesktop ? 48 : 48;
+  const DIGIT_FS = isDesktop ? '2rem' : '2.4rem';
+  const ANS_FS   = isDesktop ? '1.8rem' : '2.2rem';
+  const ANS_H    = isDesktop ? '2.8rem' : '3.2rem';
+  const TOP_W1   = isDesktop ? '32px'   : '32px';
+  const TOP_W2   = isDesktop ? '40px'   : '42px';
+  const TOP_H    = isDesktop ? '30px'   : '32px';
+  const TOP_FS   = isDesktop ? '0.95rem' : '1.05rem';
+  const CARD_MIN = isDesktop ? 380      : 0;
 
   const [difficulty,      setDifficulty]      = useState('easy');
   const [op,              setOp]              = useState('random');
@@ -339,7 +339,6 @@ export default function ColumnMathGame({ onBack, language }) {
     } else {
       setStatus('wrong');
       setStreak(0);
-      setTotalAnswered(t => t + 1);
       playSound('wrong');
       if (navigator.vibrate) navigator.vibrate([60, 30, 60]);
     }
@@ -1215,42 +1214,23 @@ export default function ColumnMathGame({ onBack, language }) {
       </div>
 
       {/* Footer stats bar */}
-      <div style={{
-        background: '#fff', borderTop: '2px solid #E5E5E5', padding: '0.75rem 1rem',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem',
-        flexShrink: 0, paddingBottom: `calc(0.75rem + ${0}px)`,
-      }}>
+      <div className="ops-footer-stats">
         {/* Answered count */}
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: '6px',
-          padding: '6px 12px', background: '#F0FFF0', borderRadius: '12px',
-          fontWeight: 900, fontSize: '0.9rem', color: '#2d8a00',
-          border: '1.5px solid #58CC02',
-        }}>
-          <span style={{ fontSize: '1rem' }}>✅</span>
-          <span>{totalAnswered}{bm ? ' dijawab' : ' answered'}</span>
+        <div className="ops-stat-chip">
+          <span>✅</span>
+          <span>{totalAnswered}</span>
+          <span style={{ color: '#AFAFAF', fontSize: '0.7rem' }}>
+            {bm ? 'dijawab' : 'answered'}
+          </span>
         </div>
 
         {/* Level progress */}
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: '8px',
-          flex: 1, minWidth: '150px',
-        }}>
-          <span style={{ fontSize: '1rem', fontWeight: 800 }}>🏆</span>
-          <div style={{
-            flex: 1, height: '8px', background: '#E5E5E5', borderRadius: '4px',
-            overflow: 'hidden', position: 'relative',
-          }}>
-            <div style={{
-              height: '100%', background: 'linear-gradient(90deg, #58CC02, #FFC800)',
-              width: `${Math.min((totalAnswered / 10) * 100, 100)}%`,
-              transition: 'width 0.4s ease',
-            }} />
+        <div className="ops-stat-chip ops-stat-chip-highlight" style={{ gap: '8px' }}>
+          <span>🏆</span>
+          <div style={{ width: '80px', height: '8px', background: 'rgba(255, 184, 0, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
+            <div style={{ width: `${Math.min((totalAnswered / 10) * 100, 100)}%`, height: '100%', background: '#FFB800', borderRadius: '4px', transition: 'width 0.3s ease-out' }} />
           </div>
-          <span style={{
-            fontSize: '0.85rem', fontWeight: 800, color: '#AFAFAF',
-            minWidth: '40px', textAlign: 'right',
-          }}>
+          <span style={{ color: '#CC7700', fontSize: '0.9rem', fontWeight: 900, minWidth: '32px', textAlign: 'right' }}>
             {Math.min(totalAnswered, 10)}/10
           </span>
         </div>
