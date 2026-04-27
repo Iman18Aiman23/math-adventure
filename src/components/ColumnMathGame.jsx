@@ -376,7 +376,36 @@ export default function ColumnMathGame({ onBack, language }) {
 
   const handleAnswerChange = (i, rawValue) => {
     if (status !== 'playing') return;
+    // Allow any numeric input - user can type 1, 2, or more digits
     const cleaned = rawValue.replace(/[^0-9]/g, '');
+
+    // Keep only up to 2 digits
+    const limited = cleaned.slice(0, 2);
+
+    const digits = [...inputDigits];
+    digits[i] = limited;
+    setInputDigits(digits);
+
+    if (!limited) {
+      setLockMessage('');
+      return;
+    }
+
+    // Only advance to next column if user has stopped typing (will be handled by onBlur)
+    setLockMessage('');
+  };
+
+  const processCarryLogic = (i, rawValue) => {
+    if (status !== 'playing') return;
+    const cleaned = rawValue.replace(/[^0-9]/g, '');
+
+    if (!cleaned) {
+      const digits = [...inputDigits];
+      digits[i] = '';
+      setInputDigits(digits);
+      setLockMessage('');
+      return;
+    }
 
     // Handle values >= 10: split and carry
     if (cleaned.length === 2 && parseInt(cleaned) >= 10) {
@@ -395,34 +424,22 @@ export default function ColumnMathGame({ onBack, language }) {
       setTopRowInputs(topInputs);
 
       setLockMessage('');
-      if (i > 0) setActiveIdx(i - 1);
       return;
     }
 
-    const digit = cleaned.slice(-1); // '' if user cleared the field
+    // Single digit or first digit only - keep as is
     const digits = [...inputDigits];
-    digits[i] = digit;
+    digits[i] = cleaned.slice(-1); // Keep only last digit for single-digit case
     setInputDigits(digits);
-
-    if (!digit) {
-      setLockMessage('');
-      return;
-    }
-
-    // Subtraction: if this column still needs a borrow, do not advance to the next column
-    if (problem.op === '-' && needsBorrowAt(i)) {
-      triggerLockMessage(i);
-      return;
-    }
-
     setLockMessage('');
-    if (i > 0) setActiveIdx(i - 1);
   };
 
   const handleAnswerKeyDown = (i, e) => {
     if (status !== 'playing') return;
     if (e.key === 'Enter') {
       e.preventDefault();
+      // Process carry logic when user presses Enter
+      processCarryLogic(i, inputRefs.current[i].value);
       submitAnswer();
       return;
     }
@@ -1132,7 +1149,7 @@ export default function ColumnMathGame({ onBack, language }) {
                     type="text" inputMode="numeric" maxLength={2} value={d} readOnly={status !== 'playing'}
                     onChange={e => handleAnswerChange(i, e.target.value)}
                     onKeyDown={e => handleAnswerKeyDown(i, e)}
-                    onBlur={e => { const val = e.target.value.replace(/[^0-9]/g, ''); if (val.length === 2 && parseInt(val) >= 10) { handleAnswerChange(i, val); } }}
+                    onBlur={e => processCarryLogic(i, e.target.value)}
                     onFocus={() => { if (status === 'playing') { setActiveSection('answer'); setActiveIdx(i); } }}
                     style={{
                       width: CELL_W - 6, height: ANS_H, margin: '0 3px', boxSizing: 'border-box',
