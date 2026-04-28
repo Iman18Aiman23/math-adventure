@@ -292,7 +292,7 @@ export default function JawiPage({ onBack, onHome, language }) {
                     {language === 'bm' ? 'PILIH AKTIVITI' : 'CHOOSE ACTIVITY'}
                 </p>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     {[
                         { mode: 'alphabet',     emoji: '🔤', iconBg: '#EDD9FF', color: '#CE82FF', title: t.learnAlphabet,  desc: language === 'bm' ? 'Pelajari 36 huruf Jawi' : 'Learn 36 Jawi letters' },
                         { mode: 'syllables',    emoji: '🅰️', iconBg: '#FFF0CC', color: '#FFC800', title: t.learnSyllables, desc: language === 'bm' ? 'Suku kata KV & KVK' : 'KV & KVK syllables' },
@@ -305,22 +305,22 @@ export default function JawiPage({ onBack, onHome, language }) {
                             className="fade-in"
                             onClick={() => setMode(item.mode)}
                             style={{
-                                display: 'flex', alignItems: 'center', padding: '1rem',
-                                background: '#fff', border: '2px solid #E5E5E5', borderRadius: '16px',
+                                display: 'flex', alignItems: 'center', padding: '1.25rem',
+                                background: '#fff', border: `3px solid ${item.iconBg}`, borderRadius: '20px',
                                 cursor: 'pointer', transition: 'transform 0.1s, borderColor 0.2s',
                                 boxShadow: '0 4px 0 #E5E5E5', textAlign: 'left',
                                 gap: '1rem', animationDelay: `${i * 0.06}s`,
                                 width: '100%'
                             }}
                         >
-                            <div style={{ background: item.iconBg, borderRadius: '50%', width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', flexShrink: 0 }}>
+                            <div style={{ background: item.color, color: '#fff', borderRadius: '12px', width: '48px', height: '48px', minWidth: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: 900 }}>
                                 {item.emoji}
                             </div>
                             <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{ fontSize: '1rem', fontWeight: 800, color: item.color, marginBottom: '2px' }}>{item.title}</div>
-                                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#777', lineHeight: 1.3 }}>{item.desc}</div>
+                                <div style={{ fontSize: '1.1rem', fontWeight: 900, color: '#3C3C3C', marginBottom: '4px' }}>{item.title}</div>
+                                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#AFAFAF', lineHeight: 1.3 }}>{item.desc}</div>
                             </div>
-                            <div style={{ fontSize: '1.2rem', color: '#AFAFAF', flexShrink: 0 }}>›</div>
+                            <ChevronRight size={24} color="#AFAFAF" />
                         </button>
                     ))}
                 </div>

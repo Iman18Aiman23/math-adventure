@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import confetti from 'canvas-confetti';
-import { ArrowLeft, RefreshCw, Trophy, Home, Keyboard, Volume2, VolumeX, ArrowRight, Grid, Shuffle } from 'lucide-react';
+import { ArrowLeft, RefreshCw, Trophy, Home, Keyboard, Volume2, VolumeX, ArrowRight, Grid, Shuffle, X } from 'lucide-react';
 import clsx from 'clsx';
 import { JAWI_TOPICS } from '../utils/jawiWordsData';
 import { playSound, toggleMute, getMuted } from '../utils/soundManager';
 import { LOCALIZATION } from '../utils/localization';
 import GameHeader from './GameHeader';
 import { GameStateContext } from '../App';
+
+const STREAK_MILESTONE = 5;
 
 export default function Jawi100WordsGame({ onBack, onHome, language }) {
     const t = LOCALIZATION[language].jawiGames;
@@ -268,24 +270,44 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
         : '#FF6B6B';
 
     return (
-        <div className="game-container">
-            <GameHeader
-                onBack={() => setLocalGameState('setup')}
-                onHome={onHome}
-                onToggleMute={handleToggleMute}
-                isMuted={isMuted}
-                score={score}
-                streak={streak}
-                title={t.words100Title}
-                language={language}
-            />
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#fff' }}>
+            {/* ── Header matching Practice Problems style ── */}
+            <div style={{ background: '#fff', borderBottom: '2px solid #E5E5E5', padding: '0 0.85rem', height: '60px', display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
+                <button onClick={() => setLocalGameState('setup')} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center', padding: '6px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>
+                    <X size={22} />
+                </button>
+                <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                    <span style={{ fontSize: '1.15rem' }}>🎮</span>
+                    <span style={{ fontWeight: 900, fontSize: '0.98rem', color: '#3C3C3C', letterSpacing: '0.01em' }}>
+                        {t.words100Title}
+                    </span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFF6D6', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#B58800', border: '1.5px solid #FFE08A' }}>
+                        <span style={{ fontSize: '0.85rem' }}>⭐</span>
+                        <span>{Math.floor(streak / STREAK_MILESTONE) * 10}</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFEAD0', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#D9610B', border: '1.5px solid #FFC081' }}>
+                        <span style={{ fontSize: '0.85rem' }}>🔥</span>
+                        <span>{streak}</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Content area */}
+            <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '1.25rem 1rem', gap: '1.25rem' }}>
 
             {/* Question Card */}
             <div className="question-card fade-in" style={{
                 background: topicColor || '#FF6B6B',
                 color: 'white',
                 padding: '2rem 1rem',
-                position: 'relative'
+                position: 'relative',
+                margin: '0',
+                width: '100%',
+                maxWidth: '480px',
+                boxSizing: 'border-box',
+                borderRadius: '16px'
             }}>
                 <button
                     onClick={() => setShowImage(!showImage)}
@@ -327,8 +349,8 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
             </div>
 
             {/* Typing Area */}
-            <div className="fade-in" style={{ width: '100%' }}>
-                <form onSubmit={(e) => { e.preventDefault(); handleAnswer(userAnswer); }} className="input-wrapper">
+            <div className="fade-in" style={{ width: '100%', maxWidth: '480px', padding: '0 0.5rem', boxSizing: 'border-box' }}>
+                <form onSubmit={(e) => { e.preventDefault(); handleAnswer(userAnswer); }} className="input-wrapper" style={{ padding: '0' }}>
                     <input
                         ref={inputRef}
                         type="text"
@@ -358,7 +380,7 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
 
             {/* Next Button for Wrong Answers */}
             {feedback === 'incorrect' && (
-                <div className="fade-in" style={{ marginTop: '1.5rem', textAlign: 'center', width: '100%' }}>
+                <div className="fade-in" style={{ marginTop: '0.5rem', textAlign: 'center', width: '100%', maxWidth: '480px', padding: '0 0.5rem', boxSizing: 'border-box' }}>
                     <p style={{ marginBottom: '0.75rem', color: '#FF6B6B', fontSize: '1.1rem' }}>
                         {t.incorrectLabel} <b>{currentWord.rumi}</b>.
                     </p>
@@ -371,6 +393,28 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
                     </button>
                 </div>
             )}
+
+            </div>
+
+            {/* Footer Stats matching Practice Problems style */}
+            <div className="ops-footer-stats">
+                <div className="ops-stat-chip">
+                    <span>✅</span>
+                    <span>{questionCount - 1}</span>
+                    <span style={{ color: '#AFAFAF', fontSize: '0.7rem' }}>
+                        {language === 'bm' ? 'dijawab' : 'answered'}
+                    </span>
+                </div>
+                <div className="ops-stat-chip ops-stat-chip-highlight" style={{ gap: '8px' }}>
+                    <span>🏆</span>
+                    <div style={{ width: '80px', height: '8px', background: 'rgba(204, 119, 0, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
+                        <div style={{ width: `${Math.min((streak / 10) * 100, 100)}%`, height: '100%', background: '#FFB800', borderRadius: '4px', transition: 'width 0.3s ease-out' }} />
+                    </div>
+                    <span style={{ color: '#CC7700', fontSize: '0.9rem', fontWeight: 900, minWidth: '32px', textAlign: 'right' }}>
+                        {Math.min(streak, 10)}/10
+                    </span>
+                </div>
+            </div>
 
             {/* Streak Popup */}
             {showStreakPopup && (() => {

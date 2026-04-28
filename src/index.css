@@ -2474,10 +2474,10 @@ button {
    ============================================= */
 .jawi-alphabet-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-  gap: 1.25rem;
-  padding: 1.5rem 1rem;
-  max-width: var(--content-max);
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.6rem;
+  padding: 0.5rem 1rem 1.5rem;
+  max-width: 480px;
   margin: 0 auto;
 }
 

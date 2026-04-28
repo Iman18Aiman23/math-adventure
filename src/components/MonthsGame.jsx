@@ -252,14 +252,25 @@ export default function MonthsGame({ onBack, onHome, language }) {
       )}
 
       {/* ── Header ── */}
-      <div className="ops-game-header" style={{ borderBottomColor: accentColor + '33', position: 'relative', display: 'flex', alignItems: 'center' }}>
-        <button onClick={onBack} className="ops-header-btn" style={{ position: 'relative', zIndex: 2 }}>
-          <X size={22} color="#AFAFAF" />
+      <div style={{ background: '#fff', borderBottom: '2px solid #E5E5E5', padding: '0 0.85rem', height: '60px', display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
+        <button onClick={onBack} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center', padding: '6px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>
+          <X size={22} />
         </button>
-
-        <div className="ops-streak-badge" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', background: streak >= 3 ? '#FFF3CD' : '#f7f7f7', borderColor: streak >= 3 ? '#FFC800' : '#E5E5E5' }}>
-          <span style={{ fontSize: '1.1rem' }}>🔥</span>
-          <span style={{ fontWeight: 900, color: streak >= 3 ? '#CC7700' : '#AFAFAF', fontSize: '1rem' }}>{streak}</span>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+          <span style={{ fontSize: '1.15rem' }}>🗓️</span>
+          <span style={{ fontWeight: 900, fontSize: '0.98rem', color: '#3C3C3C', letterSpacing: '0.01em' }}>
+            {t.gameTitle}
+          </span>
+        </div>
+        <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFF6D6', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#B58800', border: '1.5px solid #FFE08A' }}>
+            <span style={{ fontSize: '0.85rem' }}>⭐</span>
+            <span>{Math.min(totalAnswered, 99)}</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFEAD0', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#D9610B', border: '1.5px solid #FFC081' }}>
+            <span style={{ fontSize: '0.85rem' }}>🔥</span>
+            <span>{Math.min(streak, 99)}</span>
+          </div>
         </div>
       </div>
 
@@ -423,10 +434,10 @@ export default function MonthsGame({ onBack, onHome, language }) {
         <div className="ops-stat-chip ops-stat-chip-highlight" style={{ gap: '8px' }}>
           <span>🏆</span>
           <div style={{ width: '80px', height: '8px', background: 'rgba(204, 119, 0, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
-            <div style={{ width: `${(streak / (Math.ceil((streak + 1) / STREAK_MILESTONE) * STREAK_MILESTONE)) * 100}%`, height: '100%', background: '#FFB800', borderRadius: '4px', transition: 'width 0.3s ease-out' }} />
+            <div style={{ width: `${Math.min((streak / 10) * 100, 100)}%`, height: '100%', background: '#FFB800', borderRadius: '4px', transition: 'width 0.3s ease-out' }} />
           </div>
           <span style={{ color: '#CC7700', fontSize: '0.9rem', fontWeight: 900, minWidth: '32px', textAlign: 'right' }}>
-            {streak}/{Math.ceil((streak + 1) / STREAK_MILESTONE) * STREAK_MILESTONE}
+            {Math.min(streak, 10)}/10
           </span>
         </div>
       </div>

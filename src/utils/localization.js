@@ -52,6 +52,7 @@ export const LOCALIZATION = {
             selectGame: 'Pilih permainan anda! ✨'
         },
         monthsGame: {
+            gameTitle: 'Permainan Kuiz Bulan',
             modeNumber: '🔢 No → Nama',
             modeName: '🗓️ Nama → Islam',
             modeIslamic: '☪️ Islam → Nama',
@@ -144,6 +145,7 @@ export const LOCALIZATION = {
             howToStep3: 'Sebut jawapan anda dengan kuat!',
         },
         clockGame: {
+            gameTitle: 'Pembelajaran Masa',
             loading: 'Memuatkan Jam...',
             modeAnalogDigital: '🕒 Analog → Digital',
             modeDigitalAnalog: '🔟 Digital → Analog',
@@ -253,6 +255,7 @@ export const LOCALIZATION = {
             selectGame: 'Select your game! ✨'
         },
         monthsGame: {
+            gameTitle: 'Months Quiz',
             modeNumber: '🔢 No → Name',
             modeName: '🗓️ Name → Islamic',
             modeIslamic: '☪️ Islamic → Name',
@@ -345,6 +348,7 @@ export const LOCALIZATION = {
             howToStep3: 'Say your answer out loud!',
         },
         clockGame: {
+            gameTitle: 'Time Learning',
             loading: 'Loading Clock...',
             modeAnalogDigital: '🕒 Analog → Digital',
             modeDigitalAnalog: '🔟 Digital → Analog',

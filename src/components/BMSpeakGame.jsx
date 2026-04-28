@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ArrowLeft, RefreshCw, SkipForward } from 'lucide-react';
+import { ArrowLeft, RefreshCw, SkipForward, X } from 'lucide-react';
 import SpeechManager from '../services/SpeechManager';
 import { getShuffledItems, checkBilingualMatch } from '../data/curriculum/index';
 import { useGameStateContext } from '../App';
@@ -336,28 +336,31 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'auto', background: '#fff', position: 'relative' }}>
 
-      {/* ── Header ── */}
-      <div className="game-header">
-        <div className="header-section left">
-          <button onClick={() => { SpeechManager.stop(); SpeechManager.stopSpeaking(); onBack(); }}
-            style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
-            <ArrowLeft size={22} />
-          </button>
+      {/* ── Header matching Math Operations style ── */}
+      <div style={{ background: '#fff', borderBottom: '2px solid #E5E5E5', padding: '0 0.85rem', height: '60px', display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
+        <button onClick={() => { SpeechManager.stop(); SpeechManager.stopSpeaking(); onBack(); }} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center', padding: '6px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>
+          <X size={22} />
+        </button>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+          <span style={{ fontSize: '1.15rem' }}>🗣️</span>
+          <span style={{ fontWeight: 900, fontSize: '0.98rem', color: '#3C3C3C', letterSpacing: '0.01em' }}>
+            {CAT_LABELS[category] || category}
+          </span>
         </div>
-        <div className="header-section middle" style={{ flex: 2 }}>
-          <div className="lesson-progress-track">
-            <div className="lesson-progress-fill" style={{ width: `${progress}%` }} />
+        <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFF6D6', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#B58800', border: '1.5px solid #FFE08A' }}>
+            <span style={{ fontSize: '0.85rem' }}>⭐</span>
+            <span>{score}</span>
           </div>
-        </div>
-        <div className="header-section right" style={{ gap: '8px' }}>
-          <span style={{ fontWeight: 800, color: '#FFC800', fontSize: '0.95rem' }}>⭐ {score}</span>
-          <span style={{ fontWeight: 800, color: '#FF9600', fontSize: '0.95rem' }}>🔥 {streak}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFEAD0', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#D9610B', border: '1.5px solid #FFC081' }}>
+            <span style={{ fontSize: '0.85rem' }}>🔥</span>
+            <span>{streak}</span>
+          </div>
         </div>
       </div>
 
-      {/* ── Sub-header: category + lang toggle ── */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 1rem', background: '#f7f7f7', borderBottom: '1px solid #E5E5E5', flexShrink: 0 }}>
-        <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#AFAFAF' }}>{CAT_LABELS[category] || category}</span>
+      {/* ── Sub-header: language toggle ── */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', padding: '0.75rem 1rem', background: '#f7f7f7', borderBottom: '1px solid #E5E5E5', flexShrink: 0 }}>
         <button onClick={handleToggleLang}
           style={{ background: '#fff', border: '2px solid #E5E5E5', borderRadius: '999px', padding: '4px 14px', fontWeight: 800, fontSize: '0.8rem', color: '#1CB0F6', cursor: 'pointer' }}>
           {lang === 'ms' ? 'BM → EN' : 'EN → BM'}
@@ -509,6 +512,26 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
             </button>
           </div>
         )}
+      </div>
+
+      {/* ── Footer Stats Bar - Standard Layout ── */}
+      <div className="ops-footer-stats">
+        <div className="ops-stat-chip">
+          <span>✅</span>
+          <span>{index}</span>
+          <span style={{ color: '#AFAFAF', fontSize: '0.7rem' }}>
+            {language === 'bm' ? 'dijawab' : 'answered'}
+          </span>
+        </div>
+        <div className="ops-stat-chip ops-stat-chip-highlight" style={{ gap: '8px' }}>
+          <span>🏆</span>
+          <div style={{ width: '80px', height: '8px', background: 'rgba(204, 119, 0, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
+            <div style={{ width: `${Math.min((index / items.length) * 100, 100)}%`, height: '100%', background: '#FFB800', borderRadius: '4px', transition: 'width 0.3s ease-out' }} />
+          </div>
+          <span style={{ color: '#CC7700', fontSize: '0.9rem', fontWeight: 900, minWidth: '40px', textAlign: 'right' }}>
+            {Math.min(index, items.length)}/{items.length}
+          </span>
+        </div>
       </div>
 
       {/* ── Bottom: large MIC tap button (mobile) ── */}

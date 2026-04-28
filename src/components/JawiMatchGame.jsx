@@ -342,6 +342,26 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
                     </button>
                 </div>
             </div>
+
+            {/* Footer Stats */}
+            <div className="ops-footer-stats">
+                <div className="ops-stat-chip">
+                    <span>📊</span>
+                    <span>{moves}</span>
+                    <span style={{ color: '#AFAFAF', fontSize: '0.7rem' }}>
+                        {language === 'bm' ? 'langkah' : 'moves'}
+                    </span>
+                </div>
+                <div className="ops-stat-chip ops-stat-chip-highlight" style={{ gap: '8px' }}>
+                    <span>⭐</span>
+                    <div style={{ width: '80px', height: '8px', background: 'rgba(204, 119, 0, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
+                        <div style={{ width: `${(matched.length / selectedAlphabets.length) * 100}%`, height: '100%', background: '#FFB800', borderRadius: '4px', transition: 'width 0.3s ease-out' }} />
+                    </div>
+                    <span style={{ color: '#CC7700', fontSize: '0.9rem', fontWeight: 900, minWidth: '40px', textAlign: 'right' }}>
+                        {matched.length}/{selectedAlphabets.length}
+                    </span>
+                </div>
+            </div>
         </div>
     );
 }
