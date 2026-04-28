@@ -5,7 +5,7 @@ import confetti from 'canvas-confetti';
 import { LOCALIZATION } from '../utils/localization';
 import GameHeader from './GameHeader';
 import { JAWI_ALPHABET } from '../utils/jawiData';
-import { Trophy, Star, RefreshCw, ArrowLeft } from 'lucide-react';
+import { Trophy, Star, RefreshCw, ArrowLeft, X } from 'lucide-react';
 import { GameStateContext } from '../App';
 
 const CARD_COLORS = [
@@ -230,14 +230,24 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
 
     return (
         <div className="game-container fade-in">
-            <GameHeader
-                onBack={onBack}
-                onHome={onHome}
-                score={moves}
-                // streak={streak} // streak is not defined in this component
-                title={t.matchGameTitle}
-                language={language}
-            />
+            {/* Standard Header */}
+            <div style={{ background: '#fff', borderBottom: '2px solid #E5E5E5', padding: '0 0.85rem', height: '60px', display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
+                <button onClick={onBack} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center', padding: '6px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>
+                    <X size={22} />
+                </button>
+                <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                    <span style={{ fontSize: '1.15rem' }}>🎮</span>
+                    <span style={{ fontWeight: 900, fontSize: '0.98rem', color: '#3C3C3C', letterSpacing: '0.01em' }}>
+                        {t.matchTitle}
+                    </span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFF6D6', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#B58800', border: '1.5px solid #FFE08A' }}>
+                        <span style={{ fontSize: '0.85rem' }}>📊</span>
+                        <span>{Math.min(moves, 99)}</span>
+                    </div>
+                </div>
+            </div>
 
             <div className="card" style={{
                 maxWidth: '800px',

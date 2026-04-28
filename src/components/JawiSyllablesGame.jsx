@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import confetti from 'canvas-confetti';
-import { Trophy, Home, MousePointerClick, Keyboard, ArrowRight, RefreshCw } from 'lucide-react';
+import { Trophy, Home, MousePointerClick, Keyboard, ArrowRight, RefreshCw, X } from 'lucide-react';
 import { JAWI_ALPHABET } from '../utils/jawiData';
 import { SUKU_KATA_DATA } from '../utils/jawiSukuKataData';
 import { playSound, toggleMute, getMuted } from '../utils/soundManager';
@@ -342,14 +342,28 @@ export default function JawiSyllablesGame({ onBack, onHome, language }) {
 
     return (
         <div className="game-container">
-            <GameHeader
-                onBack={onBack}
-                onHome={onHome}
-                score={score}
-                streak={streak}
-                title={t.syllablesTitle}
-                language={language}
-            />
+            {/* Standard Header */}
+            <div style={{ background: '#fff', borderBottom: '2px solid #E5E5E5', padding: '0 0.85rem', height: '60px', display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
+                <button onClick={onBack} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center', padding: '6px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>
+                    <X size={22} />
+                </button>
+                <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                    <span style={{ fontSize: '1.15rem' }}>🎮</span>
+                    <span style={{ fontWeight: 900, fontSize: '0.98rem', color: '#3C3C3C', letterSpacing: '0.01em' }}>
+                        {t.syllablesTitle}
+                    </span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFF6D6', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#B58800', border: '1.5px solid #FFE08A' }}>
+                        <span style={{ fontSize: '0.85rem' }}>⭐</span>
+                        <span>{Math.min(score, 999)}</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFEAD0', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#D9610B', border: '1.5px solid #FFC081' }}>
+                        <span style={{ fontSize: '0.85rem' }}>🔥</span>
+                        <span>{Math.min(streak, 99)}</span>
+                    </div>
+                </div>
+            </div>
 
             {/* Question Card */}
             <div className="question-card fade-in" style={{
