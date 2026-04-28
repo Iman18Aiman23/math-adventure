@@ -277,9 +277,9 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
                     <X size={22} />
                 </button>
                 <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                    <span style={{ fontSize: '1.15rem' }}>🎮</span>
+                    <span style={{ fontSize: '1.15rem' }}>📖</span>
                     <span style={{ fontWeight: 900, fontSize: '0.98rem', color: '#3C3C3C', letterSpacing: '0.01em' }}>
-                        {t.words100Title}
+                        {t.wordsTitle}
                     </span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
