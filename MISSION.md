@@ -198,3 +198,104 @@
     - [x] onBlur and Enter key trigger carry processing
     - [x] Focus moves left (i-1) after pressing Enter
   - [x] Verified: Production build passes (vite build — 9.38s, 0 errors).
+
+- [ ] Phase 15: Standardized Game Page Layout Architecture
+  - [x] **Standard Header Format (All Game Pages)**
+    ```
+    Layout: ← Back button | Title Emoji + Title | Score/Answered & Streak badges
+    
+    Header Structure:
+    - Background: White (#fff)
+    - Border: 2px solid #E5E5E5
+    - Height: 60px
+    - Display: flex, center-aligned
+    - Padding: 0 0.85rem
+    
+    Left Section: Back button
+    - Background: transparent
+    - Color: #AFAFAF
+    - Icon size: 22px
+    - Padding: 6px
+    - Border-radius: 8px
+    
+    Center Section: Title (flex: 1 for centering)
+    - Title emoji: fontSize 1.15rem
+    - Title text: fontWeight 900, fontSize 0.98rem, color #3C3C3C
+    - Gap between emoji and title: 6px
+    
+    Right Section: Two score badges
+    - Badge 1 (Score/Answered):
+      - Background: #FFF6D6 (yellow)
+      - Color: #B58800
+      - Border: 1.5px solid #FFE08A
+      - Icon: ⭐ or ✅
+    - Badge 2 (Streak):
+      - Background: #FFEAD0 (orange)
+      - Color: #D9610B
+      - Border: 1.5px solid #FFC081
+      - Icon: 🔥
+    - Border-radius: 999px (pill shape)
+    - Font-size: 0.82rem
+    - Font-weight: 900
+    - Padding: 4px 10px
+    - Gap: 4px
+    ```
+
+  - [x] **Standard Footer Format (All Game Pages)**
+    ```
+    CSS Classes: ops-footer-stats, ops-stat-chip, ops-stat-chip-highlight
+    
+    Footer Structure:
+    - Container: class="ops-footer-stats"
+    - Left chip (answered/progress count):
+      - class="ops-stat-chip"
+      - Icon + count + label
+      - Example: ✅ {count} {label}
+    - Right chip (progress bar):
+      - class="ops-stat-chip ops-stat-chip-highlight"
+      - Progress bar: gap: 8px
+      - Bar dimensions: 80px × 8px
+      - Progress calculation: Math.min((value / 10) * 100, 100)%
+      - Display format: {Math.min(value, 10)}/10
+    ```
+
+  - [x] **Localization Requirements for New Games**
+    - Add `gameTitle` field to localization object for both BM and EN
+    - Format: `gameTitle: 'Display Title'` (emoji not included in localization, added separately in component)
+    - Example structure:
+      ```javascript
+      myGame: {
+        gameTitle: 'Game Name', // BM or EN
+        // ... other game strings
+      }
+      ```
+
+  - [x] **Complete Game List Following Standard Layout**
+    1. ColumnMathGame (📐 Practice Problems) ✓
+    2. MathOperationsGame (➕ Operasi Matematik) ✓
+    3. MonthsGame (🗓️ Permainan Kuiz Bulan / Months Quiz) ✓
+    4. ClockGame (⏰ Pembelajaran Masa / Time Learning) ✓
+    5. BMSpeakGame (📚 Speaking Games) ✓
+    6. JawiMatchGame (🎮 Jawi Match Game) ✓
+    7. JawiSyllablesGame (🎮 Jawi Syllables Game) ✓
+    8. Jawi100WordsGame (📖 100 Jawi Words) ✓
+
+  - [ ] **Checklist for New Games**
+    When creating a new game, ensure:
+    - [ ] Header matches standard format: Back | Emoji + Title | Score badges
+    - [ ] Footer uses ops-footer-stats CSS classes
+    - [ ] Add gameTitle to localization (BM & EN)
+    - [ ] Import LOCALIZATION if needed for game title
+    - [ ] Progress bar uses: Math.min((value / 10) * 100, 100)%
+    - [ ] Progress display uses: {Math.min(value, 10)}/10 format
+    - [ ] Use standardized badge colors (yellow #FFF6D6 for score, orange #FFEAD0 for streak)
+    - [ ] Keep header height at 60px with flex centering
+    - [ ] Test on both mobile and desktop viewports
+    - [ ] Verify production build passes: `vite build`
+
+  - [x] **Verified Games** (All 8 games now follow standard format)
+    - [x] Production build passes (vite build — consistent, 0 errors)
+    - [x] Header positioning: Back | Title | Badges (all games)
+    - [x] Footer stats: ops-footer-stats class (all games)
+    - [x] Progress bar format: 0/10 standardized (all games)
+    - [x] Localization: gameTitle added to MonthsGame & ClockGame
