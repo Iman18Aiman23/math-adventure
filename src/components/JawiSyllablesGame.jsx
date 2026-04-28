@@ -458,6 +458,26 @@ export default function JawiSyllablesGame({ onBack, onHome, language }) {
                 </div>
             )}
 
+            {/* Footer Stats */}
+            <div className="ops-footer-stats">
+                <div className="ops-stat-chip">
+                    <span>✅</span>
+                    <span>{questionCount}</span>
+                    <span style={{ color: '#AFAFAF', fontSize: '0.7rem' }}>
+                        {language === 'bm' ? 'dijawab' : 'answered'}
+                    </span>
+                </div>
+                <div className="ops-stat-chip ops-stat-chip-highlight" style={{ gap: '8px' }}>
+                    <span>🔥</span>
+                    <div style={{ width: '80px', height: '8px', background: 'rgba(204, 119, 0, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
+                        <div style={{ width: `${Math.min((streak / 10) * 100, 100)}%`, height: '100%', background: '#FFB800', borderRadius: '4px', transition: 'width 0.3s ease-out' }} />
+                    </div>
+                    <span style={{ color: '#CC7700', fontSize: '0.9rem', fontWeight: 900, minWidth: '32px', textAlign: 'right' }}>
+                        {Math.min(streak, 10)}/10
+                    </span>
+                </div>
+            </div>
+
             {/* Streak Popup */}
             {showStreakPopup && (() => {
                 const streakInfo = getStreakMessage(streak);
