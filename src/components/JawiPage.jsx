@@ -322,21 +322,37 @@ export default function JawiPage({ onBack, onHome, language }) {
                             onClick={() => setMode(item.mode)}
                             style={{
                                 display: 'flex', alignItems: 'center', padding: '1.25rem',
-                                background: '#fff', border: `3px solid ${item.iconBg}`, borderRadius: '20px',
-                                cursor: 'pointer', transition: 'transform 0.1s, borderColor 0.2s',
-                                boxShadow: '0 4px 0 #E5E5E5', textAlign: 'left',
-                                gap: '1rem', animationDelay: `${i * 0.06}s`,
-                                width: '100%'
+                                background: '#fff', border: `3px solid ${item.iconBg}`, borderLeft: `5px solid ${item.color}`, borderRadius: '16px',
+                                cursor: 'pointer', transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)', textAlign: 'left',
+                                gap: '1.2rem', animationDelay: `${i * 0.07}s`,
+                                width: '100%', minHeight: '80px'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-3px)';
+                                e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.15)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'none';
+                                e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.1)';
+                            }}
+                            onMouseDown={(e) => {
+                                e.currentTarget.style.transform = 'translateY(2px)';
+                                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+                            }}
+                            onMouseUp={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-3px)';
+                                e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.15)';
                             }}
                         >
-                            <div style={{ background: item.color, color: '#fff', borderRadius: '12px', width: '48px', height: '48px', minWidth: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: 900 }}>
+                            <div style={{ background: item.color, color: '#fff', borderRadius: '14px', width: '56px', height: '56px', minWidth: '56px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.8rem', fontWeight: 900 }}>
                                 {item.emoji}
                             </div>
                             <div style={{ flex: 1, minWidth: 0 }}>
                                 <div style={{ fontSize: '1.1rem', fontWeight: 900, color: '#3C3C3C', marginBottom: '4px' }}>{item.title}</div>
                                 <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#AFAFAF', lineHeight: 1.3 }}>{item.desc}</div>
                             </div>
-                            <ChevronRight size={24} color="#AFAFAF" />
+                            <div style={{ fontSize: '1.5rem', color: '#AFAFAF' }}>›</div>
                         </button>
                     ))}
                 </div>
