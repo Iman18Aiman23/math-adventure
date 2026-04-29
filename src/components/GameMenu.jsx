@@ -115,9 +115,9 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
           flex-direction: column;
           align-items: center;
           gap: 6px;
-          background: #fff;
-          border: 2px solid #E5E5E5;
-          border-bottom: 4px solid #E5E5E5;
+          background: var(--btn-light, #f5f5f5);
+          border: 2px solid var(--btn-color, #E5E5E5);
+          border-bottom: 4px solid var(--btn-dark, #C0C0C0);
           border-radius: 12px;
           padding: 8px 4px;
           text-align: center;
@@ -129,24 +129,28 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
           border-bottom-width: 2px;
         }
         .math-btn-card-vert.selected {
-          background: var(--btn-light);
-          border-color: var(--btn-color);
+          background: var(--btn-color);
+          border-color: var(--btn-dark);
           border-bottom-color: var(--btn-dark);
+          box-shadow: 0 0 0 3px var(--btn-light);
         }
         .math-btn-icon {
-          width: 36px;
-          height: 36px;
+          width: 40px;
+          height: 40px;
           border-radius: 50%;
-          background: var(--btn-light, #f0f0f0);
-          border: 2px solid var(--btn-color, #E5E5E5);
+          background: white;
+          border: 3px solid var(--btn-color, #E5E5E5);
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 1.3rem;
+          font-size: 1.4rem;
           flex-shrink: 0;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
         .math-btn-card-vert.selected .math-btn-icon {
-          background: #fff;
+          background: var(--btn-color);
+          border-color: white;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
         .math-btn-label {
           font-weight: 800;
