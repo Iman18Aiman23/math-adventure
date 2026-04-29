@@ -263,42 +263,6 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
           }
         }
 
-        .math-start-area {
-          padding: 1rem;
-          background: linear-gradient(135deg, #FFFFFF 0%, #FFF5E6 100%);
-          border-top: 3px solid #FFD700;
-          box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
-        }
-        .math-start-btn {
-          width: 100%;
-          padding: 16px;
-          font-size: 1.4rem;
-          font-weight: 900;
-          color: white;
-          background: linear-gradient(135deg, #58CC02 0%, #46A302 100%);
-          border: none;
-          border-bottom: 6px solid #2E6B00;
-          border-radius: 20px;
-          transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
-          cursor: pointer;
-          box-shadow: 0 8px 16px rgba(88, 204, 2, 0.3);
-          letter-spacing: 0.5px;
-        }
-        .math-start-btn:hover:not(:disabled) {
-          transform: translateY(-2px);
-          box-shadow: 0 12px 24px rgba(88, 204, 2, 0.4);
-        }
-        .math-start-btn:active:not(:disabled) {
-          transform: translateY(2px);
-          border-bottom-width: 2px;
-          box-shadow: 0 2px 8px rgba(88, 204, 2, 0.3);
-        }
-        .math-start-btn:disabled {
-          background: linear-gradient(135deg, #E5E5E5 0%, #D0D0D0 100%);
-          border-bottom-color: #AFAFAF;
-          color: #AFAFAF;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
       `}</style>
 
       <div className="math-header">
@@ -424,18 +388,56 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
           </div>
         </div>
 
+        {/* Start Button - Part of scroll area */}
+        <div style={{ marginTop: '1rem' }}>
+          <button
+            className="math-start-btn"
+            disabled={!isReady}
+            onClick={handleStart}
+            style={{
+              width: '100%',
+              padding: '14px',
+              fontSize: '1.2rem',
+              fontWeight: 900,
+              color: 'white',
+              background: isReady ? 'linear-gradient(135deg, #58CC02 0%, #46A302 100%)' : '#E5E5E5',
+              border: 'none',
+              borderBottom: isReady ? '5px solid #2E6B00' : '3px solid #AFAFAF',
+              borderRadius: '16px',
+              cursor: isReady ? 'pointer' : 'not-allowed',
+              transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
+              boxShadow: isReady ? '0 6px 12px rgba(88, 204, 2, 0.3)' : 'none',
+              letterSpacing: '0.5px',
+            }}
+            onMouseEnter={(e) => {
+              if (isReady) {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 10px 20px rgba(88, 204, 2, 0.4)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'none';
+              e.currentTarget.style.boxShadow = isReady ? '0 6px 12px rgba(88, 204, 2, 0.3)' : 'none';
+            }}
+            onMouseDown={(e) => {
+              if (isReady) {
+                e.currentTarget.style.transform = 'translateY(2px)';
+                e.currentTarget.style.borderBottomWidth = '2px';
+              }
+            }}
+            onMouseUp={(e) => {
+              if (isReady) {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.borderBottomWidth = '5px';
+              }
+            }}
+          >
+            {bm ? 'Mula Main!' : 'Start Playing!'} 🚀
+          </button>
+        </div>
+
       </div>
 
-      <div className="math-start-area">
-        <button
-          className="math-start-btn"
-          disabled={!isReady}
-          onClick={handleStart}
-        >
-          {bm ? 'Mula Main!' : 'Start Playing!'} 🚀
-        </button>
-      </div>
-      
     </div>
   );
 }
