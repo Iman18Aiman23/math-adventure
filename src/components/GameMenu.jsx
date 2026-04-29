@@ -2,22 +2,22 @@ import React, { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 
 const OPERATIONS = [
-  { id: 'add',      emoji: '➕', labelBm: 'Tambah',  labelEn: 'Addition',       color: '#58CC02', dark: '#46A302', light: '#d7ffb8' },
-  { id: 'subtract', emoji: '➖', labelBm: 'Tolak',   labelEn: 'Subtraction',    color: '#1CB0F6', dark: '#0B8DC0', light: '#ddf4ff' },
-  { id: 'multiply', emoji: '✖️', labelBm: 'Darab',   labelEn: 'Multiplication', color: '#CE82FF', dark: '#9B59B6', light: '#f4dfff' },
-  { id: 'divide',   emoji: '➗', labelBm: 'Bahagi',  labelEn: 'Division',       color: '#FF9600', dark: '#CC7800', light: '#ffe6c2' },
-  { id: 'random',   emoji: '🎲', labelBm: 'Rawak',   labelEn: 'Random Mix',     color: '#FF4B4B', dark: '#CC3B3B', light: '#ffd9d9' },
+  { id: 'add',      emoji: '➕', labelBm: 'Tambah',  labelEn: 'Addition',       color: '#00DD5F', dark: '#00AA40', light: '#C8FFE0' },
+  { id: 'subtract', emoji: '➖', labelBm: 'Tolak',   labelEn: 'Subtraction',    color: '#0099FF', dark: '#0066CC', light: '#CCE5FF' },
+  { id: 'multiply', emoji: '✖️', labelBm: 'Darab',   labelEn: 'Multiplication', color: '#DD44FF', dark: '#BB00FF', light: '#F0CCFF' },
+  { id: 'divide',   emoji: '➗', labelBm: 'Bahagi',  labelEn: 'Division',       color: '#FF7700', dark: '#DD5500', light: '#FFD9B3' },
+  { id: 'random',   emoji: '🎲', labelBm: 'Rawak',   labelEn: 'Random Mix',     color: '#FF3333', dark: '#DD0000', light: '#FFB3B3' },
 ];
 
 const DIFFICULTIES = [
-  { id: 'easy',   emoji: '🌱', labelBm: 'Senang',    labelEn: 'Easy',   descBm: '(1-9)',     color: '#58CC02', dark: '#46A302', light: '#d7ffb8' },
-  { id: 'medium', emoji: '⭐', labelBm: 'Sederhana', labelEn: 'Medium', descBm: '(10-99)',   color: '#FFC800', dark: '#CC9C00', light: '#fff3cd' },
-  { id: 'hard',   emoji: '🔥', labelBm: 'Susah',     labelEn: 'Hard',   descBm: '(100+)',    color: '#FF4B4B', dark: '#CC3B3B', light: '#ffd9d9' },
+  { id: 'easy',   emoji: '🌱', labelBm: 'Senang',    labelEn: 'Easy',   descBm: '(1-9)',     color: '#00DD5F', dark: '#00AA40', light: '#C8FFE0' },
+  { id: 'medium', emoji: '⭐', labelBm: 'Sederhana', labelEn: 'Medium', descBm: '(10-99)',   color: '#FFB800', dark: '#DD9300', light: '#FFE5B3' },
+  { id: 'hard',   emoji: '🔥', labelBm: 'Susah',     labelEn: 'Hard',   descBm: '(100+)',    color: '#FF3333', dark: '#DD0000', light: '#FFB3B3' },
 ];
 
 const INPUT_MODES = [
-  { id: 'multiple', emoji: '🔘', labelBm: 'Pilihan', labelEn: 'Choices', color: '#CE82FF', dark: '#9B59B6', light: '#f4dfff' },
-  { id: 'typing',   emoji: '⌨️', labelBm: 'Taip',    labelEn: 'Type',    color: '#FF9600', dark: '#CC7800', light: '#ffe6c2' },
+  { id: 'multiple', emoji: '🔘', labelBm: 'Pilihan', labelEn: 'Choices', color: '#DD44FF', dark: '#BB00FF', light: '#F0CCFF' },
+  { id: 'typing',   emoji: '⌨️', labelBm: 'Taip',    labelEn: 'Type',    color: '#FF7700', dark: '#DD5500', light: '#FFD9B3' },
 ];
 
 // Numbers 1 to 9
@@ -121,11 +121,17 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
           border-radius: 12px;
           padding: 8px 4px;
           text-align: center;
-          transition: all 0.1s;
+          transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
           width: 100%;
+          cursor: pointer;
+        }
+        .math-btn-card-vert:hover {
+          transform: scale(1.08);
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+          border-bottom-width: 6px;
         }
         .math-btn-card-vert:active {
-          transform: translateY(2px);
+          transform: scale(0.98) translateY(2px);
           border-bottom-width: 2px;
         }
         .math-btn-card-vert.selected {
