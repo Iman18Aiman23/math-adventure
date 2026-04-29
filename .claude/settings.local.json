@@ -6,7 +6,8 @@
       "Bash(git commit -m ' *)",
       "Bash(timeout 30 bash -c 'until curl -s http://localhost:5173 > /dev/null 2>&1; do sleep 0.5; done; echo \"Server ready\"')",
       "Bash(git push *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(xargs grep *)"
     ]
   }
 }

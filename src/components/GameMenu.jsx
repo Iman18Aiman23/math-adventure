@@ -135,22 +135,11 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
           box-shadow: 0 0 0 3px var(--btn-light);
         }
         .math-btn-icon {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          background: white;
-          border: 3px solid var(--btn-color, #E5E5E5);
           display: flex;
           align-items: center;
           justify-content: center;
           font-size: 1.4rem;
           flex-shrink: 0;
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-        .math-btn-card-vert.selected .math-btn-icon {
-          background: var(--btn-color);
-          border-color: white;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
         .math-btn-label {
           font-weight: 800;
