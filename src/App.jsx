@@ -178,6 +178,14 @@ export default function App() {
                 <span>{tab.label[language] || tab.label.bm}</span>
               </button>
             ))}
+            <button
+              className="duo-tab-item"
+              onClick={handleToggleLang}
+              style={{ gap: '0.5rem' }}
+            >
+              <span className="duo-tab-icon">🌐</span>
+              <span style={{ fontSize: '0.75rem' }}>{language === 'bm' ? 'English' : 'BM'}</span>
+            </button>
           </div>
         )}
       </div>
