@@ -10,6 +10,7 @@ import MonthsGame from './components/MonthsGame';
 import ClockGame from './components/ClockGame';
 import MonthLearning from './components/MonthLearning';
 import MathOperationsGame from './components/MathOperationsGame';
+import ColumnMathGame from './components/ColumnMathGame';
 import LevelUpToast from './components/LevelUpToast';
 import WelcomeModal from './components/WelcomeModal';
 import DesktopSidebar from './components/DesktopSidebar';
@@ -44,6 +45,7 @@ function getActiveGameId(currentSubject, mathSubGame) {
   if (currentSubject === 'math') {
     if (mathSubGame === 'operations') return 'math-operations';
     if (mathSubGame === 'datetime')   return 'math-datetime';
+    if (mathSubGame === 'faq')        return 'math-faq';
     return 'math';
   }
   return 'home';
@@ -114,6 +116,9 @@ export default function App() {
           if (dateTimeSubGame === 'months')          return <MonthsGame    onBack={handleBackToMenu} onHome={handleBackToHome} language={language} />;
           if (dateTimeSubGame === 'clock')           return <ClockGame     onBack={handleBackToMenu} onHome={handleBackToHome} language={language} />;
           if (dateTimeSubGame === 'month-learning')  return <MonthLearning onBack={handleBackToMenu} onHome={handleBackToHome} language={language} />;
+        }
+        if (mathSubGame === 'faq') {
+          return <ColumnMathGame onBack={() => setMathSubGame(null)} language={language} />;
         }
         return <MathHome onSelectSubGame={setMathSubGame} onBack={handleBackToHome} onHome={handleBackToHome} language={language} />;
       case 'bm':

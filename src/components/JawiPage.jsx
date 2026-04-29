@@ -60,7 +60,21 @@ export default function JawiPage({ onBack, onHome, language }) {
             <div className="game-container fade-in">
                 <GameHeader onBack={handleBack} onHome={onHome} title={t.alphabetTitle} language={language} />
 
-                <div className="jawi-alphabet-grid">
+                <div style={{ padding: '1rem 1rem 0.25rem', textAlign: 'center' }}>
+                    <p style={{ fontSize: '0.8rem', fontWeight: 700, color: '#AFAFAF', textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>
+                        {language === 'bm' ? 'Pilih Huruf untuk Belajar' : 'Select a Letter to Learn'}
+                    </p>
+                </div>
+
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(72px, 1fr))',
+                    gap: '0.6rem',
+                    maxWidth: '480px',
+                    margin: '0.5rem auto 0',
+                    padding: '0.5rem 1rem 1.5rem',
+                    direction: 'rtl',
+                }}>
                     {JAWI_ALPHABET.map((item, idx) => {
                         const color = COLORS[idx % COLORS.length];
                         const bgColor = BG_COLORS[idx % BG_COLORS.length];
@@ -79,6 +93,8 @@ export default function JawiPage({ onBack, onHome, language }) {
                                     transition: 'transform 0.1s, box-shadow 0.1s',
                                     boxShadow: '0 4px 0 #E5E5E5',
                                     fontFamily: 'inherit',
+                                    minHeight: '100px',
+                                    minWidth: '72px',
                                 }}
                                 onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 6px 0 ${color}`; }}
                                 onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 4px 0 #E5E5E5'; }}
@@ -86,7 +102,7 @@ export default function JawiPage({ onBack, onHome, language }) {
                                 onMouseUp={e => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
                             >
                                 <span style={{ fontSize: '2rem', fontWeight: 900, color: color, lineHeight: 1 }}>{item.jawi}</span>
-                                <span style={{ fontSize: '0.62rem', fontWeight: 700, color: '#AFAFAF', marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{item.rumi}</span>
+                                <span style={{ fontSize: '0.62rem', fontWeight: 700, color: '#AFAFAF', marginTop: '4px' }}>{item.rumi}</span>
                             </button>
                         );
                     })}

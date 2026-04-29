@@ -63,7 +63,7 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
           display: flex;
           flex-direction: column;
           height: 100%;
-          background: #f7f7f7;
+          background: linear-gradient(135deg, #FFF9E6 0%, #FFE6F0 50%, #E6F3FF 100%);
           overflow-y: auto;
           overflow-x: hidden;
         }
@@ -71,88 +71,104 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
           display: flex;
           align-items: center;
           padding: 8px 12px;
-          background: #fff;
-          border-bottom: 2px solid #E5E5E5;
+          background: linear-gradient(135deg, #FFFFFF 0%, #FFF5E6 100%);
+          border-bottom: 3px solid #FFD700;
           position: sticky;
           top: 0;
           z-index: 10;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
         .math-back-btn {
           background: transparent;
-          color: #AFAFAF;
+          color: #FF6B6B;
           padding: 8px;
           border-radius: 50%;
+          font-weight: bold;
         }
         .math-header-title {
           flex: 1;
           text-align: center;
           font-weight: 900;
-          color: #3C3C3C;
-          font-size: 1.05rem;
+          color: #FF6B6B;
+          font-size: 1.3rem;
           margin-right: 38px;
         }
         .math-scroll-area {
-          padding: 12px;
+          padding: 1rem;
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 1rem;
           width: 100%;
         }
         .math-section {
           background: #fff;
-          border: 2px solid #E5E5E5;
-          border-radius: 16px;
-          padding: 12px;
+          border: none;
+          border-radius: 24px;
+          padding: 1.2rem;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
         }
         .math-section-title {
-          font-size: 0.95rem;
-          font-weight: 800;
-          color: #3C3C3C;
-          margin-bottom: 10px;
+          font-size: 1.1rem;
+          font-weight: 900;
+          color: #FF6B6B;
+          margin-bottom: 1rem;
+          letter-spacing: 0.5px;
         }
         .math-btn-card-vert {
           display: flex;
           flex-direction: column;
           align-items: center;
+          justify-content: center;
           gap: 6px;
           background: var(--btn-light, #f5f5f5);
-          border: 2px solid var(--btn-color, #E5E5E5);
-          border-bottom: 4px solid var(--btn-dark, #C0C0C0);
-          border-radius: 12px;
-          padding: 8px 4px;
+          border: 3px solid var(--btn-color, #E5E5E5);
+          border-bottom: 5px solid var(--btn-dark, #C0C0C0);
+          border-radius: 16px;
+          padding: 12px 6px;
           text-align: center;
           transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
           width: 100%;
           cursor: pointer;
+          font-family: inherit;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .math-btn-card-vert:hover {
-          transform: scale(1.08);
-          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-          border-bottom-width: 6px;
+          transform: translateY(-3px);
+          box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+          border-bottom-width: 7px;
         }
         .math-btn-card-vert:active {
-          transform: scale(0.98) translateY(2px);
+          transform: translateY(2px);
           border-bottom-width: 2px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .math-btn-card-vert.selected {
           background: var(--btn-color);
+          color: white;
           border-color: var(--btn-dark);
           border-bottom-color: var(--btn-dark);
-          box-shadow: 0 0 0 3px var(--btn-light);
+          box-shadow: 0 0 0 4px var(--btn-light), 0 8px 16px rgba(0, 0, 0, 0.2);
+          transform: scale(1.05);
         }
         .math-btn-icon {
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 1.4rem;
+          font-size: 2rem;
           flex-shrink: 0;
+          width: 56px;
+          height: 56px;
         }
         .math-btn-label {
-          font-weight: 800;
-          font-size: 0.75rem;
+          font-weight: 900;
+          font-size: 0.85rem;
           color: #3C3C3C;
-          line-height: 1.1;
+          line-height: 1.2;
           word-break: break-word;
+        }
+        .math-btn-card-vert.selected .math-btn-label {
+          color: white;
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
         .math-btn-desc {
           font-weight: 700;
@@ -164,7 +180,7 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
         .grid-ops {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
-          gap: 6px;
+          gap: 0.8rem;
         }
         .btn-rawak {
           grid-column: span 4;
@@ -172,7 +188,7 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
           justify-content: center;
         }
         .btn-rawak .math-btn-label {
-          font-size: 0.9rem;
+          font-size: 0.95rem;
         }
         @media (min-width: 768px) {
           .grid-ops {
@@ -181,16 +197,16 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
           .btn-rawak {
             grid-column: span 1;
             flex-direction: column;
-            justify-content: flex-start;
+            justify-content: center;
           }
           .btn-rawak .math-btn-label {
-            font-size: 0.75rem;
+            font-size: 0.85rem;
           }
         }
         .grid-nombor {
           display: grid;
           grid-template-columns: repeat(5, 1fr);
-          gap: 6px;
+          gap: 0.8rem;
         }
         @media (min-width: 768px) {
           .grid-nombor {
@@ -200,39 +216,49 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
         .grid-3-cols {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 6px;
+          gap: 0.8rem;
         }
         .grid-2-cols {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: 6px;
+          gap: 0.8rem;
         }
 
         .math-start-area {
-          padding: 12px;
-          background: #fff;
-          border-top: 2px solid #E5E5E5;
+          padding: 1rem;
+          background: linear-gradient(135deg, #FFFFFF 0%, #FFF5E6 100%);
+          border-top: 3px solid #FFD700;
+          box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
         }
         .math-start-btn {
           width: 100%;
-          padding: 14px;
-          font-size: 1.25rem;
+          padding: 16px;
+          font-size: 1.4rem;
           font-weight: 900;
           color: white;
-          background: #58CC02;
+          background: linear-gradient(135deg, #58CC02 0%, #46A302 100%);
           border: none;
-          border-bottom: 5px solid #46A302;
-          border-radius: 16px;
-          transition: all 0.1s;
+          border-bottom: 6px solid #2E6B00;
+          border-radius: 20px;
+          transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+          cursor: pointer;
+          box-shadow: 0 8px 16px rgba(88, 204, 2, 0.3);
+          letter-spacing: 0.5px;
+        }
+        .math-start-btn:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 12px 24px rgba(88, 204, 2, 0.4);
         }
         .math-start-btn:active:not(:disabled) {
-          transform: translateY(3px);
+          transform: translateY(2px);
           border-bottom-width: 2px;
+          box-shadow: 0 2px 8px rgba(88, 204, 2, 0.3);
         }
         .math-start-btn:disabled {
-          background: #E5E5E5;
-          border-bottom-color: #C0C0C0;
+          background: linear-gradient(135deg, #E5E5E5 0%, #D0D0D0 100%);
+          border-bottom-color: #AFAFAF;
           color: #AFAFAF;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
       `}</style>
 
@@ -246,7 +272,7 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
       </div>
 
       <div className="math-scroll-area">
-        
+
         {/* 1. Operation */}
         <div className="math-section">
           <div className="math-section-title">1. {bm ? 'Operasi' : 'Operation'}</div>
