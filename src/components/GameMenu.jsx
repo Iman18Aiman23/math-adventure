@@ -176,23 +176,36 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
           color: #777;
         }
 
-        /* Responsive grid helpers */
+        /* Responsive grid helpers - Mobile first */
         .grid-ops {
           display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 0.8rem;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 0.6rem;
         }
         .btn-rawak {
-          grid-column: span 4;
+          grid-column: span 3;
           flex-direction: row;
           justify-content: center;
         }
         .btn-rawak .math-btn-label {
-          font-size: 0.95rem;
+          font-size: 0.85rem;
+        }
+        @media (min-width: 480px) {
+          .grid-ops {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.7rem;
+          }
+          .btn-rawak {
+            grid-column: span 4;
+          }
+          .btn-rawak .math-btn-label {
+            font-size: 0.9rem;
+          }
         }
         @media (min-width: 768px) {
           .grid-ops {
             grid-template-columns: repeat(5, 1fr);
+            gap: 0.8rem;
           }
           .btn-rawak {
             grid-column: span 1;
@@ -205,23 +218,92 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
         }
         .grid-nombor {
           display: grid;
-          grid-template-columns: repeat(5, 1fr);
-          gap: 0.8rem;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 0.6rem;
+        }
+        @media (min-width: 480px) {
+          .grid-nombor {
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.7rem;
+          }
         }
         @media (min-width: 768px) {
           .grid-nombor {
             grid-template-columns: repeat(10, 1fr);
+            gap: 0.8rem;
           }
         }
         .grid-3-cols {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 0.8rem;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 0.6rem;
+        }
+        @media (min-width: 480px) {
+          .grid-3-cols {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.7rem;
+          }
+        }
+        @media (min-width: 768px) {
+          .grid-3-cols {
+            gap: 0.8rem;
+          }
         }
         .grid-2-cols {
           display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 0.8rem;
+          grid-template-columns: repeat(1, 1fr);
+          gap: 0.6rem;
+        }
+        @media (min-width: 480px) {
+          .grid-2-cols {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.7rem;
+          }
+        }
+        @media (min-width: 768px) {
+          .grid-2-cols {
+            gap: 0.8rem;
+          }
+        }
+        @media (max-width: 479px) {
+          .math-btn-icon {
+            width: 38px;
+            height: 38px;
+            font-size: 1.3rem;
+          }
+          .math-btn-label {
+            font-size: 0.65rem;
+          }
+          .math-btn-card-vert {
+            padding: 8px 4px;
+            gap: 3px;
+            border-radius: 12px;
+            border: 2px solid var(--btn-color, #E5E5E5);
+            border-bottom: 3px solid var(--btn-dark, #C0C0C0);
+          }
+          .math-section {
+            padding: 0.8rem;
+          }
+          .math-scroll-area {
+            padding: 0.6rem;
+            gap: 0.6rem;
+          }
+          .math-section-title {
+            font-size: 0.9rem;
+            margin-bottom: 0.6rem;
+          }
+          .grid-ops {
+            gap: 0.4rem;
+          }
+          .grid-nombor {
+            gap: 0.4rem;
+          }
+          .grid-3-cols {
+            gap: 0.4rem;
+          }
+          .grid-2-cols {
+            gap: 0.4rem;
+          }
         }
 
         .math-start-area {
