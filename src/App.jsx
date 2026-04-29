@@ -181,10 +181,9 @@ export default function App() {
             <button
               className="duo-tab-item"
               onClick={handleToggleLang}
-              style={{ gap: '0.5rem' }}
             >
               <span className="duo-tab-icon">🌐</span>
-              <span style={{ fontSize: '0.75rem' }}>{language === 'bm' ? 'English' : 'BM'}</span>
+              <span>{language === 'bm' ? 'English' : 'BM'}</span>
             </button>
           </div>
         )}
