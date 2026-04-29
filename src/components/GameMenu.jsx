@@ -179,38 +179,20 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
         /* Responsive grid helpers - Mobile first */
         .grid-ops {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 0.6rem;
+          grid-template-columns: repeat(5, 1fr);
+          gap: 0.4rem;
         }
         .btn-rawak {
-          grid-column: span 3;
-          flex-direction: row;
+          grid-column: span 1;
+          flex-direction: column;
           justify-content: center;
         }
         .btn-rawak .math-btn-label {
-          font-size: 0.85rem;
-        }
-        @media (min-width: 480px) {
-          .grid-ops {
-            grid-template-columns: repeat(4, 1fr);
-            gap: 0.7rem;
-          }
-          .btn-rawak {
-            grid-column: span 4;
-          }
-          .btn-rawak .math-btn-label {
-            font-size: 0.9rem;
-          }
+          font-size: 0.65rem;
         }
         @media (min-width: 768px) {
           .grid-ops {
-            grid-template-columns: repeat(5, 1fr);
             gap: 0.8rem;
-          }
-          .btn-rawak {
-            grid-column: span 1;
-            flex-direction: column;
-            justify-content: center;
           }
           .btn-rawak .math-btn-label {
             font-size: 0.85rem;
@@ -218,14 +200,8 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
         }
         .grid-nombor {
           display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 0.6rem;
-        }
-        @media (min-width: 480px) {
-          .grid-nombor {
-            grid-template-columns: repeat(5, 1fr);
-            gap: 0.7rem;
-          }
+          grid-template-columns: repeat(5, 1fr);
+          gap: 0.4rem;
         }
         @media (min-width: 768px) {
           .grid-nombor {
@@ -235,14 +211,8 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
         }
         .grid-3-cols {
           display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 0.6rem;
-        }
-        @media (min-width: 480px) {
-          .grid-3-cols {
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.7rem;
-          }
+          grid-template-columns: repeat(3, 1fr);
+          gap: 0.4rem;
         }
         @media (min-width: 768px) {
           .grid-3-cols {
@@ -251,58 +221,45 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
         }
         .grid-2-cols {
           display: grid;
-          grid-template-columns: repeat(1, 1fr);
-          gap: 0.6rem;
-        }
-        @media (min-width: 480px) {
-          .grid-2-cols {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.7rem;
-          }
+          grid-template-columns: repeat(2, 1fr);
+          gap: 0.4rem;
         }
         @media (min-width: 768px) {
           .grid-2-cols {
             gap: 0.8rem;
           }
         }
-        @media (max-width: 479px) {
+        @media (max-width: 767px) {
           .math-btn-icon {
-            width: 38px;
-            height: 38px;
-            font-size: 1.3rem;
+            width: 32px;
+            height: 32px;
+            font-size: 1.1rem;
           }
           .math-btn-label {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
           }
           .math-btn-card-vert {
-            padding: 8px 4px;
-            gap: 3px;
-            border-radius: 12px;
+            padding: 6px 2px;
+            gap: 2px;
+            border-radius: 10px;
             border: 2px solid var(--btn-color, #E5E5E5);
             border-bottom: 3px solid var(--btn-dark, #C0C0C0);
           }
           .math-section {
-            padding: 0.8rem;
+            padding: 0.75rem;
           }
           .math-scroll-area {
-            padding: 0.6rem;
-            gap: 0.6rem;
+            padding: 0.5rem;
+            gap: 0.5rem;
           }
           .math-section-title {
-            font-size: 0.9rem;
-            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
           }
-          .grid-ops {
-            gap: 0.4rem;
-          }
-          .grid-nombor {
-            gap: 0.4rem;
-          }
-          .grid-3-cols {
-            gap: 0.4rem;
-          }
-          .grid-2-cols {
-            gap: 0.4rem;
+          .math-start-btn {
+            padding: 12px;
+            font-size: 1.1rem;
           }
         }
 
