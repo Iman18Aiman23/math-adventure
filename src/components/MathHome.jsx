@@ -57,6 +57,12 @@ export default function MathHome({ onSelectSubGame, onBack, onHome, language }) 
 
       {/* Scrollable content */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 1rem' }}>
+        <div className="bm-hero">
+          <div className="bm-hero-emoji">🔢</div>
+          <h2 className="bm-hero-title">{language === 'bm' ? 'Kuasai Matematik' : 'Master Mathematics'}</h2>
+          <p className="bm-hero-subtitle">{language === 'bm' ? 'Dari operasi asas hingga penyelesaian masalah. Belajar dengan percaya diri!' : 'From basic operations to problem solving. Learn with confidence!'}</p>
+        </div>
+
         <p style={{ fontSize: '0.8rem', fontWeight: 800, color: '#AFAFAF', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1.5rem' }}>
           {language === 'bm' ? 'PILIH TOPIK' : 'CHOOSE TOPIC'}
         </p>
