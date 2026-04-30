@@ -846,8 +846,8 @@ export default function ColumnMathGame({ onBack, language }) {
                 <div style={{ fontWeight: 700, fontSize: '1.15rem', color: '#3C3C3C', flex: 1 }}>
                   {bm ? `Berapa ${p1[confirmBorrowIdx]} - 1 = ?` : `What is ${p1[confirmBorrowIdx]} - 1 = ?`}
                 </div>
-                <div style={{ fontSize: '1.3rem', color: '#FF4B4B', fontWeight: 900, marginLeft: '0.5rem' }}>
-                  ℹ️
+                <div style={{ fontSize: '1.5rem', color: '#FF4B4B', fontWeight: 900, marginLeft: '0.5rem', fontFamily: 'Georgia, serif', lineHeight: 1 }}>
+                  i
                 </div>
               </div>
               <input
@@ -1098,6 +1098,34 @@ export default function ColumnMathGame({ onBack, language }) {
           }}>
             {problem.op}
           </div>
+
+          {/* Information icon button */}
+          <button
+            onClick={() => {}}
+            title={bm ? 'Maklumat' : 'Information'}
+            style={{
+              position: 'absolute', top: isDesktop ? '68px' : '58px', right: isDesktop ? '18px' : '14px',
+              width: isDesktop ? '42px' : '36px', height: isDesktop ? '42px' : '36px', borderRadius: '50%',
+              background: '#fff', color: '#FF4B4B',
+              fontWeight: 900, fontSize: isDesktop ? '1.8rem' : '1.6rem',
+              fontFamily: 'Georgia, serif',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              border: `3px solid #FF4B4B`,
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              lineHeight: 1,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = '#FFE0E0';
+              e.currentTarget.style.transform = 'scale(1.1)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = '#fff';
+              e.currentTarget.style.transform = 'scale(1)';
+            }}
+          >
+            i
+          </button>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: totalW, margin: '0 auto' }}>
 
