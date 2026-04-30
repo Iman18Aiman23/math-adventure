@@ -391,6 +391,17 @@ export default function ColumnMathGame({ onBack, language }) {
       return;
     }
 
+    // Check if borrowing is needed for subtraction
+    if (problem && problem.op === '-') {
+      const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
+      for (let j = 0; j < ml; j++) {
+        if (needsBorrowAt(j)) {
+          triggerLockMessage(j);
+          return;
+        }
+      }
+    }
+
     // Only advance to next column if user has stopped typing (will be handled by onBlur)
     setLockMessage('');
   };
