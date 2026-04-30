@@ -330,6 +330,8 @@ export default function ColumnMathGame({ onBack, language }) {
   const [activePartial1CarryIdx, setActivePartial1CarryIdx] = useState(0);
   const [activePartial2CarryIdx, setActivePartial2CarryIdx] = useState(0);
   const [showTutorial,         setShowTutorial]         = useState(false);
+  const [partial1Submitted,    setPartial1Submitted]    = useState(new Set());
+  const [partial2Submitted,    setPartial2Submitted]    = useState(new Set());
 
   const inputRefs            = useRef([]);
   const topRowRefs           = useRef([]);
@@ -379,6 +381,8 @@ export default function ColumnMathGame({ onBack, language }) {
     setPartial2Inputs(Array(ml).fill(''));
     setPartial1CarryInputs(Array(ml).fill(''));
     setPartial2CarryInputs(Array(ml).fill(''));
+    setPartial1Submitted(new Set());
+    setPartial2Submitted(new Set());
     setActiveIdx(ml - 1);
     setActiveTopIdx(0);
     if (p.hasPartials) {
@@ -575,6 +579,11 @@ export default function ColumnMathGame({ onBack, language }) {
     if (status !== 'playing' || !problem.hasPartials) return;
     const cleaned = rawValue.replace(/[^0-9]/g, '');
 
+    // Mark this index as submitted
+    const newSubmitted = new Set(partial1Submitted);
+    newSubmitted.add(i);
+    setPartial1Submitted(newSubmitted);
+
     if (!cleaned) {
       const digits = [...partial1Inputs];
       digits[i] = '';
@@ -609,6 +618,11 @@ export default function ColumnMathGame({ onBack, language }) {
   const processPartial2CarryLogic = (i, rawValue) => {
     if (status !== 'playing' || !problem.hasPartials) return;
     const cleaned = rawValue.replace(/[^0-9]/g, '');
+
+    // Mark this index as submitted
+    const newSubmitted = new Set(partial2Submitted);
+    newSubmitted.add(i);
+    setPartial2Submitted(newSubmitted);
 
     if (!cleaned) {
       const digits = [...partial2Inputs];
@@ -1249,10 +1263,10 @@ export default function ColumnMathGame({ onBack, language }) {
                 <div style={{ width: OP_W }} />
                 {Array.from({ length: maxLen }, (_, i) => {
                   const c = partial2CarryInputs[i] ?? '';
-                  // Only show box if there's an actual carry value
+                  // Only show box if user submitted the answer at i+1 and there's a carry
                   const hasCarry = c !== '';
-                  if (!hasCarry) return <div key={i} style={{ width: CELL_W }} />;
-                  const isActive = status === 'playing' && activeSection === 'partial2Carry' && activePartial2CarryIdx === i;
+                  const isSubmitted = partial2Submitted.has(i + 1);
+                  if (!hasCarry || !isSubmitted) return <div key={i} style={{ width: CELL_W }} />;
                   return (
                     <div key={i} style={{ width: CELL_W, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                       <div
@@ -1278,9 +1292,10 @@ export default function ColumnMathGame({ onBack, language }) {
                 <div style={{ width: OP_W }} />
                 {Array.from({ length: maxLen }, (_, i) => {
                   const c = partial1CarryInputs[i] ?? '';
-                  // Only show box if there's an actual carry value
+                  // Only show box if user submitted the answer at i+1 and there's a carry
                   const hasCarry = c !== '';
-                  if (!hasCarry) return <div key={i} style={{ width: CELL_W }} />;
+                  const isSubmitted = partial1Submitted.has(i + 1);
+                  if (!hasCarry || !isSubmitted) return <div key={i} style={{ width: CELL_W }} />;
                   return (
                     <div key={i} style={{ width: CELL_W, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                       <div
