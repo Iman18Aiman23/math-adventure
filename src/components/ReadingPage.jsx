@@ -119,8 +119,8 @@ export default function ReadingPage({ onBack, language }) {
 
         <div className="bm-hero">
           <div className="bm-hero-emoji">📖</div>
-          <h2 className="bm-hero-title">{language === 'bm' ? 'Mari Belajar Membaca!' : 'Let\'s Learn to Read!'}</h2>
-          <p className="bm-hero-subtitle">{language === 'bm' ? 'Pilih tahap kesukaran dan mulai perjalanan membaca anda.' : 'Choose a difficulty level and start your reading journey.'}</p>
+          <h2 className="bm-hero-title">{language === 'bm' ? 'Kuasai Seni Membaca' : 'Master the Art of Reading'}</h2>
+          <p className="bm-hero-subtitle">{language === 'bm' ? 'Dari suku kata hingga ayat penuh. Mulai dari tahap mudah dan berkembang dengan kepercayaan diri!' : 'From syllables to complete sentences. Start easy and progress with confidence!'}</p>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
