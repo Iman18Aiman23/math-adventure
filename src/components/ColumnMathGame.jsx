@@ -195,6 +195,7 @@ export default function ColumnMathGame({ onBack, language }) {
   const [userStruckRow,    setUserStruckRow]    = useState([]);
   const [userBorrowedTo,   setUserBorrowedTo]   = useState([]);
   const [confirmBorrowIdx, setConfirmBorrowIdx] = useState(null);
+  const [borrowAnswerInput, setBorrowAnswerInput] = useState('');
   const [lockMessage,      setLockMessage]      = useState('');
   const [partial1Inputs,       setPartial1Inputs]       = useState([]);
   const [partial2Inputs,       setPartial2Inputs]       = useState([]);
@@ -829,62 +830,87 @@ export default function ColumnMathGame({ onBack, language }) {
 
       {showStreak && <StreakPopup streak={streak} language={language} onClose={() => { setShowStreak(false); newProblem(); }} />}
 
-      {/* Borrow confirmation dialog */}
+      {/* Borrow confirmation dialog with math problem */}
       {confirmBorrowIdx !== null && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(28, 32, 40, 0.55)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backdropFilter: 'blur(2px)' }}>
-          <div className="cmg-dialog" style={{ background: '#fff', borderRadius: '24px', padding: '1.75rem 1.5rem 1.5rem', textAlign: 'center', maxWidth: '320px', width: '100%', boxShadow: '0 24px 60px rgba(0,0,0,0.25)', border: '3px solid #FFE0E0', position: 'relative', overflow: 'hidden' }}>
+          <div className="cmg-dialog" style={{ background: '#fff', borderRadius: '24px', padding: '1.75rem 1.5rem 1.5rem', textAlign: 'center', maxWidth: '340px', width: '100%', boxShadow: '0 24px 60px rgba(0,0,0,0.25)', border: '3px solid #FFE0E0', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '6px', background: 'linear-gradient(90deg, #FFA8A8, #FF4B4B)' }} />
             <div style={{ fontSize: '2.75rem', marginBottom: '0.25rem' }}>🏠</div>
-            <div style={{ fontWeight: 900, fontSize: '1.05rem', color: '#3C3C3C', marginBottom: '0.25rem' }}>
+            <div style={{ fontWeight: 900, fontSize: '1.05rem', color: '#3C3C3C', marginBottom: '1rem' }}>
               {bm ? 'Pinjam dari Rumah Sebelah?' : 'Borrow from this neighbour?'}
             </div>
-            <div style={{ fontSize: '0.8rem', color: '#777', fontWeight: 600, marginBottom: '0.85rem' }}>
-              {bm ? 'Tolak 1 dari digit ini' : 'Subtract 1 from this digit'}
+
+            <div style={{ background: '#FFF5F5', borderRadius: '16px', padding: '1.25rem', marginBottom: '1.25rem', border: '2px solid #FFE0E0' }}>
+              <div style={{ fontWeight: 700, fontSize: '1.15rem', color: '#3C3C3C', marginBottom: '0.75rem' }}>
+                {bm ? `Berapa ${p1[confirmBorrowIdx]} - 1 = ?` : `What is ${p1[confirmBorrowIdx]} - 1 = ?`}
+              </div>
+              <input
+                type="text"
+                inputMode="numeric"
+                value={borrowAnswerInput}
+                onChange={(e) => setBorrowAnswerInput(e.target.value.replace(/[^0-9]/g, '').slice(0, 1))}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    const digit = parseInt(p1[confirmBorrowIdx], 10);
+                    const correct = parseInt(borrowAnswerInput) === digit - 1;
+                    if (correct) {
+                      const idx = confirmBorrowIdx;
+                      const newStruck = [...userStruckRow];
+                      newStruck[idx] = true;
+                      newStruck[idx + 1] = true;
+                      setUserStruckRow(newStruck);
+
+                      const newBorrowedTo = [...userBorrowedTo];
+                      newBorrowedTo[idx + 1] = true;
+                      setUserBorrowedTo(newBorrowedTo);
+
+                      const newTopInputs = [...topRowInputs];
+                      if (p1[idx] && p1[idx] !== ' ') {
+                        newTopInputs[idx] = String(parseInt(p1[idx], 10) - 1);
+                      }
+                      const currentTargetValue = newTopInputs[idx + 1] ? parseInt(newTopInputs[idx + 1], 10) : parseInt(p1[idx + 1], 10);
+                      if (!isNaN(currentTargetValue)) {
+                        newTopInputs[idx + 1] = String(currentTargetValue + 10);
+                      }
+                      setTopRowInputs(newTopInputs);
+
+                      const nextIdx = inputDigits[idx + 1] !== '' ? idx : idx + 1;
+                      setActiveIdx(nextIdx);
+                      setActiveSection('answer');
+                      setLockMessage('');
+                      setConfirmBorrowIdx(null);
+                      setBorrowAnswerInput('');
+                    }
+                  }
+                }}
+                autoFocus
+                style={{
+                  width: '80px',
+                  height: '60px',
+                  fontSize: '2rem',
+                  fontWeight: 900,
+                  textAlign: 'center',
+                  border: '3px solid #FF4B4B',
+                  borderRadius: '12px',
+                  fontFamily: '"Courier New", monospace',
+                  color: '#FF4B4B',
+                  padding: '0.5rem',
+                  marginBottom: '0.75rem'
+                }}
+              />
+              {borrowAnswerInput && parseInt(borrowAnswerInput) !== parseInt(p1[confirmBorrowIdx], 10) - 1 && (
+                <div style={{ fontSize: '0.85rem', color: '#FF4B4B', fontWeight: 600 }}>
+                  {bm ? 'Tidak betul, cuba lagi!' : 'Not correct, try again!'}
+                </div>
+              )}
             </div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '88px', height: '88px', borderRadius: '20px', background: '#FFF1F1', border: '3px dashed #FF4B4B', fontSize: '3.5rem', fontWeight: 900, fontFamily: '"Courier New", monospace', color: '#FF4B4B', marginBottom: '1.25rem', lineHeight: 1 }}>
-              {p1[confirmBorrowIdx]}
-            </div>
+
             <div style={{ display: 'flex', gap: '0.75rem' }}>
               <button
                 onClick={() => {
-                  const idx = confirmBorrowIdx;
-                  const newStruck = [...userStruckRow];
-                  newStruck[idx] = true;
-                  newStruck[idx + 1] = true;
-                  setUserStruckRow(newStruck);
-
-                  const newBorrowedTo = [...userBorrowedTo];
-                  newBorrowedTo[idx + 1] = true;
-                  setUserBorrowedTo(newBorrowedTo);
-
-                  const newTopInputs = [...topRowInputs];
-                  const srcChar = p1[idx];
-                  if (srcChar && srcChar !== ' ') {
-                    newTopInputs[idx] = String(parseInt(srcChar, 10) - 1);
-                  }
-                  // Use current value from topRowInputs if it exists (from cascading borrows), otherwise use original
-                  const currentTargetValue = newTopInputs[idx + 1] ? parseInt(newTopInputs[idx + 1], 10) : parseInt(p1[idx + 1], 10);
-                  if (!isNaN(currentTargetValue)) {
-                    newTopInputs[idx + 1] = String(currentTargetValue + 10);
-                  }
-                  setTopRowInputs(newTopInputs);
-
-                  // After borrow: move focus to the next column to be answered.
-                  // If the borrow target (idx+1) already has a typed digit, advance left to idx.
-                  // Otherwise focus stays at idx+1 so the user can answer it now.
-                  const nextIdx = inputDigits[idx + 1] !== '' ? idx : idx + 1;
-                  setActiveIdx(nextIdx);
-                  setActiveSection('answer');
-                  setLockMessage('');
                   setConfirmBorrowIdx(null);
+                  setBorrowAnswerInput('');
                 }}
-                className="cmg-btn"
-                style={{ flex: 1, padding: '0.85rem', background: '#58CC02', color: '#fff', fontWeight: 900, fontSize: '1rem', borderRadius: '14px', border: 'none', borderBottom: '4px solid #46A302', cursor: 'pointer', letterSpacing: '0.02em' }}
-              >
-                {bm ? '✓ Ya, Pinjam' : '✓ Yes, Borrow'}
-              </button>
-              <button
-                onClick={() => setConfirmBorrowIdx(null)}
                 className="cmg-btn"
                 style={{ flex: 1, padding: '0.85rem', background: '#fff', color: '#9A9A9A', fontWeight: 900, fontSize: '1rem', borderRadius: '14px', border: '2px solid #E5E5E5', borderBottom: '4px solid #C0C0C0', cursor: 'pointer' }}
               >
