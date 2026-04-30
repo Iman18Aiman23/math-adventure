@@ -123,48 +123,28 @@ export default function ReadingPage({ onBack, language }) {
           <p className="bm-hero-subtitle">{language === 'bm' ? 'Dari suku kata hingga ayat penuh. Mulai dari tahap mudah dan berkembang dengan kepercayaan diri!' : 'From syllables to complete sentences. Start easy and progress with confidence!'}</p>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div className="reading-level-grid">
           {[
-            { level: 1, title: 'Tahap 1 (KV)', desc: 'Sebutan ringkas (Contoh: Ba-ca)', color: '#FF9600', bg: '#FFF0CC' },
-            { level: 2, title: 'Tahap 2 (KVK)', desc: 'Perkataan tertutup (Contoh: Ma-kan)', color: '#1CB0F6', bg: '#D0F0FF' },
-            { level: 3, title: 'Tahap 3 (Ayat Pendek)', desc: 'Gabungan perkataan (Contoh: Buku Baru)', color: '#CE82FF', bg: '#EDD9FF' },
-            { level: 4, title: 'Tahap 4 (Ayat Panjang)', desc: 'Membaca ayat penuh berserta makna', color: '#58CC02', bg: '#E0FFD4' },
+            { level: 1, title: 'Tahap 1 (KV)', desc: 'Sebutan ringkas (Contoh: Ba-ca)', color: '#FF9600' },
+            { level: 2, title: 'Tahap 2 (KVK)', desc: 'Perkataan tertutup (Contoh: Ma-kan)', color: '#1CB0F6' },
+            { level: 3, title: 'Tahap 3 (Ayat Pendek)', desc: 'Gabungan perkataan (Contoh: Buku Baru)', color: '#CE82FF' },
+            { level: 4, title: 'Tahap 4 (Ayat Panjang)', desc: 'Membaca ayat penuh berserta makna', color: '#58CC02' },
           ].map(lvl => (
             <button
               key={lvl.level}
+              className="reading-level-card fade-in"
               onClick={() => handleSelectLevel(lvl.level)}
-              style={{
-                display: 'flex', alignItems: 'center', padding: '1.25rem',
-                background: '#fff', border: `3px solid ${lvl.bg}`, borderLeft: `5px solid ${lvl.color}`, borderRadius: '16px',
-                cursor: 'pointer', transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)', textAlign: 'left', gap: '1.2rem', width: '100%', minHeight: '80px'
-              }}
-              onMouseEnter={(e) => {
-                playHoverSound();
-                e.currentTarget.style.transform = 'translateY(-3px)';
-                e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.15)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'none';
-                e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.1)';
-              }}
-              onMouseDown={(e) => {
-                e.currentTarget.style.transform = 'translateY(2px)';
-                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
-              }}
-              onMouseUp={(e) => {
-                e.currentTarget.style.transform = 'translateY(-3px)';
-                e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.15)';
-              }}
+              style={{ '--level-color': lvl.color }}
+              onMouseEnter={playHoverSound}
             >
-              <div style={{ background: lvl.color, color: '#fff', fontSize: '1.8rem', fontWeight: 900, width: '56px', height: '56px', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: '56px' }}>
+              <div className="reading-level-icon" style={{ background: lvl.color }}>
                 {lvl.level}
               </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: '1.1rem', fontWeight: 900, color: '#3C3C3C' }}>{lvl.title}</div>
-                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#AFAFAF' }}>{lvl.desc}</div>
+              <div className="reading-level-info">
+                <div className="reading-level-title">{lvl.title}</div>
+                <div className="reading-level-desc">{lvl.desc}</div>
               </div>
-              <div style={{ fontSize: '1.5rem', color: '#AFAFAF' }}>›</div>
+              <div className="reading-level-arrow">›</div>
             </button>
           ))}
         </div>
