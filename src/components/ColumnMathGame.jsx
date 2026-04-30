@@ -1258,10 +1258,7 @@ export default function ColumnMathGame({ onBack, language }) {
 
 
             {/* Multiplication Carry Row 2 (Top-most) */}
-            {problem.hasPartials && Array.from({ length: maxLen }, (_, i) => {
-              const c = partial2CarryInputs[i] ?? '';
-              return c !== '' && partial2Submitted.has(i);
-            }).some(v => v) && (
+            {problem.hasPartials && partial2CarryInputs.some((c, i) => c !== '' && partial2Submitted.has(i)) && (
               <div style={{ display: 'flex', alignItems: 'center', height: isDesktop ? '38px' : '30px', marginBottom: '2px' }}>
                 <div style={{ width: OP_W }} />
                 {Array.from({ length: maxLen }, (_, i) => {
@@ -1290,10 +1287,7 @@ export default function ColumnMathGame({ onBack, language }) {
             )}
 
             {/* Multiplication Carry Row 1 */}
-            {problem.hasPartials && Array.from({ length: maxLen }, (_, i) => {
-              const c = partial1CarryInputs[i] ?? '';
-              return c !== '' && partial1Submitted.has(i);
-            }).some(v => v) && (
+            {problem.hasPartials && partial1CarryInputs.some((c, i) => c !== '' && partial1Submitted.has(i)) && (
               <div style={{ display: 'flex', alignItems: 'center', height: isDesktop ? '38px' : '30px', marginBottom: '4px' }}>
                 <div style={{ width: OP_W }} />
                 {Array.from({ length: maxLen }, (_, i) => {
