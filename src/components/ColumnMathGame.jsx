@@ -1244,18 +1244,14 @@ export default function ColumnMathGame({ onBack, language }) {
 
 
             {/* Multiplication Carry Row 2 (Top-most) */}
-            {problem.hasPartials && p2Carries.some(v => v !== null) && (
+            {problem.hasPartials && (
               <div style={{ display: 'flex', alignItems: 'center', height: isDesktop ? '38px' : '30px', marginBottom: '2px' }}>
                 <div style={{ width: OP_W }} />
                 {Array.from({ length: maxLen }, (_, i) => {
                   const cInfo = p2Carries[i];
-                  // Visible if there's a carry needed AND user has reached or passed the active column for it
-                  // For partial 2, the ones digit corresponds to index maxLen - 2
-                  // The calculation for digit i+1 might generate carry for i
-                  // Let's just show it if activeSection is partial2/partial2Carry and activeIdx <= i+1
-                  // Actually, just show it when partial1 is done and we are on partial 2
+                  // Show carry row during partial2 entry or when there's a carry
                   const isP1Done = !partial1Inputs.slice(maxLen - String(problem.partial1).length).includes('');
-                  const isVisible = cInfo !== null && isP1Done;
+                  const isVisible = (activeSection === 'partial2' || activeSection === 'partial2Carry') || (cInfo !== null && isP1Done);
                   
                   if (!isVisible) return <div key={i} style={{ width: CELL_W }} />;
                   const c = partial2CarryInputs[i] ?? '';
@@ -1284,15 +1280,13 @@ export default function ColumnMathGame({ onBack, language }) {
             )}
 
             {/* Multiplication Carry Row 1 */}
-            {problem.hasPartials && p1Carries.some(v => v !== null) && (
+            {problem.hasPartials && (
               <div style={{ display: 'flex', alignItems: 'center', height: isDesktop ? '38px' : '30px', marginBottom: '4px' }}>
                 <div style={{ width: OP_W }} />
                 {Array.from({ length: maxLen }, (_, i) => {
                   const cInfo = p1Carries[i];
-                  // Visible if there's a carry and we are calculating it or beyond it
-                  // activePartial1Idx goes from maxLen-1 down to maxLen - N1.
-                  // If activePartial1Idx <= i+1, we have reached the point where this carry is generated.
-                  const isVisible = cInfo !== null && (activeSection !== 'answer' && activeSection !== 'topRow') && (activePartial1Idx <= i + 1 || activeSection === 'partial1Carry' || activeSection === 'partial2' || activeSection === 'partial2Carry');
+                  // Show carry row during partial1 entry or when there's a carry
+                  const isVisible = (activeSection === 'partial1' || activeSection === 'partial1Carry') || (cInfo !== null && (activePartial1Idx <= i + 1 || activeSection === 'partial2' || activeSection === 'partial2Carry'));
                   
                   if (!isVisible) return <div key={i} style={{ width: CELL_W }} />;
                   const c = partial1CarryInputs[i] ?? '';
