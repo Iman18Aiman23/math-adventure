@@ -76,6 +76,127 @@ function StreakPopup({ streak, language, onClose }) {
   );
 }
 
+function TutorialModal({ operation, language, onClose, num1, num2 }) {
+  const bm = language === 'bm';
+  const isDesktop = typeof window !== 'undefined' ? window.innerWidth >= 768 : true;
+
+  const getTutorialContent = () => {
+    if (operation === '+') {
+      return {
+        title: bm ? 'Cara Menambah Nombor' : 'How to Add Numbers',
+        steps: bm ? [
+          { title: 'Langkah 1: Senaraikan Nombor', desc: 'Letakkan nombor di atas satu sama lain. Selaraskan digit mengikut nilai tempat (unit, puluh, ratus, dsb).' },
+          { title: 'Langkah 2: Mulai dari Kanan', desc: 'Mulakan dengan lajur paling kanan (unit). Tambahkan digit di lajur itu.' },
+          { title: 'Langkah 3: Tulis Jawapan', desc: 'Tulis hasilnya di bawah lajur. Jika hasil lebih daripada 9, lihat Langkah 4.' },
+          { title: 'Langkah 4: Gendong Angka', desc: 'Jika hasil adalah 10 atau lebih, tulis digit unit dan "gendong" digit puluh ke lajur seterusnya.' },
+          { title: 'Langkah 5: Terus ke Kiri', desc: 'Lakukan perkara yang sama untuk lajur puluh, ratus, dan seterusnya sehingga selesai.' },
+          { title: 'Langkah 6: Semak Jawapan', desc: 'Baca jawapan akhir dari kiri ke kanan. Contoh: 25 + 17 = 42' }
+        ] : [
+          { title: 'Step 1: Line Up Numbers', desc: 'Place numbers on top of each other. Align digits by place value (ones, tens, hundreds, etc).' },
+          { title: 'Step 2: Start from the Right', desc: 'Begin with the rightmost column (ones place). Add the digits in that column.' },
+          { title: 'Step 3: Write the Answer', desc: 'Write the result below the column. If the result is more than 9, see Step 4.' },
+          { title: 'Step 4: Carry the Number', desc: 'If the result is 10 or more, write the ones digit and "carry" the tens digit to the next column.' },
+          { title: 'Step 5: Continue Left', desc: 'Do the same for the tens, hundreds, and continue until you\'re done.' },
+          { title: 'Step 6: Check Your Answer', desc: 'Read the final answer from left to right. Example: 25 + 17 = 42' }
+        ]
+      };
+    } else if (operation === '-') {
+      return {
+        title: bm ? 'Cara Menolak Nombor' : 'How to Subtract Numbers',
+        steps: bm ? [
+          { title: 'Langkah 1: Senaraikan Nombor', desc: 'Letakkan nombor lebih besar di atas dan nombor lebih kecil di bawah. Selaraskan digit mengikut nilai tempat.' },
+          { title: 'Langkah 2: Mulai dari Kanan', desc: 'Mulakan dengan lajur paling kanan (unit). Tolak digit bawah daripada digit atas.' },
+          { title: 'Langkah 3: Tulis Jawapan', desc: 'Tulis hasilnya di bawah lajur.' },
+          { title: 'Langkah 4: Jika Tidak Boleh Tolak', desc: 'Jika digit atas lebih kecil daripada digit bawah, anda perlu "pinjam" daripada lajur di sebelah kiri.' },
+          { title: 'Langkah 5: Pinjam Dari Tetangga', desc: 'Ambil 1 daripada digit di sebelah kiri (ia menjadi 10 untuk lajur semasa). Tolak digit bawah daripada 10 + digit atas.' },
+          { title: 'Langkah 6: Terus ke Kiri', desc: 'Lakukan perkara yang sama untuk lajur seterusnya. Contoh: 32 - 15 = 17' }
+        ] : [
+          { title: 'Step 1: Line Up Numbers', desc: 'Place the larger number on top and smaller below. Align digits by place value.' },
+          { title: 'Step 2: Start from the Right', desc: 'Begin with the rightmost column (ones place). Subtract the bottom digit from the top digit.' },
+          { title: 'Step 3: Write the Answer', desc: 'Write the result below the column.' },
+          { title: 'Step 4: When You Can\'t Subtract', desc: 'If the top digit is smaller than the bottom digit, you need to "borrow" from the column on the left.' },
+          { title: 'Step 5: Borrow from Neighbor', desc: 'Take 1 from the digit on the left (it becomes 10 for the current column). Subtract from 10 + top digit.' },
+          { title: 'Step 6: Continue Left', desc: 'Do the same for the next columns. Example: 32 - 15 = 17' }
+        ]
+      };
+    } else if (operation === '×') {
+      return {
+        title: bm ? 'Cara Mendarab Nombor' : 'How to Multiply Numbers',
+        steps: bm ? [
+          { title: 'Langkah 1: Senaraikan Nombor', desc: 'Letakkan nombor pertama di atas dan nombor kedua di bawah. Lukis garis di bawah.' },
+          { title: 'Langkah 2: Darab Digit Satu-Satu', desc: 'Mulakan dengan digit paling kanan nombor bawah. Darabkan dengan setiap digit nombor atas, dari kanan ke kiri.' },
+          { title: 'Langkah 3: Tulis Hasilnya (Bahagian 1)', desc: 'Tulis hasil pertama (dipanggil hasil separa 1) di bawah garis, selaraskan ke kanan.' },
+          { title: 'Langkah 4: Darab Digit Kedua', desc: 'Ambil digit seterusnya (puluh) daripada nombor bawah. Darabkan dengan setiap digit nombor atas.' },
+          { title: 'Langkah 5: Tulis Hasilnya (Bahagian 2)', desc: 'Tulis hasil kedua (hasil separa 2) di bawah, tetapi geser satu tempat ke kiri.' },
+          { title: 'Langkah 6: Tambahkan Semua', desc: 'Tambahkan semua hasil separa bersama-sama untuk mendapatkan jawapan akhir. Contoh: 23 × 12 = 276' }
+        ] : [
+          { title: 'Step 1: Line Up Numbers', desc: 'Place the first number on top and second below. Draw a line underneath.' },
+          { title: 'Step 2: Multiply One Digit', desc: 'Start with the rightmost digit of the bottom number. Multiply it by each digit in the top number, right to left.' },
+          { title: 'Step 3: Write the Result (Part 1)', desc: 'Write the first result (called partial product 1) below the line, aligned to the right.' },
+          { title: 'Step 4: Multiply Next Digit', desc: 'Take the next digit (tens place) from the bottom number. Multiply it by each digit in the top number.' },
+          { title: 'Step 5: Write the Result (Part 2)', desc: 'Write the second result (partial product 2) below, but shift one place to the left.' },
+          { title: 'Step 6: Add Everything Up', desc: 'Add all partial products together to get the final answer. Example: 23 × 12 = 276' }
+        ]
+      };
+    }
+    return { title: bm ? 'Maklumat' : 'Information', steps: [] };
+  };
+
+  const content = getTutorialContent();
+
+  return (
+    <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+      <div onClick={e => e.stopPropagation()} style={{ background: '#fff', borderRadius: '24px', padding: '2rem', maxWidth: isDesktop ? '600px' : '100%', width: '100%', maxHeight: '85vh', overflowY: 'auto', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+          <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 900, color: '#3C3C3C' }}>{content.title}</h2>
+          <button
+            onClick={onClose}
+            style={{ background: 'transparent', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#999' }}
+          >
+            ✕
+          </button>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          {content.steps.map((step, idx) => (
+            <div key={idx} style={{ display: 'flex', gap: '1rem' }}>
+              <div style={{
+                minWidth: '32px', width: '32px', height: '32px',
+                borderRadius: '50%',
+                background: '#FFE6F0',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontWeight: 900, color: '#FF4B4B', fontSize: '0.9rem', flexShrink: 0
+              }}>
+                {idx + 1}
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#3C3C3C', marginBottom: '0.3rem' }}>
+                  {step.title}
+                </div>
+                <div style={{ fontSize: '0.85rem', color: '#666', lineHeight: 1.4 }}>
+                  {step.desc}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <button
+          onClick={onClose}
+          style={{
+            marginTop: '2rem', width: '100%',
+            background: '#58CC02', color: '#fff', fontWeight: 900, fontSize: '1rem',
+            padding: '0.75rem 2rem', borderRadius: '12px', border: 'none',
+            borderBottom: '4px solid #46A302', cursor: 'pointer'
+          }}
+        >
+          {bm ? 'Tutup' : 'Close'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function useIsDesktop(bp = 768) {
   const [isDesk, setIsDesk] = useState(() => typeof window !== 'undefined' ? window.innerWidth >= bp : false);
   useEffect(() => {
@@ -206,6 +327,7 @@ export default function ColumnMathGame({ onBack, language }) {
   const [activePartial2Idx,    setActivePartial2Idx]    = useState(0);
   const [activePartial1CarryIdx, setActivePartial1CarryIdx] = useState(0);
   const [activePartial2CarryIdx, setActivePartial2CarryIdx] = useState(0);
+  const [showTutorial,         setShowTutorial]         = useState(false);
 
   const inputRefs            = useRef([]);
   const topRowRefs           = useRef([]);
@@ -831,6 +953,8 @@ export default function ColumnMathGame({ onBack, language }) {
 
       {showStreak && <StreakPopup streak={streak} language={language} onClose={() => { setShowStreak(false); newProblem(); }} />}
 
+      {showTutorial && <TutorialModal operation={problem?.op} language={language} onClose={() => setShowTutorial(false)} num1={problem?.num1} num2={problem?.num2} />}
+
       {/* Borrow confirmation dialog with math problem */}
       {confirmBorrowIdx !== null && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(28, 32, 40, 0.55)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backdropFilter: 'blur(2px)' }}>
@@ -1088,7 +1212,7 @@ export default function ColumnMathGame({ onBack, language }) {
 
           {/* Information icon button */}
           <button
-            onClick={() => {}}
+            onClick={() => setShowTutorial(true)}
             title={bm ? 'Maklumat' : 'Information'}
             style={{
               position: 'absolute', top: isDesktop ? '18px' : '14px', right: isDesktop ? '18px' : '14px',
