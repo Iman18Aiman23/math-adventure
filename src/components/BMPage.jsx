@@ -109,6 +109,7 @@ export default function BMPage({ onBack, onHome, language }) {
               className="bm-category-card fade-in"
               style={{
                 '--card-gradient': cat.gradient,
+                '--card-color': cat.color,
                 animationDelay: `${i * 0.06}s`,
                 opacity: !isSupported ? 0.5 : 1,
               }}
