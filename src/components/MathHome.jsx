@@ -1,5 +1,4 @@
 import React from 'react';
-import { ArrowLeft } from 'lucide-react';
 import { LOCALIZATION } from '../utils/localization';
 
 const SUB_GAMES = [
@@ -36,20 +35,14 @@ export default function MathHome({ onSelectSubGame, onBack, onHome, language }) 
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
       {/* Header */}
       <div style={{
-        background: 'linear-gradient(135deg, #FFFFFF 0%, #FFF5E6 100%)',
-        borderBottom: '3px solid #FFD700',
-        padding: '0 1rem',
-        height: '56px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0.75rem',
-        flexShrink: 0,
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+        background: '#fff', borderBottom: '2px solid #E5E5E5',
+        padding: '0 1rem', height: '56px',
+        display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0,
       }}>
-        <button onClick={onBack} style={{ background: 'transparent', color: '#FF6B6B', display: 'flex', alignItems: 'center', fontWeight: 'bold' }}>
-          <ArrowLeft size={24} />
+        <button onClick={onBack} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center', fontSize: '1.3rem' }}>
+          ←
         </button>
-        <div style={{ flex: 1, textAlign: 'center', fontWeight: 900, fontSize: '1.3rem', color: '#FF6B6B' }}>
+        <div style={{ flex: 1, textAlign: 'center', fontWeight: 900, fontSize: '1rem', color: '#3C3C3C' }}>
           🔢 {language === 'bm' ? 'Matematik' : 'Mathematics'}
         </div>
         <div style={{ width: 24 }} />

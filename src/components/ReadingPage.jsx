@@ -106,16 +106,24 @@ export default function ReadingPage({ onBack, language }) {
   // View: Level Selection
   if (!selectedLevel) {
     return (
-      <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', height: '100%', background: '#fff' }}>
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2rem' }}>
-          <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#AFAFAF', cursor: 'pointer' }}>
-            <ArrowLeft size={28} />
+      <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
+        {/* Header */}
+        <div style={{
+          background: '#fff', borderBottom: '2px solid #E5E5E5',
+          padding: '0 1rem', height: '56px',
+          display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0,
+        }}>
+          <button onClick={onBack} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center', fontSize: '1.3rem' }}>
+            ←
           </button>
-          <h1 style={{ flex: 1, textAlign: 'center', fontSize: '1.5rem', fontWeight: 900, color: '#3C3C3C', margin: 0 }}>
-            {language === 'bm' ? 'Pilih Tahap' : 'Select Level'}
-          </h1>
-          <div style={{ width: 28 }} />
+          <div style={{ flex: 1, textAlign: 'center', fontWeight: 900, fontSize: '1rem', color: '#3C3C3C' }}>
+            📖 {language === 'bm' ? 'Pilih Tahap' : 'Select Level'}
+          </div>
+          <div style={{ width: 24 }} />
         </div>
+
+        {/* Scrollable content */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 1rem' }}>
 
         <div className="bm-hero">
           <div className="bm-hero-emoji">📖</div>
@@ -147,6 +155,7 @@ export default function ReadingPage({ onBack, language }) {
               <div className="reading-level-arrow">›</div>
             </button>
           ))}
+        </div>
         </div>
       </div>
     );
