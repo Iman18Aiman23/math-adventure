@@ -196,6 +196,7 @@ export default function ColumnMathGame({ onBack, language }) {
   const [userBorrowedTo,   setUserBorrowedTo]   = useState([]);
   const [confirmBorrowIdx, setConfirmBorrowIdx] = useState(null);
   const [borrowAnswerInput, setBorrowAnswerInput] = useState('');
+  const [borrowSubmitAttempted, setBorrowSubmitAttempted] = useState(false);
   const [lockMessage,      setLockMessage]      = useState('');
   const [partial1Inputs,       setPartial1Inputs]       = useState([]);
   const [partial2Inputs,       setPartial2Inputs]       = useState([]);
@@ -848,9 +849,16 @@ export default function ColumnMathGame({ onBack, language }) {
                 type="text"
                 inputMode="numeric"
                 value={borrowAnswerInput}
-                onChange={(e) => setBorrowAnswerInput(e.target.value.replace(/[^0-9]/g, '').slice(0, 1))}
+                onChange={(e) => {
+                  const newValue = e.target.value.replace(/[^0-9]/g, '').slice(0, 1);
+                  setBorrowAnswerInput(newValue);
+                  if (newValue !== borrowAnswerInput) {
+                    setBorrowSubmitAttempted(false);
+                  }
+                }}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
+                  if (e.key === 'Enter' && borrowAnswerInput) {
+                    setBorrowSubmitAttempted(true);
                     const digit = parseInt(p1[confirmBorrowIdx], 10);
                     const correct = parseInt(borrowAnswerInput) === digit - 1;
                     if (correct) {
@@ -880,6 +888,7 @@ export default function ColumnMathGame({ onBack, language }) {
                       setLockMessage('');
                       setConfirmBorrowIdx(null);
                       setBorrowAnswerInput('');
+                      setBorrowSubmitAttempted(false);
                     }
                   }
                 }}
@@ -898,7 +907,7 @@ export default function ColumnMathGame({ onBack, language }) {
                   marginBottom: '0.75rem'
                 }}
               />
-              {borrowAnswerInput && parseInt(borrowAnswerInput) !== parseInt(p1[confirmBorrowIdx], 10) - 1 && (
+              {borrowSubmitAttempted && borrowAnswerInput && parseInt(borrowAnswerInput) !== parseInt(p1[confirmBorrowIdx], 10) - 1 && (
                 <div style={{ fontSize: '0.85rem', color: '#FF4B4B', fontWeight: 600 }}>
                   {bm ? 'Tidak betul, cuba lagi!' : 'Not correct, try again!'}
                 </div>
@@ -907,6 +916,7 @@ export default function ColumnMathGame({ onBack, language }) {
 
             <button
               onClick={() => {
+                setBorrowSubmitAttempted(true);
                 const digit = parseInt(p1[confirmBorrowIdx], 10);
                 const correct = parseInt(borrowAnswerInput) === digit - 1;
                 if (correct && borrowAnswerInput) {
@@ -936,6 +946,7 @@ export default function ColumnMathGame({ onBack, language }) {
                   setLockMessage('');
                   setConfirmBorrowIdx(null);
                   setBorrowAnswerInput('');
+                  setBorrowSubmitAttempted(false);
                 }
               }}
               disabled={!borrowAnswerInput}
