@@ -1248,31 +1248,24 @@ export default function ColumnMathGame({ onBack, language }) {
               <div style={{ display: 'flex', alignItems: 'center', height: isDesktop ? '38px' : '30px', marginBottom: '2px' }}>
                 <div style={{ width: OP_W }} />
                 {Array.from({ length: maxLen }, (_, i) => {
-                  const cInfo = p2Carries[i];
-                  // Show carry row during partial2 entry or when there's a carry
-                  const isP1Done = !partial1Inputs.slice(maxLen - String(problem.partial1).length).includes('');
-                  const isVisible = (activeSection === 'partial2' || activeSection === 'partial2Carry') || (cInfo !== null && isP1Done);
-                  
-                  if (!isVisible) return <div key={i} style={{ width: CELL_W }} />;
                   const c = partial2CarryInputs[i] ?? '';
+                  // Only show box if there's an actual carry value
+                  const hasCarry = c !== '';
+                  if (!hasCarry) return <div key={i} style={{ width: CELL_W }} />;
                   const isActive = status === 'playing' && activeSection === 'partial2Carry' && activePartial2CarryIdx === i;
                   return (
                     <div key={i} style={{ width: CELL_W, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                      <input
-                        ref={el => partial2CarryRefs.current[i] = el}
-                        type="text" inputMode="numeric" maxLength={2}
-                        value={c} readOnly={status !== 'playing'} tabIndex={status !== 'playing' ? -1 : 0}
-                        onChange={e => handlePartial2CarryChange(i, e.target.value)}
-                        onKeyDown={e => handlePartial2CarryKeyDown(i, e)}
-                        onFocus={() => { if (status === 'playing') { setActiveSection('partial2Carry'); setActivePartial2CarryIdx(i); } }}
+                      <div
                         style={{
                           width: TOP_W1, height: TOP_H, boxSizing: 'border-box',
-                          border: `2px solid ${isActive ? '#1CB0F6' : '#C0C0C0'}`,
-                          borderRadius: '6px', background: isActive ? '#EAF7FF' : '#fafafa',
+                          border: `2px solid #1CB0F6`,
+                          borderRadius: '6px', background: '#EAF7FF',
                           textAlign: 'center', fontSize: TOP_FS, fontWeight: 900, fontFamily: '"Courier New", monospace',
-                          color: '#1CB0F6', outline: 'none', caretColor: 'transparent', cursor: 'pointer'
+                          color: '#1CB0F6', display: 'flex', alignItems: 'center', justifyContent: 'center'
                         }}
-                      />
+                      >
+                        {c}
+                      </div>
                     </div>
                   );
                 })}
@@ -1284,30 +1277,23 @@ export default function ColumnMathGame({ onBack, language }) {
               <div style={{ display: 'flex', alignItems: 'center', height: isDesktop ? '38px' : '30px', marginBottom: '4px' }}>
                 <div style={{ width: OP_W }} />
                 {Array.from({ length: maxLen }, (_, i) => {
-                  const cInfo = p1Carries[i];
-                  // Show carry row during partial1 entry or when there's a carry
-                  const isVisible = (activeSection === 'partial1' || activeSection === 'partial1Carry') || (cInfo !== null && (activePartial1Idx <= i + 1 || activeSection === 'partial2' || activeSection === 'partial2Carry'));
-                  
-                  if (!isVisible) return <div key={i} style={{ width: CELL_W }} />;
                   const c = partial1CarryInputs[i] ?? '';
-                  const isActive = status === 'playing' && activeSection === 'partial1Carry' && activePartial1CarryIdx === i;
+                  // Only show box if there's an actual carry value
+                  const hasCarry = c !== '';
+                  if (!hasCarry) return <div key={i} style={{ width: CELL_W }} />;
                   return (
                     <div key={i} style={{ width: CELL_W, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                      <input
-                        ref={el => partial1CarryRefs.current[i] = el}
-                        type="text" inputMode="numeric" maxLength={2}
-                        value={c} readOnly={status !== 'playing'} tabIndex={status !== 'playing' ? -1 : 0}
-                        onChange={e => handlePartial1CarryChange(i, e.target.value)}
-                        onKeyDown={e => handlePartial1CarryKeyDown(i, e)}
-                        onFocus={() => { if (status === 'playing') { setActiveSection('partial1Carry'); setActivePartial1CarryIdx(i); } }}
+                      <div
                         style={{
                           width: TOP_W1, height: TOP_H, boxSizing: 'border-box',
-                          border: `2px solid ${isActive ? '#CE82FF' : '#C0C0C0'}`,
-                          borderRadius: '6px', background: isActive ? '#F3E5FF' : '#fafafa',
+                          border: `2px solid #CE82FF`,
+                          borderRadius: '6px', background: '#F3E5FF',
                           textAlign: 'center', fontSize: TOP_FS, fontWeight: 900, fontFamily: '"Courier New", monospace',
-                          color: '#CE82FF', outline: 'none', caretColor: 'transparent', cursor: 'pointer'
+                          color: '#CE82FF', display: 'flex', alignItems: 'center', justifyContent: 'center'
                         }}
-                      />
+                      >
+                        {c}
+                      </div>
                     </div>
                   );
                 })}
