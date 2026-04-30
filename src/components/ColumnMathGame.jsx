@@ -1086,19 +1086,6 @@ export default function ColumnMathGame({ onBack, language }) {
           {/* Top color stripe themed by operation */}
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: isDesktop ? '8px' : '6px', background: opTheme.stripe, borderTopLeftRadius: '21px', borderTopRightRadius: '21px' }} />
 
-          {/* Operation badge */}
-          <div style={{
-            position: 'absolute', top: isDesktop ? '18px' : '14px', right: isDesktop ? '18px' : '14px',
-            width: isDesktop ? '42px' : '34px', height: isDesktop ? '42px' : '34px', borderRadius: '50%',
-            background: opTheme.main, color: '#fff',
-            fontWeight: 900, fontSize: isDesktop ? '1.35rem' : '1.1rem',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontFamily: '"Courier New", monospace',
-            boxShadow: `0 3px 0 ${opTheme.dark}`,
-          }}>
-            {problem.op}
-          </div>
-
           {/* Information icon button */}
           <button
             onClick={() => {}}
