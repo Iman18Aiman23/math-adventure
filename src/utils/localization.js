@@ -127,7 +127,7 @@ export const LOCALIZATION = {
         },
         bmPage: {
             title: 'Bahasa Melayu',
-            heroTitle: 'Sebut & Main! 🎤',
+            heroTitle: 'Sebut & Main!',
             heroSubtitle: 'Bercakap untuk bermain! Pilih kategori di bawah.',
             notSupported: 'Pelayar anda tidak menyokong Speech Recognition. Sila gunakan Chrome atau Edge.',
             micDenied: 'Capaian mikrofon ditolak. Sila benarkan capaian mikrofon dalam tetapan pelayar anda dan cuba lagi.',
@@ -330,7 +330,7 @@ export const LOCALIZATION = {
         },
         bmPage: {
             title: 'Bahasa Melayu',
-            heroTitle: 'Speak & Play! 🎤',
+            heroTitle: 'Speak & Play!',
             heroSubtitle: 'Speak to play! Choose a category below.',
             notSupported: 'Your browser does not support Speech Recognition. Please use Chrome or Edge.',
             micDenied: 'Microphone access was denied. Please allow microphone access in your browser settings and try again.',
