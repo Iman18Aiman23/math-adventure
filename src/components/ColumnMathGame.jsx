@@ -1091,8 +1091,8 @@ export default function ColumnMathGame({ onBack, language }) {
             onClick={() => {}}
             title={bm ? 'Maklumat' : 'Information'}
             style={{
-              position: 'absolute', top: isDesktop ? '68px' : '58px', right: isDesktop ? '18px' : '14px',
-              width: isDesktop ? '42px' : '36px', height: isDesktop ? '42px' : '36px', borderRadius: '50%',
+              position: 'absolute', top: isDesktop ? '18px' : '14px', right: isDesktop ? '18px' : '14px',
+              width: isDesktop ? '42px' : '34px', height: isDesktop ? '42px' : '34px', borderRadius: '50%',
               background: '#fff', color: '#FF4B4B',
               fontWeight: 900, fontSize: isDesktop ? '1.8rem' : '1.6rem',
               fontFamily: 'Georgia, serif',
