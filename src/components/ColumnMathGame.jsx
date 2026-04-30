@@ -602,9 +602,9 @@ export default function ColumnMathGame({ onBack, language }) {
       digits[i] = ones;
       setPartial1Inputs(digits);
 
-      // Set the tens digit in the upper carry field (left column)
+      // Set the tens digit in the carry row directly above this position
       const carryInputs = [...partial1CarryInputs];
-      carryInputs[i - 1] = tens;
+      carryInputs[i] = tens;
       setPartial1CarryInputs(carryInputs);
       return;
     }
@@ -642,9 +642,9 @@ export default function ColumnMathGame({ onBack, language }) {
       digits[i] = ones;
       setPartial2Inputs(digits);
 
-      // Set the tens digit in the upper carry field (left column)
+      // Set the tens digit in the carry row directly above this position
       const carryInputs = [...partial2CarryInputs];
-      carryInputs[i - 1] = tens;
+      carryInputs[i] = tens;
       setPartial2CarryInputs(carryInputs);
       return;
     }
@@ -1263,9 +1263,9 @@ export default function ColumnMathGame({ onBack, language }) {
                 <div style={{ width: OP_W }} />
                 {Array.from({ length: maxLen }, (_, i) => {
                   const c = partial2CarryInputs[i] ?? '';
-                  // Only show box if user submitted the answer at i+1 and there's a carry
+                  // Only show box if user submitted the answer at position i and there's a carry
                   const hasCarry = c !== '';
-                  const isSubmitted = partial2Submitted.has(i + 1);
+                  const isSubmitted = partial2Submitted.has(i);
                   if (!hasCarry || !isSubmitted) return <div key={i} style={{ width: CELL_W }} />;
                   return (
                     <div key={i} style={{ width: CELL_W, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -1292,9 +1292,9 @@ export default function ColumnMathGame({ onBack, language }) {
                 <div style={{ width: OP_W }} />
                 {Array.from({ length: maxLen }, (_, i) => {
                   const c = partial1CarryInputs[i] ?? '';
-                  // Only show box if user submitted the answer at i+1 and there's a carry
+                  // Only show box if user submitted the answer at position i and there's a carry
                   const hasCarry = c !== '';
-                  const isSubmitted = partial1Submitted.has(i + 1);
+                  const isSubmitted = partial1Submitted.has(i);
                   if (!hasCarry || !isSubmitted) return <div key={i} style={{ width: CELL_W }} />;
                   return (
                     <div key={i} style={{ width: CELL_W, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
