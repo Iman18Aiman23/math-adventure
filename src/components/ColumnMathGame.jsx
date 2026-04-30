@@ -124,18 +124,20 @@ function TutorialModal({ operation, language, onClose, num1, num2 }) {
         title: bm ? 'Cara Mendarab Nombor' : 'How to Multiply Numbers',
         steps: bm ? [
           { title: 'Langkah 1: Senaraikan Nombor', desc: 'Letakkan nombor pertama di atas dan nombor kedua di bawah. Lukis garis di bawah.' },
-          { title: 'Langkah 2: Darab Digit Satu-Satu', desc: 'Mulakan dengan digit paling kanan nombor bawah. Darabkan dengan setiap digit nombor atas, dari kanan ke kiri.' },
-          { title: 'Langkah 3: Tulis Hasilnya (Bahagian 1)', desc: 'Tulis hasil pertama (dipanggil hasil separa 1) di bawah garis, selaraskan ke kanan.' },
-          { title: 'Langkah 4: Darab Digit Kedua', desc: 'Ambil digit seterusnya (puluh) daripada nombor bawah. Darabkan dengan setiap digit nombor atas.' },
-          { title: 'Langkah 5: Tulis Hasilnya (Bahagian 2)', desc: 'Tulis hasil kedua (hasil separa 2) di bawah, tetapi geser satu tempat ke kiri.' },
-          { title: 'Langkah 6: Tambahkan Semua', desc: 'Tambahkan semua hasil separa bersama-sama untuk mendapatkan jawapan akhir. Contoh: 23 × 12 = 276' }
+          { title: 'Langkah 2: Darab Digit Unit', desc: 'Mulakan dengan digit paling kanan nombor bawah. Darabkan dengan setiap digit nombor atas, dari kanan ke kiri.' },
+          { title: 'Langkah 3: Gendong Apabila Lebih 10', desc: 'Jika hasil darab ≥ 10, tulis digit unit di jawapan dan "gendong" digit puluh ke atas seperti dalam penambahan. Contoh: 6×4=24, tulis 4 dan gendong 2.' },
+          { title: 'Langkah 4: Terus Darab Digit Unit', desc: 'Darab digit unit dengan digit seterusnya di nombor atas. Tambahkan angka gendong daripada Langkah 3 sebelum menulis hasilnya.' },
+          { title: 'Langkah 5: Darab Digit Puluh', desc: 'Ambil digit puluh daripada nombor bawah. Darabkan dengan setiap digit nombor atas (dari kanan ke kiri), dan ulangi proses gendong.' },
+          { title: 'Langkah 6: Tulis Hasil Separa 2', desc: 'Tulis hasil puluh di bawah, tetapi geser satu tempat ke kiri daripada hasil unit.' },
+          { title: 'Langkah 7: Tambahkan Semua', desc: 'Tambahkan semua hasil separa bersama-sama untuk mendapatkan jawapan akhir.' }
         ] : [
           { title: 'Step 1: Line Up Numbers', desc: 'Place the first number on top and second below. Draw a line underneath.' },
-          { title: 'Step 2: Multiply One Digit', desc: 'Start with the rightmost digit of the bottom number. Multiply it by each digit in the top number, right to left.' },
-          { title: 'Step 3: Write the Result (Part 1)', desc: 'Write the first result (called partial product 1) below the line, aligned to the right.' },
-          { title: 'Step 4: Multiply Next Digit', desc: 'Take the next digit (tens place) from the bottom number. Multiply it by each digit in the top number.' },
-          { title: 'Step 5: Write the Result (Part 2)', desc: 'Write the second result (partial product 2) below, but shift one place to the left.' },
-          { title: 'Step 6: Add Everything Up', desc: 'Add all partial products together to get the final answer. Example: 23 × 12 = 276' }
+          { title: 'Step 2: Multiply Ones Digit', desc: 'Start with the rightmost digit (ones place) of the bottom number. Multiply it by each digit in the top number, from right to left.' },
+          { title: 'Step 3: Carry When >= 10', desc: 'When a multiplication result is 10 or more, write the ones digit in the answer and "carry" the tens digit above, just like in addition. Example: 6×4=24, write 4 and carry 2.' },
+          { title: 'Step 4: Continue Multiplying Ones', desc: 'Multiply the ones digit by the next digit in the top number. Add the carried number from Step 3 before writing the result.' },
+          { title: 'Step 5: Multiply Tens Digit', desc: 'Now take the tens digit from the bottom number. Multiply it by each digit in the top number (right to left), and repeat the carrying process.' },
+          { title: 'Step 6: Write Partial Product 2', desc: 'Write the tens result below, but shift one place to the left compared to the ones result.' },
+          { title: 'Step 7: Add All Results', desc: 'Add all partial products together to get the final answer.' }
         ]
       };
     }
