@@ -841,9 +841,14 @@ export default function ColumnMathGame({ onBack, language }) {
               {bm ? 'Pinjam dari Rumah Sebelah?' : 'Borrow from this neighbour?'}
             </div>
 
-            <div style={{ background: '#FFF5F5', borderRadius: '16px', padding: '1.25rem', marginBottom: '1.25rem', border: '2px solid #FFE0E0' }}>
-              <div style={{ fontWeight: 700, fontSize: '1.15rem', color: '#3C3C3C', marginBottom: '0.75rem' }}>
-                {bm ? `Berapa ${p1[confirmBorrowIdx]} - 1 = ?` : `What is ${p1[confirmBorrowIdx]} - 1 = ?`}
+            <div style={{ background: '#FFF5F5', borderRadius: '16px', padding: '1.25rem', marginBottom: '1.25rem', border: '2px solid #FFE0E0', position: 'relative' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                <div style={{ fontWeight: 700, fontSize: '1.15rem', color: '#3C3C3C', flex: 1 }}>
+                  {bm ? `Berapa ${p1[confirmBorrowIdx]} - 1 = ?` : `What is ${p1[confirmBorrowIdx]} - 1 = ?`}
+                </div>
+                <div style={{ fontSize: '1.3rem', color: '#FF4B4B', fontWeight: 900, marginLeft: '0.5rem' }}>
+                  ℹ️
+                </div>
               </div>
               <input
                 type="text"
