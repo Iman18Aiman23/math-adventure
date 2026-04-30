@@ -905,18 +905,58 @@ export default function ColumnMathGame({ onBack, language }) {
               )}
             </div>
 
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
-              <button
-                onClick={() => {
+            <button
+              onClick={() => {
+                const digit = parseInt(p1[confirmBorrowIdx], 10);
+                const correct = parseInt(borrowAnswerInput) === digit - 1;
+                if (correct && borrowAnswerInput) {
+                  const idx = confirmBorrowIdx;
+                  const newStruck = [...userStruckRow];
+                  newStruck[idx] = true;
+                  newStruck[idx + 1] = true;
+                  setUserStruckRow(newStruck);
+
+                  const newBorrowedTo = [...userBorrowedTo];
+                  newBorrowedTo[idx + 1] = true;
+                  setUserBorrowedTo(newBorrowedTo);
+
+                  const newTopInputs = [...topRowInputs];
+                  if (p1[idx] && p1[idx] !== ' ') {
+                    newTopInputs[idx] = String(parseInt(p1[idx], 10) - 1);
+                  }
+                  const currentTargetValue = newTopInputs[idx + 1] ? parseInt(newTopInputs[idx + 1], 10) : parseInt(p1[idx + 1], 10);
+                  if (!isNaN(currentTargetValue)) {
+                    newTopInputs[idx + 1] = String(currentTargetValue + 10);
+                  }
+                  setTopRowInputs(newTopInputs);
+
+                  const nextIdx = inputDigits[idx + 1] !== '' ? idx : idx + 1;
+                  setActiveIdx(nextIdx);
+                  setActiveSection('answer');
+                  setLockMessage('');
                   setConfirmBorrowIdx(null);
                   setBorrowAnswerInput('');
-                }}
-                className="cmg-btn"
-                style={{ flex: 1, padding: '0.85rem', background: '#fff', color: '#9A9A9A', fontWeight: 900, fontSize: '1rem', borderRadius: '14px', border: '2px solid #E5E5E5', borderBottom: '4px solid #C0C0C0', cursor: 'pointer' }}
-              >
-                {bm ? 'Batal' : 'Cancel'}
-              </button>
-            </div>
+                }
+              }}
+              disabled={!borrowAnswerInput}
+              className="cmg-btn"
+              style={{
+                width: '100%',
+                padding: '0.95rem',
+                background: borrowAnswerInput ? '#58CC02' : '#E5E5E5',
+                color: borrowAnswerInput ? '#fff' : '#9A9A9A',
+                fontWeight: 900,
+                fontSize: '1rem',
+                borderRadius: '14px',
+                border: 'none',
+                borderBottom: borrowAnswerInput ? '4px solid #46A302' : '2px solid #C0C0C0',
+                cursor: borrowAnswerInput ? 'pointer' : 'not-allowed',
+                transition: 'all 0.2s ease',
+                letterSpacing: '0.02em'
+              }}
+            >
+              {bm ? '✓ Hantar' : '✓ Submit'}
+            </button>
           </div>
         </div>
       )}
