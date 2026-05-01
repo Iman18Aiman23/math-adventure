@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BookOpen } from 'lucide-react';
 import { JAWI_TOPICS } from '../utils/jawiWordsData';
 import { LOCALIZATION } from '../utils/localization';
+import { BilingualText } from '../utils/bilingual';
 import GameHeader from './GameHeader';
 
 const TopicCard = ({ topic, onClick, language }) => {
@@ -53,7 +54,8 @@ const TopicCard = ({ topic, onClick, language }) => {
                 padding: '0.2rem 0.6rem',
                 borderRadius: '0.75rem',
                 fontWeight: 'bold',
-                fontSize: '0.85rem'
+                fontSize: '0.85rem',
+                textAlign: 'center'
             }}>
                 {topic.words.length} {language === 'bm' ? 'Perkataan' : 'Words'}
             </div>

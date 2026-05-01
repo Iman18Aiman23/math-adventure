@@ -6,7 +6,7 @@ import { JAWI_ALPHABET } from '../utils/jawiData';
 import { SUKU_KATA_DATA } from '../utils/jawiSukuKataData';
 import JawiMatchGame from './JawiMatchGame';
 import JawiWordsPage from './JawiWordsPage';
-import JawiSyllablesGame from './JawiSyllablesGame';
+import JawiSyllablesLearningPage from './JawiSyllablesLearningPage';
 import Jawi100WordsGame from './Jawi100WordsGame';
 import GameHeader from './GameHeader';
 
@@ -212,7 +212,7 @@ export default function JawiPage({ onBack, onHome, language }) {
                                     })}
                                 </div>
                             ) : (
-                                <p style={{ textAlign: 'center', color: '#888' }}>
+                                <p style={{ textAlign: 'center', color: '#888', margin: 0 }}>
                                     {t.noSyllableData}
                                 </p>
                             )}
@@ -276,7 +276,7 @@ export default function JawiPage({ onBack, onHome, language }) {
 
     if (mode === 'match') return <JawiMatchGame onBack={handleBack} onHome={onHome} language={language} />;
     if (mode === 'words') return <JawiWordsPage onBack={handleBack} onHome={onHome} language={language} />;
-    if (mode === 'syllables') return <JawiSyllablesGame onBack={handleBack} onHome={onHome} language={language} />;
+    if (mode === 'syllables') return <JawiSyllablesLearningPage onBack={handleBack} onHome={onHome} language={language} />;
     if (mode === 'spelling_game') return <Jawi100WordsGame onBack={handleBack} onHome={onHome} language={language} />;
 
     return (
@@ -290,7 +290,7 @@ export default function JawiPage({ onBack, onHome, language }) {
                 <button onClick={onBack} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
                     <ArrowLeft size={24} />
                 </button>
-                <div style={{ flex: 1, textAlign: 'center', fontWeight: 900, fontSize: '1rem', color: '#3C3C3C' }}>
+                <div style={{ flex: 1, textAlign: 'center', fontWeight: 900, fontSize: '1.3rem', color: '#3C3C3C' }}>
                     📖 {t.title}
                 </div>
                 <div style={{ width: 24 }} />
@@ -301,10 +301,10 @@ export default function JawiPage({ onBack, onHome, language }) {
                 {/* Jawi hero */}
                 <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
                     <div style={{ fontSize: '3.5rem', marginBottom: '0.25rem', animation: 'bounce 2s ease-in-out infinite' }}>📖</div>
-                    <p style={{ fontWeight: 600, color: '#777', fontSize: '0.9rem' }}>{t.subtitle}</p>
+                    <p style={{ fontWeight: 600, color: '#777', fontSize: '1.1rem', margin: 0 }}>{t.subtitle}</p>
                 </div>
 
-                <p style={{ fontSize: '0.8rem', fontWeight: 800, color: '#AFAFAF', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.75rem' }}>
+                <p style={{ fontSize: '1rem', fontWeight: 800, color: '#AFAFAF', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.75rem', textAlign: 'center', margin: '0 0 0.75rem 0' }}>
                     {language === 'bm' ? 'PILIH AKTIVITI' : 'CHOOSE ACTIVITY'}
                 </p>
 
@@ -326,7 +326,7 @@ export default function JawiPage({ onBack, onHome, language }) {
                                 cursor: 'pointer', transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
                                 boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)', textAlign: 'left',
                                 gap: '1.2rem', animationDelay: `${i * 0.07}s`,
-                                width: '100%', minHeight: '80px'
+                                width: '100%', minHeight: '95px'
                             }}
                             onMouseEnter={(e) => {
                                 e.currentTarget.style.transform = 'translateY(-3px)';
@@ -349,15 +349,15 @@ export default function JawiPage({ onBack, onHome, language }) {
                                 {item.emoji}
                             </div>
                             <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{ fontSize: '1.1rem', fontWeight: 900, color: '#3C3C3C', marginBottom: '4px' }}>{item.title}</div>
-                                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#AFAFAF', lineHeight: 1.3 }}>{item.desc}</div>
+                                <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#3C3C3C', marginBottom: '6px' }}>{item.title}</div>
+                                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#AFAFAF', lineHeight: 1.3 }}>{item.desc}</div>
                             </div>
                             <div style={{ fontSize: '1.5rem', color: '#AFAFAF' }}>›</div>
                         </button>
                     ))}
                 </div>
 
-                <p style={{ color: '#AFAFAF', fontStyle: 'italic', marginTop: '1rem', fontSize: '0.85rem', textAlign: 'center' }}>
+                <p style={{ color: '#AFAFAF', fontStyle: 'italic', marginTop: '1rem', fontSize: '0.85rem', textAlign: 'center', margin: '1rem 0 0 0' }}>
                     {t.comingSoon}
                 </p>
             </div>

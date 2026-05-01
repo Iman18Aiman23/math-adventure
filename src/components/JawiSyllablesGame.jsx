@@ -9,7 +9,7 @@ import { LOCALIZATION } from '../utils/localization';
 import GameHeader from './GameHeader';
 import { GameStateContext } from '../App';
 
-export default function JawiSyllablesGame({ onBack, onHome, language }) {
+export default function JawiSyllablesGame({ onBack, onHome, language, defaultSyllables }) {
     const t = LOCALIZATION[language].jawiGames;
 
     // Get the appropriate message for the current streak
@@ -69,6 +69,20 @@ export default function JawiSyllablesGame({ onBack, onHome, language }) {
         const muted = toggleMute();
         setIsMuted(muted);
     };
+
+    // Initialize with default syllables if provided
+    useEffect(() => {
+        if (defaultSyllables && defaultSyllables.length > 0 && selectedAlphabets.length === 0) {
+            setSelectedAlphabets(defaultSyllables);
+        }
+    }, [defaultSyllables]);
+
+    // Auto-start game if default syllables are provided
+    useEffect(() => {
+        if (defaultSyllables && defaultSyllables.length > 0 && localGameState === 'setup' && selectedAlphabets.length === defaultSyllables.length) {
+            startGame();
+        }
+    }, [selectedAlphabets, defaultSyllables, localGameState]);
 
     // Auto-focus input when question changes (for typing mode)
     useEffect(() => {
