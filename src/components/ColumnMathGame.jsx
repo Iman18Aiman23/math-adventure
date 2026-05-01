@@ -973,8 +973,11 @@ export default function ColumnMathGame({ onBack, language }) {
 
       {/* Borrow confirmation dialog with math problem */}
       {confirmBorrowIdx !== null && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(28, 32, 40, 0.55)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backdropFilter: 'blur(2px)' }}>
-          <div className="cmg-dialog" style={{ background: '#fff', borderRadius: '24px', padding: '1.75rem 1.5rem 1.5rem', textAlign: 'center', maxWidth: '340px', width: '100%', boxShadow: '0 24px 60px rgba(0,0,0,0.25)', border: '3px solid #FFE0E0', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(28, 32, 40, 0.55)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backdropFilter: 'blur(2px)' }} onClick={() => { setConfirmBorrowIdx(null); setBorrowAnswerInput(''); setBorrowSubmitAttempted(false); setLockMessage(''); }}>
+          <div className="cmg-dialog" style={{ background: '#fff', borderRadius: '24px', padding: '1.75rem 1.5rem 1.5rem', textAlign: 'center', maxWidth: '340px', width: '100%', boxShadow: '0 24px 60px rgba(0,0,0,0.25)', border: '3px solid #FFE0E0', position: 'relative', overflow: 'hidden' }} onClick={e => e.stopPropagation()}>
+            <button onClick={() => { setConfirmBorrowIdx(null); setBorrowAnswerInput(''); setBorrowSubmitAttempted(false); setLockMessage(''); }} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#AFAFAF', zIndex: 10 }}>
+              ✕
+            </button>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '6px', background: 'linear-gradient(90deg, #FFA8A8, #FF4B4B)' }} />
             <div style={{ fontSize: '2.75rem', marginBottom: '0.25rem' }}>🏠</div>
             <div style={{ fontWeight: 900, fontSize: '1.05rem', color: '#3C3C3C', marginBottom: '1rem' }}>
@@ -994,15 +997,17 @@ export default function ColumnMathGame({ onBack, language }) {
                 type="text"
                 inputMode="numeric"
                 value={borrowAnswerInput}
+                maxLength="2"
                 onChange={(e) => {
-                  const newValue = e.target.value.replace(/[^0-9]/g, '').slice(0, 1);
+                  const match = e.target.value.match(/^-?\d{0,1}$/);
+                  const newValue = match ? e.target.value : borrowAnswerInput;
                   setBorrowAnswerInput(newValue);
                   if (newValue !== borrowAnswerInput) {
                     setBorrowSubmitAttempted(false);
                   }
                 }}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' && borrowAnswerInput) {
+                  if (e.key === 'Enter' && /^-?\d$/.test(borrowAnswerInput)) {
                     setBorrowSubmitAttempted(true);
                     const digit = parseInt(p1[confirmBorrowIdx], 10);
                     const correct = parseInt(borrowAnswerInput) === digit - 1;
@@ -1063,8 +1068,8 @@ export default function ColumnMathGame({ onBack, language }) {
               onClick={() => {
                 setBorrowSubmitAttempted(true);
                 const digit = parseInt(p1[confirmBorrowIdx], 10);
-                const correct = parseInt(borrowAnswerInput) === digit - 1;
-                if (correct && borrowAnswerInput) {
+                const correct = /^-?\d$/.test(borrowAnswerInput) && parseInt(borrowAnswerInput) === digit - 1;
+                if (correct) {
                   const idx = confirmBorrowIdx;
                   const newStruck = [...userStruckRow];
                   newStruck[idx] = true;
@@ -1094,7 +1099,7 @@ export default function ColumnMathGame({ onBack, language }) {
                   setBorrowSubmitAttempted(false);
                 }
               }}
-              disabled={!borrowAnswerInput}
+              disabled={!/^-?\d$/.test(borrowAnswerInput)}
               className="cmg-btn"
               style={{
                 width: '100%',
