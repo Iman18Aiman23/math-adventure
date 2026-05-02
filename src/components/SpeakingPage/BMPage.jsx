@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { LOCALIZATION } from '../utils/localization';
-import { useGameStateContext } from '../App';
-import SpeechManager from '../services/SpeechManager';
+import { LOCALIZATION } from '../../utils/localization';
+import { useGameStateContext } from '../../App';
+import SpeechManager from '../../services/SpeechManager';
 import BMSpeakGame from './BMSpeakGame';
 
 /**

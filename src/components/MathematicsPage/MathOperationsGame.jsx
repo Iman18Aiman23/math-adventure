@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import confetti from 'canvas-confetti';
 import { X } from 'lucide-react';
-import { generateProblem } from '../utils/mathLogic';
-import { playSound } from '../utils/soundManager';
+import { generateProblem } from '../../utils/mathLogic';
+import { playSound } from '../../utils/soundManager';
 
 // ─── Web Speech API voice helper ───────────────────────────────────────────────
 function speak(text, { pitch = 1.4, rate = 1.05, volume = 1 } = {}) {

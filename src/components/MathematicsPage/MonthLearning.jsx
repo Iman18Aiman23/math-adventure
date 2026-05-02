@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import { MONTHS } from '../utils/timeData';
-import GameHeader from './GameHeader';
-import { LOCALIZATION } from '../utils/localization';
+import { MONTHS } from '../../utils/timeData';
+import GameHeader from '../GameHeader';
+import { LOCALIZATION } from '../../utils/localization';
 
 export default function MonthLearning({ onBack, onHome, language }) {
     const t = LOCALIZATION[language].monthLearningDetail;

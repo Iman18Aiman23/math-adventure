@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { LOCALIZATION } from '../utils/localization';
+import { LOCALIZATION } from '../../utils/localization';
 
 const TIME_GAMES = [
   { id: 'month-learning', emoji: '📅', iconBg: '#EDD9FF', iconColor: '#CE82FF', titleKey: 'monthLearning', descKey: 'monthLearningDesc' },

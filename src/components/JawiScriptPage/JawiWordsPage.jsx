@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { BookOpen } from 'lucide-react';
-import { JAWI_TOPICS } from '../utils/jawiWordsData';
-import { LOCALIZATION } from '../utils/localization';
-import { BilingualText } from '../utils/bilingual';
-import GameHeader from './GameHeader';
+import { JAWI_TOPICS } from '../../utils/jawiWordsData';
+import { LOCALIZATION } from '../../utils/localization';
+import { BilingualText } from '../../utils/bilingual';
+import GameHeader from '../GameHeader';
 
 const TopicCard = ({ topic, onClick, language }) => {
     return (

@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import confetti from 'canvas-confetti';
 import { Trophy, Home, MousePointerClick, Keyboard, ArrowRight, RefreshCw, X } from 'lucide-react';
-import { JAWI_ALPHABET } from '../utils/jawiData';
-import { SUKU_KATA_DATA } from '../utils/jawiSukuKataData';
-import { playSound, toggleMute, getMuted } from '../utils/soundManager';
+import { JAWI_ALPHABET } from '../../utils/jawiData';
+import { SUKU_KATA_DATA } from '../../utils/jawiSukuKataData';
+import { playSound, toggleMute, getMuted } from '../../utils/soundManager';
 import clsx from 'clsx';
-import { LOCALIZATION } from '../utils/localization';
-import GameHeader from './GameHeader';
-import { GameStateContext } from '../App';
+import { LOCALIZATION } from '../../utils/localization';
+import GameHeader from '../GameHeader';
+import { GameStateContext } from '../../App';
 
 export default function JawiSyllablesGame({ onBack, onHome, language, defaultSyllables }) {
     const t = LOCALIZATION[language].jawiGames;

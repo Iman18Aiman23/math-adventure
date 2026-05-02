@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { BookOpen, GraduationCap, Star, Keyboard, ChevronLeft, ChevronRight, Languages, Brain, ArrowLeft, Home, Volume2 } from 'lucide-react';
-import { LOCALIZATION } from '../utils/localization';
-import { JAWI_ALPHABET } from '../utils/jawiData';
-import { SUKU_KATA_DATA } from '../utils/jawiSukuKataData';
+import { LOCALIZATION } from '../../utils/localization';
+import { JAWI_ALPHABET } from '../../utils/jawiData';
+import { SUKU_KATA_DATA } from '../../utils/jawiSukuKataData';
 import JawiMatchGame from './JawiMatchGame';
 import JawiWordsPage from './JawiWordsPage';
 import JawiSyllablesLearningPage from './JawiSyllablesLearningPage';
 import Jawi100WordsGame from './Jawi100WordsGame';
 import JawiShortStoriesPage from './JawiShortStoriesPage';
-import GameHeader from './GameHeader';
+import GameHeader from '../GameHeader';
 
 export default function JawiPage({ onBack, onHome, language }) {
     const t = LOCALIZATION[language].jawi;
@@ -137,9 +137,9 @@ export default function JawiPage({ onBack, onHome, language }) {
                                             onClick={(e) => { e.stopPropagation(); speakLetter(selectedAlphabet.rumi); }}
                                             className="pulse-audio"
                                             style={{
-                                                background: '#f0f8ff', border: 'none', cursor: 'pointer',
+                                                background: '#f0f8ff', border: '2px solid #D0F0FF', cursor: 'pointer',
                                                 color: '#1CB0F6', display: 'flex', alignItems: 'center', padding: '0.5rem',
-                                                borderRadius: '50%', border: '2px solid #D0F0FF'
+                                                borderRadius: '50%'
                                             }}
                                             title="Dengar sebutan"
                                         >

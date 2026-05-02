@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { LOCALIZATION } from '../utils/localization';
-import { JAWI_STORIES } from '../utils/jawiStoriesData';
-import GameHeader from './GameHeader';
+import { LOCALIZATION } from '../../utils/localization';
+import { JAWI_STORIES } from '../../utils/jawiStoriesData';
+import GameHeader from '../GameHeader';
 
 export default function JawiShortStoriesPage({ onBack, onHome, language }) {
     const t = LOCALIZATION[language].jawi;

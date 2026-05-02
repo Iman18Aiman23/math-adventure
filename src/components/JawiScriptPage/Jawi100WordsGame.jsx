@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import confetti from 'canvas-confetti';
 import { ArrowLeft, RefreshCw, Trophy, Home, Keyboard, Volume2, VolumeX, ArrowRight, Grid, Shuffle, X } from 'lucide-react';
 import clsx from 'clsx';
-import { JAWI_TOPICS } from '../utils/jawiWordsData';
-import { playSound, toggleMute, getMuted } from '../utils/soundManager';
-import { LOCALIZATION } from '../utils/localization';
-import GameHeader from './GameHeader';
-import { GameStateContext } from '../App';
+import { JAWI_TOPICS } from '../../utils/jawiWordsData';
+import { playSound, toggleMute, getMuted } from '../../utils/soundManager';
+import { LOCALIZATION } from '../../utils/localization';
+import GameHeader from '../GameHeader';
+import { GameStateContext } from '../../App';
 
 const STREAK_MILESTONE = 5;
 

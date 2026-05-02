@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { readingData } from '../data/curriculum/readingData';
+import { readingData } from '../../data/curriculum/readingData';
 import { ChevronLeft, ChevronRight, Volume2, ArrowLeft } from 'lucide-react';
-import { playHoverSound } from '../utils/soundManager';
-import SpeechManager from '../services/SpeechManager';
+import { playHoverSound } from '../../utils/soundManager';
+import SpeechManager from '../../services/SpeechManager';
 
 // ── Script button config ──────────────────────────────────────────────────────
 const SCRIPTS = [
@@ -13,12 +13,12 @@ const SCRIPTS = [
 
 // ── Level color themes ────────────────────────────────────────────────────────
 const LEVEL_THEMES = {
-  4: { color: '#58CC02', bg: '#E6FFD4', shadow: '#B3E080', darkColor: '#46A302' },
+  3: { color: '#CE82FF', bg: '#EDD9FF', shadow: '#E6B3FF', darkColor: '#9B59B6' },
 };
 
-const getTheme = (level) => LEVEL_THEMES[level] || LEVEL_THEMES[4];
+const getTheme = (level) => LEVEL_THEMES[level] || LEVEL_THEMES[3];
 
-export default function JawiReadingPage4({ onBack, language }) {
+export default function JawiReadingPage3({ onBack, language }) {
   // ── State ─────────────────────────────────────────────────────────────
   const [currentIndex, setCurrentIndex] = useState(0);
   const [scriptType, setScriptType] = useState('JAWI');
@@ -26,7 +26,7 @@ export default function JawiReadingPage4({ onBack, language }) {
   const [activeSyllable, setActiveSyllable] = useState(null);
 
   // ── Derived Data ──────────────────────────────────────────────────────
-  const currentLevelData = readingData.filter(item => item.level === 4);
+  const currentLevelData = readingData.filter(item => item.level === 3);
   const currentItem = currentLevelData[currentIndex] || null;
 
   // ── Handlers ──────────────────────────────────────────────────────────
@@ -108,8 +108,8 @@ export default function JawiReadingPage4({ onBack, language }) {
           ))}
         </div>
 
-        <div style={{ background: '#fff', border: '2px solid #E5E5E5', borderRadius: '999px', padding: '6px 16px', fontWeight: 800, color: getTheme(4).color, fontSize: '0.9rem' }}>
-          تاهڤ إمڤت(4) {currentIndex + 1}/{currentLevelData.length}
+        <div style={{ background: '#fff', border: '2px solid #E5E5E5', borderRadius: '999px', padding: '6px 16px', fontWeight: 800, color: getTheme(3).color, fontSize: '0.9rem' }}>
+          تاهڤ تيݢا(3) {currentIndex + 1}/{currentLevelData.length}
         </div>
       </div>
 
@@ -119,7 +119,7 @@ export default function JawiReadingPage4({ onBack, language }) {
         {/* Flashcard Box */}
         <div style={{
           width: '100%', maxWidth: '400px', background: '#fff', borderRadius: '24px',
-          boxShadow: `0 8px 0 ${getTheme(4).shadow}`, padding: '2.5rem 1.5rem', position: 'relative',
+          boxShadow: `0 8px 0 ${getTheme(3).shadow}`, padding: '2.5rem 1.5rem', position: 'relative',
           display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '320px', justifyContent: 'center'
         }}>
 
@@ -184,8 +184,8 @@ export default function JawiReadingPage4({ onBack, language }) {
                 color: activeSyllable === 0 ? '#fff' : '#3C3C3C',
                 direction: 'rtl', fontFamily: '"Lateef", serif', lineHeight: 1.5,
                 textAlign: 'center',
-                background: activeSyllable === 0 ? '#58CC02' : '#E6FFD4',
-                border: `2px solid ${activeSyllable === 0 ? '#46A302' : '#58CC02'}`,
+                background: activeSyllable === 0 ? '#CE82FF' : '#EDD9FF',
+                border: `2px solid ${activeSyllable === 0 ? '#A451E0' : '#CE82FF'}`,
                 borderRadius: '16px', padding: '12px 24px', cursor: 'pointer', width: '100%',
                 transition: 'all 0.15s ease',
                 transform: activeSyllable === 0 ? 'scale(1.05)' : 'scale(1)'
@@ -262,9 +262,9 @@ export default function JawiReadingPage4({ onBack, language }) {
           onClick={handleVolumeClick}
           style={{
             flex: 1, padding: '0.9rem 1.2rem', borderRadius: '16px',
-            border: `2px solid ${getTheme(4).color}`,
-            background: '#fff', color: getTheme(4).color, fontWeight: 900, fontSize: '1rem',
-            cursor: 'pointer', boxShadow: `0 4px 0 ${getTheme(4).shadow}`,
+            border: `2px solid ${getTheme(3).color}`,
+            background: '#fff', color: getTheme(3).color, fontWeight: 900, fontSize: '1rem',
+            cursor: 'pointer', boxShadow: `0 4px 0 ${getTheme(3).shadow}`,
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
           }}
         >
@@ -278,10 +278,10 @@ export default function JawiReadingPage4({ onBack, language }) {
           disabled={currentIndex === currentLevelData.length - 1}
           style={{
             flex: 1, padding: '0.9rem 1.2rem', borderRadius: '16px', border: 'none',
-            background: currentIndex === currentLevelData.length - 1 ? '#E5E5E5' : getTheme(4).color,
+            background: currentIndex === currentLevelData.length - 1 ? '#E5E5E5' : getTheme(3).color,
             color: '#fff', fontWeight: 900, fontSize: '1rem',
             cursor: currentIndex === currentLevelData.length - 1 ? 'not-allowed' : 'pointer',
-            boxShadow: currentIndex === currentLevelData.length - 1 ? 'none' : `0 4px 0 ${getTheme(4).darkColor}`
+            boxShadow: currentIndex === currentLevelData.length - 1 ? 'none' : `0 4px 0 ${getTheme(3).darkColor}`
           }}
         >
           ستروسڽ {'>'}

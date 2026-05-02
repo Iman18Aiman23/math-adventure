@@ -1,5 +1,5 @@
 import React from 'react';
-import { LOCALIZATION } from '../utils/localization';
+import { LOCALIZATION } from '../../utils/localization';
 
 const SUB_GAMES = [
   {

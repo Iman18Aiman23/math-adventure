@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import confetti from 'canvas-confetti';
 import { X, HelpCircle, Layers, Keyboard, MousePointerClick } from 'lucide-react';
-import { MONTHS } from '../utils/timeData';
-import { LOCALIZATION } from '../utils/localization';
-import { playSound } from '../utils/soundManager';
+import { MONTHS } from '../../utils/timeData';
+import { LOCALIZATION } from '../../utils/localization';
+import { playSound } from '../../utils/soundManager';
 
 // ─── Web Speech API voice helper ───────────────────────────────────────────────
 function speak(text, { pitch = 1.4, rate = 1.05, volume = 1 } = {}) {

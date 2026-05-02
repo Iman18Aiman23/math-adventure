@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { readingData } from '../data/curriculum/readingData';
+import { readingData } from '../../data/curriculum/readingData';
 import { ChevronLeft, ChevronRight, Volume2, HelpCircle, ArrowLeft } from 'lucide-react';
-import { playHoverSound, playSound } from '../utils/soundManager';
-import SpeechManager from '../services/SpeechManager';
+import { playHoverSound, playSound } from '../../utils/soundManager';
+import SpeechManager from '../../services/SpeechManager';
 import KVLearningPage from './KVLearningPage';
 import KVKLearningPage from './KVKLearningPage';
 

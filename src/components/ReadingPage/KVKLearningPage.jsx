@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { ArrowLeft, ChevronLeft, ChevronRight, Volume2 } from 'lucide-react';
-import bm_kvk_complete, { KVK_LETTERS, getKVKSeriesByLetter } from '../data/curriculum/bm_kvk';
-import SpeechManager from '../services/SpeechManager';
+import bm_kvk_complete, { KVK_LETTERS, getKVKSeriesByLetter } from '../../data/curriculum/bm_kvk';
+import SpeechManager from '../../services/SpeechManager';
 
 // ── Vowel row labels (shown under the KVK badge) ─────────────────────────────
 const SLOT_COLORS = ['#FF9600', '#1CB0F6', '#58CC02', '#CE82FF', '#FF4B4B', '#00C2A8'];

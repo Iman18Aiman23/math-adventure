@@ -10,7 +10,15 @@
       "Bash(xargs grep *)",
       "Bash(curl -s http://localhost:5175)",
       "Bash(curl -s http://localhost:3000/)",
-      "Bash(node -c src/components/JawiKVKLearningPage.jsx)"
+      "Bash(node -c src/components/JawiKVKLearningPage.jsx)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\izwan\\\\Desktop\\\\math-adventure\\\\src\\\\components\\\\\" -Recurse -Filter \"*.jsx\" | Select-Object -ExpandProperty FullName)",
+      "Bash(Get-Content \"c:\\\\Users\\\\izwan\\\\Desktop\\\\math-adventure\\\\src\\\\components\\\\*.jsx\")",
+      "Bash(Select-String \"^import.*from.*['\\\\\"]\\\\./\")",
+      "Bash(Select-Object -Unique)",
+      "PowerShell(New-Item -ItemType Directory -Path \"src\\\\components\\\\ReadingPage\" -Force)",
+      "PowerShell(New-Item -ItemType Directory -Path \"src\\\\components\\\\SpeakingPage\" -Force)",
+      "PowerShell(New-Item -ItemType Directory -Path \"src\\\\components\\\\JawiScriptPage\" -Force)",
+      "PowerShell(New-Item -ItemType Directory -Path \"src\\\\components\\\\MathematicsPage\" -Force)"
     ]
   }
 }

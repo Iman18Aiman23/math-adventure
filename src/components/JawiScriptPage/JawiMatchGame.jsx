@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
-import { playSound } from '../utils/soundManager';
+import { playSound } from '../../utils/soundManager';
 import clsx from 'clsx';
 import confetti from 'canvas-confetti';
-import { LOCALIZATION } from '../utils/localization';
-import GameHeader from './GameHeader';
-import { JAWI_ALPHABET } from '../utils/jawiData';
+import { LOCALIZATION } from '../../utils/localization';
+import GameHeader from '../GameHeader';
+import { JAWI_ALPHABET } from '../../utils/jawiData';
 import { Trophy, Star, RefreshCw, ArrowLeft, X } from 'lucide-react';
-import { GameStateContext } from '../App';
+import { GameStateContext } from '../../App';
 
 const CARD_COLORS = [
     '#FF6B6B', // Red

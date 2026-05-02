@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { LOCALIZATION } from '../utils/localization';
+import { LOCALIZATION } from '../../utils/localization';
 
 const OPS_GAMES = [
   { id: 'basic', emoji: '🔢', iconBg: '#FFF0CC', iconColor: '#FFC800', titleKey: 'opsTitle', descKey: 'opsDesc' },

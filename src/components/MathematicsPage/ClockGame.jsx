@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import confetti from 'canvas-confetti';
 import { X, Clock } from 'lucide-react';
-import { generateClockProblem } from '../utils/timeData';
+import { generateClockProblem } from '../../utils/timeData';
 import AnalogClock from './AnalogClock';
-import { playSound } from '../utils/soundManager';
-import { LOCALIZATION } from '../utils/localization';
+import { playSound } from '../../utils/soundManager';
+import { LOCALIZATION } from '../../utils/localization';
 
 // ─── Web Speech API voice helper ───────────────────────────────────────────────
 function speak(text, { pitch = 1.4, rate = 1.05, volume = 1 } = {}) {

@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { playSound } from '../utils/soundManager';
+import { playSound } from '../../utils/soundManager';
 
 const STREAK_MILESTONE = 10;
 

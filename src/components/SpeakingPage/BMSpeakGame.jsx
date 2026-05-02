@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ArrowLeft, RefreshCw, SkipForward, X } from 'lucide-react';
-import SpeechManager from '../services/SpeechManager';
-import { getShuffledItems, checkBilingualMatch } from '../data/curriculum/index';
-import { useGameStateContext } from '../App';
+import SpeechManager from '../../services/SpeechManager';
+import { getShuffledItems, checkBilingualMatch } from '../../data/curriculum/index';
+import { useGameStateContext } from '../../App';
 import confetti from 'canvas-confetti';
 
 const ITEMS_PER_ROUND = 10;

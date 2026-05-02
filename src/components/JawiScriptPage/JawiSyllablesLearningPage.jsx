@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { LOCALIZATION } from '../utils/localization';
-import { JAWI_ALPHABET } from '../utils/jawiData';
+import { LOCALIZATION } from '../../utils/localization';
+import { JAWI_ALPHABET } from '../../utils/jawiData';
 import JawiSyllablesGame from './JawiSyllablesGame';
 import JawiKVLearningPage from './JawiKVLearningPage';
 import JawiKVKLearningPage from './JawiKVKLearningPage';

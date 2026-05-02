@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { ArrowLeft, ChevronLeft, ChevronRight, Volume2 } from 'lucide-react';
-import bm_kv_complete, { KV_LETTERS, getKVSeriesByLetter } from '../data/curriculum/bm_kv';
-import SpeechManager from '../services/SpeechManager';
+import bm_kv_complete, { KV_LETTERS, getKVSeriesByLetter } from '../../data/curriculum/bm_kv';
+import SpeechManager from '../../services/SpeechManager';
 
 // ── Vowel row labels (shown under the KV badge) ──────────────────────────────
 const VOWEL_LABELS = ['a', 'i', 'u', 'e (taling)', 'o', 'e (pepet)'];
