@@ -21,7 +21,7 @@ const getTheme = (level) => LEVEL_THEMES[level] || LEVEL_THEMES[4];
 export default function JawiReadingPage4({ onBack, language }) {
   // ── State ─────────────────────────────────────────────────────────────
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [scriptType, setScriptType] = useState('RUMI');
+  const [scriptType, setScriptType] = useState('JAWI');
   const [showHelp, setShowHelp] = useState(false);
   const [activeSyllable, setActiveSyllable] = useState(null);
 
@@ -109,7 +109,7 @@ export default function JawiReadingPage4({ onBack, language }) {
         </div>
 
         <div style={{ background: '#fff', border: '2px solid #E5E5E5', borderRadius: '999px', padding: '6px 16px', fontWeight: 800, color: getTheme(4).color, fontSize: '0.9rem' }}>
-          Tahap 4 {currentIndex + 1}/{currentLevelData.length}
+          تاهڤ إمڤت(4) {currentIndex + 1}/{currentLevelData.length}
         </div>
       </div>
 
@@ -269,7 +269,7 @@ export default function JawiReadingPage4({ onBack, language }) {
           }}
         >
           <Volume2 size={20} />
-          {language === 'bm' ? 'Dengar' : 'Listen'}
+          دڠر
         </button>
 
         {/* Next Button */}
@@ -284,7 +284,7 @@ export default function JawiReadingPage4({ onBack, language }) {
             boxShadow: currentIndex === currentLevelData.length - 1 ? 'none' : `0 4px 0 ${getTheme(4).darkColor}`
           }}
         >
-          {language === 'bm' ? 'Seterusnya' : 'Next'} {'>'}
+          ستروسڽ {'>'}
         </button>
       </div>
 

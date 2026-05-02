@@ -7,6 +7,14 @@ import SpeechManager from '../services/SpeechManager';
 const SLOT_COLORS = ['#FF9600', '#1CB0F6', '#58CC02', '#CE82FF', '#FF4B4B', '#00C2A8'];
 const SLOT_BG     = ['#FFF4E0', '#E0F4FF', '#E6FFD4', '#F3DDFF', '#FFE0E0', '#D4FFF8'];
 
+// ── Jawi alphabet mapping (Rumi to Jawi) ─────────────────────────────────────
+const RUMI_TO_JAWI = {
+  'A': 'ا', 'E': 'اي', 'I': 'اي', 'O': 'او', 'U': 'او',
+  'B': 'ب', 'C': 'چ', 'D': 'د', 'F': 'ف', 'G': 'ݢ', 'H': 'ه',
+  'J': 'ج', 'K': 'ك', 'L': 'ل', 'M': 'م', 'N': 'ن', 'P': 'ڤ', 'R': 'ر',
+  'S': 'س', 'T': 'ت', 'V': 'ۏ', 'W': 'و', 'Y': 'ي', 'Z': 'ز'
+};
+
 // ── Script button config ──────────────────────────────────────────────────────
 const SCRIPTS = [
   { key: 'RUMI', label: 'RUMI', color: '#1CB0F6', bg: '#D0F0FF' },
@@ -21,7 +29,7 @@ export default function JawiKVKLearningPage({ onBack, language }) {
   // ── State ─────────────────────────────────────────────────────────────────
   const [selectedLetter, setSelectedLetter] = useState(null);
   const [cardIndex,      setCardIndex]      = useState(0);
-  const [script,         setScript]         = useState('RUMI');
+  const [script,         setScript]         = useState('JAWI');
   const [activeSyl,      setActiveSyl]      = useState(null);
   const [seriesComplete, setSeriesComplete] = useState(false);
 
@@ -77,7 +85,7 @@ export default function JawiKVKLearningPage({ onBack, language }) {
       setCardIndex(0);
       setActiveSyl(null);
       setSeriesComplete(false);
-      setScript('RUMI');
+      setScript('JAWI');
     } else {
       onBack();
     }
@@ -88,7 +96,7 @@ export default function JawiKVKLearningPage({ onBack, language }) {
     setCardIndex(0);
     setActiveSyl(null);
     setSeriesComplete(false);
-    setScript('RUMI');
+    setScript('JAWI');
   };
 
   const handleBackToLetters = () => {
@@ -115,16 +123,16 @@ export default function JawiKVKLearningPage({ onBack, language }) {
           <button onClick={onBack} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
             <ArrowLeft size={24} />
           </button>
-          <div style={{ flex: 1, textAlign: 'center', fontWeight: 900, fontSize: '1rem', color: '#3C3C3C' }}>
-            🔤 Tahap 2 — Suku Kata KVK
+          <div style={{ flex: 1, textAlign: 'center', fontWeight: 900, fontSize: '1rem', color: '#3C3C3C', fontFamily: '"Lateef", "Noto Naskh Arabic", serif', direction: 'rtl' }}>
+            🔤 تاهڤ دوا(2) - سوکو کات کۏک
           </div>
           <div style={{ width: 24 }} />
         </div>
 
         {/* Subtitle */}
         <div style={{ padding: '1rem 1rem 0.25rem', textAlign: 'center' }}>
-          <p style={{ fontSize: '0.8rem', fontWeight: 700, color: '#AFAFAF', textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>
-            {language === 'bm' ? 'Pilih Huruf untuk Belajar' : 'Select a Letter to Learn'}
+          <p style={{ fontSize: '0.8rem', fontWeight: 700, color: '#AFAFAF', textTransform: 'uppercase', letterSpacing: '1px', margin: 0, fontFamily: '"Lateef", "Noto Naskh Arabic", serif', direction: 'rtl' }}>
+            ڤيليه حروف اونتوق بلاجر
           </p>
         </div>
 
@@ -160,10 +168,14 @@ export default function JawiKVKLearningPage({ onBack, language }) {
                   onMouseDown={e => { e.currentTarget.style.transform = 'translateY(2px)'; e.currentTarget.style.boxShadow = '0 1px 0 #E5E5E5'; }}
                   onMouseUp={e => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
                 >
-                  <span style={{ fontSize: '2rem', fontWeight: 900, color: SLOT_COLORS[ci], lineHeight: 1 }}>{letter}</span>
-                  <span style={{ fontSize: '0.62rem', fontWeight: 700, color: '#AFAFAF', marginTop: '4px' }}>
-                    {getKVKSeriesByLetter(letter).length} kad
-                  </span>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ fontSize: '2.2rem', fontWeight: 900, color: SLOT_COLORS[ci], lineHeight: 1, fontFamily: '"Lateef", "Noto Naskh Arabic", serif' }}>
+                      {RUMI_TO_JAWI[letter] || letter}
+                    </span>
+                    <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#AFAFAF' }}>
+                      ({letter.toLowerCase()})
+                    </span>
+                  </div>
                 </button>
               );
             })}
@@ -187,21 +199,21 @@ export default function JawiKVKLearningPage({ onBack, language }) {
           <button onClick={handleBackToLetters} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
             <ArrowLeft size={24} />
           </button>
-          <div style={{ flex: 1, textAlign: 'center', fontWeight: 900, fontSize: '1rem', color: '#3C3C3C' }}>
-            Siri {selectedLetter} ✅
+          <div style={{ flex: 1, textAlign: 'center', fontWeight: 900, fontSize: '1rem', color: '#3C3C3C', fontFamily: '"Lateef", "Noto Naskh Arabic", serif', direction: 'rtl' }}>
+            سيري {selectedLetter} ✅
           </div>
           <div style={{ width: 24 }} />
         </div>
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', gap: '1.5rem', textAlign: 'center' }}>
           <div style={{ fontSize: '5rem', animation: 'kvkBounce 1.5s ease-in-out infinite' }}>🎉</div>
-          <h2 style={{ fontSize: '1.8rem', fontWeight: 900, color: '#3C3C3C', margin: 0 }}>
-            Siri <span style={{ color: '#58CC02' }}>{selectedLetter}</span> Selesai!
+          <h2 style={{ fontSize: '1.8rem', fontWeight: 900, color: '#3C3C3C', margin: 0, fontFamily: '"Lateef", "Noto Naskh Arabic", serif', direction: 'rtl' }}>
+            سيري <span style={{ color: '#58CC02' }}>{selectedLetter}</span> سيلساءي!
           </h2>
-          <p style={{ color: '#AFAFAF', fontWeight: 700, fontSize: '0.95rem', margin: 0 }}>
+          <p style={{ color: '#AFAFAF', fontWeight: 700, fontSize: '0.95rem', margin: 0, fontFamily: '"Lateef", "Noto Naskh Arabic", serif', direction: 'rtl' }}>
             {nextLetter
-              ? (language === 'bm' ? `Teruskan dengan Siri ${nextLetter}` : `Continue with Letter ${nextLetter} Series`)
-              : (language === 'bm' ? 'Tahniah! Semua huruf selesai!' : 'All letters complete!')}
+              ? `تروسکن دڠن سيري ${nextLetter}`
+              : 'تاهنيه! سموا حروف سيلساءي!'}
           </p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', maxWidth: '320px' }}>
@@ -212,8 +224,10 @@ export default function JawiKVKLearningPage({ onBack, language }) {
                 border: 'none', borderBottom: '4px solid #46A302',
                 borderRadius: '16px', fontWeight: 900, fontSize: '1.1rem',
                 cursor: 'pointer',
+                fontFamily: '"Lateef", "Noto Naskh Arabic", serif',
+                direction: 'rtl',
               }}>
-                Siri {nextLetter} →
+                ← سيري {nextLetter}
               </button>
             )}
             <button onClick={handleBackToLetters} style={{
@@ -222,8 +236,10 @@ export default function JawiKVKLearningPage({ onBack, language }) {
               border: '2px solid #E5E5E5', borderBottom: '4px solid #D0D0D0',
               borderRadius: '16px', fontWeight: 800, fontSize: '1rem',
               cursor: 'pointer',
+              fontFamily: '"Lateef", "Noto Naskh Arabic", serif',
+              direction: 'rtl',
             }}>
-              {language === 'bm' ? '← Pilih Huruf Lain' : '← Pick Another Letter'}
+              ← ڤيليه حروف لاءين
             </button>
           </div>
         </div>
@@ -268,8 +284,10 @@ export default function JawiKVKLearningPage({ onBack, language }) {
           background: slotBg, color: slotColor,
           borderRadius: '999px', padding: '4px 12px',
           fontWeight: 900, fontSize: '0.85rem',
+          fontFamily: '"Lateef", "Noto Naskh Arabic", serif',
+          direction: 'rtl',
         }}>
-          Siri <strong>{selectedLetter}</strong>
+          سيري <strong>{selectedLetter}</strong>
         </div>
       </div>
 
@@ -297,8 +315,9 @@ export default function JawiKVKLearningPage({ onBack, language }) {
           background: slotBg, color: slotColor,
           borderRadius: '999px', padding: '3px 14px',
           fontWeight: 800, fontSize: '0.78rem', letterSpacing: '0.5px',
+          fontFamily: script === 'JAWI' ? '"Lateef", "Noto Naskh Arabic", serif' : '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
         }}>
-          {currentItem?.kvk?.toUpperCase()} — {cardIndex + 1} / {seriesItems.length}
+          {script === 'JAWI' ? currentItem?.jawikvk : currentItem?.kvk?.toUpperCase()} — {cardIndex + 1} / {seriesItems.length}
         </div>
       </div>
 
@@ -333,8 +352,9 @@ export default function JawiKVKLearningPage({ onBack, language }) {
             borderRadius: '10px', padding: '3px 16px',
             fontWeight: 900, fontSize: '1rem', marginBottom: '0.75rem',
             letterSpacing: '2px',
+            fontFamily: script === 'JAWI' ? '"Lateef", "Noto Naskh Arabic", serif' : '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
           }}>
-            {currentItem?.kvk?.toUpperCase()}
+            {script === 'JAWI' ? currentItem?.jawikvk : currentItem?.kvk?.toUpperCase()}
           </div>
 
           {/* Emoji icon */}
@@ -360,11 +380,6 @@ export default function JawiKVKLearningPage({ onBack, language }) {
           </div>
 
           {/* Helper hints */}
-          {script === 'JAWI' && (
-            <p style={{ fontSize: '0.88rem', color: '#AFAFAF', fontWeight: 700, marginTop: '0.5rem', margin: '0.5rem 0 0' }}>
-              {currentItem?.ms?.word}
-            </p>
-          )}
           {script === 'ENG' && (
             <p style={{ fontSize: '0.82rem', color: '#AFAFAF', fontWeight: 700, marginTop: '0.4rem' }}>
               BM: {currentItem?.ms?.word}
@@ -378,7 +393,7 @@ export default function JawiKVKLearningPage({ onBack, language }) {
         </div>
 
         {/* ── Mini syllable strip ── */}
-        <div style={{ display: 'flex', gap: '0.35rem', width: '100%', maxWidth: '400px', overflowX: 'auto', paddingBottom: '4px' }}>
+        <div style={{ display: 'flex', gap: '0.35rem', width: '100%', maxWidth: '400px', overflowX: 'auto', paddingBottom: '4px', margin: '0 auto', justifyContent: 'center', alignItems: 'center' }}>
           {seriesItems.map((it, i) => {
             const isA = i === cardIndex;
             const isDone = i < cardIndex;
@@ -392,10 +407,11 @@ export default function JawiKVKLearningPage({ onBack, language }) {
                 color: isA ? '#fff' : isDone ? c : '#AFAFAF',
                 border: `2px solid ${isA ? c : isDone ? c : '#E5E5E5'}`,
                 borderBottom: `4px solid ${isA ? c : isDone ? c : '#D0D0D0'}`,
-                borderRadius: '10px', fontWeight: 900, fontSize: '0.72rem',
+                borderRadius: '10px', fontWeight: 900, fontSize: script === 'JAWI' ? '1.1rem' : '0.7rem',
                 cursor: 'pointer', transition: 'all 0.15s', textAlign: 'center',
+                ...(script === 'JAWI' ? { fontFamily: '"Lateef", "Noto Naskh Arabic", serif', letterSpacing: '0.5px' } : { letterSpacing: '0.3px' }),
               }}>
-                {it.kvk.toUpperCase()}
+                {script === 'JAWI' ? it.jawikvk : it.kvk.toUpperCase()}
                 {isDone && <div style={{ fontSize: '0.58rem' }}>✓</div>}
               </button>
             );
@@ -427,9 +443,10 @@ export default function JawiKVKLearningPage({ onBack, language }) {
           border: `2px solid ${slotColor}44`, borderBottom: `4px solid ${slotColor}`,
           fontWeight: 900, fontSize: '1rem', cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem',
+          fontFamily: '"Lateef", "Noto Naskh Arabic", serif',
         }}>
           <Volume2 size={18} />
-          {language === 'bm' ? 'Dengar' : 'Listen'}
+          دڠر
         </button>
 
         <button onClick={handleNext} style={{
@@ -439,10 +456,11 @@ export default function JawiKVKLearningPage({ onBack, language }) {
           borderBottom: `4px solid ${cardIndex === seriesItems.length - 1 ? '#46A302' : slotColor}CC`,
           fontWeight: 900, fontSize: '1rem', cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem',
+          fontFamily: '"Lateef", "Noto Naskh Arabic", serif',
         }}>
           {cardIndex === seriesItems.length - 1
-            ? (language === 'bm' ? 'Siap ✓' : 'Done ✓')
-            : (language === 'bm' ? 'Seterusnya' : 'Next')}
+            ? 'سياڤ ✓'
+            : 'ستروسڽ'}
           {cardIndex < seriesItems.length - 1 && <ChevronRight size={19} />}
         </button>
       </div>

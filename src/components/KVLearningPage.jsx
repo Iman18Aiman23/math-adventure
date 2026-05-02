@@ -381,7 +381,7 @@ export default function KVLearningPage({ onBack, language }) {
         </div>
 
         {/* ── Mini vowel strip ── */}
-        <div style={{ display: 'flex', gap: '0.35rem', width: '100%', maxWidth: '400px', overflowX: 'auto', paddingBottom: '4px' }}>
+        <div style={{ display: 'flex', gap: '0.35rem', width: '100%', maxWidth: '400px', overflowX: 'auto', paddingBottom: '4px', margin: '0 auto', justifyContent: 'center', alignItems: 'center' }}>
           {seriesItems.map((it, i) => {
             const isA = i === cardIndex;
             const isDone = i < cardIndex;
