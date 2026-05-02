@@ -5,7 +5,7 @@ export const JAWI_STORIES = [
     color: '#FF6B6B',
     bgColor: '#FFF0F0',
     bgGradient: 'linear-gradient(160deg, #FFF0F0 0%, #FFE8CC 100%)',
-    sceneEmojis: ['🚌', '🛣️', '🎒', '🏫', '👟', '😄'],
+    sceneEmojis: ['🚍', '🚌', '🎒', '🚏', '🏃‍♀️💨🚌', '😄'],
     accentColors: ['#FFB3B3', '#FFC9A3', '#FFE8A3', '#FFB3B3', '#FFC9A3', '#FFE8A3'],
     title: { bm: 'Bas Sekolah', eng: 'School Bus', jawi: 'بس سكوله' },
     paragraphs: [
@@ -41,7 +41,7 @@ export const JAWI_STORIES = [
     color: '#FF9600',
     bgColor: '#FFF5E0',
     bgGradient: 'linear-gradient(160deg, #FFF5E0 0%, #FFF0CC 100%)',
-    sceneEmojis: ['🐱', '🧶', '⚽', '🏃', '🍖', '🥰'],
+    sceneEmojis: ['🐱', '🧡🟠🟤', '⚽', '🏃', '🍖', '🥰'],
     accentColors: ['#FFD9B3', '#FFCCB3', '#FFE0B3', '#FFD9B3', '#FFCCB3', '#FFE0B3'],
     title: { bm: 'Kucing Comel', eng: 'Cute Cat', jawi: 'كوچيڠ چومل' },
     paragraphs: [
