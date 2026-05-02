@@ -8,11 +8,12 @@ import JawiMatchGame from './JawiMatchGame';
 import JawiWordsPage from './JawiWordsPage';
 import JawiSyllablesLearningPage from './JawiSyllablesLearningPage';
 import Jawi100WordsGame from './Jawi100WordsGame';
+import JawiShortStoriesPage from './JawiShortStoriesPage';
 import GameHeader from './GameHeader';
 
 export default function JawiPage({ onBack, onHome, language }) {
     const t = LOCALIZATION[language].jawi;
-    const [mode, setMode] = useState(null); // null, 'alphabet' | 'match' | 'words' | 'syllables' | 'spelling_game'
+    const [mode, setMode] = useState(null); // null, 'alphabet' | 'match' | 'words' | 'syllables' | 'spelling_game' | 'short_stories'
     const [selectedAlphabet, setSelectedAlphabet] = useState(null);
 
     const speakLetter = (text) => {
@@ -33,7 +34,7 @@ export default function JawiPage({ onBack, onHome, language }) {
     }, [selectedAlphabet]);
 
     const handleBack = () => {
-        if (mode === 'alphabet' || mode === 'match' || mode === 'words' || mode === 'syllables' || mode === 'spelling_game') {
+        if (mode === 'alphabet' || mode === 'match' || mode === 'words' || mode === 'syllables' || mode === 'spelling_game' || mode === 'short_stories') {
             setMode('menu');
         } else {
             onBack();
@@ -278,6 +279,7 @@ export default function JawiPage({ onBack, onHome, language }) {
     if (mode === 'words') return <JawiWordsPage onBack={handleBack} onHome={onHome} language={language} />;
     if (mode === 'syllables') return <JawiSyllablesLearningPage onBack={handleBack} onHome={onHome} language={language} />;
     if (mode === 'spelling_game') return <Jawi100WordsGame onBack={handleBack} onHome={onHome} language={language} />;
+    if (mode === 'short_stories') return <JawiShortStoriesPage onBack={handleBack} onHome={onHome} language={language} />;
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
@@ -314,6 +316,7 @@ export default function JawiPage({ onBack, onHome, language }) {
                         { mode: 'syllables',    emoji: '🅰️', iconBg: '#FFF0CC', color: '#FFC800', title: t.learnSyllables, desc: language === 'bm' ? 'Suku kata KV & KVK' : 'KV & KVK syllables' },
                         { mode: 'words',        emoji: '📝', iconBg: '#FFE0E0', color: '#FF4B4B', title: t.learn100Words,  desc: language === 'bm' ? '100 perkataan asas' : '100 basic words' },
                         { mode: 'spelling_game',emoji: '🎮', iconBg: '#D0F0FF', color: '#1CB0F6', title: t.learnSpelling,  desc: language === 'bm' ? 'Cabaran ejaan interaktif' : 'Interactive spelling challenge' },
+                        { mode: 'short_stories',emoji: '📚', iconBg: '#E8D4F5', color: '#B856D9', title: t.shortStories,   desc: language === 'bm' ? 'Baca cerita pendek dalam Jawi' : 'Read short stories in Jawi' },
                         { mode: 'match',        emoji: '⭐', iconBg: '#FFE8CC', color: '#FF9600', title: t.testMatch,      desc: language === 'bm' ? 'Padankan huruf & perkataan' : 'Match letters & words' },
                     ].map((item, i) => (
                         <button
