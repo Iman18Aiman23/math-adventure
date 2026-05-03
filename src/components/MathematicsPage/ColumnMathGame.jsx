@@ -1234,9 +1234,8 @@ export default function ColumnMathGame({ onBack, language }) {
             background: '#fff', borderRadius: '24px',
             padding: isDesktop ? '1.5rem 2.5rem 1.75rem' : '2.2rem 2rem 2.4rem',
             border: '3px solid #E5E5E5', boxShadow: '0 6px 0 #E5E5E5',
-            minWidth: CARD_MIN ? `${CARD_MIN}px` : undefined,
-            width: isDesktop ? 'auto' : '100%',
-            maxWidth: '720px',
+            width: isDesktop ? 'fit-content' : '100%',
+            maxWidth: isDesktop ? 'calc(100vw - 2rem)' : '100%',
             boxSizing: 'border-box',
           }}
         >
