@@ -76,71 +76,231 @@ function StreakPopup({ streak, language, onClose }) {
   );
 }
 
+function buildAdditionTutorial(num1, num2, bm) {
+  const a = String(num1);
+  const b = String(num2);
+  const maxLen = Math.max(a.length, b.length);
+  const p1 = a.padStart(maxLen, '0');
+  const p2 = b.padStart(maxLen, '0');
+  const answer = num1 + num2;
+  const places = bm
+    ? ['unit', 'puluh', 'ratus', 'ribu', 'puluh ribu', 'ratus ribu']
+    : ['ones', 'tens', 'hundreds', 'thousands', 'ten thousands', 'hundred thousands'];
+
+  const lines = [];
+  let carry = 0;
+  for (let i = maxLen - 1; i >= 0; i--) {
+    const d1 = parseInt(p1[i], 10);
+    const d2 = parseInt(p2[i], 10);
+    const place = places[maxLen - 1 - i];
+    const sum = d1 + d2 + carry;
+    const ones = sum % 10;
+    const newCarry = Math.floor(sum / 10);
+    const eq = carry > 0 ? `${d1} + ${d2} + ${carry} = ${sum}` : `${d1} + ${d2} = ${sum}`;
+    let outcome;
+    if (i === 0 && newCarry > 0) {
+      outcome = bm ? `tulis ${sum}` : `write ${sum}`;
+    } else if (newCarry > 0) {
+      outcome = bm ? `tulis ${ones}, gendong ${newCarry}` : `write ${ones}, carry ${newCarry}`;
+    } else {
+      outcome = bm ? `tulis ${ones}` : `write ${ones}`;
+    }
+    lines.push(`${bm ? 'Lajur' : 'Column'} ${place}: ${eq} → ${outcome}.`);
+    carry = newCarry;
+  }
+
+  return {
+    title: bm ? `Cara Selesaikan ${num1} + ${num2}` : `How to Solve ${num1} + ${num2}`,
+    steps: [
+      {
+        title: bm ? 'Langkah 1: Susun Nombor' : 'Step 1: Line Up the Numbers',
+        lines: [bm
+          ? `Letakkan ${num1} di atas dan ${num2} di bawah. Selaraskan digit mengikut nilai tempat (unit, puluh, ratus...).`
+          : `Place ${num1} on top and ${num2} below. Line up the digits by place value (ones, tens, hundreds...).`
+        ]
+      },
+      {
+        title: bm ? 'Langkah 2: Tambah Setiap Lajur (Kanan ke Kiri)' : 'Step 2: Add Each Column (Right to Left)',
+        lines
+      },
+      {
+        title: bm ? 'Langkah 3: Jawapan Akhir' : 'Step 3: Final Answer',
+        lines: [`${num1} + ${num2} = ${answer}`]
+      }
+    ]
+  };
+}
+
+function buildSubtractionTutorial(num1, num2, bm) {
+  const big = Math.max(num1, num2);
+  const small = Math.min(num1, num2);
+  const a = String(big);
+  const b = String(small);
+  const maxLen = a.length;
+  const p1 = a.padStart(maxLen, '0').split('').map(Number);
+  const p2 = b.padStart(maxLen, '0').split('').map(Number);
+  const answer = big - small;
+  const places = bm
+    ? ['unit', 'puluh', 'ratus', 'ribu', 'puluh ribu', 'ratus ribu']
+    : ['ones', 'tens', 'hundreds', 'thousands', 'ten thousands', 'hundred thousands'];
+
+  const lines = [];
+  for (let i = maxLen - 1; i >= 0; i--) {
+    const place = places[maxLen - 1 - i];
+    if (p1[i] < p2[i]) {
+      const leftPlace = places[maxLen - i];
+      lines.push(bm
+        ? `Lajur ${place}: ${p1[i]} terlalu kecil untuk tolak ${p2[i]}. Pinjam 1 daripada lajur ${leftPlace}: ${p1[i - 1]} → ${p1[i - 1] - 1}, dan ${p1[i]} → ${p1[i] + 10}.`
+        : `Column ${place}: ${p1[i]} is too small to subtract ${p2[i]}. Borrow 1 from the ${leftPlace} column: ${p1[i - 1]} becomes ${p1[i - 1] - 1}, and ${p1[i]} becomes ${p1[i] + 10}.`
+      );
+      p1[i - 1] -= 1;
+      p1[i] += 10;
+    }
+    const result = p1[i] - p2[i];
+    lines.push(`${bm ? 'Lajur' : 'Column'} ${place}: ${p1[i]} - ${p2[i]} = ${result}.`);
+  }
+
+  return {
+    title: bm ? `Cara Selesaikan ${big} - ${small}` : `How to Solve ${big} - ${small}`,
+    steps: [
+      {
+        title: bm ? 'Langkah 1: Susun Nombor' : 'Step 1: Line Up the Numbers',
+        lines: [bm
+          ? `Letakkan ${big} di atas dan ${small} di bawah, selaraskan digit mengikut nilai tempat.`
+          : `Place ${big} on top and ${small} below, lining up digits by place value.`
+        ]
+      },
+      {
+        title: bm ? 'Langkah 2: Tolak Setiap Lajur (Kanan ke Kiri)' : 'Step 2: Subtract Each Column (Right to Left)',
+        lines
+      },
+      {
+        title: bm ? 'Langkah 3: Jawapan Akhir' : 'Step 3: Final Answer',
+        lines: [`${big} - ${small} = ${answer}`]
+      }
+    ]
+  };
+}
+
+function buildMultiplyByDigit(topStr, multiplier, bm) {
+  const lines = [];
+  let carry = 0;
+  let resultDigits = [];
+  for (let i = topStr.length - 1; i >= 0; i--) {
+    const d = parseInt(topStr[i], 10);
+    const product = d * multiplier + carry;
+    const ones = product % 10;
+    const newCarry = Math.floor(product / 10);
+    const eq = carry > 0 ? `${multiplier} × ${d} + ${carry} = ${product}` : `${multiplier} × ${d} = ${product}`;
+    let outcome;
+    if (i === 0 && newCarry > 0) {
+      outcome = bm ? `tulis ${product}` : `write ${product}`;
+      resultDigits.unshift(String(product));
+    } else if (newCarry > 0) {
+      outcome = bm ? `tulis ${ones}, gendong ${newCarry}` : `write ${ones}, carry ${newCarry}`;
+      resultDigits.unshift(String(ones));
+    } else {
+      outcome = bm ? `tulis ${ones}` : `write ${ones}`;
+      resultDigits.unshift(String(ones));
+    }
+    lines.push(`${eq} → ${outcome}.`);
+    carry = newCarry;
+  }
+  return { lines, result: resultDigits.join('') };
+}
+
+function buildMultiplicationTutorial(num1, num2, bm) {
+  const num1Str = String(num1);
+  const onesDigit = num2 % 10;
+  const tensDigit = Math.floor(num2 / 10);
+  const hundredsDigit = Math.floor(num2 / 100);
+  const answer = num1 * num2;
+
+  const steps = [];
+  steps.push({
+    title: bm ? 'Langkah 1: Susun Nombor' : 'Step 1: Line Up the Numbers',
+    lines: [bm
+      ? `Letakkan ${num1} di atas dan ${num2} di bawah. Lukis garis di bawah.`
+      : `Place ${num1} on top and ${num2} below. Draw a line underneath.`
+    ]
+  });
+
+  // Step: multiply by ones
+  const onesPart = buildMultiplyByDigit(num1Str, onesDigit, bm);
+  steps.push({
+    title: bm
+      ? `Langkah 2: Darab dengan Tempat Unit (${num1} × ${onesDigit})`
+      : `Step 2: Multiply by the "Ones" place (${num1} × ${onesDigit})`,
+    lines: onesPart.lines,
+    result: bm ? `Hasil baris pertama: ${onesPart.result}` : `Result of first line: ${onesPart.result}`
+  });
+
+  // Step: multiply by tens (if applicable)
+  if (tensDigit > 0) {
+    const tensPart = buildMultiplyByDigit(num1Str, tensDigit, bm);
+    const tensLines = [
+      bm
+        ? `Penanda Tempat: Kerana ${tensDigit} berada di tempat puluh, kita letakkan 0 di lajur unit dahulu.`
+        : `The Placeholder: Since ${tensDigit} is in the tens place, we put a 0 in the ones column before we start.`,
+      ...tensPart.lines
+    ];
+    steps.push({
+      title: bm
+        ? `Langkah 3: Darab dengan Tempat Puluh (${num1} × ${tensDigit}0)`
+        : `Step 3: Multiply by the "Tens" place (${num1} × ${tensDigit}0)`,
+      lines: tensLines,
+      result: bm ? `Hasil baris kedua: ${tensPart.result}0` : `Result of second line: ${tensPart.result}0`
+    });
+
+    if (hundredsDigit > 0) {
+      const hundredsPart = buildMultiplyByDigit(num1Str, hundredsDigit, bm);
+      const hLines = [
+        bm
+          ? `Penanda Tempat: Kerana ${hundredsDigit} berada di tempat ratus, letakkan 00 di sebelah kanan.`
+          : `The Placeholder: Since ${hundredsDigit} is in the hundreds place, put 00 on the right.`,
+        ...hundredsPart.lines
+      ];
+      steps.push({
+        title: bm
+          ? `Langkah 4: Darab dengan Tempat Ratus (${num1} × ${hundredsDigit}00)`
+          : `Step 4: Multiply by the "Hundreds" place (${num1} × ${hundredsDigit}00)`,
+        lines: hLines,
+        result: bm ? `Hasil baris ketiga: ${hundredsPart.result}00` : `Result of third line: ${hundredsPart.result}00`
+      });
+    }
+
+    steps.push({
+      title: bm ? 'Langkah Akhir: Tambahkan Hasil-Hasil Separa' : 'Final Step: Add the Partial Products',
+      lines: [bm
+        ? `Tambahkan semua hasil separa untuk mendapatkan jawapan akhir.`
+        : `Add the partial products together for the final answer.`
+      ],
+      result: `${num1} × ${num2} = ${answer}`
+    });
+  } else {
+    steps.push({
+      title: bm ? 'Jawapan Akhir' : 'Final Answer',
+      lines: [`${num1} × ${num2} = ${answer}`]
+    });
+  }
+
+  return {
+    title: bm ? `Cara Selesaikan ${num1} × ${num2}` : `How to Solve ${num1} × ${num2}`,
+    steps
+  };
+}
+
 function TutorialModal({ operation, language, onClose, num1, num2 }) {
   const bm = language === 'bm';
   const isDesktop = typeof window !== 'undefined' ? window.innerWidth >= 768 : true;
 
   const getTutorialContent = () => {
-    if (operation === '+') {
-      return {
-        title: bm ? 'Cara Menambah Nombor' : 'How to Add Numbers',
-        steps: bm ? [
-          { title: 'Langkah 1: Senaraikan Nombor', desc: 'Letakkan nombor di atas satu sama lain. Selaraskan digit mengikut nilai tempat (unit, puluh, ratus, dsb).' },
-          { title: 'Langkah 2: Mulai dari Kanan', desc: 'Mulakan dengan lajur paling kanan (unit). Tambahkan digit di lajur itu.' },
-          { title: 'Langkah 3: Tulis Jawapan', desc: 'Tulis hasilnya di bawah lajur. Jika hasil lebih daripada 9, lihat Langkah 4.' },
-          { title: 'Langkah 4: Gendong Angka', desc: 'Jika hasil adalah 10 atau lebih, tulis digit unit dan "gendong" digit puluh ke lajur seterusnya.' },
-          { title: 'Langkah 5: Terus ke Kiri', desc: 'Lakukan perkara yang sama untuk lajur puluh, ratus, dan seterusnya sehingga selesai.' },
-          { title: 'Langkah 6: Semak Jawapan', desc: 'Baca jawapan akhir dari kiri ke kanan. Contoh: 25 + 17 = 42' }
-        ] : [
-          { title: 'Step 1: Line Up Numbers', desc: 'Place numbers on top of each other. Align digits by place value (ones, tens, hundreds, etc).' },
-          { title: 'Step 2: Start from the Right', desc: 'Begin with the rightmost column (ones place). Add the digits in that column.' },
-          { title: 'Step 3: Write the Answer', desc: 'Write the result below the column. If the result is more than 9, see Step 4.' },
-          { title: 'Step 4: Carry the Number', desc: 'If the result is 10 or more, write the ones digit and "carry" the tens digit to the next column.' },
-          { title: 'Step 5: Continue Left', desc: 'Do the same for the tens, hundreds, and continue until you\'re done.' },
-          { title: 'Step 6: Check Your Answer', desc: 'Read the final answer from left to right. Example: 25 + 17 = 42' }
-        ]
-      };
-    } else if (operation === '-') {
-      return {
-        title: bm ? 'Cara Menolak Nombor' : 'How to Subtract Numbers',
-        steps: bm ? [
-          { title: 'Langkah 1: Senaraikan Nombor', desc: 'Letakkan nombor lebih besar di atas dan nombor lebih kecil di bawah. Selaraskan digit mengikut nilai tempat.' },
-          { title: 'Langkah 2: Mulai dari Kanan', desc: 'Mulakan dengan lajur paling kanan (unit). Tolak digit bawah daripada digit atas.' },
-          { title: 'Langkah 3: Tulis Jawapan', desc: 'Tulis hasilnya di bawah lajur.' },
-          { title: 'Langkah 4: Jika Tidak Boleh Tolak', desc: 'Jika digit atas lebih kecil daripada digit bawah, anda perlu "pinjam" daripada lajur di sebelah kiri.' },
-          { title: 'Langkah 5: Pinjam Dari Tetangga', desc: 'Ambil 1 daripada digit di sebelah kiri (ia menjadi 10 untuk lajur semasa). Tolak digit bawah daripada 10 + digit atas.' },
-          { title: 'Langkah 6: Terus ke Kiri', desc: 'Lakukan perkara yang sama untuk lajur seterusnya. Contoh: 32 - 15 = 17' }
-        ] : [
-          { title: 'Step 1: Line Up Numbers', desc: 'Place the larger number on top and smaller below. Align digits by place value.' },
-          { title: 'Step 2: Start from the Right', desc: 'Begin with the rightmost column (ones place). Subtract the bottom digit from the top digit.' },
-          { title: 'Step 3: Write the Answer', desc: 'Write the result below the column.' },
-          { title: 'Step 4: When You Can\'t Subtract', desc: 'If the top digit is smaller than the bottom digit, you need to "borrow" from the column on the left.' },
-          { title: 'Step 5: Borrow from Neighbor', desc: 'Take 1 from the digit on the left (it becomes 10 for the current column). Subtract from 10 + top digit.' },
-          { title: 'Step 6: Continue Left', desc: 'Do the same for the next columns. Example: 32 - 15 = 17' }
-        ]
-      };
-    } else if (operation === '×') {
-      return {
-        title: bm ? 'Cara Mendarab Nombor' : 'How to Multiply Numbers',
-        steps: bm ? [
-          { title: 'Langkah 1: Senaraikan Nombor', desc: 'Letakkan nombor pertama di atas dan nombor kedua di bawah. Lukis garis di bawah.' },
-          { title: 'Langkah 2: Darab Digit Unit', desc: 'Mulakan dengan digit paling kanan nombor bawah. Darabkan dengan setiap digit nombor atas, dari kanan ke kiri.' },
-          { title: 'Langkah 3: Gendong Apabila Lebih 10', desc: 'Jika hasil darab ≥ 10, tulis digit unit di jawapan dan "gendong" digit puluh ke atas seperti dalam penambahan. Contoh: 6×4=24, tulis 4 dan gendong 2.' },
-          { title: 'Langkah 4: Terus Darab Digit Unit', desc: 'Darab digit unit dengan digit seterusnya di nombor atas. Tambahkan angka gendong daripada Langkah 3 sebelum menulis hasilnya.' },
-          { title: 'Langkah 5: Darab Digit Puluh', desc: 'Ambil digit puluh daripada nombor bawah. Darabkan dengan setiap digit nombor atas (dari kanan ke kiri), dan ulangi proses gendong.' },
-          { title: 'Langkah 6: Tulis Hasil Separa 2', desc: 'Tulis hasil puluh di bawah, tetapi geser satu tempat ke kiri daripada hasil unit.' },
-          { title: 'Langkah 7: Tambahkan Semua', desc: 'Tambahkan semua hasil separa bersama-sama untuk mendapatkan jawapan akhir.' }
-        ] : [
-          { title: 'Step 1: Line Up Numbers', desc: 'Place the first number on top and second below. Draw a line underneath.' },
-          { title: 'Step 2: Multiply Ones Digit', desc: 'Start with the rightmost digit (ones place) of the bottom number. Multiply it by each digit in the top number, from right to left.' },
-          { title: 'Step 3: Carry When >= 10', desc: 'When a multiplication result is 10 or more, write the ones digit in the answer and "carry" the tens digit above, just like in addition. Example: 6×4=24, write 4 and carry 2.' },
-          { title: 'Step 4: Continue Multiplying Ones', desc: 'Multiply the ones digit by the next digit in the top number. Add the carried number from Step 3 before writing the result.' },
-          { title: 'Step 5: Multiply Tens Digit', desc: 'Now take the tens digit from the bottom number. Multiply it by each digit in the top number (right to left), and repeat the carrying process.' },
-          { title: 'Step 6: Write Partial Product 2', desc: 'Write the tens result below, but shift one place to the left compared to the ones result.' },
-          { title: 'Step 7: Add All Results', desc: 'Add all partial products together to get the final answer.' }
-        ]
-      };
+    if (typeof num1 !== 'number' || typeof num2 !== 'number') {
+      return { title: bm ? 'Maklumat' : 'Information', steps: [] };
     }
+    if (operation === '+') return buildAdditionTutorial(num1, num2, bm);
+    if (operation === '-') return buildSubtractionTutorial(num1, num2, bm);
+    if (operation === '×') return buildMultiplicationTutorial(num1, num2, bm);
     return { title: bm ? 'Maklumat' : 'Information', steps: [] };
   };
 
@@ -150,7 +310,7 @@ function TutorialModal({ operation, language, onClose, num1, num2 }) {
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
       <div onClick={e => e.stopPropagation()} style={{ background: '#fff', borderRadius: '24px', padding: '2rem', maxWidth: isDesktop ? '600px' : '100%', width: '100%', maxHeight: '85vh', overflowY: 'auto', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-          <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 900, color: '#3C3C3C' }}>{content.title}</h2>
+          <h2 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 900, color: '#3C3C3C' }}>{content.title}</h2>
           <button
             onClick={onClose}
             style={{ background: 'transparent', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#999' }}
@@ -172,12 +332,19 @@ function TutorialModal({ operation, language, onClose, num1, num2 }) {
                 {idx + 1}
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#3C3C3C', marginBottom: '0.3rem' }}>
+                <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#3C3C3C', marginBottom: '0.4rem' }}>
                   {step.title}
                 </div>
-                <div style={{ fontSize: '0.85rem', color: '#666', lineHeight: 1.4 }}>
-                  {step.desc}
-                </div>
+                {step.lines && step.lines.map((ln, k) => (
+                  <div key={k} style={{ fontSize: '0.85rem', color: '#666', lineHeight: 1.5, marginBottom: '0.25rem', paddingLeft: '0.25rem' }}>
+                    • {ln}
+                  </div>
+                ))}
+                {step.result && (
+                  <div style={{ marginTop: '0.4rem', fontSize: '0.9rem', fontWeight: 800, color: '#58CC02', background: '#EFFFEA', padding: '0.4rem 0.6rem', borderRadius: '8px', display: 'inline-block' }}>
+                    {step.result}
+                  </div>
+                )}
               </div>
             </div>
           ))}
