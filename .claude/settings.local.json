@@ -20,7 +20,8 @@
       "PowerShell(New-Item -ItemType Directory -Path \"src\\\\components\\\\JawiScriptPage\" -Force)",
       "PowerShell(New-Item -ItemType Directory -Path \"src\\\\components\\\\MathematicsPage\" -Force)",
       "Bash(curl -s http://localhost:3000)",
-      "Bash(npx eslint *)"
+      "Bash(npx eslint *)",
+      "WebFetch(domain:localhost)"
     ]
   }
 }
