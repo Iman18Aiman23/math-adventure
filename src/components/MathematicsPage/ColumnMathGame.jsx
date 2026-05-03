@@ -1336,7 +1336,7 @@ export default function ColumnMathGame({ onBack, language }) {
             {showTopRow && (
               <div style={{ display: 'flex', alignItems: 'center', height: isDesktop ? '50px' : '38px', minHeight: isDesktop ? '50px' : '38px', visibility: 'visible' }}>
                 <div style={{ width: OP_W }} />
-                {topRow.map((val, i) => {
+                {(problem.op === '×' && !problem.hasPartials ? topRowInputs : topRow).map((val, i) => {
                   const hide = p1[i] === ' ' && p2[i] === ' ';
                   const isSubBorrow = problem.op === '-' && (userStruckRow[i] || userBorrowedTo[i]);
                   const isMulCarry = problem.op === '×' && !problem.hasPartials && topRowInputs[i];
