@@ -934,15 +934,6 @@ export default function ColumnMathGame({ onBack, language }) {
           setActivePartial1Idx(i - 1);
           partial1Refs.current[i - 1]?.focus();
         }, 0);
-      } else if (problem.hasPartials) {
-        // Move to rightmost partial 2 input
-        const N2 = String(problem.partial2).length;
-        const rightmostP2 = ml - 2;
-        setTimeout(() => {
-          setActiveSection('partial2');
-          setActivePartial2Idx(rightmostP2);
-          partial2Refs.current[rightmostP2]?.focus();
-        }, 0);
       }
       return;
     }
@@ -997,13 +988,6 @@ export default function ColumnMathGame({ onBack, language }) {
         setTimeout(() => {
           setActivePartial2Idx(i - 1);
           partial2Refs.current[i - 1]?.focus();
-        }, 0);
-      } else {
-        // Move to rightmost answer input
-        setTimeout(() => {
-          setActiveSection('answer');
-          setActiveIdx(ml - 1);
-          inputRefs.current[ml - 1]?.focus();
         }, 0);
       }
       return;
@@ -1426,7 +1410,7 @@ export default function ColumnMathGame({ onBack, language }) {
             position: 'relative',
             background: '#fff',
             borderRadius: '24px',
-            padding: isDesktop ? '1.5rem 2.5rem 1.75rem' : '2.2rem 2rem 2.4rem',
+            padding: isDesktop ? '1.5rem 2.5rem 1.75rem' : '2.2rem 3.25rem 2.4rem 1rem',
             border: '3px solid #E5E5E5',
             boxShadow: '0 6px 0 #E5E5E5',
             width: isDesktop ? '440px' : '100%',
