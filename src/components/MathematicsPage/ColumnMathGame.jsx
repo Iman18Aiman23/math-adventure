@@ -919,6 +919,20 @@ export default function ColumnMathGame({ onBack, language }) {
     const inputs = [...partial1Inputs];
     inputs[i] = limited;
     setPartial1Inputs(inputs);
+
+    // Mobile-friendly auto-advance: if user typed 2-digit value (carry case), auto process & move left
+    if (limited.length === 2 && parseInt(limited, 10) >= 10) {
+      const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
+      const N1 = String(problem.partial1).length;
+      const leftmostP1 = ml - N1;
+      processPartial1CarryLogic(i, limited);
+      if (i > leftmostP1) {
+        setTimeout(() => {
+          setActivePartial1Idx(i - 1);
+          partial1Refs.current[i - 1]?.focus();
+        }, 50);
+      }
+    }
   };
 
   const handlePartial1KeyDown = (i, e) => {
@@ -933,7 +947,20 @@ export default function ColumnMathGame({ onBack, language }) {
         setTimeout(() => {
           setActivePartial1Idx(i - 1);
           partial1Refs.current[i - 1]?.focus();
-        }, 0);
+        }, 50);
+      } else if (problem.hasPartials) {
+        // At leftmost partial 1, all filled → move to rightmost partial 2
+        const updatedInputs = [...partial1Inputs];
+        updatedInputs[i] = partial1Refs.current[i].value.replace(/[^0-9]/g, '').slice(0, 2);
+        const allFilled = !updatedInputs.slice(leftmostP1).some(d => d === '');
+        if (allFilled) {
+          const rightmostP2 = ml - 2;
+          setTimeout(() => {
+            setActiveSection('partial2');
+            setActivePartial2Idx(rightmostP2);
+            partial2Refs.current[rightmostP2]?.focus();
+          }, 80);
+        }
       }
       return;
     }
@@ -967,6 +994,21 @@ export default function ColumnMathGame({ onBack, language }) {
     }
   };
 
+  const handlePartial2ChangeAutoAdvance = (i, limited) => {
+    if (limited.length === 2 && parseInt(limited, 10) >= 10) {
+      const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
+      const N2 = String(problem.partial2).length;
+      const leftmostP2 = ml - N2 - 1;
+      processPartial2CarryLogic(i, limited);
+      if (i > leftmostP2) {
+        setTimeout(() => {
+          setActivePartial2Idx(i - 1);
+          partial2Refs.current[i - 1]?.focus();
+        }, 50);
+      }
+    }
+  };
+
   const handlePartial2Change = (i, rawValue) => {
     if (status !== 'playing' || !problem.hasPartials) return;
     const cleaned = rawValue.replace(/[^0-9]/g, '');
@@ -974,6 +1016,7 @@ export default function ColumnMathGame({ onBack, language }) {
     const inputs = [...partial2Inputs];
     inputs[i] = limited;
     setPartial2Inputs(inputs);
+    handlePartial2ChangeAutoAdvance(i, limited);
   };
 
   const handlePartial2KeyDown = (i, e) => {
@@ -1646,9 +1689,31 @@ export default function ColumnMathGame({ onBack, language }) {
                     return (
                       <input
                         key={i} ref={el => partial1Refs.current[i] = el}
-                        type="text" inputMode="numeric" maxLength={2} value={d} readOnly={status !== 'playing'}
+                        type="text" inputMode="numeric" maxLength={2} enterKeyHint="next" value={d} readOnly={status !== 'playing'}
                         onChange={e => handlePartial1Change(i, e.target.value)} onKeyDown={e => handlePartial1KeyDown(i, e)}
-                        onBlur={e => processPartial1CarryLogic(i, e.target.value)}
+                        onBlur={(e) => {
+                          processPartial1CarryLogic(i, e.target.value);
+                          // Mobile fix: if focus moved to answer row prematurely, redirect to next correct field
+                          if (e.relatedTarget && inputRefs.current.includes(e.relatedTarget)) {
+                            const N1 = String(problem.partial1).length;
+                            const leftmostP1 = maxLen - N1;
+                            if (i > leftmostP1) {
+                              setTimeout(() => { setActivePartial1Idx(i - 1); partial1Refs.current[i - 1]?.focus(); }, 50);
+                            } else {
+                              const updatedInputs = [...partial1Inputs];
+                              updatedInputs[i] = e.target.value.replace(/[^0-9]/g, '').slice(0, 2);
+                              const allFilled = !updatedInputs.slice(leftmostP1).some(d => d === '');
+                              if (allFilled) {
+                                const rightmostP2 = maxLen - 2;
+                                setTimeout(() => {
+                                  setActiveSection('partial2');
+                                  setActivePartial2Idx(rightmostP2);
+                                  partial2Refs.current[rightmostP2]?.focus();
+                                }, 80);
+                              }
+                            }
+                          }
+                        }}
                         onFocus={() => { if (status === 'playing') { setActiveSection('partial1'); setActivePartial1Idx(i); } }}
                         style={{
                           width: CELL_W - 6, height: ANS_H, margin: '0 3px', boxSizing: 'border-box',
@@ -1700,9 +1765,19 @@ export default function ColumnMathGame({ onBack, language }) {
                     return (
                       <input
                         key={i} ref={el => partial2Refs.current[i] = el}
-                        type="text" inputMode="numeric" maxLength={2} value={d} readOnly={status !== 'playing'}
+                        type="text" inputMode="numeric" maxLength={2} enterKeyHint="next" value={d} readOnly={status !== 'playing'}
                         onChange={e => handlePartial2Change(i, e.target.value)} onKeyDown={e => handlePartial2KeyDown(i, e)}
-                        onBlur={e => processPartial2CarryLogic(i, e.target.value)}
+                        onBlur={(e) => {
+                          processPartial2CarryLogic(i, e.target.value);
+                          // Mobile fix: if focus moved to answer row prematurely while still in partial 2, redirect to left
+                          if (e.relatedTarget && inputRefs.current.includes(e.relatedTarget)) {
+                            const N2 = String(problem.partial2).length;
+                            const leftmostP2 = maxLen - N2 - 1;
+                            if (i > leftmostP2) {
+                              setTimeout(() => { setActivePartial2Idx(i - 1); partial2Refs.current[i - 1]?.focus(); }, 50);
+                            }
+                          }
+                        }}
                         onFocus={() => { if (status === 'playing') { setActiveSection('partial2'); setActivePartial2Idx(i); } }}
                         style={{
                           width: CELL_W - 6, height: ANS_H, margin: '0 3px', boxSizing: 'border-box',
