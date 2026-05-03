@@ -1483,7 +1483,13 @@ export default function ColumnMathGame({ onBack, language }) {
                   })}
                 </div>
 
-                {/* Partial 2 */}
+                {/* Partial 2 — hidden until user finishes partial 1 (all filled & submitted via enter/blur) */}
+                {(() => {
+                  const N1 = String(problem.partial1).length;
+                  const isP1Done = !partial1Inputs.slice(maxLen - N1).includes('');
+                  const isP1Submitted = isP1Done && partial1Submitted.has(maxLen - N1);
+                  return isP1Submitted;
+                })() && (
                 <div style={{ display: 'flex', alignItems: 'center', marginTop: '4px' }}>
                   {/* + sign appears when p1 is done */}
                   {(() => {
@@ -1530,6 +1536,7 @@ export default function ColumnMathGame({ onBack, language }) {
                     );
                   })}
                 </div>
+                )}
 
                 {/* Separator between partials and final total */}
                 <div style={{ borderTop: '3px solid #3C3C3C', margin: '4px 0' }} />
