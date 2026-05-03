@@ -1,17 +1,71 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import confetti from 'canvas-confetti';
-import { X, ChevronRight } from 'lucide-react';
+import { X } from 'lucide-react';
 import { generateProblem } from '../../utils/mathLogic';
 import { playSound } from '../../utils/soundManager';
 
-const STREAK_MILESTONE = 10;
-const STREAK_CHEERS_BM = ['Bagus!', 'Cemerlang!', 'Hebat!', 'Luar Biasa!', 'Menakjubkan!', 'BINTANG!', 'JUARA!', 'PAKAR MATEMATIK!'];
-const STREAK_CHEERS_EN = ['Great!', 'Excellent!', 'Fantastic!', 'Amazing!', 'Incredible!', 'SUPERSTAR!', 'CHAMPION!', 'MATH WIZARD!'];
+// ─── Web Speech API voice helper ───────────────────────────────────────────────
+function speak(text, { pitch = 1.4, rate = 1.05, volume = 1 } = {}) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.pitch   = pitch;
+  utt.rate    = rate;
+  utt.volume  = volume;
+  // Pick a child-friendly voice if available
+  const voices = window.speechSynthesis.getVoices();
+  const preferred = voices.find(v =>
+    /Google|Zira|Hazel|Karen|Samantha|Nicky/i.test(v.name)
+  ) || voices[0];
+  if (preferred) utt.voice = preferred;
+  window.speechSynthesis.speak(utt);
+}
 
+// ─── Operation meta ────────────────────────────────────────────────────────────
 const OP_META = {
-  multiply: { label: 'Darab', labelEn: 'Multiplication', emoji: '✖️', color: '#CE82FF', dark: '#9B59B6' },
+  add:      { label: 'Tambah',   labelEn: 'Addition',       emoji: '➕', color: '#58CC02', dark: '#46A302' },
+  subtract: { label: 'Tolak',    labelEn: 'Subtraction',    emoji: '➖', color: '#1CB0F6', dark: '#0B8DC0' },
+  multiply: { label: 'Darab',    labelEn: 'Multiplication', emoji: '✖️', color: '#CE82FF', dark: '#9B59B6' },
+  divide:   { label: 'Bahagi',   labelEn: 'Division',       emoji: '➗', color: '#FF9600', dark: '#CC7800' },
+  random:   { label: 'Rawak',    labelEn: 'Random Mix',     emoji: '🎲', color: '#FF4B4B', dark: '#CC3B3B' },
 };
 
+const getFruitIcon = (num) => {
+  switch(num) {
+    case 1: return '🍎';
+    case 2: return '🍇';
+    case 3: return '🍌';
+    case 4: return '🍉';
+    default: 
+      const extras = ['🍓', '🍒', '🥭', '🍍', '🍊', '🥝', '🫐', '🍑'];
+      return extras[num % extras.length];
+  }
+};
+
+const getAnimalIcon = (num) => {
+  switch(num) {
+    case 1: return '🐱';
+    case 2: return '🐰';
+    case 3: return '🐄';
+    case 4: return '🐐';
+    default: 
+      const extras = ['🐶', '🦊', '🐻', '🐼', '🐨', '🦁', '🐯', '🐸'];
+      return extras[num % extras.length];
+  }
+};
+
+const DIFF_META = {
+  easy:   { label: 'Senang',     labelEn: 'Easy',   emoji: '🌱', desc: '1–9',     descEn: 'Single digit' },
+  medium: { label: 'Sederhana',  labelEn: 'Medium', emoji: '⭐', desc: '10–99',   descEn: 'Two digits'   },
+  hard:   { label: 'Susah',      labelEn: 'Hard',   emoji: '🔥', desc: '100–999', descEn: 'Three digits' },
+};
+
+const STREAK_MILESTONE = 10;
+
+const STREAK_CHEERS_BM  = ['Bagus!', 'Cemerlang!', 'Hebat!', 'Luar Biasa!', 'Menakjubkan!', 'BINTANG!', 'JUARA!', 'PAKAR MATEMATIK!'];
+const STREAK_CHEERS_EN  = ['Great!', 'Excellent!', 'Fantastic!', 'Amazing!', 'Incredible!', 'SUPERSTAR!', 'CHAMPION!', 'MATH WIZARD!'];
+
+// ─── Streak Popup ──────────────────────────────────────────────────────────────
 function StreakPopup({ streak, language, onClose }) {
   const milestoneCount = Math.floor(streak / STREAK_MILESTONE);
   const cheers = language === 'bm' ? STREAK_CHEERS_BM : STREAK_CHEERS_EN;
@@ -34,28 +88,40 @@ function StreakPopup({ streak, language, onClose }) {
   );
 }
 
-export default function MathOperationsGame({ operation, difficulty, nums, quizType, onBack, onHome, language }) {
-  const opMeta = OP_META.multiply;
+// ─── Main Game Component ───────────────────────────────────────────────────────
+export default function MathOperationsGame({
+  operation, difficulty, nums, quizType,
+  onBack, onHome, language,
+}) {
+  const opMeta   = OP_META[operation]  || OP_META.add;
+  const diffMeta = DIFF_META[difficulty] || DIFF_META.easy;
 
-  const [problem, setProblem] = useState(null);
-  const [streak, setStreak] = useState(0);
-  const [totalAnswered, setTotalAnswered] = useState(0);
-  const [answerInputs, setAnswerInputs] = useState({});
-  const [carryInputs, setCarryInputs] = useState({});
-  const [expectedCarries, setExpectedCarries] = useState({});
-  const [feedback, setFeedback] = useState(null);
-  const [showStreak, setShowStreak] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [problem,        setProblem]        = useState(null);
+  const [streak,         setStreak]         = useState(0);
+  const [totalAnswered,  setTotalAnswered]  = useState(0);
+  const [feedback,       setFeedback]       = useState(null); // 'correct' | 'wrong' | null
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [typedAnswer,    setTypedAnswer]    = useState('');
+  const [showStreak,     setShowStreak]     = useState(false);
+  const [isAnimating,    setIsAnimating]    = useState(false);
 
-  const answerRefs = useRef({});
-  const carryRefs = useRef({});
+  const inputRef      = useRef(null);
   const feedbackTimer = useRef(null);
 
+  // Generate first problem on mount / config change
   useEffect(() => {
     loadNext();
     return () => { if (feedbackTimer.current) clearTimeout(feedbackTimer.current); };
   }, [operation, difficulty]);
 
+  // Re-focus input after feedback clears (typing mode)
+  useEffect(() => {
+    if (!feedback && quizType === 'typing' && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [feedback, quizType]);
+
+  // Pre-load voices (Chrome lazy-loads them)
   useEffect(() => {
     if (window.speechSynthesis) {
       window.speechSynthesis.getVoices();
@@ -64,192 +130,79 @@ export default function MathOperationsGame({ operation, difficulty, nums, quizTy
   }, []);
 
   const loadNext = useCallback(() => {
-    let newProblem;
-    do {
-      newProblem = generateProblem('multiply', difficulty, nums);
-    } while (newProblem.num2 > 9);
-
-    setProblem(newProblem);
-    setAnswerInputs({});
-    setCarryInputs({});
+    setProblem(generateProblem(operation, difficulty, nums));
     setFeedback(null);
+    setSelectedOption(null);
+    setTypedAnswer('');
     setIsAnimating(false);
+  }, [operation, Math.max(0, ...[difficulty.length, (nums||[]).length])]); // ensure reactivity if nums array reference changes but content same. Actually just `nums` is fine.
 
-    // Pre-calculate all expected carries
-    const num1Str = String(newProblem.num1);
-    const multiplier = newProblem.num2;
-    const carries = {};
-    let carry = 0;
+  const problemIcon = useMemo(() => {
+    if (!problem) return null;
+    const isFruit = Math.random() < 0.5;
+    const rnd = Math.floor(Math.random() * 10);
+    return isFruit ? getFruitIcon(rnd) : getAnimalIcon(rnd);
+  }, [problem]);
 
-    for (let i = num1Str.length - 1; i >= 0; i--) {
-      const digit = parseInt(num1Str[i], 10);
-      const result = digit * multiplier + carry;
-      carry = Math.floor(result / 10);
-      if (carry > 0) {
-        carries[String(i + 1)] = carry;
-      }
-    }
-
-    setExpectedCarries(carries);
-  }, [difficulty, nums]);
-
-  const handleAnswerInput = (colIndex, value) => {
+  const handleAnswer = useCallback((userAnswer) => {
     if (feedback || isAnimating) return;
+    const correct = Number(userAnswer) === problem.answer;
 
-    const trimmed = value.replace(/[^0-9]/g, '');
-    if (trimmed.length > 2) return;
-
-    const intValue = trimmed === '' ? null : parseInt(trimmed, 10);
-    const newAnswers = { ...answerInputs, [colIndex]: intValue };
-    setAnswerInputs(newAnswers);
-  };
-
-  const handleAnswerBlur = (colIndex) => {
-    if (feedback || isAnimating) return;
-
-    const value = answerRefs.current[colIndex]?.value.trim();
-    if (!value) return;
-
-    if (!/^\d{1,2}$/.test(value)) {
-      if (answerRefs.current[colIndex]) {
-        answerRefs.current[colIndex].value = '';
-      }
-      return;
-    }
-
-    const intValue = parseInt(value, 10);
-    const num1Str = String(problem.num1);
-    const digit = parseInt(num1Str[colIndex], 10);
-    const carryFromPrev = expectedCarries[String(colIndex)] || 0;
-    const expectedResult = digit * problem.num2 + carryFromPrev;
-
-    if (intValue === expectedResult) {
-      const newAnswers = { ...answerInputs, [colIndex]: intValue };
-      setAnswerInputs(newAnswers);
-
-      if (intValue >= 10) {
-        const carryValue = Math.floor(intValue / 10);
-        const carryKey = String(colIndex + 1);
-
-        // Auto-focus carry field
-        setTimeout(() => {
-          if (carryRefs.current[carryKey]) {
-            carryRefs.current[carryKey].focus();
-          }
-        }, 100);
-      } else {
-        // Move to next answer column
-        const nextCol = colIndex + 1;
-        if (nextCol < String(problem.num1).length) {
-          setTimeout(() => {
-            if (answerRefs.current[nextCol]) {
-              answerRefs.current[nextCol].focus();
-            }
-          }, 100);
-        } else {
-          checkCompletion(newAnswers);
-        }
-      }
-    } else {
-      // Wrong answer
-      if (answerRefs.current[colIndex]) {
-        answerRefs.current[colIndex].value = '';
-        answerRefs.current[colIndex].style.borderColor = '#FF4B4B';
-        setTimeout(() => {
-          if (answerRefs.current[colIndex]) {
-            answerRefs.current[colIndex].style.borderColor = '#DDD';
-          }
-        }, 500);
-      }
-    }
-  };
-
-  const handleCarryInput = (colIndex, value) => {
-    if (feedback || isAnimating) return;
-
-    const trimmed = value.replace(/[^0-9]/g, '');
-    if (trimmed.length > 1) return;
-
-    const intValue = trimmed === '' ? null : parseInt(trimmed, 10);
-    const newCarries = { ...carryInputs, [colIndex]: intValue };
-    setCarryInputs(newCarries);
-  };
-
-  const handleCarryBlur = (colIndex) => {
-    if (feedback || isAnimating) return;
-
-    const value = carryRefs.current[colIndex]?.value.trim();
-    if (!value) return;
-
-    if (!/^\d{1}$/.test(value)) {
-      if (carryRefs.current[colIndex]) {
-        carryRefs.current[colIndex].value = '';
-      }
-      return;
-    }
-
-    const intValue = parseInt(value, 10);
-    const expectedCarry = expectedCarries[colIndex] || 0;
-
-    if (intValue === expectedCarry) {
-      const newCarries = { ...carryInputs, [colIndex]: intValue };
-      setCarryInputs(newCarries);
-
-      // Move to next answer column
-      const answerColIndex = parseInt(colIndex) - 1;
-      const nextCol = answerColIndex + 1;
-      if (nextCol < String(problem.num1).length) {
-        setTimeout(() => {
-          if (answerRefs.current[nextCol]) {
-            answerRefs.current[nextCol].focus();
-          }
-        }, 100);
-      } else {
-        checkCompletion(answerInputs);
-      }
-    } else {
-      // Wrong carry
-      if (carryRefs.current[colIndex]) {
-        carryRefs.current[colIndex].value = '';
-        carryRefs.current[colIndex].style.borderColor = '#FF4B4B';
-        setTimeout(() => {
-          if (carryRefs.current[colIndex]) {
-            carryRefs.current[colIndex].style.borderColor = '#DDD';
-          }
-        }, 500);
-      }
-    }
-  };
-
-  const checkCompletion = (answers) => {
-    const num1Str = String(problem.num1);
-    const totalColumns = num1Str.length;
-
-    if (Object.keys(answers).length === totalColumns) {
-      handleComplete();
-    }
-  };
-
-  const handleComplete = () => {
-    setFeedback('correct');
+    setSelectedOption(Number(userAnswer));
+    setFeedback(correct ? 'correct' : 'wrong');
     setIsAnimating(true);
 
-    const newStreak = streak + 1;
-    setStreak(newStreak);
-    setTotalAnswered(t => t + 1);
+    if (correct) {
+      const newStreak = streak + 1;
+      setStreak(newStreak);
+      setTotalAnswered(t => t + 1);
 
-    if (newStreak % STREAK_MILESTONE === 0) {
-      playSound('streak');
-      confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
-      setTimeout(() => setShowStreak(true), 400);
+      // Confetti + streak milestone
+      if (newStreak % STREAK_MILESTONE === 0) {
+        playSound('streak');
+        confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
+        const milestoneCount = newStreak / STREAK_MILESTONE;
+        const cheers = language === 'bm' ? STREAK_CHEERS_BM : STREAK_CHEERS_EN;
+        const cheer  = cheers[Math.min(milestoneCount - 1, cheers.length - 1)];
+        setTimeout(() => {
+          setShowStreak(true);
+        }, 400);
+      } else {
+        playSound('correct');
+        confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 }, scalar: 0.8 });
+      }
+
+      // Auto-advance after short delay
+      feedbackTimer.current = setTimeout(() => {
+        loadNext();
+      }, 1200);
+
     } else {
-      playSound('correct');
-      confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 }, scalar: 0.8 });
-    }
+      setStreak(0);
+      setTotalAnswered(t => t + 1);
+      if (navigator.vibrate) navigator.vibrate([60, 30, 60]);
 
-    feedbackTimer.current = setTimeout(() => {
-      loadNext();
-    }, 1500);
+      // Voice: encouraging wrong
+      speak(
+        language === 'bm'
+          ? `Cuba lagi! Jawapannya ialah ${problem.answer}`
+          : `Try again! The answer is ${problem.answer}`,
+        { pitch: 1.3, rate: 0.95 }
+      );
+
+      // Stay on wrong until user taps Continue
+    }
+  }, [feedback, isAnimating, problem, streak, language, loadNext]);
+
+  const handleTypingSubmit = (e) => {
+    e.preventDefault();
+    const val = typedAnswer.trim();
+    if (!val || feedback) return;
+    handleAnswer(val);
+  };
+
+  const handleContinueAfterWrong = () => {
+    loadNext();
   };
 
   if (!problem) {
@@ -262,241 +215,184 @@ export default function MathOperationsGame({ operation, difficulty, nums, quizTy
     );
   }
 
-  const num1Str = String(problem.num1);
   const accentColor = opMeta.color;
-  const totalColumns = num1Str.length;
+  const accentDark  = opMeta.dark;
 
   return (
     <div className="ops-game-shell">
+      {/* Streak popup */}
       {showStreak && (
-        <StreakPopup streak={streak} language={language} onClose={() => setShowStreak(false)} />
+        <StreakPopup
+          streak={streak}
+          language={language}
+          onClose={() => setShowStreak(false)}
+        />
       )}
 
-      {/* Header */}
+      {/* ── Header ── */}
       <div style={{ background: '#fff', borderBottom: '2px solid #E5E5E5', padding: '0 0.85rem', height: '60px', display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
         <button onClick={onBack} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center', padding: '6px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>
           <X size={22} />
         </button>
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
           <span style={{ fontSize: '1.15rem' }}>{opMeta.emoji}</span>
-          <span style={{ fontWeight: 900, fontSize: '0.98rem', color: '#3C3C3C' }}>
+          <span style={{ fontWeight: 900, fontSize: '0.98rem', color: '#3C3C3C', letterSpacing: '0.01em' }}>
             {language === 'bm' ? opMeta.label : opMeta.labelEn}
           </span>
         </div>
         <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFF6D6', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#B58800' }}>
-            <span>⭐</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFF6D6', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#B58800', border: '1.5px solid #FFE08A' }}>
+            <span style={{ fontSize: '0.85rem' }}>⭐</span>
             <span>{Math.floor(streak / STREAK_MILESTONE) * 10}</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFEAD0', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#D9610B' }}>
-            <span>🔥</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFEAD0', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#D9610B', border: '1.5px solid #FFC081' }}>
+            <span style={{ fontSize: '0.85rem' }}>🔥</span>
             <span>{streak}</span>
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem', overflowY: 'auto' }}>
-        <div style={{ fontSize: '1rem', color: '#666', marginBottom: '2rem', fontWeight: 600 }}>
-          {language === 'bm' ? 'Selesaikan pendaraban ini:' : 'Solve this multiplication:'}
-        </div>
+      {/* ── Question Zone ── */}
+      <div className="ops-question-zone">
+        <p className="ops-question-label">
+          {language === 'bm' ? 'Berapakah hasilnya?' : 'What is the answer?'}
+        </p>
 
-        {/* Long Multiplication Layout */}
-        <div style={{
-          fontFamily: 'Courier, monospace',
-          fontSize: '1.6rem',
-          lineHeight: 2.2,
-          textAlign: 'right',
-          background: '#F9F9F9',
-          padding: '2rem 2.5rem',
-          borderRadius: '16px',
-          border: '3px solid #E5E5E5',
-          minWidth: '300px',
-          maxWidth: '450px'
-        }}>
-          {/* Carry Row */}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.8rem', marginBottom: '0.8rem', height: '2.8rem', alignItems: 'flex-end' }}>
-            {Array.from({ length: totalColumns + 1 }).map((_, i) => {
-              const carryKey = String(i);
-              const expectedCarry = expectedCarries[carryKey];
-              const userCarry = carryInputs[carryKey];
-
-              return (
-                <div key={`carry-pos-${i}`} style={{ width: '2.8rem', textAlign: 'center', position: 'relative', height: '100%' }}>
-                  {expectedCarry !== undefined && i < totalColumns && (
-                    <>
-                      <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#CCC', marginBottom: '0.2rem' }}>
-                        [{expectedCarry}]
-                      </div>
-                      <input
-                        ref={el => carryRefs.current[carryKey] = el}
-                        type="text"
-                        inputMode="numeric"
-                        maxLength="1"
-                        placeholder=""
-                        value={userCarry !== undefined ? userCarry : ''}
-                        onChange={(e) => handleCarryInput(carryKey, e.target.value)}
-                        onBlur={() => handleCarryBlur(carryKey)}
-                        style={{
-                          width: '2.2rem',
-                          height: '2.2rem',
-                          fontSize: '1.1rem',
-                          fontWeight: 900,
-                          textAlign: 'center',
-                          border: `2px solid ${userCarry !== undefined ? accentColor : '#DDD'}`,
-                          borderRadius: '8px',
-                          outline: 'none',
-                          background: userCarry !== undefined ? '#F0F9FF' : '#fff',
-                          color: accentColor,
-                          cursor: 'text'
-                        }}
-                        onFocus={(e) => {
-                          e.target.style.boxShadow = `0 0 0 3px ${accentColor}30`;
-                        }}
-                      />
-                    </>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Multiplicand */}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.8rem', marginBottom: '0.5rem' }}>
-            {num1Str.split('').map((digit, i) => (
-              <div key={`num1-${i}`} style={{ width: '2.8rem', textAlign: 'center', fontWeight: 700 }}>
-                {digit}
-              </div>
-            ))}
-          </div>
-
-          {/* Multiplier */}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.8rem', marginBottom: '1rem' }}>
-            <div style={{ width: '2.8rem', textAlign: 'center', fontWeight: 700 }}>×</div>
-            <div style={{ width: '2.8rem', textAlign: 'center', fontWeight: 700 }}>{problem.num2}</div>
-          </div>
-
-          {/* Divider Line */}
-          <div style={{ borderTop: '3px solid #3C3C3C', marginBottom: '1rem' }} />
-
-          {/* Answer Row */}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.8rem', marginBottom: '1rem' }}>
-            {Array.from({ length: totalColumns }).map((_, colIndex) => {
-              const userAnswer = answerInputs[colIndex];
-              const digit = userAnswer !== undefined ? (userAnswer % 10) : null;
-
-              return (
-                <div key={`answer-col-${colIndex}`} style={{ width: '2.8rem', textAlign: 'center' }}>
-                  {userAnswer !== undefined ? (
-                    <div style={{
-                      width: '2.8rem',
-                      height: '2.8rem',
-                      fontSize: '1.5rem',
-                      fontWeight: 900,
-                      textAlign: 'center',
-                      border: `3px solid ${accentColor}`,
-                      borderRadius: '10px',
-                      background: '#F0F9FF',
-                      color: accentColor,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}>
-                      {digit}
-                    </div>
-                  ) : (
-                    <input
-                      ref={el => answerRefs.current[colIndex] = el}
-                      type="text"
-                      inputMode="numeric"
-                      maxLength="2"
-                      placeholder="__"
-                      onChange={(e) => handleAnswerInput(colIndex, e.target.value)}
-                      onBlur={() => handleAnswerBlur(colIndex)}
-                      style={{
-                        width: '2.8rem',
-                        height: '2.8rem',
-                        fontSize: '1.5rem',
-                        fontWeight: 900,
-                        textAlign: 'center',
-                        border: '3px solid #DDD',
-                        borderRadius: '10px',
-                        outline: 'none',
-                        background: '#fff',
-                        color: '#3C3C3C',
-                        cursor: 'text'
-                      }}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = accentColor;
-                        e.target.style.boxShadow = `0 0 0 3px ${accentColor}30`;
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = '#DDD';
-                        e.target.style.boxShadow = 'none';
-                      }}
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Divider Line */}
-          <div style={{ borderTop: '3px solid #3C3C3C', marginBottom: '1rem' }} />
-
-          {/* Final Answer */}
-          {feedback === 'correct' && (
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.8rem' }}>
-              {String(problem.answer).split('').map((digit, i) => (
-                <div key={`final-${i}`} style={{
-                  width: '2.8rem',
-                  height: '2.8rem',
-                  textAlign: 'center',
-                  fontWeight: 900,
-                  color: '#46A302',
-                  fontSize: '1.5rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                  {digit}
-                </div>
-              ))}
+        {/* ── Icons Visual ── */}
+        {problem.num1 <= 20 && problem.num2 <= 20 && problemIcon && (
+          <div className="ops-icons-container">
+            {/* Number 1 Icons */}
+            <div className="ops-icon-group">
+              {Array.from({ length: problem.num1 }).map((_, i) => (
+                <span key={`n1-${i}`} className="ops-icon-emoji">{problemIcon}</span>
+             ))}
+              {problem.num1 === 0 && <span className="ops-icon-emoji" style={{ opacity: 0 }}>{problemIcon}</span>}
             </div>
-          )}
-        </div>
 
-        {feedback === 'correct' && (
-          <div style={{ marginTop: '2rem', fontSize: '1.2rem', fontWeight: 700, color: '#46A302' }}>
-            🎉 {language === 'bm' ? 'Sempurna!' : 'Perfect!'}
+            {/* Operator */}
+            <div className="ops-icon-operator" style={{ color: accentColor }}>
+              {problem.symbol}
+            </div>
+
+            {/* Number 2 Icons */}
+            <div className="ops-icon-group">
+              {Array.from({ length: problem.num2 }).map((_, i) => (
+                <span key={`n2-${i}`} className="ops-icon-emoji">{problemIcon}</span>
+              ))}
+              {problem.num2 === 0 && <span className="ops-icon-emoji" style={{ opacity: 0 }}>{problemIcon}</span>}
+            </div>
           </div>
+        )}
+
+        <div
+          className="ops-question-expr ops-question-row"
+          style={{ color: feedback === 'correct' ? '#46A302' : feedback === 'wrong' ? '#CC3B3B' : '#3C3C3C', display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'nowrap' }}
+        >
+          {problem.num1} <span className="ops-question-op" style={{ color: accentColor }}>{problem.symbol}</span> {problem.num2} <span style={{ color: '#3C3C3C', marginLeft: '0.5rem' }}>= ?</span>
+        </div>
+      </div>
+
+      {/* ── Answer Zone ── */}
+      <div className="ops-answer-zone">
+        {quizType === 'typing' ? (
+          /* Manual Entry */
+          <form onSubmit={handleTypingSubmit} className="ops-typing-form">
+            <input
+              ref={inputRef}
+              type="number"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              enterKeyHint="go"
+              value={typedAnswer}
+              onChange={e => setTypedAnswer(e.target.value)}
+              placeholder={language === 'bm' ? 'Taip jawapan...' : 'Type answer...'}
+              disabled={!!feedback}
+              className={`ops-typing-input${feedback === 'correct' ? ' ops-input-correct' : feedback === 'wrong' ? ' ops-input-wrong' : ''}`}
+              autoComplete="off"
+            />
+            <button
+              type="submit"
+              className="ops-submit-btn"
+              style={{ background: accentColor, borderBottomColor: accentDark }}
+              disabled={!typedAnswer.trim() || !!feedback}
+            >
+              {language === 'bm' ? 'Semak ✓' : 'Check ✓'}
+            </button>
+          </form>
+        ) : (
+          /* Multiple Choice */
+          <div className="ops-choices-grid">
+            {problem.options.map((opt, idx) => {
+              const labels = ['A', 'B', 'C', 'D'];
+              let state = 'idle';
+              if (feedback === 'correct' && opt === problem.answer) state = 'correct';
+              else if (feedback === 'wrong') {
+                if (opt === problem.answer) state = 'correct';
+                else if (opt === selectedOption) state = 'wrong';
+              }
+
+              return (
+                <button
+                  key={opt}
+                  onClick={() => handleAnswer(opt)}
+                  disabled={!!feedback}
+                  className={`ops-choice-btn ops-choice-${state}`}
+                  style={state === 'idle' ? { '--accent': accentColor, '--accent-dark': accentDark } : undefined}
+                >
+                  <span className="ops-choice-label">{labels[idx]}</span>
+                  <span className="ops-choice-value">{opt}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Wrong answer continue button */}
+        {feedback === 'wrong' && (
+          <button
+            className="ops-continue-wrong"
+            onClick={handleContinueAfterWrong}
+          >
+            {language === 'bm' ? 'Faham, terus →' : 'Got it, next →'}
+          </button>
         )}
       </div>
 
-      {/* Footer */}
-      <div style={{ padding: '1rem', background: '#fff', borderTop: '2px solid #E5E5E5' }}>
-        <button
-          onClick={() => loadNext()}
-          style={{
-            width: '100%',
-            padding: '1rem',
-            fontSize: '1rem',
-            fontWeight: 900,
-            background: accentColor,
-            color: '#fff',
-            border: 'none',
-            borderRadius: '12px',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '0.5rem',
-            opacity: feedback === 'correct' ? 1 : 0.6,
-            pointerEvents: feedback === 'correct' ? 'auto' : 'none'
-          }}
-        >
-          {language === 'bm' ? 'Soalan Seterusnya' : 'Next Question'} <ChevronRight size={20} />
-        </button>
+      {/* ── Feedback Bar ── */}
+      {feedback && (
+        <div className={`ops-feedback-bar ops-feedback-${feedback}`}>
+          {feedback === 'correct' ? (
+            <span>
+              {language === 'bm' ? '🎉 Betul sekali!' : '🎉 Correct!'}{' '}
+              <strong>{problem.answer}</strong>
+            </span>
+          ) : (
+            <span>
+              {language === 'bm' ? `💡 Jawapan: ` : `💡 Answer: `}
+              <strong>{problem.answer}</strong>
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* ── Footer Stats ── */}
+      <div className="ops-footer-stats">
+        <div className="ops-stat-chip">
+          <span>✅</span>
+          <span>{totalAnswered}</span>
+          <span style={{ color: '#AFAFAF', fontSize: '0.7rem' }}>
+            {language === 'bm' ? 'dijawab' : 'answered'}
+          </span>
+        </div>
+          <div className="ops-stat-chip ops-stat-chip-highlight" style={{ gap: '8px' }}>
+            <span>🏆</span>
+            <div style={{ width: '80px', height: '8px', background: 'rgba(204, 119, 0, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
+              <div style={{ width: `${Math.min((streak / 10) * 100, 100)}%`, height: '100%', background: '#FFB800', borderRadius: '4px', transition: 'width 0.3s ease-out' }} />
+            </div>
+            <span style={{ color: '#CC7700', fontSize: '0.9rem', fontWeight: 900, minWidth: '32px', textAlign: 'right' }}>
+              {Math.min(streak, 10)}/10
+            </span>
+          </div>
       </div>
     </div>
   );
