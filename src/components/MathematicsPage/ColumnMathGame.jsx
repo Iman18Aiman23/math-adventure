@@ -1451,7 +1451,7 @@ export default function ColumnMathGame({ onBack, language }) {
                 </div>
 
                 {/* Addition Carry row for final sum */}
-                {addCarries.some(v => v !== null) && (
+                {addCarries.some(v => v !== null) && topRowInputs.some(d => d !== '' && d !== undefined) && (
                   <div style={{ display: 'flex', alignItems: 'center', height: isDesktop ? '38px' : '30px', marginTop: '4px' }}>
                     <div style={{ width: OP_W }} />
                     {Array.from({ length: maxLen }, (_, i) => {
