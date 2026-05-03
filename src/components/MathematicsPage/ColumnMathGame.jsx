@@ -919,20 +919,6 @@ export default function ColumnMathGame({ onBack, language }) {
     const inputs = [...partial1Inputs];
     inputs[i] = limited;
     setPartial1Inputs(inputs);
-
-    // Mobile-friendly auto-advance: if user typed 2-digit value (carry case), auto process & move left
-    if (limited.length === 2 && parseInt(limited, 10) >= 10) {
-      const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
-      const N1 = String(problem.partial1).length;
-      const leftmostP1 = ml - N1;
-      processPartial1CarryLogic(i, limited);
-      if (i > leftmostP1) {
-        setTimeout(() => {
-          setActivePartial1Idx(i - 1);
-          partial1Refs.current[i - 1]?.focus();
-        }, 50);
-      }
-    }
   };
 
   const handlePartial1KeyDown = (i, e) => {
@@ -994,21 +980,6 @@ export default function ColumnMathGame({ onBack, language }) {
     }
   };
 
-  const handlePartial2ChangeAutoAdvance = (i, limited) => {
-    if (limited.length === 2 && parseInt(limited, 10) >= 10) {
-      const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
-      const N2 = String(problem.partial2).length;
-      const leftmostP2 = ml - N2 - 1;
-      processPartial2CarryLogic(i, limited);
-      if (i > leftmostP2) {
-        setTimeout(() => {
-          setActivePartial2Idx(i - 1);
-          partial2Refs.current[i - 1]?.focus();
-        }, 50);
-      }
-    }
-  };
-
   const handlePartial2Change = (i, rawValue) => {
     if (status !== 'playing' || !problem.hasPartials) return;
     const cleaned = rawValue.replace(/[^0-9]/g, '');
@@ -1016,7 +987,6 @@ export default function ColumnMathGame({ onBack, language }) {
     const inputs = [...partial2Inputs];
     inputs[i] = limited;
     setPartial2Inputs(inputs);
-    handlePartial2ChangeAutoAdvance(i, limited);
   };
 
   const handlePartial2KeyDown = (i, e) => {
@@ -1701,7 +1671,7 @@ export default function ColumnMathGame({ onBack, language }) {
                     return (
                       <input
                         key={i} ref={el => partial1Refs.current[i] = el}
-                        type="text" inputMode="numeric" maxLength={2} enterKeyHint="next" value={d} readOnly={status !== 'playing'}
+                        type="text" inputMode="numeric" maxLength="2" enterKeyHint="next" value={d} readOnly={status !== 'playing'}
                         onChange={e => handlePartial1Change(i, e.target.value)} onKeyDown={e => handlePartial1KeyDown(i, e)}
                         onBlur={(e) => {
                           processPartial1CarryLogic(i, e.target.value);
@@ -1777,7 +1747,7 @@ export default function ColumnMathGame({ onBack, language }) {
                     return (
                       <input
                         key={i} ref={el => partial2Refs.current[i] = el}
-                        type="text" inputMode="numeric" maxLength={2} enterKeyHint="next" value={d} readOnly={status !== 'playing'}
+                        type="text" inputMode="numeric" maxLength="2" enterKeyHint="next" value={d} readOnly={status !== 'playing'}
                         onChange={e => handlePartial2Change(i, e.target.value)} onKeyDown={e => handlePartial2KeyDown(i, e)}
                         onBlur={(e) => {
                           processPartial2CarryLogic(i, e.target.value);
