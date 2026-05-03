@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { LOCALIZATION } from '../../utils/localization';
 import { JAWI_STORIES } from '../../utils/jawiStoriesData';
@@ -9,6 +9,7 @@ export default function JawiShortStoriesPage({ onBack, onHome, language }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [displayLang, setDisplayLang] = useState('jawi');
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    const scrollContainerRef = useRef(null);
 
     useEffect(() => {
         const handleResize = () => {
@@ -17,6 +18,12 @@ export default function JawiShortStoriesPage({ onBack, onHome, language }) {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
+
+    useEffect(() => {
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollTop = 0;
+        }
+    }, [currentIndex]);
 
     const story = JAWI_STORIES[currentIndex];
 
@@ -127,7 +134,7 @@ export default function JawiShortStoriesPage({ onBack, onHome, language }) {
             </div>
 
             {/* Scrollable content */}
-            <div style={{
+            <div ref={scrollContainerRef} style={{
                 flex: 1,
                 overflowY: 'auto',
                 padding: '1rem 0',

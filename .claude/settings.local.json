@@ -18,7 +18,9 @@
       "PowerShell(New-Item -ItemType Directory -Path \"src\\\\components\\\\ReadingPage\" -Force)",
       "PowerShell(New-Item -ItemType Directory -Path \"src\\\\components\\\\SpeakingPage\" -Force)",
       "PowerShell(New-Item -ItemType Directory -Path \"src\\\\components\\\\JawiScriptPage\" -Force)",
-      "PowerShell(New-Item -ItemType Directory -Path \"src\\\\components\\\\MathematicsPage\" -Force)"
+      "PowerShell(New-Item -ItemType Directory -Path \"src\\\\components\\\\MathematicsPage\" -Force)",
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(npx eslint *)"
     ]
   }
 }

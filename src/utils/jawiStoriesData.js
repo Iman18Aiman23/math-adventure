@@ -11,7 +11,7 @@ export const JAWI_STORIES = [
     paragraphs: [
       { bm: 'Bas sekolah berwarna kuning.', eng: 'The school bus is yellow.', jawi: 'بس سکوله برورنا کونيڠ.' },
       { bm: 'Bas itu besar dan panjang.', eng: 'The bus is big and long.', jawi: 'بس ايت بسر دان/دن ڤنجڠ.' },
-      { bm: 'Bas membawa murid kesekolah.', eng: 'The bus takes students to school.', jawi: 'بس ممباوا موريد کيسله.' },
+      { bm: 'Bas membawa murid kesekolah.', eng: 'The bus takes students to school.', jawi: 'بس ممباوا موريد کسکوله.' },
       { bm: 'Bas berhenti di hadapan sekolah.', eng: 'The bus stops at school.', jawi: 'بس برهنتي دهادڤن سکوله.' },
       { bm: 'Semua murid turun dari bas.', eng: 'All students get off the bus.', jawi: 'سموا موريد تورون دري بس.' },
       { bm: 'Murid gembira menaiki bas sekolah.', eng: 'Students are happy to ride the school bus.', jawi: 'موريد ݢمبيرا مناءيقي بس سکوله.' },
