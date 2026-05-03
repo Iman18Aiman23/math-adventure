@@ -1032,6 +1032,18 @@ export default function ColumnMathGame({ onBack, language }) {
           setActivePartial2Idx(i - 1);
           partial2Refs.current[i - 1]?.focus();
         }, 0);
+      } else {
+        // At leftmost partial 2, check if all filled → move to rightmost answer
+        const updatedInputs = [...partial2Inputs];
+        updatedInputs[i] = partial2Refs.current[i].value.replace(/[^0-9]/g, '').slice(0, 2);
+        const allFilled = !updatedInputs.slice(leftmostP2).some(d => d === '');
+        if (allFilled) {
+          const rightmostAnswer = ml - 1;
+          setTimeout(() => {
+            setActiveSection('answer');
+            inputRefs.current[rightmostAnswer]?.focus();
+          }, 80);
+        }
       }
       return;
     }
