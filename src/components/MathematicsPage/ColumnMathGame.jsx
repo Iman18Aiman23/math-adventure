@@ -647,13 +647,11 @@ export default function ColumnMathGame({ onBack, language }) {
       digits[i] = ones;
       setPartial2Inputs(digits);
 
-      // Set the tens digit in the carry row to the left column
+      // Set the tens digit in the carry row aligned with partial 2 (shifted left by 1)
+      // Place carry at same column as input (i) so it visually aligns with partial 1 carries
       const carryInputs = [...partial2CarryInputs];
-      if (i - 1 >= 0) {
-        carryInputs[i - 1] = tens;
-        // Mark the carry position as submitted so it displays
-        newSubmitted.add(i - 1);
-      }
+      carryInputs[i] = tens;
+      newSubmitted.add(i);
       setPartial2CarryInputs(carryInputs);
       setPartial2Submitted(newSubmitted);
       return;
