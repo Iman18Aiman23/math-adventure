@@ -602,10 +602,15 @@ export default function ColumnMathGame({ onBack, language }) {
       digits[i] = ones;
       setPartial1Inputs(digits);
 
-      // Set the tens digit in the carry row directly above this position
+      // Set the tens digit in the carry row to the left column
       const carryInputs = [...partial1CarryInputs];
-      carryInputs[i] = tens;
+      if (i - 1 >= 0) {
+        carryInputs[i - 1] = tens;
+        // Mark the carry position as submitted so it displays
+        newSubmitted.add(i - 1);
+      }
       setPartial1CarryInputs(carryInputs);
+      setPartial1Submitted(newSubmitted);
       return;
     }
 
@@ -642,10 +647,15 @@ export default function ColumnMathGame({ onBack, language }) {
       digits[i] = ones;
       setPartial2Inputs(digits);
 
-      // Set the tens digit in the carry row directly above this position
+      // Set the tens digit in the carry row to the left column
       const carryInputs = [...partial2CarryInputs];
-      carryInputs[i] = tens;
+      if (i - 1 >= 0) {
+        carryInputs[i - 1] = tens;
+        // Mark the carry position as submitted so it displays
+        newSubmitted.add(i - 1);
+      }
       setPartial2CarryInputs(carryInputs);
+      setPartial2Submitted(newSubmitted);
       return;
     }
 
@@ -938,7 +948,9 @@ export default function ColumnMathGame({ onBack, language }) {
     ? hasTopRow && topRowInputs.some(d => d !== '' && d !== undefined)
     : problem.op === '-'
       ? (userStruckRow.some(v => v) || userBorrowedTo.some(v => v))
-      : false;
+      : problem.op === '×' && !problem.hasPartials
+        ? topRowInputs.some(d => d !== '' && d !== undefined)
+        : false;
 
   const opTheme = problem.op === '-'
     ? { main: '#FF4B4B', dark: '#CC0000', soft: '#FFEFEF', stripe: 'linear-gradient(90deg, #FFA8A8, #FF4B4B)' }
@@ -1327,12 +1339,15 @@ export default function ColumnMathGame({ onBack, language }) {
                 {topRow.map((val, i) => {
                   const hide = p1[i] === ' ' && p2[i] === ' ';
                   const isSubBorrow = problem.op === '-' && (userStruckRow[i] || userBorrowedTo[i]);
+                  const isMulCarry = problem.op === '×' && !problem.hasPartials && topRowInputs[i];
                   const isTwoDigit = (topRowInputs[i] ?? '').length >= 2;
                   const hasCarry = problem.op === '+'
                     ? ((val !== null && !hide) || topRowInputs[i])
-                    : isSubBorrow;
+                    : problem.op === '×' && !problem.hasPartials
+                      ? isMulCarry
+                      : isSubBorrow;
                   const isTopActive = activeSection === 'topRow' && activeTopIdx === i && status === 'playing' && problem.op === '+';
-                  const isReadonly = status !== 'playing' || problem.op === '-';
+                  const isReadonly = status !== 'playing' || problem.op === '-' || (problem.op === '×' && !problem.hasPartials);
                   return (
                     <div key={i} style={{ width: CELL_W, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                       {hasCarry && (
@@ -1348,7 +1363,7 @@ export default function ColumnMathGame({ onBack, language }) {
                             border: `2px solid ${isTopActive ? '#1CB0F6' : '#C0C0C0'}`, borderRadius: '8px',
                             background: isTopActive ? '#EAF7FF' : isReadonly ? '#F0F0F0' : '#fafafa',
                             textAlign: 'center', fontSize: TOP_FS, fontWeight: 900, fontFamily: '"Courier New", monospace',
-                            color: problem.op === '+' ? '#58CC02' : '#FF4B4B', outline: 'none', caretColor: 'transparent', cursor: isReadonly ? 'default' : 'pointer',
+                            color: problem.op === '+' ? '#58CC02' : problem.op === '×' ? '#FF4B4B' : '#FF4B4B', outline: 'none', caretColor: 'transparent', cursor: isReadonly ? 'default' : 'pointer',
                           }}
                         />
                       )}
