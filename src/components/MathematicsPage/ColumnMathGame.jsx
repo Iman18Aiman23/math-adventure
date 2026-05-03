@@ -971,7 +971,7 @@ export default function ColumnMathGame({ onBack, language }) {
         .cmg-btn { transition: transform 0.08s ease, filter 0.15s ease, background 0.15s ease; }
         .cmg-btn:hover:not(:disabled) { filter: brightness(1.06); }
         .cmg-btn:active:not(:disabled) { transform: translateY(2px); }
-        .cmg-card { animation: cmg-pop 0.28s cubic-bezier(.2,.85,.3,1.15) both; }
+        .cmg-card { animation: cmg-pop 0.28s cubic-bezier(.2,.85,.3,1.15) both; width: 100%; }
         .cmg-banner { animation: cmg-slide 0.22s ease-out both; }
         .cmg-shake { animation: cmg-shake 0.42s ease-in-out; }
         .cmg-dialog { animation: cmg-bounce-in 0.32s cubic-bezier(.2,.9,.4,1.3) both; }
