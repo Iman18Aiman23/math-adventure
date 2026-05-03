@@ -971,7 +971,7 @@ export default function ColumnMathGame({ onBack, language }) {
         .cmg-btn { transition: transform 0.08s ease, filter 0.15s ease, background 0.15s ease; }
         .cmg-btn:hover:not(:disabled) { filter: brightness(1.06); }
         .cmg-btn:active:not(:disabled) { transform: translateY(2px); }
-        .cmg-card { animation: cmg-pop 0.28s cubic-bezier(.2,.85,.3,1.15) both; width: 100%; }
+        .cmg-card { animation: cmg-pop 0.28s cubic-bezier(.2,.85,.3,1.15) both; width: 100%; max-width: 440px; }
         .cmg-banner { animation: cmg-slide 0.22s ease-out both; }
         .cmg-shake { animation: cmg-shake 0.42s ease-in-out; }
         .cmg-dialog { animation: cmg-bounce-in 0.32s cubic-bezier(.2,.9,.4,1.3) both; }
@@ -1234,8 +1234,6 @@ export default function ColumnMathGame({ onBack, language }) {
             background: '#fff', borderRadius: '24px',
             padding: isDesktop ? '1.5rem 2.5rem 1.75rem 2.5rem' : '2.2rem 2rem 2.4rem',
             border: '3px solid #E5E5E5', boxShadow: '0 6px 0 #E5E5E5',
-            width: '100%',
-            maxWidth: isDesktop ? '440px' : '100%',
             boxSizing: 'border-box',
           }}
         >
