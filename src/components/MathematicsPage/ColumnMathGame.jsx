@@ -1540,12 +1540,6 @@ export default function ColumnMathGame({ onBack, language }) {
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div style={{ width: OP_W }} />
               {inputDigits.map((d, i) => {
-                // For easy multiplication: only show ones digit (rightmost column)
-                // Tens digit is shown as carry above
-                if (problem.op === '×' && !problem.hasPartials && i < inputDigits.length - 1) {
-                  return <div key={i} style={{ width: CELL_W }} />;
-                }
-
                 const isActive = status === 'playing' && i === activeIdx && activeSection === 'answer';
                 const correctD = sa[i];
                 const isWrong = status === 'wrong' && d !== correctD;
