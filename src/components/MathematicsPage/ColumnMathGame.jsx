@@ -101,7 +101,7 @@ function buildAdditionTutorial(num1, num2, bm) {
     if (i === 0 && newCarry > 0) {
       outcome = bm ? `tulis ${sum}` : `write ${sum}`;
     } else if (newCarry > 0) {
-      outcome = bm ? `tulis ${ones}, gendong ${newCarry}` : `write ${ones}, carry ${newCarry}`;
+      outcome = bm ? `tulis ${ones}, bawa ke rumah sebelah ${newCarry}` : `write ${ones}, carry ${newCarry}`;
     } else {
       outcome = bm ? `tulis ${ones}` : `write ${ones}`;
     }
@@ -197,7 +197,7 @@ function buildMultiplyByDigit(topStr, multiplier, bm) {
       outcome = bm ? `tulis ${product}` : `write ${product}`;
       resultDigits.unshift(String(product));
     } else if (newCarry > 0) {
-      outcome = bm ? `tulis ${ones}, gendong ${newCarry}` : `write ${ones}, carry ${newCarry}`;
+      outcome = bm ? `tulis ${ones}, bawa ke rumah sebelah ${newCarry}` : `write ${ones}, carry ${newCarry}`;
       resultDigits.unshift(String(ones));
     } else {
       outcome = bm ? `tulis ${ones}` : `write ${ones}`;
