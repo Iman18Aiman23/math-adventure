@@ -339,6 +339,7 @@ export default function ColumnMathGame({ onBack, language }) {
   const partial2Refs         = useRef([]);
   const partial1CarryRefs    = useRef([]);
   const partial2CarryRefs    = useRef([]);
+  const submitBtnRef         = useRef(null);
   const feedbackTimer        = useRef(null);
 
   const needsBorrowAt = (i) => {
@@ -676,8 +677,15 @@ export default function ColumnMathGame({ onBack, language }) {
           setActiveSection('answer');
           inputRefs.current[i - 1]?.focus();
         }, 0);
+      } else {
+        // At leftmost answer input — focus submit button when all answer fields are filled
+        setTimeout(() => {
+          const allFilled = !inputDigits.some((d, idx) => idx === i ? false : d === '');
+          if (allFilled) {
+            submitBtnRef.current?.focus();
+          }
+        }, 0);
       }
-      submitAnswer();
       return;
     }
     if (e.key === 'ArrowLeft') {
@@ -752,10 +760,21 @@ export default function ColumnMathGame({ onBack, language }) {
     if (e.key === 'Enter') {
       e.preventDefault();
       processPartial1CarryLogic(i, partial1Refs.current[i].value);
-      if (i > 0) {
+      const N1 = String(problem.partial1).length;
+      const leftmostP1 = ml - N1;
+      if (i > leftmostP1) {
         setTimeout(() => {
           setActivePartial1Idx(i - 1);
           partial1Refs.current[i - 1]?.focus();
+        }, 0);
+      } else if (problem.hasPartials) {
+        // Move to rightmost partial 2 input
+        const N2 = String(problem.partial2).length;
+        const rightmostP2 = ml - 2;
+        setTimeout(() => {
+          setActiveSection('partial2');
+          setActivePartial2Idx(rightmostP2);
+          partial2Refs.current[rightmostP2]?.focus();
         }, 0);
       }
       return;
@@ -805,10 +824,19 @@ export default function ColumnMathGame({ onBack, language }) {
     if (e.key === 'Enter') {
       e.preventDefault();
       processPartial2CarryLogic(i, partial2Refs.current[i].value);
-      if (i > 0) {
+      const N2 = String(problem.partial2).length;
+      const leftmostP2 = ml - N2 - 1;
+      if (i > leftmostP2) {
         setTimeout(() => {
           setActivePartial2Idx(i - 1);
           partial2Refs.current[i - 1]?.focus();
+        }, 0);
+      } else {
+        // Move to rightmost answer input
+        setTimeout(() => {
+          setActiveSection('answer');
+          setActiveIdx(ml - 1);
+          inputRefs.current[ml - 1]?.focus();
         }, 0);
       }
       return;
@@ -1614,7 +1642,9 @@ export default function ColumnMathGame({ onBack, language }) {
           }
           return (
             <button
+              ref={submitBtnRef}
               onClick={submitAnswer}
+              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); submitAnswer(); } }}
               disabled={!ready}
               className={`cmg-btn ${ready ? 'cmg-submit-ready' : ''}`}
               style={{
