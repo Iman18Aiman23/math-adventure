@@ -1419,6 +1419,41 @@ export default function ColumnMathGame({ onBack, language }) {
             {/* Partial product rows (multiplication, medium/hard) */}
             {problem.hasPartials && (
               <>
+                {/* Addition Carry row for final sum */}
+                {addCarries.some(v => v !== null) && topRowInputs.some(d => d !== '' && d !== undefined) && (
+                  <div style={{ display: 'flex', alignItems: 'center', height: isDesktop ? '38px' : '30px', marginBottom: '4px' }}>
+                    <div style={{ width: OP_W }} />
+                    {Array.from({ length: maxLen }, (_, i) => {
+                      const cInfo = addCarries[i];
+                      const isP1P2Done = !partial1Inputs.slice(maxLen - String(problem.partial1).length).includes('') && !partial2Inputs.slice(maxLen - String(problem.partial2).length - 1, -1).includes('');
+                      const isVisible = cInfo !== null && isP1P2Done;
+
+                      if (!isVisible) return <div key={i} style={{ width: CELL_W }} />;
+                      const c = topRowInputs[i] ?? '';
+                      const isActive = status === 'playing' && activeSection === 'topRow' && activeTopIdx === i;
+                      return (
+                        <div key={i} style={{ width: CELL_W, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                          <input
+                            ref={el => topRowRefs.current[i] = el}
+                            type="text" inputMode="numeric" maxLength={2}
+                            value={c} readOnly={status !== 'playing'} tabIndex={status !== 'playing' ? -1 : 0}
+                            onChange={e => handleTopRowChange(i, e.target.value)}
+                            onKeyDown={e => handleTopRowKeyDown(i, e)}
+                            onFocus={() => { if (status === 'playing') { setActiveSection('topRow'); setActiveTopIdx(i); } }}
+                            style={{
+                              width: TOP_W1, height: TOP_H, boxSizing: 'border-box',
+                              border: `2px solid ${isActive ? '#58CC02' : '#C0C0C0'}`,
+                              borderRadius: '6px', background: isActive ? '#EEFCDD' : '#fafafa',
+                              textAlign: 'center', fontSize: TOP_FS, fontWeight: 900, fontFamily: '"Courier New", monospace',
+                              color: '#58CC02', outline: 'none', caretColor: 'transparent', cursor: 'pointer'
+                            }}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
                 {/* Partial 1 */}
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <div style={{ width: OP_W }} />
@@ -1450,43 +1485,8 @@ export default function ColumnMathGame({ onBack, language }) {
                   })}
                 </div>
 
-                {/* Addition Carry row for final sum */}
-                {addCarries.some(v => v !== null) && topRowInputs.some(d => d !== '' && d !== undefined) && (
-                  <div style={{ display: 'flex', alignItems: 'center', height: isDesktop ? '38px' : '30px', marginTop: '4px' }}>
-                    <div style={{ width: OP_W }} />
-                    {Array.from({ length: maxLen }, (_, i) => {
-                      const cInfo = addCarries[i];
-                      const isP1P2Done = !partial1Inputs.slice(maxLen - String(problem.partial1).length).includes('') && !partial2Inputs.slice(maxLen - String(problem.partial2).length - 1, -1).includes('');
-                      const isVisible = cInfo !== null && isP1P2Done;
-                      
-                      if (!isVisible) return <div key={i} style={{ width: CELL_W }} />;
-                      const c = topRowInputs[i] ?? '';
-                      const isActive = status === 'playing' && activeSection === 'topRow' && activeTopIdx === i;
-                      return (
-                        <div key={i} style={{ width: CELL_W, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                          <input
-                            ref={el => topRowRefs.current[i] = el}
-                            type="text" inputMode="numeric" maxLength={2}
-                            value={c} readOnly={status !== 'playing'} tabIndex={status !== 'playing' ? -1 : 0}
-                            onChange={e => handleTopRowChange(i, e.target.value)}
-                            onKeyDown={e => handleTopRowKeyDown(i, e)}
-                            onFocus={() => { if (status === 'playing') { setActiveSection('topRow'); setActiveTopIdx(i); } }}
-                            style={{
-                              width: TOP_W1, height: TOP_H, boxSizing: 'border-box',
-                              border: `2px solid ${isActive ? '#58CC02' : '#C0C0C0'}`,
-                              borderRadius: '6px', background: isActive ? '#EEFCDD' : '#fafafa',
-                              textAlign: 'center', fontSize: TOP_FS, fontWeight: 900, fontFamily: '"Courier New", monospace',
-                              color: '#58CC02', outline: 'none', caretColor: 'transparent', cursor: 'pointer'
-                            }}
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-
                 {/* Partial 2 */}
-                <div style={{ display: 'flex', alignItems: 'center', marginTop: addCarries.some(v => v !== null) ? '0px' : '4px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', marginTop: '4px' }}>
                   {/* + sign appears when p1 is done */}
                   {(() => {
                     const isP1Done = !partial1Inputs.slice(maxLen - String(problem.partial1).length).includes('');
