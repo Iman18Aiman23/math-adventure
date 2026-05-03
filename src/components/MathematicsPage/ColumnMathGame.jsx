@@ -1231,9 +1231,14 @@ export default function ColumnMathGame({ onBack, language }) {
           className={`cmg-card ${status === 'wrong' ? 'cmg-shake' : ''}`}
           style={{
             position: 'relative',
-            background: '#fff', borderRadius: '24px',
-            padding: isDesktop ? '1.5rem 2.5rem 1.75rem 2.5rem' : '2.2rem 2rem 2.4rem',
-            border: '3px solid #E5E5E5', boxShadow: '0 6px 0 #E5E5E5',
+            background: '#fff',
+            borderRadius: '24px',
+            padding: isDesktop ? '1.5rem 2.5rem 1.75rem' : '2.2rem 2rem 2.4rem',
+            border: '3px solid #E5E5E5',
+            boxShadow: '0 6px 0 #E5E5E5',
+            width: isDesktop ? '440px' : '100%',
+            maxWidth: isDesktop ? '720px' : '100%',
+            minWidth: isDesktop ? '380px' : 'auto',
             boxSizing: 'border-box',
           }}
         >
