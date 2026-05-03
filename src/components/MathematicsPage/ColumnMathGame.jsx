@@ -1232,7 +1232,7 @@ export default function ColumnMathGame({ onBack, language }) {
           style={{
             position: 'relative',
             background: '#fff', borderRadius: '24px',
-            padding: isDesktop ? '1.5rem 4rem 1.75rem 2.5rem' : '2.2rem 3.5rem 2.4rem',
+            padding: isDesktop ? '1.5rem 2.5rem 1.75rem 2.5rem' : '2.2rem 2rem 2.4rem',
             border: '3px solid #E5E5E5', boxShadow: '0 6px 0 #E5E5E5',
             width: '100%',
             maxWidth: isDesktop ? '440px' : '100%',
@@ -1247,7 +1247,7 @@ export default function ColumnMathGame({ onBack, language }) {
             onClick={() => setShowTutorial(true)}
             title={bm ? 'Maklumat' : 'Information'}
             style={{
-              position: 'absolute', top: isDesktop ? '18px' : '14px', right: isDesktop ? '18px' : '14px',
+              position: 'absolute', top: isDesktop ? '18px' : '14px', left: isDesktop ? '18px' : '14px',
               width: isDesktop ? '42px' : '34px', height: isDesktop ? '42px' : '34px', borderRadius: '50%',
               background: '#fff', color: '#FF4B4B',
               fontWeight: 900, fontSize: isDesktop ? '1.8rem' : '1.6rem',
