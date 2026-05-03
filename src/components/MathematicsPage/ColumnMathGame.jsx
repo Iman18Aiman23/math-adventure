@@ -1332,9 +1332,9 @@ export default function ColumnMathGame({ onBack, language }) {
               </div>
             )}
 
-            {/* Carry / Borrow row for Addition / Subtraction */}
+            {/* Carry / Borrow row for Addition / Subtraction / Multiplication */}
             {showTopRow && (
-              <div style={{ display: 'flex', alignItems: 'center', height: isDesktop ? '50px' : '38px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', height: isDesktop ? '50px' : '38px', minHeight: isDesktop ? '50px' : '38px', visibility: 'visible' }}>
                 <div style={{ width: OP_W }} />
                 {topRow.map((val, i) => {
                   const hide = p1[i] === ' ' && p2[i] === ' ';
@@ -1360,10 +1360,13 @@ export default function ColumnMathGame({ onBack, language }) {
                           onFocus={() => { if (!isReadonly) { setActiveSection('topRow'); setActiveTopIdx(i); } }}
                           style={{
                             width: isTwoDigit ? TOP_W2 : TOP_W1, height: TOP_H, boxSizing: 'border-box',
-                            border: `2px solid ${isTopActive ? '#1CB0F6' : '#C0C0C0'}`, borderRadius: '8px',
-                            background: isTopActive ? '#EAF7FF' : isReadonly ? '#F0F0F0' : '#fafafa',
+                            border: `2px solid ${isTopActive ? '#1CB0F6' : problem.op === '×' ? '#FF4B4B' : '#C0C0C0'}`,
+                            borderRadius: '8px',
+                            background: isTopActive ? '#EAF7FF' : problem.op === '×' ? '#FFE6E6' : isReadonly ? '#F0F0F0' : '#fafafa',
                             textAlign: 'center', fontSize: TOP_FS, fontWeight: 900, fontFamily: '"Courier New", monospace',
-                            color: problem.op === '+' ? '#58CC02' : problem.op === '×' ? '#FF4B4B' : '#FF4B4B', outline: 'none', caretColor: 'transparent', cursor: isReadonly ? 'default' : 'pointer',
+                            color: problem.op === '+' ? '#58CC02' : problem.op === '×' ? '#FF4B4B' : '#FF4B4B',
+                            outline: 'none', caretColor: 'transparent', cursor: isReadonly ? 'default' : 'pointer',
+                            visibility: 'visible', display: 'block'
                           }}
                         />
                       )}
