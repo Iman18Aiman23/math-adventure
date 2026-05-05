@@ -1794,7 +1794,7 @@ export default function ColumnMathGame({ onBack, language }) {
                 return (
                   <input
                     key={i} ref={el => inputRefs.current[i] = el}
-                    type="text" inputMode="numeric" maxLength={2} value={d} readOnly={status !== 'playing'}
+                    type="text" inputMode="numeric" maxLength={2} enterKeyHint="next" value={d} readOnly={status !== 'playing'}
                     onChange={e => handleAnswerChange(i, e.target.value)}
                     onKeyDown={e => handleAnswerKeyDown(i, e)}
                     onBlur={e => processCarryLogic(i, e.target.value)}
