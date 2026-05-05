@@ -14,7 +14,8 @@ export default function DesktopSidebar({
     <aside className="desktop-sidebar">
       {/* Logo */}
       <div className="sidebar-logo" onClick={onHome} style={{ cursor: 'pointer' }}>
-        <img className="sidebar-logo-image" src="/images/mascot.png" alt="ImanCore Mascot" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
+        {/* TODO: Replace with image at /images/mascot.png when ready */}
+        <span className="sidebar-logo-owl">🦉</span>
         <span>ImanCore Learning Hub</span>
       </div>
 
