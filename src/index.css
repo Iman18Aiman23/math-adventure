@@ -1595,7 +1595,7 @@ button {
     width: var(--sidebar-w);
     min-width: var(--sidebar-w);
     height: 100%;
-    background: var(--bg-white);
+    background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
     border-right: 2px solid var(--border-color);
     flex-shrink: 0;
     z-index: 60;
@@ -1610,7 +1610,7 @@ button {
     padding: var(--sp-2) var(--sp-3);
     font-size: 1.3rem;
     font-weight: 900;
-    color: var(--duo-green);
+    color: #FFFFFF;
     margin-bottom: var(--sp-3);
   }
   .sidebar-logo-owl { font-size: 2rem; }
@@ -1631,26 +1631,26 @@ button {
     border-radius: var(--border-radius-md);
     font-weight: 700;
     font-size: 0.95rem;
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.8);
     background: transparent;
     transition: background 0.15s, color 0.15s;
     width: 100%;
     text-align: left;
   }
   .sidebar-item:hover {
-    background: var(--bg-body);
-    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.2);
+    color: #FFFFFF;
   }
   .sidebar-item.active {
-    background: #E8F5FF;
-    color: var(--duo-blue);
+    background: rgba(255, 255, 255, 0.25);
+    color: #FFFFFF;
     font-weight: 800;
   }
   .sidebar-item-icon { font-size: 1.4rem; width: 32px; text-align: center; }
 
   .sidebar-footer {
     padding: var(--sp-2) var(--sp-3);
-    border-top: 2px solid var(--border-color);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
     margin-top: var(--sp-2);
   }
   .sidebar-stat-row {
@@ -1659,7 +1659,7 @@ button {
     gap: var(--sp-1);
     font-weight: 800;
     font-size: 0.85rem;
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.9);
     padding: 6px 0;
   }
 
