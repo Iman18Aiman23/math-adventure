@@ -63,7 +63,7 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
           display: flex;
           flex-direction: column;
           height: 100%;
-          background: linear-gradient(135deg, #FFF9E6 0%, #FFE6F0 50%, #E6F3FF 100%);
+          background: linear-gradient(135deg, #FFF9E6 0%, #FFF9E6 50%, #E6F3FF 100%);
           overflow-y: auto;
           overflow-x: hidden;
         }
@@ -80,7 +80,7 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
         }
         .math-back-btn {
           background: transparent;
-          color: #FF6B6B;
+          color: #000000;
           padding: 8px;
           border-radius: 50%;
           font-weight: bold;
@@ -89,7 +89,7 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
           flex: 1;
           text-align: center;
           font-weight: 900;
-          color: #FF6B6B;
+          color: #000000;
           font-size: 1.3rem;
           margin-right: 38px;
         }
