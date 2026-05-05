@@ -672,6 +672,31 @@ export default function ColumnMathGame({ onBack, language }) {
     checkAnswer(inputDigits);
   };
 
+  const resetFields = () => {
+    const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
+    setInputDigits(Array(ml).fill(''));
+    setTopRowInputs(Array(ml).fill(''));
+    setPartial1Inputs(Array(ml).fill(''));
+    setPartial2Inputs(Array(ml).fill(''));
+    setPartial1CarryInputs(Array(ml).fill(''));
+    setPartial2CarryInputs(Array(ml).fill(''));
+    setPartial1Submitted(new Set());
+    setPartial2Submitted(new Set());
+    setUserStruckRow([]);
+    setUserBorrowedTo([]);
+    setConfirmBorrowIdx(null);
+    setBorrowAnswerInput('');
+    setBorrowSubmitAttempted(false);
+    setLockMessage('');
+    setActiveIdx(0);
+    setActiveTopIdx(0);
+    setActiveSection('answer');
+    setActivePartial1Idx(0);
+    setActivePartial2Idx(0);
+    setActivePartial1CarryIdx(0);
+    setActivePartial2CarryIdx(0);
+  };
+
   const handleAnswerChange = (i, rawValue) => {
     if (status !== 'playing') return;
     // Allow any numeric input - user can type 1, 2, or more digits
@@ -1853,28 +1878,49 @@ export default function ColumnMathGame({ onBack, language }) {
             }
           }
           return (
-            <button
-              ref={submitBtnRef}
-              onClick={submitAnswer}
-              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); submitAnswer(); } }}
-              disabled={!ready}
-              className={`cmg-btn ${ready ? 'cmg-submit-ready' : ''}`}
-              style={{
-                padding: isDesktop ? '0.7rem 2.5rem' : '0.95rem 3rem',
-                background: ready ? '#58CC02' : '#E5E5E5',
-                color: ready ? '#fff' : '#AFAFAF',
-                fontWeight: 900, fontSize: '1rem',
-                letterSpacing: '0.04em', textTransform: 'uppercase',
-                borderRadius: '16px', border: 'none',
-                borderBottom: ready ? '4px solid #46A302' : '4px solid #C0C0C0',
-                cursor: ready ? 'pointer' : 'not-allowed',
-                display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-                minWidth: '180px', justifyContent: 'center',
-              }}
-            >
-              <span style={{ fontSize: '1.1rem' }}>✓</span>
-              <span>{bm ? 'Hantar' : 'Submit'}</span>
-            </button>
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <button
+                onClick={resetFields}
+                className="cmg-btn"
+                style={{
+                  padding: isDesktop ? '0.7rem 2.5rem' : '0.95rem 3rem',
+                  background: '#FF9500',
+                  color: '#fff',
+                  fontWeight: 900, fontSize: '1rem',
+                  letterSpacing: '0.04em', textTransform: 'uppercase',
+                  borderRadius: '16px', border: 'none',
+                  borderBottom: '4px solid #D97E00',
+                  cursor: 'pointer',
+                  display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+                  minWidth: '180px', justifyContent: 'center',
+                }}
+              >
+                <span style={{ fontSize: '1.1rem' }}>↻</span>
+                <span>{bm ? 'Semula' : 'Reset'}</span>
+              </button>
+              <button
+                ref={submitBtnRef}
+                onClick={submitAnswer}
+                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); submitAnswer(); } }}
+                disabled={!ready}
+                className={`cmg-btn ${ready ? 'cmg-submit-ready' : ''}`}
+                style={{
+                  padding: isDesktop ? '0.7rem 2.5rem' : '0.95rem 3rem',
+                  background: ready ? '#58CC02' : '#E5E5E5',
+                  color: ready ? '#fff' : '#AFAFAF',
+                  fontWeight: 900, fontSize: '1rem',
+                  letterSpacing: '0.04em', textTransform: 'uppercase',
+                  borderRadius: '16px', border: 'none',
+                  borderBottom: ready ? '4px solid #46A302' : '4px solid #C0C0C0',
+                  cursor: ready ? 'pointer' : 'not-allowed',
+                  display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+                  minWidth: '180px', justifyContent: 'center',
+                }}
+              >
+                <span style={{ fontSize: '1.1rem' }}>✓</span>
+                <span>{bm ? 'Hantar' : 'Submit'}</span>
+              </button>
+            </div>
           );
         })()}
 
