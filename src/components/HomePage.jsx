@@ -24,7 +24,7 @@ const COURSES = [
   },
   {
     id: 'jawi',
-    emoji: '📖',
+    emoji: 'svg/jawi.svg',
     iconBg: '#EDD9FF',
     title: { bm: 'Jawi', eng: 'Jawi Script' },
     desc: { bm: 'Huruf & suku kata Jawi', eng: 'Jawi letters & syllables' },
