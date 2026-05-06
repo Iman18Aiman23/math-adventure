@@ -15,7 +15,7 @@ const COURSES = [
   },
   {
     id: 'bm',
-    emoji: '/svg/speaking.svg',
+    emoji: 'svg/speaking.svg',
     iconBg: '#D0F0FF',
     title: { bm: 'Belajar Sebutan', eng: 'Speaking' },
     desc: { bm: 'Fonik & sebutan', eng: 'Phonics & pronunciation' },
@@ -120,7 +120,7 @@ export default function HomePage({ onSelectSubject, language, playerName, gameSt
             >
               <div className="duo-course-icon" style={{ background: course.iconBg }}>
                 {course.emoji.endsWith('.svg') ? (
-                  <img src={course.emoji} alt={course.title.bm} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                  <img src={`${import.meta.env.BASE_URL}${course.emoji}`} alt={course.title.bm} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                 ) : (
                   course.emoji
                 )}
