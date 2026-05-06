@@ -15,7 +15,7 @@ const COURSES = [
   },
   {
     id: 'bm',
-    emoji: '🗣️',
+    emoji: '/svg/speaking.svg',
     iconBg: '#D0F0FF',
     title: { bm: 'Belajar Sebutan', eng: 'Speaking' },
     desc: { bm: 'Fonik & sebutan', eng: 'Phonics & pronunciation' },
@@ -119,7 +119,11 @@ export default function HomePage({ onSelectSubject, language, playerName, gameSt
               style={{ animationDelay: `${i * 0.06}s` }}
             >
               <div className="duo-course-icon" style={{ background: course.iconBg }}>
-                {course.emoji}
+                {course.emoji.endsWith('.svg') ? (
+                  <img src={course.emoji} alt={course.title.bm} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                ) : (
+                  course.emoji
+                )}
               </div>
               <div className="duo-course-info">
                 <div className="duo-course-title">{course.title[language] || course.title.bm}</div>

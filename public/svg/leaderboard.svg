@@ -1,0 +1,17 @@
+<svg viewBox="0 0 24 24" width="80" height="80" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    .trophy { animation: pulse 2s infinite; transform-origin: center; }
+    .star:hover { fill: #FF0000; transition: 0.3s; cursor: pointer; }
+  </style>
+  <g class="trophy">
+    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18" stroke="#F59E0B" stroke-width="2" fill="none"/>
+    <path d="M18 2H6v7a6 6 0 0 0 12 0V2z" fill="#FBBF24"/>
+    <path d="M12 15v4m-4 3h8" stroke="#B45309" stroke-width="2" stroke-linecap="round"/>
+    <path class="star" d="M12 5l1 2h2.5l-2 1.5.5 3-2-1.5-2 1.5.5-3-2-1.5h2.5z" fill="#FFFFFF" />
+  </g>
+</svg>

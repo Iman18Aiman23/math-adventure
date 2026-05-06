@@ -1,0 +1,15 @@
+<svg viewBox="0 0 24 24" width="80" height="80" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .avatar:hover .eye-right { display: none; }
+    .avatar:hover .wink { display: block !important; }
+    .wink { display: none; }
+  </style>
+  <g class="avatar">
+    <circle cx="12" cy="12" r="11" fill="#10B981" />
+    <circle cx="12" cy="8" r="4" fill="#FFFFFF" />
+    <path d="M6 21v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1" fill="#FFFFFF" />
+    <circle cx="10.5" cy="8" r="0.6" fill="#10B981" />
+    <circle class="eye-right" cx="13.5" cy="8" r="0.6" fill="#10B981" />
+    <path class="wink" d="M12.5 8.5c.5 0 1-.2 1-.5" fill="none" stroke="#10B981" stroke-width="0.5" stroke-linecap="round" />
+  </g>
+</svg>

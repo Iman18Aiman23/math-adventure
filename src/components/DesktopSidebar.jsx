@@ -1,9 +1,9 @@
 import React from 'react';
 
 const SIDEBAR_TABS = [
-  { id: 'learn',       icon: '📚', label: { bm: 'Belajar',     eng: 'Learn'        } },
-  { id: 'leaderboard', icon: '🏆', label: { bm: 'Papan Juara', eng: 'Leaderboard'  } },
-  { id: 'profile',     icon: '👤', label: { bm: 'Profil',      eng: 'Profile'      } },
+  { id: 'learn',       icon: '/svg/learn.svg', label: { bm: 'Belajar',     eng: 'Learn'        } },
+  { id: 'leaderboard', icon: '/svg/leaderboard.svg', label: { bm: 'Papan Juara', eng: 'Leaderboard'  } },
+  { id: 'profile',     icon: '/svg/profile.svg', label: { bm: 'Profil',      eng: 'Profile'      } },
 ];
 
 export default function DesktopSidebar({
@@ -33,7 +33,9 @@ export default function DesktopSidebar({
               }
             }}
           >
-            <span className="sidebar-item-icon">{tab.icon}</span>
+            <span className="sidebar-item-icon">
+              <img src={tab.icon} alt={tab.label.bm} style={{ width: '100%', height: '100%' }} />
+            </span>
             <span>{tab.label[language] || tab.label.bm}</span>
           </button>
         ))}
@@ -43,7 +45,9 @@ export default function DesktopSidebar({
 
         {/* Language Toggle */}
         <button className="sidebar-item" onClick={onToggleLanguage}>
-          <span className="sidebar-item-icon">🌐</span>
+          <span className="sidebar-item-icon">
+            <img src="/svg/duolangue.svg" alt="Language" style={{ width: '100%', height: '100%' }} />
+          </span>
           <span>{language === 'bm' ? 'English' : 'Bahasa Melayu'}</span>
         </button>
       </nav>
