@@ -499,6 +499,7 @@ export default function ColumnMathGame({ onBack, language }) {
   const [showTutorial,         setShowTutorial]         = useState(false);
   const [partial1Submitted,    setPartial1Submitted]    = useState(new Set());
   const [partial2Submitted,    setPartial2Submitted]    = useState(new Set());
+  const [answerSubmitted,      setAnswerSubmitted]      = useState(new Set());
 
   const inputRefs            = useRef([]);
   const topRowRefs           = useRef([]);
@@ -551,6 +552,7 @@ export default function ColumnMathGame({ onBack, language }) {
     setPartial2CarryInputs(Array(ml).fill(''));
     setPartial1Submitted(new Set());
     setPartial2Submitted(new Set());
+    setAnswerSubmitted(new Set());
     setActiveIdx(ml - 1);
     setActiveTopIdx(0);
     if (p.hasPartials) {
@@ -682,6 +684,7 @@ export default function ColumnMathGame({ onBack, language }) {
     setPartial2CarryInputs(Array(ml).fill(''));
     setPartial1Submitted(new Set());
     setPartial2Submitted(new Set());
+    setAnswerSubmitted(new Set());
     setUserStruckRow([]);
     setUserBorrowedTo([]);
     setConfirmBorrowIdx(null);
@@ -741,6 +744,10 @@ export default function ColumnMathGame({ onBack, language }) {
       return;
     }
 
+    // Mark this position as submitted
+    const submitted = new Set(answerSubmitted);
+    submitted.add(i);
+
     // Handle values >= 10: split and carry
     if (cleaned.length === 2 && parseInt(cleaned) >= 10) {
       const value = parseInt(cleaned);
@@ -757,14 +764,19 @@ export default function ColumnMathGame({ onBack, language }) {
       topInputs[i - 1] = tens;
       setTopRowInputs(topInputs);
 
+      // Mark carry position as submitted so it displays
+      if (i > 0) submitted.add(i - 1);
+      setAnswerSubmitted(submitted);
+
       setLockMessage('');
       return;
     }
 
-    // Single digit or first digit only - keep as is
+    // Single digit - keep as is
     const digits = [...inputDigits];
-    digits[i] = cleaned.slice(-1); // Keep only last digit for single-digit case
+    digits[i] = cleaned.slice(-1);
     setInputDigits(digits);
+    setAnswerSubmitted(submitted);
     setLockMessage('');
   };
 
@@ -1176,7 +1188,7 @@ export default function ColumnMathGame({ onBack, language }) {
   const { p1Carries, p2Carries, addCarries } = computeMultiplicationInfo(problem, maxLen);
   const hasTopRow = topRow.some((v, i) => v !== null && !(p1[i] === ' ' && p2[i] === ' '));
   const showTopRow = problem.op === '+'
-    ? hasTopRow && topRowInputs.some(d => d !== '' && d !== undefined)
+    ? topRowInputs.some((d, i) => d !== '' && d !== undefined && answerSubmitted.has(i))
     : problem.op === '-'
       ? (userStruckRow.some(v => v) || userBorrowedTo.some(v => v))
       : problem.op === '×' && !problem.hasPartials
