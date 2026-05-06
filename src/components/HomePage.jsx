@@ -118,7 +118,7 @@ export default function HomePage({ onSelectSubject, language, playerName, gameSt
               onMouseEnter={playHoverSound}
               style={{ animationDelay: `${i * 0.06}s` }}
             >
-              <div className="duo-course-icon" style={{ background: course.iconBg }}>
+              <div className="duo-course-icon">
                 {course.emoji.endsWith('.svg') ? (
                   <img src={`${import.meta.env.BASE_URL}${course.emoji}`} alt={course.title.bm} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                 ) : (
