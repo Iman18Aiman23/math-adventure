@@ -33,7 +33,7 @@ const COURSES = [
   },
   {
     id: 'math',
-    emoji: '🔢',
+    emoji: 'svg/vite.svg',
     iconBg: '#FFF0CC',
     title: { bm: 'Matematik', eng: 'Mathematics' },
     desc: { bm: 'Tambah, tolak, darab & bahagi', eng: 'Addition, subtraction, multiply & divide' },
