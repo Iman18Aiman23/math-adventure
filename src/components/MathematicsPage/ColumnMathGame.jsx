@@ -63,7 +63,7 @@ function StreakPopup({ streak, language, onClose }) {
   const cheer = cheers[Math.min(Math.floor(streak / STREAK_MILESTONE) - 1, cheers.length - 1)];
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div onClick={e => e.stopPropagation()} style={{ background: '#fff', borderRadius: '24px', padding: '2.5rem 2rem', textAlign: 'center', maxWidth: '300px', width: '90%', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+      <div onClick={e => e.stopPropagation()} style={{ background: '#fff', borderRadius: '24px', padding: '2.5rem 2rem', textAlign: 'center', maxWidth: '300px', width: '90%', border: '4px solid #FFC800', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
         <div style={{ fontSize: '4rem' }}>🎉</div>
         <div style={{ fontSize: '3.5rem', fontWeight: 900, color: '#FFC800', lineHeight: 1 }}>{streak}</div>
         <div style={{ fontWeight: 700, color: '#777', marginBottom: '0.5rem' }}>{bm ? 'jawapan betul berturut-turut!' : 'correct answers in a row!'}</div>
@@ -630,12 +630,11 @@ export default function ColumnMathGame({ onBack, language }) {
       } else {
         playSound('correct');
         confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
+        // Auto-advance after short delay (only if not a milestone)
+        feedbackTimer.current = setTimeout(() => {
+          newProblem();
+        }, 1200);
       }
-
-      // Auto-advance after short delay
-      feedbackTimer.current = setTimeout(() => {
-        newProblem();
-      }, 1200);
     } else {
       setStatus('wrong');
       setStreak(0);
@@ -1976,15 +1975,20 @@ export default function ColumnMathGame({ onBack, language }) {
         </div>
 
         {/* Level progress */}
-        <div className="ops-stat-chip ops-stat-chip-highlight" style={{ gap: '8px' }}>
-          <span>🏆</span>
-          <div style={{ width: '80px', height: '8px', background: 'rgba(255, 184, 0, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
-            <div style={{ width: `${Math.min((totalAnswered / 10) * 100, 100)}%`, height: '100%', background: '#FFB800', borderRadius: '4px', transition: 'width 0.3s ease-out' }} />
-          </div>
-          <span style={{ color: '#CC7700', fontSize: '0.9rem', fontWeight: 900, minWidth: '32px', textAlign: 'right' }}>
-            {Math.min(totalAnswered, 10)}/10
-          </span>
-        </div>
+        {(() => {
+          const progressInGroup = showStreak && streak % 10 === 0 && streak > 0 ? 10 : streak % 10;
+          return (
+            <div className="ops-stat-chip ops-stat-chip-highlight" style={{ gap: '8px' }}>
+              <span>🏆</span>
+              <div style={{ width: '80px', height: '8px', background: 'rgba(255, 184, 0, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
+                <div style={{ width: `${(progressInGroup / 10) * 100}%`, height: '100%', background: '#FFB800', borderRadius: '4px', transition: 'width 0.3s ease-out' }} />
+              </div>
+              <span style={{ color: '#CC7700', fontSize: '0.9rem', fontWeight: 900, minWidth: '32px', textAlign: 'right' }}>
+                {progressInGroup}/10
+              </span>
+            </div>
+          );
+        })()}
       </div>
     </div>
   );

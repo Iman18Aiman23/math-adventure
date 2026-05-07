@@ -229,8 +229,8 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
     };
 
     return (
-        <div className="game-container fade-in">
-            {/* Standard Header */}
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#fff' }}>
+            {/* Header */}
             <div style={{ background: '#fff', borderBottom: '2px solid #E5E5E5', padding: '0 0.85rem', height: '60px', display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
                 <button onClick={onBack} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center', padding: '6px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>
                     <X size={22} />
@@ -249,20 +249,16 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
                 </div>
             </div>
 
-            <div className="card" style={{
-                maxWidth: '800px',
-                margin: '0 auto',
-                padding: '1rem 0.5rem',
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column'
-            }}>
+            {/* Content area */}
+            <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '1.25rem 1rem', gap: '1.25rem' }}>
+
                 <div style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(3, 1fr)',
                     gap: '0.5rem',
-                    flex: 1,
-                    alignContent: 'center'
+                    width: '100%',
+                    maxWidth: '480px',
+                    boxSizing: 'border-box'
                 }}>
                     {cards.map((card, idx) => {
                         const isCardFlipped = flipped.includes(idx);
@@ -330,27 +326,21 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
                     })}
                 </div>
 
-                <div style={{
-                    marginTop: '1.5rem',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    gap: '1rem'
-                }}>
-                    <button
-                        className="btn-primary"
-                        onClick={initGame}
-                        style={{
-                            padding: '0.8rem 1.5rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.5rem',
-                            margin: 0
-                        }}
-                    >
-                        <RefreshCw size={20} />
-                        {t.restart}
-                    </button>
-                </div>
+                <button
+                    className="btn-primary"
+                    onClick={initGame}
+                    style={{
+                        padding: '0.8rem 1.5rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        margin: 0
+                    }}
+                >
+                    <RefreshCw size={20} />
+                    {t.restart}
+                </button>
+
             </div>
 
             {/* Footer Stats */}

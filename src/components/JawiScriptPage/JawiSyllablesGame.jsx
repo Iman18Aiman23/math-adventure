@@ -9,6 +9,33 @@ import { LOCALIZATION } from '../../utils/localization';
 import GameHeader from '../GameHeader';
 import { GameStateContext } from '../../App';
 
+const STREAK_MILESTONE = 10;
+
+const STREAK_CHEERS_BM  = ['Bagus!', 'Cemerlang!', 'Hebat!', 'Luar Biasa!', 'Menakjubkan!', 'BINTANG!', 'JUARA!', 'PAKAR JAWI!'];
+const STREAK_CHEERS_EN  = ['Great!', 'Excellent!', 'Fantastic!', 'Amazing!', 'Incredible!', 'SUPERSTAR!', 'CHAMPION!', 'JAWI WIZARD!'];
+
+function StreakPopup({ streak, language, onClose }) {
+  const milestoneCount = Math.floor(streak / STREAK_MILESTONE);
+  const cheers = language === 'bm' ? STREAK_CHEERS_BM : STREAK_CHEERS_EN;
+  const cheer = cheers[Math.min(milestoneCount - 1, cheers.length - 1)];
+
+  return (
+    <div className="ops-streak-overlay" onClick={onClose}>
+      <div className="ops-streak-popup" onClick={e => e.stopPropagation()}>
+        <div className="ops-streak-firework">🎉</div>
+        <div className="ops-streak-number">{streak}</div>
+        <div className="ops-streak-label">
+          {language === 'bm' ? 'jawapan betul berturut-turut!' : 'correct answers in a row!'}
+        </div>
+        <div className="ops-streak-cheer">{cheer}</div>
+        <button className="ops-streak-continue" onClick={onClose}>
+          {language === 'bm' ? 'Terus! 🚀' : 'Keep Going! 🚀'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function JawiSyllablesGame({ onBack, onHome, language, defaultSyllables }) {
     const t = LOCALIZATION[language].jawiGames;
 
@@ -186,7 +213,7 @@ export default function JawiSyllablesGame({ onBack, onHome, language, defaultSyl
             const newStreak = streak + 1;
             setStreak(newStreak);
 
-            if (newStreak > 0 && newStreak % 5 === 0) {
+            if (newStreak > 0 && newStreak % 10 === 0) {
                 playSound('streak');
                 setShowStreakPopup(true);
                 confetti({
@@ -194,7 +221,6 @@ export default function JawiSyllablesGame({ onBack, onHome, language, defaultSyl
                     spread: 100,
                     origin: { y: 0.6 }
                 });
-                setTimeout(nextProblem, 3000);
             } else {
                 playSound('correct');
                 setTimeout(nextProblem, 1000);
@@ -355,8 +381,8 @@ export default function JawiSyllablesGame({ onBack, onHome, language, defaultSyl
     const style = getCardStyle(currentQuestion.bunyi, gameMode);
 
     return (
-        <div className="game-container">
-            {/* Standard Header */}
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#fff' }}>
+            {/* Header */}
             <div style={{ background: '#fff', borderBottom: '2px solid #E5E5E5', padding: '0 0.85rem', height: '60px', display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
                 <button onClick={onBack} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center', padding: '6px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>
                     <X size={22} />
@@ -370,173 +396,170 @@ export default function JawiSyllablesGame({ onBack, onHome, language, defaultSyl
                 <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFF6D6', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#B58800', border: '1.5px solid #FFE08A' }}>
                         <span style={{ fontSize: '0.85rem' }}>⭐</span>
-                        <span>{Math.min(score, 999)}</span>
+                        <span>{Math.floor(streak / STREAK_MILESTONE) * 10}</span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFEAD0', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#D9610B', border: '1.5px solid #FFC081' }}>
                         <span style={{ fontSize: '0.85rem' }}>🔥</span>
-                        <span>{Math.min(streak, 99)}</span>
+                        <span>{streak}</span>
                     </div>
                 </div>
             </div>
 
-            {/* Question Card */}
-            <div className="question-card fade-in" style={{
-                background: style.background,
-                color: style.color,
-                position: 'relative'
-            }}>
-                {style.label && (
+            {/* Content area */}
+            <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '1.25rem 1rem', gap: '1.25rem' }}>
+
+                {/* Question Card */}
+                <div className="question-card fade-in" style={{
+                    background: style.background,
+                    color: style.color,
+                    position: 'relative',
+                    width: '100%',
+                    maxWidth: '480px',
+                    boxSizing: 'border-box',
+                    borderRadius: '16px'
+                }}>
+                    {style.label && (
+                        <div style={{
+                            position: 'absolute',
+                            top: '0.75rem',
+                            right: '0.75rem',
+                            background: 'rgba(0,0,0,0.2)',
+                            padding: '0.25rem 0.6rem',
+                            borderRadius: '1rem',
+                            fontSize: '0.8rem',
+                            fontWeight: 'bold'
+                        }}>
+                            {style.label}
+                        </div>
+                    )}
+
+                    <div style={{ fontSize: '1.1rem', opacity: 0.8, marginBottom: '0.75rem' }}>
+                        {t.whatSyllable}
+                    </div>
+                    <div className="question-text-lg">
+                        {currentQuestion.jawi}
+                    </div>
+                </div>
+
+                {/* Answer Section */}
+                {gameMode === 'abcd' ? (
                     <div style={{
-                        position: 'absolute',
-                        top: '0.75rem',
-                        right: '0.75rem',
-                        background: 'rgba(0,0,0,0.2)',
-                        padding: '0.25rem 0.6rem',
-                        borderRadius: '1rem',
-                        fontSize: '0.8rem',
-                        fontWeight: 'bold'
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 1fr',
+                        gap: '0.75rem',
+                        width: '100%',
+                        maxWidth: '480px',
+                        padding: '0 0.5rem',
+                        boxSizing: 'border-box'
                     }}>
-                        {style.label}
+                        {shuffledOptions.map((opt, idx) => {
+                            let btnStyle = {
+                                background: 'white',
+                                border: '3px solid #eee',
+                                color: '#333'
+                            };
+
+                            if (feedback && opt === currentQuestion.rumi) {
+                                btnStyle = { background: '#6BCB77', border: '3px solid #6BCB77', color: 'white' };
+                            } else if (feedback === 'incorrect') {
+                                btnStyle = { opacity: 0.5, background: '#eee', border: '3px solid #eee', color: '#999' };
+                            }
+
+                            return (
+                                <button
+                                    key={`${currentQuestion.jawi}-${opt}`}
+                                    onClick={() => handleAnswer(opt)}
+                                    disabled={isAnimating}
+                                    className="btn-option"
+                                    style={btnStyle}
+                                >
+                                    {opt}
+                                </button>
+                            );
+                        })}
+                    </div>
+                ) : (
+                    <div className="fade-in" style={{ width: '100%', maxWidth: '480px', padding: '0 0.5rem', boxSizing: 'border-box' }}>
+                        <form onSubmit={(e) => { e.preventDefault(); handleAnswer(userAnswer); }} className="input-wrapper" style={{ padding: '0' }}>
+                            <input
+                                ref={inputRef}
+                                type="text"
+                                value={userAnswer}
+                                onChange={(e) => setUserAnswer(e.target.value)}
+                                disabled={isAnimating}
+                                placeholder={t.typeAnswer}
+                                autoFocus
+                                className={clsx(
+                                    "standard-input",
+                                    feedback === 'correct' && 'correct-input',
+                                    feedback === 'incorrect' && 'incorrect-input'
+                                )}
+                                style={{
+                                    textAlign: 'center',
+                                    fontSize: '1.75rem',
+                                    padding: '1rem'
+                                }}
+                            />
+                        </form>
+                        {feedback === 'correct' && (
+                            <div style={{ marginTop: '0.75rem', color: '#6BCB77', fontSize: '1.25rem', fontWeight: 'bold', textAlign: 'center' }}>
+                                {t.correct}
+                            </div>
+                        )}
                     </div>
                 )}
 
-                <div style={{ fontSize: '1.1rem', opacity: 0.8, marginBottom: '0.75rem' }}>
-                    {t.whatSyllable}
-                </div>
-                <div className="question-text-lg">
-                    {currentQuestion.jawi}
-                </div>
+                {/* Next Button for Wrong Answers */}
+                {feedback === 'incorrect' && (
+                    <div className="fade-in" style={{ marginTop: '0.5rem', textAlign: 'center', width: '100%', maxWidth: '480px', padding: '0 0.5rem', boxSizing: 'border-box' }}>
+                        <p style={{ marginBottom: '0.75rem', color: '#FF6B6B', fontSize: '1.1rem' }}>
+                            {t.incorrectLabel} <b>{currentQuestion.rumi}</b>.
+                        </p>
+                        <button
+                            className="btn-primary"
+                            onClick={nextProblem}
+                            style={{ padding: '0.8rem 2rem', fontSize: '1.1rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}
+                        >
+                            {t.nextQuestion} <ArrowRight size={20} />
+                        </button>
+                    </div>
+                )}
+
             </div>
-
-            {/* Answer Section */}
-            {gameMode === 'abcd' ? (
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: '0.75rem',
-                    width: '100%',
-                    maxWidth: '100%',
-                    margin: '0 auto'
-                }}>
-                    {shuffledOptions.map((opt, idx) => {
-                        let btnStyle = {
-                            background: 'white',
-                            border: '3px solid #eee',
-                            color: '#333'
-                        };
-
-                        if (feedback && opt === currentQuestion.rumi) {
-                            btnStyle = { background: '#6BCB77', border: '3px solid #6BCB77', color: 'white' };
-                        } else if (feedback === 'incorrect') {
-                            btnStyle = { opacity: 0.5, background: '#eee', border: '3px solid #eee', color: '#999' };
-                        }
-
-                        return (
-                            <button
-                                key={`${currentQuestion.jawi}-${opt}`}
-                                onClick={() => handleAnswer(opt)}
-                                disabled={isAnimating}
-                                className="btn-option"
-                                style={btnStyle}
-                            >
-                                {opt}
-                            </button>
-                        );
-                    })}
-                </div>
-            ) : (
-                <div className="fade-in" style={{ width: '100%' }}>
-                    <form onSubmit={(e) => { e.preventDefault(); handleAnswer(userAnswer); }} className="input-wrapper">
-                        <input
-                            ref={inputRef}
-                            type="text"
-                            value={userAnswer}
-                            onChange={(e) => setUserAnswer(e.target.value)}
-                            disabled={isAnimating}
-                            placeholder={t.typeAnswer}
-                            autoFocus
-                            className={clsx(
-                                "standard-input",
-                                feedback === 'correct' && 'correct-input',
-                                feedback === 'incorrect' && 'incorrect-input'
-                            )}
-                        />
-                    </form>
-                    {feedback === 'correct' && (
-                        <div style={{ marginTop: '0.75rem', color: '#6BCB77', fontSize: '1.25rem', fontWeight: 'bold', textAlign: 'center' }}>
-                            {t.correct}
-                        </div>
-                    )}
-                </div>
-            )}
-
-            {/* Next Button for Wrong Answers */}
-            {feedback === 'incorrect' && (
-                <div className="fade-in" style={{ marginTop: '1.5rem', textAlign: 'center', width: '100%' }}>
-                    <p style={{ marginBottom: '0.75rem', color: '#FF6B6B', fontSize: '1.1rem' }}>
-                        {t.incorrectLabel} <b>{currentQuestion.rumi}</b>.
-                    </p>
-                    <button
-                        className="btn-primary"
-                        onClick={nextProblem}
-                        style={{ padding: '0.8rem 2rem', fontSize: '1.1rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}
-                    >
-                        {t.nextQuestion} <ArrowRight size={20} />
-                    </button>
-                </div>
-            )}
 
             {/* Footer Stats */}
             <div className="ops-footer-stats">
                 <div className="ops-stat-chip">
                     <span>✅</span>
-                    <span>{questionCount}</span>
+                    <span>{questionCount - 1}</span>
                     <span style={{ color: '#AFAFAF', fontSize: '0.7rem' }}>
                         {language === 'bm' ? 'dijawab' : 'answered'}
                     </span>
                 </div>
-                <div className="ops-stat-chip ops-stat-chip-highlight" style={{ gap: '8px' }}>
-                    <span>🔥</span>
-                    <div style={{ width: '80px', height: '8px', background: 'rgba(204, 119, 0, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
-                        <div style={{ width: `${Math.min((streak / 10) * 100, 100)}%`, height: '100%', background: '#FFB800', borderRadius: '4px', transition: 'width 0.3s ease-out' }} />
-                    </div>
-                    <span style={{ color: '#CC7700', fontSize: '0.9rem', fontWeight: 900, minWidth: '32px', textAlign: 'right' }}>
-                        {Math.min(streak, 10)}/10
-                    </span>
-                </div>
+                {(() => {
+                    const progressInGroup = showStreakPopup && streak % 10 === 0 && streak > 0 ? 10 : streak % 10;
+                    return (
+                        <div className="ops-stat-chip ops-stat-chip-highlight" style={{ gap: '8px' }}>
+                            <span>🏆</span>
+                            <div style={{ width: '80px', height: '8px', background: 'rgba(204, 119, 0, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
+                                <div style={{ width: `${(progressInGroup / 10) * 100}%`, height: '100%', background: '#FFB800', borderRadius: '4px', transition: 'width 0.3s ease-out' }} />
+                            </div>
+                            <span style={{ color: '#CC7700', fontSize: '0.9rem', fontWeight: 900, minWidth: '32px', textAlign: 'right' }}>
+                                {progressInGroup}/10
+                            </span>
+                        </div>
+                    );
+                })()}
             </div>
 
-            {/* Streak Popup */}
-            {showStreakPopup && (() => {
-                const streakInfo = getStreakMessage(streak);
-                return (
-                    <div className="fade-in" style={{
-                        position: 'fixed',
-                        top: '0', left: '0', right: '0', bottom: '0',
-                        backgroundColor: 'rgba(255,255,255,0.95)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        zIndex: 9999,
-                        padding: '1rem'
-                    }}>
-                        <h2 style={{
-                            fontSize: 'clamp(2rem, 8vw, 3rem)',
-                            color: streakInfo.color,
-                            marginBottom: '0.75rem',
-                            textShadow: `0 0 20px ${streakInfo.color}40`,
-                            textAlign: 'center'
-                        }} className="animate-bounce">
-                            {streakInfo.text}
-                        </h2>
-                        <p style={{ fontSize: '1.25rem', marginBottom: '0.75rem', color: '#666' }}>
-                            🔥 {streak} {t.streakInRow} 🔥
-                        </p>
-                        <span style={{ fontSize: '4rem' }}>{streakInfo.emoji}</span>
-                    </div>
-                );
-            })()}
+            {/* Streak popup */}
+            {showStreakPopup && (
+                <StreakPopup
+                    streak={streak}
+                    language={language}
+                    onClose={() => { setShowStreakPopup(false); nextProblem(); }}
+                />
+            )}
         </div>
     );
 }

@@ -11,10 +11,30 @@ import Jawi100WordsGame from './Jawi100WordsGame';
 import JawiShortStoriesPage from './JawiShortStoriesPage';
 import GameHeader from '../GameHeader';
 
-export default function JawiPage({ onBack, onHome, language }) {
+export default function JawiPage({ onBack, onHome, language, onGameStart, onGameEnd }) {
     const t = LOCALIZATION[language].jawi;
     const [mode, setMode] = useState(null); // null, 'alphabet' | 'match' | 'words' | 'syllables' | 'spelling_game' | 'short_stories'
     const [selectedAlphabet, setSelectedAlphabet] = useState(null);
+
+    const handleGameModeChange = (newMode) => {
+        const gameModesWithSidebar = ['match', 'spelling_game', 'syllables'];
+        if (gameModesWithSidebar.includes(newMode)) {
+            onGameStart?.();
+        }
+        setMode(newMode);
+    };
+
+    const handleBackFromGame = () => {
+        const gameModesWithSidebar = ['match', 'spelling_game', 'syllables'];
+        if (gameModesWithSidebar.includes(mode)) {
+            onGameEnd?.();
+        }
+        if (mode === 'alphabet' || mode === 'match' || mode === 'words' || mode === 'syllables' || mode === 'spelling_game' || mode === 'short_stories') {
+            setMode(null);
+        } else {
+            onBack();
+        }
+    };
 
     const speakLetter = (text) => {
         if (!window.speechSynthesis) return;
@@ -33,13 +53,6 @@ export default function JawiPage({ onBack, onHome, language }) {
         }
     }, [selectedAlphabet]);
 
-    const handleBack = () => {
-        if (mode === 'alphabet' || mode === 'match' || mode === 'words' || mode === 'syllables' || mode === 'spelling_game' || mode === 'short_stories') {
-            setMode('menu');
-        } else {
-            onBack();
-        }
-    };
 
     const handleNextAlphabet = () => {
         const currentIndex = JAWI_ALPHABET.findIndex(item => item.jawi === selectedAlphabet.jawi);
@@ -59,7 +72,7 @@ export default function JawiPage({ onBack, onHome, language }) {
 
         return (
             <div className="game-container fade-in">
-                <GameHeader onBack={handleBack} onHome={onHome} title={t.alphabetTitle} language={language} />
+                <GameHeader onBack={handleBackFromGame} onHome={onHome} title={t.alphabetTitle} language={language} />
 
                 <div style={{ padding: '1rem 1rem 0.25rem', textAlign: 'center' }}>
                     <p style={{ fontSize: '0.8rem', fontWeight: 700, color: '#AFAFAF', textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>
@@ -275,11 +288,11 @@ export default function JawiPage({ onBack, onHome, language }) {
         );
     }
 
-    if (mode === 'match') return <JawiMatchGame onBack={handleBack} onHome={onHome} language={language} />;
-    if (mode === 'words') return <JawiWordsPage onBack={handleBack} onHome={onHome} language={language} />;
-    if (mode === 'syllables') return <JawiSyllablesLearningPage onBack={handleBack} onHome={onHome} language={language} />;
-    if (mode === 'spelling_game') return <Jawi100WordsGame onBack={handleBack} onHome={onHome} language={language} />;
-    if (mode === 'short_stories') return <JawiShortStoriesPage onBack={handleBack} onHome={onHome} language={language} />;
+    if (mode === 'match') return <JawiMatchGame onBack={handleBackFromGame} onHome={onHome} language={language} />;
+    if (mode === 'words') return <JawiWordsPage onBack={handleBackFromGame} onHome={onHome} language={language} />;
+    if (mode === 'syllables') return <JawiSyllablesLearningPage onBack={handleBackFromGame} onHome={onHome} language={language} />;
+    if (mode === 'spelling_game') return <Jawi100WordsGame onBack={handleBackFromGame} onHome={onHome} language={language} />;
+    if (mode === 'short_stories') return <JawiShortStoriesPage onBack={handleBackFromGame} onHome={onHome} language={language} />;
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
@@ -322,7 +335,7 @@ export default function JawiPage({ onBack, onHome, language }) {
                         <button
                             key={item.mode}
                             className="fade-in"
-                            onClick={() => setMode(item.mode)}
+                            onClick={() => handleGameModeChange(item.mode)}
                             style={{
                                 display: 'flex', alignItems: 'center', padding: '1.25rem',
                                 background: '#fff', border: `3px solid ${item.iconBg}`, borderLeft: `5px solid ${item.color}`, borderRadius: '16px',

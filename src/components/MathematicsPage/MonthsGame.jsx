@@ -431,15 +431,20 @@ export default function MonthsGame({ onBack, onHome, language }) {
           <span>{totalAnswered}</span>
           <span style={{ color: '#AFAFAF', fontSize: '0.7rem' }}>{bm ? 'dijawab' : 'answered'}</span>
         </div>
-        <div className="ops-stat-chip ops-stat-chip-highlight" style={{ gap: '8px' }}>
-          <span>🏆</span>
-          <div style={{ width: '80px', height: '8px', background: 'rgba(204, 119, 0, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
-            <div style={{ width: `${Math.min((streak / 10) * 100, 100)}%`, height: '100%', background: '#FFB800', borderRadius: '4px', transition: 'width 0.3s ease-out' }} />
-          </div>
-          <span style={{ color: '#CC7700', fontSize: '0.9rem', fontWeight: 900, minWidth: '32px', textAlign: 'right' }}>
-            {Math.min(streak, 10)}/10
-          </span>
-        </div>
+        {(() => {
+          const progressInGroup = showStreak && streak % 10 === 0 && streak > 0 ? 10 : streak % 10;
+          return (
+            <div className="ops-stat-chip ops-stat-chip-highlight" style={{ gap: '8px' }}>
+              <span>🏆</span>
+              <div style={{ width: '80px', height: '8px', background: 'rgba(204, 119, 0, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
+                <div style={{ width: `${(progressInGroup / 10) * 100}%`, height: '100%', background: '#FFB800', borderRadius: '4px', transition: 'width 0.3s ease-out' }} />
+              </div>
+              <span style={{ color: '#CC7700', fontSize: '0.9rem', fontWeight: 900, minWidth: '32px', textAlign: 'right' }}>
+                {progressInGroup}/10
+              </span>
+            </div>
+          );
+        })()}
       </div>
 
       {/* ── Reference Modal ── */}

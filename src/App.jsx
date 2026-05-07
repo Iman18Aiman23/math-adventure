@@ -70,6 +70,7 @@ export default function App() {
   const [language,       setLanguage]       = useState('bm');
   const [activeTab,      setActiveTab]      = useState('learn');
   const [streak,         setStreak]         = useState(0);
+  const [isPlayingJawiGame, setIsPlayingJawiGame] = useState(false);
 
   const activeGameId = getActiveGameId(currentSubject, mathSubGame);
   const { gameState, levelUpInfo, clearLevelUp } = useGameState(activeGameId);
@@ -98,6 +99,9 @@ export default function App() {
   const inActiveQuiz = isPlaying;
   const viewKey = `${activeTab}-${currentSubject}-${mathSubGame}-${dateTimeSubGame}-${isPlaying}`;
 
+  // Hide sidebar during game play
+  const shouldHideSidebar = isPlaying || (currentSubject === 'math' && mathSubGame === 'faq') || isPlayingJawiGame;
+
   // ── Content renderer ──────────────────────────────────────────────────────
   const renderContent = () => {
     if (activeTab === 'leaderboard') return <LeaderboardPlaceholder language={language} />;
@@ -124,7 +128,7 @@ export default function App() {
       case 'bm':
         return <BMPage onBack={handleBackToHome} onHome={handleBackToHome} language={language} />;
       case 'jawi':
-        return <JawiPage onBack={handleBackToHome} onHome={handleBackToHome} language={language} />;
+        return <JawiPage onBack={handleBackToHome} onHome={handleBackToHome} language={language} onGameStart={() => setIsPlayingJawiGame(true)} onGameEnd={() => setIsPlayingJawiGame(false)} />;
       case 'reading':
         return <ReadingPage onBack={handleBackToHome} language={language} />;
       default:
@@ -135,7 +139,7 @@ export default function App() {
   return (
     <GameStateContext.Provider value={gameState}>
       {/* Desktop Sidebar — rendered outside .app-container, inside #root row */}
-      {isDesktop && (
+      {isDesktop && !shouldHideSidebar && (
         <DesktopSidebar
           activeTab={activeTab}
           onTabChange={setActiveTab}

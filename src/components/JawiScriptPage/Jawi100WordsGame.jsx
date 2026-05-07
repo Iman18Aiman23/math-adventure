@@ -8,7 +8,32 @@ import { LOCALIZATION } from '../../utils/localization';
 import GameHeader from '../GameHeader';
 import { GameStateContext } from '../../App';
 
-const STREAK_MILESTONE = 5;
+const STREAK_MILESTONE = 10;
+
+const STREAK_CHEERS_BM  = ['Bagus!', 'Cemerlang!', 'Hebat!', 'Luar Biasa!', 'Menakjubkan!', 'BINTANG!', 'JUARA!', 'PAKAR BAHASA!'];
+const STREAK_CHEERS_EN  = ['Great!', 'Excellent!', 'Fantastic!', 'Amazing!', 'Incredible!', 'SUPERSTAR!', 'CHAMPION!', 'LANGUAGE WIZARD!'];
+
+function StreakPopup({ streak, language, onClose }) {
+  const milestoneCount = Math.floor(streak / STREAK_MILESTONE);
+  const cheers = language === 'bm' ? STREAK_CHEERS_BM : STREAK_CHEERS_EN;
+  const cheer = cheers[Math.min(milestoneCount - 1, cheers.length - 1)];
+
+  return (
+    <div className="ops-streak-overlay" onClick={onClose}>
+      <div className="ops-streak-popup" onClick={e => e.stopPropagation()}>
+        <div className="ops-streak-firework">🎉</div>
+        <div className="ops-streak-number">{streak}</div>
+        <div className="ops-streak-label">
+          {language === 'bm' ? 'jawapan betul berturut-turut!' : 'correct answers in a row!'}
+        </div>
+        <div className="ops-streak-cheer">{cheer}</div>
+        <button className="ops-streak-continue" onClick={onClose}>
+          {language === 'bm' ? 'Terus! 🚀' : 'Keep Going! 🚀'}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function Jawi100WordsGame({ onBack, onHome, language }) {
     const t = LOCALIZATION[language].jawiGames;
@@ -122,17 +147,17 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
             const newStreak = streak + 1;
             setStreak(newStreak);
 
-            if (newStreak > 0 && newStreak % 5 === 0) {
+            if (newStreak > 0 && newStreak % STREAK_MILESTONE === 0) {
                 playSound('streak');
                 setShowStreakPopup(true);
                 confetti({
                     particleCount: 150,
                     spread: 100,
-                    origin: { y: 0.6 }
+                    origin: { y: 0.5 }
                 });
-                setTimeout(nextProblem, 3000);
             } else {
                 playSound('correct');
+                confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 }, scalar: 0.8 });
                 setTimeout(nextProblem, 1000);
             }
         } else {
@@ -405,47 +430,30 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
                         {language === 'bm' ? 'dijawab' : 'answered'}
                     </span>
                 </div>
-                <div className="ops-stat-chip ops-stat-chip-highlight" style={{ gap: '8px' }}>
-                    <span>🏆</span>
-                    <div style={{ width: '80px', height: '8px', background: 'rgba(204, 119, 0, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
-                        <div style={{ width: `${Math.min((streak / 10) * 100, 100)}%`, height: '100%', background: '#FFB800', borderRadius: '4px', transition: 'width 0.3s ease-out' }} />
-                    </div>
-                    <span style={{ color: '#CC7700', fontSize: '0.9rem', fontWeight: 900, minWidth: '32px', textAlign: 'right' }}>
-                        {Math.min(streak, 10)}/10
-                    </span>
-                </div>
+                {(() => {
+                    const progressInGroup = showStreakPopup && streak % 10 === 0 && streak > 0 ? 10 : streak % 10;
+                    return (
+                        <div className="ops-stat-chip ops-stat-chip-highlight" style={{ gap: '8px' }}>
+                            <span>🏆</span>
+                            <div style={{ width: '80px', height: '8px', background: 'rgba(204, 119, 0, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
+                                <div style={{ width: `${(progressInGroup / 10) * 100}%`, height: '100%', background: '#FFB800', borderRadius: '4px', transition: 'width 0.3s ease-out' }} />
+                            </div>
+                            <span style={{ color: '#CC7700', fontSize: '0.9rem', fontWeight: 900, minWidth: '32px', textAlign: 'right' }}>
+                                {progressInGroup}/10
+                            </span>
+                        </div>
+                    );
+                })()}
             </div>
 
-            {/* Streak Popup */}
-            {showStreakPopup && (() => {
-                const streakInfo = getStreakMessage(streak);
-                return (
-                    <div className="fade-in" style={{
-                        position: 'fixed',
-                        top: '0', left: '0', right: '0', bottom: '0',
-                        backgroundColor: 'rgba(255,255,255,0.95)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        zIndex: 9999
-                    }}>
-                        <h2 style={{
-                            fontSize: '3rem',
-                            color: streakInfo.color,
-                            marginBottom: '1rem',
-                            textShadow: `0 0 20px ${streakInfo.color}40`,
-                            textAlign: 'center'
-                        }} className="animate-bounce">
-                            {streakInfo.text}
-                        </h2>
-                        <p style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#666' }}>
-                            🔥 {streak} {t.streakInRow} 🔥
-                        </p>
-                        <span style={{ fontSize: '5rem' }}>{streakInfo.emoji}</span>
-                    </div>
-                );
-            })()}
+            {/* Streak popup */}
+            {showStreakPopup && (
+                <StreakPopup
+                    streak={streak}
+                    language={language}
+                    onClose={() => { setShowStreakPopup(false); nextProblem(); }}
+                />
+            )}
         </div>
     );
 }
