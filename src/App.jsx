@@ -164,7 +164,7 @@ export default function App() {
         </div>
 
         {/* Mobile Bottom Tab Bar — hidden on desktop via CSS */}
-        {!inActiveQuiz && (
+        {!inActiveQuiz && !isPlayingJawiGame && (
           <div className="duo-tab-bar">
             {TABS.map(tab => (
               <button
