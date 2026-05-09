@@ -3,7 +3,7 @@ import React from 'react';
 export function BmSukuKataKvIcon({ size = 48 }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 48 48" fill="none">
-      <text x="24" y="8" textAnchor="middle" fontFamily="sans-serif" fontSize="8" fontWeight="900" fill="#0D6B94">Suku Kata</text>
+      <text x="24" y="8" textAnchor="middle" fontFamily="sans-serif" fontSize="8" fontWeight="900" fill="#ffffff">Suku Kata</text>
       <path d="M6 12H42C43.1046 12 44 12.8954 44 14V34C44 35.1046 43.1046 36 42 36H14L8 44V36H6C4.89543 36 4 35.1046 4 34V14C4 12.8954 4.89543 12 6 12Z" fill="#1CB0F6"/>
       <path d="M4 32C4 33.1046 4.89543 34 6 34H8V36L14 28H42C43.1046 28 44 28.8954 44 30V34C44 35.1046 43.1046 36 42 36H14L8 44V36H6C4.89543 36 4 35.1046 4 34V32Z" fill="#0D6B94"/>
       <text x="16" y="29" textAnchor="middle" fontFamily="sans-serif" fontSize="20" fontWeight="900" fill="#ffffff">B</text>
@@ -19,7 +19,7 @@ export function BmSukuKataKvIcon({ size = 48 }) {
 export function BmSukuKataKvkIcon({ size = 48 }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 48 48" fill="none">
-      <text x="24" y="8" textAnchor="middle" fontFamily="sans-serif" fontSize="8" fontWeight="900" fill="#7B2FA0">Suku Kata</text>
+      <text x="24" y="8" textAnchor="middle" fontFamily="sans-serif" fontSize="8" fontWeight="900" fill="#ffffff">Suku Kata</text>
       <path d="M6 12H42C43.1046 12 44 12.8954 44 14V34C44 35.1046 43.1046 36 42 36H14L8 44V36H6C4.89543 36 4 35.1046 4 34V14C4 12.89543 4.89543 12 6 12Z" fill="#CE82FF"/>
       <path d="M4 32C4 29.1046 4.89543 28 6 28H8V36L14 28H42C43.1046 28 44 28.8954 44 30V34C44 35.1046 43.1046 36 42 36H14L8 44V36H6C4.89543 36 4 35.1046 4 34V32Z" fill="#7B2FA0"/>
       <text x="16" y="29" textAnchor="middle" fontFamily="sans-serif" fontSize="20" fontWeight="900" fill="#ffffff">K</text>
@@ -35,7 +35,7 @@ export function BmSukuKataKvkIcon({ size = 48 }) {
 export function BmPhonicsIcon({ size = 48 }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 48 48" fill="none">
-      <text x="24" y="13" textAnchor="middle" fontFamily="sans-serif" fontSize="11" fontWeight="900" fill="#C91515">Phonics</text>
+      <text x="24" y="13" textAnchor="middle" fontFamily="sans-serif" fontSize="11" fontWeight="900" fill="#ffffff">Phonics</text>
       <path d="M4 18C4 16.8954 4.89543 16 6 16H15C17 16 19 18 19 20V38C19 36 17 34 15 34H6C4.89543 34 4 33.1046 4 32V18Z" fill="#FF9191"/>
       <path d="M4 32C4 33.1046 4.89543 34 6 34H15C17 34 19 36 19 38V40C19 38 17 36 15 36H6C4.89543 36 4 35.1046 4 34V32Z" fill="#C91515"/>
       <path d="M44 18C44 16.8954 43.1046 16 42 16H33C31 16 29 18 29 20V38C29 36 31 34 33 34H42C43.1046 34 44 33.1046 44 32V18Z" fill="#FFBCBC"/>
@@ -53,7 +53,7 @@ export function BmPhonicsIcon({ size = 48 }) {
 export function BmNombor1100Icon({ size = 48 }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 48 48" fill="none">
-      <text x="24" y="6" textAnchor="middle" fontFamily="sans-serif" fontSize="9" fontWeight="900" fill="#8A6D00">Number</text>
+      <text x="24" y="6" textAnchor="middle" fontFamily="sans-serif" fontSize="9" fontWeight="900" fill="#ffffff">xxxxxx</text>
       <rect x="6" y="9" width="36" height="36" rx="8" fill="#FFC800"/>
       <path d="M6 39C6 41.2091 7.79086 43 10 43H38C40.2091 43 42 41.2091 42 39V41C42 43.2091 40.2091 45 38 45H10C7.79086 45 6 43.2091 6 41V39Z" fill="#8A6D00"/>
       <text x="24" y="30" textAnchor="middle" fontFamily="sans-serif" fontSize="10" fontWeight="900" fill="#ffffff">1-100</text>
