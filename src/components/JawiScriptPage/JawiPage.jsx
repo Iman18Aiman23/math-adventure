@@ -10,6 +10,7 @@ import JawiSyllablesLearningPage from './JawiSyllablesLearningPage';
 import Jawi100WordsGame from './Jawi100WordsGame';
 import JawiShortStoriesPage from './JawiShortStoriesPage';
 import GameHeader from '../GameHeader';
+import { JawiAlphabetIcon, JawiReadingIcon, Jawi100WordsIcon, JawiSpellingGameIcon, JawiStoriesIcon } from '../icons/JawiPageIcons';
 
 export default function JawiPage({ onBack, onHome, language, onGameStart, onGameEnd }) {
     const t = LOCALIZATION[language].jawi;
@@ -325,11 +326,11 @@ export default function JawiPage({ onBack, onHome, language, onGameStart, onGame
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     {[
-                        { mode: 'alphabet',     emoji: '🔤', iconBg: '#EDD9FF', color: '#CE82FF', title: t.learnAlphabet,  desc: language === 'bm' ? 'Pelajari 36 huruf Jawi' : 'Learn 36 Jawi letters' },
-                        { mode: 'syllables',    emoji: '🅰️', iconBg: '#FFF0CC', color: '#FFC800', title: t.learnSyllables, desc: language === 'bm' ? 'Suku kata KV & KVK' : 'KV & KVK syllables' },
-                        { mode: 'words',        emoji: '📝', iconBg: '#FFE0E0', color: '#FF4B4B', title: t.learn100Words,  desc: language === 'bm' ? '100 perkataan asas' : '100 basic words' },
-                        { mode: 'spelling_game',emoji: '🎮', iconBg: '#D0F0FF', color: '#1CB0F6', title: t.learnSpelling,  desc: language === 'bm' ? 'Cabaran ejaan interaktif' : 'Interactive spelling challenge' },
-                        { mode: 'short_stories',emoji: '📚', iconBg: '#E8D4F5', color: '#B856D9', title: t.shortStories,   desc: language === 'bm' ? 'Baca cerita pendek dalam Jawi' : 'Read short stories in Jawi' },
+                        { mode: 'alphabet',     icon: <JawiAlphabetIcon size={48} />, iconBg: '#EDD9FF', color: '#CE82FF', title: t.learnAlphabet,  desc: language === 'bm' ? 'Pelajari 36 huruf Jawi' : 'Learn 36 Jawi letters' },
+                        { mode: 'syllables',    icon: <JawiReadingIcon size={48} />, iconBg: '#FFF0CC', color: '#FFC800', title: t.learnSyllables, desc: language === 'bm' ? 'Suku kata KV & KVK' : 'KV & KVK syllables' },
+                        { mode: 'words',        icon: <Jawi100WordsIcon size={48} />, iconBg: '#FFE0E0', color: '#FF4B4B', title: t.learn100Words,  desc: language === 'bm' ? '100 perkataan asas' : '100 basic words' },
+                        { mode: 'spelling_game',icon: <JawiSpellingGameIcon size={48} />, iconBg: '#D0F0FF', color: '#1CB0F6', title: t.learnSpelling,  desc: language === 'bm' ? 'Cabaran ejaan interaktif' : 'Interactive spelling challenge' },
+                        { mode: 'short_stories',icon: <JawiStoriesIcon size={48} />, iconBg: '#E8D4F5', color: '#B856D9', title: t.shortStories,   desc: language === 'bm' ? 'Baca cerita pendek dalam Jawi' : 'Read short stories in Jawi' },
                         { mode: 'match',        emoji: '⭐', iconBg: '#FFE8CC', color: '#FF9600', title: t.testMatch,      desc: language === 'bm' ? 'Padankan huruf & perkataan' : 'Match letters & words' },
                     ].map((item, i) => (
                         <button
@@ -362,7 +363,7 @@ export default function JawiPage({ onBack, onHome, language, onGameStart, onGame
                             }}
                         >
                             <div style={{ background: item.color, color: '#fff', borderRadius: '14px', width: '56px', height: '56px', minWidth: '56px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.8rem', fontWeight: 900 }}>
-                                {item.emoji}
+                                {item.icon || item.emoji}
                             </div>
                             <div style={{ flex: 1, minWidth: 0 }}>
                                 <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#3C3C3C', marginBottom: '6px' }}>{item.title}</div>
