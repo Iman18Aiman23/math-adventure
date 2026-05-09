@@ -3,6 +3,7 @@ import { LOCALIZATION } from '../../utils/localization';
 import { useGameStateContext } from '../../App';
 import SpeechManager from '../../services/SpeechManager';
 import BMSpeakGame from './BMSpeakGame';
+import { BmSukuKataKvIcon, BmSukuKataKvkIcon, BmPhonicsIcon, BmNombor1100Icon, BmObjekBiasaIcon } from '../icons/BmPageIcons';
 
 /**
  * BMPage — Bahasa Melayu Speak & Play
@@ -15,31 +16,31 @@ import BMSpeakGame from './BMSpeakGame';
 const CATEGORIES = [
   {
     key: 'bm_kv',
-    emoji: '🗣️',
+    icon: <BmSukuKataKvIcon size={48} />,
     color: '#0EA5E9',
     gradient: 'linear-gradient(135deg, #0EA5E9, #38bdf8)',
   },
   {
     key: 'bm_kvk',
-    emoji: '🔤',
+    icon: <BmSukuKataKvkIcon size={48} />,
     color: '#7C3AED',
     gradient: 'linear-gradient(135deg, #7C3AED, #a78bfa)',
   },
   {
     key: 'en_long_vowels',
-    emoji: '📖',
+    icon: <BmPhonicsIcon size={48} />,
     color: '#F43F5E',
     gradient: 'linear-gradient(135deg, #F43F5E, #fb7185)',
   },
   {
     key: 'numbers',
-    emoji: '🔢',
+    icon: <BmNombor1100Icon size={48} />,
     color: '#F59E0B',
     gradient: 'linear-gradient(135deg, #F59E0B, #fbbf24)',
   },
   {
     key: 'common_objects',
-    emoji: '🎯',
+    icon: <BmObjekBiasaIcon size={48} />,
     color: '#10B981',
     gradient: 'linear-gradient(135deg, #10B981, #34d399)',
   },
@@ -116,7 +117,7 @@ export default function BMPage({ onBack, onHome, language }) {
               onClick={() => isSupported && setSelectedCategory(cat.key)}
               disabled={!isSupported}
             >
-              <span className="bm-cat-emoji" style={{ background: cat.gradient }}>{cat.emoji}</span>
+              <div className="bm-cat-emoji" style={{ background: cat.gradient, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{cat.icon}</div>
               <div className="bm-cat-info">
                 <span className="bm-cat-title">{t.categories[cat.key]?.title}</span>
                 <span className="bm-cat-desc">{t.categories[cat.key]?.desc}</span>
