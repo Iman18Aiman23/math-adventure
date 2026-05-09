@@ -219,7 +219,7 @@ function ProfilePlaceholder({ playerName, gameState, language, streak = 0 }) {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', padding: '1.25rem 1rem', maxWidth: '700px', margin: '0 auto' }}>
         {[
           { label: 'Total XP', value: gameState?.totalXP ?? 0, color: '#FFC800', emoji: '⭐' },
-          { label: language === 'bm' ? 'Syiling' : 'Coins',  value: gameState?.mathCoins ?? 0, color: '#1CB0F6', emoji: '🪙' },
+          { label: language === 'bm' ? 'Syiling' : 'Coins',  value: gameState?.mathCoins ?? 0, color: '#1CB0F6', emoji: '💰' },
           { label: 'Level',   value: gameState?.level ?? 1,   color: '#CE82FF', emoji: '🏆' },
           { label: language === 'bm' ? 'Hari Aktif' : 'Streak', value: streak, color: '#FF9600', emoji: '🔥' },
         ].map(stat => (

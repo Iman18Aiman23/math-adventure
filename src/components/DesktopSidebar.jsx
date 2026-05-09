@@ -1,5 +1,6 @@
 import React from 'react';
 import { LearnIcon, LeaderboardIcon, ProfileIcon, LanguageIcon } from './icons/SidebarIcons';
+import MascotIcon from './icons/MascotIcon';
 
 const SIDEBAR_TABS = [
   { id: 'learn',       icon: LearnIcon, label: { bm: 'Kursus',      eng: 'Course'       } },
@@ -15,8 +16,9 @@ export default function DesktopSidebar({
     <aside className="desktop-sidebar">
       {/* Logo */}
       <div className="sidebar-logo" onClick={onHome} style={{ cursor: 'pointer' }}>
-        {/* TODO: Replace with image at /images/mascot.png when ready */}
-        <span className="sidebar-logo-owl">🦉</span>
+        <div style={{ width: '48px', height: '48px', flexShrink: 0 }}>
+          <MascotIcon size={48} />
+        </div>
         <span>ImanCore Learning Hub</span>
       </div>
 
@@ -72,7 +74,7 @@ export default function DesktopSidebar({
           <span style={{ color: 'var(--duo-orange)' }}>0 Streak</span>
         </div>
         <div className="sidebar-stat-row">
-          <span>🪙</span>
+          <span>💰</span>
           <span style={{ color: 'var(--duo-blue)' }}>{gameState?.mathCoins ?? 0} Coins</span>
         </div>
       </div>

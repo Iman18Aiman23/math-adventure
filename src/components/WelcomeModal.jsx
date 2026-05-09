@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import MascotIcon from './icons/MascotIcon';
 
 export default function WelcomeModal({ onSave }) {
   const [name, setName] = useState('');
@@ -16,7 +17,9 @@ export default function WelcomeModal({ onSave }) {
   return (
     <div className="welcome-overlay">
       {/* Full-screen Duolingo onboarding */}
-      <div className="welcome-emoji">🦉</div>
+      <div className="welcome-emoji">
+        <MascotIcon size={120} />
+      </div>
 
       <div style={{ textAlign: 'center', maxWidth: '360px', width: '100%' }}>
         <h1 className="welcome-title">Selamat Datang!</h1>
