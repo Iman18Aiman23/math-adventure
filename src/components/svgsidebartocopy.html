@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidebar SVG Icons</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --navy: #4A6FA5;
+            --navy-light: #EEF2F7;
+            --gold: #FFD93D;
+            --gold-dark: #F4C430;
+            
+            --orange: #FFB347;
+            --orange-light: #FFF4E0;
+            --orange-dark: #E89F2C;
+            
+            --teal: #2EC4B6;
+            --teal-light: #E8FAF8;
+            --teal-dark: #1DA89B;
+            --peach: #FF9F1C;
+            
+            --sky: #5DADE2;
+            --sky-light: #EBF5FB;
+            --sky-dark: #3498DB;
+            --coral: #FF6B6B;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #FFF8F0;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        h1, .nav-label { font-family: 'Fredoka One', cursive; }
+
+        /* ========= Sidebar ========= */
+        .sidebar {
+            width: 100px;
+            min-height: 100vh;
+            background: #FFFFFF;
+            border-right: 2px solid #FFE8D0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 0;
+            gap: 12px;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.03);
+            z-index: 10;
+        }
+
+        .nav-btn {
+            width: 80px;
+            padding: 12px 4px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1),
+                        box-shadow 0.35s ease,
+                        background 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            border: none;
+            background: transparent;
+        }
+        .nav-btn:hover {
+            transform: translateY(-5px) scale(1.06);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .nav-btn:active {
+            transform: translateY(-1px) scale(0.95);
+            transition-duration: 0.12s;
+        }
+
+        /* ========= Animasi SVG (aktif hanya semasa hover) ========= */
+        @keyframes bounceUp {
+            0%, 100% { transform: translateY(0); }
+            40%      { transform: translateY(-8px); }
+            60%      { transform: translateY(-8px); }
+        }
+        @keyframes floatItem {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50%      { transform: translateY(-5px) rotate(5deg); }
+        }
+        @keyframes pulseStar {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50%      { transform: scale(1.3); opacity: 0.7; }
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25%      { transform: rotate(-7deg); }
+            75%      { transform: rotate(7deg); }
+        }
+        @keyframes blinkEyes {
+            0%, 92%, 100% { transform: scaleY(1); }
+            96%           { transform: scaleY(0.08); }
+        }
+        @keyframes floatBubble {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50%      { transform: translateY(-6px) scale(1.05); }
+        }
+        @keyframes swapBounce {
+            0%, 100% { transform: translateX(0); }
+            50%      { transform: translateX(5px); }
+        }
+        @keyframes swapBounceReverse {
+            0%, 100% { transform: translateX(0); }
+            50%      { transform: translateX(-5px); }
+        }
+        @keyframes jello {
+            0%   { transform: scale(1); }
+            20%  { transform: scale(0.94, 1.06); }
+            40%  { transform: scale(1.04, 0.96); }
+            60%  { transform: scale(0.98, 1.02); }
+            80%  { transform: scale(1.01, 0.99); }
+            100% { transform: scale(1); }
+        }
+
+        .svg-wrap {
+            width: 52px;
+            height: 52px;
+            margin: 0 auto 6px;
+        }
+
+        /* Animasi hanya semasa hover */
+        .nav-btn:hover .svg-wrap { animation: bounceUp 0.7s ease-in-out infinite; }
+        .nav-btn:hover .fl1 { animation: floatItem 1s ease-in-out infinite; }
+        .nav-btn:hover .fl2 { animation: floatItem 1s ease-in-out infinite 0.3s; }
+        .nav-btn:hover .fl3 { animation: floatItem 1s ease-in-out infinite 0.6s; }
+        .nav-btn:hover .ps  { animation: pulseStar 0.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+        .nav-btn:hover .ps2 { animation: pulseStar 0.8s ease-in-out infinite 0.4s; transform-box: fill-box; transform-origin: center; }
+        .nav-btn:hover .wg  { animation: wiggle 0.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center top; }
+        .nav-btn:hover .eyes{ animation: blinkEyes 2s ease-in-out infinite; transform-origin: center; }
+        .nav-btn:hover .bb  { animation: floatBubble 1.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+        .nav-btn:hover .bb2 { animation: floatBubble 1.2s ease-in-out infinite 0.4s; transform-box: fill-box; transform-origin: center; }
+        .nav-btn:hover .sw1 { animation: swapBounce 1s ease-in-out infinite; }
+        .nav-btn:hover .sw2 { animation: swapBounceReverse 1s ease-in-out infinite; }
+
+        .jello { animation: jello 0.6s ease !important; }
+
+        .nav-label {
+            font-size: 0.65rem;
+            text-align: center;
+            letter-spacing: 0.3px;
+            line-height: 1.2;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ========= Confetti mini ========= */
+        .confetti-piece {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* ========= Responsif ========= */
+        @media (max-width: 640px) {
+            .sidebar {
+                width: 100%;
+                min-height: auto;
+                flex-direction: row;
+                justify-content: space-around;
+                padding: 10px 0;
+                border-right: none;
+                border-top: 2px solid #FFE8D0;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                box-shadow: 0 -4px 15px rgba(0,0,0,0.03);
+            }
+            .nav-btn { width: 70px; padding: 8px 4px 6px; border-radius: 16px; }
+            .svg-wrap { width: 40px; height: 40px; }
+            .nav-label { font-size: 0.6rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== SIDEBAR NAV ==================== -->
+    <nav class="sidebar" role="navigation" aria-label="Menu utama">
+
+        <!-- ==================== 1. BELAJAR (Kursus / Graduation Cap) ==================== -->
+        <button class="nav-btn" style="background:var(--navy-light);color:var(--navy);"
+                onclick="popBtn(this,event)" aria-label="Belajar">
+            <div class="svg-wrap">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <!-- Papan atas topi -->
+                    <path d="M40,110 L100,80 L160,110 L100,140 Z" fill="var(--navy)"/>
+                    <!-- Badan topi -->
+                    <path d="M55,112 L55,130 C55,145 145,145 145,130 L145,112 L100,137 Z" fill="#3B5998"/>
+                    <!-- Kilauan -->
+                    <path d="M65,115 C65,125 75,130 80,125" fill="none" stroke="#6B8FC7" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+                    <!-- Tassel / Tali -->
+                    <g class="wg">
+                        <circle cx="140" cy="107" r="5" fill="var(--gold)"/>
+                        <line x1="140" y1="112" x2="135" y2="150" stroke="var(--gold-dark)" stroke-width="3" stroke-linecap="round"/>
+                        <rect x="130" y="148" width="10" height="18" rx="3" fill="var(--gold)"/>
+                    </g>
+                    <!-- Muka pada badan topi -->
+                    <g class="eyes">
+                        <circle cx="88" cy="125" r="4.5" fill="#FFF"/>
+                        <circle cx="88" cy="125" r="2.5" fill="#333"/>
+                        <circle cx="112" cy="125" r="4.5" fill="#FFF"/>
+                        <circle cx="112" cy="125" r="2.5" fill="#333"/>
+                        <circle cx="89" cy="124" r="1" fill="#FFF"/>
+                        <circle cx="113" cy="124" r="1" fill="#FFF"/>
+                    </g>
+                    <!-- Pipi -->
+                    <circle cx="78" cy="135" r="5" fill="#8FAEE0" opacity="0.5"/>
+                    <circle cx="122" cy="135" r="5" fill="#8FAEE0" opacity="0.5"/>
+                    <!-- Senyuman -->
+                    <path d="M92,135 Q100,143 108,135" fill="none" stroke="#FFF" stroke-width="2" stroke-linecap="round"/>
+                    <!-- Bintang ilmu -->
+                    <g class="ps"><polygon points="50,70 52,76 58,76 53,80 55,86 50,82 45,86 47,80 42,76 48,76" fill="var(--gold)"/></g>
+                    <g class="ps2"><polygon points="150,70 152,76 158,76 153,80 155,86 150,82 145,86 147,80 142,76 148,76" fill="var(--gold)"/></g>
+                </svg>
+            </div>
+            <div class="nav-label">Belajar</div>
+        </button>
+
+        <!-- ==================== 2. PAPAN JUARA ==================== -->
+        <button class="nav-btn" style="background:var(--orange-light);color:var(--orange-dark);"
+                onclick="popBtn(this,event)" aria-label="Papan Juara">
+            <div class="svg-wrap">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M70,60 L70,110 C70,135 130,135 130,110 L130,60 Z" fill="#FFD080"/>
+                    <path d="M60,45 L60,110 C60,145 140,145 140,110 L140,45 Z" fill="var(--orange)"/>
+                    <path d="M75,55 C72,75 74,95 80,105" fill="none" stroke="#FFE0A6" stroke-width="5" stroke-linecap="round" opacity="0.5"/>
+                    <path d="M60,65 C30,65 30,110 60,110" fill="none" stroke="var(--orange-dark)" stroke-width="8" stroke-linecap="round"/>
+                    <path d="M140,65 C170,65 170,110 140,110" fill="none" stroke="var(--orange-dark)" stroke-width="8" stroke-linecap="round"/>
+                    <rect x="85" y="135" width="30" height="12" rx="3" fill="var(--orange-dark)"/>
+                    <rect x="75" y="147" width="50" height="10" rx="4" fill="var(--orange-dark)"/>
+                    <g class="eyes">
+                        <circle cx="88" cy="90" r="6" fill="#333"/><circle cx="112" cy="90" r="6" fill="#333"/>
+                        <circle cx="89.5" cy="88.5" r="2.5" fill="#FFF"/><circle cx="113.5" cy="88.5" r="2.5" fill="#FFF"/>
+                    </g>
+                    <circle cx="78" cy="105" r="7" fill="var(--gold)" opacity="0.5"/><circle cx="122" cy="105" r="7" fill="var(--gold)" opacity="0.5"/>
+                    <path d="M92,104 Q100,116 108,104" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round"/>
+                    <g class="ps"><polygon points="100,15 105,28 118,28 108,36 112,50 100,42 88,50 92,36 82,28 95,28" fill="var(--gold)"/></g>
+                    <g class="ps2"><polygon points="45,40 46.5,45 51,45 47.5,48 48.5,53 45,50 41.5,53 42.5,48 39,45 43.5,45" fill="var(--gold)"/></g>
+                    <g class="fl1"><polygon points="155,40 156.5,45 161,45 157.5,48 158.5,53 155,50 151.5,53 152.5,48 149,45 153.5,45" fill="var(--gold)"/></g>
+                </svg>
+            </div>
+            <div class="nav-label">Papan Juara</div>
+        </button>
+
+        <!-- ==================== 3. PROFIL (ID Card / Badge) ==================== -->
+        <button class="nav-btn" style="background:var(--teal-light);color:var(--teal-dark);"
+                onclick="popBtn(this,event)" aria-label="Profil">
+            <div class="svg-wrap">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <!-- Klip kad atas -->
+                    <g class="fl1">
+                        <rect x="85" y="32" width="30" height="18" rx="4" fill="var(--teal)"/>
+                        <circle cx="100" cy="32" r="9" fill="var(--teal)"/>
+                        <circle cx="100" cy="32" r="5" fill="var(--teal-light)"/>
+                    </g>
+                    <!-- Badan Kad -->
+                    <rect x="50" y="45" width="100" height="120" rx="12" fill="#E0F7F5" stroke="var(--teal)" stroke-width="3"/>
+                    <!-- Avatar bulat -->
+                    <circle cx="100" cy="95" r="25" fill="var(--peach)"/>
+                    <!-- Rambut avatar -->
+                    <path d="M75,88 C75,68 125,68 125,88 C125,80 115,72 100,72 C85,72 75,80 75,88 Z" fill="#333"/>
+                    <!-- Muka pada avatar -->
+                    <g class="eyes">
+                        <circle cx="92" cy="92" r="3" fill="#333"/>
+                        <circle cx="108" cy="92" r="3" fill="#333"/>
+                        <circle cx="92.5" cy="91" r="1.2" fill="#FFF"/>
+                        <circle cx="108.5" cy="91" r="1.2" fill="#FFF"/>
+                    </g>
+                    <path d="M94,100 Q100,106 106,100" fill="none" stroke="#333" stroke-width="1.5" stroke-linecap="round"/>
+                    <!-- Garisan teks pada kad -->
+                    <line x1="70" y1="135" x2="130" y2="135" stroke="var(--teal)" stroke-width="4" stroke-linecap="round" opacity="0.5"/>
+                    <line x1="85" y1="148" x2="115" y2="148" stroke="var(--teal)" stroke-width="4" stroke-linecap="round" opacity="0.3"/>
+                    <!-- Bintang -->
+                    <g class="ps"><polygon points="45,55 46.5,60 51,60 47.5,63 48.5,68 45,65 41.5,68 42.5,63 39,60 43.5,60" fill="var(--gold)"/></g>
+                </svg>
+            </div>
+            <div class="nav-label">Profil</div>
+        </button>
+
+        <!-- ==================== 4. LANGUAGE SETTING (Globe + Switch Bubbles) ==================== -->
+        <button class="nav-btn" style="background:var(--sky-light);color:var(--sky-dark);"
+                onclick="popBtn(this,event)" aria-label="Language Setting">
+            <div class="svg-wrap">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <!-- Globe -->
+                    <g class="wg">
+                        <circle cx="100" cy="110" r="45" fill="var(--sky)"/>
+                        <ellipse cx="100" cy="110" rx="45" ry="15" fill="none" stroke="#87CEEB" stroke-width="1.5" opacity="0.6"/>
+                        <ellipse cx="100" cy="110" rx="45" ry="30" fill="none" stroke="#87CEEB" stroke-width="1.5" opacity="0.4"/>
+                        <ellipse cx="100" cy="110" rx="18" ry="45" fill="none" stroke="#87CEEB" stroke-width="1.5" opacity="0.5"/>
+                        <line x1="55" y1="110" x2="145" y2="110" stroke="#87CEEB" stroke-width="1.5" opacity="0.4"/>
+                    </g>
+                    <!-- Muka globe -->
+                    <g class="eyes">
+                        <circle cx="88" cy="108" r="4.5" fill="#333"/>
+                        <circle cx="112" cy="108" r="4.5" fill="#333"/>
+                        <circle cx="89.2" cy="106.5" r="1.8" fill="#FFF"/>
+                        <circle cx="113.2" cy="106.5" r="1.8" fill="#FFF"/>
+                    </g>
+                    <path d="M92,118 Q100,126 108,118" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+                    <!-- Buih EN -->
+                    <g class="bb sw1">
+                        <rect x="20" y="35" width="42" height="28" rx="8" fill="var(--coral)"/>
+                        <polygon points="50,63 55,72 45,63" fill="var(--coral)"/>
+                        <text x="41" y="54" font-size="13" fill="#FFF" text-anchor="middle" font-weight="bold" font-family="Fredoka One, sans-serif">EN</text>
+                    </g>
+                    <!-- Buih MS -->
+                    <g class="bb2 sw2">
+                        <rect x="138" y="45" width="42" height="28" rx="8" fill="var(--gold)"/>
+                        <polygon points="150,73 145,82 155,73" fill="var(--gold)"/>
+                        <text x="159" y="64" font-size="13" fill="#333" text-anchor="middle" font-weight="bold" font-family="Fredoka One, sans-serif">MS</text>
+                    </g>
+                    <!-- Bintang -->
+                    <g class="ps"><polygon points="30,85 31.5,90 36,90 32.5,93 33.5,98 30,95 26.5,98 27.5,93 24,90 28.5,90" fill="var(--gold)"/></g>
+                    <g class="ps2"><polygon points="170,95 171.5,100 176,100 172.5,103 173.5,108 170,105 166.5,108 167.5,103 164,100 168.5,100" fill="var(--coral)"/></g>
+                </svg>
+            </div>
+            <div class="nav-label">Language</div>
+        </button>
+
+    </nav>
+
+    <script>
+        /* ====== Kesan jello + confetti mini semasa klik ====== */
+        function popBtn(btn, e) {
+            btn.classList.remove('jello');
+            btn.offsetHeight; // reflow
+            btn.classList.add('jello');
+            setTimeout(() => btn.classList.remove('jello'), 600);
+
+            const rect = btn.getBoundingClientRect();
+            spawnConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        }
+
+        function spawnConfetti(x, y) {
+            const colors = ['#4A6FA5','#FFD93D','#2EC4B6','#5DADE2','#FF9F1C','#FF6B6B'];
+            for (let i = 0; i < 10; i++) {
+                const el = document.createElement('div');
+                el.className = 'confetti-piece';
+                const size = Math.random() * 6 + 3;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                Object.assign(el.style, {
+                    left: x + 'px', top: y + 'px',
+                    width: size + 'px', height: size + 'px',
+                    borderRadius: Math.random() > 0.5 ? '50%' : '2px',
+                    background: color
+                });
+                document.body.appendChild(el);
+
+                const angle = (Math.PI * 2 * i) / 10 + (Math.random() - 0.5) * 0.8;
+                const speed = Math.random() * 4 + 2;
+                let vx = Math.cos(angle) * speed;
+                let vy = Math.sin(angle) * speed - 3;
+                let px = 0, py = 0, opacity = 1, rot = 0;
+                const rotSpeed = (Math.random() - 0.5) * 12;
+
+                (function animate() {
+                    vy += 0.15;
+                    px += vx; py += vy;
+                    opacity -= 0.025;
+                    rot += rotSpeed;
+                    vx *= 0.98;
+                    el.style.transform = `translate(${px}px,${py}px) rotate(${rot}deg)`;
+                    el.style.opacity = Math.max(0, opacity);
+                    if (opacity > 0) requestAnimationFrame(animate);
+                    else el.remove();
+                })();
+            }
+        }
+
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('keydown', e => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    popBtn(btn, e);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

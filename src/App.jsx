@@ -14,6 +14,7 @@ import ColumnMathGame from './components/MathematicsPage/ColumnMathGame';
 import LevelUpToast from './components/LevelUpToast';
 import WelcomeModal from './components/WelcomeModal';
 import DesktopSidebar from './components/DesktopSidebar';
+import { LearnIcon, LeaderboardIcon, ProfileIcon, LanguageIcon } from './components/icons/SidebarIcons';
 import ReadingPage from './components/ReadingPage/ReadingPage';
 import { getMuted, setMuted, preloadSounds, unlockAudio } from './utils/soundManager';
 import { useGameState } from './hooks/useGameState';
@@ -53,9 +54,9 @@ function getActiveGameId(currentSubject, mathSubGame) {
 
 // Tab definitions (mobile bottom bar)
 const TABS = [
-  { id: 'learn',       icon: '📚', label: { bm: 'Belajar',  eng: 'Learn'    } },
-  { id: 'leaderboard', icon: '🏆', label: { bm: 'Ranking',  eng: 'Ranking'  } },
-  { id: 'profile',     icon: '👤', label: { bm: 'Profil',   eng: 'Profile'  } },
+  { id: 'learn',       icon: LearnIcon, label: { bm: 'Kursus',   eng: 'Course'   } },
+  { id: 'leaderboard', icon: LeaderboardIcon, label: { bm: 'Ranking',  eng: 'Ranking'  } },
+  { id: 'profile',     icon: ProfileIcon, label: { bm: 'Profil',   eng: 'Profile'  } },
 ];
 
 export default function App() {
@@ -178,16 +179,16 @@ export default function App() {
                   }
                 }}
               >
-                <span className="duo-tab-icon">{tab.icon}</span>
-                <span>{tab.label[language] || tab.label.bm}</span>
+                <span className="duo-tab-icon">{React.createElement(tab.icon)}</span>
+                <span className="duo-tab-label">{tab.label[language] || tab.label.bm}</span>
               </button>
             ))}
             <button
               className="duo-tab-item"
               onClick={handleToggleLang}
             >
-              <span className="duo-tab-icon">🌐</span>
-              <span>{language === 'bm' ? 'English' : 'BM'}</span>
+              <span className="duo-tab-icon"><LanguageIcon /></span>
+              <span className="duo-tab-label">{language === 'bm' ? 'English' : 'BM'}</span>
             </button>
           </div>
         )}

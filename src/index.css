@@ -204,6 +204,7 @@ button {
   padding-bottom: var(--safe-bottom);
   flex-shrink: 0;
   z-index: 100;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .duo-tab-item {
@@ -212,16 +213,23 @@ button {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 6px;
   background: transparent;
-  color: var(--text-light);
+  color: #999;
   font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  padding-top: 8px;
+  padding-top: 10px;
   position: relative;
-  transition: color 0.15s;
+  transition: color 0.2s ease;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+
+.duo-tab-item:active {
+  transform: scale(0.95);
 }
 
 .duo-tab-item.active {
@@ -231,15 +239,26 @@ button {
 .duo-tab-item.active::before {
   content: '';
   position: absolute;
-  top: 0; left: 20%; right: 20%;
-  height: 3px;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 4px;
   background: var(--duo-blue);
-  border-radius: 0 0 3px 3px;
+  border-radius: 0 0 4px 4px;
 }
 
 .duo-tab-icon {
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   line-height: 1;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.duo-tab-label {
+  font-size: 0.65rem;
+  font-weight: 700;
 }
 
 /* =============================================
@@ -379,9 +398,10 @@ button {
 .duo-home-flag {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-size: 0.8rem;
   font-weight: 800;
+  font-family: var(--font-body);
   color: var(--text-secondary);
   background: var(--bg-body);
   border: 2px solid var(--border-color);
@@ -398,24 +418,26 @@ button {
 .duo-home-stat {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   font-weight: 800;
-  font-size: 1rem;
+  font-size: 0.95rem;
+  font-family: var(--font-body);
 }
 
 .duo-course-card {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
   background: var(--bg-white);
-  border: 2px solid var(--border-color);
-  border-radius: var(--border-radius-lg);
-  padding: 1rem 1.25rem;
+  border: 2px solid;
+  border-radius: 20px;
+  padding: 1.25rem 1.5rem;
   width: 100%;
   text-align: left;
   cursor: pointer;
-  transition: transform 0.1s, border-color 0.15s;
-  border-bottom: 4px solid var(--border-color);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  border-bottom: 4px solid;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 .duo-course-card:active {
   transform: translateY(3px);
@@ -423,8 +445,8 @@ button {
 }
 
 .duo-course-icon {
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -434,27 +456,30 @@ button {
 
 .duo-course-info { flex: 1; min-width: 0; }
 .duo-course-title {
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   font-weight: 800;
   color: var(--text-primary);
-  margin-bottom: 4px;
+  margin-bottom: 0.5rem;
+  font-family: var(--font-heading);
 }
 .duo-course-desc {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
-  font-weight: 600;
-  margin-bottom: 6px;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+  font-family: var(--font-body);
 }
 .duo-course-progress-bar {
   height: 8px;
   background: var(--border-color);
-  border-radius: 4px;
+  border-radius: 6px;
   overflow: hidden;
 }
 .duo-course-progress-fill {
   height: 100%;
   background: var(--duo-green);
-  border-radius: 4px;
+  border-radius: 6px;
   transition: width 0.4s ease;
 }
 
