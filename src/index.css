@@ -1664,19 +1664,19 @@ button {
     border-radius: var(--border-radius-md);
     font-weight: 700;
     font-size: 0.95rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: #3C3C3C;
     background: transparent;
     transition: background 0.15s, color 0.15s;
     width: 100%;
     text-align: left;
   }
   .sidebar-item:hover {
-    background: rgba(255, 255, 255, 0.2);
-    color: #FFFFFF;
+    background: rgba(107, 203, 119, 0.15);
+    color: #2D4059;
   }
   .sidebar-item.active {
-    background: rgba(255, 255, 255, 0.25);
-    color: #FFFFFF;
+    background: rgba(107, 203, 119, 0.25);
+    color: #2D4059;
     font-weight: 800;
   }
   .sidebar-item-icon { font-size: 1.4rem; width: 32px; text-align: center; }
