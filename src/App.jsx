@@ -15,6 +15,7 @@ import LevelUpToast from './components/LevelUpToast';
 import WelcomeModal from './components/WelcomeModal';
 import DesktopSidebar from './components/DesktopSidebar';
 import { LearnIcon, LeaderboardIcon, ProfileIcon, LanguageIcon } from './components/icons/SidebarIcons';
+import MascotIcon from './components/icons/MascotIcon';
 import ReadingPage from './components/ReadingPage/ReadingPage';
 import { getMuted, setMuted, preloadSounds, unlockAudio } from './utils/soundManager';
 import { useGameState } from './hooks/useGameState';
@@ -212,7 +213,11 @@ function ProfilePlaceholder({ playerName, gameState, language, streak = 0 }) {
   return (
     <div style={{ flex: 1, overflowY: 'auto', background: '#f7f7f7' }}>
       <div style={{ background: '#fff', padding: '2rem 1.5rem', textAlign: 'center', borderBottom: '2px solid #E5E5E5' }}>
-        <div style={{ fontSize: '4rem', marginBottom: '0.5rem' }}>🦉</div>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.5rem' }}>
+          <div style={{ width: '80px', height: '80px' }}>
+            <MascotIcon size={80} />
+          </div>
+        </div>
         <h2 style={{ fontWeight: 900, fontSize: '1.4rem', color: '#3C3C3C', marginBottom: '4px' }}>{playerName || 'Player'}</h2>
         <p style={{ color: '#AFAFAF', fontWeight: 600, fontSize: '0.85rem' }}>Level {gameState?.level ?? 1} Explorer</p>
       </div>

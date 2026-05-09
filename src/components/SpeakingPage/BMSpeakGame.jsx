@@ -3,6 +3,7 @@ import { ArrowLeft, RefreshCw, SkipForward, X } from 'lucide-react';
 import SpeechManager from '../../services/SpeechManager';
 import { getShuffledItems, checkBilingualMatch } from '../../data/curriculum/index';
 import { useGameStateContext } from '../../App';
+import MascotIcon from '../icons/MascotIcon';
 import confetti from 'canvas-confetti';
 
 const ITEMS_PER_ROUND = 10;
@@ -263,7 +264,9 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
         </div>
 
         <div className="lesson-complete fade-in">
-          <div className="lesson-complete-mascot">🦉</div>
+          <div className="lesson-complete-mascot">
+            <MascotIcon size={100} />
+          </div>
           <h2 className="lesson-complete-title win">
             {language === 'bm' ? 'Tahniah! 🎉' : 'Well Done! 🎉'}
           </h2>
@@ -585,7 +588,7 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
       {/* Desktop: auto-listening, feedback drawer style */}
       {!isMobile && (phase === PHASE_CORRECT || phase === PHASE_WRONG || phase === PHASE_CROSSLANG) && (
         <div className={`feedback-drawer ${isCorrect ? 'correct' : 'wrong'}`}>
-          <div className="drawer-mascot">{isCorrect ? '🦉' : phase === PHASE_CROSSLANG ? '🔄' : '🦉'}</div>
+          <div className="drawer-mascot">{phase === PHASE_CROSSLANG ? '🔄' : <MascotIcon size={60} />}</div>
           <div className="drawer-content">
             <div className="drawer-label">
               {isCorrect ? (language === 'bm' ? 'Betul! Hebat!' : 'Correct! Great!') :
