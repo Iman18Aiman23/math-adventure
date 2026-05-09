@@ -2,6 +2,29 @@ import React from 'react';
 import { LearnIcon, LeaderboardIcon, ProfileIcon, LanguageIcon } from './icons/SidebarIcons';
 import MascotIcon from './icons/MascotIcon';
 
+const sidebarLogoStyles = `
+  .sidebar-logo-text {
+    font-size: 1.2rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #2D4059 0%, #4A6FA5 50%, #A3D8F4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 1px;
+    font-family: 'Fredoka One', cursive;
+    margin: 0;
+    line-height: 1.1;
+  }
+  .sidebar-subtitle-text {
+    color: #F4C430;
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    margin: 0;
+    text-transform: uppercase;
+  }
+`;
+
 const SIDEBAR_TABS = [
   { id: 'learn',       icon: LearnIcon, label: { bm: 'Kursus',      eng: 'Course'       } },
   { id: 'leaderboard', icon: LeaderboardIcon, label: { bm: 'Papan Juara', eng: 'Leaderboard'  } },
@@ -13,14 +36,19 @@ export default function DesktopSidebar({
   playerName, gameState, onHome
 }) {
   return (
-    <aside className="desktop-sidebar">
-      {/* Logo */}
-      <div className="sidebar-logo" onClick={onHome} style={{ cursor: 'pointer' }}>
-        <div style={{ width: '48px', height: '48px', flexShrink: 0 }}>
-          <MascotIcon size={48} />
+    <>
+      <style>{sidebarLogoStyles}</style>
+      <aside className="desktop-sidebar">
+        {/* Logo */}
+        <div className="sidebar-logo" onClick={onHome} style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ width: '56px', height: '56px', flexShrink: 0 }}>
+            <MascotIcon size={56} />
+          </div>
+          <div style={{ textAlign: 'center', width: '100%' }}>
+            <h1 className="sidebar-logo-text">ImanCore</h1>
+            <h2 className="sidebar-subtitle-text">Learning Hub</h2>
+          </div>
         </div>
-        <span>ImanCore Learning Hub</span>
-      </div>
 
       {/* Navigation */}
       <nav className="sidebar-nav">
@@ -78,6 +106,7 @@ export default function DesktopSidebar({
           <span style={{ color: 'var(--duo-blue)' }}>{gameState?.mathCoins ?? 0} Coins</span>
         </div>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }
