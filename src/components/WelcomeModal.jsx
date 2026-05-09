@@ -45,7 +45,7 @@ export default function WelcomeModal({ onSave }) {
         </div>
 
         {/* Logo Text */}
-        <div style={{ textAlign: 'center', marginTop: '1.5rem', marginBottom: '2rem' }}>
+        <div style={{ textAlign: 'center', marginTop: '0.5rem', marginBottom: '2.5rem' }}>
           <h1 className="welcome-logo-text">ImanCore</h1>
           <h2 className="welcome-subtitle-text">Learning Hub</h2>
         </div>
