@@ -10,7 +10,7 @@ export const baseAssessments = [
         difficulty: "Beginner",
         duration: "30 minutes",
         questions: 30,
-        status: "Pending",
+        status: "Completed"
     },
     {
         id: 2,
