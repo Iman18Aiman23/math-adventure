@@ -5,6 +5,9 @@ import { X, HelpCircle, Layers, Keyboard, MousePointerClick } from 'lucide-react
 import { MONTHS } from '../../utils/timeData';
 import { LOCALIZATION } from '../../utils/localization';
 import { playSound } from '../../utils/soundManager';
+import { useGameStateContext } from '../../App';
+import AppHeader from '../AppHeader';
+import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
 
 // ─── Web Speech API voice helper ───────────────────────────────────────────────
 function speak(text, { pitch = 1.4, rate = 1.05, volume = 1 } = {}) {
@@ -49,6 +52,7 @@ function StreakPopup({ streak, language, onClose }) {
 }
 
 export default function MonthsGame({ onBack, onHome, language }) {
+  const gameState = useGameStateContext();
   const t = LOCALIZATION[language].monthsGame;
   const bm = language === 'bm';
 
@@ -67,12 +71,24 @@ export default function MonthsGame({ onBack, onHome, language }) {
   const [showStreak, setShowStreak] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [showReference, setShowReference] = useState(false);
-  
+  const [hearts, setHearts] = useState(3);
+  const [gems, setGems] = useState(0);
+  const [stars, setStars] = useState(0);
+
   const [showLogicDropdown, setShowLogicDropdown] = useState(false);
   const [showInputDropdown, setShowInputDropdown] = useState(false);
 
   const inputRef = useRef(null);
   const feedbackTimer = useRef(null);
+
+  // Load game data from localStorage on mount
+  useEffect(() => {
+    const gameData = getGameData();
+    setHearts(gameData.hearts);
+    setGems(gameData.gems);
+    setStars(gameData.stars);
+    setStreak(gameData.streak);
+  }, []);
 
   // Pre-load voices
   useEffect(() => {
@@ -179,7 +195,11 @@ export default function MonthsGame({ onBack, onHome, language }) {
     setIsAnimating(true);
 
     if (isCorrect) {
-      const newStreak = streak + 1;
+      // Add correct answer reward
+      const gameData = addCorrectAnswer();
+      setGems(gameData.gems);
+      setStars(gameData.stars);
+      const newStreak = gameData.streak;
       setStreak(newStreak);
       setTotalAnswered(t => t + 1);
 
@@ -202,9 +222,13 @@ export default function MonthsGame({ onBack, onHome, language }) {
       }, 1200);
 
     } else {
-      setStreak(0);
       setTotalAnswered(t => t + 1);
       if (navigator.vibrate) navigator.vibrate([60, 30, 60]);
+
+      // Deduct heart on wrong answer (resets streak)
+      const gameData = deductHeart();
+      setHearts(gameData.hearts);
+      setStreak(gameData.streak);
 
       speak(
         bm ? `Cuba lagi! Jawapannya ialah ${currentQuestion.primaryAnswerDisplay}` : `Try again! The answer is ${currentQuestion.primaryAnswerDisplay}`,
@@ -251,28 +275,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
         <StreakPopup streak={streak} language={language} onClose={() => setShowStreak(false)} />
       )}
 
-      {/* ── Header ── */}
-      <div style={{ background: '#fff', borderBottom: '2px solid #E5E5E5', padding: '0 0.85rem', height: '60px', display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
-        <button onClick={onBack} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center', padding: '6px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>
-          <X size={22} />
-        </button>
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-          <span style={{ fontSize: '1.15rem' }}>🗓️</span>
-          <span style={{ fontWeight: 900, fontSize: '0.98rem', color: '#3C3C3C', letterSpacing: '0.01em' }}>
-            {t.gameTitle}
-          </span>
-        </div>
-        <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFF6D6', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#B58800', border: '1.5px solid #FFE08A' }}>
-            <span style={{ fontSize: '0.85rem' }}>⭐</span>
-            <span>{Math.min(totalAnswered, 99)}</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFEAD0', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#D9610B', border: '1.5px solid #FFC081' }}>
-            <span style={{ fontSize: '0.85rem' }}>🔥</span>
-            <span>{Math.min(streak, 99)}</span>
-          </div>
-        </div>
-      </div>
+      <AppHeader onBack={onBack} gameState={gameState} language={language} hearts={hearts} gems={gems} stars={stars} />
 
       {/* ── Secondary Modes Row ── */}
       <div style={{ display: 'flex', gap: '10px', padding: '0 1rem', margin: '14px 0 8px 0', justifyContent: 'center' }}>

@@ -6,7 +6,9 @@ import { JAWI_TOPICS } from '../../utils/jawiWordsData';
 import { playSound, toggleMute, getMuted } from '../../utils/soundManager';
 import { LOCALIZATION } from '../../utils/localization';
 import GameHeader from '../GameHeader';
-import { GameStateContext } from '../../App';
+import AppHeader from '../AppHeader';
+import { GameStateContext, useGameStateContext } from '../../App';
+import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
 
 const STREAK_MILESTONE = 10;
 
@@ -37,7 +39,7 @@ function StreakPopup({ streak, language, onClose }) {
 
 export default function Jawi100WordsGame({ onBack, onHome, language }) {
     const t = LOCALIZATION[language].jawiGames;
-    const gameState = useContext(GameStateContext);
+    const gameState = useGameStateContext();
 
     // Get the appropriate message for the current streak
     const getStreakMessage = (streakValue) => {
@@ -71,7 +73,19 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
     const [showStreakPopup, setShowStreakPopup] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
     const [showImage, setShowImage] = useState(false);
+    const [hearts, setHearts] = useState(3);
+    const [gems, setGems] = useState(0);
+    const [stars, setStars] = useState(0);
     const inputRef = useRef(null);
+
+    // Load game data from localStorage on mount
+    useEffect(() => {
+      const gameData = getGameData();
+      setHearts(gameData.hearts);
+      setGems(gameData.gems);
+      setStars(gameData.stars);
+      setStreak(gameData.streak);
+    }, []);
 
     // --- Helpers ---
 
@@ -144,7 +158,12 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
             setScore(s => s + 10);
             setFeedback('correct');
             if (gameState?.addWin) gameState.addWin(10);
-            const newStreak = streak + 1;
+
+            // Add correct answer reward
+            const gameData = addCorrectAnswer();
+            setGems(gameData.gems);
+            setStars(gameData.stars);
+            const newStreak = gameData.streak;
             setStreak(newStreak);
 
             if (newStreak > 0 && newStreak % STREAK_MILESTONE === 0) {
@@ -162,9 +181,13 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
             }
         } else {
             setFeedback('incorrect');
-            setStreak(0);
             playSound('wrong');
             setIsAnimating(true);
+
+            // Deduct heart on wrong answer (resets streak)
+            const gameData = deductHeart();
+            setHearts(gameData.hearts);
+            setStreak(gameData.streak);
             // Wait for user to click Next
         }
     };
@@ -296,28 +319,7 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#fff' }}>
-            {/* ── Header matching Practice Problems style ── */}
-            <div style={{ background: '#fff', borderBottom: '2px solid #E5E5E5', padding: '0 0.85rem', height: '60px', display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
-                <button onClick={() => setLocalGameState('setup')} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center', padding: '6px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>
-                    <X size={22} />
-                </button>
-                <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                    <span style={{ fontSize: '1.15rem' }}>📖</span>
-                    <span style={{ fontWeight: 900, fontSize: '0.98rem', color: '#3C3C3C', letterSpacing: '0.01em' }}>
-                        {t.wordsTitle}
-                    </span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFF6D6', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#B58800', border: '1.5px solid #FFE08A' }}>
-                        <span style={{ fontSize: '0.85rem' }}>⭐</span>
-                        <span>{Math.floor(streak / STREAK_MILESTONE) * 10}</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFEAD0', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#D9610B', border: '1.5px solid #FFC081' }}>
-                        <span style={{ fontSize: '0.85rem' }}>🔥</span>
-                        <span>{streak}</span>
-                    </div>
-                </div>
-            </div>
+            <AppHeader onBack={() => setLocalGameState('setup')} gameState={gameState} language={language} hearts={hearts} gems={gems} stars={stars} />
 
             {/* Content area */}
             <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '1.25rem 1rem', gap: '1.25rem' }}>

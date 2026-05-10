@@ -159,6 +159,72 @@ export function ProfileIcon() {
   );
 }
 
+export function AchievementIcon() {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <svg
+      viewBox="0 0 200 200"
+      width="52"
+      height="52"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{ cursor: 'pointer' }}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <style>{`
+          @keyframes sparkle { 0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; } 50% { transform: scale(1.3) rotate(15deg); opacity: 0.7; } }
+          @keyframes floatMedal { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-6px) rotate(5deg); } }
+          @keyframes blinkEyes { 0%, 92%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.08); } }
+          .svg-hover .sp1 { animation: sparkle 0.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+          .svg-hover .sp2 { animation: sparkle 0.6s ease-in-out infinite 0.3s; transform-box: fill-box; transform-origin: center; }
+          .svg-hover .fm { animation: floatMedal 1.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+          .svg-hover .eyes { animation: blinkEyes 2s ease-in-out infinite; transform-origin: center; }
+        `}</style>
+      </defs>
+      <g className={isHovered ? 'svg-hover' : ''}>
+        {/* Ribbon Left */}
+        <rect x="40" y="20" width="18" height="70" rx="4" fill="#FF6B6B"/>
+        {/* Ribbon Right */}
+        <rect x="142" y="20" width="18" height="70" rx="4" fill="#FF6B6B"/>
+        {/* Medal Body - Floating */}
+        <g className="fm">
+          {/* Outer Circle */}
+          <circle cx="100" cy="95" r="48" fill="#FFD93D" stroke="#F4C430" strokeWidth="3"/>
+          {/* Inner Circle */}
+          <circle cx="100" cy="95" r="40" fill="#FFF8DC"/>
+          {/* Inner Glow */}
+          <circle cx="100" cy="95" r="35" fill="none" stroke="#FFE5A6" strokeWidth="2" opacity="0.6"/>
+          {/* Trophy/Badge Shape */}
+          <path d="M85,80 L115,80 L115,110 C115,125 100,130 100,130 C100,130 85,125 85,110 Z" fill="#FF9500"/>
+          {/* Trophy Shine */}
+          <ellipse cx="100" cy="85" rx="12" ry="8" fill="#FFD93D" opacity="0.6"/>
+        </g>
+        {/* Eyes on Medal */}
+        <g className="eyes">
+          <circle cx="92" cy="95" r="3.5" fill="#333"/>
+          <circle cx="108" cy="95" r="3.5" fill="#333"/>
+          <circle cx="92.8" cy="93.5" r="1.2" fill="#FFF"/>
+          <circle cx="108.8" cy="93.5" r="1.2" fill="#FFF"/>
+        </g>
+        {/* Smile */}
+        <path d="M94,105 Q100,110 106,105" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round"/>
+        {/* Sparkles */}
+        <g className="sp1"><polygon points="50,50 51.5,55 56,55 52.5,58 53.5,63 50,60 46.5,63 47.5,58 44,55 48.5,55" fill="#FFD93D"/></g>
+        <g className="sp2"><polygon points="150,60 151.5,65 156,65 152.5,68 153.5,73 150,70 146.5,73 147.5,68 144,65 148.5,65" fill="#FF6B6B"/></g>
+        {/* Crown on top */}
+        <g>
+          <polygon points="100,50 92,65 96,65 88,80 112,80 104,65 108,65" fill="#FFD93D" stroke="#F4C430" strokeWidth="1.5"/>
+          <circle cx="88" cy="62" r="4" fill="#FF6B6B"/>
+          <circle cx="100" cy="55" r="5" fill="#FF6B6B"/>
+          <circle cx="112" cy="62" r="4" fill="#FF6B6B"/>
+        </g>
+      </g>
+    </svg>
+  );
+}
+
 export function LanguageIcon() {
   const [isHovered, setIsHovered] = useState(false);
 

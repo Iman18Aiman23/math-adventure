@@ -3,6 +3,8 @@ import { readingData } from '../../data/curriculum/readingData';
 import { ChevronLeft, ChevronRight, Volume2, HelpCircle, ArrowLeft } from 'lucide-react';
 import { playHoverSound, playSound } from '../../utils/soundManager';
 import SpeechManager from '../../services/SpeechManager';
+import { useGameStateContext } from '../../App';
+import AppHeader from '../AppHeader';
 import KVLearningPage from './KVLearningPage';
 import KVKLearningPage from './KVKLearningPage';
 
@@ -24,6 +26,7 @@ const LEVEL_THEMES = {
 const getTheme = (level) => LEVEL_THEMES[level] || LEVEL_THEMES[1];
 
 export default function ReadingPage({ onBack, language }) {
+  const gameState = useGameStateContext();
   // ── State ─────────────────────────────────────────────────────────────
   const [selectedLevel, setSelectedLevel] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -107,20 +110,7 @@ export default function ReadingPage({ onBack, language }) {
   if (!selectedLevel) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
-        {/* Header */}
-        <div style={{
-          background: '#fff', borderBottom: '2px solid #E5E5E5',
-          padding: '0 1rem', height: '56px',
-          display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0,
-        }}>
-          <button onClick={onBack} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center', fontSize: '1.3rem' }}>
-            ←
-          </button>
-          <div style={{ flex: 1, textAlign: 'center', fontWeight: 900, fontSize: '1rem', color: '#3C3C3C' }}>
-            📖 {language === 'bm' ? 'Pilih Tahap' : 'Select Level'}
-          </div>
-          <div style={{ width: 24 }} />
-        </div>
+        <AppHeader onBack={onBack} gameState={gameState} language={language} />
 
         {/* Scrollable content */}
         <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 1rem' }}>

@@ -2,6 +2,9 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { playSound } from '../../utils/soundManager';
+import { useGameStateContext } from '../../App';
+import AppHeader from '../AppHeader';
+import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
 
 const STREAK_MILESTONE = 10;
 
@@ -454,6 +457,7 @@ function computeMultiplicationInfo(prob, maxLen) {
 }
 
 export default function ColumnMathGame({ onBack, language }) {
+  const gameState = useGameStateContext();
   const bm = language === 'bm';
   const isDesktop = useIsDesktop();
 
@@ -500,8 +504,20 @@ export default function ColumnMathGame({ onBack, language }) {
   const [partial1Submitted,    setPartial1Submitted]    = useState(new Set());
   const [partial2Submitted,    setPartial2Submitted]    = useState(new Set());
   const [answerSubmitted,      setAnswerSubmitted]      = useState(new Set());
+  const [hearts,               setHearts]               = useState(3);
+  const [gems,                 setGems]                 = useState(0);
+  const [stars,                setStars]                = useState(0);
 
   const inputRefs            = useRef([]);
+
+  // Load game data from localStorage on mount
+  useEffect(() => {
+    const gameData = getGameData();
+    setHearts(gameData.hearts);
+    setGems(gameData.gems);
+    setStars(gameData.stars);
+    setStreak(gameData.streak);
+  }, []);
   const topRowRefs           = useRef([]);
   const partial1Refs         = useRef([]);
   const partial2Refs         = useRef([]);
@@ -621,8 +637,14 @@ export default function ColumnMathGame({ onBack, language }) {
       setStatus('correct');
       setScore(s => s + 10);
       setTotalAnswered(t => t + 1);
-      const newStreak = streak + 1;
+
+      // Add correct answer reward
+      const gameData = addCorrectAnswer();
+      setGems(gameData.gems);
+      setStars(gameData.stars);
+      const newStreak = gameData.streak;
       setStreak(newStreak);
+
       if (newStreak % STREAK_MILESTONE === 0) {
         playSound('streak');
         confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
@@ -637,9 +659,13 @@ export default function ColumnMathGame({ onBack, language }) {
       }
     } else {
       setStatus('wrong');
-      setStreak(0);
       playSound('wrong');
       if (navigator.vibrate) navigator.vibrate([60, 30, 60]);
+
+      // Deduct heart on wrong answer (resets streak)
+      const gameData = deductHeart();
+      setHearts(gameData.hearts);
+      setStreak(gameData.streak);
     }
   }, [problem, streak, partial1Inputs, partial2Inputs, newProblem]);
 
@@ -1376,28 +1402,7 @@ export default function ColumnMathGame({ onBack, language }) {
         </div>
       )}
 
-      {/* Header */}
-      <div style={{ background: '#fff', borderBottom: '2px solid #E5E5E5', padding: '0 0.85rem', height: '60px', display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
-        <button onClick={onBack} className="cmg-btn" style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center', padding: '6px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>
-          <ArrowLeft size={22} />
-        </button>
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-          <span style={{ fontSize: '1.15rem' }}>📐</span>
-          <span style={{ fontWeight: 900, fontSize: '0.98rem', color: '#3C3C3C', letterSpacing: '0.01em' }}>
-            {bm ? 'Soalan Lazim' : 'Practice Problems'}
-          </span>
-        </div>
-        <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFF6D6', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#B58800', border: '1.5px solid #FFE08A' }}>
-            <span style={{ fontSize: '0.85rem' }}>⭐</span>
-            <span>{score}</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFEAD0', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#D9610B', border: '1.5px solid #FFC081' }}>
-            <span style={{ fontSize: '0.85rem' }}>🔥</span>
-            <span>{streak}</span>
-          </div>
-        </div>
-      </div>
+      <AppHeader onBack={onBack} gameState={gameState} language={language} hearts={hearts} gems={gems} stars={stars} />
 
       <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: isDesktop ? '0.75rem 1.5rem 1rem' : '1.25rem 1rem', gap: isDesktop ? '0.65rem' : '1.25rem' }}>
 

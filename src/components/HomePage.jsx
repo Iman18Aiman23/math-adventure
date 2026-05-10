@@ -1,8 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { LOCALIZATION } from '../utils/localization';
 import { GameStateContext } from '../App';
 import { playHoverSound } from '../utils/soundManager';
 import { ReadingIcon, SpeakingIcon, JawiIcon, MathIcon } from './icons/CourseIcons';
+import AppHeader from './AppHeader';
+import { getGameData } from '../utils/gameStatsManager';
 
 const ICON_MAP = {
   reading: ReadingIcon,
@@ -50,32 +52,22 @@ const COURSES = [
   },
 ];
 
-export default function HomePage({ onSelectSubject, language, playerName, gameState }) {
-  const streak = gameState?.streak ?? 0;
-  const hearts = 5;
+export default function HomePage({ onSelectSubject, language, playerName, gameState, streak = 0 }) {
+  const [hearts, setHearts] = useState(3);
+  const [gems, setGems] = useState(0);
+  const [stars, setStars] = useState(0);
+
+  // Load game data from localStorage on mount
+  useEffect(() => {
+    const gameData = getGameData();
+    setHearts(gameData.hearts);
+    setGems(gameData.gems);
+    setStars(gameData.stars);
+  }, []);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#fff' }}>
-      {/* Duolingo-style Top Header */}
-      <div className="duo-home-header">
-        <div className="duo-home-flag">
-          🇲🇾 <span>{language === 'bm' ? 'Bahasa Malaysia' : 'Malaysia'}</span>
-        </div>
-        <div className="duo-home-stats">
-          <div className="duo-home-stat" style={{ color: '#FF9600' }}>
-            <span style={{ fontSize: '1.4rem' }}>🔥</span>
-            <span>{streak}</span>
-          </div>
-          <div className="duo-home-stat" style={{ color: '#FF4B4B' }}>
-            <span style={{ fontSize: '1.4rem' }}>❤️</span>
-            <span>{hearts}</span>
-          </div>
-          <div className="duo-home-stat" style={{ color: '#CE82FF' }}>
-            <span style={{ fontSize: '1.4rem' }}>💎</span>
-            <span>{gameState?.mathCoins ?? 0}</span>
-          </div>
-        </div>
-      </div>
+      <AppHeader onBack={() => {}} gameState={gameState} language={language} hearts={hearts} gems={gems} stars={stars} />
 
       {/* Scrollable content */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 1.25rem' }}>

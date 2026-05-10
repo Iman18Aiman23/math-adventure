@@ -4,6 +4,7 @@ import { useGameStateContext } from '../../App';
 import SpeechManager from '../../services/SpeechManager';
 import BMSpeakGame from './BMSpeakGame';
 import { BmSukuKataKvIcon, BmSukuKataKvkIcon, BmPhonicsIcon, BmNombor1100Icon, BmObjekBiasaIcon } from '../icons/BmPageIcons';
+import AppHeader from '../AppHeader';
 
 /**
  * BMPage — Bahasa Melayu Speak & Play
@@ -48,6 +49,7 @@ const CATEGORIES = [
 
 export default function BMPage({ onBack, onHome, language }) {
   const t = LOCALIZATION[language].bmPage;
+  const gameState = useGameStateContext();
 
   const [selectedCategory, setSelectedCategory] = useState(null);
   const isSupported = SpeechManager.isSupported();
@@ -67,20 +69,7 @@ export default function BMPage({ onBack, onHome, language }) {
   // ── Category Selection ─────────────────────────────────────────────────────
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
-      {/* Sub-header */}
-      <div style={{
-        background: '#fff', borderBottom: '2px solid #E5E5E5',
-        padding: '0 1rem', height: '56px',
-        display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0,
-      }}>
-        <button onClick={onBack} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center', fontSize: '1.3rem' }}>
-          ←
-        </button>
-        <div style={{ flex: 1, textAlign: 'center', fontWeight: 900, fontSize: '1rem', color: '#3C3C3C' }}>
-          🗣️ {t.title}
-        </div>
-        <div style={{ width: 24 }} />
-      </div>
+      <AppHeader onBack={onBack} gameState={gameState} language={language} />
 
       <div style={{ flex: 1, overflowY: 'auto' }}>
         {/* Hero */}

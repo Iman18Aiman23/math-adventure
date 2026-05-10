@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
+import { useGameStateContext } from '../../App';
+import AppHeader from '../AppHeader';
 
 const OPERATIONS = [
   { id: 'add',      emoji: '➕', labelBm: 'Tambah',  labelEn: 'Addition',       color: '#00DD5F', dark: '#00AA40', light: '#C8FFE0' },
@@ -24,6 +26,7 @@ const INPUT_MODES = [
 const NUMBERS = Array.from({length: 9}, (_, i) => i + 1);
 
 export default function GameMenu({ onStart, onBack, onHome, language }) {
+  const gameState = useGameStateContext();
   const [selOp,    setSelOp]    = useState(null);
   const [selNums,  setSelNums]  = useState([]);
   const [selDiff,  setSelDiff]  = useState(null);
@@ -265,14 +268,7 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
 
       `}</style>
 
-      <div className="math-header">
-        <button className="math-back-btn" onClick={onBack}>
-          <ArrowLeft size={24} />
-        </button>
-        <div className="math-header-title">
-          {bm ? 'Operasi Matematik' : 'Math Operations'}
-        </div>
-      </div>
+      <AppHeader onBack={onBack} gameState={gameState} language={language} />
 
       <div className="math-scroll-area">
 

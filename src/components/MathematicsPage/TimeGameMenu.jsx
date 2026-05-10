@@ -1,6 +1,8 @@
 import React from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { LOCALIZATION } from '../../utils/localization';
+import { useGameStateContext } from '../../App';
+import AppHeader from '../AppHeader';
 
 const TIME_GAMES = [
   { id: 'month-learning', emoji: '📅', iconBg: '#EDD9FF', iconColor: '#CE82FF', titleKey: 'monthLearning', descKey: 'monthLearningDesc' },
@@ -10,29 +12,11 @@ const TIME_GAMES = [
 
 export default function TimeGameMenu({ onStart, onBack, onHome, language }) {
   const t = LOCALIZATION[language].time;
+  const gameState = useGameStateContext();
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
-      {/* Header */}
-      <div style={{
-        background: 'linear-gradient(135deg, #FFFFFF 0%, #FFF5E6 100%)',
-        borderBottom: '3px solid #FFD700',
-        padding: '0 1rem',
-        height: '56px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0.75rem',
-        flexShrink: 0,
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-      }}>
-        <button onClick={onBack} style={{ background: 'transparent', color: '#FF6B6B', display: 'flex', alignItems: 'center', fontWeight: 'bold' }}>
-          <ArrowLeft size={24} />
-        </button>
-        <div style={{ flex: 1, textAlign: 'center', fontWeight: 900, fontSize: '1.3rem', color: '#FF6B6B' }}>
-          🕐 {t.title}
-        </div>
-        <div style={{ width: 24 }} />
-      </div>
+      <AppHeader onBack={onBack} gameState={gameState} language={language} />
 
       {/* Content */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 1rem' }}>

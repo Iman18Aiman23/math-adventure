@@ -1,5 +1,5 @@
 import React from 'react';
-import { LearnIcon, LeaderboardIcon, ProfileIcon, LanguageIcon } from './icons/SidebarIcons';
+import { LearnIcon, LeaderboardIcon, ProfileIcon, AchievementIcon, LanguageIcon } from './icons/SidebarIcons';
 import MascotIcon from './icons/MascotIcon';
 
 const sidebarLogoStyles = `
@@ -29,6 +29,7 @@ const SIDEBAR_TABS = [
   { id: 'learn',       icon: LearnIcon, label: { bm: 'Kursus',      eng: 'Course'       } },
   { id: 'leaderboard', icon: LeaderboardIcon, label: { bm: 'Papan Juara', eng: 'Leaderboard'  } },
   { id: 'profile',     icon: ProfileIcon, label: { bm: 'Profil',      eng: 'Profile'      } },
+  { id: 'achievement', icon: AchievementIcon, label: { bm: 'Pencapaian',   eng: 'Achievement'  } },
 ];
 
 export default function DesktopSidebar({

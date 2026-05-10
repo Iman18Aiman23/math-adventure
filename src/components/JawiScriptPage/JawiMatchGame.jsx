@@ -4,9 +4,11 @@ import clsx from 'clsx';
 import confetti from 'canvas-confetti';
 import { LOCALIZATION } from '../../utils/localization';
 import GameHeader from '../GameHeader';
+import AppHeader from '../AppHeader';
 import { JAWI_ALPHABET } from '../../utils/jawiData';
 import { Trophy, Star, RefreshCw, ArrowLeft, X } from 'lucide-react';
-import { GameStateContext } from '../../App';
+import { GameStateContext, useGameStateContext } from '../../App';
+import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
 
 const CARD_COLORS = [
     '#FF6B6B', // Red
@@ -63,7 +65,7 @@ const JawiSelectionGrid = ({ selected, onToggle, onSelectAll, onClearAll, t }) =
 
 export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
     const t = LOCALIZATION[language].jawiGames;
-    const gameState = useContext(GameStateContext);
+    const gameState = useGameStateContext();
     const [localGameState, setLocalGameState] = useState('setup'); // 'setup' | 'playing' | 'won'
     const [selectedAlphabets, setSelectedAlphabets] = useState([]);
     const [cards, setCards] = useState([]);
@@ -71,6 +73,19 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
     const [matched, setMatched] = useState([]); // pairs of matched IDs
     const [moves, setMoves] = useState(0);
     const [isLock, setIsLock] = useState(false);
+    const [hearts, setHearts] = useState(3);
+    const [gems, setGems] = useState(0);
+    const [stars, setStars] = useState(0);
+    const [streak, setStreak] = useState(0);
+
+    // Load game data from localStorage on mount
+    useEffect(() => {
+      const gameData = getGameData();
+      setHearts(gameData.hearts);
+      setGems(gameData.gems);
+      setStars(gameData.stars);
+      setStreak(gameData.streak);
+    }, []);
 
     const toggleAlphabet = (item) => {
         setSelectedAlphabets(prev => {
@@ -141,6 +156,12 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
                 playSound('correct');
                 if (gameState?.addWin) gameState.addWin(10);
 
+                // Add gem on correct match
+                const gameData = addCorrectAnswer();
+                setGems(gameData.gems);
+                setStars(gameData.stars);
+                setStreak(gameData.streak);
+
                 if (matched.length + 1 === selectedAlphabets.length) {
                     setLocalGameState('won');
                     confetti({
@@ -155,6 +176,11 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
                     setFlipped([]);
                     setIsLock(false);
                 }, 1000);
+
+                // Deduct heart on wrong match (resets streak)
+                const gameData = deductHeart();
+                setHearts(gameData.hearts);
+                setStreak(gameData.streak);
             }
         }
     };
@@ -230,24 +256,7 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#fff' }}>
-            {/* Header */}
-            <div style={{ background: '#fff', borderBottom: '2px solid #E5E5E5', padding: '0 0.85rem', height: '60px', display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
-                <button onClick={onBack} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center', padding: '6px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>
-                    <X size={22} />
-                </button>
-                <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                    <span style={{ fontSize: '1.15rem' }}>🎮</span>
-                    <span style={{ fontWeight: 900, fontSize: '0.98rem', color: '#3C3C3C', letterSpacing: '0.01em' }}>
-                        {t.matchTitle}
-                    </span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFF6D6', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#B58800', border: '1.5px solid #FFE08A' }}>
-                        <span style={{ fontSize: '0.85rem' }}>📊</span>
-                        <span>{Math.min(moves, 99)}</span>
-                    </div>
-                </div>
-            </div>
+            <AppHeader onBack={onBack} gameState={gameState} language={language} hearts={hearts} gems={gems} stars={stars} />
 
             {/* Content area */}
             <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '1.25rem 1rem', gap: '1.25rem' }}>

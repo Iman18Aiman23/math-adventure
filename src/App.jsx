@@ -17,9 +17,12 @@ import DesktopSidebar from './components/DesktopSidebar';
 import { LearnIcon, LeaderboardIcon, ProfileIcon, LanguageIcon } from './components/icons/SidebarIcons';
 import MascotIcon from './components/icons/MascotIcon';
 import ReadingPage from './components/ReadingPage/ReadingPage';
-import { getMuted, setMuted, preloadSounds, unlockAudio } from './utils/soundManager';
+import HeartShopModal from './components/HeartShopModal';
+import AchievementPage from './components/AchievementPage';
+import { getMuted, setMuted, preloadSounds, unlockAudio, playHoverSound } from './utils/soundManager';
 import { useGameState } from './hooks/useGameState';
 import { loadPlayerName, savePlayerName, recordLogin, calcStreak } from './services/storageService';
+import { getGameData } from './utils/gameStatsManager';
 
 // ── Context ──────────────────────────────────────────────────────────────────
 export const GameStateContext = createContext(null);
@@ -108,6 +111,7 @@ export default function App() {
   const renderContent = () => {
     if (activeTab === 'leaderboard') return <LeaderboardPlaceholder language={language} />;
     if (activeTab === 'profile')     return <ProfilePlaceholder playerName={playerName} gameState={gameState} language={language} streak={streak} />;
+    if (activeTab === 'achievement') return <AchievementPage onBack={handleBackToHome} onHome={handleBackToHome} language={language} gameState={gameState} />;
 
     switch (currentSubject) {
       case 'math':
@@ -134,7 +138,7 @@ export default function App() {
       case 'reading':
         return <ReadingPage onBack={handleBackToHome} language={language} />;
       default:
-        return <HomePage onSelectSubject={setCurrentSubject} language={language} playerName={playerName} gameState={gameState} />;
+        return <HomePage onSelectSubject={setCurrentSubject} language={language} playerName={playerName} gameState={gameState} streak={streak} />;
     }
   };
 
@@ -210,6 +214,16 @@ function LeaderboardPlaceholder({ language }) {
 }
 
 function ProfilePlaceholder({ playerName, gameState, language, streak = 0 }) {
+  // Load game data from localStorage
+  const gameData = getGameData();
+  const totalXP = gameData.stars; // Each star = 1 XP
+  const gems = gameData.gems;
+  const hearts = gameData.hearts;
+  const [isHeartShopOpen, setIsHeartShopOpen] = useState(false);
+
+  const openHeartShop = () => setIsHeartShopOpen(true);
+  const closeHeartShop = () => setIsHeartShopOpen(false);
+
   return (
     <div style={{ flex: 1, overflowY: 'auto', background: '#f7f7f7' }}>
       <div style={{ background: '#fff', padding: '2rem 1.5rem', textAlign: 'center', borderBottom: '2px solid #E5E5E5' }}>
@@ -223,18 +237,57 @@ function ProfilePlaceholder({ playerName, gameState, language, streak = 0 }) {
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', padding: '1.25rem 1rem', maxWidth: '700px', margin: '0 auto' }}>
         {[
-          { label: 'Total XP', value: gameState?.totalXP ?? 0, color: '#FFC800', emoji: '⭐' },
-          { label: language === 'bm' ? 'Syiling' : 'Coins',  value: gameState?.mathCoins ?? 0, color: '#1CB0F6', emoji: '💰' },
-          { label: 'Level',   value: gameState?.level ?? 1,   color: '#CE82FF', emoji: '🏆' },
           { label: language === 'bm' ? 'Hari Aktif' : 'Streak', value: streak, color: '#FF9600', emoji: '🔥' },
-        ].map(stat => (
-          <div key={stat.label} style={{ background: '#fff', border: '2px solid #E5E5E5', borderRadius: '16px', padding: '1rem', textAlign: 'center' }}>
-            <div style={{ fontSize: '1.8rem', marginBottom: '4px' }}>{stat.emoji}</div>
-            <div style={{ fontSize: '1.4rem', fontWeight: 900, color: stat.color }}>{stat.value}</div>
-            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#AFAFAF', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{stat.label}</div>
-          </div>
-        ))}
+          { label: 'Level',   value: gameState?.level ?? 1,   color: '#CE82FF', emoji: '🏆' },
+          { label: language === 'bm' ? 'Nyawa' : 'Hearts', value: hearts, color: '#FF4B4B', emoji: '❤️' },
+          { label: 'Stars', value: totalXP, color: '#FFC800', emoji: '⭐' },
+          { label: language === 'bm' ? 'Permata' : 'Gems', value: gems, color: '#CE82FF', emoji: '💎'},
+        ].map(stat => {
+          const isClickable = stat.emoji === '❤️' || stat.emoji === '⭐' || stat.emoji === '💎';
+          return (
+            <button
+              key={stat.label}
+              className="profile-stat-card"
+              onMouseEnter={playHoverSound}
+              onClick={isClickable ? openHeartShop : undefined}
+              style={{
+                background: '#fff',
+                border: '2px solid #E5E5E5',
+                borderRadius: '16px',
+                padding: '1rem',
+                textAlign: 'center',
+                cursor: isClickable ? 'pointer' : 'default'
+              }}
+            >
+              <div style={{ fontSize: '1.8rem', marginBottom: '4px' }}>{stat.emoji}</div>
+              <div style={{ fontSize: '1.4rem', fontWeight: 900, color: stat.color }}>{stat.value}</div>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#AFAFAF', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{stat.label}</div>
+            </button>
+          );
+        })}
       </div>
+      <style>{`
+        .profile-stat-card {
+          border: none;
+          cursor: pointer;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .profile-stat-card:hover {
+          transform: translateY(-8px) scale(1.05);
+          box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+          border-color: #999 !important;
+        }
+
+        .profile-stat-card:active {
+          transform: translateY(-4px) scale(1.02);
+        }
+      `}</style>
+      <HeartShopModal isOpen={isHeartShopOpen} onClose={closeHeartShop} language={language} />
     </div>
   );
 }

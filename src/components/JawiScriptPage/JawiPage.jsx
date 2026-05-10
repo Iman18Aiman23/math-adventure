@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { BookOpen, GraduationCap, Star, Keyboard, ChevronLeft, ChevronRight, Languages, Brain, ArrowLeft, Home, Volume2 } from 'lucide-react';
 import { LOCALIZATION } from '../../utils/localization';
+import { useGameStateContext } from '../../App';
 import { JAWI_ALPHABET } from '../../utils/jawiData';
 import { SUKU_KATA_DATA } from '../../utils/jawiSukuKataData';
 import JawiMatchGame from './JawiMatchGame';
@@ -10,10 +11,12 @@ import JawiSyllablesLearningPage from './JawiSyllablesLearningPage';
 import Jawi100WordsGame from './Jawi100WordsGame';
 import JawiShortStoriesPage from './JawiShortStoriesPage';
 import GameHeader from '../GameHeader';
+import AppHeader from '../AppHeader';
 import { JawiAlphabetIcon, JawiReadingIcon, Jawi100WordsIcon, JawiSpellingGameIcon, JawiStoriesIcon } from '../icons/JawiPageIcons';
 
 export default function JawiPage({ onBack, onHome, language, onGameStart, onGameEnd }) {
     const t = LOCALIZATION[language].jawi;
+    const gameState = useGameStateContext();
     const [mode, setMode] = useState(null); // null, 'alphabet' | 'match' | 'words' | 'syllables' | 'spelling_game' | 'short_stories'
     const [selectedAlphabet, setSelectedAlphabet] = useState(null);
 
@@ -297,20 +300,7 @@ export default function JawiPage({ onBack, onHome, language, onGameStart, onGame
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
-            {/* Duolingo sub-header */}
-            <div style={{
-                background: '#fff', borderBottom: '2px solid #E5E5E5',
-                padding: '0 1rem', height: '56px',
-                display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0,
-            }}>
-                <button onClick={onBack} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
-                    <ArrowLeft size={24} />
-                </button>
-                <div style={{ flex: 1, textAlign: 'center', fontWeight: 900, fontSize: '1.3rem', color: '#3C3C3C' }}>
-                    📖 {t.title}
-                </div>
-                <div style={{ width: 24 }} />
-            </div>
+            <AppHeader onBack={onBack} gameState={gameState} language={language} />
 
             {/* Scrollable content */}
             <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem 1rem' }}>
