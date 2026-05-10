@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { getGameData } from '../utils/gameStatsManager';
+import { baseAssessments } from '../data/curriculum/assessment';
 import AppHeader from './AppHeader';
 import MascotIcon from './icons/MascotIcon';
 import html2canvas from 'html2canvas';
@@ -25,13 +26,7 @@ const BADGE_CONFIG = [
   { id: 'gems-500', type: 'gems', tier: 'Diamond', name: 'Infinite Wealth', target: 500, emoji: '💎', color: '#00FFFF', darkColor: '#00CED1', description: '500 Gems Collected' },
 ];
 
-const ACHIEVEMENT_CONFIG = [
-  { id: 'early-bird', name: { bm: 'Langkah Pertama', eng: 'First Steps' }, emoji: '🐦', description: { bm: 'Menyelesaikan sesi pertama anda', eng: 'Complete your first session' }, condition: 'earlyBird', seal: '✓' },
-  { id: 'night-owl', name: { bm: 'Menguasai Topik', eng: 'Topic Master' }, emoji: '🦉', description: { bm: 'Mencapai 100% ketepatan dalam satu topik', eng: 'Achieve 100% accuracy in one topic' }, condition: 'nightOwl', seal: '✓' },
-  { id: 'perfect-score', name: { bm: 'Pemecah Kelajuan', eng: 'Speed Solver' }, emoji: '💯', description: { bm: 'Jawab 10 soalan berturut-turut dalam masa < 60 saat', eng: 'Answer 10 questions consecutively in less than 60 seconds' }, condition: 'perfectScore', seal: '⭐' },
-  { id: 'power-user', name: { bm: 'Ahli Strategi', eng: 'The Strategist' }, emoji: '⚡', description: { bm: 'Menggunakan item bantuan (hints) 5 kali', eng: 'Use hints (help items) 5 times' }, condition: 'powerUser', seal: '✓' },
-  { id: 'explorer', name: { bm: 'Suara Komuniti', eng: 'Community Voice' }, emoji: '🗺️', description: { bm: 'Berkongsi ID Badge pertama anda di media sosial', eng: 'Share your first badge ID on social media' }, condition: 'explorer', seal: '🎖️' },
-];
+// Using baseAssessments from assessment.js instead of ACHIEVEMENT_CONFIG
 
 const getTierGradient = (tier) => {
   switch (tier) {
@@ -45,21 +40,20 @@ const getTierGradient = (tier) => {
 
 const AchievementCertificate = ({ achievement, playerName, gameState, language, ref }) => {
   const achievementName = typeof achievement.name === 'object' ? achievement.name.eng : achievement.name;
-  const isGold = achievementName === 'Eternal Flame';
-  const isDiamond = achievementName === 'Master Scholar';
+  const isGold = achievement.difficulty === 'Intermediate';
+  const isDiamond = achievement.difficulty === 'Advanced';
 
   return (
     <div
       ref={ref}
       style={{
         width: '100%',
-        maxWidth: '560px',
         background: '#FAFAF8',
         borderRadius: '12px',
         padding: '2.5rem 2rem',
         fontFamily: '"Segoe UI", "Trebuchet MS", sans-serif',
         position: 'relative',
-        border: isGold ? '6px solid #DAA520' : isDiamond ? '6px solid #00CED1' : '4px solid #D4AF37',
+        border: isGold ? '4px solid #DAA520' : isDiamond ? '4px solid #00CED1' : '4px solid #D4AF37',
         boxShadow: isGold
           ? '0 0 30px rgba(218, 165, 32, 0.4), 0 20px 60px rgba(0, 0, 0, 0.2)'
           : isDiamond
@@ -100,22 +94,22 @@ const AchievementCertificate = ({ achievement, playerName, gameState, language, 
         opacity: 0.6
       }}>✦</div>
 
-      {/* Legendary Badge for Gold */}
-      {isGold && (
+      {/* Legendary / Elite Badge */}
+      {(isGold || isDiamond) && (
         <div style={{
           position: 'absolute',
           top: '-15px',
           right: '20px',
-          background: 'linear-gradient(135deg, #FFD700, #DAA520)',
-          color: 'white',
+          background: isDiamond ? 'linear-gradient(135deg, #00FFFF, #00CED1)' : 'linear-gradient(135deg, #FFD700, #DAA520)',
+          color: isDiamond ? '#0D7A8C' : 'white',
           padding: '0.5rem 1.2rem',
           borderRadius: '20px',
           fontSize: '0.85rem',
           fontWeight: 900,
           letterSpacing: '1px',
-          boxShadow: '0 4px 12px rgba(218, 165, 32, 0.4)'
+          boxShadow: isDiamond ? '0 4px 12px rgba(0, 206, 209, 0.4)' : '0 4px 12px rgba(218, 165, 32, 0.4)'
         }}>
-          ⭐ LEGENDARY
+          {isDiamond ? '💎 LEGENDARY' : '⭐ ELITE'}
         </div>
       )}
 
@@ -139,21 +133,21 @@ const AchievementCertificate = ({ achievement, playerName, gameState, language, 
           <div style={{
             fontSize: '1.2rem',
             fontWeight: 900,
-            background: isGold ? 'linear-gradient(135deg, #FFD700, #DAA520)' : isDiamond ? 'linear-gradient(135deg, #00CED1, #0D7A8C)' : 'linear-gradient(135deg, #58CC02, #46A302)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
+            color: '#2D4059',
+            fontFamily: "'Fredoka One', cursive",
             margin: '0',
-            letterSpacing: '0.5px'
+            letterSpacing: '1px',
+            lineHeight: 1.1
           }}>
             ImanCore
           </div>
           <div style={{
             fontSize: '0.75rem',
-            color: isDiamond ? '#00BCD4' : isGold ? '#DAA520' : '#58CC02',
-            fontWeight: 700,
-            letterSpacing: '1.2px',
-            textTransform: 'uppercase'
+            color: '#F4C430',
+            fontFamily: "'Fredoka One', cursive",
+            letterSpacing: '2px',
+            textTransform: 'uppercase',
+            margin: '0'
           }}>
             Learning Hub
           </div>
@@ -315,9 +309,9 @@ const AchievementCertificate = ({ achievement, playerName, gameState, language, 
   );
 };
 
-const AchievementCard = React.memo(({ achievement, isUnlocked, onDownload, onView, language }) => {
-  const isGold = useMemo(() => typeof achievement.name === 'object' ? achievement.name.eng === 'Eternal Flame' : achievement.name === 'Eternal Flame', [achievement.name]);
-  const isDiamond = useMemo(() => typeof achievement.name === 'object' ? achievement.name.eng === 'Master Scholar' : achievement.name === 'Master Scholar', [achievement.name]);
+const AchievementCard = React.memo(({ achievement, isUnlocked, onDownload, onView, language, isDownloading }) => {
+  const isGold = useMemo(() => achievement.difficulty === 'Intermediate', [achievement.difficulty]);
+  const isDiamond = useMemo(() => achievement.difficulty === 'Advanced', [achievement.difficulty]);
 
   return (
     <div
@@ -491,6 +485,7 @@ const AchievementCard = React.memo(({ achievement, isUnlocked, onDownload, onVie
               e.stopPropagation();
               onDownload(achievement, 'png');
             }}
+            disabled={isDownloading}
             style={{
               background: 'linear-gradient(135deg, #58CC02, #46A302)',
               color: 'white',
@@ -499,14 +494,15 @@ const AchievementCard = React.memo(({ achievement, isUnlocked, onDownload, onVie
               padding: '0.5rem 0.75rem',
               fontSize: '0.75rem',
               fontWeight: 700,
-              cursor: 'pointer',
-              transition: 'all 0.2s ease'
+              cursor: isDownloading ? 'not-allowed' : 'pointer',
+              transition: 'all 0.2s ease',
+              opacity: isDownloading ? 0.7 : 1
             }}
             onMouseEnter={e => {
-              e.target.style.transform = 'scale(1.05)';
+              if (!isDownloading) e.target.style.transform = 'scale(1.05)';
             }}
             onMouseLeave={e => {
-              e.target.style.transform = 'scale(1)';
+              if (!isDownloading) e.target.style.transform = 'scale(1)';
             }}
           >
             📥 PNG
@@ -516,6 +512,7 @@ const AchievementCard = React.memo(({ achievement, isUnlocked, onDownload, onVie
               e.stopPropagation();
               onDownload(achievement, 'pdf');
             }}
+            disabled={isDownloading}
             style={{
               background: 'linear-gradient(135deg, #FF6B6B, #EE5A6F)',
               color: 'white',
@@ -524,14 +521,15 @@ const AchievementCard = React.memo(({ achievement, isUnlocked, onDownload, onVie
               padding: '0.5rem 0.75rem',
               fontSize: '0.75rem',
               fontWeight: 700,
-              cursor: 'pointer',
-              transition: 'all 0.2s ease'
+              cursor: isDownloading ? 'not-allowed' : 'pointer',
+              transition: 'all 0.2s ease',
+              opacity: isDownloading ? 0.7 : 1
             }}
             onMouseEnter={e => {
-              e.target.style.transform = 'scale(1.05)';
+              if (!isDownloading) e.target.style.transform = 'scale(1.05)';
             }}
             onMouseLeave={e => {
-              e.target.style.transform = 'scale(1)';
+              if (!isDownloading) e.target.style.transform = 'scale(1)';
             }}
           >
             📥 PDF
@@ -542,7 +540,7 @@ const AchievementCard = React.memo(({ achievement, isUnlocked, onDownload, onVie
   );
 });
 
-const BadgeCard = React.memo(({ badge, progress, isUnlocked, onDownload, language }) => {
+const BadgeCard = React.memo(({ badge, progress, isUnlocked, onDownload, language, isDownloading }) => {
   const progressPercent = useMemo(() => Math.min((progress / badge.target) * 100, 100), [progress, badge.target]);
 
   return (
@@ -584,6 +582,7 @@ const BadgeCard = React.memo(({ badge, progress, isUnlocked, onDownload, languag
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <button
               onClick={() => onDownload(badge, 'png')}
+              disabled={isDownloading}
               style={{
                 background: getTierGradient(badge.tier),
                 color: 'white',
@@ -592,20 +591,22 @@ const BadgeCard = React.memo(({ badge, progress, isUnlocked, onDownload, languag
                 padding: '0.4rem 0.8rem',
                 fontSize: '0.7rem',
                 fontWeight: 700,
-                cursor: 'pointer',
-                transition: 'all 0.2s ease'
+                cursor: isDownloading ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s ease',
+                opacity: isDownloading ? 0.7 : 1
               }}
               onMouseEnter={e => {
-                e.target.style.transform = 'scale(1.05)';
+                if (!isDownloading) e.target.style.transform = 'scale(1.05)';
               }}
               onMouseLeave={e => {
-                e.target.style.transform = 'scale(1)';
+                if (!isDownloading) e.target.style.transform = 'scale(1)';
               }}
             >
               📥 PNG
             </button>
             <button
               onClick={() => onDownload(badge, 'pdf')}
+              disabled={isDownloading}
               style={{
                 background: getTierGradient(badge.tier),
                 color: 'white',
@@ -614,15 +615,15 @@ const BadgeCard = React.memo(({ badge, progress, isUnlocked, onDownload, languag
                 padding: '0.4rem 0.8rem',
                 fontSize: '0.7rem',
                 fontWeight: 700,
-                cursor: 'pointer',
+                cursor: isDownloading ? 'not-allowed' : 'pointer',
                 transition: 'all 0.2s ease',
-                opacity: 0.85
+                opacity: isDownloading ? 0.7 : 0.85
               }}
               onMouseEnter={e => {
-                e.target.style.transform = 'scale(1.05)';
+                if (!isDownloading) e.target.style.transform = 'scale(1.05)';
               }}
               onMouseLeave={e => {
-                e.target.style.transform = 'scale(1)';
+                if (!isDownloading) e.target.style.transform = 'scale(1)';
               }}
             >
               📥 PDF
@@ -667,7 +668,7 @@ const BadgeIDCard = ({ badge, playerName, gameState, language, ref }) => {
     <div
       ref={ref}
       style={{
-        width: '600px',
+        width: '100%',
         background: 'white',
         borderRadius: '20px',
         overflow: 'hidden',
@@ -751,7 +752,7 @@ const BadgeIDCard = ({ badge, playerName, gameState, language, ref }) => {
   );
 };
 
-const CertificateModal = ({ achievement, playerName, gameState, language, onClose, onDownload }) => {
+const CertificateModal = ({ achievement, playerName, gameState, language, onClose, onDownload, isDownloading }) => {
   const certRef = React.useRef(null);
   const [canClose, setCanClose] = React.useState(false);
 
@@ -833,6 +834,7 @@ const CertificateModal = ({ achievement, playerName, gameState, language, onClos
           </button>
           <button
             onClick={() => onDownload(achievement, certRef, 'png')}
+            disabled={isDownloading}
             style={{
               background: 'linear-gradient(135deg, #58CC02, #46A302)',
               color: 'white',
@@ -841,13 +843,15 @@ const CertificateModal = ({ achievement, playerName, gameState, language, onClos
               padding: '0.75rem 1.5rem',
               fontSize: '0.95rem',
               fontWeight: 700,
-              cursor: 'pointer'
+              cursor: isDownloading ? 'not-allowed' : 'pointer',
+              opacity: isDownloading ? 0.7 : 1
             }}
           >
             📥 PNG
           </button>
           <button
             onClick={() => onDownload(achievement, certRef, 'pdf')}
+            disabled={isDownloading}
             style={{
               background: 'linear-gradient(135deg, #FF6B6B, #EE5A6F)',
               color: 'white',
@@ -856,7 +860,8 @@ const CertificateModal = ({ achievement, playerName, gameState, language, onClos
               padding: '0.75rem 1.5rem',
               fontSize: '0.95rem',
               fontWeight: 700,
-              cursor: 'pointer'
+              cursor: isDownloading ? 'not-allowed' : 'pointer',
+              opacity: isDownloading ? 0.7 : 1
             }}
           >
             📥 PDF
@@ -881,10 +886,13 @@ export default function AchievementPage({ onBack, onHome, language, gameState })
     return currentValue >= badge.target;
   });
 
-  const handleDownloadBadge = useCallback(async (badge, format = 'png') => {
-    try {
-      setDownloadingBadge(badge.id);
-      const element = document.getElementById(`badge-id-${badge.id}`);
+  const handleDownloadBadge = useCallback((badge, format = 'png') => {
+    setDownloadingBadge(badge.id);
+    
+    // Defer the heavy html2canvas task so the browser can render the loading spinner
+    setTimeout(async () => {
+      try {
+        const element = document.getElementById(`badge-id-${badge.id}`);
 
       if (!element) {
         console.error(`Element not found: badge-id-${badge.id}`);
@@ -897,27 +905,14 @@ export default function AchievementPage({ onBack, onHome, language, gameState })
 
       if (format === 'pdf') {
         const imgData = canvas.toDataURL('image/png');
+        const pdfWidth = 210;
+        const pdfHeight = pdfWidth * (canvas.height / canvas.width);
         const pdf = new jsPDF({
-          orientation: 'portrait',
+          orientation: pdfHeight > pdfWidth ? 'portrait' : 'landscape',
           unit: 'mm',
-          format: 'a4'
+          format: [pdfWidth, pdfHeight]
         });
-        const imgWidth = 210;
-        const pageHeight = 297;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        let heightLeft = imgHeight;
-        let position = 0;
-
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-
-        while (heightLeft >= 0) {
-          position = heightLeft - imgHeight;
-          pdf.addPage();
-          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
-        }
-
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
         pdf.save(`${badge.name}-Badge.pdf`);
       } else {
         const link = document.createElement('a');
@@ -928,23 +923,22 @@ export default function AchievementPage({ onBack, onHome, language, gameState })
         document.body.removeChild(link);
       }
 
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
-      console.log('Badge download completed successfully');
-    } catch (error) {
-      console.error('Download failed:', error);
-      alert('Download failed: ' + error.message);
-    } finally {
-      setDownloadingBadge(null);
-    }
+        console.log('Badge download completed successfully');
+      } catch (error) {
+        console.error('Download failed:', error);
+        alert('Download failed: ' + error.message);
+      } finally {
+        setDownloadingBadge(null);
+      }
+    }, 50);
   }, [language]);
 
-  const handleDownloadAchievement = useCallback(async (achievement, certRefOrFormat, format) => {
-    try {
-      // Handle both calling patterns:
+  const handleDownloadAchievement = useCallback((achievement, certRefOrFormat, format) => {
+    setDownloadingBadge(achievement.id);
+    
+    setTimeout(async () => {
+      try {
+        // Handle both calling patterns:
       // 1. From CertificateModal: (achievement, certRef, format)
       // 2. From AchievementCard: (achievement, format)
       let element;
@@ -981,27 +975,14 @@ export default function AchievementPage({ onBack, onHome, language, gameState })
 
       if (downloadFormat === 'pdf') {
         const imgData = canvas.toDataURL('image/png');
+        const pdfWidth = 210;
+        const pdfHeight = pdfWidth * (canvas.height / canvas.width);
         const pdf = new jsPDF({
-          orientation: 'portrait',
+          orientation: pdfHeight > pdfWidth ? 'portrait' : 'landscape',
           unit: 'mm',
-          format: 'a4'
+          format: [pdfWidth, pdfHeight]
         });
-        const imgWidth = 210;
-        const pageHeight = 297;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        let heightLeft = imgHeight;
-        let position = 0;
-
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-
-        while (heightLeft >= 0) {
-          position = heightLeft - imgHeight;
-          pdf.addPage();
-          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
-        }
-
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
         pdf.save(`${achievementName}-Certificate.pdf`);
       } else {
         const link = document.createElement('a');
@@ -1012,32 +993,75 @@ export default function AchievementPage({ onBack, onHome, language, gameState })
         document.body.removeChild(link);
       }
 
-      confetti({
-        particleCount: 120,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
-      console.log('Download completed successfully');
-    } catch (error) {
-      console.error('Download failed:', error);
-      alert('Download failed: ' + error.message);
-    }
+        console.log('Download completed successfully');
+      } catch (error) {
+        console.error('Download failed:', error);
+        alert('Download failed: ' + error.message);
+      } finally {
+        setDownloadingBadge(null);
+      }
+    }, 50);
   }, [language]);
 
   const getUnlockedAchievements = useCallback(() => {
-    return ACHIEVEMENT_CONFIG.filter(ach => {
-      if (ach.id === 'early-bird' || ach.id === 'night-owl') return Math.random() > 0.5;
-      if (ach.id === 'perfect-score') return gameData.streak > 5;
-      if (ach.id === 'power-user') return gameData.streak >= 7;
-      if (ach.id === 'explorer') return true;
-      return false;
+    return baseAssessments.filter(ach => {
+      return ach.status === 'Completed';
     });
-  }, [gameData.streak]);
+  }, []);
 
   const unlockedAchievements = useMemo(() => getUnlockedAchievements(), [getUnlockedAchievements]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#fff' }}>
+      
+      {/* Full-screen Loading Overlay */}
+      {downloadingBadge && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.7)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 999999,
+          color: 'white',
+          fontFamily: "'Fredoka One', cursive"
+        }}>
+          <div style={{ position: 'relative', width: '90px', height: '90px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{
+              position: 'absolute',
+              top: 0, left: 0, right: 0, bottom: 0,
+              border: '6px solid rgba(255, 255, 255, 0.2)',
+              borderTopColor: '#58CC02',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite'
+            }} />
+            <div style={{ animation: 'pulse 1.5s ease-in-out infinite', display: 'flex', marginTop: '5px' }}>
+              <MascotIcon size={50} />
+            </div>
+          </div>
+          <h2 style={{ letterSpacing: '1px', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+            {language === 'bm' ? 'Menjana Dokumen...' : 'Generating Document...'}
+          </h2>
+          <style>
+            {`
+              @keyframes spin {
+                to { transform: rotate(360deg); }
+              }
+              @keyframes pulse {
+                0% { transform: scale(0.9); opacity: 0.8; }
+                50% { transform: scale(1.1); opacity: 1; }
+                100% { transform: scale(0.9); opacity: 0.8; }
+              }
+            `}
+          </style>
+        </div>
+      )}
+
       <AppHeader onBack={onBack} gameState={gameState} language={language} />
 
       {/* Tabs */}
@@ -1098,7 +1122,7 @@ export default function AchievementPage({ onBack, onHome, language, gameState })
       <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 1.25rem' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
           {currentTab === 'achievements' ? (
-            ACHIEVEMENT_CONFIG.map(achievement => {
+            baseAssessments.map(achievement => {
               const isUnlocked = unlockedAchievements.some(a => a.id === achievement.id);
               return (
                 <div key={achievement.id}>
@@ -1108,6 +1132,7 @@ export default function AchievementPage({ onBack, onHome, language, gameState })
                     onDownload={handleDownloadAchievement}
                     onView={setSelectedAchievement}
                     language={language}
+                    isDownloading={downloadingBadge === achievement.id}
                   />
                 </div>
               );
@@ -1128,6 +1153,7 @@ export default function AchievementPage({ onBack, onHome, language, gameState })
                     isUnlocked={isUnlocked}
                     onDownload={handleDownloadBadge}
                     language={language}
+                    isDownloading={downloadingBadge === badge.id}
                   />
                 </div>
               );
@@ -1137,11 +1163,11 @@ export default function AchievementPage({ onBack, onHome, language, gameState })
       </div>
 
       {/* Hidden ID Cards for Download */}
-      <div style={{ position: 'absolute', left: '-9999px', top: '-9999px', width: '100%', visibility: 'hidden', pointerEvents: 'none' }}>
+      <div style={{ position: 'absolute', left: '-9999px', top: '-9999px', pointerEvents: 'none' }}>
         {BADGE_CONFIG.map(badge => {
           const idCardRef = React.createRef();
           return (
-            <div key={badge.id} id={`badge-id-${badge.id}`}>
+            <div key={badge.id} id={`badge-id-${badge.id}`} style={{ width: '794px', padding: '38px', boxSizing: 'border-box', background: '#fff' }}>
               <BadgeIDCard
                 ref={idCardRef}
                 badge={badge}
@@ -1152,10 +1178,10 @@ export default function AchievementPage({ onBack, onHome, language, gameState })
             </div>
           );
         })}
-        {ACHIEVEMENT_CONFIG.map(achievement => {
+        {baseAssessments.map(achievement => {
           const certRef = React.createRef();
           return (
-            <div key={achievement.id} id={`achievement-cert-${achievement.id}`}>
+            <div key={achievement.id} id={`achievement-cert-${achievement.id}`} style={{ width: '794px', padding: '38px', boxSizing: 'border-box', background: '#FAFAF8' }}>
               <AchievementCertificate
                 ref={certRef}
                 achievement={achievement}
@@ -1177,6 +1203,7 @@ export default function AchievementPage({ onBack, onHome, language, gameState })
           language={language}
           onClose={() => setSelectedAchievement(null)}
           onDownload={handleDownloadAchievement}
+          isDownloading={downloadingBadge === selectedAchievement.id}
         />
       )}
 

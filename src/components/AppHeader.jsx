@@ -17,6 +17,13 @@ export default function AppHeader({ onBack, gameState, language, hearts, gems, s
     setDisplayStars(gameData.stars);
   }, []);
 
+  // Callback when a purchase is made in HeartShopModal
+  const handlePurchase = (newData) => {
+    setDisplayHearts(newData.hearts);
+    setDisplayGems(newData.gems);
+    setDisplayStars(newData.stars);
+  };
+
   // Update when props change (for real-time updates from games)
   useEffect(() => {
     if (hearts !== undefined && hearts !== null) {
@@ -271,7 +278,7 @@ export default function AppHeader({ onBack, gameState, language, hearts, gems, s
         }
       `}</style>
 
-      <HeartShopModal isOpen={isHeartShopOpen} onClose={() => setIsHeartShopOpen(false)} language={language} />
+      <HeartShopModal isOpen={isHeartShopOpen} onClose={() => setIsHeartShopOpen(false)} onPurchase={handlePurchase} language={language} />
     </>
   );
 }
