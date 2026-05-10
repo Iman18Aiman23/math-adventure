@@ -173,53 +173,92 @@ export function AchievementIcon() {
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
+        <linearGradient id="certGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#FDF6E3"/>
+          <stop offset="100%" stopColor="#F5E6C8"/>
+        </linearGradient>
+        <linearGradient id="sealRing" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#C9A94E"/>
+          <stop offset="50%" stopColor="#F4D03F"/>
+          <stop offset="100%" stopColor="#B8860B"/>
+        </linearGradient>
+        <radialGradient id="goldCenter" cx="40%" cy="35%" r="65%">
+          <stop offset="0%" stopColor="#FFF9C4"/>
+          <stop offset="40%" stopColor="#F4D03F"/>
+          <stop offset="100%" stopColor="#C9A94E"/>
+        </radialGradient>
+        <linearGradient id="ribbonL" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#1A5276"/>
+          <stop offset="100%" stopColor="#2980B9"/>
+        </linearGradient>
+        <linearGradient id="ribbonR" x1="100%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#1A5276"/>
+          <stop offset="100%" stopColor="#2980B9"/>
+        </linearGradient>
+        <linearGradient id="shieldG" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#27AE60"/>
+          <stop offset="100%" stopColor="#1E8449"/>
+        </linearGradient>
+        <filter id="dropShadow" x="-10%" y="-10%" width="130%" height="130%">
+          <feDropShadow dx="0" dy="1" stdDeviation="1.5" floodColor="#000" floodOpacity="0.15"/>
+        </filter>
         <style>{`
-          @keyframes sparkle { 0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; } 50% { transform: scale(1.3) rotate(15deg); opacity: 0.7; } }
-          @keyframes floatMedal { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-6px) rotate(5deg); } }
-          @keyframes blinkEyes { 0%, 92%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.08); } }
-          .svg-hover .sp1 { animation: sparkle 0.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-          .svg-hover .sp2 { animation: sparkle 0.6s ease-in-out infinite 0.3s; transform-box: fill-box; transform-origin: center; }
-          .svg-hover .fm { animation: floatMedal 1.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-          .svg-hover .eyes { animation: blinkEyes 2s ease-in-out infinite; transform-origin: center; }
+          @keyframes sealPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+          @keyframes starTwinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+          .svg-hover .seal { animation: sealPulse 1.5s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+          .svg-hover .star1 { animation: starTwinkle 1.2s ease-in-out infinite; }
+          .svg-hover .star2 { animation: starTwinkle 1.2s ease-in-out infinite 0.4s; }
         `}</style>
       </defs>
       <g className={isHovered ? 'svg-hover' : ''}>
-        {/* Ribbon Left */}
-        <rect x="40" y="20" width="18" height="70" rx="4" fill="#FF6B6B"/>
-        {/* Ribbon Right */}
-        <rect x="142" y="20" width="18" height="70" rx="4" fill="#FF6B6B"/>
-        {/* Medal Body - Floating */}
-        <g className="fm">
-          {/* Outer Circle */}
-          <circle cx="100" cy="95" r="48" fill="#FFD93D" stroke="#F4C430" strokeWidth="3"/>
-          {/* Inner Circle */}
-          <circle cx="100" cy="95" r="40" fill="#FFF8DC"/>
-          {/* Inner Glow */}
-          <circle cx="100" cy="95" r="35" fill="none" stroke="#FFE5A6" strokeWidth="2" opacity="0.6"/>
-          {/* Trophy/Badge Shape */}
-          <path d="M85,80 L115,80 L115,110 C115,125 100,130 100,130 C100,130 85,125 85,110 Z" fill="#FF9500"/>
-          {/* Trophy Shine */}
-          <ellipse cx="100" cy="85" rx="12" ry="8" fill="#FFD93D" opacity="0.6"/>
+        {/* Left ribbon tail */}
+        <path d="M56,100 L50,135 L56,128 L62,135 L56,100 Z" fill="url(#ribbonL)"/>
+        {/* Right ribbon tail */}
+        <path d="M144,100 L150,135 L144,128 L138,135 L144,100 Z" fill="url(#ribbonR)"/>
+
+        {/* Outer seal ring */}
+        <g className="seal">
+          <circle cx="100" cy="100" r="48" fill="url(#sealRing)" filter="url(#dropShadow)"/>
+          <circle cx="100" cy="100" r="46" fill="none" stroke="#B8860B" strokeWidth="1" opacity="0.5"/>
+          <circle cx="100" cy="100" r="48" fill="none" stroke="#D4AC0D" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.5"/>
         </g>
-        {/* Eyes on Medal */}
-        <g className="eyes">
-          <circle cx="92" cy="95" r="3.5" fill="#333"/>
-          <circle cx="108" cy="95" r="3.5" fill="#333"/>
-          <circle cx="92.8" cy="93.5" r="1.2" fill="#FFF"/>
-          <circle cx="108.8" cy="93.5" r="1.2" fill="#FFF"/>
+
+        {/* Certificate center */}
+        <circle cx="100" cy="100" r="40" fill="url(#certGrad)"/>
+        <circle cx="100" cy="100" r="36" fill="none" stroke="#C9A94E" strokeWidth="0.8" opacity="0.4" strokeDasharray="2 3"/>
+
+        {/* Document shape */}
+        <rect x="72" y="70" width="56" height="44" rx="3" fill="#FFF" stroke="#C9A94E" strokeWidth="1" opacity="0.9"/>
+        {/* Document fold corner */}
+        <path d="M116,70 L124,70 L124,78 Z" fill="#F5E6C8" stroke="#C9A94E" strokeWidth="0.8"/>
+        <path d="M116,70 L116,78 L124,78" fill="#FDF6E3" stroke="#C9A94E" strokeWidth="0.6"/>
+
+        {/* Text lines on document */}
+        <line x1="78" y1="80" x2="116" y2="80" stroke="#C9A94E" strokeWidth="1.8" strokeLinecap="round" opacity="0.6"/>
+        <line x1="78" y1="86" x2="113" y2="86" stroke="#C9A94E" strokeWidth="1.5" strokeLinecap="round" opacity="0.3"/>
+        <line x1="78" y1="91" x2="110" y2="91" stroke="#C9A94E" strokeWidth="1.5" strokeLinecap="round" opacity="0.3"/>
+
+        {/* Verification shield */}
+        <path d="M100,108 L92,112 L92,118 C92,124 100,128 100,128 C100,128 108,124 108,118 L108,112 Z" fill="url(#shieldG)" stroke="#145A32" strokeWidth="0.8"/>
+        {/* Checkmark */}
+        <polyline points="96,117 100,121 108,112" fill="none" stroke="#FFF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+
+        {/* Top decorative stars */}
+        <g className="star1">
+          <polygon points="100,30 101,33 104,33 101.5,35 102.5,38 100,36 97.5,38 98.5,35 96,33 99,33" fill="#F4D03F"/>
         </g>
-        {/* Smile */}
-        <path d="M94,105 Q100,110 106,105" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round"/>
-        {/* Sparkles */}
-        <g className="sp1"><polygon points="50,50 51.5,55 56,55 52.5,58 53.5,63 50,60 46.5,63 47.5,58 44,55 48.5,55" fill="#FFD93D"/></g>
-        <g className="sp2"><polygon points="150,60 151.5,65 156,65 152.5,68 153.5,73 150,70 146.5,73 147.5,68 144,65 148.5,65" fill="#FF6B6B"/></g>
-        {/* Crown on top */}
-        <g>
-          <polygon points="100,50 92,65 96,65 88,80 112,80 104,65 108,65" fill="#FFD93D" stroke="#F4C430" strokeWidth="1.5"/>
-          <circle cx="88" cy="62" r="4" fill="#FF6B6B"/>
-          <circle cx="100" cy="55" r="5" fill="#FF6B6B"/>
-          <circle cx="112" cy="62" r="4" fill="#FF6B6B"/>
+        <g className="star2">
+          <polygon points="70,45 71,47 73.5,47 71.5,48.5 72.5,51 70,49.5 67.5,51 68.5,48.5 66.5,47 69,47" fill="#F4D03F" opacity="0.6"/>
         </g>
+        <polygon points="130,45 131,47 133.5,47 131.5,48.5 132.5,51 130,49.5 127.5,51 128.5,48.5 126.5,47 129,47" fill="#F4D03F" opacity="0.6"/>
+
+        {/* Laurel leaves - left */}
+        <ellipse cx="55" cy="75" rx="2.5" ry="6" transform="rotate(-40 55 75)" fill="#27AE60" opacity="0.6"/>
+        <ellipse cx="52" cy="90" rx="2.5" ry="6" transform="rotate(-20 52 90)" fill="#27AE60" opacity="0.6"/>
+
+        {/* Laurel leaves - right */}
+        <ellipse cx="145" cy="75" rx="2.5" ry="6" transform="rotate(40 145 75)" fill="#27AE60" opacity="0.6"/>
+        <ellipse cx="148" cy="90" rx="2.5" ry="6" transform="rotate(20 148 90)" fill="#27AE60" opacity="0.6"/>
       </g>
     </svg>
   );
@@ -277,13 +316,13 @@ export function LanguageIcon() {
         <g className="bb sw1">
           <rect x="20" y="35" width="42" height="28" rx="8" fill="#FF6B6B"/>
           <polygon points="50,63 55,72 45,63" fill="#FF6B6B"/>
-          <text x="41" y="54" fontSize="13" fill="#FFF" textAnchor="middle" fontWeight="bold" fontFamily="Fredoka One, sans-serif">EN</text>
+          <text x="41" y="49" fontSize="13" fill="#FFF" textAnchor="middle" dominantBaseline="middle" fontWeight="bold" fontFamily="Fredoka One, sans-serif">EN</text>
         </g>
         {/* Buih MS */}
         <g className="bb2 sw2">
           <rect x="138" y="45" width="42" height="28" rx="8" fill="#FFD93D"/>
           <polygon points="150,73 145,82 155,73" fill="#FFD93D"/>
-          <text x="159" y="64" fontSize="13" fill="#333" textAnchor="middle" fontWeight="bold" fontFamily="Fredoka One, sans-serif">MS</text>
+          <text x="159" y="59" fontSize="13" fill="#333" textAnchor="middle" dominantBaseline="middle" fontWeight="bold" fontFamily="Fredoka One, sans-serif">MS</text>
         </g>
         {/* Bintang */}
         <g className="ps"><polygon points="30,85 31.5,90 36,90 32.5,93 33.5,98 30,95 26.5,98 27.5,93 24,90 28.5,90" fill="#FFD93D"/></g>

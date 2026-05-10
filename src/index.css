@@ -197,7 +197,6 @@ button {
 .duo-tab-bar {
   display: flex;
   align-items: stretch;
-  justify-content: space-around;
   background: var(--bg-white);
   border-top: 2px solid var(--border-color);
   height: calc(var(--tab-bar-h) + var(--safe-bottom));
@@ -207,8 +206,25 @@ button {
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
 }
 
-.duo-tab-item {
+.duo-tab-container {
+  display: flex;
   flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  gap: 0;
+  align-items: stretch;
+  scroll-snap-type: x mandatory;
+}
+
+.duo-tab-container::-webkit-scrollbar {
+  display: none;
+}
+
+.duo-tab-item {
+  flex-shrink: 0;
+  min-width: 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -226,6 +242,7 @@ button {
   border: none;
   cursor: pointer;
   font-family: var(--font-body);
+  scroll-snap-align: start;
 }
 
 .duo-tab-item:active {

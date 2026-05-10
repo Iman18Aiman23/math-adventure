@@ -14,7 +14,7 @@ import ColumnMathGame from './components/MathematicsPage/ColumnMathGame';
 import LevelUpToast from './components/LevelUpToast';
 import WelcomeModal from './components/WelcomeModal';
 import DesktopSidebar from './components/DesktopSidebar';
-import { LearnIcon, LeaderboardIcon, ProfileIcon, LanguageIcon } from './components/icons/SidebarIcons';
+import { LearnIcon, LeaderboardIcon, ProfileIcon, AchievementIcon, LanguageIcon } from './components/icons/SidebarIcons';
 import MascotIcon from './components/icons/MascotIcon';
 import ReadingPage from './components/ReadingPage/ReadingPage';
 import HeartShopModal from './components/HeartShopModal';
@@ -61,6 +61,7 @@ const TABS = [
   { id: 'learn',       icon: LearnIcon, label: { bm: 'Kursus',   eng: 'Course'   } },
   { id: 'leaderboard', icon: LeaderboardIcon, label: { bm: 'Ranking',  eng: 'Ranking'  } },
   { id: 'profile',     icon: ProfileIcon, label: { bm: 'Profil',   eng: 'Profile'  } },
+  { id: 'achievement', icon: AchievementIcon, label: { bm: 'Pencapaian', eng: 'Achievement' } },
 ];
 
 export default function App() {
@@ -172,29 +173,31 @@ export default function App() {
         {/* Mobile Bottom Tab Bar — hidden on desktop via CSS */}
         {!inActiveQuiz && !isPlayingJawiGame && (
           <div className="duo-tab-bar">
-            {TABS.map(tab => (
+            <div className="duo-tab-container">
+              {TABS.map(tab => (
+                <button
+                  key={tab.id}
+                  className={`duo-tab-item${activeTab === tab.id ? ' active' : ''}`}
+                  onClick={() => {
+                    if (tab.id === 'learn') {
+                      handleBackToHome();
+                    } else {
+                      setActiveTab(tab.id);
+                    }
+                  }}
+                >
+                  <span className="duo-tab-icon">{React.createElement(tab.icon)}</span>
+                  <span className="duo-tab-label">{tab.label[language] || tab.label.bm}</span>
+                </button>
+              ))}
               <button
-                key={tab.id}
-                className={`duo-tab-item${activeTab === tab.id ? ' active' : ''}`}
-                onClick={() => {
-                  if (tab.id === 'learn') {
-                    handleBackToHome();
-                  } else {
-                    setActiveTab(tab.id);
-                  }
-                }}
+                className="duo-tab-item"
+                onClick={handleToggleLang}
               >
-                <span className="duo-tab-icon">{React.createElement(tab.icon)}</span>
-                <span className="duo-tab-label">{tab.label[language] || tab.label.bm}</span>
+                <span className="duo-tab-icon"><LanguageIcon /></span>
+                <span className="duo-tab-label">{language === 'bm' ? 'English' : 'BM'}</span>
               </button>
-            ))}
-            <button
-              className="duo-tab-item"
-              onClick={handleToggleLang}
-            >
-              <span className="duo-tab-icon"><LanguageIcon /></span>
-              <span className="duo-tab-label">{language === 'bm' ? 'English' : 'BM'}</span>
-            </button>
+            </div>
           </div>
         )}
       </div>
