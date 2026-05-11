@@ -19,10 +19,13 @@ import MascotIcon from './components/icons/MascotIcon';
 import ReadingPage from './components/ReadingPage/ReadingPage';
 import HeartShopModal from './components/HeartShopModal';
 import AchievementPage from './components/AchievementPage';
+import AssessmentSelector from './pages/AssessmentSelector';
+import AssessmentPage from './pages/AssessmentPage';
 import { getMuted, setMuted, preloadSounds, unlockAudio, playHoverSound } from './utils/soundManager';
 import { useGameState } from './hooks/useGameState';
 import { loadPlayerName, savePlayerName, recordLogin, calcStreak } from './services/storageService';
 import { getGameData } from './utils/gameStatsManager';
+import { baseAssessments } from './data/curriculum/assessment';
 
 // ── Context ──────────────────────────────────────────────────────────────────
 export const GameStateContext = createContext(null);
@@ -56,6 +59,21 @@ function getActiveGameId(currentSubject, mathSubGame) {
   return 'home';
 }
 
+// ── Find matching assessment for achievement ───────────────────────────────────
+function findMatchingAssessment(achievement) {
+  if (!achievement) return null;
+
+  // Try to find assessment that matches the achievement's topic and level
+  return baseAssessments.find(assessment => {
+    const topicMatch = assessment.topic === achievement.topic;
+    const levelMatch = assessment.level === achievement.level;
+    const questionTypeMatch = assessment.questionType === achievement.questionType;
+
+    // Return if all three match, or at least topic and level match
+    return topicMatch && levelMatch && (questionTypeMatch || true);
+  }) || baseAssessments.find(a => a.topic === achievement.topic);
+}
+
 // Tab definitions (mobile bottom bar)
 const TABS = [
   { id: 'learn',       icon: LearnIcon, label: { bm: 'Kursus',   eng: 'Course'   } },
@@ -77,6 +95,7 @@ export default function App() {
   const [activeTab,      setActiveTab]      = useState('learn');
   const [streak,         setStreak]         = useState(0);
   const [isPlayingJawiGame, setIsPlayingJawiGame] = useState(false);
+  const [selectedAssessment, setSelectedAssessment] = useState(null);
 
   const activeGameId = getActiveGameId(currentSubject, mathSubGame);
   const { gameState, levelUpInfo, clearLevelUp } = useGameState(activeGameId);
@@ -103,16 +122,48 @@ export default function App() {
   const handleToggleLang   = () => setLanguage(l => l === 'bm' ? 'eng' : 'bm');
 
   const inActiveQuiz = isPlaying;
-  const viewKey = `${activeTab}-${currentSubject}-${mathSubGame}-${dateTimeSubGame}-${isPlaying}`;
+  const viewKey = `${activeTab}-${currentSubject}-${mathSubGame}-${dateTimeSubGame}-${isPlaying}-${selectedAssessment?.id}`;
 
-  // Hide sidebar during game play
-  const shouldHideSidebar = isPlaying || (currentSubject === 'math' && mathSubGame === 'faq') || isPlayingJawiGame;
+  // Hide sidebar during game play or assessment
+  const shouldHideSidebar = isPlaying || (currentSubject === 'math' && mathSubGame === 'faq') || isPlayingJawiGame || selectedAssessment;
 
   // ── Content renderer ──────────────────────────────────────────────────────
   const renderContent = () => {
     if (activeTab === 'leaderboard') return <LeaderboardPlaceholder language={language} />;
     if (activeTab === 'profile')     return <ProfilePlaceholder playerName={playerName} gameState={gameState} language={language} streak={streak} />;
-    if (activeTab === 'achievement') return <AchievementPage onBack={handleBackToHome} onHome={handleBackToHome} language={language} gameState={gameState} />;
+    if (activeTab === 'achievement') {
+      // If an assessment is selected, show AssessmentPage
+      if (selectedAssessment) {
+        return <AssessmentPage assessment={selectedAssessment} onBack={() => setSelectedAssessment(null)} language={language} gameState={gameState} />;
+      }
+      // Otherwise show AchievementPage with callback to select assessment
+      return <AchievementPage
+        onBack={handleBackToHome}
+        onHome={handleBackToHome}
+        language={language}
+        gameState={gameState}
+        onTakeAssessment={(achievement) => {
+          console.log('Taking assessment:', achievement);
+          // The achievement from baseAssessments can be used directly as an assessment
+          // if it has all required properties (totalQuestions, duration, topic, level, questionType)
+          if (achievement && achievement.totalQuestions && achievement.duration) {
+            console.log('✓ Assessment has required fields, using directly:', achievement);
+            setSelectedAssessment(achievement);
+          } else {
+            // Otherwise try to find a matching one
+            console.log('Assessment missing fields, finding match...', achievement);
+            const matchingAssessment = findMatchingAssessment(achievement);
+            if (matchingAssessment) {
+              console.log('✓ Found matching assessment:', matchingAssessment);
+              setSelectedAssessment(matchingAssessment);
+            } else {
+              console.error('✗ No matching assessment found for:', achievement);
+              alert('Could not find matching assessment');
+            }
+          }
+        }}
+      />;
+    }
 
     switch (currentSubject) {
       case 'math':
@@ -171,7 +222,7 @@ export default function App() {
         </div>
 
         {/* Mobile Bottom Tab Bar — hidden on desktop via CSS */}
-        {!inActiveQuiz && !isPlayingJawiGame && (
+        {!inActiveQuiz && !isPlayingJawiGame && !selectedAssessment && (
           <div className="duo-tab-bar">
             <div className="duo-tab-container">
               {TABS.map(tab => (

@@ -309,7 +309,7 @@ const AchievementCertificate = ({ achievement, playerName, gameState, language, 
   );
 };
 
-const AchievementCard = React.memo(({ achievement, isUnlocked, onDownload, onView, language, isDownloading }) => {
+const AchievementCard = React.memo(({ achievement, isUnlocked, onDownload, onView, language, isDownloading, onTakeAssessment }) => {
   const isGold = useMemo(() => achievement.difficulty === 'Intermediate', [achievement.difficulty]);
   const isDiamond = useMemo(() => achievement.difficulty === 'Advanced', [achievement.difficulty]);
 
@@ -333,10 +333,11 @@ const AchievementCard = React.memo(({ achievement, isUnlocked, onDownload, onVie
             : '3px solid #8B7355'
           : '2px dashed #DDD',
         transition: 'all 0.3s ease',
-        opacity: isUnlocked ? 1 : 0.5,
+        opacity: 1,
         cursor: isUnlocked ? 'pointer' : 'default',
         position: 'relative',
         minHeight: '300px',
+        maxHeight: '500px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -348,7 +349,7 @@ const AchievementCard = React.memo(({ achievement, isUnlocked, onDownload, onVie
             : isGold
             ? '0 0 25px rgba(218, 165, 32, 0.4), 0 8px 16px rgba(0, 0, 0, 0.1)'
             : '0 4px 12px rgba(0, 0, 0, 0.08)'
-          : '0 2px 8px rgba(0, 0, 0, 0.05)',
+          : 'none',
         animation: isUnlocked && isGold ? 'cardGoldenGlow 3s ease-in-out infinite' : 'none'
       }}
       onMouseEnter={e => {
@@ -464,18 +465,114 @@ const AchievementCard = React.memo(({ achievement, isUnlocked, onDownload, onVie
         {typeof achievement.description === 'object' ? (language === 'bm' ? achievement.description.bm : achievement.description.eng) : achievement.description}
       </div>
 
-      {/* Secret Achievement Label for Locked */}
-      {!isUnlocked && (
-        <div style={{
-          fontSize: '0.75rem',
-          color: '#999',
-          fontWeight: 600,
-          textTransform: 'uppercase',
-          letterSpacing: '1px'
-        }}>
-          🔐 {language === 'bm' ? 'Rahsia' : 'Secret'}
-        </div>
-      )}
+      {/* Assessment Details for Locked */}
+      {!isUnlocked && (() => {
+        const assessment = baseAssessments.find(a => a.id === achievement.id);
+        if (!assessment) return null;
+
+        const getDifficultyColor = (level) => {
+          switch (level?.toLowerCase()) {
+            case 'easy': return '#58CC02';
+            case 'medium': return '#FF9800';
+            case 'hard': return '#F44336';
+            default: return '#4A90E2';
+          }
+        };
+
+        return (
+          <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #E5E5E5' }}>
+            {/* Difficulty Badge */}
+            <div style={{
+              display: 'inline-block',
+              backgroundColor: getDifficultyColor(assessment.level),
+              color: 'white',
+              padding: '0.4rem 0.8rem',
+              borderRadius: '16px',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              marginBottom: '0.75rem'
+            }}>
+              {assessment.level}
+            </div>
+
+            {/* Assessment Details Grid */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '0.75rem',
+              marginBottom: '0.75rem',
+              fontSize: '0.85rem'
+            }}>
+              <div>
+                <div style={{ color: '#999', fontWeight: 600, marginBottom: '0.25rem', fontSize: '0.75rem' }}>Duration</div>
+                <div style={{ fontWeight: 700, color: '#2D4059' }}>{assessment.duration} min</div>
+              </div>
+              <div>
+                <div style={{ color: '#999', fontWeight: 600, marginBottom: '0.25rem', fontSize: '0.75rem' }}>Questions</div>
+                <div style={{ fontWeight: 700, color: '#2D4059' }}>{assessment.totalQuestions}</div>
+              </div>
+              <div>
+                <div style={{ color: '#999', fontWeight: 600, marginBottom: '0.25rem', fontSize: '0.75rem' }}>Target Score</div>
+                <div style={{ fontWeight: 700, color: '#58CC02' }}>{assessment.scoreTarget} pts</div>
+              </div>
+              <div>
+                <div style={{ color: '#999', fontWeight: 600, marginBottom: '0.25rem', fontSize: '0.75rem' }}>Type</div>
+                <div style={{ fontWeight: 700, color: '#4A90E2', textTransform: 'capitalize' }}>{assessment.questionType.replace('-', ' ')}</div>
+              </div>
+            </div>
+
+            {/* Status Badge */}
+            <div style={{
+              backgroundColor: '#FFF3E0',
+              color: '#E65100',
+              padding: '0.5rem',
+              borderRadius: '6px',
+              textAlign: 'center',
+              fontSize: '0.8rem',
+              fontWeight: 700,
+              marginBottom: '0.75rem'
+            }}>
+              ⏳ {language === 'bm' ? 'Belum Siap' : 'Pending'}
+            </div>
+
+            {/* Take Assessment Button */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onTakeAssessment?.(achievement);
+              }}
+              style={{
+                width: '100%',
+                backgroundColor: '#2196F3',
+                color: 'white',
+                border: '2px solid #1976D2',
+                borderRadius: '8px',
+                padding: '0.75rem 1rem',
+                fontSize: '0.9rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                boxShadow: '0 4px 12px rgba(33, 150, 243, 0.4)',
+                position: 'relative',
+                zIndex: 99999
+              }}
+              onMouseEnter={e => {
+                e.target.style.backgroundColor = '#1976D2';
+                e.target.style.transform = 'scale(1.05)';
+                e.target.style.boxShadow = '0 6px 16px rgba(33, 150, 243, 0.6)';
+              }}
+              onMouseLeave={e => {
+                e.target.style.backgroundColor = '#2196F3';
+                e.target.style.transform = 'scale(1)';
+                e.target.style.boxShadow = '0 4px 12px rgba(33, 150, 243, 0.4)';
+              }}
+            >
+              {language === 'bm' ? '📋 Ambil Penilaian' : '📋 Take Assessment'}
+            </button>
+          </div>
+        );
+      })()}
 
       {/* Download Button for Unlocked */}
       {isUnlocked && (
@@ -872,8 +969,8 @@ const CertificateModal = ({ achievement, playerName, gameState, language, onClos
   );
 };
 
-export default function AchievementPage({ onBack, onHome, language, gameState }) {
-  const [currentTab, setCurrentTab] = useState('badges');
+export default function AchievementPage({ onBack, onHome, language, gameState, onTakeAssessment }) {
+  const [currentTab, setCurrentTab] = useState('assessments');
   const gameData = getGameData();
   const [downloadingBadge, setDownloadingBadge] = useState(null);
   const [selectedAchievement, setSelectedAchievement] = useState(null);
@@ -1067,11 +1164,37 @@ export default function AchievementPage({ onBack, onHome, language, gameState })
       {/* Tabs */}
       <div style={{
         display: 'flex',
-        gap: '1rem',
-        padding: '1.5rem 1.25rem',
+        gap: '0.5rem',
+        padding: '1rem 0.75rem',
         borderBottom: '2px solid #E5E5E5',
-        background: '#fff'
+        background: '#fff',
+        flexWrap: 'wrap',
+        justifyContent: 'center'
       }}>
+        <button
+          onClick={() => setCurrentTab('assessments')}
+          style={{
+            background: currentTab === 'assessments' ? '#58CC02' : 'transparent',
+            color: currentTab === 'assessments' ? 'white' : '#999',
+            border: 'none',
+            padding: '0.6rem 1rem',
+            borderRadius: '8px',
+            fontSize: '0.85rem',
+            fontWeight: 700,
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            whiteSpace: 'nowrap'
+          }}
+          onMouseEnter={e => {
+            if (currentTab !== 'assessments') e.target.style.background = '#F0F0F0';
+          }}
+          onMouseLeave={e => {
+            if (currentTab !== 'assessments') e.target.style.background = 'transparent';
+          }}
+        >
+          {language === 'bm' ? '📋 Penilaian' : '📋 Assessment'}
+        </button>
+
         <button
           onClick={() => setCurrentTab('badges')}
           style={{
@@ -1121,44 +1244,65 @@ export default function AchievementPage({ onBack, onHome, language, gameState })
       {/* Content */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 1.25rem' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
-          {currentTab === 'achievements' ? (
-            baseAssessments.map(achievement => {
-              const isUnlocked = unlockedAchievements.some(a => a.id === achievement.id);
-              return (
-                <div key={achievement.id}>
-                  <AchievementCard
-                    achievement={achievement}
-                    isUnlocked={isUnlocked}
-                    onDownload={handleDownloadAchievement}
-                    onView={setSelectedAchievement}
-                    language={language}
-                    isDownloading={downloadingBadge === achievement.id}
-                  />
-                </div>
-              );
-            })
-          ) : (
-            BADGE_CONFIG.map(badge => {
-              let progress = 0;
-              if (badge.type === 'streak') progress = gameData.streak || 0;
-              if (badge.type === 'accuracy') progress = gameData.gems || 0;
-              if (badge.type === 'gems') progress = gameData.gems || 0;
-              const isUnlocked = progress >= badge.target;
+          {currentTab === 'assessments' ? (
+          // Pending Assessments
+          baseAssessments.filter(a => a.status === 'Pending').map(achievement => {
+            const isUnlocked = unlockedAchievements.some(a => a.id === achievement.id);
+            return (
+              <div key={achievement.id}>
+                <AchievementCard
+                  achievement={achievement}
+                  isUnlocked={isUnlocked}
+                  onDownload={handleDownloadAchievement}
+                  onView={setSelectedAchievement}
+                  language={language}
+                  isDownloading={downloadingBadge === achievement.id}
+                  onTakeAssessment={onTakeAssessment}
+                />
+              </div>
+            );
+          })
+        ) : currentTab === 'badges' ? (
+          // Badges
+          BADGE_CONFIG.map(badge => {
+            let progress = 0;
+            if (badge.type === 'streak') progress = gameData.streak || 0;
+            if (badge.type === 'accuracy') progress = gameData.gems || 0;
+            if (badge.type === 'gems') progress = gameData.gems || 0;
+            const isUnlocked = progress >= badge.target;
 
-              return (
-                <div key={badge.id}>
-                  <BadgeCard
-                    badge={badge}
-                    progress={progress}
-                    isUnlocked={isUnlocked}
-                    onDownload={handleDownloadBadge}
-                    language={language}
-                    isDownloading={downloadingBadge === badge.id}
-                  />
-                </div>
-              );
-            })
-          )}
+            return (
+              <div key={badge.id}>
+                <BadgeCard
+                  badge={badge}
+                  progress={progress}
+                  isUnlocked={isUnlocked}
+                  onDownload={handleDownloadBadge}
+                  language={language}
+                  isDownloading={downloadingBadge === badge.id}
+                />
+              </div>
+            );
+          })
+        ) : (
+          // Completed Achievements
+          baseAssessments.filter(a => a.status === 'Completed').map(achievement => {
+            const isUnlocked = unlockedAchievements.some(a => a.id === achievement.id);
+            return (
+              <div key={achievement.id}>
+                <AchievementCard
+                  achievement={achievement}
+                  isUnlocked={isUnlocked}
+                  onDownload={handleDownloadAchievement}
+                  onView={setSelectedAchievement}
+                  language={language}
+                  isDownloading={downloadingBadge === achievement.id}
+                  onTakeAssessment={onTakeAssessment}
+                />
+              </div>
+            );
+          })
+        )}
         </div>
       </div>
 
