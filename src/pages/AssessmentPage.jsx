@@ -366,51 +366,237 @@ const AssessmentPage = ({ assessment, onBack, language = 'eng', gameState }) => 
   const timeUpClass = isTimeUp ? 'time-up' : '';
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100vh',
-      backgroundColor: '#fff'
-    }}>
-      {/* Header with Timer - FIXED */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '1rem 1.5rem',
-        borderBottom: '2px solid #E5E5E5',
-        backgroundColor: isTimeUp ? '#FFEBEE' : '#fff',
-        flexShrink: 0
-      }}>
-        <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#2D4059' }}>
+    <div className="assessment-page">
+      <style>{`
+        .assessment-page {
+          display: flex;
+          flex-direction: column;
+          height: 100vh;
+          background-color: #fff;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          overflow: hidden;
+        }
+
+        /* ── Header ── */
+        .assessment-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0.6rem 0.75rem;
+          border-bottom: 2px solid #E5E5E5;
+          flex-shrink: 0;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+        }
+        .assessment-header.time-up-bg { background-color: #FFEBEE; }
+        .assessment-title {
+          font-size: 0.85rem;
+          font-weight: 700;
+          color: #2D4059;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 45%;
+        }
+        .assessment-header-right {
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+        }
+        .assessment-progress {
+          font-size: 0.75rem;
+          color: #666;
+          font-weight: 600;
+          white-space: nowrap;
+        }
+        .assessment-timer {
+          font-size: 0.85rem;
+          font-weight: 700;
+          padding: 0.35rem 0.6rem;
+          border-radius: 8px;
+          min-width: 65px;
+          text-align: center;
+          white-space: nowrap;
+        }
+
+        /* ── Time Up Warning ── */
+        .time-up-warning {
+          background-color: #FFCDD2;
+          color: #C62828;
+          padding: 0.6rem;
+          text-align: center;
+          font-size: 0.8rem;
+          font-weight: 700;
+          border-bottom: 2px solid #F44336;
+          flex-shrink: 0;
+        }
+
+        /* ── Main Content ── */
+        .assessment-main {
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+          overflow: hidden;
+          min-height: 0;
+        }
+
+        /* ── Sidebar (Question Palette) ── */
+        .assessment-sidebar {
+          display: none;
+          flex-shrink: 0;
+        }
+
+        /* ── Question Content (NO SCROLL) ── */
+        .assessment-content {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          padding: 0.5rem 0.75rem;
+          overflow: hidden;
+          background-color: #FAFAFA;
+          min-height: 0;
+        }
+        .assessment-question-wrap {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          max-width: 700px;
+          margin: 0 auto;
+          min-height: 0;
+          font-size: 0.85rem;
+        }
+
+        /* ── Footer Nav (always at bottom) ── */
+        .assessment-nav {
+          display: flex;
+          gap: 0.6rem;
+          justify-content: center;
+          align-items: center;
+          padding: 0.65rem 0.75rem;
+          background-color: #fff;
+          border-top: 1px solid #E5E5E5;
+          box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+          flex-wrap: wrap;
+          flex-shrink: 0;
+        }
+        .assessment-nav .nav-btn {
+          padding: 0.45rem 0.75rem;
+          font-size: 0.72rem;
+          font-weight: 600;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          white-space: nowrap;
+          border: 2px solid #E0E0E0;
+          background-color: #F5F5F5;
+          color: #2D4059;
+        }
+        .assessment-nav .nav-btn:disabled {
+          cursor: not-allowed;
+          opacity: 0.5;
+        }
+        .assessment-nav .nav-btn.btn-next {
+          background-color: #58CC02;
+          color: white;
+          border: none;
+        }
+        .assessment-nav .nav-btn.btn-next:disabled {
+          background-color: #CCC;
+        }
+        .assessment-nav .nav-btn.btn-submit {
+          background-color: #4A90E2;
+          color: white;
+          border: none;
+        }
+        .assessment-nav .nav-btn:hover:not(:disabled) {
+          filter: brightness(1.08);
+          transform: translateY(-1px);
+        }
+
+        /* ═══════════════════════════════════════════
+           Small (Landscape Phones): min-width 576px
+           ═══════════════════════════════════════════ */
+        @media (min-width: 576px) {
+          .assessment-header { padding: 0.75rem 1rem; }
+          .assessment-title { font-size: 0.95rem; max-width: 50%; }
+          .assessment-header-right { gap: 1rem; }
+          .assessment-progress { font-size: 0.8rem; }
+          .assessment-timer { font-size: 0.9rem; padding: 0.4rem 0.75rem; }
+          .time-up-warning { font-size: 0.85rem; padding: 0.75rem; }
+          .assessment-content { padding: 0.75rem 1rem; }
+          .assessment-question-wrap { font-size: 0.9rem; }
+          .assessment-nav { gap: 0.65rem; padding: 0.75rem 1rem; }
+          .assessment-nav .nav-btn { padding: 0.5rem 0.85rem; font-size: 0.76rem; }
+        }
+
+        /* ═══════════════════════════════════════
+           Medium (Tablets): min-width 768px
+           ═══════════════════════════════════════ */
+        @media (min-width: 768px) {
+          .assessment-main { flex-direction: row; }
+          .assessment-sidebar { display: flex; }
+          .assessment-header { padding: 0.85rem 1.25rem; flex-wrap: nowrap; }
+          .assessment-title { font-size: 1rem; max-width: 55%; }
+          .assessment-header-right { gap: 1.5rem; }
+          .assessment-progress { font-size: 0.85rem; }
+          .assessment-timer { font-size: 1rem; padding: 0.45rem 0.85rem; min-width: 75px; }
+          .time-up-warning { font-size: 0.9rem; padding: 0.85rem; }
+          .assessment-content { padding: 1rem 1.5rem; }
+          .assessment-question-wrap { font-size: 0.95rem; }
+          .assessment-nav { gap: 0.75rem; padding: 0.85rem 1.5rem; }
+          .assessment-nav .nav-btn { padding: 0.5rem 0.95rem; font-size: 0.8rem; }
+        }
+
+        /* ═══════════════════════════════════════════════
+           Large (Laptops/Desktops): min-width 992px
+           ═══════════════════════════════════════════════ */
+        @media (min-width: 992px) {
+          .assessment-header { padding: 1rem 1.5rem; }
+          .assessment-title { font-size: 1.1rem; max-width: 60%; }
+          .assessment-header-right { gap: 2rem; }
+          .assessment-progress { font-size: 0.9rem; }
+          .assessment-timer { font-size: 1.1rem; padding: 0.5rem 1rem; min-width: 80px; }
+          .time-up-warning { font-size: 1rem; padding: 1rem; }
+          .assessment-content { padding: 1.25rem 2rem; }
+          .assessment-question-wrap { font-size: 1rem; }
+          .assessment-nav { gap: 0.85rem; padding: 1rem 2rem; }
+          .assessment-nav .nav-btn { padding: 0.55rem 1.1rem; font-size: 0.84rem; }
+        }
+
+        /* ═══════════════════════════════════════════════
+           Extra Large (Wide Desktops): min-width 1200px
+           ═══════════════════════════════════════════════ */
+        @media (min-width: 1200px) {
+          .assessment-header { padding: 1rem 2rem; }
+          .assessment-title {
+            font-size: 1.15rem;
+            max-width: none;
+          }
+          .assessment-content { padding: 1.5rem 2.5rem; }
+          .assessment-nav { padding: 1.1rem 2.5rem; }
+          .assessment-nav .nav-btn { padding: 0.65rem 1.25rem; font-size: 0.88rem; }
+        }
+      `}</style>
+
+      {/* Header with Timer */}
+      <div className={`assessment-header ${isTimeUp ? 'time-up-bg' : ''}`}>
+        <div className="assessment-title">
           {assessment.name}
         </div>
-
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '2rem'
-        }}>
-          {/* Progress Info */}
-          <div style={{
-            fontSize: '0.9rem',
-            color: '#666',
-            fontWeight: 600
-          }}>
-            Question {currentQuestionIndex + 1} / {questions.length}
+        <div className="assessment-header-right">
+          <div className="assessment-progress">
+            Q{currentQuestionIndex + 1} / {questions.length}
           </div>
-
-          {/* Timer */}
-          <div style={{
-            fontSize: '1.1rem',
-            fontWeight: 700,
-            color: isTimeUp ? '#F44336' : timeRemaining < 300 ? '#FF9800' : '#2D4059',
-            backgroundColor: isTimeUp ? '#FFCDD2' : timeRemaining < 300 ? '#FFF3E0' : 'transparent',
-            padding: '0.5rem 1rem',
-            borderRadius: '8px',
-            minWidth: '80px',
-            textAlign: 'center'
-          }}>
+          <div
+            className="assessment-timer"
+            style={{
+              color: isTimeUp ? '#F44336' : timeRemaining < 300 ? '#FF9800' : '#2D4059',
+              backgroundColor: isTimeUp ? '#FFCDD2' : timeRemaining < 300 ? '#FFF3E0' : 'transparent',
+            }}
+          >
             ⏱️ {formatTime(timeRemaining)}
           </div>
         </div>
@@ -418,54 +604,27 @@ const AssessmentPage = ({ assessment, onBack, language = 'eng', gameState }) => 
 
       {/* Time Up Warning */}
       {isTimeUp && (
-        <div style={{
-          backgroundColor: '#FFCDD2',
-          color: '#C62828',
-          padding: '1rem',
-          textAlign: 'center',
-          fontSize: '1rem',
-          fontWeight: 700,
-          borderBottom: '2px solid #F44336',
-          flexShrink: 0
-        }}>
+        <div className="time-up-warning">
           ⚠️ Time is up! Your answers have been submitted automatically.
         </div>
       )}
 
-      {/* Main Content Area - Flexible but with footer space */}
-      <div style={{
-        display: 'flex',
-        flex: 1,
-        overflow: 'hidden',
-        minHeight: 0
-      }}>
+      {/* Main Content Area */}
+      <div className="assessment-main">
         {/* Question Palette Sidebar */}
-        <QuestionPalette
-          totalQuestions={questions.length}
-          currentQuestion={currentQuestionIndex + 1}
-          answeredQuestions={answeredQuestions}
-          onSelectQuestion={handleSelectQuestion}
-          isMobile={isMobile}
-        />
+        <div className="assessment-sidebar">
+          <QuestionPalette
+            totalQuestions={questions.length}
+            currentQuestion={currentQuestionIndex + 1}
+            answeredQuestions={answeredQuestions}
+            onSelectQuestion={handleSelectQuestion}
+            isMobile={false}
+          />
+        </div>
 
-        {/* Question Content - Scrollable */}
-        <div style={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          padding: '1.5rem 2rem 0 2rem',
-          overflowY: 'auto',
-          backgroundColor: '#FAFAFA',
-          position: 'relative',
-          justifyContent: 'center'
-        }}>
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            paddingBottom: '0'
-          }}>
+        {/* Question Content */}
+        <div className="assessment-content">
+          <div className="assessment-question-wrap">
             {currentQuestion ? (
               <QuestionRenderer
                 question={currentQuestion}
@@ -486,46 +645,12 @@ const AssessmentPage = ({ assessment, onBack, language = 'eng', gameState }) => 
             )}
           </div>
 
-          {/* Navigation Buttons - FIXED TO QUESTION BOX */}
-          <div style={{
-            display: 'flex',
-            gap: '0.75rem',
-            justifyContent: 'center',
-            padding: '0.3rem 0.5rem 0.5rem 0.5rem',
-            backgroundColor: '#fff',
-            borderTop: '2px solid #E5E5E5',
-            flexWrap: 'wrap',
-            position: 'sticky',
-            bottom: 0,
-            zIndex: 100,
-            margin: '0',
-            marginTop: 'auto'
-          }}>
+          {/* Navigation Buttons */}
+          <div className="assessment-nav">
             <button
               onClick={handlePreviousQuestion}
               disabled={currentQuestionIndex === 0 || isTimeUp}
-              style={{
-                padding: '0.4rem 0.8rem',
-                fontSize: '0.8rem',
-                fontWeight: 600,
-                backgroundColor: currentQuestionIndex === 0 ? '#CCC' : '#F5F5F5',
-                color: '#2D4059',
-                border: '2px solid #E0E0E0',
-                borderRadius: '6px',
-                cursor: currentQuestionIndex === 0 ? 'not-allowed' : 'pointer',
-                transition: 'all 0.3s ease',
-                whiteSpace: 'nowrap'
-              }}
-              onMouseEnter={(e) => {
-                if (currentQuestionIndex > 0 && !isTimeUp) {
-                  e.target.style.backgroundColor = '#E8F5E9';
-                  e.target.style.borderColor = '#58CC02';
-                }
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = '#F5F5F5';
-                e.target.style.borderColor = '#E0E0E0';
-              }}
+              className="nav-btn"
             >
               ← Previous
             </button>
@@ -534,28 +659,7 @@ const AssessmentPage = ({ assessment, onBack, language = 'eng', gameState }) => 
               <button
                 onClick={handleAnswerSubmit}
                 disabled={!currentAnswer || isTimeUp}
-                style={{
-                  padding: '0.5rem 1rem',
-                  fontSize: '0.85rem',
-                  fontWeight: 600,
-                  backgroundColor: !currentAnswer || isTimeUp ? '#CCC' : '#58CC02',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '6px',
-                  cursor: !currentAnswer || isTimeUp ? 'not-allowed' : 'pointer',
-                  transition: 'all 0.3s ease',
-                  whiteSpace: 'nowrap'
-                }}
-                onMouseEnter={(e) => {
-                  if (currentAnswer && !isTimeUp) {
-                    e.target.style.backgroundColor = '#46A302';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (currentAnswer && !isTimeUp) {
-                    e.target.style.backgroundColor = '#58CC02';
-                  }
-                }}
+                className="nav-btn btn-next"
               >
                 Next →
               </button>
@@ -564,59 +668,20 @@ const AssessmentPage = ({ assessment, onBack, language = 'eng', gameState }) => 
             <button
               onClick={handleNextQuestion}
               disabled={currentQuestionIndex === questions.length - 1 || isTimeUp}
-              style={{
-                padding: '0.4rem 0.8rem',
-                fontSize: '0.8rem',
-                fontWeight: 600,
-                backgroundColor: currentQuestionIndex === questions.length - 1 ? '#CCC' : '#F5F5F5',
-                color: '#2D4059',
-                border: '2px solid #E0E0E0',
-                borderRadius: '6px',
-                cursor: currentQuestionIndex === questions.length - 1 ? 'not-allowed' : 'pointer',
-                transition: 'all 0.3s ease',
-                whiteSpace: 'nowrap'
-              }}
-              onMouseEnter={(e) => {
-                if (currentQuestionIndex < questions.length - 1 && !isTimeUp) {
-                  e.target.style.backgroundColor = '#E8F5E9';
-                  e.target.style.borderColor = '#58CC02';
-                }
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = '#F5F5F5';
-                e.target.style.borderColor = '#E0E0E0';
-              }}
+              className="nav-btn"
             >
               Skip →
             </button>
 
             <button
               onClick={handleSubmitAssessment}
-              style={{
-                padding: '0.4rem 0.8rem',
-                fontSize: '0.8rem',
-                fontWeight: 600,
-                backgroundColor: '#4A90E2',
-                color: 'white',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                whiteSpace: 'nowrap'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.backgroundColor = '#357ABD';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = '#4A90E2';
-              }}
+              className="nav-btn btn-submit"
             >
-              ✓ Submit Assessment
+              ✓ Submit
             </button>
           </div>
         </div>
       </div>
-
     </div>
   );
 };

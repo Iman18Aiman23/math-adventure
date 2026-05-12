@@ -1745,267 +1745,189 @@ export default function ColumnMathGame({ onBack, language }) {
 
             {/* Long Division Format (for division operations) */}
             {problem.op === '÷' ? (
-              <>
-                {/* Quotient row - aligned with first digit of dividend */}
-                <div style={{ display: 'flex', alignItems: 'flex-end', marginBottom: '8px', fontFamily: '"Courier New", monospace' }}>
-                  {/* Divisor space */}
-                  <div style={{ display: 'flex', alignItems: 'center', marginRight: '8px', width: CELL_W }}>
-                    <div style={{ textAlign: 'right', fontSize: DIGIT_FS, fontWeight: 700, marginRight: '4px', minWidth: CELL_W - 24, visibility: 'hidden' }}>
+              (() => {
+                // Compute a fixed-width left gutter for the divisor + bracket.
+                // Every row uses DIVISOR_COL_W so columns stay perfectly aligned.
+                const divisorStr = String(problem.num2);
+                const DIVISOR_COL_W = divisorStr.length * 18 + 28; // text + bracket + padding
+
+                // Helper: render the left gutter (visible or hidden)
+                const DivisorGutter = ({ visible }) => (
+                  <div style={{ width: DIVISOR_COL_W, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', flexShrink: 0 }}>
+                    <span style={{ fontSize: DIGIT_FS, fontWeight: 700, fontFamily: '"Courier New", monospace', marginRight: '2px', visibility: visible ? 'visible' : 'hidden' }}>
                       {problem.num2}
-                    </div>
-                    <div style={{ fontSize: '2.5rem', fontWeight: 900, color: opTheme.main, lineHeight: 0.8, visibility: 'hidden' }}>)</div>
+                    </span>
+                    <span style={{ fontSize: '2.2rem', fontWeight: 900, color: opTheme.main, lineHeight: 0.8, visibility: visible ? 'visible' : 'hidden' }}>
+                      )
+                    </span>
                   </div>
-                  {/* Quotient input boxes - same column structure as dividend */}
+                );
+
+                // Helper: render a row of digit cells (fixed width, gap matches everywhere)
+                const DigitRow = ({ children }) => (
                   <div style={{ display: 'flex', gap: '3px' }}>
-                    {Array.from({ length: maxLen }, (_, i) => {
-                      const d = inputDigits[i] ?? '';
-                      const isActive = status === 'playing' && activeIdx === i && activeSection === 'answer';
-                      const correctD = String(problem.answer)[i];
-                      const isWrong = status === 'wrong' && d !== '' && d !== correctD;
-                      const isCorrect = status === 'correct';
+                    {children}
+                  </div>
+                );
+
+                // Build all working rows dynamically based on how many quotient digits the user has entered
+                const dividendDigits = p1.replace(/ /g, '').split('').map(Number);
+                const quotientStr = String(problem.answer);
+
+                // Collect working-step rows to render
+                const workingRows = [];
+                let currentValue = 0; // running value being divided
+
+                for (let step = 0; step < dividendDigits.length; step++) {
+                  const qDigitVal = inputDigits[step] !== '' && inputDigits[step] !== undefined
+                    ? parseInt(inputDigits[step], 10) : null;
+
+                  if (qDigitVal === null) break; // stop if user hasn't entered this quotient digit yet
+
+                  const divisor = problem.num2;
+                  currentValue = currentValue * 10 + dividendDigits[step];
+                  const multiplyResult = qDigitVal * divisor;
+                  const subtractResult = currentValue - multiplyResult;
+
+                  // Brought-down number: subtractResult with next dividend digit appended
+                  let broughtDown = subtractResult;
+                  const hasNextDigit = step + 1 < dividendDigits.length;
+                  if (hasNextDigit) {
+                    broughtDown = subtractResult * 10 + dividendDigits[step + 1];
+                  }
+
+                  workingRows.push({
+                    step,
+                    multiplyStr: String(multiplyResult),
+                    broughtDown,
+                    broughtDownStr: String(broughtDown),
+                    hasNextDigit,
+                    subtractResult,
+                  });
+
+                  currentValue = subtractResult;
+                }
+
+                return (
+                  <>
+                    {/* Quotient row */}
+                    <div style={{ display: 'flex', alignItems: 'flex-end', marginBottom: '8px', fontFamily: '"Courier New", monospace' }}>
+                      <DivisorGutter visible={false} />
+                      <DigitRow>
+                        {Array.from({ length: maxLen }, (_, i) => {
+                          const d = inputDigits[i] ?? '';
+                          const isActive = status === 'playing' && activeIdx === i && activeSection === 'answer';
+                          const correctD = quotientStr[i];
+                          const isWrong = status === 'wrong' && d !== '' && d !== correctD;
+                          const isCorrect = status === 'correct';
+                          return (
+                            <input
+                              key={i} ref={el => inputRefs.current[i] = el}
+                              type="text" inputMode="numeric" maxLength="2" enterKeyHint="done" value={d} readOnly={status !== 'playing'}
+                              onChange={e => handleAnswerChange(i, e.target.value)}
+                              onKeyDown={e => handleAnswerKeyDown(i, e)}
+                              onBlur={e => processCarryLogic(i, e.target.value)}
+                              onFocus={() => { if (status === 'playing') { setActiveSection('answer'); setActiveIdx(i); } }}
+                              style={{
+                                width: CELL_W, height: ANS_H, boxSizing: 'border-box',
+                                border: `3px solid ${isActive ? opTheme.main : isWrong ? '#FF4B4B' : isCorrect ? '#58CC02' : '#ADADAD'}`,
+                                borderRadius: '12px', background: isActive ? opTheme.soft : isWrong ? '#FFEBEB' : isCorrect ? '#EFFFEA' : '#fafafa',
+                                textAlign: 'center', fontSize: ANS_FS, fontWeight: 700, fontFamily: '"Courier New", monospace',
+                                color: isWrong ? '#FF4B4B' : isCorrect ? '#58CC02' : '#3C3C3C', outline: 'none', caretColor: 'transparent', cursor: 'pointer', transition: 'all 0.12s',
+                              }}
+                            />
+                          );
+                        })}
+                      </DigitRow>
+                    </div>
+
+                    {/* Bracket line under quotient */}
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px', fontFamily: '"Courier New", monospace' }}>
+                      <DivisorGutter visible={false} />
+                      <div style={{ flex: 1, borderTop: `3px solid ${opTheme.main}` }} />
+                    </div>
+
+                    {/* Divisor ) Dividend row */}
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '4px', fontFamily: '"Courier New", monospace' }}>
+                      <DivisorGutter visible={true} />
+                      <DigitRow>
+                        {dividendDigits.map((d, i) => (
+                          <div key={i} style={{ width: CELL_W, textAlign: 'center', fontSize: DIGIT_FS, fontWeight: 700, fontFamily: '"Courier New", monospace', color: '#3C3C3C' }}>
+                            {d}
+                          </div>
+                        ))}
+                      </DigitRow>
+                    </div>
+
+                    {/* Dynamic working rows */}
+                    {workingRows.map((row, rIdx) => {
+                      // Multiply is RIGHT-ALIGNED ending at column = step
+                      const mulEndCol = row.step;
+                      const mulStartCol = Math.max(0, row.step - row.multiplyStr.length + 1);
+
+                      // Subtract+BD spans from mulStartCol to step+1 (or step if last)
+                      const bdStartCol = mulStartCol;
+                      const bdEndCol = row.hasNextDigit ? row.step + 1 : row.step;
+                      const bdSpan = bdEndCol - bdStartCol + 1;
+                      const bdStr = row.hasNextDigit
+                        ? String(row.broughtDown).padStart(bdSpan, '0')
+                        : String(row.subtractResult).padStart(bdSpan, '0');
+
                       return (
-                        <input
-                          key={i} ref={el => inputRefs.current[i] = el}
-                          type="text" inputMode="numeric" maxLength="2" enterKeyHint="done" value={d} readOnly={status !== 'playing'}
-                          onChange={e => handleAnswerChange(i, e.target.value)}
-                          onKeyDown={e => handleAnswerKeyDown(i, e)}
-                          onBlur={e => processCarryLogic(i, e.target.value)}
-                          onFocus={() => { if (status === 'playing') { setActiveSection('answer'); setActiveIdx(i); } }}
-                          style={{
-                            width: CELL_W, height: ANS_H, boxSizing: 'border-box',
-                            border: `3px solid ${isActive ? opTheme.main : isWrong ? '#FF4B4B' : isCorrect ? '#58CC02' : '#ADADAD'}`,
-                            borderRadius: '12px', background: isActive ? opTheme.soft : isWrong ? '#FFEBEB' : isCorrect ? '#EFFFEA' : '#fafafa',
-                            textAlign: 'center', fontSize: ANS_FS, fontWeight: 700, fontFamily: '"Courier New", monospace',
-                            color: isWrong ? '#FF4B4B' : isCorrect ? '#58CC02' : '#3C3C3C', outline: 'none', caretColor: 'transparent', cursor: 'pointer', transition: 'all 0.12s',
-                          }}
-                        />
+                        <React.Fragment key={rIdx}>
+                          {/* Multiply result row */}
+                          <div style={{ display: 'flex', alignItems: 'center', minHeight: ANS_H, fontFamily: '"Courier New", monospace' }}>
+                            <DivisorGutter visible={false} />
+                            <DigitRow>
+                              {Array.from({ length: maxLen }, (_, i) => {
+                                let digit = '';
+                                if (i >= mulStartCol && i <= mulEndCol) {
+                                  digit = row.multiplyStr[i - mulStartCol];
+                                }
+                                return (
+                                  <div key={i} style={{ width: CELL_W, textAlign: 'center', fontSize: DIGIT_FS, fontWeight: 700, fontFamily: '"Courier New", monospace', color: digit ? opTheme.main : 'transparent', height: ANS_H, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    {digit || '\u00A0'}
+                                  </div>
+                                );
+                              })}
+                            </DigitRow>
+                          </div>
+
+                          {/* Separator line */}
+                          <div style={{ display: 'flex', alignItems: 'center', margin: '2px 0', fontFamily: '"Courier New", monospace' }}>
+                            <DivisorGutter visible={false} />
+                            <DigitRow>
+                              {Array.from({ length: maxLen }, (_, i) => (
+                                <div key={i} style={{ borderTop: '2px solid #3C3C3C', width: CELL_W }} />
+                              ))}
+                            </DigitRow>
+                          </div>
+
+                          {/* Subtract + Brought down row */}
+                          <div style={{ display: 'flex', alignItems: 'center', minHeight: ANS_H, marginBottom: '4px', fontFamily: '"Courier New", monospace' }}>
+                            <DivisorGutter visible={false} />
+                            <DigitRow>
+                              {Array.from({ length: maxLen }, (_, i) => {
+                                let digit = '';
+                                let color = 'transparent';
+                                if (i >= bdStartCol && i <= bdEndCol) {
+                                  digit = bdStr[i - bdStartCol];
+                                  color = row.hasNextDigit ? '#999' : '#58CC02';
+                                }
+                                return (
+                                  <div key={i} style={{ width: CELL_W, textAlign: 'center', fontSize: DIGIT_FS, fontWeight: 700, fontFamily: '"Courier New", monospace', color, height: ANS_H, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    {digit || '\u00A0'}
+                                  </div>
+                                );
+                              })}
+                            </DigitRow>
+                          </div>
+                        </React.Fragment>
                       );
                     })}
-                  </div>
-                </div>
-
-                {/* Divisor spacing variable for consistent alignment */}
-                {(() => {
-                  const divisorWidth = CELL_W; // Standard column width
-                  const divisorSpacing = '8px';
-
-                  return null; // Just for variable calculation
-                })()}
-
-                {/* Long division bracket line - divisor ) dividend */}
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '4px', fontFamily: '"Courier New", monospace' }}>
-                  {/* Divisor with bracket */}
-                  <div style={{ display: 'flex', alignItems: 'center', marginRight: '8px', width: CELL_W }}>
-                    <div style={{ textAlign: 'right', fontSize: DIGIT_FS, fontWeight: 700, marginRight: '4px', minWidth: CELL_W - 24 }}>
-                      {problem.num2}
-                    </div>
-                    <div style={{ fontSize: '2.5rem', fontWeight: 900, color: opTheme.main, lineHeight: 0.8 }}>)</div>
-                  </div>
-                  {/* Dividend digits */}
-                  <div style={{ display: 'flex', gap: '3px' }}>
-                    {p1.split('').map((d, i) => (
-                      <div key={i} style={{ width: CELL_W, textAlign: 'center', fontSize: DIGIT_FS, fontWeight: 700, fontFamily: '"Courier New", monospace', color: '#3C3C3C' }}>
-                        {d === ' ' ? '' : d}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Top row (working row for multiplication results) - AUTO-FILLED based on quotient */}
-                {(() => {
-                  if (inputDigits[0] === '' || inputDigits[0] === undefined) return null;
-
-                  const firstDigit = parseInt(inputDigits[0], 10);
-                  const divisor = problem.num2;
-                  const multiplyResult = firstDigit * divisor;
-                  const multiplyStr = String(multiplyResult);
-
-                  return (
-                    <div style={{ display: 'flex', alignItems: 'center', height: isDesktop ? '50px' : '38px', minHeight: isDesktop ? '50px' : '38px', marginBottom: '4px', fontFamily: '"Courier New", monospace' }}>
-                      {/* Divisor space */}
-                      <div style={{ display: 'flex', alignItems: 'center', marginRight: '8px', width: CELL_W }}>
-                        <div style={{ textAlign: 'right', fontSize: DIGIT_FS, fontWeight: 700, marginRight: '4px', minWidth: CELL_W - 24, visibility: 'hidden' }}>
-                          {problem.num2}
-                        </div>
-                        <div style={{ fontSize: '2.5rem', fontWeight: 900, color: opTheme.main, lineHeight: 0.8, visibility: 'hidden' }}>)</div>
-                      </div>
-                      {/* Top row display - auto-calculated multiply result LEFT-ALIGNED in columns */}
-                      <div style={{ display: 'flex', gap: '3px' }}>
-                        {Array.from({ length: maxLen }, (_, i) => {
-                          const digitIndex = i; // Start from column 0, left-aligned
-                          const digit = digitIndex < multiplyStr.length ? multiplyStr[digitIndex] : '';
-                          return (
-                            <div key={i} style={{ width: CELL_W, textAlign: 'center', fontSize: DIGIT_FS, fontWeight: 700, fontFamily: '"Courier New", monospace', color: digit ? opTheme.main : 'transparent', height: ANS_H, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                              {digit}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })()}
-
-                {/* Separator line */}
-                {inputDigits[0] !== '' && inputDigits[0] !== undefined && (
-                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '4px', fontFamily: '"Courier New", monospace' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', marginRight: '8px', width: CELL_W }}>
-                      <div style={{ visibility: 'hidden', minWidth: CELL_W - 24 }} />
-                      <div style={{ visibility: 'hidden' }}>)</div>
-                    </div>
-                    <div style={{ display: 'flex', gap: '3px' }}>
-                      {Array.from({ length: maxLen }, (_, i) => (
-                        <div key={i} style={{ borderTop: '2px solid #3C3C3C', width: CELL_W }} />
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Subtraction result + Brought down digit row (SAME ROW) - AUTO-FILLED */}
-                {(() => {
-                  if (inputDigits[0] === '' || inputDigits[0] === undefined) return null;
-
-                  const firstDigit = parseInt(inputDigits[0], 10);
-                  const divisor = problem.num2;
-                  const multiplyResult = firstDigit * divisor;
-                  const firstDividendDigit = parseInt(p1[0], 10);
-                  const subtractResult = firstDividendDigit - multiplyResult;
-
-                  // Brought down: subtract result + next dividend digit
-                  let broughtDownNumber = subtractResult;
-                  if (p1.length > 1) {
-                    const secondDividendDigit = parseInt(p1[1], 10);
-                    broughtDownNumber = subtractResult * 10 + secondDividendDigit;
-                  }
-
-                  const subtractStr = String(subtractResult);
-                  const broughtDownStr = String(broughtDownNumber);
-
-                  return (
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '4px', fontFamily: '"Courier New", monospace' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', marginRight: '8px', width: CELL_W }}>
-                        <div style={{ visibility: 'hidden', minWidth: CELL_W - 24 }} />
-                        <div style={{ visibility: 'hidden' }}>)</div>
-                      </div>
-                      {/* Subtract + brought down in same row - LEFT-ALIGNED */}
-                      <div style={{ display: 'flex', gap: '3px' }}>
-                        {Array.from({ length: maxLen }, (_, i) => {
-                          let digit = '';
-                          let color = 'transparent';
-
-                          // LEFT-ALIGN: Show brought down first (it spans from subtract column onwards)
-                          if (i < broughtDownStr.length) {
-                            digit = broughtDownStr[i];
-                            color = '#999';
-                          }
-
-                          return (
-                            <div key={i} style={{ width: CELL_W, textAlign: 'center', fontSize: DIGIT_FS, fontWeight: 700, fontFamily: '"Courier New", monospace', color, height: ANS_H, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                              {digit}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })()}
-
-                {/* Second multiply row - AUTO-FILLED (for second quotient digit if entered) */}
-                {(() => {
-                  if (inputDigits[1] === '' || inputDigits[1] === undefined || p1.length < 2) return null;
-
-                  const firstDigit = parseInt(inputDigits[0], 10);
-                  const secondDigit = parseInt(inputDigits[1], 10);
-                  const divisor = problem.num2;
-                  const firstMultiply = firstDigit * divisor;
-                  const firstDividendDigit = parseInt(p1[0], 10);
-                  const firstSubtract = firstDividendDigit - firstMultiply;
-                  const secondDividendDigit = parseInt(p1[1], 10);
-                  const secondMultiply = secondDigit * divisor;
-                  const secondMultiplyStr = String(secondMultiply);
-
-                  return (
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '4px', fontFamily: '"Courier New", monospace' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', marginRight: '8px', width: CELL_W }}>
-                        <div style={{ visibility: 'hidden', minWidth: CELL_W - 24 }} />
-                        <div style={{ visibility: 'hidden' }}>)</div>
-                      </div>
-                      <div style={{ display: 'flex', gap: '3px' }}>
-                        {Array.from({ length: maxLen }, (_, i) => {
-                          // LEFT-ALIGN: start from column 1 (after first iteration)
-                          const digitIndex = i - 1;
-                          const digit = digitIndex >= 0 && digitIndex < secondMultiplyStr.length ? secondMultiplyStr[digitIndex] : '';
-                          return (
-                            <div key={i} style={{ width: CELL_W, textAlign: 'center', fontSize: DIGIT_FS, fontWeight: 700, fontFamily: '"Courier New", monospace', color: digit ? opTheme.main : 'transparent', height: ANS_H, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                              {digit}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })()}
-
-                {/* Second separator line */}
-                {inputDigits[1] !== '' && inputDigits[1] !== undefined && p1.length >= 2 && (
-                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '4px', fontFamily: '"Courier New", monospace' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', marginRight: '8px', width: CELL_W }}>
-                      <div style={{ visibility: 'hidden', minWidth: CELL_W - 24 }} />
-                      <div style={{ visibility: 'hidden' }}>)</div>
-                    </div>
-                    <div style={{ display: 'flex', gap: '3px' }}>
-                      {Array.from({ length: maxLen }, (_, i) => (
-                        <div key={i} style={{ borderTop: '2px solid #3C3C3C', width: CELL_W }} />
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Second subtract + brought down row - AUTO-FILLED LEFT-ALIGNED */}
-                {(() => {
-                  if (inputDigits[1] === '' || inputDigits[1] === undefined || p1.length < 2) return null;
-
-                  const firstDigit = parseInt(inputDigits[0], 10);
-                  const secondDigit = parseInt(inputDigits[1], 10);
-                  const divisor = problem.num2;
-                  const firstMultiply = firstDigit * divisor;
-                  const firstDividendDigit = parseInt(p1[0], 10);
-                  const firstSubtract = firstDividendDigit - firstMultiply;
-                  const secondDividendDigit = parseInt(p1[1], 10);
-                  const broughtDownNumber = firstSubtract * 10 + secondDividendDigit;
-                  const secondMultiply = secondDigit * divisor;
-                  const secondSubtract = broughtDownNumber - secondMultiply;
-
-                  // Brought down: second subtract + next dividend digit (if exists)
-                  let finalBroughtDown = secondSubtract;
-                  if (p1.length > 2) {
-                    const thirdDividendDigit = parseInt(p1[2], 10);
-                    finalBroughtDown = secondSubtract * 10 + thirdDividendDigit;
-                  }
-
-                  const finalBroughtDownStr = String(finalBroughtDown);
-
-                  return (
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '4px', fontFamily: '"Courier New", monospace' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', marginRight: '8px', width: CELL_W }}>
-                        <div style={{ visibility: 'hidden', minWidth: CELL_W - 24 }} />
-                        <div style={{ visibility: 'hidden' }}>)</div>
-                      </div>
-                      <div style={{ display: 'flex', gap: '3px' }}>
-                        {Array.from({ length: maxLen }, (_, i) => {
-                          // LEFT-ALIGN: start from column 1 (after first iteration)
-                          const digitIndex = i - 1;
-                          const digit = digitIndex >= 0 && digitIndex < finalBroughtDownStr.length ? finalBroughtDownStr[digitIndex] : '';
-                          return (
-                            <div key={i} style={{ width: CELL_W, textAlign: 'center', fontSize: DIGIT_FS, fontWeight: 700, fontFamily: '"Courier New", monospace', color: digit ? '#999' : 'transparent', height: ANS_H, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                              {digit}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })()}
-              </>
+                  </>
+                );
+              })()
             ) : (
               <>
                 {/* Row 1 — num1 */}
