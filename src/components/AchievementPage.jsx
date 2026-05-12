@@ -465,110 +465,172 @@ const AchievementCard = React.memo(({ achievement, isUnlocked, onDownload, onVie
         {typeof achievement.description === 'object' ? (language === 'bm' ? achievement.description.bm : achievement.description.eng) : achievement.description}
       </div>
 
-      {/* Assessment Details for Locked */}
+      {/* Assessment Details for Locked — Kid-Friendly Interactive Design */}
       {!isUnlocked && (() => {
         const assessment = baseAssessments.find(a => a.id === achievement.id);
         if (!assessment) return null;
 
-        const getDifficultyColor = (level) => {
+        const getDifficultyEmoji = (level) => {
           switch (level?.toLowerCase()) {
-            case 'easy': return '#58CC02';
-            case 'medium': return '#FF9800';
-            case 'hard': return '#F44336';
-            default: return '#4A90E2';
+            case 'easy': return { emoji: '🌟', color: '#58CC02', bg: '#E8F5E9', label: 'Easy' };
+            case 'medium': return { emoji: '⚡', color: '#FF9800', bg: '#FFF3E0', label: 'Medium' };
+            case 'hard': return { emoji: '🔥', color: '#F44336', bg: '#FFEBEE', label: 'Hard' };
+            default: return { emoji: '📚', color: '#4A90E2', bg: '#E3F2FD', label: 'Fun' };
           }
         };
 
+        const diff = getDifficultyEmoji(assessment.level);
+
         return (
-          <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #E5E5E5' }}>
-            {/* Difficulty Badge */}
+          <div style={{ width: '100%', marginTop: '0.5rem' }}>
+            <style>{`
+              @keyframes bounce-btn {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-4px); }
+              }
+              @keyframes wiggle {
+                0%, 100% { transform: rotate(0deg); }
+                25% { transform: rotate(-3deg); }
+                75% { transform: rotate(3deg); }
+              }
+              @keyframes pulse-glow {
+                0%, 100% { box-shadow: 0 0 0 0 rgba(33,150,243,0.4); }
+                50% { box-shadow: 0 0 0 8px rgba(33,150,243,0); }
+              }
+              .assess-stat-bubble {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                background: white;
+                border-radius: 14px;
+                padding: 0.6rem 0.4rem;
+                border: 2px solid #E8E8E8;
+                transition: all 0.25s ease;
+                min-width: 0;
+              }
+              .assess-stat-bubble:hover {
+                transform: scale(1.08) translateY(-2px);
+                border-color: #4A90E2;
+                box-shadow: 0 4px 12px rgba(74,144,226,0.2);
+              }
+              .assess-stat-emoji {
+                font-size: 1.3rem;
+                margin-bottom: 0.2rem;
+                animation: wiggle 2s ease-in-out infinite;
+              }
+              .assess-stat-value {
+                font-size: 0.95rem;
+                font-weight: 800;
+                color: #2D4059;
+                line-height: 1.1;
+              }
+              .assess-stat-label {
+                font-size: 0.6rem;
+                color: #999;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+              }
+              .assess-take-btn {
+                width: 100%;
+                background: linear-gradient(135deg, #4A90E2, #357ABD);
+                color: white;
+                border: none;
+                border-radius: 14px;
+                padding: 0.85rem 1rem;
+                font-size: 1rem;
+                font-weight: 800;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                position: relative;
+                z-index: 99999;
+                letter-spacing: 0.5px;
+                animation: pulse-glow 2.5s ease-in-out infinite;
+              }
+              .assess-take-btn:hover {
+                background: linear-gradient(135deg, #357ABD, #2A5F9E);
+                transform: scale(1.04) translateY(-2px);
+                box-shadow: 0 8px 20px rgba(33,150,243,0.5);
+              }
+              .assess-take-btn:active {
+                transform: scale(0.98);
+              }
+              .assess-take-btn .btn-rocket {
+                display: inline-block;
+                animation: bounce-btn 1.2s ease-in-out infinite;
+              }
+            `}</style>
+
+            {/* Difficulty Badge — Playful pill */}
             <div style={{
-              display: 'inline-block',
-              backgroundColor: getDifficultyColor(assessment.level),
-              color: 'white',
-              padding: '0.4rem 0.8rem',
-              borderRadius: '16px',
-              fontSize: '0.75rem',
-              fontWeight: 700,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              backgroundColor: diff.bg,
+              color: diff.color,
+              padding: '0.4rem 0.85rem',
+              borderRadius: '20px',
+              fontSize: '0.78rem',
+              fontWeight: 800,
               textTransform: 'uppercase',
-              marginBottom: '0.75rem'
+              marginBottom: '0.75rem',
+              border: `2px solid ${diff.color}30`,
+              animation: 'wiggle 3s ease-in-out infinite',
             }}>
-              {assessment.level}
+              <span style={{ fontSize: '1rem' }}>{diff.emoji}</span>
+              {diff.label}
             </div>
 
-            {/* Assessment Details Grid */}
+            {/* Stat Bubbles Grid */}
             <div style={{
               display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '0.75rem',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: '0.5rem',
               marginBottom: '0.75rem',
-              fontSize: '0.85rem'
             }}>
-              <div>
-                <div style={{ color: '#999', fontWeight: 600, marginBottom: '0.25rem', fontSize: '0.75rem' }}>Duration</div>
-                <div style={{ fontWeight: 700, color: '#2D4059' }}>{assessment.duration} min</div>
+              <div className="assess-stat-bubble">
+                <span className="assess-stat-emoji">⏱️</span>
+                <span className="assess-stat-value">{assessment.duration}</span>
+                <span className="assess-stat-label">{language === 'bm' ? 'Minit' : 'Min'}</span>
               </div>
-              <div>
-                <div style={{ color: '#999', fontWeight: 600, marginBottom: '0.25rem', fontSize: '0.75rem' }}>Questions</div>
-                <div style={{ fontWeight: 700, color: '#2D4059' }}>{assessment.totalQuestions}</div>
+              <div className="assess-stat-bubble">
+                <span className="assess-stat-emoji">❓</span>
+                <span className="assess-stat-value">{assessment.totalQuestions}</span>
+                <span className="assess-stat-label">{language === 'bm' ? 'Soalan' : 'Q\'s'}</span>
               </div>
-              <div>
-                <div style={{ color: '#999', fontWeight: 600, marginBottom: '0.25rem', fontSize: '0.75rem' }}>Target Score</div>
-                <div style={{ fontWeight: 700, color: '#58CC02' }}>{assessment.scoreTarget} pts</div>
-              </div>
-              <div>
-                <div style={{ color: '#999', fontWeight: 600, marginBottom: '0.25rem', fontSize: '0.75rem' }}>Type</div>
-                <div style={{ fontWeight: 700, color: '#4A90E2', textTransform: 'capitalize' }}>{assessment.questionType.replace('-', ' ')}</div>
+              <div className="assess-stat-bubble">
+                <span className="assess-stat-emoji">🎯</span>
+                <span className="assess-stat-value">{assessment.scoreTarget}</span>
+                <span className="assess-stat-label">{language === 'bm' ? 'Sasaran' : 'Target'}</span>
               </div>
             </div>
 
-            {/* Status Badge */}
+            {/* Fun encouragement */}
             <div style={{
-              backgroundColor: '#FFF3E0',
-              color: '#E65100',
-              padding: '0.5rem',
-              borderRadius: '6px',
-              textAlign: 'center',
-              fontSize: '0.8rem',
-              fontWeight: 700,
-              marginBottom: '0.75rem'
+              fontSize: '0.75rem',
+              color: '#888',
+              fontWeight: 600,
+              marginBottom: '0.75rem',
+              fontStyle: 'italic',
+              lineHeight: 1.4,
             }}>
-              ⏳ {language === 'bm' ? 'Belum Siap' : 'Pending'}
+              ✨ {language === 'bm'
+                ? 'Kumpul bintang dan jadi juara!'
+                : 'Collect stars and become a champion!'}
             </div>
 
-            {/* Take Assessment Button */}
+            {/* Take Assessment Button — Animated */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onTakeAssessment?.(achievement);
               }}
-              style={{
-                width: '100%',
-                backgroundColor: '#2196F3',
-                color: 'white',
-                border: '2px solid #1976D2',
-                borderRadius: '8px',
-                padding: '0.75rem 1rem',
-                fontSize: '0.9rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                boxShadow: '0 4px 12px rgba(33, 150, 243, 0.4)',
-                position: 'relative',
-                zIndex: 99999
-              }}
-              onMouseEnter={e => {
-                e.target.style.backgroundColor = '#1976D2';
-                e.target.style.transform = 'scale(1.05)';
-                e.target.style.boxShadow = '0 6px 16px rgba(33, 150, 243, 0.6)';
-              }}
-              onMouseLeave={e => {
-                e.target.style.backgroundColor = '#2196F3';
-                e.target.style.transform = 'scale(1)';
-                e.target.style.boxShadow = '0 4px 12px rgba(33, 150, 243, 0.4)';
-              }}
+              className="assess-take-btn"
             >
-              {language === 'bm' ? '📋 Ambil Penilaian' : '📋 Take Assessment'}
+              <span className="btn-rocket">🚀</span>
+              {' '}
+              {language === 'bm' ? 'Mula Penilaian!' : 'Start Assessment!'}
             </button>
           </div>
         );
