@@ -17,6 +17,9 @@ import DesktopSidebar from './components/DesktopSidebar';
 import { LearnIcon, LeaderboardIcon, ProfileIcon, AchievementIcon, LanguageIcon } from './components/icons/SidebarIcons';
 import MascotIcon from './components/icons/MascotIcon';
 import ReadingPage from './components/ReadingPage/ReadingPage';
+import AgeGroupPage from './components/AgeGroups/AgeGroupPage';
+import AlphabetSafari from './components/ReadingPage/AlphabetSafari';
+import LetterTrace from './components/ReadingPage/LetterTrace';
 import HeartShopModal from './components/HeartShopModal';
 import AchievementPage from './components/AchievementPage';
 import AssessmentSelector from './pages/AssessmentSelector';
@@ -96,6 +99,8 @@ export default function App() {
   const [streak,         setStreak]         = useState(0);
   const [isPlayingJawiGame, setIsPlayingJawiGame] = useState(false);
   const [selectedAssessment, setSelectedAssessment] = useState(null);
+  const [currentAgeGroup, setCurrentAgeGroup] = useState(null);
+  const [currentAgeGame, setCurrentAgeGame] = useState(null);
 
   const activeGameId = getActiveGameId(currentSubject, mathSubGame);
   const { gameState, levelUpInfo, clearLevelUp } = useGameState(activeGameId);
@@ -117,7 +122,7 @@ export default function App() {
   const handleStartGame    = (op, diff, _nums = [], qType = 'multiple') => { setGameConfig({ operation: op, difficulty: diff, nums: _nums, quizType: qType }); setIsPlaying(true); };
   const handleBackToMenu   = () => setIsPlaying(false);
   const handleStartTimeGame= (gameId) => { setDateTimeSubGame(gameId); setIsPlaying(true); };
-  const handleBackToHome   = () => { setIsPlaying(false); setMathSubGame(null); setDateTimeSubGame(null); setCurrentSubject(null); setActiveTab('learn'); };
+  const handleBackToHome   = () => { setIsPlaying(false); setMathSubGame(null); setDateTimeSubGame(null); setCurrentSubject(null); setCurrentAgeGroup(null); setCurrentAgeGame(null); setActiveTab('learn'); };
   const handleToggleMute   = () => { const m = !isMuted; setIsMuted(m); setMuted(m); };
   const handleToggleLang   = () => setLanguage(l => l === 'bm' ? 'eng' : 'bm');
 
@@ -190,7 +195,24 @@ export default function App() {
       case 'reading':
         return <ReadingPage onBack={handleBackToHome} language={language} />;
       default:
-        return <HomePage onSelectSubject={setCurrentSubject} language={language} playerName={playerName} gameState={gameState} streak={streak} />;
+        // Age-group routing takes precedence over the default home screen.
+        if (currentAgeGame === 'alphabet-safari') {
+          return <AlphabetSafari onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'letter-trace') {
+          return <LetterTrace onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGroup) {
+          return (
+            <AgeGroupPage
+              ageGroupId={currentAgeGroup}
+              onBack={() => setCurrentAgeGroup(null)}
+              onPlayGame={(gameId) => setCurrentAgeGame(gameId)}
+              language={language}
+            />
+          );
+        }
+        return <HomePage onSelectSubject={setCurrentSubject} onSelectAgeGroup={setCurrentAgeGroup} language={language} playerName={playerName} gameState={gameState} streak={streak} />;
     }
   };
 

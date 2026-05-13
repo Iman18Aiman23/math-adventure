@@ -5,6 +5,7 @@ import { playHoverSound } from '../utils/soundManager';
 import { ReadingIcon, SpeakingIcon, JawiIcon, MathIcon } from './icons/CourseIcons';
 import AppHeader from './AppHeader';
 import { getGameData } from '../utils/gameStatsManager';
+import { AGE_GROUPS } from '../data/ageCurriculum';
 
 const ICON_MAP = {
   reading: ReadingIcon,
@@ -52,7 +53,7 @@ const COURSES = [
   },
 ];
 
-export default function HomePage({ onSelectSubject, language, playerName, gameState, streak = 0 }) {
+export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, playerName, gameState, streak = 0 }) {
   const [hearts, setHearts] = useState(3);
   const [gems, setGems] = useState(0);
   const [stars, setStars] = useState(0);
@@ -197,6 +198,78 @@ export default function HomePage({ onSelectSubject, language, playerName, gameSt
               }}>
                 {language === 'bm' ? 'Mula →' : 'Start →'}
               </div>
+            </button>
+          ))}
+        </div>
+
+        {/* Age Groups section header */}
+        <p style={{
+          fontSize: '0.75rem',
+          fontWeight: 800,
+          color: '#999',
+          textTransform: 'uppercase',
+          letterSpacing: '0.8px',
+          fontFamily: 'var(--font-body)',
+          margin: '2rem 0 1rem 0'
+        }}>
+          {language === 'bm' ? 'KUMPULAN UMUR' : 'AGE GROUPS'}
+        </p>
+
+        {/* Age group cards */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', paddingBottom: '1.5rem' }}>
+          {AGE_GROUPS.map((group, i) => (
+            <button
+              key={group.id}
+              className="fade-in"
+              onClick={() => onSelectAgeGroup && onSelectAgeGroup(group.id)}
+              onMouseEnter={playHoverSound}
+              style={{
+                animationDelay: `${i * 0.06}s`,
+                background: group.bg,
+                color: group.color,
+                border: `2px solid ${group.color}`,
+                borderRadius: '20px',
+                boxShadow: `0 4px 0 ${group.colorDark}`,
+                padding: '1rem 1.1rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.9rem',
+                cursor: 'pointer',
+                textAlign: 'left',
+                fontFamily: 'var(--font-body)',
+              }}
+            >
+              <span style={{ fontSize: '2rem', lineHeight: 1 }}>{group.emoji}</span>
+              <div style={{ flex: 1 }}>
+                <div style={{
+                  fontWeight: 900,
+                  fontSize: '1.05rem',
+                  fontFamily: 'var(--font-heading)',
+                  color: group.colorDark,
+                  lineHeight: 1.2,
+                }}>
+                  {group.title[language] || group.title.bm}
+                </div>
+                <div style={{
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  color: group.color,
+                  marginTop: '2px',
+                  letterSpacing: '0.04em',
+                }}>
+                  {group.subtitle[language] || group.subtitle.bm}
+                </div>
+              </div>
+              <span style={{
+                color: group.colorDark,
+                fontWeight: 900,
+                fontFamily: 'var(--font-heading)',
+                fontSize: '0.85rem',
+                letterSpacing: '0.5px',
+                whiteSpace: 'nowrap',
+              }}>
+                {language === 'bm' ? 'Mula →' : 'Start →'}
+              </span>
             </button>
           ))}
         </div>
