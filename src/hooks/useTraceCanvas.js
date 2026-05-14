@@ -277,7 +277,14 @@ export function useTraceCanvas({
     const rect = canvas.getBoundingClientRect();
     // Ensure canvas has valid dimensions before processing pointer
     if (rect.width === 0 || rect.height === 0) {
+      // Force setup with current dimensions and retry click on next frame
       setupCanvas();
+      requestAnimationFrame(() => {
+        // Retry the pointer down after layout settles
+        if (ctxRef.current) {
+          handlePointerDown(e);
+        }
+      });
       return;
     }
 
@@ -366,17 +373,18 @@ export function useTraceCanvas({
     let delayedSetupTimer;
     let setupAttempts = 0;
 
-    // Initial setup
+    // Initial setup with aggressive retrying
     const attemptSetup = () => {
       if (!canvas) return;
       const rect = canvas.getBoundingClientRect();
       // Only setup if canvas has valid dimensions
       if (rect.width > 0 && rect.height > 0) {
         setupCanvas();
-      } else if (setupAttempts < 5) {
+      } else if (setupAttempts < 10) {
         // Retry if dimensions are still 0
         setupAttempts++;
-        delayedSetupTimer = setTimeout(attemptSetup, 30);
+        const delay = setupAttempts > 3 ? 100 : 30;
+        delayedSetupTimer = setTimeout(attemptSetup, delay);
       }
     };
 
@@ -398,6 +406,8 @@ export function useTraceCanvas({
     const frame = () => {
       const ctx = ctxRef.current;
       if (!ctx) {
+        // Try to setup canvas if not initialized yet
+        setupCanvas();
         rafIdRef.current = requestAnimationFrame(frame);
         return;
       }
