@@ -272,6 +272,15 @@ export function useTraceCanvas({
   const handlePointerDown = useCallback((e) => {
     if (completedRef.current) return;
     const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    // Ensure canvas has valid dimensions before processing pointer
+    if (rect.width === 0 || rect.height === 0) {
+      setupCanvas();
+      return;
+    }
+
     canvas.setPointerCapture?.(e.pointerId);
     isDrawingRef.current = true;
 
@@ -283,7 +292,6 @@ export function useTraceCanvas({
       currentSegmentSamplesRef.current = getSegmentSamples(currentSegmentRef.current);
     }
 
-    const rect = canvas.getBoundingClientRect();
     const pt = pointPoolRef.current.next();
     pt.x = e.clientX - rect.left;
     pt.y = e.clientY - rect.top;
@@ -293,7 +301,7 @@ export function useTraceCanvas({
 
     const logical = cssToLogical(pt.x, pt.y);
     advanceProgress(logical.x, logical.y);
-  }, [canvasRef, cssToLogical, advanceProgress, letter, getSegmentSamples]);
+  }, [canvasRef, cssToLogical, advanceProgress, letter, getSegmentSamples, setupCanvas]);
 
   const handlePointerMove = useCallback((e) => {
     if (!isDrawingRef.current || completedRef.current) return;
@@ -353,18 +361,36 @@ export function useTraceCanvas({
   }, [strokeColor, strokeWidth]);
 
   useEffect(() => {
-    setupCanvas();
     const canvas = canvasRef.current;
     let resizeObserver;
     let delayedSetupTimer;
+    let setupAttempts = 0;
+
+    // Initial setup
+    const attemptSetup = () => {
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      // Only setup if canvas has valid dimensions
+      if (rect.width > 0 && rect.height > 0) {
+        setupCanvas();
+      } else if (setupAttempts < 5) {
+        // Retry if dimensions are still 0
+        setupAttempts++;
+        delayedSetupTimer = setTimeout(attemptSetup, 30);
+      }
+    };
+
+    attemptSetup();
 
     if (canvas && typeof ResizeObserver !== 'undefined') {
-      resizeObserver = new ResizeObserver(() => setupCanvas());
+      resizeObserver = new ResizeObserver(() => {
+        const rect = canvas.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+          setupCanvas();
+        }
+      });
       resizeObserver.observe(canvas);
     }
-
-    // Fallback: call setupCanvas after a brief delay to allow layout to settle
-    delayedSetupTimer = setTimeout(() => setupCanvas(), 50);
 
     const handleResize = () => setupCanvas();
     window.addEventListener('resize', handleResize);
