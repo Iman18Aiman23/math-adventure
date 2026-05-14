@@ -218,7 +218,7 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
 
       <div style={{ padding: '0.3rem 1rem 0.4rem 1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem', flex: 1, overflow: 'hidden', minHeight: 0, position: 'relative', zIndex: 1 }}>
 
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', maxWidth: isDesktop && upperDone ? '900px' : '480px', flex: 'none' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', maxWidth: '480px', flex: 'none' }}>
           <div style={{
             background: 'linear-gradient(135deg, #FFFFFF, #E1F5FE)',
             border: '2px solid #4FC3F7',
