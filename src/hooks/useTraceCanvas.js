@@ -251,10 +251,12 @@ export function useTraceCanvas({
         if (completedCanvas) {
           completedSegmentsRef.current.push(completedCanvas);
         }
+        // Clear user's drawn stroke immediately
+        inputCountRef.current = 0;
+
         if (currentSegmentRef.current < letter.segments.length - 1) {
           // Move to next segment
           currentSegmentRef.current += 1;
-          inputCountRef.current = 0;
           progressIdxRef.current = 0;
           lastNotifiedRef.current = 0;
           currentSegmentSamplesRef.current = getSegmentSamples(currentSegmentRef.current);
@@ -352,6 +354,18 @@ export function useTraceCanvas({
 
   useEffect(() => {
     setupCanvas();
+    const canvas = canvasRef.current;
+    let resizeObserver;
+    let delayedSetupTimer;
+
+    if (canvas && typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(() => setupCanvas());
+      resizeObserver.observe(canvas);
+    }
+
+    // Fallback: call setupCanvas after a brief delay to allow layout to settle
+    delayedSetupTimer = setTimeout(() => setupCanvas(), 50);
+
     const handleResize = () => setupCanvas();
     window.addEventListener('resize', handleResize);
 
@@ -417,6 +431,8 @@ export function useTraceCanvas({
     return () => {
       cancelAnimationFrame(rafIdRef.current);
       window.removeEventListener('resize', handleResize);
+      if (resizeObserver) resizeObserver.disconnect();
+      if (delayedSetupTimer) clearTimeout(delayedSetupTimer);
     };
   }, [letter, setupCanvas, getSegmentSamples, logicalToCss, drawUserStroke]);
 

@@ -174,23 +174,47 @@ const shuffle = (arr) => {
   return a;
 };
 
+const OPTION_COLORS = [
+  'linear-gradient(135deg, #FF6B9D, #E91E63, #C2185B)',
+  'linear-gradient(135deg, #FFD54F, #FFB300, #FF6F00)',
+  'linear-gradient(135deg, #4FC3F7, #29B6F6, #0277BD)',
+  'linear-gradient(135deg, #BA68C8, #9C27B0, #6A1B9A)'
+];
+
 const LetterCard = React.memo(function LetterCard({ letter, onSpeak, language }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-      <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--text-secondary)', letterSpacing: '0.08em' }}>
-        {language === 'bm' ? 'CARI HURUF' : 'FIND THE LETTER'}
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}>
+      <div style={{
+        fontSize: '0.95rem',
+        fontWeight: 900,
+        color: '#7B1FA2',
+        letterSpacing: '0.08em',
+        fontFamily: "'Baloo 2', cursive",
+        textShadow: '0 2px 8px rgba(123,31,162,0.2)'
+      }}>
+        ✨ {language === 'bm' ? 'CARI HURUF' : 'FIND THE LETTER'} ✨
       </div>
       <button
         onClick={onSpeak}
         onMouseEnter={playHoverSound}
         style={{
-          fontSize: '6rem', fontWeight: 900, color: '#fff',
-          background: 'linear-gradient(135deg, #1CB0F6, #0B8DC0)',
-          border: 'none', borderRadius: '24px', width: '150px', height: '150px',
+          fontSize: '4.5rem', fontWeight: 900, color: '#fff',
+          background: 'linear-gradient(135deg, #4FC3F7, #BA68C8, #FF6B9D)',
+          backgroundSize: '200% 200%',
+          border: '5px solid rgba(255,255,255,0.85)',
+          borderRadius: '28px',
+          width: '130px',
+          height: '130px',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 8px 0 #0B8DC0', cursor: 'pointer',
-          fontFamily: 'var(--font-heading)', lineHeight: 1,
+          boxShadow: '0 12px 30px rgba(186,104,200,0.5), inset 0 -6px 0 rgba(0,0,0,0.15), inset 0 4px 0 rgba(255,255,255,0.3)',
+          cursor: 'pointer',
+          fontFamily: "'Baloo 2', cursive",
+          lineHeight: 1,
+          textShadow: '0 4px 12px rgba(0,0,0,0.3)',
+          animation: 'rainbowShift 4s ease infinite, letterCardBounce 1.5s ease-in-out infinite',
+          transition: 'transform 0.2s'
         }}
+        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
       >
         {letter}
       </button>
@@ -198,36 +222,57 @@ const LetterCard = React.memo(function LetterCard({ letter, onSpeak, language })
   );
 });
 
-const AnimalCard = React.memo(function AnimalCard({ option, feedback, disabled, onClick }) {
+const AnimalCard = React.memo(function AnimalCard({ option, feedback, disabled, onClick, colorIdx = 0 }) {
   const isCorrect = feedback === 'correct';
   const isWrong = feedback === 'wrong';
 
-  let bg = '#fff';
-  let border = '#E5E5E5';
-  let shadow = '#E5E5E5';
-  if (isCorrect) { bg = '#D7FFB8'; border = '#58CC02'; shadow = '#46A302'; }
-  else if (isWrong) { bg = '#FFD3D3'; border = '#FF4B4B'; shadow = '#CC3B3B'; }
+  let background = OPTION_COLORS[colorIdx % OPTION_COLORS.length];
+  let borderColor = 'rgba(255,255,255,0.85)';
+  let shadowColor = 'rgba(0,0,0,0.2)';
+
+  if (isCorrect) {
+    background = 'linear-gradient(135deg, #A5D6A7, #66BB6A, #2E7D32)';
+    borderColor = '#FFFFFF';
+    shadowColor = 'rgba(102,187,106,0.55)';
+  } else if (isWrong) {
+    background = 'linear-gradient(135deg, #FFB0B0, #FF8787, #C92A2A)';
+    borderColor = '#FFFFFF';
+    shadowColor = 'rgba(244,67,54,0.45)';
+  }
 
   return (
     <button
       onClick={onClick}
-      onMouseEnter={!disabled ? playHoverSound : undefined}
+      onMouseEnter={(e) => {
+        if (!disabled) {
+          playHoverSound();
+          e.currentTarget.style.transform = 'scale(1.06) rotate(-2deg)';
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!disabled) e.currentTarget.style.transform = 'scale(1)';
+      }}
       disabled={disabled}
       style={{
-        background: bg,
-        border: `2px solid ${border}`,
-        borderRadius: '20px',
-        padding: '1.25rem 0.75rem',
-        boxShadow: `0 4px 0 ${shadow}`,
+        background,
+        border: `4px solid ${borderColor}`,
+        borderRadius: '22px',
+        padding: '0.9rem 0.8rem',
+        boxShadow: `0 10px 26px ${shadowColor}, inset 0 -6px 0 rgba(0,0,0,0.15), inset 0 4px 0 rgba(255,255,255,0.3)`,
         cursor: disabled ? 'default' : 'pointer',
-        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem',
-        animation: isWrong ? 'shake 0.4s ease-in-out' : 'none',
-        minHeight: '140px', justifyContent: 'center',
-        transition: 'transform 0.1s ease',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.35rem',
+        animation: isWrong ? 'shake 0.4s ease-in-out' : `cardFloat ${2.5 + (colorIdx * 0.3)}s ease-in-out infinite`,
+        animationDelay: `${colorIdx * 0.15}s`,
+        minHeight: '110px',
+        justifyContent: 'center',
+        transition: 'transform 0.2s cubic-bezier(0.34,1.56,0.64,1)',
+        color: 'white',
+        fontFamily: "'Baloo 2', cursive",
+        textShadow: '0 2px 6px rgba(0,0,0,0.3)'
       }}
     >
-      <span style={{ fontSize: '3.5rem', lineHeight: 1 }}>{option.emoji}</span>
-      <span style={{ fontWeight: 900, color: 'var(--text-primary)', fontSize: '1.05rem' }}>
+      <span style={{ fontSize: '2.8rem', lineHeight: 1, filter: 'drop-shadow(0 3px 6px rgba(0,0,0,0.2))' }}>{option.emoji}</span>
+      <span style={{ fontWeight: 900, fontSize: '1.05rem' }}>
         {option.name}
       </span>
     </button>
@@ -384,17 +429,68 @@ export default function AlphabetSafari({ onBack, language = 'bm' }) {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, background: 'var(--bg-body)' }}>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      flex: 1,
+      background: 'linear-gradient(135deg, #E8F5E9 0%, #FFF9C4 50%, #FFE0B2 100%)',
+      overflow: 'hidden',
+      position: 'relative'
+    }}>
+      {/* Animated Background */}
+      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+        {['🦁', '🐘', '🦓', '🐯', '🦒', '🐵', '🐧', '🦜'].map((emoji, i) => (
+          <div key={i} style={{
+            position: 'absolute',
+            fontSize: '1.8rem',
+            opacity: 0.3,
+            top: `${(i * 13 + 8) % 90}%`,
+            left: `${(i * 17 + 5) % 95}%`,
+            animation: `floatBg ${4 + (i % 3)}s ease-in-out infinite`,
+            animationDelay: `${i * 0.4}s`
+          }}>{emoji}</div>
+        ))}
+      </div>
+
       <AppHeader onBack={onBack} gameState={gameState} language={language} />
 
-      <div style={{ padding: '1rem 1.25rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.25rem', flex: 1, overflowY: 'auto' }}>
-
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', maxWidth: '480px' }}>
-          <div style={{ background: '#fff', border: '2px solid #E5E5E5', borderRadius: '999px', padding: '6px 16px', fontWeight: 800, color: 'var(--duo-blue)', fontSize: '0.95rem' }}>
-            {currentQuestionIndex + 1} / {questions.length}
-          </div>
-          <div style={{ background: '#FFF0CC', border: '2px solid #FFC800', borderRadius: '999px', padding: '6px 16px', fontWeight: 800, color: '#B8860B', fontSize: '0.95rem' }}>
-            ⭐ {score}
+      <div style={{
+        padding: '0.4rem 1rem 0.5rem',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '0.5rem',
+        flex: 1,
+        overflow: 'hidden',
+        minHeight: 0,
+        position: 'relative',
+        zIndex: 1,
+        justifyContent: 'space-around'
+      }}>
+        {/* Question Counter Badge */}
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', maxWidth: '700px', flex: 'none' }}>
+          <div style={{
+            background: 'linear-gradient(135deg, #FFFFFF, #F3E5F5)',
+            border: '2px solid #BA68C8',
+            borderRadius: '999px',
+            padding: '5px 18px',
+            fontWeight: 800,
+            fontSize: '0.95rem',
+            boxShadow: '0 6px 18px rgba(186,104,200,0.25)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.4rem',
+            animation: 'statPulse 2s ease-in-out infinite'
+          }}>
+            <span style={{ fontSize: '1.1rem' }}>📊</span>
+            <span style={{
+              background: 'linear-gradient(135deg, #9C27B0, #6A1B9A)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
+              {currentQuestionIndex + 1} / {questions.length}
+            </span>
           </div>
         </div>
 
@@ -404,20 +500,38 @@ export default function AlphabetSafari({ onBack, language = 'bm' }) {
           onClick={handleSpeakLetter}
           onMouseEnter={playHoverSound}
           style={{
-            background: '#fff', border: '2px solid var(--duo-blue)', borderRadius: '999px',
-            padding: '6px 16px', color: 'var(--duo-blue)', fontWeight: 800, fontSize: '0.9rem',
-            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px',
+            background: 'linear-gradient(135deg, #4FC3F7, #BA68C8, #FF6B9D)',
+            backgroundSize: '200% 200%',
+            border: 'none',
+            borderRadius: '50px',
+            padding: '0.55rem 1.4rem',
+            color: 'white',
+            fontWeight: 800,
+            fontSize: '0.95rem',
+            fontFamily: "'Baloo 2', cursive",
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.4rem',
+            flex: 'none',
+            boxShadow: '0 6px 18px rgba(186,104,200,0.45)',
+            animation: 'rainbowShift 3s ease infinite, soundPulse 1.8s ease-in-out infinite',
+            transition: 'transform 0.2s'
           }}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
         >
-          <Volume2 size={16} />
-          {language === 'bm' ? 'Dengar' : 'Listen'}
+          <Volume2 size={18} />
+          {language === 'bm' ? 'Dengar 🔊' : 'Listen 🔊'}
         </button>
 
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: '0.75rem',
-          width: '100%', maxWidth: '480px',
+          gridAutoRows: 'auto',
+          gap: '0.9rem',
+          width: '100%',
+          maxWidth: '560px',
+          flex: 'none'
         }}>
           {currentQuestion.options.map((opt, i) => (
             <AnimalCard
@@ -426,10 +540,43 @@ export default function AlphabetSafari({ onBack, language = 'bm' }) {
               feedback={feedback.optionIndex === i ? feedback.type : null}
               disabled={locked}
               onClick={() => handleAnswer(i)}
+              colorIdx={i}
             />
           ))}
         </div>
       </div>
+
+      <style>{`
+        @keyframes floatBg {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-25px) rotate(15deg); }
+        }
+        @keyframes rainbowShift {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        @keyframes letterCardBounce {
+          0%, 100% { transform: translateY(0px) scale(1); }
+          50% { transform: translateY(-8px) scale(1.04); }
+        }
+        @keyframes cardFloat {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-6px); }
+        }
+        @keyframes soundPulse {
+          0%, 100% { box-shadow: 0 6px 18px rgba(186,104,200,0.45); }
+          50% { box-shadow: 0 6px 28px rgba(186,104,200,0.75), 0 0 0 8px rgba(186,104,200,0.15); }
+        }
+        @keyframes statPulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.04); }
+        }
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-6px); }
+          75% { transform: translateX(6px); }
+        }
+      `}</style>
     </div>
   );
 }

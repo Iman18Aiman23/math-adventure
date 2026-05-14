@@ -139,9 +139,10 @@ class SpeechManagerClass {
    * Speak text aloud.
    * @param {string} text
    * @param {string} lang  'ms-MY' | 'en-US'
+   * @param {object} options  { rate: 0-2, pitch: 0-2, volume: 0-1 }
    * @returns {Promise<void>}
    */
-  speak(text, lang = 'en-US') {
+  speak(text, lang = 'en-US', options = {}) {
     return new Promise((resolve) => {
       if (!this._synth) { resolve(); return; }
 
@@ -149,9 +150,9 @@ class SpeechManagerClass {
 
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = lang;
-      utterance.rate = 0.85;
-      utterance.pitch = 1.1;
-      utterance.volume = 1;
+      utterance.rate = options.rate ?? 0.85;
+      utterance.pitch = options.pitch ?? 1.1;
+      utterance.volume = options.volume ?? 1;
 
       let settled = false;
       const timeout = setTimeout(() => { if (!settled) { settled = true; resolve(); } }, 8000);

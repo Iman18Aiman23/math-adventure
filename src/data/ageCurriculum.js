@@ -85,9 +85,10 @@ export const CURRICULUM = {
     reading: [
       { id: 'alphabet-safari',      name: 'Alphabet Safari',      status: 'complete' },
       { id: 'letter-trace',         name: 'Letter Trace',         status: 'complete' },
-      { id: 'phonics-pop',          name: 'Phonics Pop',          status: 'pending'  },
-      { id: 'picture-letter-match', name: 'Picture–Letter Match', status: 'pending'  },
-      { id: 'big-letter-hunt',      name: 'Big Letter Hunt',      status: 'pending'  },
+      { id: 'phonics-pop',          name: 'Phonics Pop',          status: 'complete'  },
+      { id: 'sound-matching',       name: 'Sound Matching',       status: 'complete'  },
+      { id: 'letter-sound-puzzle',  name: 'Letter-Sound Puzzle',  status: 'complete'  },
+      { id: 'phonics-sprint',       name: 'Phonics Sprint',       status: 'complete'  },
     ],
     speaking: null,
     jawi: null,

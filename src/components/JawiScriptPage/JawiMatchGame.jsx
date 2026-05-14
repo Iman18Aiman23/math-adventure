@@ -668,9 +668,11 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#FFF8E1' }}>
             <AppHeader onBack={onBack} gameState={gameState} language={language} hearts={hearts} gems={gems} stars={stars} />
-            <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '1.25rem 1rem', gap: '1.25rem' }}>
-                {/* Stats bar */}
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', width: '100%' }}>
+                {/* HEADER - Stats bar */}
                 <div style={{
+                    flex: 'none',
+                    padding: '1.25rem 1rem 0.75rem',
                     display: 'flex',
                     gap: '1rem',
                     flexWrap: 'wrap',
@@ -763,44 +765,26 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
                     </span>
                 </div>
 
-                <div style={{
-                    background: 'white',
-                    borderRadius: '16px',
-                    padding: '0.5rem 1.2rem',
-                    boxShadow: '0 3px 15px rgba(0,0,0,0.07)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.45rem',
-                    fontWeight: 700,
-                    fontSize: '1rem'
-                }}>
-                    <div style={{
-                        width: '30px',
-                        height: '30px',
-                        borderRadius: '9px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'white',
-                        fontSize: '0.85rem',
-                        background: 'linear-gradient(135deg, #FF6B9D, #E91E63)'
-                    }}>
-                        <Star size={16} />
-                    </div>
-                    <span>Score</span>
-                    <span style={{ fontWeight: 800, fontSize: '1.25rem', minWidth: '2ch' }}>{score}</span>
                 </div>
 
-                {/* Game grid */}
+                {/* BODY - Game grid container */}
                 <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: `repeat(${diff.cols}, 1fr)`,
-                    gap: '10px',
+                    flex: 1,
+                    overflowY: 'auto',
+                    display: 'flex',
+                    alignItems: 'center',
                     justifyContent: 'center',
-                    margin: '0 auto',
-                    width: '100%',
-                    maxWidth: diff.cols === 5 ? '500px' : '440px'
+                    padding: '1.25rem 1rem',
+                    width: '100%'
                 }}>
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: `repeat(${diff.cols}, 1fr)`,
+                        gap: '10px',
+                        justifyContent: 'center',
+                        width: diff.cols === 5 ? '500px' : '440px',
+                        boxSizing: 'border-box'
+                    }}>
                 {cards.map((card, idx) => {
                         const isFlipped = flipped.includes(idx);
                         const isMatched = matchedPairIds.includes(card.pairId);
@@ -825,9 +809,9 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
                                         padding: '0.5rem',
                                         textAlign: 'center',
                                         cursor: 'not-allowed',
-                                        opacity: 0.9,
                                         color: '#2E7D32',
-                                        pointerEvents: 'none'
+                                        pointerEvents: 'none',
+                                        boxSizing: 'border-box'
                                     }}
                                 >
                                     {card.content}
@@ -846,7 +830,8 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
                                     position: 'relative',
                                     transformStyle: 'preserve-3d',
                                     transition: 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1)',
-                                    transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0)'
+                                    transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0)',
+                                    boxSizing: 'border-box'
                                 }}
                             >
                                 {/* Front face (back of card) */}
@@ -904,15 +889,20 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
                             </div>
                         );
                     })}
+                    </div>
                 </div>
 
-                {/* Controls */}
+                {/* FOOTER - Controls */}
                 <div style={{
+                    flex: 'none',
+                    padding: '0.75rem 1rem 1.25rem',
                     display: 'flex',
                     gap: '0.8rem',
-                    marginTop: '1.2rem',
                     flexWrap: 'wrap',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    width: '100%',
+                    background: '#FFF8E1',
+                    boxSizing: 'border-box'
                 }}>
                     <button
                         onClick={() => initGame()}
@@ -955,7 +945,6 @@ export default function JawiMatchGame({ onBack, onHome, isMuted, language }) {
                     >
                         Menu
                     </button>
-                </div>
                 </div>
             </div>
         </div>

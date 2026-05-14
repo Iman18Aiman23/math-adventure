@@ -20,6 +20,10 @@ import ReadingPage from './components/ReadingPage/ReadingPage';
 import AgeGroupPage from './components/AgeGroups/AgeGroupPage';
 import AlphabetSafari from './components/ReadingPage/AlphabetSafari';
 import LetterTrace from './components/ReadingPage/LetterTrace';
+import PhoneticsPop from './components/ReadingPage/PhoneticsPop';
+import SoundMatching from './components/ReadingPage/SoundMatching';
+import LetterSoundPuzzle from './components/ReadingPage/LetterSoundPuzzle';
+import PhoneticsSprint from './components/ReadingPage/PhoneticsSprint';
 import HeartShopModal from './components/HeartShopModal';
 import AchievementPage from './components/AchievementPage';
 import AssessmentSelector from './pages/AssessmentSelector';
@@ -130,7 +134,7 @@ export default function App() {
   const viewKey = `${activeTab}-${currentSubject}-${mathSubGame}-${dateTimeSubGame}-${isPlaying}-${selectedAssessment?.id}`;
 
   // Hide sidebar during game play or assessment
-  const shouldHideSidebar = isPlaying || (currentSubject === 'math' && mathSubGame === 'faq') || isPlayingJawiGame || selectedAssessment;
+  const shouldHideSidebar = isPlaying || (currentSubject === 'math' && mathSubGame === 'faq') || isPlayingJawiGame || selectedAssessment || !!currentAgeGame;
 
   // ── Content renderer ──────────────────────────────────────────────────────
   const renderContent = () => {
@@ -202,6 +206,18 @@ export default function App() {
         if (currentAgeGame === 'letter-trace') {
           return <LetterTrace onBack={() => setCurrentAgeGame(null)} language={language} />;
         }
+        if (currentAgeGame === 'phonics-pop') {
+          return <PhoneticsPop onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'sound-matching') {
+          return <SoundMatching onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'letter-sound-puzzle') {
+          return <LetterSoundPuzzle onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'phonics-sprint') {
+          return <PhoneticsSprint onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
         if (currentAgeGroup) {
           return (
             <AgeGroupPage
@@ -244,7 +260,7 @@ export default function App() {
         </div>
 
         {/* Mobile Bottom Tab Bar — hidden on desktop via CSS */}
-        {!inActiveQuiz && !isPlayingJawiGame && !selectedAssessment && (
+        {!inActiveQuiz && !isPlayingJawiGame && !selectedAssessment && !currentAgeGame && (
           <div className="duo-tab-bar">
             <div className="duo-tab-container">
               {TABS.map(tab => (

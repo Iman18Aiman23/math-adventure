@@ -19,6 +19,13 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
   const [upperDone, setUpperDone] = useState(false);
   const [lowerDone, setLowerDone] = useState(false);
   const [resetSignal, setResetSignal] = useState(0);
+  const [isDesktop, setIsDesktop] = useState(typeof window !== 'undefined' && window.innerWidth >= 1024);
+
+  useEffect(() => {
+    const onResize = () => setIsDesktop(window.innerWidth >= 1024);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   const upperCanvasRef = useRef(null);
   const lowerCanvasRef = useRef(null);
@@ -191,87 +198,126 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
   const combinedProgress = (upperProgress + lowerProgress) / 2;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, background: 'var(--bg-body)' }}>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      flex: 1,
+      background: 'linear-gradient(135deg, #E1F5FE 0%, #F3E5F5 50%, #FFF3E0 100%)',
+      position: 'relative',
+      overflow: 'hidden'
+    }}>
+      {/* Animated Background */}
+      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+        {['✍️', '🎨', '⭐', '✨', '🖌️', '🌈', '💫', '🎯'].map((emoji, i) => (
+          <div key={i} style={{
+            position: 'absolute',
+            fontSize: '1.8rem',
+            opacity: 0.3,
+            top: `${(i * 13 + 8) % 90}%`,
+            left: `${(i * 17 + 5) % 95}%`,
+            animation: `floatBg ${4 + (i % 3)}s ease-in-out infinite`,
+            animationDelay: `${i * 0.4}s`
+          }}>{emoji}</div>
+        ))}
+      </div>
+
       <AppHeader onBack={onBack} gameState={gameState} language={language} />
 
-      <div style={{ padding: '0.75rem 1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', flex: 1, overflowY: 'auto' }}>
+      <div style={{ padding: '0.3rem 1rem 0.4rem 1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem', flex: 1, overflow: 'hidden', minHeight: 0, position: 'relative', zIndex: 1 }}>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', maxWidth: '520px' }}>
-          <div style={{ background: '#fff', border: '2px solid #E5E5E5', borderRadius: '999px', padding: '6px 16px', fontWeight: 800, color: 'var(--duo-blue)', fontSize: '0.95rem' }}>
-            {currentLetterIndex + 1} / {LETTERS_UPPER.length}
-          </div>
-          <div style={{ background: '#FFF0CC', border: '2px solid #FFC800', borderRadius: '999px', padding: '6px 16px', fontWeight: 800, color: '#B8860B', fontSize: '0.95rem' }}>
-            ⭐ {score}
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', maxWidth: isDesktop && upperDone ? '900px' : '480px', flex: 'none' }}>
+          <div style={{
+            background: 'linear-gradient(135deg, #FFFFFF, #E1F5FE)',
+            border: '2px solid #4FC3F7',
+            borderRadius: '999px',
+            padding: '5px 16px',
+            fontWeight: 800,
+            fontSize: '0.9rem',
+            boxShadow: '0 6px 18px rgba(79,195,247,0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.4rem',
+            animation: 'statPulse 2s ease-in-out infinite'
+          }}>
+            <span style={{ fontSize: '1.1rem' }}>✍️</span>
+            <span style={{
+              background: 'linear-gradient(135deg, #0277BD, #29B6F6)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
+              {currentLetterIndex + 1} / {LETTERS_UPPER.length}
+            </span>
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.3rem' }}>
-          <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-secondary)', letterSpacing: '0.08em' }}>
-            {language === 'bm' ? 'SURIH HURUF BESAR & KECIL' : 'TRACE UPPER & LOWER'}
-          </div>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: '1rem', fontFamily: 'var(--font-heading)', lineHeight: 1 }}>
-            <div style={{ fontWeight: 900, fontSize: '2.5rem', color: 'var(--duo-blue)' }}>
-              {upperLetter.char}
-            </div>
-            <div style={{ fontWeight: 900, fontSize: '2.5rem', color: 'var(--duo-blue)' }}>
-              {lowerLetter.char}
-            </div>
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <button
-            onClick={handleSpeakLetter}
-            onMouseEnter={playHoverSound}
-            style={{
-              background: '#fff', border: '2px solid var(--duo-blue)', borderRadius: '999px',
-              padding: '6px 16px', color: 'var(--duo-blue)', fontWeight: 800, fontSize: '0.85rem',
-              cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px',
-            }}
-          >
-            <Volume2 size={16} />
-            {language === 'bm' ? 'Dengar' : 'Listen'}
-          </button>
-          <button
-            onClick={handleReset}
-            onMouseEnter={playHoverSound}
-            style={{
-              background: '#fff', border: '2px solid #E5E5E5', borderRadius: '999px',
-              padding: '6px 16px', color: 'var(--text-secondary)', fontWeight: 800, fontSize: '0.85rem',
-              cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px',
-            }}
-          >
-            <RotateCcw size={16} />
-            {language === 'bm' ? 'Cuba Lagi' : 'Retry'}
-          </button>
-        </div>
-
-        {/* Side-by-side canvases */}
+        {/* Stacked on mobile, side-by-side on desktop when both shown */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '0.75rem',
+          gridTemplateColumns: isDesktop && upperDone ? 'repeat(2, 1fr)' : '1fr',
+          gap: '0.6rem',
           width: '100%',
-          maxWidth: '520px',
+          maxWidth: isDesktop && upperDone ? '900px' : '420px',
+          flex: 1,
+          minHeight: 0,
+          alignItems: 'stretch'
         }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.35rem' }}>
+          {/* Uppercase canvas with header inside */}
+          <div style={{
+            display: 'flex', flexDirection: 'column', gap: '0.3rem',
+            background: 'linear-gradient(135deg, #FFFFFF, #F3E5F5)',
+            borderRadius: '22px',
+            border: `4px solid ${upperDone ? '#43A047' : '#BA68C8'}`,
+            boxShadow: upperDone
+              ? '0 10px 28px rgba(102,187,106,0.4), inset 0 -4px 0 rgba(0,0,0,0.08)'
+              : '0 10px 28px rgba(186,104,200,0.3), inset 0 -4px 0 rgba(0,0,0,0.08)',
+            padding: '0.5rem',
+            minHeight: 0,
+            overflow: 'hidden',
+            transition: 'all 0.3s'
+          }}>
+            {/* Header with letter and label */}
             <div style={{
-              fontWeight: 900, fontSize: '0.75rem', color: upperDone ? 'var(--duo-green)' : 'var(--text-secondary)',
-              letterSpacing: '0.08em',
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              paddingBottom: '0.25rem', borderBottom: '2px solid rgba(186,104,200,0.2)', flex: 'none'
             }}>
-              {upperDone ? '✓ ' : ''}{language === 'bm' ? 'BESAR' : 'UPPER'} — {upperLetter.char}
+              <div style={{
+                fontFamily: "'Baloo 2', cursive",
+                fontWeight: 900,
+                fontSize: '1.4rem',
+                lineHeight: 1,
+                background: 'linear-gradient(135deg, #BA68C8, #9C27B0)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}>
+                {upperLetter.char}
+              </div>
+              <div style={{
+                fontWeight: 900,
+                fontSize: '0.7rem',
+                color: upperDone ? '#43A047' : '#7B1FA2',
+                letterSpacing: '0.08em',
+                textAlign: 'right',
+                fontFamily: "'Baloo 2', cursive"
+              }}>
+                {upperDone ? '✅ ' : '✏️ '}{language === 'bm' ? 'BESAR' : 'UPPER'} — {upperLetter.char}
+              </div>
             </div>
+            {/* Canvas */}
             <div style={{
               width: '100%', aspectRatio: '1 / 1',
-              background: '#fff', borderRadius: '20px',
-              border: `2px solid ${upperDone ? 'var(--duo-green)' : '#E5E5E5'}`,
-              boxShadow: `0 6px 0 ${upperDone ? 'var(--duo-green-dark)' : '#E5E5E5'}`,
-              padding: '0.4rem', overflow: 'hidden',
+              overflow: 'hidden',
+              flex: 1,
+              minHeight: 0,
+              maxHeight: '100%',
+              borderRadius: '14px',
+              background: 'rgba(255,255,255,0.5)'
             }}>
               <TraceCanvas
                 ref={upperCanvasRef}
                 letter={upperLetter}
-                strokeColor="#58CC02"
+                strokeColor="#9C27B0"
                 strokeWidth={12}
                 onProgress={handleUpperProgress}
                 onComplete={handleUpperComplete}
@@ -280,39 +326,144 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
             </div>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.35rem' }}>
+          {upperDone && (
             <div style={{
-              fontWeight: 900, fontSize: '0.75rem', color: lowerDone ? 'var(--duo-green)' : 'var(--text-secondary)',
-              letterSpacing: '0.08em',
+              display: 'flex', flexDirection: 'column', gap: '0.3rem',
+              background: 'linear-gradient(135deg, #FFFFFF, #FFF3E0)',
+              borderRadius: '22px',
+              border: `4px solid ${lowerDone ? '#43A047' : '#FF9800'}`,
+              boxShadow: lowerDone
+                ? '0 10px 28px rgba(102,187,106,0.4), inset 0 -4px 0 rgba(0,0,0,0.08)'
+                : '0 10px 28px rgba(255,152,0,0.3), inset 0 -4px 0 rgba(0,0,0,0.08)',
+              padding: '0.5rem',
+              minHeight: 0,
+              overflow: 'hidden',
+              transition: 'all 0.3s',
+              animation: 'bounceIn 0.4s ease'
             }}>
-              {lowerDone ? '✓ ' : ''}{language === 'bm' ? 'KECIL' : 'LOWER'} — {lowerLetter.char}
+              {/* Header with letter and label */}
+              <div style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                paddingBottom: '0.25rem', borderBottom: '2px solid rgba(255,152,0,0.2)', flex: 'none'
+              }}>
+                <div style={{
+                  fontFamily: "'Baloo 2', cursive",
+                  fontWeight: 900,
+                  fontSize: '1.4rem',
+                  lineHeight: 1,
+                  background: 'linear-gradient(135deg, #FF9800, #E65100)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}>
+                  {lowerLetter.char}
+                </div>
+                <div style={{
+                  fontWeight: 900,
+                  fontSize: '0.7rem',
+                  color: lowerDone ? '#43A047' : '#E65100',
+                  letterSpacing: '0.08em',
+                  textAlign: 'right',
+                  fontFamily: "'Baloo 2', cursive"
+                }}>
+                  {lowerDone ? '✅ ' : '✏️ '}{language === 'bm' ? 'KECIL' : 'LOWER'} — {lowerLetter.char}
+                </div>
+              </div>
+              {/* Canvas */}
+              <div style={{
+                width: '100%', aspectRatio: '1 / 1',
+                overflow: 'hidden',
+                flex: 1,
+                minHeight: 0,
+                maxHeight: '100%',
+                borderRadius: '14px',
+                background: 'rgba(255,255,255,0.5)'
+              }}>
+                <TraceCanvas
+                  ref={lowerCanvasRef}
+                  letter={lowerLetter}
+                  strokeColor="#FF6F00"
+                  strokeWidth={12}
+                  onProgress={handleLowerProgress}
+                  onComplete={handleLowerComplete}
+                  resetSignal={resetSignal}
+                />
+              </div>
             </div>
-            <div style={{
-              width: '100%', aspectRatio: '1 / 1',
-              background: '#fff', borderRadius: '20px',
-              border: `2px solid ${lowerDone ? 'var(--duo-green)' : '#E5E5E5'}`,
-              boxShadow: `0 6px 0 ${lowerDone ? 'var(--duo-green-dark)' : '#E5E5E5'}`,
-              padding: '0.4rem', overflow: 'hidden',
-            }}>
-              <TraceCanvas
-                ref={lowerCanvasRef}
-                letter={lowerLetter}
-                strokeColor="#58CC02"
-                strokeWidth={12}
-                onProgress={handleLowerProgress}
-                onComplete={handleLowerComplete}
-                resetSignal={resetSignal}
-              />
-            </div>
-          </div>
+          )}
+        </div>
+
+        <div style={{ display: 'flex', gap: '0.5rem', flex: 'none' }}>
+          <button
+            onClick={handleSpeakLetter}
+            onMouseEnter={(e) => { playHoverSound(); e.currentTarget.style.transform = 'scale(1.06)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
+            style={{
+              background: 'linear-gradient(135deg, #4FC3F7, #BA68C8, #FF6B9D)',
+              backgroundSize: '200% 200%',
+              border: 'none',
+              borderRadius: '999px',
+              padding: '6px 18px',
+              color: 'white',
+              fontWeight: 800,
+              fontSize: '0.85rem',
+              fontFamily: "'Baloo 2', cursive",
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: '0 5px 16px rgba(186,104,200,0.45)',
+              animation: 'rainbowShift 3s ease infinite',
+              transition: 'transform 0.2s'
+            }}
+          >
+            <Volume2 size={16} />
+            {language === 'bm' ? 'Dengar 🔊' : 'Listen 🔊'}
+          </button>
+          <button
+            onClick={handleReset}
+            onMouseEnter={(e) => { playHoverSound(); e.currentTarget.style.transform = 'scale(1.06)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
+            style={{
+              background: 'white',
+              border: '2.5px solid #FF6B9D',
+              borderRadius: '999px',
+              padding: '6px 18px',
+              color: '#FF6B9D',
+              fontWeight: 800,
+              fontSize: '0.85rem',
+              fontFamily: "'Baloo 2', cursive",
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: '0 5px 16px rgba(255,107,157,0.25)',
+              transition: 'transform 0.2s'
+            }}
+          >
+            <RotateCcw size={16} />
+            {language === 'bm' ? 'Cuba Lagi' : 'Retry'}
+          </button>
         </div>
 
         {/* Combined progress bar */}
-        <div style={{ width: '100%', maxWidth: '520px', height: '10px', background: '#E5E5E5', borderRadius: '999px', overflow: 'hidden' }}>
+        <div style={{
+          width: '100%',
+          maxWidth: '480px',
+          height: '12px',
+          background: 'repeating-linear-gradient(90deg, #E0E0E0 0px, #E0E0E0 14px, #EEEEEE 14px, #EEEEEE 28px)',
+          borderRadius: '999px',
+          overflow: 'hidden',
+          boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.12)',
+          flex: 'none'
+        }}>
           <div style={{
-            width: `${Math.round(combinedProgress * 100)}%`, height: '100%',
-            background: 'linear-gradient(90deg, #58CC02, #46A302)',
-            transition: 'width 0.12s ease-out',
+            width: `${Math.round(combinedProgress * 100)}%`,
+            height: '100%',
+            background: 'linear-gradient(135deg, #66BB6A, #43A047, #2E7D32)',
+            transition: 'width 0.18s ease-out',
+            boxShadow: '0 0 12px rgba(102,187,106,0.6)',
+            borderRadius: '999px'
           }} />
         </div>
 
@@ -320,29 +471,70 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
         {bothComplete ? (
           <button
             onClick={handleNext}
-            onMouseEnter={playHoverSound}
+            onMouseEnter={(e) => { playHoverSound(); e.currentTarget.style.transform = 'scale(1.06)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
             style={{
-              padding: '0.9rem 2rem', background: 'var(--duo-green)', color: '#fff',
-              border: 'none', borderRadius: '16px', boxShadow: '0 6px 0 var(--duo-green-dark)',
-              fontWeight: 900, fontSize: '1.1rem', cursor: 'pointer',
-              fontFamily: 'var(--font-heading)', letterSpacing: '0.05em',
-              display: 'flex', alignItems: 'center', gap: '0.5rem',
-              animation: 'pulse 0.6s ease-in-out',
+              padding: '0.7rem 1.7rem',
+              background: 'linear-gradient(135deg, #66BB6A, #43A047, #2E7D32)',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '50px',
+              boxShadow: '0 8px 22px rgba(102,187,106,0.5), inset 0 -4px 0 rgba(0,0,0,0.15)',
+              fontWeight: 900,
+              fontSize: '1rem',
+              cursor: 'pointer',
+              fontFamily: "'Baloo 2', cursive",
+              letterSpacing: '0.05em',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              animation: 'bounceIn 0.5s ease',
+              transition: 'transform 0.2s',
+              flex: 'none'
             }}
           >
-            {currentLetterIndex < LETTERS_UPPER.length - 1
+            🎉 {currentLetterIndex < LETTERS_UPPER.length - 1
               ? (language === 'bm' ? 'SETERUSNYA' : 'NEXT')
               : (language === 'bm' ? 'SELESAI' : 'FINISH')}
             <ArrowRight size={20} />
           </button>
         ) : (
-          <p style={{ color: 'var(--text-light)', fontWeight: 700, fontSize: '0.8rem', textAlign: 'center', maxWidth: '420px', margin: 0 }}>
-            {language === 'bm'
+          <p style={{
+            color: '#7B1FA2',
+            fontWeight: 800,
+            fontSize: '0.85rem',
+            textAlign: 'center',
+            maxWidth: '420px',
+            margin: 0,
+            fontFamily: "'Baloo 2', cursive",
+            flex: 'none'
+          }}>
+            ✨ {language === 'bm'
               ? 'Surih kedua-dua huruf untuk teruskan'
-              : 'Trace both letters to continue'}
+              : 'Trace both letters to continue'} ✨
           </p>
         )}
       </div>
+
+      <style>{`
+        @keyframes floatBg {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-25px) rotate(15deg); }
+        }
+        @keyframes rainbowShift {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        @keyframes statPulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.04); }
+        }
+        @keyframes bounceIn {
+          0% { transform: scale(0.3); opacity: 0; }
+          50% { transform: scale(1.1); }
+          100% { transform: scale(1); opacity: 1; }
+        }
+      `}</style>
     </div>
   );
 }
