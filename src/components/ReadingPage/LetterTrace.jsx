@@ -19,13 +19,6 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
   const [upperDone, setUpperDone] = useState(false);
   const [lowerDone, setLowerDone] = useState(false);
   const [resetSignal, setResetSignal] = useState(0);
-  const [isDesktop, setIsDesktop] = useState(typeof window !== 'undefined' && window.innerWidth >= 1024);
-
-  useEffect(() => {
-    const onResize = () => setIsDesktop(window.innerWidth >= 1024);
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
 
   const upperCanvasRef = useRef(null);
   const lowerCanvasRef = useRef(null);
@@ -251,13 +244,13 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
           </div>
         </div>
 
-        {/* Stacked on mobile, side-by-side on desktop when both shown */}
+        {/* Always stacked vertically */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: isDesktop && upperDone ? 'repeat(2, 1fr)' : '1fr',
+          gridTemplateColumns: '1fr',
           gap: '0.6rem',
           width: '100%',
-          maxWidth: isDesktop && upperDone ? '900px' : '420px',
+          maxWidth: '420px',
           flex: 1,
           minHeight: 0,
           alignItems: 'stretch'
