@@ -216,7 +216,7 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
 
       <AppHeader onBack={onBack} gameState={gameState} language={language} />
 
-      <div style={{ padding: '0.3rem 1rem 0.4rem 1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem', flex: 1, overflow: 'hidden', minHeight: 0, position: 'relative', zIndex: 1 }}>
+      <div style={{ padding: '0.3rem 1rem 0.4rem 1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem', flex: 1, overflow: 'auto', minHeight: 0, position: 'relative', zIndex: 1 }}>
 
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', maxWidth: '480px', flex: 'none' }}>
           <div style={{
@@ -251,51 +251,61 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
           gap: '0.6rem',
           width: '100%',
           maxWidth: '420px',
-          flex: 1,
-          minHeight: 0,
-          alignItems: 'stretch'
+          flex: 'none'
         }}>
           {/* Uppercase canvas with header inside */}
           <div style={{
             display: 'flex', flexDirection: 'column', gap: '0.3rem',
-            background: '#fff',
-            borderRadius: '8px',
-            border: '2px solid #ddd',
-            padding: '0.75rem',
-            overflow: 'hidden'
+            background: 'linear-gradient(135deg, #FFFFFF, #F3E5F5)',
+            borderRadius: '22px',
+            border: `4px solid ${upperDone ? '#43A047' : '#BA68C8'}`,
+            boxShadow: upperDone
+              ? '0 10px 28px rgba(102,187,106,0.4), inset 0 -4px 0 rgba(0,0,0,0.08)'
+              : '0 10px 28px rgba(186,104,200,0.3), inset 0 -4px 0 rgba(0,0,0,0.08)',
+            padding: '0.5rem',
+            overflow: 'hidden',
+            transition: 'all 0.3s'
           }}>
             {/* Header with letter and label */}
             <div style={{
               display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              paddingBottom: '0.25rem', borderBottom: '1px solid #ddd', flex: 'none'
+              paddingBottom: '0.25rem', borderBottom: '2px solid rgba(186,104,200,0.2)', flex: 'none'
             }}>
               <div style={{
-                fontWeight: 700,
-                fontSize: '1.2rem',
-                color: '#333'
+                fontFamily: "'Baloo 2', cursive",
+                fontWeight: 900,
+                fontSize: '1.4rem',
+                lineHeight: 1,
+                background: 'linear-gradient(135deg, #BA68C8, #9C27B0)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
               }}>
                 {upperLetter.char}
               </div>
               <div style={{
-                fontWeight: 600,
-                fontSize: '0.75rem',
-                color: '#666'
+                fontWeight: 900,
+                fontSize: '0.7rem',
+                color: upperDone ? '#43A047' : '#7B1FA2',
+                letterSpacing: '0.08em',
+                textAlign: 'right',
+                fontFamily: "'Baloo 2', cursive"
               }}>
-                {upperDone ? '✓ ' : ''}{language === 'bm' ? 'BESAR' : 'UPPER'} — {upperLetter.char}
+                {upperDone ? '✅ ' : '✏️ '}{language === 'bm' ? 'BESAR' : 'UPPER'} — {upperLetter.char}
               </div>
             </div>
             {/* Canvas */}
             <div style={{
               width: '100%', aspectRatio: '1 / 1',
               overflow: 'hidden',
-              borderRadius: '4px',
-              background: '#f5f5f5'
+              borderRadius: '14px',
+              background: 'rgba(255,255,255,0.5)'
             }}>
               <TraceCanvas
                 ref={upperCanvasRef}
                 letter={upperLetter}
-                strokeColor="#333"
-                strokeWidth={8}
+                strokeColor="#9C27B0"
+                strokeWidth={12}
                 onProgress={handleUpperProgress}
                 onComplete={handleUpperComplete}
                 resetSignal={resetSignal}
@@ -306,44 +316,57 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
           {upperDone && (
             <div style={{
               display: 'flex', flexDirection: 'column', gap: '0.3rem',
-              background: '#fff',
-              borderRadius: '8px',
-              border: '2px solid #ddd',
-              padding: '0.75rem',
-              overflow: 'hidden'
+              background: 'linear-gradient(135deg, #FFFFFF, #FFF3E0)',
+              borderRadius: '22px',
+              border: `4px solid ${lowerDone ? '#43A047' : '#FF9800'}`,
+              boxShadow: lowerDone
+                ? '0 10px 28px rgba(102,187,106,0.4), inset 0 -4px 0 rgba(0,0,0,0.08)'
+                : '0 10px 28px rgba(255,152,0,0.3), inset 0 -4px 0 rgba(0,0,0,0.08)',
+              padding: '0.5rem',
+              overflow: 'hidden',
+              transition: 'all 0.3s',
+              animation: 'bounceIn 0.4s ease'
             }}>
               {/* Header with letter and label */}
               <div style={{
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                paddingBottom: '0.25rem', borderBottom: '1px solid #ddd', flex: 'none'
+                paddingBottom: '0.25rem', borderBottom: '2px solid rgba(255,152,0,0.2)', flex: 'none'
               }}>
                 <div style={{
-                  fontWeight: 700,
-                  fontSize: '1.2rem',
-                  color: '#333'
+                  fontFamily: "'Baloo 2', cursive",
+                  fontWeight: 900,
+                  fontSize: '1.4rem',
+                  lineHeight: 1,
+                  background: 'linear-gradient(135deg, #FF9800, #E65100)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
                 }}>
                   {lowerLetter.char}
                 </div>
                 <div style={{
-                  fontWeight: 600,
-                  fontSize: '0.75rem',
-                  color: '#666'
+                  fontWeight: 900,
+                  fontSize: '0.7rem',
+                  color: lowerDone ? '#43A047' : '#E65100',
+                  letterSpacing: '0.08em',
+                  textAlign: 'right',
+                  fontFamily: "'Baloo 2', cursive"
                 }}>
-                  {lowerDone ? '✓ ' : ''}{language === 'bm' ? 'KECIL' : 'LOWER'} — {lowerLetter.char}
+                  {lowerDone ? '✅ ' : '✏️ '}{language === 'bm' ? 'KECIL' : 'LOWER'} — {lowerLetter.char}
                 </div>
               </div>
               {/* Canvas */}
               <div style={{
                 width: '100%', aspectRatio: '1 / 1',
                 overflow: 'hidden',
-                borderRadius: '4px',
-                background: '#f5f5f5'
+                borderRadius: '14px',
+                background: 'rgba(255,255,255,0.5)'
               }}>
                 <TraceCanvas
                   ref={lowerCanvasRef}
                   letter={lowerLetter}
-                  strokeColor="#333"
-                  strokeWidth={8}
+                  strokeColor="#FF6F00"
+                  strokeWidth={12}
                   onProgress={handleLowerProgress}
                   onComplete={handleLowerComplete}
                   resetSignal={resetSignal}
