@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { playSound } from '../../utils/soundManager';
 import confetti from 'canvas-confetti';
 import { LOCALIZATION } from '../../utils/localization';
@@ -37,6 +37,7 @@ export default function LetterSoundPuzzle({ onBack, onHome, isMuted, language })
   const [correctCount, setCorrectCount] = useState(0);
   const [feedback, setFeedback] = useState('');
   const [completedPairs, setCompletedPairs] = useState(new Set());
+  const touchDragRef = useRef({ letter: null, clone: null, sourceEl: null });
 
   useEffect(() => {
     const gameData = getGameData();
@@ -86,10 +87,11 @@ export default function LetterSoundPuzzle({ onBack, onHome, isMuted, language })
     setDraggedLetter(letter);
   };
 
-  const handleSoundSlotDrop = (slot) => {
-    if (!draggedLetter || completedPairs.has(slot.id)) return;
+  const handleSoundSlotDrop = (slot, letterOverride) => {
+    const activeLetter = letterOverride || draggedLetter;
+    if (!activeLetter || completedPairs.has(slot.id)) return;
 
-    if (draggedLetter.slotId === slot.id && draggedLetter.letter.toUpperCase() === slot.letter.toUpperCase()) {
+    if (activeLetter.slotId === slot.id && activeLetter.letter.toUpperCase() === slot.letter.toUpperCase()) {
       playSound('correct');
       setFeedback('✅ Correct Match!');
 
@@ -146,6 +148,76 @@ export default function LetterSoundPuzzle({ onBack, onHome, isMuted, language })
 
   const handleDragOver = (e) => {
     e.preventDefault();
+  };
+
+  // ── Touch drag-and-drop (mobile / small screens) ───────────────────
+  const handleTouchStart = (e, letter) => {
+    if (completedPairs.has(letter.slotId)) return;
+    e.preventDefault();
+
+    const touch = e.touches[0];
+    const target = e.currentTarget;
+    const rect = target.getBoundingClientRect();
+
+    // Floating clone that follows the finger
+    const clone = target.cloneNode(true);
+    clone.style.position = 'fixed';
+    clone.style.width = rect.width + 'px';
+    clone.style.height = rect.height + 'px';
+    clone.style.left = (touch.clientX - rect.width / 2) + 'px';
+    clone.style.top = (touch.clientY - rect.height / 2) + 'px';
+    clone.style.zIndex = '9999';
+    clone.style.pointerEvents = 'none';
+    clone.style.opacity = '0.9';
+    clone.style.transform = 'scale(1.15) rotate(-3deg)';
+    clone.style.transition = 'none';
+    clone.style.animation = 'none';
+    clone.style.boxShadow = '0 16px 48px rgba(0,0,0,0.35)';
+    clone.id = 'touch-drag-clone';
+    document.body.appendChild(clone);
+
+    target.style.opacity = '0.35';
+    touchDragRef.current = { letter, clone, sourceEl: target };
+    setDraggedLetter(letter);
+  };
+
+  const handleTouchMove = (e) => {
+    const { clone } = touchDragRef.current;
+    if (!clone) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    clone.style.left = (touch.clientX - clone.offsetWidth / 2) + 'px';
+    clone.style.top = (touch.clientY - clone.offsetHeight / 2) + 'px';
+  };
+
+  const handleTouchEnd = (e) => {
+    const { letter, clone, sourceEl } = touchDragRef.current;
+
+    // Remove clone BEFORE elementFromPoint so the clone doesn't intercept
+    if (clone) clone.remove();
+    if (sourceEl) sourceEl.style.opacity = '';
+
+    if (!letter) {
+      touchDragRef.current = { letter: null, clone: null, sourceEl: null };
+      return;
+    }
+
+    const touch = e.changedTouches[0];
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+
+    // Walk up to find a [data-slot-id] drop target
+    let slotEl = el;
+    while (slotEl && !slotEl.dataset?.slotId) {
+      slotEl = slotEl.parentElement;
+    }
+
+    if (slotEl) {
+      const slot = soundSlots.find(s => s.id === slotEl.dataset.slotId);
+      if (slot) handleSoundSlotDrop(slot, letter);
+    }
+
+    touchDragRef.current = { letter: null, clone: null, sourceEl: null };
+    setDraggedLetter(null);
   };
 
   if (gameState_ === 'won') {
@@ -480,6 +552,7 @@ export default function LetterSoundPuzzle({ onBack, onHome, isMuted, language })
               {soundSlots.map((slot, idx) => (
                 <div
                   key={slot.id}
+                  data-slot-id={slot.id}
                   onDragOver={handleDragOver}
                   onDrop={() => handleSoundSlotDrop(slot)}
                   style={{
@@ -570,6 +643,9 @@ export default function LetterSoundPuzzle({ onBack, onHome, isMuted, language })
                     key={letter.id}
                     draggable={!completedPairs.has(letter.slotId)}
                     onDragStart={() => handleLetterDragStart(letter)}
+                    onTouchStart={(e) => handleTouchStart(e, letter)}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
                     style={{
                       padding: '0.4rem',
                       borderRadius: '16px',

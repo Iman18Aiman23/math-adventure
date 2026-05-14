@@ -133,15 +133,21 @@ export function useTraceCanvas({
   const setupCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
+    // Use offsetWidth/Height — immune to CSS transforms (e.g. bounceIn
+    // animation that scales the parent to 0.3 on mount). getBoundingClientRect
+    // returns visually-transformed dimensions, which would permanently corrupt
+    // cssSizeRef because ResizeObserver doesn't fire for transform changes.
+    const w = canvas.offsetWidth;
+    const h = canvas.offsetHeight;
+    if (!w || !h) return;
     const dpr = Math.min(window.devicePixelRatio || 1, 3);
-    canvas.width = Math.round(rect.width * dpr);
-    canvas.height = Math.round(rect.height * dpr);
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
     const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctxRef.current = ctx;
     dprRef.current = dpr;
-    cssSizeRef.current = { w: rect.width, h: rect.height };
+    cssSizeRef.current = { w, h };
     offscreenRef.current = null;
   }, [canvasRef]);
 
@@ -274,19 +280,16 @@ export function useTraceCanvas({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const rect = canvas.getBoundingClientRect();
-    // Ensure canvas has valid dimensions before processing pointer
-    if (rect.width === 0 || rect.height === 0) {
-      // Force setup with current dimensions and retry click on next frame
+    // Use offsetWidth/Height for the zero-check (immune to CSS transforms)
+    if (canvas.offsetWidth === 0 || canvas.offsetHeight === 0) {
       setupCanvas();
       requestAnimationFrame(() => {
-        // Retry the pointer down after layout settles
-        if (ctxRef.current) {
-          handlePointerDown(e);
-        }
+        if (ctxRef.current) handlePointerDown(e);
       });
       return;
     }
+
+    const rect = canvas.getBoundingClientRect();
 
     canvas.setPointerCapture?.(e.pointerId);
     isDrawingRef.current = true;
@@ -376,12 +379,10 @@ export function useTraceCanvas({
     // Initial setup with aggressive retrying
     const attemptSetup = () => {
       if (!canvas) return;
-      const rect = canvas.getBoundingClientRect();
-      // Only setup if canvas has valid dimensions
-      if (rect.width > 0 && rect.height > 0) {
+      // offsetWidth/Height are immune to CSS transforms (bounceIn etc.)
+      if (canvas.offsetWidth > 0 && canvas.offsetHeight > 0) {
         setupCanvas();
       } else if (setupAttempts < 10) {
-        // Retry if dimensions are still 0
         setupAttempts++;
         const delay = setupAttempts > 3 ? 100 : 30;
         delayedSetupTimer = setTimeout(attemptSetup, delay);
@@ -392,8 +393,7 @@ export function useTraceCanvas({
 
     if (canvas && typeof ResizeObserver !== 'undefined') {
       resizeObserver = new ResizeObserver(() => {
-        const rect = canvas.getBoundingClientRect();
-        if (rect.width > 0 && rect.height > 0) {
+        if (canvas.offsetWidth > 0 && canvas.offsetHeight > 0) {
           setupCanvas();
         }
       });
