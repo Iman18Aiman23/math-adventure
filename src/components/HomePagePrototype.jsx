@@ -3,7 +3,7 @@ import { getGameData } from '../utils/gameStatsManager';
 import { AGE_GROUPS } from '../data/ageCurriculum';
 import { playHoverSound } from '../utils/soundManager';
 
-export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, playerName, gameState, streak = 0 }) {
+export default function HomePagePrototype({ onSelectSubject, onSelectAgeGroup, language, playerName, gameState, streak = 0 }) {
   const currentLevel = gameState?.level ?? 1;
 
   /* Streak logic */
@@ -205,12 +205,6 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             gap: 1.25rem;
             padding-bottom: 3rem;
         }
-        
-        .age-group-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-        }
 
         .streak-circle {
             width: 28px;
@@ -263,10 +257,6 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
                 margin: 0 auto;
             }
             .course-grid {
-                grid-template-columns: 1fr !important;
-                gap: 1rem !important;
-            }
-            .age-group-grid {
                 grid-template-columns: 1fr !important;
                 gap: 1rem !important;
             }
