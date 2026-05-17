@@ -462,8 +462,6 @@ export default function ReadingPage({ onBack, language }) {
       display: flex;
       flex-direction: column;
       height: 100%;
-      padding: 1rem;
-      overflow-y: auto;
     }
 
     .flashcard-box {
@@ -567,8 +565,8 @@ export default function ReadingPage({ onBack, language }) {
           <svg style={{ position: 'absolute', bottom: '8%', right: '6%', opacity: 0.5 }} width="30" height="30" viewBox="0 0 24 24" fill="#58CC02"><circle cx="12" cy="12" r="10"/></svg>
         </div>
 
-        {/* Main Content */}
-        <div className="app-container" style={{ flex: 1, overflowY: 'auto' }}>
+        {/* Main Content - Single Scrollable Container */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 1rem' }}>
 
           {/* Hero Section */}
           <div className="hero-section">
@@ -676,11 +674,11 @@ export default function ReadingPage({ onBack, language }) {
   // View: Flashcard Interface
   const theme = getTheme(selectedLevel);
   return (
-    <div className="flashcard-container" style={{ background: DESIGN_SYSTEM.colors.bg }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: DESIGN_SYSTEM.colors.bg }}>
       <style>{globalStyles}</style>
 
-      {/* Header with Script Buttons */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', gap: '0.75rem', flexWrap: 'wrap' }}>
+      {/* Header with Script Buttons - Fixed */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', gap: '0.75rem', flexWrap: 'wrap', background: '#fff', borderBottom: `2px solid ${DESIGN_SYSTEM.colors.hair}`, flexShrink: 0 }}>
         <button
           onClick={() => setSelectedLevel(null)}
           style={{ background: '#fff', border: `2px solid ${DESIGN_SYSTEM.colors.hair}`, borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', color: DESIGN_SYSTEM.colors.muted, cursor: 'pointer', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`, transition: 'transform .12s' }}
@@ -754,8 +752,8 @@ export default function ReadingPage({ onBack, language }) {
         }
       `}</style>
 
-      {/* Main Card */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.5rem' }}>
+      {/* Main Content - Single Scrollable Container */}
+      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.5rem', padding: '1rem' }}>
 
         {/* Flashcard Box */}
         <div className="flashcard-box" style={{
