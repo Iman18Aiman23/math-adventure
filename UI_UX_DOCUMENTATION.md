@@ -439,6 +439,21 @@ Stats Grid (2 columns)
 **Padding Bottom**: `calc(var(--safe-bottom))` (for mobile notches)
 **Visibility**: Mobile only (hidden on desktop via `.duo-tab-bar { display: none !important }`)
 
+### `.duo-tab-container` (Tab Items Wrapper)
+
+**Updated Behavior (May 2026)**:
+- **Display**: Flex
+- **Justify-Content**: `space-evenly` (distributes items evenly with equal spacing)
+- **Flex-Wrap**: `nowrap` (all items visible, no wrapping)
+- **Width**: 100% (full container width)
+- **Flex**: 1 (fills available space)
+
+**Previous Issues Fixed**:
+- ✅ Removed `overflow-x: auto` (no horizontal scrolling)
+- ✅ Removed `scroll-snap-type` (not needed with space-evenly)
+- ✅ Removed `scroll-behavior: smooth` (not needed)
+- ✅ Added `flex-wrap: nowrap` (ensures items always visible)
+
 #### 6.1 Tab Items (`.duo-tab-item`)
 
 **Structure** (per tab):
@@ -450,20 +465,24 @@ Stats Grid (2 columns)
      └─ Text label
 ```
 
-**Styling**:
+**Styling** (Updated May 2026):
 - **Display**: Flex, column, center
-- **Flex**: 1
-- **Height**: 100%
-- **Padding**: 0.5rem
+- **Flex**: 1 (equal width distribution across all items)
+- **Min Height**: 56px (minimum touch target size)
+- **Padding**: 10px top (adjusted for better spacing)
 - **Background**: Transparent
 - **Border**: None
-- **Border Top**: 3px solid transparent
-- **Gap**: 4px
-- **Font Weight**: 600
+- **Gap**: 6px
+- **Font Weight**: 700
 - **Font Size**: 0.65rem
-- **Color**: `#AFAFAF`
-- **Transition**: 0.15s
+- **Color**: `#999` (inactive)
+- **Transition**: 0.2s color ease
 - **Cursor**: Pointer
+
+**Previous Issues Fixed**:
+- ✅ Changed from `flex-shrink: 0; min-width: 80px` to `flex: 1`
+- ✅ Removed `scroll-snap-align: start` (not needed without scrolling)
+- ✅ Added `min-height: 56px` for consistency
 
 **States**:
 - **Hover**: Color `#2D4059`, background `#f5f5f5`
@@ -536,10 +555,41 @@ Used in game screens at bottom
 ### Mobile (< 768px)
 - **Layout**: Single column
 - **Sidebar**: Hidden
-- **Tab Bar**: Visible
+- **Tab Bar**: Visible (bottom)
 - **Content**: Full width minus padding
 - **Header**: Sticky top
 - **Footer**: Sticky bottom
+
+#### Mobile Landscape Handling (Orientation: Landscape, max-height: 800px)
+**Special Considerations**:
+- Content extends **edge-to-edge** (no padding)
+- No box-shadow on #root for cleaner display
+- Body: `justify-content: flex-start` (removes centering)
+- #root: `max-width: 100%` with `margin: 0`
+- Menu bar uses `justify-content: space-evenly` with `flex-wrap: nowrap`
+
+**Key CSS Rules**:
+```css
+@media (orientation: landscape) and (max-height: 800px) {
+  body { justify-content: flex-start !important; }
+  #root {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+  .duo-tab-container {
+    justify-content: space-evenly;
+    flex-wrap: nowrap;
+  }
+}
+```
+
+**Impact**:
+- Eliminates left/right gaps on mobile landscape rotation
+- Menu bar items distribute evenly across full width
+- All tabs visible without scrolling
+- Smooth transition when device is rotated
 
 ### Tablet (768px - 1023px)
 - **Layout**: Sidebar + Content (768px width breakpoint)
@@ -656,11 +706,23 @@ Used in game screens at bottom
 ## 13. File References
 
 **Key Component Files**:
-- `src/App.jsx` - Main app logic and layout
+- `src/App.jsx` - Main app logic, layout, and TABS definition for mobile menu bar
 - `src/components/DesktopSidebar.jsx` - Sidebar component
 - `src/components/GameHeader.jsx` - Game header component
 - `src/components/HomePage.jsx` - Home page layout
-- `src/index.css` - All layout and styling
+- `src/components/ReadingPage/ReadingPage.jsx` - Reading page with landscape fixes
+
+**Critical CSS Files**:
+- `src/index.css` - **All layout and styling** including:
+  - Lines 110-135: `#root` element with landscape media query
+  - Lines 206-275: `.duo-tab-bar` and menu bar styling with space-evenly distribution
+  - Line 125-135: Landscape orientation media query (@media (orientation: landscape) and (max-height: 800px))
+- `src/App.css` - Desktop container styling (mostly unused after refactor)
+
+**Icon Files**:
+- `src/components/icons/SidebarIcons.jsx` - Sidebar navigation icons (LearnIcon, etc.)
+- `src/components/icons/CourseIcons.jsx` - Course card icons
+- `src/components/icons/MascotIcon.jsx` - Iman mascot character
 
 **Icon Files**:
 - `src/components/icons/SidebarIcons.jsx` - Sidebar navigation icons
@@ -669,7 +731,114 @@ Used in game screens at bottom
 
 ---
 
-## 14. Summary
+## 14. Mobile Responsiveness Best Practices & Fixes
+
+### Root Container Constraints (May 2026 Update)
+
+**Issue**: Mobile devices showed left/right gaps when rotated to landscape orientation.
+
+**Root Causes Identified**:
+1. `#root { max-width: 480px; margin: 0 auto; }` - Constrained width with centering
+2. `body { justify-content: center; }` - Centered content on wider screens
+3. Menu bar used horizontal scrolling instead of space distribution
+4. ReadingPage had unused `.app-container` CSS creating conflicting padding
+
+**Solutions Implemented**:
+
+#### 1. Root Element Constraints (src/index.css)
+```css
+/* Desktop default */
+#root {
+  max-width: 480px;
+  margin: 0 auto;
+  box-shadow: 0 0 40px rgba(0,0,0,0.15);
+}
+
+/* Mobile landscape fix */
+@media (orientation: landscape) and (max-height: 800px) {
+  body {
+    justify-content: flex-start !important;
+  }
+  #root {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+}
+```
+
+#### 2. Menu Bar Distribution (src/index.css)
+```css
+.duo-tab-container {
+  display: flex;
+  flex: 1;
+  justify-content: space-evenly;  /* Even distribution */
+  align-items: stretch;
+  gap: 0;
+  flex-wrap: nowrap;  /* No wrapping */
+  width: 100%;
+}
+
+.duo-tab-item {
+  flex: 1;  /* Equal width items */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+}
+```
+
+#### 3. ReadingPage Cleanup
+- Removed unused `.app-container` CSS definition with conflicting padding
+- Applied `clamp()` for responsive padding that scales properly
+- Added landscape-specific classes for content areas
+
+### Testing Landscape Responsiveness
+
+**Device Rotation Test**:
+1. Rotate mobile device to landscape
+2. Verify NO gaps on left/right edges
+3. Check menu bar extends fully to both sides
+4. Confirm all tabs visible without scrolling
+
+**Supported Breakpoint**: Devices with max-height ≤ 800px in landscape
+- iPhone 5/6/7/8: ~667px portrait → ~375px landscape ✓
+- iPhone 11/12/13: ~812px portrait → ~375px landscape ✓
+- iPad Mini: ~1024px landscape (desktop mode, sidebar shown)
+- Honor 400 Lite: Tested and verified ✓
+
+### Future Development Guidelines
+
+**Do's**:
+- ✅ Use `justify-content: space-evenly` for even distribution
+- ✅ Use `flex-wrap: nowrap` to prevent item wrapping
+- ✅ Use `flex: 1` for items that should grow equally
+- ✅ Test landscape orientation on all device sizes
+- ✅ Remove `overflow-x: auto` if content should not scroll horizontally
+- ✅ Use `max-width: 100%` for mobile containers
+
+**Don'ts**:
+- ❌ Don't use `overflow-x: auto` without proper scroll handling
+- ❌ Don't use `margin: 0 auto` on root containers for mobile
+- ❌ Don't use `justify-content: center` on full-width containers
+- ❌ Don't leave unused CSS classes with conflicting styles
+- ❌ Don't use fixed `min-width` that prevents responsive scaling
+- ❌ Don't forget to test landscape rotation
+
+### Commits Related to Mobile Responsiveness
+- `ff24ad6`: Remove unused `.app-container` CSS from ReadingPage
+- `042701d`: Fix mobile landscape rotation layout gaps
+- `a4cd264`: Aggressive landscape mode fix (remove all padding/margins)
+- `db02694`: Refine landscape mode (target both wrapper and content)
+- `f2c5fff`: Fix gaps in index.css #root styling
+- `4516af0`: Fix menu bar gap by removing body centering
+- `29b6486`: Make mobile menu bar use space-evenly distribution
+
+---
+
+## 15. Summary
 
 The **Math Adventure** UI is built with a **mobile-first responsive design**:
 
