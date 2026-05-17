@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { readingData } from '../../data/curriculum/readingData';
 import { Volume2, ArrowLeft, Play } from 'lucide-react';
 import { playHoverSound } from '../../utils/soundManager';
 import SpeechManager from '../../services/SpeechManager';
+import { useGameStateContext } from '../../App';
+import { getGameData } from '../../utils/gameStatsManager';
 import KVLearningPage from './KVLearningPage';
 import KVKLearningPage from './KVKLearningPage';
 
@@ -124,6 +126,17 @@ export default function ReadingPage({ onBack, language }) {
   const [scriptType, setScriptType] = useState('RUMI'); // 'RUMI', 'JAWI', or 'ENG'
   const [showHelp, setShowHelp] = useState(false);
   const [activeSyllable, setActiveSyllable] = useState(null);
+  const [displayHearts, setDisplayHearts] = useState(3);
+  const [displayGems, setDisplayGems] = useState(0);
+  const [displayStars, setDisplayStars] = useState(0);
+
+  // Load game stats
+  useEffect(() => {
+    const gameData = getGameData();
+    setDisplayHearts(gameData.hearts);
+    setDisplayGems(gameData.gems);
+    setDisplayStars(gameData.stars);
+  }, []);
 
   // ── Route Tahap 1 → dedicated KV page ─────────────────────────────────
   if (selectedLevel === 1) {
@@ -695,10 +708,45 @@ export default function ReadingPage({ onBack, language }) {
           ))}
         </div>
 
+        {/* Stats Badges */}
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          {/* Stars Badge */}
+          <div style={{ background: '#fff', border: `2px solid ${DESIGN_SYSTEM.colors.hair}`, borderRadius: '999px', padding: '6px 12px', fontWeight: 800, fontSize: '0.85rem', color: '#FFC800', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`, display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <span>⭐</span>
+            <span className="desktop-stat">{displayStars} {language === 'bm' ? 'bintang' : 'stars'}</span>
+            <span className="mobile-stat">{displayStars}</span>
+          </div>
+
+          {/* Hearts Badge */}
+          <div style={{ background: '#fff', border: `2px solid ${DESIGN_SYSTEM.colors.hair}`, borderRadius: '999px', padding: '6px 12px', fontWeight: 800, fontSize: '0.85rem', color: '#FF4B4B', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`, display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <span>❤️</span>
+            <span className="desktop-stat">{displayHearts} {language === 'bm' ? 'nyawa' : 'hearts'}</span>
+            <span className="mobile-stat">{displayHearts}</span>
+          </div>
+
+          {/* Gems Badge */}
+          <div style={{ background: '#fff', border: `2px solid ${DESIGN_SYSTEM.colors.hair}`, borderRadius: '999px', padding: '6px 12px', fontWeight: 800, fontSize: '0.85rem', color: '#CE82FF', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`, display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <span>💎</span>
+            <span className="desktop-stat">{displayGems} {language === 'bm' ? 'permata' : 'gems'}</span>
+            <span className="mobile-stat">{displayGems}</span>
+          </div>
+        </div>
+
         <div style={{ background: '#fff', border: `2px solid ${DESIGN_SYSTEM.colors.hair}`, borderRadius: '999px', padding: '6px 16px', fontWeight: 800, color: theme.color, fontSize: '0.9rem', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}` }}>
           Tahap {selectedLevel} {currentIndex + 1}/{currentLevelData.length}
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .desktop-stat {
+            display: none !important;
+          }
+          .mobile-stat {
+            display: inline !important;
+          }
+        }
+      `}</style>
 
       {/* Main Card */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.5rem' }}>
