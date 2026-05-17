@@ -483,15 +483,18 @@ export default function ReadingPage({ onBack, language }) {
         margin: 0 !important;
         padding: 0 !important;
         overflow-x: hidden;
+        width: 100% !important;
       }
-      div {
-        overflow-x: hidden;
+      .reading-page-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
       }
       .landscape-content {
         padding: 0 !important;
-        width: 100vw !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
       }
     }
   `;
@@ -506,7 +509,7 @@ export default function ReadingPage({ onBack, language }) {
     ];
 
     return (
-      <div style={{ background: DESIGN_SYSTEM.colors.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 2, width: '100%', boxSizing: 'border-box' }}>
+      <div className="reading-page-wrapper" style={{ background: DESIGN_SYSTEM.colors.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 2, width: '100%', boxSizing: 'border-box' }}>
         <style>{globalStyles}</style>
 
         {/* Back Button - Top Left */}
@@ -636,7 +639,7 @@ export default function ReadingPage({ onBack, language }) {
   // View: Flashcard Interface
   const theme = getTheme(selectedLevel);
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: DESIGN_SYSTEM.colors.bg, position: 'relative' }}>
+    <div className="reading-page-wrapper" style={{ display: 'flex', flexDirection: 'column', height: '100%', background: DESIGN_SYSTEM.colors.bg, position: 'relative' }}>
       <style>{globalStyles}</style>
 
       {/* Back Button - Top Left */}
