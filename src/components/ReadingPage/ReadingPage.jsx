@@ -506,6 +506,20 @@ export default function ReadingPage({ onBack, language }) {
         gap: 0.5rem;
       }
     }
+
+    /* Mobile: Full width, no side padding */
+    @media (max-width: 768px) {
+      body, html {
+        overflow-x: hidden;
+      }
+    }
+
+    /* Landscape orientation on mobile */
+    @media (orientation: landscape) and (max-height: 500px) {
+      div {
+        overflow-x: hidden;
+      }
+    }
   `;
 
   // View: Level Selection
@@ -518,7 +532,7 @@ export default function ReadingPage({ onBack, language }) {
     ];
 
     return (
-      <div style={{ background: DESIGN_SYSTEM.colors.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 2, width: '100%' }}>
+      <div style={{ background: DESIGN_SYSTEM.colors.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 2, width: '100%', boxSizing: 'border-box' }}>
         <style>{globalStyles}</style>
 
         {/* Back Button - Top Left */}
@@ -540,7 +554,7 @@ export default function ReadingPage({ onBack, language }) {
         </div>
 
         {/* Main Content - Single Scrollable Container */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 1rem' }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: 'clamp(0.75rem, 3vw, 1.5rem) clamp(0.5rem, 2vw, 1rem)', width: '100%', boxSizing: 'border-box', maxWidth: '100%' }}>
 
           {/* Hero Section */}
           <div className="hero-section">
@@ -662,7 +676,7 @@ export default function ReadingPage({ onBack, language }) {
       </button>
 
       {/* Main Content - Single Scrollable Container */}
-      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.5rem', padding: '1rem' }}>
+      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.5rem', padding: 'clamp(0.5rem, 2vw, 1rem)', width: '100%', boxSizing: 'border-box', maxWidth: '100%' }}>
 
         {/* Script Buttons - Inside Content */}
         <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', marginTop: '2rem' }}>
