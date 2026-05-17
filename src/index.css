@@ -121,6 +121,15 @@ body {
   background: var(--bg-body);
 }
 
+/* Mobile landscape: remove width constraint and margin */
+@media (orientation: landscape) and (max-height: 500px) {
+  #root {
+    max-width: 100% !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+}
+
 /* =============================================
    DESKTOP SIDEBAR (hidden on mobile)
    ============================================= */
