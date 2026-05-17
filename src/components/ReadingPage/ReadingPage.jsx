@@ -58,34 +58,34 @@ const getTileIllustration = (level) => {
   switch (level) {
     case 1:
       return (
-        <div style={{ position: 'relative', width: '140px', height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+        <div className="tile-illustration" style={{ gap: '12px' }}>
           {/* Block 1: Ba */}
-          <div style={{ animation: 'bob 2.2s ease-in-out infinite', width: '50px', height: '50px', background: '#FFFFFF', border: '3px solid #8F5300', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', fontWeight: 800, color: '#8F5300', fontFamily: 'Baloo 2, sans-serif', position: 'relative' }}>
+          <div className="tile-block-lg" style={{ animation: 'bob 2.2s ease-in-out infinite', background: '#FFFFFF', border: '3px solid #8F5300', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', fontWeight: 800, color: '#8F5300', fontFamily: 'Baloo 2, sans-serif', position: 'relative' }}>
             Ba
             <div style={{ position: 'absolute', top: '-8px', right: '-8px', width: '14px', height: '14px', background: '#FF9600', borderRadius: '50%' }} />
           </div>
           {/* Block 2: Ca */}
-          <div style={{ animation: 'bob 2.2s ease-in-out infinite 0.6s', width: '50px', height: '50px', background: '#FFF0CC', border: '3px solid #8F5300', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', fontWeight: 800, color: '#8F5300', fontFamily: 'Baloo 2, sans-serif' }}>
+          <div className="tile-block-lg" style={{ animation: 'bob 2.2s ease-in-out infinite 0.6s', background: '#FFF0CC', border: '3px solid #8F5300', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', fontWeight: 800, color: '#8F5300', fontFamily: 'Baloo 2, sans-serif' }}>
             Ca
           </div>
         </div>
       );
     case 2:
       return (
-        <div style={{ position: 'relative', width: '140px', height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+        <div className="tile-illustration" style={{ gap: '12px' }}>
           {/* Block 1: Ma */}
-          <div style={{ animation: 'bob 2.2s ease-in-out infinite', width: '45px', height: '45px', background: '#fff', border: '3px solid #06628A', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: 800, color: '#06628A', fontFamily: 'Baloo 2, sans-serif' }}>
+          <div className="tile-block-md" style={{ animation: 'bob 2.2s ease-in-out infinite', background: '#fff', border: '3px solid #06628A', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: 800, color: '#06628A', fontFamily: 'Baloo 2, sans-serif' }}>
             Ma
           </div>
           {/* Block 2: kan */}
-          <div style={{ animation: 'bob 2.2s ease-in-out infinite 0.6s', width: '45px', height: '45px', background: '#D0F0FF', border: '3px solid #06628A', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', fontWeight: 800, color: '#06628A', fontFamily: 'Baloo 2, sans-serif' }}>
+          <div className="tile-block-md" style={{ animation: 'bob 2.2s ease-in-out infinite 0.6s', background: '#D0F0FF', border: '3px solid #06628A', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', fontWeight: 800, color: '#06628A', fontFamily: 'Baloo 2, sans-serif' }}>
             kan
           </div>
         </div>
       );
     case 3:
       return (
-        <div style={{ position: 'relative', width: '140px', height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className="tile-illustration">
           {/* Book illustration */}
           <div style={{ animation: 'bob 2.2s ease-in-out infinite', width: '120px', height: '90px', background: 'linear-gradient(to right, #FFF 50%, #EDD9FF 50%)', border: '3px solid #6E3B85', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', left: '50%', top: '12px', bottom: '12px', width: '2px', background: '#6E3B85' }} />
@@ -104,7 +104,7 @@ const getTileIllustration = (level) => {
       );
     case 4:
       return (
-        <div style={{ position: 'relative', width: '140px', height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className="tile-illustration">
           {/* Scroll illustration */}
           <div style={{ animation: 'bob 2.2s ease-in-out infinite', width: '120px', height: '90px', background: '#FFF', border: '3px solid #2E6B00', borderRadius: '10px', display: 'flex', flexDirection: 'column', padding: '12px', gap: '6px', justifyContent: 'center' }}>
             <div style={{ height: '2px', background: '#58CC02', borderRadius: '1px', width: '90%' }} />
@@ -226,8 +226,10 @@ export default function ReadingPage({ onBack, language }) {
     @media (max-width: 520px) {
       .level-grid {
         grid-template-columns: 1fr;
-        gap: 14px;
-        margin-top: 20px;
+        row-gap: 28px;
+        column-gap: 20px;
+        margin-top: 40px;
+        padding: 0 16px;
       }
     }
 
@@ -235,8 +237,10 @@ export default function ReadingPage({ onBack, language }) {
     @media (min-width: 521px) and (max-width: 1100px) {
       .level-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
+        row-gap: 32px;
+        column-gap: 32px;
         margin-top: 24px;
+        padding: 0 12px;
       }
     }
 
@@ -244,15 +248,19 @@ export default function ReadingPage({ onBack, language }) {
     @media (min-width: 1101px) {
       .level-grid {
         grid-template-columns: repeat(4, 1fr);
-        gap: 24px;
+        row-gap: 28px;
+        column-gap: 24px;
         margin-top: 32px;
+        padding: 0 20px;
       }
     }
 
     /* Very small phones */
     @media (max-width: 360px) {
       .level-grid {
-        gap: 12px;
+        row-gap: 24px;
+        column-gap: 16px;
+        padding: 0 8px;
       }
     }
 
@@ -420,6 +428,81 @@ export default function ReadingPage({ onBack, language }) {
       }
     }
 
+    /* Responsive Tile Illustrations */
+    .tile-illustration {
+      width: 140px;
+      height: 120px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      .tile-illustration {
+        width: 180px;
+        height: 160px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .tile-illustration {
+        width: 220px;
+        height: 200px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .tile-illustration {
+        width: 200px;
+        height: 180px;
+      }
+    }
+
+    /* Responsive Illustration Blocks (Ba, Ca, Ma, kan) */
+    .tile-block-lg {
+      width: 55px;
+      height: 55px;
+    }
+
+    .tile-block-md {
+      width: 50px;
+      height: 50px;
+    }
+
+    @media (max-width: 768px) {
+      .tile-block-lg {
+        width: 80px;
+        height: 80px;
+      }
+      .tile-block-md {
+        width: 80px;
+        height: 80px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .tile-block-lg {
+        width: 90px;
+        height: 90px;
+      }
+      .tile-block-md {
+        width: 90px;
+        height: 90px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .tile-block-lg {
+        width: 85px;
+        height: 85px;
+      }
+      .tile-block-md {
+        width: 85px;
+        height: 85px;
+      }
+    }
+
     /* Responsive Flashcard */
     .flashcard-container {
       display: flex;
@@ -584,36 +667,56 @@ export default function ReadingPage({ onBack, language }) {
                   onMouseUp={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 0 0 5px ${DESIGN_SYSTEM.bezel[1]}, 0 0 0 8px ${DESIGN_SYSTEM.bezel[2]}, 0 0 0 9px ${DESIGN_SYSTEM.bezel[3]}, 0 12px 0 -2px ${colorScheme.cd}, 0 22px 28px -10px rgba(0,0,0,.22)`; }}
                   onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 0 0 5px ${DESIGN_SYSTEM.bezel[1]}, 0 0 0 8px ${DESIGN_SYSTEM.bezel[2]}, 0 0 0 9px ${DESIGN_SYSTEM.bezel[3]}, 0 12px 0 -2px ${colorScheme.cd}, 0 22px 28px -10px rgba(0,0,0,.22)`; }}
                 >
+
+                  {/* ─────────────────────────────────── */}
+                  {/* 1️⃣ HEADER SECTION (Top Decorations) */}
+                  {/* ─────────────────────────────────── */}
+
                   {/* Glossy highlight */}
                   <div style={{ content: '""', position: 'absolute', top: 8, left: 18, right: 18, height: '42%', borderRadius: '28px 28px 80% 80%', background: 'linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,.12) 70%, transparent 100%)', pointerEvents: 'none', zIndex: 1 }} />
 
-                  {/* Number Badge */}
+                  {/* Number Badge (1, 2, 3, 4) */}
                   <div style={{ position: 'absolute', top: 14, left: 14, zIndex: 3, width: 56, height: 56, borderRadius: '50%', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 34, color: colorScheme.cd, boxShadow: `0 4px 0 rgba(0,0,0,.18), 0 0 0 4px rgba(255,255,255,.4)` }}>
                     {lvl.icon}
                   </div>
 
-                  {/* Corner Star */}
+                  {/* Corner Star (Spinning Animation) */}
                   <svg style={{ position: 'absolute', top: 10, right: 10, zIndex: 3, transform: 'rotate(12deg)', animation: 'spin 6s linear infinite', opacity: 0.95 }} width="44" height="44" viewBox="0 0 24 24" fill="#FFE066">
                     <path d="M12 2l2.6 6.4L21 9l-5 4.4L17.4 20 12 16.7 6.6 20 8 13.4 3 9l6.4-.6L12 2z"/>
                   </svg>
 
-                  {/* Illustration */}
+                  {/* ─────────────────────────────────── */}
+                  {/* 2️⃣ BODY SECTION (Illustration) */}
+                  {/* ─────────────────────────────────── */}
+
+                  {/* Tile Illustration Container */}
                   <div style={{ position: 'absolute', top: 14, left: 0, right: 0, bottom: 130, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2, minHeight: '140px' }}>
                     {getTileIllustration(lvl.level)}
                   </div>
 
-                  {/* Bottom Plate */}
+                  {/* ─────────────────────────────────── */}
+                  {/* 3️⃣ FOOTER SECTION (Bottom Plate) */}
+                  {/* ─────────────────────────────────── */}
+
+                  {/* Bottom Plate Container */}
                   <div style={{ position: 'absolute', bottom: 14, left: 14, right: 14, background: '#fff', borderRadius: 22, padding: '14px 16px 12px', boxShadow: '0 4px 0 rgba(0,0,0,.08)', zIndex: 3 }}>
+
+                    {/* Title with Tag */}
                     <div className="plate-title">
                       {lvl.title}
                       <span className="plate-tag" style={{ background: colorScheme.c3, boxShadow: `0 2px 0 ${colorScheme.cd}` }}>
                         {lvl.tag}
                       </span>
                     </div>
+
+                    {/* Description Text */}
                     <div className="plate-desc">
                       {lvl.desc}
                     </div>
+
+                    {/* Stars & Play Button Row */}
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
+                      {/* Star Rating (1 filled, 2 empty) */}
                       <div style={{ display: 'flex', gap: 2 }}>
                         {[0, 0, 0].map((_, i) => (
                           <svg key={i} width="18" height="18" viewBox="0 0 24 24" fill={i === 0 ? '#F4B400' : '#E5E0D2'}>
@@ -621,6 +724,8 @@ export default function ReadingPage({ onBack, language }) {
                           </svg>
                         ))}
                       </div>
+
+                      {/* Play Button */}
                       <div style={{ width: 38, height: 38, borderRadius: '50%', background: `radial-gradient(circle at 50% 30%, ${colorScheme.c1} 0%, ${colorScheme.c2} 55%, ${colorScheme.c3} 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 3px 0 ${colorScheme.cd}, 0 0 0 2px rgba(255,255,255,.7), 0 6px 10px -4px rgba(0,0,0,.25)`, position: 'relative' }}>
                         <div style={{ content: '""', position: 'absolute', top: 4, left: 7, right: 7, height: 10, borderRadius: '50%', background: 'radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.9), transparent 70%)' }} />
                         <Play size={18} fill="#fff" color="#fff" style={{ position: 'relative', zIndex: 2, filter: `drop-shadow(0 1px 0 ${colorScheme.cd})` }} />
