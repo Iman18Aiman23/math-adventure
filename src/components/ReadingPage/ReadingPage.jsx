@@ -534,36 +534,6 @@ export default function ReadingPage({ onBack, language }) {
         {/* Main Content - Now includes header */}
         <div className="app-container" style={{ flex: 1, overflowY: 'auto' }}>
 
-          {/* Top Bar with Stats */}
-          <div className="top-bar">
-            <button
-              onClick={onBack}
-              style={{ width: 42, height: 42, borderRadius: 14, border: 0, cursor: 'pointer', background: '#fff', color: DESIGN_SYSTEM.colors.ink2, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}, 0 0 0 1px ${DESIGN_SYSTEM.colors.hair}`, transition: 'transform .12s' }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
-            >
-              <ArrowLeft size={22} />
-            </button>
-            <div className="spacer" />
-            {/* Star Stat */}
-            <div className="stat-item" style={{ color: DESIGN_SYSTEM.colors.ink }}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill={DESIGN_SYSTEM.stats.star}><path d="M12 2.6 14.7 8.4l6.3.6-4.7 4.3 1.4 6.2L12 16.7l-5.7 2.8 1.4-6.2L3 9l6.3-.6L12 2.6Z"/></svg>
-              7 <span className="stat-label">bintang</span>
-            </div>
-            <span style={{ color: '#D5CFC0', fontWeight: 800, margin: '0 6px' }}>·</span>
-            {/* Heart Stat */}
-            <div className="stat-item" style={{ color: DESIGN_SYSTEM.colors.ink }}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill={DESIGN_SYSTEM.stats.heart}><path d="M12 20.3c-.4 0-.8-.15-1.1-.45L3.6 12.6A5 5 0 0 1 10.7 5.5l1.3 1.3 1.3-1.3A5 5 0 0 1 20.4 12.6l-7.3 7.25c-.3.3-.7.45-1.1.45Z"/></svg>
-              3 <span className="stat-label">nyawa</span>
-            </div>
-            <span style={{ color: '#D5CFC0', fontWeight: 800, margin: '0 6px' }}>·</span>
-            {/* Gem Stat */}
-            <div className="stat-item" style={{ color: DESIGN_SYSTEM.colors.ink }}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill={DESIGN_SYSTEM.stats.gem}><path d="M7.5 4h9l4 5-8.5 11L3.5 9l4-5Z"/></svg>
-              81 <span className="stat-label">permata</span>
-            </div>
-          </div>
-
           {/* Hero Section */}
           <div className="hero-section">
             <div style={{ width: 96, height: 96, margin: '0 auto 4px', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'floaty 3.6s ease-in-out infinite' }}>
