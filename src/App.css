@@ -5,6 +5,27 @@
   text-align: center;
 }
 
+/* Mobile devices: remove constraints and padding */
+@media (max-width: 768px) {
+  #root {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+}
+
+/* Mobile landscape: ensure full width */
+@media (orientation: landscape) and (max-height: 500px) {
+  #root {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100%;
+    height: 100vh;
+  }
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
