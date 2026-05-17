@@ -121,10 +121,14 @@ body {
   background: var(--bg-body);
 }
 
-/* Mobile landscape: remove width constraint and margin */
-@media (orientation: landscape) and (max-height: 500px) {
+/* Mobile landscape: remove width constraint and centering */
+@media (orientation: landscape) and (max-height: 800px) {
+  body {
+    justify-content: flex-start !important;
+  }
   #root {
     max-width: 100% !important;
+    width: 100% !important;
     margin: 0 !important;
     box-shadow: none !important;
   }
