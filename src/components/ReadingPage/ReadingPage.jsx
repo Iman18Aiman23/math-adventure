@@ -482,6 +482,9 @@ export default function ReadingPage({ onBack, language }) {
       div {
         overflow-x: hidden;
       }
+      .landscape-content {
+        padding: 0 !important;
+      }
     }
   `;
 
@@ -517,7 +520,7 @@ export default function ReadingPage({ onBack, language }) {
         </div>
 
         {/* Main Content - Single Scrollable Container */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: 'clamp(0.75rem, 3vw, 1.5rem) clamp(0.5rem, 2vw, 1rem)', width: '100%', boxSizing: 'border-box', maxWidth: '100%' }}>
+        <div className="landscape-content" style={{ flex: 1, overflowY: 'auto', padding: 'clamp(0.75rem, 3vw, 1.5rem) clamp(0.5rem, 2vw, 1rem)', width: '100%', boxSizing: 'border-box', maxWidth: '100%' }}>
 
           {/* Hero Section */}
           <div className="hero-section">
@@ -639,7 +642,7 @@ export default function ReadingPage({ onBack, language }) {
       </button>
 
       {/* Main Content - Single Scrollable Container */}
-      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.5rem', padding: 'clamp(0.5rem, 2vw, 1rem)', width: '100%', boxSizing: 'border-box', maxWidth: '100%' }}>
+      <div className="landscape-content" style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.5rem', padding: 'clamp(0.5rem, 2vw, 1rem)', width: '100%', boxSizing: 'border-box', maxWidth: '100%' }}>
 
         {/* Script Buttons - Inside Content */}
         <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', marginTop: '2rem' }}>
