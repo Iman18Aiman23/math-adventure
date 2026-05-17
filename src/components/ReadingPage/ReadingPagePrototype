@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Iman · Reading Levels</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    /* Brand */
+    --primary:#4A90E2;
+    --secondary:#9013FE;
+    --surface:#FFFFFF;
+    --text-main:#111827;
+
+    --bg:#FFFDF8;            /* warm neutral surface */
+    --ink:#111827;
+    --ink2:#374151;
+    --muted:#6B7280;
+    --hair:#E5E7EB;
+
+    /* bezel ring — warm neutral putty */
+    --bezel-1:#FFFFFF;
+    --bezel-2:#F4EFE6;
+    --bezel-3:#D9D0BD;
+
+    /* Tile palettes — per spec */
+    /* Tahap 1 — Orange */
+    --o1:#FFF0CC; --o2:#FF9600; --o3:#D47A00; --o-deep:#8F5300;
+    /* Tahap 2 — Sky */
+    --s1:#D0F0FF; --s2:#1CB0F6; --s3:#0B8DC0; --s-deep:#06628A;
+    /* Tahap 3 — Purple */
+    --p1:#EDD9FF; --p2:#CE82FF; --p3:#9B59B6; --p-deep:#6E3B85;
+    /* Tahap 4 — Green */
+    --l1:#E6FFD4; --l2:#58CC02; --l3:#46A302; --l-deep:#2E6B00;
+
+    --c-heart:#FF4B4B; --c-gem:#1CB0F6; --c-star:#FFC800;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Nunito',system-ui,sans-serif}
+  body{overflow-x:hidden}
+
+  /* ──────────── App chrome ──────────── */
+  .app{max-width:1180px;margin:0 auto;padding:14px 20px 80px;position:relative;z-index:2}
+
+  /* floating background sparkles */
+  .bg-deco{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+  .bg-deco svg{position:absolute}
+
+  .topbar{display:flex;align-items:center;gap:12px;padding:6px 4px 18px}
+  .iconbtn{
+    width:42px;height:42px;border-radius:14px;border:0;cursor:pointer;
+    background:#fff;color:var(--ink2);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 3px 0 var(--hair), 0 0 0 1px var(--hair);
+    transition:transform .12s;
+  }
+  .iconbtn:hover{transform:translateY(-1px)}
+  .topbar .spacer{flex:1}
+  .stat{display:inline-flex;align-items:center;gap:6px;font-family:'Baloo 2',sans-serif;font-weight:800;font-size:14px;color:var(--ink);padding:6px 4px}
+  .stat .dot{color:#D5CFC0;font-weight:800;margin:0 6px}
+  .stat .label{color:var(--muted);font-weight:700}
+
+  /* ──────────── Hero ──────────── */
+  .hero{text-align:center;padding:10px 12px 22px}
+  .book-icon{width:96px;height:96px;margin:0 auto 4px;display:flex;align-items:center;justify-content:center;animation:floaty 3.6s ease-in-out infinite}
+  @keyframes floaty{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
+  .hero h1{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:40px;letter-spacing:-0.01em;margin:0 0 8px;color:var(--ink);text-shadow:0 2px 0 #fff,0 3px 0 rgba(0,0,0,.04)}
+  .hero p{margin:0 auto;max-width:680px;color:var(--muted);font-weight:700;font-size:15px;line-height:1.5}
+
+  /* ──────────── Grid ──────────── */
+  .grid{
+    margin:32px 0 0;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:24px;
+  }
+  @media (max-width:1100px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:520px){.grid{grid-template-columns:1fr;gap:18px}}
+
+  /* ──────────── Tile ──────────── */
+  .tile{
+    --c1:var(--o1); --c2:var(--o2); --c3:var(--o3); --cd:var(--o-deep);
+    position:relative;
+    border:0;cursor:pointer;padding:0;
+    width:100%;aspect-ratio:1/1.18;
+    border-radius:32px;
+    font-family:inherit;
+    background:linear-gradient(180deg, var(--c1) 0%, var(--c2) 55%, var(--c3) 100%);
+    box-shadow:
+      0 0 0 5px var(--bezel-1),
+      0 0 0 8px var(--bezel-2),
+      0 0 0 9px var(--bezel-3),
+      0 12px 0 -2px var(--cd),
+      0 22px 28px -10px rgba(0,0,0,.22);
+    overflow:hidden;
+    transition:transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .18s ease;
+    text-align:left;color:#fff;
+  }
+  .tile:hover{
+    transform:translateY(-4px) rotate(-1deg);
+    box-shadow:
+      0 0 0 5px var(--bezel-1),
+      0 0 0 8px var(--bezel-2),
+      0 0 0 9px var(--bezel-3),
+      0 16px 0 -2px var(--cd),
+      0 30px 38px -10px rgba(0,0,0,.28);
+  }
+  .tile:active{
+    transform:translateY(8px);
+    box-shadow:
+      0 0 0 5px var(--bezel-1),
+      0 0 0 8px var(--bezel-2),
+      0 0 0 9px var(--bezel-3),
+      0 4px 0 -2px var(--cd),
+      0 10px 14px -8px rgba(0,0,0,.22);
+  }
+
+  /* color variants */
+  .tile.l1{--c1:var(--o1);--c2:var(--o2);--c3:var(--o3);--cd:var(--o-deep)}
+  .tile.l2{--c1:var(--s1);--c2:var(--s2);--c3:var(--s3);--cd:var(--s-deep)}
+  .tile.l3{--c1:var(--p1);--c2:var(--p2);--c3:var(--p3);--cd:var(--p-deep)}
+  .tile.l4{--c1:var(--l1);--c2:var(--l2);--c3:var(--l3);--cd:var(--l-deep)}
+
+  /* top glossy highlight */
+  .tile::before{
+    content:"";position:absolute;
+    top:8px;left:18px;right:18px;height:42%;border-radius:28px 28px 80% 80%;
+    background:linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,.12) 70%, transparent 100%);
+    pointer-events:none;z-index:1;
+  }
+  /* radial dots pattern in background */
+  .tile::after{
+    content:"";position:absolute;inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.16) 1.5px, transparent 1.6px);
+    background-size:18px 18px;
+    background-position:0 0;
+    opacity:.6;pointer-events:none;
+  }
+
+  /* Number badge */
+  .num-badge{
+    position:absolute;top:14px;left:14px;z-index:3;
+    width:56px;height:56px;border-radius:50%;
+    background:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Baloo 2',sans-serif;font-weight:800;font-size:34px;color:var(--cd);
+    box-shadow:0 4px 0 rgba(0,0,0,.18), 0 0 0 4px rgba(255,255,255,.4);
+    transition:transform .3s;
+  }
+  .tile:hover .num-badge{transform:rotate(-12deg) scale(1.08)}
+
+  /* Sparkles on hover */
+  .spark{position:absolute;z-index:3;opacity:0;transition:opacity .3s, transform .5s}
+  .tile:hover .spark{opacity:1}
+  .tile:hover .spark.s1{transform:translate(-6px,-8px) scale(1.2) rotate(20deg)}
+  .tile:hover .spark.s2{transform:translate(6px,-6px) scale(1.15) rotate(-15deg)}
+  .tile:hover .spark.s3{transform:translate(-4px,6px) scale(1.1) rotate(10deg)}
+
+  /* Illustration zone */
+  .illo{
+    position:absolute;top:14px;left:0;right:0;bottom:120px;
+    display:flex;align-items:center;justify-content:center;
+    z-index:2;
+  }
+  .illo svg{width:78%;height:auto;max-height:100%;filter:drop-shadow(0 8px 6px rgba(0,0,0,.18));transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
+  .tile:hover .illo svg{transform:scale(1.06) translateY(-4px)}
+
+  /* bouncy elements within illustration */
+  .bob{animation:bob 2.2s ease-in-out infinite}
+  .bob.d1{animation-delay:.2s}
+  .bob.d2{animation-delay:.6s}
+  .bob.d3{animation-delay:1s}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
+  /* Bottom plate (white) */
+  .plate{
+    position:absolute;bottom:14px;left:14px;right:14px;
+    background:#fff;border-radius:22px;
+    padding:14px 16px 12px;
+    box-shadow:0 4px 0 rgba(0,0,0,.08);
+    z-index:3;
+  }
+  .plate .title{
+    font-family:'Baloo 2',sans-serif;font-weight:800;font-size:20px;color:var(--ink);
+    line-height:1.05;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  }
+  .plate .tag{
+    display:inline-block;
+    font-family:'Nunito',sans-serif;font-weight:800;font-size:10px;letter-spacing:0.1em;
+    color:#fff;background:var(--c3);
+    padding:3px 8px;border-radius:999px;
+    box-shadow:0 2px 0 var(--cd);
+  }
+  .plate .desc{
+    margin-top:4px;
+    font-family:'Nunito',sans-serif;font-weight:700;font-size:12px;color:var(--muted);
+    line-height:1.35;
+  }
+  .plate .row{
+    display:flex;align-items:center;justify-content:space-between;margin-top:8px;
+  }
+  .stars{display:flex;gap:2px}
+  .stars svg{width:18px;height:18px}
+  .stars svg.on path{fill:#F4B400;filter:drop-shadow(0 1px 0 #C99000)}
+  .stars svg.off path{fill:#E5E0D2}
+
+  .go-btn{
+    width:38px;height:38px;border-radius:50%;
+    background:radial-gradient(circle at 50% 30%, var(--c1) 0%, var(--c2) 55%, var(--c3) 100%);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 3px 0 var(--cd), 0 0 0 2px rgba(255,255,255,.7), 0 6px 10px -4px rgba(0,0,0,.25);
+    position:relative;
+  }
+  .go-btn::before{content:"";position:absolute;top:4px;left:7px;right:7px;height:10px;border-radius:50%;background:radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.9), transparent 70%)}
+  .go-btn svg{width:18px;height:18px;position:relative;z-index:2;filter:drop-shadow(0 1px 0 var(--cd))}
+
+  /* Locked state */
+  .tile.locked{
+    background:linear-gradient(180deg,#E4DED0,#BFB7A0 55%,#8A8170);
+    --cd:#5A5444;
+    cursor:not-allowed;
+  }
+  .tile.locked:hover{transform:translateY(-2px) rotate(0)}
+  .tile.locked .illo svg{opacity:.6;filter:grayscale(.4)}
+  .tile.locked .num-badge{color:#5A5444}
+  .tile.locked .plate .tag{background:#8A8170;box-shadow:0 2px 0 #5A5444}
+
+  /* Lock overlay badge */
+  .lock-chip{
+    position:absolute;top:14px;right:14px;z-index:3;
+    width:48px;height:48px;border-radius:50%;
+    background:#fff;color:#5A5444;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 4px 0 rgba(0,0,0,.18);
+  }
+
+  /* unlocked corner star */
+  .badge-corner{
+    position:absolute;top:10px;right:10px;z-index:3;
+    transform:rotate(12deg);
+    animation:spin 6s linear infinite;
+    opacity:.95;
+  }
+  @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+  /* gentle wiggle to draw attention to first tile (current) */
+  .tile.current{animation:nudge 3s ease-in-out infinite}
+  @keyframes nudge{0%,90%,100%{transform:rotate(-1deg)}45%{transform:rotate(1deg)}}
+  .tile.current:hover{animation:none}
+</style>
+</head>
+<body>
+
+<!-- floating background sparkles -->
+<div class="bg-deco" aria-hidden="true">
+  <svg style="top:8%;left:6%;opacity:.5" width="34" height="34" viewBox="0 0 34 34" fill="#FF9600"><path d="M17 2l3 11 11 4-11 4-3 11-3-11L3 17l11-4z"/></svg>
+  <svg style="top:14%;right:8%;opacity:.5" width="22" height="22" viewBox="0 0 24 24" fill="#1CB0F6"><circle cx="12" cy="12" r="10"/></svg>
+  <svg style="bottom:18%;left:4%;opacity:.45" width="28" height="28" viewBox="0 0 24 24" fill="#CE82FF"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg>
+  <svg style="bottom:8%;right:6%;opacity:.5" width="30" height="30" viewBox="0 0 24 24" fill="#58CC02"><circle cx="12" cy="12" r="10"/></svg>
+  <svg style="top:48%;left:2%;opacity:.4" width="20" height="20" viewBox="0 0 24 24" fill="#FFC800"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg>
+  <svg style="top:42%;right:3%;opacity:.4" width="26" height="26" viewBox="0 0 24 24" fill="#1CB0F6"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg>
+</div>
+
+<div class="app">
+
+  <!-- ─── Top bar ─── -->
+  <div class="topbar">
+    <button class="iconbtn" aria-label="Back">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5 7.6 11.6a.5.5 0 0 0 0 .8L14.5 19"/></svg>
+    </button>
+    <div class="spacer"></div>
+    <div class="stat">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--c-star)"><path d="M12 2.6 14.7 8.4l6.3.6-4.7 4.3 1.4 6.2L12 16.7l-5.7 2.8 1.4-6.2L3 9l6.3-.6L12 2.6Z"/></svg>
+      7 <span class="label">bintang</span>
+    </div>
+    <span class="stat dot">·</span>
+    <div class="stat">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--c-heart)"><path d="M12 20.3c-.4 0-.8-.15-1.1-.45L3.6 12.6A5 5 0 0 1 10.7 5.5l1.3 1.3 1.3-1.3A5 5 0 0 1 20.4 12.6l-7.3 7.25c-.3.3-.7.45-1.1.45Z"/></svg>
+      3 <span class="label">nyawa</span>
+    </div>
+    <span class="stat dot">·</span>
+    <div class="stat">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--c-gem)"><path d="M7.5 4h9l4 5-8.5 11L3.5 9l4-5Z"/></svg>
+      81 <span class="label">permata</span>
+    </div>
+  </div>
+
+  <!-- ─── Hero ─── -->
+  <div class="hero">
+    <div class="book-icon">
+      <svg viewBox="0 0 100 100" width="92" height="92" fill="none">
+        <defs>
+          <linearGradient id="bookL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF0CC"/><stop offset="1" stop-color="#FFD699"/></linearGradient>
+          <linearGradient id="bookR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC766"/><stop offset="1" stop-color="#FF9600"/></linearGradient>
+        </defs>
+        <ellipse cx="50" cy="88" rx="38" ry="5" fill="rgba(0,0,0,.12)"/>
+        <path d="M10 30c12-6 28-6 38 2v52c-10-8-26-8-38-2V30Z" fill="url(#bookL)" stroke="#8F5300" stroke-width="2.4" stroke-linejoin="round"/>
+        <path d="M90 30c-12-6-28-6-38 2v52c10-8 26-8 38-2V30Z" fill="url(#bookR)" stroke="#8F5300" stroke-width="2.4" stroke-linejoin="round"/>
+        <path d="M48 32v52M52 32v52" stroke="#8F5300" stroke-width="1.6"/>
+        <path d="M18 44h22M18 50h18M18 56h22M18 62h16" stroke="rgba(143,83,0,.45)" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M60 44h22M60 50h18M60 56h22M60 62h16" stroke="rgba(255,255,255,.75)" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h1>Kuasai Seni Membaca</h1>
+    <p>Dari suku kata hingga ayat penuh. Mulai dari tahap mudah dan berkembang dengan kepercayaan diri!</p>
+  </div>
+
+  <!-- ─── 4 illustrated level tiles ─── -->
+  <div class="grid">
+
+    <!-- ───── TAHAP 1 — KV (orange) — letter blocks ───── -->
+    <button class="tile l1 current">
+      <span class="num-badge">1</span>
+
+      <!-- corner star -->
+      <svg class="badge-corner" width="44" height="44" viewBox="0 0 24 24" fill="#FFE066"><path d="M12 2l2.6 6.4L21 9l-5 4.4L17.4 20 12 16.7 6.6 20 8 13.4 3 9l6.4-.6L12 2z"/></svg>
+
+      <span class="spark s1" style="top:30%;left:14%"><svg width="22" height="22" viewBox="0 0 24 24" fill="#FFF"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></span>
+      <span class="spark s2" style="top:36%;right:16%"><svg width="16" height="16" viewBox="0 0 24 24" fill="#DCE9FA"><circle cx="12" cy="12" r="10"/></svg></span>
+
+      <div class="illo">
+        <!-- Two letter blocks "BA" and "CA" -->
+        <svg viewBox="0 0 200 160">
+          <!-- shadow -->
+          <ellipse cx="100" cy="148" rx="74" ry="7" fill="rgba(0,0,0,.18)"/>
+          <!-- block BA -->
+          <g transform="translate(20 22) rotate(-8 40 40)"><g class="bob d1">
+            <rect x="0" y="0" width="78" height="78" rx="14" fill="#FFFFFF" stroke="#8F5300" stroke-width="3.5"/>
+            <rect x="6" y="6" width="66" height="22" rx="8" fill="rgba(255,150,0,.22)"/>
+            <text x="39" y="55" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="38" fill="#8F5300">Ba</text>
+            <circle cx="68" cy="12" r="4" fill="#FF9600"/>
+          </g></g>
+          <!-- block CA -->
+          <g transform="translate(108 30) rotate(10 40 40)"><g class="bob d2">
+            <rect x="0" y="0" width="78" height="78" rx="14" fill="#FFF0CC" stroke="#8F5300" stroke-width="3.5"/>
+            <rect x="6" y="6" width="66" height="22" rx="8" fill="rgba(143,83,0,.18)"/>
+            <text x="39" y="55" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="38" fill="#8F5300">Ca</text>
+            <circle cx="68" cy="12" r="4" fill="#FFFFFF"/>
+          </g></g>
+          <!-- floating stars -->
+          <g class="bob d3" fill="#FFFFFF">
+            <path d="M170 20l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="plate">
+        <div class="title">Tahap 1 <span class="tag">KV</span></div>
+        <div class="desc">Sebutan ringkas (Contoh: <b>Ba · Ca</b>)</div>
+        <div class="row">
+          <div class="stars" aria-label="3 stars">
+            <svg viewBox="0 0 24 24" class="on"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+            <svg viewBox="0 0 24 24" class="on"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+            <svg viewBox="0 0 24 24" class="off"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          </div>
+          <div class="go-btn"><svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5.5v13a.6.6 0 0 0 .9.5l11.5-6.5a.6.6 0 0 0 0-1L8.9 5a.6.6 0 0 0-.9.5Z"/></svg></div>
+        </div>
+      </div>
+    </button>
+
+    <!-- ───── TAHAP 2 — KVK (sky blue) — bowl of rice (makan) ───── -->
+    <button class="tile l2">
+      <span class="num-badge">2</span>
+
+      <span class="spark s1" style="top:24%;left:16%"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></span>
+      <span class="spark s3" style="bottom:34%;right:18%"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="10"/></svg></span>
+
+      <div class="illo">
+        <svg viewBox="0 0 200 160">
+          <ellipse cx="100" cy="148" rx="70" ry="7" fill="rgba(0,0,0,.18)"/>
+          <!-- letter block "MA" -->
+          <g transform="translate(12 20) rotate(-8 40 40)"><g class="bob d1">
+            <rect x="0" y="0" width="68" height="68" rx="14" fill="#fff" stroke="#06628A" stroke-width="3.5"/>
+            <text x="34" y="50" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="34" fill="#06628A">Ma</text>
+          </g></g>
+          <!-- letter block "kan" -->
+          <g transform="translate(118 24) rotate(10 40 40)"><g class="bob d2">
+            <rect x="0" y="0" width="68" height="68" rx="14" fill="#D0F0FF" stroke="#06628A" stroke-width="3.5"/>
+            <text x="34" y="50" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="30" fill="#06628A">kan</text>
+          </g></g>
+          <!-- bowl with steam -->
+          <g transform="translate(60 78)"><g class="bob d3">
+            <!-- steam -->
+            <path d="M18 -10c-4 -6 4 -10 0 -16M30 -10c-4 -6 4 -10 0 -16M42 -10c-4 -6 4 -10 0 -16" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none" opacity=".75"/>
+            <!-- bowl -->
+            <path d="M0 0c0 18 18 32 40 32s40 -14 40 -32H0Z" fill="#fff" stroke="#06628A" stroke-width="3"/>
+            <path d="M0 0h80" stroke="#06628A" stroke-width="3"/>
+            <!-- rice -->
+            <ellipse cx="20" cy="-3" rx="4" ry="2.5" fill="#D0F0FF"/>
+            <ellipse cx="34" cy="-5" rx="4" ry="2.5" fill="#D0F0FF"/>
+            <ellipse cx="48" cy="-3" rx="4" ry="2.5" fill="#D0F0FF"/>
+            <ellipse cx="60" cy="-5" rx="4" ry="2.5" fill="#D0F0FF"/>
+            <!-- base -->
+            <path d="M-6 30h92" stroke="#06628A" stroke-width="3" stroke-linecap="round"/>
+          </g></g>
+        </svg>
+      </div>
+
+      <div class="plate">
+        <div class="title">Tahap 2 <span class="tag">KVK</span></div>
+        <div class="desc">Perkataan tertutup (Contoh: <b>Ma · kan</b>)</div>
+        <div class="row">
+          <div class="stars" aria-label="1 star">
+            <svg viewBox="0 0 24 24" class="on"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+            <svg viewBox="0 0 24 24" class="off"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+            <svg viewBox="0 0 24 24" class="off"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          </div>
+          <div class="go-btn"><svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5.5v13a.6.6 0 0 0 .9.5l11.5-6.5a.6.6 0 0 0 0-1L8.9 5a.6.6 0 0 0-.9.5Z"/></svg></div>
+        </div>
+      </div>
+    </button>
+
+    <!-- ───── TAHAP 3 — Ayat Pendek (purple) — friendly book character ───── -->
+    <button class="tile l3">
+      <span class="num-badge">3</span>
+
+      <span class="spark s1" style="top:22%;left:12%"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></span>
+      <span class="spark s2" style="top:30%;right:14%"><svg width="22" height="22" viewBox="0 0 24 24" fill="#F1D6FF"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg></span>
+
+      <div class="illo">
+        <svg viewBox="0 0 200 160">
+          <ellipse cx="100" cy="148" rx="76" ry="7" fill="rgba(0,0,0,.18)"/>
+          <!-- Friendly book character -->
+          <g transform="translate(28 14)"><g class="bob d1">
+            <!-- pages back glow -->
+            <rect x="-2" y="6" width="148" height="120" rx="14" fill="rgba(255,255,255,.18)"/>
+            <!-- left page -->
+            <path d="M2 14c14-8 36-10 70-4v114c-34-6-56-4-70 4V14Z" fill="#FFF" stroke="#6E3B85" stroke-width="3.4" stroke-linejoin="round"/>
+            <!-- right page -->
+            <path d="M142 14c-14-8-36-10-70-4v114c34-6 56-4 70 4V14Z" fill="#EDD9FF" stroke="#6E3B85" stroke-width="3.4" stroke-linejoin="round"/>
+            <!-- text lines -->
+            <path d="M14 36h44M14 46h32M14 56h44M14 66h28" stroke="#CE82FF" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M86 36h44M86 46h36M86 56h44M86 66h32" stroke="#CE82FF" stroke-width="2.4" stroke-linecap="round"/>
+            <!-- face on book -->
+            <circle cx="50" cy="92" r="4" fill="#6E3B85"/>
+            <circle cx="96" cy="92" r="4" fill="#6E3B85"/>
+            <path d="M62 100c4 6 14 6 18 0" stroke="#6E3B85" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <!-- cheeks -->
+            <circle cx="38" cy="100" r="4" fill="#FF9DA8" opacity=".7"/>
+            <circle cx="108" cy="100" r="4" fill="#FF9DA8" opacity=".7"/>
+          </g></g>
+          <!-- mini sparkles -->
+          <g class="bob d3" fill="#FFF">
+            <path d="M168 30l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="plate">
+        <div class="title">Tahap 3 <span class="tag">AYAT PENDEK</span></div>
+        <div class="desc">Gabungan perkataan (<b>Buku Baru</b>)</div>
+        <div class="row">
+          <div class="stars" aria-label="0 stars">
+            <svg viewBox="0 0 24 24" class="off"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+            <svg viewBox="0 0 24 24" class="off"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+            <svg viewBox="0 0 24 24" class="off"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          </div>
+          <div class="go-btn"><svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5.5v13a.6.6 0 0 0 .9.5l11.5-6.5a.6.6 0 0 0 0-1L8.9 5a.6.6 0 0 0-.9.5Z"/></svg></div>
+        </div>
+      </div>
+    </button>
+
+    <!-- ───── TAHAP 4 — Ayat Panjang (green) — reading scene ───── -->
+    <button class="tile l4">
+      <span class="num-badge">4</span>
+      <!-- corner star -->
+      <svg class="badge-corner" width="44" height="44" viewBox="0 0 24 24" fill="#FFE066"><path d="M12 2l2.6 6.4L21 9l-5 4.4L17.4 20 12 16.7 6.6 20 8 13.4 3 9l6.4-.6L12 2z"/></svg>
+
+      <span class="spark s1" style="top:24%;left:14%"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></span>
+      <span class="spark s2" style="top:32%;right:16%"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="10"/></svg></span>
+
+      <div class="illo">
+        <svg viewBox="0 0 200 160">
+          <ellipse cx="100" cy="148" rx="74" ry="7" fill="rgba(0,0,0,.18)"/>
+          <!-- scroll / long page -->
+          <g transform="translate(30 16)"><g class="bob d1">
+            <rect x="0" y="6" width="140" height="116" rx="10" fill="#FFF" stroke="#2E6B00" stroke-width="3.4"/>
+            <!-- top scroll edge -->
+            <path d="M0 14c20-8 120-8 140 0" stroke="#2E6B00" stroke-width="3.4" fill="none"/>
+            <!-- lines -->
+            <path d="M14 32h112M14 44h96M14 56h112M14 68h84M14 80h112M14 92h72M14 104h100" stroke="#58CC02" stroke-width="2.6" stroke-linecap="round"/>
+            <!-- magnifying glass -->
+            <g transform="translate(86 62)">
+              <circle cx="0" cy="0" r="22" fill="rgba(88,204,2,.22)" stroke="#2E6B00" stroke-width="3"/>
+              <path d="M16 16l14 14" stroke="#2E6B00" stroke-width="5" stroke-linecap="round"/>
+              <circle cx="-4" cy="-4" r="5" fill="rgba(255,255,255,.7)"/>
+            </g>
+          </g></g>
+        </svg>
+      </div>
+
+      <div class="plate">
+        <div class="title">Tahap 4 <span class="tag">AYAT PANJANG</span></div>
+        <div class="desc">Membaca ayat penuh berserta makna.</div>
+        <div class="row">
+          <div class="stars">
+            <svg viewBox="0 0 24 24" class="off"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+            <svg viewBox="0 0 24 24" class="off"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+            <svg viewBox="0 0 24 24" class="off"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          </div>
+          <div class="go-btn"><svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5.5v13a.6.6 0 0 0 .9.5l11.5-6.5a.6.6 0 0 0 0-1L8.9 5a.6.6 0 0 0-.9.5Z"/></svg></div>
+        </div>
+      </div>
+    </button>
+
+  </div>
+</div>
+
+</body>
+</html>

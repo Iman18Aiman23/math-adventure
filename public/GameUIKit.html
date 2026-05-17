@@ -1,0 +1,1268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Iman · Game UI Kit</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --bg:#FFFDF7;
+    --ink:#2A2230;
+    --muted:#8D879A;
+    --hair:#EDE7DC;
+
+    /* lime palette (matches reference green buttons) */
+    --lime-1:#D6F26B;
+    --lime-2:#B8E03E;
+    --lime-3:#8FBE1E;
+    --lime-shadow:#6B9913;
+
+    /* sky palette (matches reference blue LOGIN) */
+    --sky-1:#9EE2FF;
+    --sky-2:#3FB7F1;
+    --sky-3:#1F8FC9;
+    --sky-shadow:#0D6A9C;
+
+    /* button bezel (the warm putty ring around every button in the ref) */
+    --bezel-1:#FFF6E2;
+    --bezel-2:#F5E2B0;
+    --bezel-3:#D7B97A;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Nunito',system-ui,sans-serif}
+  body{padding:48px 28px 80px;display:flex;justify-content:center}
+  .page{width:100%;max-width:980px}
+  h1{
+    font-family:'Baloo 2',sans-serif;font-weight:800;font-size:42px;letter-spacing:-0.01em;
+    color:#F08A1E;margin:0 0 6px;text-align:center;
+    text-shadow:0 2px 0 #fff, 0 4px 0 rgba(240,138,30,.15);
+  }
+  .sub{
+    text-align:center;color:var(--muted);font-weight:700;font-size:14px;letter-spacing:0.08em;
+    text-transform:uppercase;margin:0 0 40px;
+  }
+  .section{margin:0 0 44px}
+  .section-label{
+    font-family:'Baloo 2',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.14em;
+    color:var(--muted);text-transform:uppercase;margin:0 0 18px;text-align:center;
+  }
+
+  /* ────────── ROUND ICON BUTTONS ────────── */
+  .round-row{
+    display:flex;gap:22px;justify-content:center;flex-wrap:wrap;
+  }
+  .round-btn{
+    width:84px;height:84px;border-radius:50%;border:0;cursor:pointer;
+    background:
+      radial-gradient(circle at 50% 30%, var(--lime-1) 0%, var(--lime-2) 55%, var(--lime-3) 100%);
+    /* outer bezel ring + drop shadow + inner highlight */
+    box-shadow:
+      0 0 0 6px var(--bezel-1),
+      0 0 0 8px var(--bezel-2),
+      0 0 0 9px var(--bezel-3),
+      0 10px 0 -2px var(--lime-shadow),
+      0 18px 22px -8px rgba(107,153,19,.35);
+    position:relative;
+    transition:transform .12s, box-shadow .12s;
+  }
+  .round-btn::before{
+    /* glossy top highlight */
+    content:"";position:absolute;
+    top:8px;left:14px;right:14px;height:28px;border-radius:50%;
+    background:radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.95) 0%, rgba(255,255,255,.4) 35%, transparent 70%);
+    pointer-events:none;
+  }
+  .round-btn::after{
+    /* bottom shadow inside the button */
+    content:"";position:absolute;inset:0;border-radius:50%;
+    background:radial-gradient(ellipse at 50% 100%, rgba(107,153,19,.35) 0%, transparent 50%);
+    pointer-events:none;
+  }
+  .round-btn:active{
+    transform:translateY(4px);
+    box-shadow:
+      0 0 0 6px var(--bezel-1),
+      0 0 0 8px var(--bezel-2),
+      0 0 0 9px var(--bezel-3),
+      0 4px 0 -2px var(--lime-shadow),
+      0 8px 12px -6px rgba(107,153,19,.35);
+  }
+  .round-btn svg{
+    position:relative;z-index:2;
+    width:42px;height:42px;display:block;margin:21px auto;
+    filter:drop-shadow(0 2px 0 rgba(107,153,19,.45));
+  }
+
+  /* ────────── PILL BUTTONS ────────── */
+  .pill-row{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;align-items:center}
+  .pill{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-width:200px;height:74px;padding:0 36px;
+    border-radius:999px;border:0;cursor:pointer;position:relative;
+    font-family:'Baloo 2',sans-serif;font-weight:800;font-size:30px;letter-spacing:0.04em;
+    color:#fff;
+    text-shadow:0 2px 0 rgba(0,0,0,.18), 0 -1px 0 rgba(255,255,255,.25);
+    transition:transform .12s, box-shadow .12s;
+  }
+  .pill.lime{
+    background:linear-gradient(180deg, var(--lime-1) 0%, var(--lime-2) 45%, var(--lime-3) 100%);
+    box-shadow:
+      0 0 0 5px var(--bezel-1),
+      0 0 0 7px var(--bezel-2),
+      0 0 0 8px var(--bezel-3),
+      0 10px 0 -2px var(--lime-shadow),
+      0 18px 26px -10px rgba(107,153,19,.4);
+    color:#fff;
+    text-shadow:0 2px 0 var(--lime-shadow), 0 -1px 0 rgba(255,255,255,.35);
+  }
+  .pill.sky{
+    background:linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 45%, var(--sky-3) 100%);
+    box-shadow:
+      0 0 0 5px var(--bezel-1),
+      0 0 0 7px var(--bezel-2),
+      0 0 0 8px var(--bezel-3),
+      0 10px 0 -2px var(--sky-shadow),
+      0 18px 26px -10px rgba(13,106,156,.4);
+    text-shadow:0 2px 0 var(--sky-shadow), 0 -1px 0 rgba(255,255,255,.35);
+  }
+  /* glossy top highlight on pills */
+  .pill::before{
+    content:"";position:absolute;
+    top:6px;left:18px;right:18px;height:28px;border-radius:999px;
+    background:linear-gradient(180deg, rgba(255,255,255,.85) 0%, rgba(255,255,255,.15) 80%, transparent 100%);
+    pointer-events:none;
+  }
+  .pill:active{
+    transform:translateY(4px);
+  }
+  .pill.lime:active{
+    box-shadow:
+      0 0 0 5px var(--bezel-1),
+      0 0 0 7px var(--bezel-2),
+      0 0 0 8px var(--bezel-3),
+      0 4px 0 -2px var(--lime-shadow),
+      0 8px 14px -8px rgba(107,153,19,.4);
+  }
+  .pill.sky:active{
+    box-shadow:
+      0 0 0 5px var(--bezel-1),
+      0 0 0 7px var(--bezel-2),
+      0 0 0 8px var(--bezel-3),
+      0 4px 0 -2px var(--sky-shadow),
+      0 8px 14px -8px rgba(13,106,156,.4);
+  }
+  .pill.sm{min-width:160px;height:58px;font-size:22px;padding:0 28px}
+  .pill.sm::before{height:22px}
+
+  /* ────────── BIG GAME ICONS (chunky cartoon) ────────── */
+  .icon-row{
+    display:flex;gap:36px;justify-content:center;align-items:flex-end;flex-wrap:wrap;
+  }
+  .icon-card{
+    width:180px;display:flex;flex-direction:column;align-items:center;gap:10px;
+  }
+  .icon-card svg{width:160px;height:160px;display:block;filter:drop-shadow(0 14px 16px rgba(0,0,0,.18))}
+  .icon-card .name{
+    font-family:'Baloo 2',sans-serif;font-weight:700;font-size:14px;color:var(--muted);
+    letter-spacing:0.08em;text-transform:uppercase;
+  }
+
+  /* dense icon grid (for the expanded sets) */
+  .icon-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:22px;
+  }
+  .icon-grid .icon-card{width:auto}
+  .icon-grid .icon-card svg{width:96px;height:96px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.16))}
+  .icon-grid .icon-card .name{font-size:12px}
+
+  /* shared interactivity — gentle hover on every game icon */
+  .icon-card svg{transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+  .icon-card:hover svg{transform:translateY(-4px) scale(1.06) rotate(-2deg)}
+
+  /* arabic letter block (uses font fallback for the character) */
+  .arabic-glyph{
+    font-family:'Amiri Quran','Scheherazade New','Noto Naskh Arabic',serif;
+    font-weight:700;
+  }
+
+  /* small footer */
+  .swatch-row{display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+  .swatch{
+    width:48px;height:48px;border-radius:14px;
+    box-shadow:0 0 0 1px rgba(0,0,0,.06), 0 4px 12px -4px rgba(0,0,0,.18);
+    display:flex;align-items:flex-end;justify-content:center;padding:4px;
+    font-family:'Nunito';font-weight:800;font-size:9px;color:rgba(0,0,0,.55);
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <h1>GAME UI · ICON SET</h1>
+  <div class="sub">Iman · learning kit</div>
+
+  <!-- ─── Round buttons ─── -->
+  <div class="section">
+    <div class="section-label">Round buttons</div>
+    <div class="round-row">
+
+      <!-- LOCK -->
+      <button class="round-btn" aria-label="Locked">
+        <svg viewBox="0 0 48 48" fill="none">
+          <rect x="11" y="22" width="26" height="20" rx="4" fill="#fff"/>
+          <path d="M16 22v-5a8 8 0 0 1 16 0v5" stroke="#fff" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+          <circle cx="24" cy="31" r="2.6" fill="#8FBE1E"/>
+          <rect x="22.7" y="32" width="2.6" height="6" rx="1.2" fill="#8FBE1E"/>
+        </svg>
+      </button>
+
+      <!-- PLAY -->
+      <button class="round-btn" aria-label="Play">
+        <svg viewBox="0 0 48 48" fill="none">
+          <path d="M17 13.5v21a1.5 1.5 0 0 0 2.3 1.27l17-10.5a1.5 1.5 0 0 0 0-2.54l-17-10.5A1.5 1.5 0 0 0 17 13.5Z" fill="#fff"/>
+        </svg>
+      </button>
+
+      <!-- GEAR / SETTINGS -->
+      <button class="round-btn" aria-label="Settings">
+        <svg viewBox="0 0 48 48" fill="none">
+          <path d="M24 6.5c1 0 1.9.7 2.1 1.7l.4 2.4c1.6.4 3.1 1 4.5 1.9l2.1-1.3a2.2 2.2 0 0 1 2.9.5l1.8 2.4a2.2 2.2 0 0 1-.4 3l-1.8 1.6c.5 1.5.8 3 .8 4.6 0 .5 0 1 -.1 1.5l2 1.2a2.2 2.2 0 0 1 .9 2.8l-1.2 2.8a2.2 2.2 0 0 1-2.7 1.2l-2.3-.7a14 14 0 0 1-3.6 3l.4 2.3a2.2 2.2 0 0 1-1.5 2.6l-2.9.9a2.2 2.2 0 0 1-2.7-1.3l-.9-2.2a14 14 0 0 1-4.7 0l-.9 2.2a2.2 2.2 0 0 1-2.7 1.3l-2.9-.9a2.2 2.2 0 0 1-1.5-2.6l.4-2.3a14 14 0 0 1-3.6-3l-2.3.7a2.2 2.2 0 0 1-2.7-1.2l-1.2-2.8a2.2 2.2 0 0 1 .9-2.8l2-1.2c0-.5-.1-1-.1-1.5 0-1.6.3-3.1.8-4.6L8.6 16a2.2 2.2 0 0 1-.4-3L10 10.7a2.2 2.2 0 0 1 2.9-.5l2.1 1.3c1.4-.9 2.9-1.5 4.5-1.9l.4-2.4a2.2 2.2 0 0 1 2.1-1.7Z" fill="#fff"/>
+          <circle cx="24" cy="24" r="6" fill="#8FBE1E"/>
+        </svg>
+      </button>
+
+      <!-- TROPHY -->
+      <button class="round-btn" aria-label="Trophy">
+        <svg viewBox="0 0 48 48" fill="none">
+          <path d="M14 9h20v10a10 10 0 0 1-20 0V9Z" fill="#fff"/>
+          <path d="M10 11H6v3.5A5.5 5.5 0 0 0 11.5 20H14" stroke="#fff" stroke-width="3.6" stroke-linecap="round" fill="none"/>
+          <path d="M38 11h4v3.5A5.5 5.5 0 0 1 36.5 20H34" stroke="#fff" stroke-width="3.6" stroke-linecap="round" fill="none"/>
+          <rect x="19" y="31" width="10" height="6" fill="#fff"/>
+          <rect x="14" y="37" width="20" height="4.5" rx="1.4" fill="#fff"/>
+          <path d="M24 14l1.8 3.6 4 .4-2.9 2.8.7 3.9L24 22.8l-3.6 1.9.7-3.9-2.9-2.8 4-.4L24 14Z" fill="#8FBE1E"/>
+        </svg>
+      </button>
+
+      <!-- MUSIC -->
+      <button class="round-btn" aria-label="Music">
+        <svg viewBox="0 0 48 48" fill="none">
+          <path d="M20 8.5c0-.9.6-1.6 1.5-1.7l16-2.6c1.1-.2 2.1.7 2.1 1.8V30a6 6 0 1 1-3.2-5.3V11.7l-13 2.1V34a6 6 0 1 1-3.2-5.3l-.1-20.2Z" fill="#fff"/>
+        </svg>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ─── Pill buttons ─── -->
+  <div class="section">
+    <div class="section-label">Pill buttons</div>
+    <div class="pill-row">
+      <button class="pill lime">START</button>
+      <button class="pill sky">LOGIN</button>
+    </div>
+    <div style="height:24px"></div>
+    <div class="pill-row">
+      <button class="pill lime sm">MULA</button>
+      <button class="pill sky sm">DAFTAR</button>
+      <button class="pill lime sm">PLAY</button>
+      <button class="pill sky sm">SHOP</button>
+    </div>
+  </div>
+
+  <!-- ─── Game icons ─── -->
+  <div class="section">
+    <div class="section-label">Game icons</div>
+    <div class="icon-row">
+
+      <!-- TREASURE CHEST -->
+      <div class="icon-card">
+        <svg viewBox="0 0 200 200" fill="none" aria-label="Treasure chest">
+          <defs>
+            <linearGradient id="chestBody" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#FF6FB5"/>
+              <stop offset="1" stop-color="#E0247E"/>
+            </linearGradient>
+            <linearGradient id="chestLid" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#FFA6D2"/>
+              <stop offset="1" stop-color="#E84BA0"/>
+            </linearGradient>
+            <linearGradient id="chestBand" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#FFE066"/>
+              <stop offset="1" stop-color="#E89A1A"/>
+            </linearGradient>
+          </defs>
+          <!-- shadow -->
+          <ellipse cx="100" cy="178" rx="78" ry="10" fill="rgba(0,0,0,.15)"/>
+          <!-- body -->
+          <path d="M28 100h144v62c0 6-4.5 10-10 10H38c-5.5 0-10-4-10-10v-62Z" fill="url(#chestBody)"/>
+          <!-- highlight on body -->
+          <path d="M36 108v52c0 4 3 7 7 7h6c-3 0-5-3-5-7v-52h-8Z" fill="rgba(255,255,255,.35)"/>
+          <!-- side dark -->
+          <path d="M164 108v52c0 4-3 7-7 7h-6c3 0 5-3 5-7v-52h8Z" fill="rgba(0,0,0,.18)"/>
+          <!-- lid -->
+          <path d="M22 62c0-12 9-22 22-22h112c12 0 22 10 22 22v38H22V62Z" fill="url(#chestLid)"/>
+          <!-- lid gloss -->
+          <path d="M40 50c1-4 6-7 12-7h6c-7 1-12 5-13 12-.5 6-1 22-1 22h-6S37 64 40 50Z" fill="rgba(255,255,255,.55)"/>
+          <!-- lid dark edge -->
+          <path d="M168 100H22v-6h146v6Z" fill="rgba(0,0,0,.18)"/>
+          <!-- gold band middle -->
+          <rect x="20" y="92" width="160" height="14" rx="2" fill="url(#chestBand)"/>
+          <!-- lock plate -->
+          <rect x="86" y="78" width="28" height="34" rx="4" fill="url(#chestBand)"/>
+          <rect x="86" y="78" width="28" height="34" rx="4" fill="none" stroke="rgba(0,0,0,.18)" stroke-width="2"/>
+          <circle cx="100" cy="96" r="4" fill="#7A4D0E"/>
+          <rect x="98" y="98" width="4" height="9" rx="1.5" fill="#7A4D0E"/>
+          <!-- corner studs -->
+          <circle cx="36" cy="120" r="3" fill="#FFD060"/>
+          <circle cx="36" cy="150" r="3" fill="#FFD060"/>
+          <circle cx="164" cy="120" r="3" fill="#FFD060"/>
+          <circle cx="164" cy="150" r="3" fill="#FFD060"/>
+          <!-- side handles -->
+          <path d="M22 120c-4 0-8 3-8 7v6c0 4 4 7 8 7" stroke="#7A1C50" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M178 120c4 0 8 3 8 7v6c0 4-4 7-8 7" stroke="#7A1C50" stroke-width="3" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div class="name">Treasure</div>
+      </div>
+
+      <!-- GEARS -->
+      <div class="icon-card">
+        <svg viewBox="0 0 200 200" fill="none" aria-label="Gears">
+          <defs>
+            <radialGradient id="gearBig" cx="0.35" cy="0.3" r="0.9">
+              <stop offset="0" stop-color="#FFD78F"/>
+              <stop offset="0.55" stop-color="#FF9220"/>
+              <stop offset="1" stop-color="#C45E08"/>
+            </radialGradient>
+            <radialGradient id="gearSmall" cx="0.4" cy="0.3" r="0.9">
+              <stop offset="0" stop-color="#FFE0A8"/>
+              <stop offset="0.55" stop-color="#FFAA3C"/>
+              <stop offset="1" stop-color="#B85A0C"/>
+            </radialGradient>
+          </defs>
+          <ellipse cx="100" cy="178" rx="78" ry="10" fill="rgba(0,0,0,.15)"/>
+
+          <!-- Big gear -->
+          <g transform="translate(80 86)">
+            <g>
+              <!-- 8 teeth -->
+              <g>
+                <rect x="-9" y="-66" width="18" height="22" rx="3" fill="url(#gearBig)"/>
+                <rect x="-9" y="44" width="18" height="22" rx="3" fill="url(#gearBig)"/>
+                <rect x="-66" y="-9" width="22" height="18" rx="3" fill="url(#gearBig)"/>
+                <rect x="44" y="-9" width="22" height="18" rx="3" fill="url(#gearBig)"/>
+                <g transform="rotate(45)">
+                  <rect x="-9" y="-66" width="18" height="22" rx="3" fill="url(#gearBig)"/>
+                  <rect x="-9" y="44" width="18" height="22" rx="3" fill="url(#gearBig)"/>
+                  <rect x="-66" y="-9" width="22" height="18" rx="3" fill="url(#gearBig)"/>
+                  <rect x="44" y="-9" width="22" height="18" rx="3" fill="url(#gearBig)"/>
+                </g>
+              </g>
+              <!-- body -->
+              <circle r="50" fill="url(#gearBig)"/>
+              <!-- inner ring -->
+              <circle r="50" fill="none" stroke="rgba(0,0,0,.18)" stroke-width="2"/>
+              <!-- hub -->
+              <circle r="22" fill="#FFE0A8"/>
+              <circle r="22" fill="none" stroke="rgba(0,0,0,.18)" stroke-width="2"/>
+              <circle r="9" fill="#C45E08"/>
+              <!-- gloss -->
+              <path d="M-30 -34c12 -10 28 -12 38 -8" stroke="rgba(255,255,255,.7)" stroke-width="7" fill="none" stroke-linecap="round"/>
+            </g>
+          </g>
+
+          <!-- Small gear -->
+          <g transform="translate(140 134)">
+            <g>
+              <rect x="-6" y="-42" width="12" height="14" rx="2" fill="url(#gearSmall)"/>
+              <rect x="-6" y="28" width="12" height="14" rx="2" fill="url(#gearSmall)"/>
+              <rect x="-42" y="-6" width="14" height="12" rx="2" fill="url(#gearSmall)"/>
+              <rect x="28" y="-6" width="14" height="12" rx="2" fill="url(#gearSmall)"/>
+              <g transform="rotate(45)">
+                <rect x="-6" y="-42" width="12" height="14" rx="2" fill="url(#gearSmall)"/>
+                <rect x="-6" y="28" width="12" height="14" rx="2" fill="url(#gearSmall)"/>
+                <rect x="-42" y="-6" width="14" height="12" rx="2" fill="url(#gearSmall)"/>
+                <rect x="28" y="-6" width="14" height="12" rx="2" fill="url(#gearSmall)"/>
+              </g>
+              <circle r="32" fill="url(#gearSmall)"/>
+              <circle r="32" fill="none" stroke="rgba(0,0,0,.18)" stroke-width="2"/>
+              <circle r="13" fill="#FFE0A8"/>
+              <circle r="13" fill="none" stroke="rgba(0,0,0,.18)" stroke-width="2"/>
+              <circle r="5" fill="#B85A0C"/>
+              <path d="M-18 -20c8 -6 16 -7 22 -4" stroke="rgba(255,255,255,.7)" stroke-width="5" fill="none" stroke-linecap="round"/>
+            </g>
+          </g>
+        </svg>
+        <div class="name">Gears</div>
+      </div>
+
+      <!-- ROCKET (kid-friendly substitute for dynamite) -->
+      <div class="icon-card">
+        <svg viewBox="0 0 200 200" fill="none" aria-label="Rocket">
+          <defs>
+            <linearGradient id="rocketBody" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#FFE9E9"/>
+              <stop offset="0.45" stop-color="#FF7878"/>
+              <stop offset="1" stop-color="#C42626"/>
+            </linearGradient>
+            <linearGradient id="rocketBand" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#FFD56B"/>
+              <stop offset="1" stop-color="#E8961D"/>
+            </linearGradient>
+            <radialGradient id="rocketWindow" cx="0.35" cy="0.35" r="0.8">
+              <stop offset="0" stop-color="#D6F4FF"/>
+              <stop offset="0.6" stop-color="#3FB7F1"/>
+              <stop offset="1" stop-color="#1F6D9E"/>
+            </radialGradient>
+            <linearGradient id="rocketFlame" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#FFE166"/>
+              <stop offset="0.6" stop-color="#FF8A2A"/>
+              <stop offset="1" stop-color="#FF3C2F"/>
+            </linearGradient>
+          </defs>
+          <ellipse cx="100" cy="184" rx="60" ry="8" fill="rgba(0,0,0,.18)"/>
+
+          <!-- flames -->
+          <path d="M82 156c2 14 6 22 18 30 12-8 16-16 18-30-4 4-10 6-18 6s-14-2-18-6Z" fill="url(#rocketFlame)"/>
+          <path d="M92 162c2 8 4 12 8 18 4-6 6-10 8-18-2 2-5 3-8 3s-6-1-8-3Z" fill="#FFF1AE"/>
+
+          <!-- fins -->
+          <path d="M70 110c-12 6-18 16-20 30 12 0 22-4 28-12l-8-18Z" fill="#C42626"/>
+          <path d="M130 110c12 6 18 16 20 30-12 0-22-4-28-12l8-18Z" fill="#C42626"/>
+          <path d="M72 116c-8 4-12 12-14 22 8-1 14-4 18-9l-4-13Z" fill="rgba(255,255,255,.35)"/>
+
+          <!-- body -->
+          <path d="M100 16c-22 18-32 44-32 78v44c0 6 4 10 10 10h44c6 0 10-4 10-10v-44c0-34-10-60-32-78Z" fill="url(#rocketBody)"/>
+
+          <!-- body shine -->
+          <path d="M78 60c0-18 6-32 14-44-14 12-22 30-22 56v44c0 4 2 6 6 6h4c-2 0-2-2-2-6V60Z" fill="rgba(255,255,255,.45)"/>
+
+          <!-- nose tip -->
+          <path d="M100 16c4 4 8 10 12 16-3-2-8-3-12-3s-9 1-12 3c4-6 8-12 12-16Z" fill="#FFE7E7"/>
+
+          <!-- yellow band -->
+          <rect x="68" y="130" width="64" height="14" rx="3" fill="url(#rocketBand)"/>
+          <rect x="68" y="130" width="64" height="14" rx="3" fill="none" stroke="rgba(0,0,0,.18)" stroke-width="2"/>
+
+          <!-- window -->
+          <circle cx="100" cy="86" r="20" fill="#7A1A1A"/>
+          <circle cx="100" cy="86" r="16" fill="url(#rocketWindow)"/>
+          <ellipse cx="93" cy="80" rx="6" ry="4" fill="rgba(255,255,255,.7)"/>
+        </svg>
+        <div class="name">Rocket</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── STATS & REWARDS ─── -->
+  <div class="section">
+    <div class="section-label">Stats & Rewards</div>
+    <div class="icon-grid">
+
+      <!-- STAR -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Star">
+          <defs><linearGradient id="starG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE066"/><stop offset=".55" stop-color="#FFC107"/><stop offset="1" stop-color="#C77800"/></linearGradient></defs>
+          <ellipse cx="50" cy="92" rx="32" ry="4" fill="rgba(0,0,0,.15)"/>
+          <path d="M50 8l11 24 26 3-19 18 5 26-23-13-23 13 5-26L13 35l26-3z" fill="url(#starG)" stroke="#8F5300" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M44 18l4 9 10 1-7 6 2 10" stroke="rgba(255,255,255,.7)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="name">Star</div>
+      </div>
+
+      <!-- HEART / LIFE -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Life / Heart">
+          <defs><linearGradient id="heartG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8B95"/><stop offset=".6" stop-color="#FF4759"/><stop offset="1" stop-color="#B5172A"/></linearGradient></defs>
+          <ellipse cx="50" cy="92" rx="34" ry="4" fill="rgba(0,0,0,.15)"/>
+          <path d="M50 88c-2 0-4-1-6-3L18 60a18 18 0 0 1 26-26l6 6 6-6a18 18 0 0 1 26 26L56 85c-2 2-4 3-6 3z" fill="url(#heartG)" stroke="#7E0F20" stroke-width="3" stroke-linejoin="round"/>
+          <ellipse cx="34" cy="38" rx="6" ry="9" fill="rgba(255,255,255,.55)" transform="rotate(-30 34 38)"/>
+        </svg>
+        <div class="name">Life</div>
+      </div>
+
+      <!-- HEALTH POTION -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Health">
+          <defs>
+            <linearGradient id="hpBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".5" stop-color="#E1F5E5"/><stop offset="1" stop-color="#B9E0BD"/></linearGradient>
+            <linearGradient id="hpLiquid" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#86E067"/><stop offset="1" stop-color="#3F8F12"/></linearGradient>
+          </defs>
+          <ellipse cx="50" cy="92" rx="26" ry="4" fill="rgba(0,0,0,.15)"/>
+          <!-- cork -->
+          <rect x="40" y="6" width="20" height="14" rx="3" fill="#C45E08" stroke="#7A3A02" stroke-width="2.5"/>
+          <!-- neck -->
+          <rect x="42" y="20" width="16" height="10" fill="#fff" stroke="#3F6A07" stroke-width="2.5"/>
+          <!-- bottle -->
+          <path d="M30 32c0-2 2-4 4-4h32c2 0 4 2 4 4v44a14 14 0 0 1-14 14H44a14 14 0 0 1-14-14V32z" fill="url(#hpBody)" stroke="#3F6A07" stroke-width="3"/>
+          <!-- liquid -->
+          <path d="M30 52v24a14 14 0 0 0 14 14h12a14 14 0 0 0 14-14V52H30z" fill="url(#hpLiquid)"/>
+          <!-- plus mark -->
+          <rect x="46" y="56" width="8" height="22" rx="2" fill="#fff"/>
+          <rect x="39" y="63" width="22" height="8" rx="2" fill="#fff"/>
+          <!-- gloss -->
+          <rect x="36" y="36" width="6" height="34" rx="3" fill="rgba(255,255,255,.55)"/>
+        </svg>
+        <div class="name">Health</div>
+      </div>
+
+      <!-- GEM -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Gem">
+          <defs>
+            <linearGradient id="gemTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C7F2FF"/><stop offset="1" stop-color="#3FB7F1"/></linearGradient>
+            <linearGradient id="gemMid" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5EC8F5"/><stop offset="1" stop-color="#1F6FA0"/></linearGradient>
+          </defs>
+          <ellipse cx="50" cy="92" rx="30" ry="4" fill="rgba(0,0,0,.18)"/>
+          <!-- crown -->
+          <path d="M22 36L34 18h32l12 18-28 6z" fill="url(#gemTop)" stroke="#0A4D74" stroke-width="3" stroke-linejoin="round"/>
+          <!-- body -->
+          <path d="M22 36h56L50 86z" fill="url(#gemMid)" stroke="#0A4D74" stroke-width="3" stroke-linejoin="round"/>
+          <!-- facet lines -->
+          <path d="M34 18L50 36 66 18M34 18l-12 18M66 18l12 18M22 36L50 86M78 36L50 86M50 36v50" stroke="rgba(0,0,0,.18)" stroke-width="1.4" fill="none"/>
+          <!-- gloss -->
+          <path d="M28 40l8 22" stroke="rgba(255,255,255,.85)" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <div class="name">Gem</div>
+      </div>
+
+      <!-- COIN -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Coin">
+          <defs><radialGradient id="coinG" cx=".35" cy=".35" r=".75"><stop offset="0" stop-color="#FFF1A8"/><stop offset=".55" stop-color="#FFC800"/><stop offset="1" stop-color="#A97500"/></radialGradient></defs>
+          <ellipse cx="50" cy="92" rx="32" ry="4" fill="rgba(0,0,0,.15)"/>
+          <!-- edge -->
+          <ellipse cx="50" cy="56" rx="36" ry="32" fill="#8F5300"/>
+          <!-- face -->
+          <ellipse cx="50" cy="50" rx="36" ry="32" fill="url(#coinG)" stroke="#8F5300" stroke-width="3"/>
+          <!-- inner ring -->
+          <ellipse cx="50" cy="50" rx="28" ry="24" fill="none" stroke="#8F5300" stroke-width="2" stroke-dasharray="2 3"/>
+          <!-- $ or star -->
+          <path d="M50 30l4 12 12 1-9 8 3 12-10-7-10 7 3-12-9-8 12-1z" fill="#FFE066" stroke="#8F5300" stroke-width="2"/>
+        </svg>
+        <div class="name">Coin</div>
+      </div>
+
+      <!-- TROPHY -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Trophy">
+          <defs><linearGradient id="trophyG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE066"/><stop offset=".55" stop-color="#FFC107"/><stop offset="1" stop-color="#A97500"/></linearGradient></defs>
+          <ellipse cx="50" cy="94" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <!-- handles -->
+          <path d="M28 22h-6a8 8 0 0 0 0 16h6M72 22h6a8 8 0 0 1 0 16h-6" stroke="#8F5300" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <!-- cup -->
+          <path d="M28 14h44v22a22 22 0 0 1-44 0V14z" fill="url(#trophyG)" stroke="#8F5300" stroke-width="3" stroke-linejoin="round"/>
+          <!-- star inside -->
+          <path d="M50 26l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#fff" opacity=".8"/>
+          <!-- stem -->
+          <rect x="44" y="58" width="12" height="14" fill="url(#trophyG)" stroke="#8F5300" stroke-width="3"/>
+          <!-- base -->
+          <rect x="32" y="72" width="36" height="12" rx="3" fill="url(#trophyG)" stroke="#8F5300" stroke-width="3"/>
+          <rect x="28" y="82" width="44" height="6" rx="2" fill="#8F5300"/>
+        </svg>
+        <div class="name">Trophy</div>
+      </div>
+
+      <!-- MEDAL -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Medal">
+          <defs><radialGradient id="medalG" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#FFF1A8"/><stop offset=".55" stop-color="#FFC107"/><stop offset="1" stop-color="#8F5300"/></radialGradient></defs>
+          <!-- ribbon -->
+          <path d="M30 6l10 38 10-8 10 8 10-38h-8l-8 26-4-2-4 2-8-26z" fill="#FF4759" stroke="#7E0F20" stroke-width="2.5" stroke-linejoin="round"/>
+          <ellipse cx="50" cy="94" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <!-- disk -->
+          <circle cx="50" cy="62" r="26" fill="url(#medalG)" stroke="#8F5300" stroke-width="3"/>
+          <circle cx="50" cy="62" r="18" fill="none" stroke="#8F5300" stroke-width="1.6" stroke-dasharray="2 3"/>
+          <!-- number 1 -->
+          <text x="50" y="74" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="30" fill="#8F5300">1</text>
+        </svg>
+        <div class="name">Medal</div>
+      </div>
+
+      <!-- CROWN -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Crown">
+          <defs><linearGradient id="crownG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE066"/><stop offset=".55" stop-color="#FFC107"/><stop offset="1" stop-color="#A97500"/></linearGradient></defs>
+          <ellipse cx="50" cy="92" rx="32" ry="4" fill="rgba(0,0,0,.18)"/>
+          <!-- crown -->
+          <path d="M14 30l12 24 10-30 14 28 14-28 10 30 12-24v50H14z" fill="url(#crownG)" stroke="#8F5300" stroke-width="3" stroke-linejoin="round"/>
+          <!-- base band -->
+          <rect x="14" y="70" width="72" height="14" fill="#C45E08" stroke="#8F5300" stroke-width="3"/>
+          <!-- gems -->
+          <circle cx="50" cy="60" r="6" fill="#FF4759" stroke="#7E0F20" stroke-width="2"/>
+          <circle cx="28" cy="58" r="4" fill="#3FB7F1" stroke="#0A4D74" stroke-width="2"/>
+          <circle cx="72" cy="58" r="4" fill="#86E067" stroke="#3F6A07" stroke-width="2"/>
+          <!-- tip jewels -->
+          <circle cx="14" cy="30" r="3" fill="#fff"/>
+          <circle cx="36" cy="24" r="3" fill="#fff"/>
+          <circle cx="50" cy="22" r="3" fill="#fff"/>
+          <circle cx="64" cy="24" r="3" fill="#fff"/>
+          <circle cx="86" cy="30" r="3" fill="#fff"/>
+        </svg>
+        <div class="name">Crown</div>
+      </div>
+
+      <!-- FLAME / STREAK -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Streak">
+          <defs><linearGradient id="flameG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE066"/><stop offset=".45" stop-color="#FF8A1F"/><stop offset="1" stop-color="#D32A2A"/></linearGradient></defs>
+          <ellipse cx="50" cy="92" rx="26" ry="4" fill="rgba(0,0,0,.18)"/>
+          <path d="M50 6c2 14-18 22-18 42 0 14 8 24 18 24s18-10 18-24c0-8-3-13-3-22 0 4-3 6-6 6 0-10-6-16-9-26z" fill="url(#flameG)" stroke="#7E0F20" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M50 38c-4 6-8 12-8 22 0 6 4 12 8 12s8-6 8-12c0-4-2-6-2-12 0 2-2 4-3 4 0-4-1-8-3-14z" fill="#FFF1A8" opacity=".85"/>
+        </svg>
+        <div class="name">Streak</div>
+      </div>
+
+      <!-- LIGHTNING / ENERGY -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Energy">
+          <defs><linearGradient id="boltG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE066"/><stop offset=".55" stop-color="#FFC107"/><stop offset="1" stop-color="#C77800"/></linearGradient></defs>
+          <ellipse cx="50" cy="92" rx="26" ry="4" fill="rgba(0,0,0,.18)"/>
+          <path d="M52 6L18 56h22l-8 38 36-50H46l10-38z" fill="url(#boltG)" stroke="#8F5300" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M48 20l-18 30h10" stroke="rgba(255,255,255,.7)" stroke-width="3" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div class="name">Energy</div>
+      </div>
+
+      <!-- SHIELD -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Shield">
+          <defs><linearGradient id="shieldG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9EE2FF"/><stop offset=".5" stop-color="#3FB7F1"/><stop offset="1" stop-color="#0D5784"/></linearGradient></defs>
+          <ellipse cx="50" cy="92" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <path d="M50 8L18 16v30c0 22 14 36 32 44 18-8 32-22 32-44V16L50 8z" fill="url(#shieldG)" stroke="#0A4D74" stroke-width="3" stroke-linejoin="round"/>
+          <!-- inner emblem -->
+          <path d="M50 30v32M34 46h32" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+          <!-- gloss -->
+          <path d="M28 22v22" stroke="rgba(255,255,255,.55)" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        <div class="name">Shield</div>
+      </div>
+
+      <!-- KEY -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Key">
+          <defs><radialGradient id="keyG" cx=".35" cy=".35" r=".75"><stop offset="0" stop-color="#FFF1A8"/><stop offset=".55" stop-color="#FFC107"/><stop offset="1" stop-color="#A97500"/></radialGradient></defs>
+          <ellipse cx="50" cy="92" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <!-- head -->
+          <circle cx="32" cy="38" r="20" fill="url(#keyG)" stroke="#8F5300" stroke-width="3"/>
+          <circle cx="32" cy="38" r="8" fill="#8F5300"/>
+          <!-- shaft -->
+          <rect x="48" y="32" width="42" height="12" rx="2" fill="url(#keyG)" stroke="#8F5300" stroke-width="3"/>
+          <!-- teeth -->
+          <rect x="68" y="44" width="6" height="10" fill="url(#keyG)" stroke="#8F5300" stroke-width="3"/>
+          <rect x="82" y="44" width="6" height="10" fill="url(#keyG)" stroke="#8F5300" stroke-width="3"/>
+          <!-- gloss -->
+          <path d="M18 28a18 18 0 0 1 14-12" stroke="rgba(255,255,255,.7)" stroke-width="4" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div class="name">Key</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── LEARNING ─── -->
+  <div class="section">
+    <div class="section-label">Learning</div>
+    <div class="icon-grid">
+
+      <!-- BOOK CLOSED -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Book">
+          <defs><linearGradient id="bookCG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8B95"/><stop offset="1" stop-color="#D32A2A"/></linearGradient></defs>
+          <ellipse cx="50" cy="92" rx="26" ry="4" fill="rgba(0,0,0,.18)"/>
+          <!-- pages -->
+          <rect x="22" y="14" width="56" height="72" rx="3" fill="#FFF1D2" stroke="#A87A2B" stroke-width="2.5"/>
+          <path d="M28 22v60M32 22v60" stroke="#E0CDA0" stroke-width="1.4"/>
+          <!-- cover -->
+          <path d="M20 12h54a6 6 0 0 1 6 6v60a6 6 0 0 1-6 6H20V12z" fill="url(#bookCG)" stroke="#7E0F20" stroke-width="3" stroke-linejoin="round"/>
+          <!-- spine band -->
+          <rect x="20" y="30" width="60" height="6" fill="#FFE066" stroke="#7E0F20" stroke-width="2"/>
+          <!-- bookmark -->
+          <path d="M58 12v22l6-6 6 6V12z" fill="#FFC107" stroke="#7E0F20" stroke-width="2" stroke-linejoin="round"/>
+          <!-- title -->
+          <rect x="30" y="48" width="34" height="3" rx="1.5" fill="rgba(255,255,255,.85)"/>
+          <rect x="30" y="56" width="26" height="3" rx="1.5" fill="rgba(255,255,255,.85)"/>
+        </svg>
+        <div class="name">Book</div>
+      </div>
+
+      <!-- OPEN BOOK -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Open Book">
+          <defs>
+            <linearGradient id="obL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF1D2"/><stop offset="1" stop-color="#FFD699"/></linearGradient>
+            <linearGradient id="obR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE2A6"/><stop offset="1" stop-color="#FF9600"/></linearGradient>
+          </defs>
+          <ellipse cx="50" cy="92" rx="34" ry="4" fill="rgba(0,0,0,.18)"/>
+          <path d="M6 28c14-8 36-10 42 0v54c-6-10-28-8-42 0V28z" fill="url(#obL)" stroke="#8F5300" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M94 28c-14-8-36-10-42 0v54c6-10 28-8 42 0V28z" fill="url(#obR)" stroke="#8F5300" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M48 30v52M52 30v52" stroke="#8F5300" stroke-width="1.6"/>
+          <path d="M14 42h26M14 50h22M14 58h26M14 66h18" stroke="rgba(143,83,0,.45)" stroke-width="2" stroke-linecap="round"/>
+          <path d="M60 42h26M60 50h22M60 58h26M60 66h18" stroke="rgba(255,255,255,.75)" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <div class="name">Open Book</div>
+      </div>
+
+      <!-- PENCIL -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Pencil">
+          <defs><linearGradient id="pencilG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE066"/><stop offset="1" stop-color="#E89A1A"/></linearGradient></defs>
+          <ellipse cx="50" cy="92" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <g transform="rotate(-30 50 50)">
+            <!-- body -->
+            <rect x="20" y="42" width="50" height="16" fill="url(#pencilG)" stroke="#8F5300" stroke-width="3"/>
+            <!-- eraser -->
+            <rect x="14" y="42" width="10" height="16" rx="3" fill="#FF8B95" stroke="#7E0F20" stroke-width="3"/>
+            <!-- ferrule -->
+            <rect x="22" y="42" width="6" height="16" fill="#C8C8D0" stroke="#7E7E88" stroke-width="2"/>
+            <!-- tip -->
+            <path d="M70 42l16 8-16 8z" fill="#FFE2A6" stroke="#8F5300" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M82 50l4 0z" stroke="#1A1A1A" stroke-width="4" stroke-linecap="round"/>
+            <!-- stripe -->
+            <rect x="36" y="42" width="3" height="16" fill="#8F5300"/>
+            <rect x="60" y="42" width="3" height="16" fill="#8F5300"/>
+          </g>
+        </svg>
+        <div class="name">Pencil</div>
+      </div>
+
+      <!-- BACKPACK -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Backpack">
+          <defs><linearGradient id="bagG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9EE2FF"/><stop offset=".55" stop-color="#3FB7F1"/><stop offset="1" stop-color="#0D5784"/></linearGradient></defs>
+          <ellipse cx="50" cy="92" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <!-- top handle -->
+          <path d="M40 14a10 10 0 0 1 20 0v8" stroke="#0A4D74" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <!-- bag body -->
+          <rect x="20" y="22" width="60" height="62" rx="14" fill="url(#bagG)" stroke="#0A4D74" stroke-width="3"/>
+          <!-- pocket -->
+          <rect x="30" y="44" width="40" height="28" rx="6" fill="rgba(255,255,255,.55)" stroke="#0A4D74" stroke-width="3"/>
+          <rect x="42" y="56" width="16" height="4" rx="2" fill="#0A4D74"/>
+          <!-- top strap -->
+          <rect x="34" y="22" width="32" height="8" rx="2" fill="rgba(0,0,0,.18)"/>
+        </svg>
+        <div class="name">Backpack</div>
+      </div>
+
+      <!-- GRAD CAP -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Graduation Cap">
+          <ellipse cx="50" cy="92" rx="30" ry="4" fill="rgba(0,0,0,.18)"/>
+          <!-- mortarboard -->
+          <path d="M50 22L8 40l42 18 42-18z" fill="#1B1D29" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/>
+          <!-- cap -->
+          <path d="M22 48v14c0 6 12 12 28 12s28-6 28-12V48L50 60z" fill="#1B1D29" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/>
+          <!-- gloss -->
+          <path d="M14 40l34 14" stroke="rgba(255,255,255,.18)" stroke-width="3"/>
+          <!-- tassel -->
+          <path d="M86 40v22" stroke="#FFC107" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="86" cy="40" r="3" fill="#FFC107"/>
+          <path d="M86 62l-3 8M86 62l3 8M86 62v8" stroke="#FFC107" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <div class="name">Grad Cap</div>
+      </div>
+
+      <!-- LIGHTBULB / IDEA -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Idea">
+          <defs><radialGradient id="bulbG" cx=".4" cy=".3" r=".8"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".5" stop-color="#FFE066"/><stop offset="1" stop-color="#E89A1A"/></radialGradient></defs>
+          <ellipse cx="50" cy="92" rx="22" ry="4" fill="rgba(0,0,0,.18)"/>
+          <!-- rays -->
+          <g stroke="#FFC107" stroke-width="3.5" stroke-linecap="round">
+            <path d="M50 4v6M22 12l4 4M78 12l-4 4M10 30l5 1M90 30l-5 1"/>
+          </g>
+          <!-- bulb -->
+          <path d="M50 14a22 22 0 0 0-14 38c4 4 5 6 5 10v2h18v-2c0-4 1-6 5-10A22 22 0 0 0 50 14z" fill="url(#bulbG)" stroke="#8F5300" stroke-width="3" stroke-linejoin="round"/>
+          <!-- base -->
+          <rect x="38" y="64" width="24" height="8" fill="#8E8E96" stroke="#3E3E46" stroke-width="2"/>
+          <rect x="40" y="72" width="20" height="6" fill="#5E5E66" stroke="#3E3E46" stroke-width="2"/>
+          <rect x="42" y="78" width="16" height="6" rx="2" fill="#3E3E46"/>
+          <!-- filament gloss -->
+          <path d="M44 32c4-4 12-4 16 0" stroke="rgba(255,255,255,.7)" stroke-width="3" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div class="name">Idea</div>
+      </div>
+
+      <!-- BRAIN -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Brain">
+          <defs><linearGradient id="brainG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC2D1"/><stop offset="1" stop-color="#FF6F8E"/></linearGradient></defs>
+          <ellipse cx="50" cy="92" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <!-- left hemisphere -->
+          <path d="M48 16c-12 0-22 8-22 18 0 4 1 6 1 8-4 3-7 8-7 14 0 8 6 14 14 14 4 0 6-1 8-2v8h6V18c-2-1-3-2-6-2z" fill="url(#brainG)" stroke="#9D1A40" stroke-width="3" stroke-linejoin="round"/>
+          <!-- right hemisphere -->
+          <path d="M52 16c12 0 22 8 22 18 0 4-1 6-1 8 4 3 7 8 7 14 0 8-6 14-14 14-4 0-6-1-8-2v8h-6V18c2-1 3-2 6-2z" fill="url(#brainG)" stroke="#9D1A40" stroke-width="3" stroke-linejoin="round"/>
+          <!-- folds -->
+          <path d="M36 32c4 2 6 6 6 10M62 32c-4 2-6 6-6 10M30 52c4 2 8 6 12 6M68 52c-4 2-8 6-12 6" stroke="#9D1A40" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div class="name">Brain</div>
+      </div>
+
+      <!-- APPLE -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Apple">
+          <defs><linearGradient id="appleG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFB3BF"/><stop offset=".5" stop-color="#FF4759"/><stop offset="1" stop-color="#B5172A"/></linearGradient></defs>
+          <ellipse cx="50" cy="92" rx="26" ry="4" fill="rgba(0,0,0,.18)"/>
+          <!-- leaf -->
+          <path d="M52 14c8-6 18-6 22 0-2 8-12 12-22 4z" fill="#86E067" stroke="#3F6A07" stroke-width="2.5" stroke-linejoin="round"/>
+          <!-- stem -->
+          <path d="M50 16v6" stroke="#5C4128" stroke-width="3" stroke-linecap="round"/>
+          <!-- apple body -->
+          <path d="M50 22c-14 0-30 12-30 30 0 18 14 32 30 32s30-14 30-32c0-18-16-30-30-30z" fill="url(#appleG)" stroke="#7E0F20" stroke-width="3" stroke-linejoin="round"/>
+          <!-- highlight -->
+          <ellipse cx="36" cy="40" rx="5" ry="9" fill="rgba(255,255,255,.6)" transform="rotate(-30 36 40)"/>
+        </svg>
+        <div class="name">Apple</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── READING ─── -->
+  <div class="section">
+    <div class="section-label">Reading</div>
+    <div class="icon-grid">
+
+      <!-- SPEECH BUBBLE -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Speech">
+          <defs><linearGradient id="bubG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#D0F0FF"/></linearGradient></defs>
+          <ellipse cx="50" cy="92" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <path d="M14 22a8 8 0 0 1 8-8h56a8 8 0 0 1 8 8v34a8 8 0 0 1-8 8H50l-18 14v-14h-10a8 8 0 0 1-8-8z" fill="url(#bubG)" stroke="#0A4D74" stroke-width="3" stroke-linejoin="round"/>
+          <rect x="26" y="28" width="48" height="4" rx="2" fill="#3FB7F1"/>
+          <rect x="26" y="38" width="36" height="4" rx="2" fill="#3FB7F1"/>
+          <rect x="26" y="48" width="42" height="4" rx="2" fill="#3FB7F1"/>
+        </svg>
+        <div class="name">Speech</div>
+      </div>
+
+      <!-- LETTER CUBE A -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Letter Cube">
+          <ellipse cx="50" cy="92" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <!-- back face -->
+          <rect x="22" y="22" width="56" height="56" rx="8" fill="#FFD699" stroke="#8F5300" stroke-width="3"/>
+          <!-- top face -->
+          <path d="M22 28L34 16h54l-12 12z" fill="#FFE2A6" stroke="#8F5300" stroke-width="2.5" stroke-linejoin="round"/>
+          <!-- right face -->
+          <path d="M78 22l12-12v56l-12 12z" fill="#FFC766" stroke="#8F5300" stroke-width="2.5" stroke-linejoin="round"/>
+          <!-- letter -->
+          <text x="50" y="65" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="38" fill="#8F5300">A</text>
+        </svg>
+        <div class="name">Letter Cube</div>
+      </div>
+
+      <!-- BOOKMARK -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Bookmark">
+          <defs><linearGradient id="bmG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8B95"/><stop offset=".5" stop-color="#FF4759"/><stop offset="1" stop-color="#9D1A40"/></linearGradient></defs>
+          <ellipse cx="50" cy="92" rx="22" ry="4" fill="rgba(0,0,0,.18)"/>
+          <path d="M28 8h44v82L50 72 28 90z" fill="url(#bmG)" stroke="#7E0F20" stroke-width="3" stroke-linejoin="round"/>
+          <!-- star -->
+          <path d="M50 28l3 8 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z" fill="#FFE066" stroke="#7E0F20" stroke-width="2"/>
+        </svg>
+        <div class="name">Bookmark</div>
+      </div>
+
+      <!-- MAGNIFIER -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Magnifier">
+          <defs><radialGradient id="lensG" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".5" stop-color="#D0F0FF"/><stop offset="1" stop-color="#3FB7F1"/></radialGradient></defs>
+          <ellipse cx="50" cy="92" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <!-- handle -->
+          <rect x="60" y="60" width="14" height="34" rx="4" fill="#8F5300" stroke="#5C3702" stroke-width="3" transform="rotate(40 67 77)"/>
+          <!-- ring -->
+          <circle cx="42" cy="42" r="28" fill="url(#lensG)" stroke="#0A4D74" stroke-width="4"/>
+          <circle cx="42" cy="42" r="22" fill="rgba(255,255,255,.3)"/>
+          <ellipse cx="32" cy="32" rx="6" ry="9" fill="rgba(255,255,255,.85)" transform="rotate(-30 32 32)"/>
+        </svg>
+        <div class="name">Search</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── SPEAKING ─── -->
+  <div class="section">
+    <div class="section-label">Speaking</div>
+    <div class="icon-grid">
+
+      <!-- MICROPHONE -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Microphone">
+          <defs>
+            <linearGradient id="micHead" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8B95"/><stop offset="1" stop-color="#B5172A"/></linearGradient>
+            <linearGradient id="micBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E0E0E8"/><stop offset="1" stop-color="#888894"/></linearGradient>
+          </defs>
+          <ellipse cx="50" cy="94" rx="22" ry="4" fill="rgba(0,0,0,.18)"/>
+          <!-- waves -->
+          <path d="M18 50a14 14 0 0 0 14 14M82 50a14 14 0 0 1-14 14" stroke="#3FB7F1" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <!-- head -->
+          <rect x="34" y="10" width="32" height="50" rx="16" fill="url(#micHead)" stroke="#7E0F20" stroke-width="3"/>
+          <!-- grille -->
+          <path d="M38 20h24M38 30h24M38 40h24M38 50h24" stroke="rgba(255,255,255,.45)" stroke-width="2" stroke-linecap="round"/>
+          <!-- stand -->
+          <rect x="46" y="60" width="8" height="20" fill="url(#micBody)" stroke="#3E3E46" stroke-width="2.5"/>
+          <rect x="34" y="78" width="32" height="8" rx="3" fill="url(#micBody)" stroke="#3E3E46" stroke-width="2.5"/>
+          <ellipse cx="42" cy="22" rx="3" ry="6" fill="rgba(255,255,255,.55)"/>
+        </svg>
+        <div class="name">Microphone</div>
+      </div>
+
+      <!-- SOUND WAVES -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Sound">
+          <defs><linearGradient id="spkG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9EE2FF"/><stop offset=".5" stop-color="#3FB7F1"/><stop offset="1" stop-color="#0D5784"/></linearGradient></defs>
+          <ellipse cx="50" cy="92" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <!-- speaker -->
+          <path d="M14 36h16l18-16v60L30 64H14z" fill="url(#spkG)" stroke="#0A4D74" stroke-width="3" stroke-linejoin="round"/>
+          <!-- waves -->
+          <path d="M60 36a16 16 0 0 1 0 28" stroke="#0A4D74" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M70 28a26 26 0 0 1 0 44" stroke="#0A4D74" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M80 20a36 36 0 0 1 0 60" stroke="#0A4D74" stroke-width="4" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div class="name">Sound</div>
+      </div>
+
+      <!-- MEGAPHONE -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Megaphone">
+          <defs><linearGradient id="megaG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC766"/><stop offset=".5" stop-color="#FF8A1F"/><stop offset="1" stop-color="#C45E08"/></linearGradient></defs>
+          <ellipse cx="50" cy="92" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <!-- horn -->
+          <path d="M14 40v20l24 8 36 14V20L38 32z" fill="url(#megaG)" stroke="#7A3A02" stroke-width="3" stroke-linejoin="round"/>
+          <!-- inside -->
+          <path d="M38 32v36" stroke="#7A3A02" stroke-width="3"/>
+          <!-- mouthpiece end -->
+          <rect x="74" y="14" width="10" height="72" rx="4" fill="url(#megaG)" stroke="#7A3A02" stroke-width="3"/>
+          <!-- handle -->
+          <rect x="38" y="68" width="8" height="20" rx="2" fill="#7A3A02"/>
+          <!-- gloss -->
+          <path d="M28 40v20" stroke="rgba(255,255,255,.55)" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <div class="name">Megaphone</div>
+      </div>
+
+      <!-- MUSIC NOTE -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Music Note">
+          <defs><linearGradient id="noteG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E0B6FF"/><stop offset=".5" stop-color="#9013FE"/><stop offset="1" stop-color="#4A0784"/></linearGradient></defs>
+          <ellipse cx="50" cy="92" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <!-- flag bar -->
+          <path d="M40 14L82 8v18l-42 6z" fill="url(#noteG)" stroke="#3F0866" stroke-width="3" stroke-linejoin="round"/>
+          <!-- left stem -->
+          <rect x="36" y="14" width="6" height="56" rx="2" fill="url(#noteG)" stroke="#3F0866" stroke-width="3"/>
+          <!-- right stem -->
+          <rect x="76" y="8" width="6" height="56" rx="2" fill="url(#noteG)" stroke="#3F0866" stroke-width="3"/>
+          <!-- left head -->
+          <ellipse cx="30" cy="74" rx="14" ry="10" fill="url(#noteG)" stroke="#3F0866" stroke-width="3" transform="rotate(-12 30 74)"/>
+          <!-- right head -->
+          <ellipse cx="70" cy="68" rx="14" ry="10" fill="url(#noteG)" stroke="#3F0866" stroke-width="3" transform="rotate(-12 70 68)"/>
+          <ellipse cx="26" cy="70" rx="4" ry="2.5" fill="rgba(255,255,255,.65)" transform="rotate(-12 26 70)"/>
+        </svg>
+        <div class="name">Music</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── MATHEMATICS ─── -->
+  <div class="section">
+    <div class="section-label">Mathematics</div>
+    <div class="icon-grid">
+
+      <!-- PLUS BLOCK -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Plus">
+          <defs><linearGradient id="plusG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#86E067"/><stop offset=".5" stop-color="#58CC02"/><stop offset="1" stop-color="#2E6B00"/></linearGradient></defs>
+          <ellipse cx="50" cy="92" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <rect x="14" y="14" width="72" height="72" rx="14" fill="url(#plusG)" stroke="#2E6B00" stroke-width="3"/>
+          <rect x="44" y="24" width="12" height="52" rx="3" fill="#fff"/>
+          <rect x="24" y="44" width="52" height="12" rx="3" fill="#fff"/>
+          <rect x="20" y="20" width="10" height="42" rx="3" fill="rgba(255,255,255,.4)"/>
+        </svg>
+        <div class="name">Add</div>
+      </div>
+
+      <!-- MINUS -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Minus">
+          <defs><linearGradient id="minusG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9EE2FF"/><stop offset=".5" stop-color="#1CB0F6"/><stop offset="1" stop-color="#06628A"/></linearGradient></defs>
+          <ellipse cx="50" cy="92" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <rect x="14" y="14" width="72" height="72" rx="14" fill="url(#minusG)" stroke="#06628A" stroke-width="3"/>
+          <rect x="24" y="44" width="52" height="12" rx="3" fill="#fff"/>
+          <rect x="20" y="20" width="10" height="42" rx="3" fill="rgba(255,255,255,.4)"/>
+        </svg>
+        <div class="name">Subtract</div>
+      </div>
+
+      <!-- MULTIPLY -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Multiply">
+          <defs><linearGradient id="mulG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E0B6FF"/><stop offset=".5" stop-color="#CE82FF"/><stop offset="1" stop-color="#6E3B85"/></linearGradient></defs>
+          <ellipse cx="50" cy="92" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <rect x="14" y="14" width="72" height="72" rx="14" fill="url(#mulG)" stroke="#6E3B85" stroke-width="3"/>
+          <path d="M30 30l40 40M70 30L30 70" stroke="#fff" stroke-width="12" stroke-linecap="round"/>
+          <rect x="20" y="20" width="10" height="42" rx="3" fill="rgba(255,255,255,.4)"/>
+        </svg>
+        <div class="name">Multiply</div>
+      </div>
+
+      <!-- DIVIDE -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Divide">
+          <defs><linearGradient id="divG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC766"/><stop offset=".5" stop-color="#FF8A1F"/><stop offset="1" stop-color="#7A3A02"/></linearGradient></defs>
+          <ellipse cx="50" cy="92" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <rect x="14" y="14" width="72" height="72" rx="14" fill="url(#divG)" stroke="#7A3A02" stroke-width="3"/>
+          <circle cx="50" cy="32" r="6" fill="#fff"/>
+          <circle cx="50" cy="68" r="6" fill="#fff"/>
+          <rect x="24" y="44" width="52" height="12" rx="3" fill="#fff"/>
+          <rect x="20" y="20" width="10" height="42" rx="3" fill="rgba(255,255,255,.4)"/>
+        </svg>
+        <div class="name">Divide</div>
+      </div>
+
+      <!-- CALCULATOR -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Calculator">
+          <ellipse cx="50" cy="94" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <rect x="18" y="8" width="64" height="84" rx="10" fill="#3FB7F1" stroke="#06628A" stroke-width="3"/>
+          <!-- screen -->
+          <rect x="24" y="16" width="52" height="20" rx="4" fill="#E1F5E5" stroke="#06628A" stroke-width="2"/>
+          <text x="70" y="32" text-anchor="end" font-family="Baloo 2, sans-serif" font-weight="800" font-size="16" fill="#2E6B00">123</text>
+          <!-- buttons -->
+          <g fill="#fff" stroke="#06628A" stroke-width="2">
+            <rect x="26" y="42" width="12" height="10" rx="2"/>
+            <rect x="44" y="42" width="12" height="10" rx="2"/>
+            <rect x="62" y="42" width="12" height="10" rx="2"/>
+            <rect x="26" y="56" width="12" height="10" rx="2"/>
+            <rect x="44" y="56" width="12" height="10" rx="2"/>
+            <rect x="62" y="56" width="12" height="10" rx="2" fill="#FFC107"/>
+            <rect x="26" y="70" width="12" height="10" rx="2"/>
+            <rect x="44" y="70" width="12" height="10" rx="2"/>
+            <rect x="62" y="70" width="12" height="10" rx="2" fill="#58CC02"/>
+          </g>
+        </svg>
+        <div class="name">Calculator</div>
+      </div>
+
+      <!-- RULER -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Ruler">
+          <defs><linearGradient id="rulerG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE066"/><stop offset="1" stop-color="#E89A1A"/></linearGradient></defs>
+          <ellipse cx="50" cy="94" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <g transform="rotate(-40 50 50)">
+            <rect x="10" y="38" width="80" height="24" rx="3" fill="url(#rulerG)" stroke="#8F5300" stroke-width="3"/>
+            <!-- tick marks -->
+            <g stroke="#8F5300" stroke-width="2.2">
+              <path d="M18 38v8M26 38v6M34 38v8M42 38v6M50 38v10M58 38v6M66 38v8M74 38v6M82 38v8"/>
+            </g>
+            <text x="50" y="58" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="9" fill="#8F5300">1 2 3 4 5</text>
+          </g>
+        </svg>
+        <div class="name">Ruler</div>
+      </div>
+
+      <!-- ABACUS -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Abacus">
+          <ellipse cx="50" cy="94" rx="32" ry="4" fill="rgba(0,0,0,.18)"/>
+          <!-- frame -->
+          <rect x="10" y="14" width="80" height="72" rx="6" fill="#8F5300" stroke="#5C3702" stroke-width="3"/>
+          <rect x="14" y="20" width="72" height="60" fill="#FFE2A6" stroke="#5C3702" stroke-width="2"/>
+          <!-- rods -->
+          <g stroke="#5C3702" stroke-width="2">
+            <path d="M14 30h72M14 44h72M14 58h72M14 72h72"/>
+          </g>
+          <!-- beads -->
+          <g stroke="#3E3E46" stroke-width="1.4">
+            <circle cx="24" cy="30" r="5" fill="#FF4759"/>
+            <circle cx="36" cy="30" r="5" fill="#FF4759"/>
+            <circle cx="64" cy="30" r="5" fill="#FFC107"/>
+            <circle cx="76" cy="30" r="5" fill="#FFC107"/>
+            <circle cx="24" cy="44" r="5" fill="#3FB7F1"/>
+            <circle cx="36" cy="44" r="5" fill="#3FB7F1"/>
+            <circle cx="48" cy="44" r="5" fill="#3FB7F1"/>
+            <circle cx="60" cy="58" r="5" fill="#58CC02"/>
+            <circle cx="72" cy="58" r="5" fill="#58CC02"/>
+            <circle cx="24" cy="72" r="5" fill="#CE82FF"/>
+            <circle cx="36" cy="72" r="5" fill="#CE82FF"/>
+            <circle cx="48" cy="72" r="5" fill="#CE82FF"/>
+            <circle cx="60" cy="72" r="5" fill="#CE82FF"/>
+          </g>
+        </svg>
+        <div class="name">Abacus</div>
+      </div>
+
+      <!-- SHAPES -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Shapes">
+          <ellipse cx="50" cy="94" rx="32" ry="4" fill="rgba(0,0,0,.18)"/>
+          <!-- triangle -->
+          <path d="M28 14l18 30H10z" fill="#FF4759" stroke="#7E0F20" stroke-width="3" stroke-linejoin="round"/>
+          <!-- circle -->
+          <circle cx="72" cy="30" r="18" fill="#3FB7F1" stroke="#0A4D74" stroke-width="3"/>
+          <!-- square -->
+          <rect x="10" y="56" width="36" height="32" rx="4" fill="#58CC02" stroke="#2E6B00" stroke-width="3"/>
+          <!-- diamond -->
+          <path d="M70 50l20 18-20 18-20-18z" fill="#FFC107" stroke="#8F5300" stroke-width="3" stroke-linejoin="round"/>
+        </svg>
+        <div class="name">Shapes</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── ARABIC / JAWI ─── -->
+  <div class="section">
+    <div class="section-label">Arabic · Jawi</div>
+    <div class="icon-grid">
+
+      <!-- ALIF block -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Alif">
+          <ellipse cx="50" cy="92" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <rect x="22" y="22" width="56" height="56" rx="10" fill="#86E067" stroke="#2E6B00" stroke-width="3"/>
+          <rect x="22" y="22" width="56" height="14" rx="10" fill="rgba(255,255,255,.35)"/>
+          <text class="arabic-glyph" x="50" y="70" text-anchor="middle" font-size="48" fill="#fff" stroke="#2E6B00" stroke-width="1">ا</text>
+        </svg>
+        <div class="name">Alif ا</div>
+      </div>
+
+      <!-- BA block -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Ba">
+          <ellipse cx="50" cy="92" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <rect x="22" y="22" width="56" height="56" rx="10" fill="#3FB7F1" stroke="#06628A" stroke-width="3"/>
+          <rect x="22" y="22" width="56" height="14" rx="10" fill="rgba(255,255,255,.35)"/>
+          <text class="arabic-glyph" x="50" y="62" text-anchor="middle" font-size="40" fill="#fff" stroke="#06628A" stroke-width="1">ب</text>
+        </svg>
+        <div class="name">Ba ب</div>
+      </div>
+
+      <!-- TA block -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Ta">
+          <ellipse cx="50" cy="92" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <rect x="22" y="22" width="56" height="56" rx="10" fill="#CE82FF" stroke="#6E3B85" stroke-width="3"/>
+          <rect x="22" y="22" width="56" height="14" rx="10" fill="rgba(255,255,255,.35)"/>
+          <text class="arabic-glyph" x="50" y="62" text-anchor="middle" font-size="40" fill="#fff" stroke="#6E3B85" stroke-width="1">ت</text>
+        </svg>
+        <div class="name">Ta ت</div>
+      </div>
+
+      <!-- QURAN -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Quran">
+          <defs><linearGradient id="quG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#86E067"/><stop offset=".5" stop-color="#3F8F12"/><stop offset="1" stop-color="#1F4A00"/></linearGradient></defs>
+          <ellipse cx="50" cy="92" rx="30" ry="4" fill="rgba(0,0,0,.22)"/>
+          <!-- stand -->
+          <path d="M14 78l36-10 36 10v6H14z" fill="#8F5300" stroke="#5C3702" stroke-width="3" stroke-linejoin="round"/>
+          <!-- book base -->
+          <path d="M18 70l32-8 32 8-32 6z" fill="#FFE2A6" stroke="#8F5300" stroke-width="2"/>
+          <!-- left half -->
+          <path d="M22 32a18 6 0 0 1 26 0v34l-26-6z" fill="url(#quG)" stroke="#1F4A00" stroke-width="3" stroke-linejoin="round"/>
+          <!-- right half -->
+          <path d="M78 32a18 6 0 0 0-26 0v34l26-6z" fill="url(#quG)" stroke="#1F4A00" stroke-width="3" stroke-linejoin="round"/>
+          <!-- center crest -->
+          <path d="M46 40h8v18h-8z" fill="#FFC107" stroke="#1F4A00" stroke-width="2"/>
+          <circle cx="50" cy="36" r="3" fill="#FFC107" stroke="#1F4A00" stroke-width="1.5"/>
+          <!-- arabic decoration -->
+          <path d="M30 46c4 -2 8 -2 12 0M58 46c4 -2 8 -2 12 0M30 54c4 -2 8 -2 12 0M58 54c4 -2 8 -2 12 0" stroke="#FFC107" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div class="name">Quran</div>
+      </div>
+
+      <!-- CRESCENT + STAR -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Crescent and Star">
+          <defs>
+            <radialGradient id="moonG" cx=".35" cy=".35" r=".75"><stop offset="0" stop-color="#FFF1A8"/><stop offset=".55" stop-color="#FFC107"/><stop offset="1" stop-color="#A97500"/></radialGradient>
+            <radialGradient id="starG2" cx=".4" cy=".3" r=".7"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".5" stop-color="#FFE066"/><stop offset="1" stop-color="#C77800"/></radialGradient>
+          </defs>
+          <ellipse cx="50" cy="92" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <!-- crescent: big disc minus offset disc -->
+          <path d="M62 14a36 36 0 1 0 0 72 28 28 0 1 1 0-72z" fill="url(#moonG)" stroke="#8F5300" stroke-width="3" stroke-linejoin="round"/>
+          <!-- star -->
+          <path d="M72 50l4 9 10 1-7 7 2 10-9-5-9 5 2-10-7-7 10-1z" fill="url(#starG2)" stroke="#8F5300" stroke-width="3" stroke-linejoin="round"/>
+          <!-- highlight on crescent -->
+          <path d="M30 36c-4 4-6 10-6 14" stroke="rgba(255,255,255,.7)" stroke-width="3" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div class="name">Crescent</div>
+      </div>
+
+      <!-- MOSQUE -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Mosque">
+          <defs><linearGradient id="domeG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9EE2FF"/><stop offset=".5" stop-color="#3FB7F1"/><stop offset="1" stop-color="#0A4D74"/></linearGradient></defs>
+          <ellipse cx="50" cy="92" rx="34" ry="4" fill="rgba(0,0,0,.22)"/>
+          <!-- minarets -->
+          <rect x="10" y="46" width="10" height="38" fill="#FFE2A6" stroke="#8F5300" stroke-width="2.5"/>
+          <path d="M10 46l5-10 5 10z" fill="url(#domeG)" stroke="#0A4D74" stroke-width="2.5" stroke-linejoin="round"/>
+          <rect x="80" y="46" width="10" height="38" fill="#FFE2A6" stroke="#8F5300" stroke-width="2.5"/>
+          <path d="M80 46l5-10 5 10z" fill="url(#domeG)" stroke="#0A4D74" stroke-width="2.5" stroke-linejoin="round"/>
+          <!-- main body -->
+          <rect x="22" y="50" width="56" height="36" fill="#FFE2A6" stroke="#8F5300" stroke-width="3"/>
+          <!-- main dome -->
+          <path d="M22 50a28 28 0 0 1 56 0z" fill="url(#domeG)" stroke="#0A4D74" stroke-width="3" stroke-linejoin="round"/>
+          <!-- crescent on top -->
+          <path d="M50 12a6 6 0 1 0 0 12 4 4 0 1 1 0-12z" fill="#FFC107" stroke="#8F5300" stroke-width="2" stroke-linejoin="round"/>
+          <!-- arch door -->
+          <path d="M44 70a6 6 0 0 1 12 0v16h-12z" fill="#8F5300" stroke="#5C3702" stroke-width="2.5" stroke-linejoin="round"/>
+          <!-- side arches -->
+          <path d="M28 64a4 4 0 0 1 8 0v6h-8z" fill="rgba(0,0,0,.3)"/>
+          <path d="M64 64a4 4 0 0 1 8 0v6h-8z" fill="rgba(0,0,0,.3)"/>
+        </svg>
+        <div class="name">Mosque</div>
+      </div>
+
+      <!-- PRAYER BEADS / TASBIH -->
+      <div class="icon-card">
+        <svg viewBox="0 0 100 100" aria-label="Tasbih">
+          <defs><radialGradient id="beadG" cx=".35" cy=".35" r=".8"><stop offset="0" stop-color="#FFB3BF"/><stop offset=".5" stop-color="#9013FE"/><stop offset="1" stop-color="#4A0784"/></radialGradient></defs>
+          <ellipse cx="50" cy="92" rx="28" ry="4" fill="rgba(0,0,0,.18)"/>
+          <!-- string loop -->
+          <path d="M50 14C20 14 14 40 14 56s8 30 36 30 36-14 36-30S80 14 50 14z" fill="none" stroke="#5C3702" stroke-width="2.5"/>
+          <!-- beads — top arc -->
+          <g fill="url(#beadG)" stroke="#3F0866" stroke-width="2">
+            <circle cx="24" cy="32" r="6"/>
+            <circle cx="38" cy="20" r="6"/>
+            <circle cx="50" cy="16" r="6"/>
+            <circle cx="62" cy="20" r="6"/>
+            <circle cx="76" cy="32" r="6"/>
+            <circle cx="84" cy="46" r="6"/>
+            <circle cx="84" cy="60" r="6"/>
+            <circle cx="76" cy="74" r="6"/>
+            <circle cx="62" cy="84" r="6"/>
+            <circle cx="38" cy="84" r="6"/>
+            <circle cx="24" cy="74" r="6"/>
+            <circle cx="16" cy="60" r="6"/>
+            <circle cx="16" cy="46" r="6"/>
+          </g>
+          <!-- tassel -->
+          <circle cx="50" cy="50" r="6" fill="#FFC107" stroke="#8F5300" stroke-width="2"/>
+          <path d="M50 56v14M47 56v14M53 56v14" stroke="#FFC107" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        <div class="name">Tasbih</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── Color swatches ─── -->
+  <div class="section">
+    <div class="section-label">Palette</div>
+    <div class="swatch-row">
+      <div class="swatch" style="background:linear-gradient(180deg,var(--lime-1),var(--lime-2),var(--lime-3))">LIME</div>
+      <div class="swatch" style="background:linear-gradient(180deg,var(--sky-1),var(--sky-2),var(--sky-3))">SKY</div>
+      <div class="swatch" style="background:linear-gradient(180deg,#FFA6D2,#E84BA0,#A8126C);color:#fff">ROSE</div>
+      <div class="swatch" style="background:linear-gradient(180deg,#FFD78F,#FF9220,#C45E08);color:#fff">ORANGE</div>
+      <div class="swatch" style="background:linear-gradient(180deg,#FF7878,#C42626,#7A1010);color:#fff">CHERRY</div>
+      <div class="swatch" style="background:linear-gradient(180deg,#FFE066,#E89A1A,#7A4D0E);color:#fff">GOLD</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
