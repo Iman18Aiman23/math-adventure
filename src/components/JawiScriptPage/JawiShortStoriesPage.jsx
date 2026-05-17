@@ -2,10 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { LOCALIZATION } from '../../utils/localization';
 import { JAWI_STORIES } from '../../utils/jawiStoriesData';
-import GameHeader from '../GameHeader';
+import { useGameStateContext } from '../../App';
+import AppHeader from '../AppHeader';
 
-export default function JawiShortStoriesPage({ onBack, onHome, language }) {
+export default function JawiShortStoriesPage({ onBack, language }) {
     const t = LOCALIZATION[language].jawi;
+    const gameState = useGameStateContext();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [displayLang, setDisplayLang] = useState('jawi');
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -54,8 +56,8 @@ export default function JawiShortStoriesPage({ onBack, onHome, language }) {
     };
 
     return (
-        <div className="game-container fade-in">
-            <GameHeader onBack={onBack} onHome={onHome} title={t.shortStories} language={language} />
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
+            <AppHeader onBack={onBack} gameState={gameState} language={language} />
 
             {/* Story Selector & Language Tabs - Same Line */}
             <div style={{

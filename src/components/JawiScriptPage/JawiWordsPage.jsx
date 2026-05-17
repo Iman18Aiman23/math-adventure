@@ -3,7 +3,8 @@ import { BookOpen } from 'lucide-react';
 import { JAWI_TOPICS } from '../../utils/jawiWordsData';
 import { LOCALIZATION } from '../../utils/localization';
 import { BilingualText } from '../../utils/bilingual';
-import GameHeader from '../GameHeader';
+import { useGameStateContext } from '../../App';
+import AppHeader from '../AppHeader';
 
 const TopicCard = ({ topic, onClick, language }) => {
     return (
@@ -107,15 +108,16 @@ const WordCard = ({ word, color }) => {
     );
 };
 
-export default function JawiWordsPage({ onBack, onHome, language }) {
+export default function JawiWordsPage({ onBack, language }) {
     const t = LOCALIZATION[language].jawiGames;
+    const gameState = useGameStateContext();
     const [selectedTopic, setSelectedTopic] = useState(null);
 
     // Topic Selection View
     if (!selectedTopic) {
         return (
-            <div className="game-container fade-in">
-                <GameHeader onBack={onBack} onHome={onHome} title={t.wordsTitle} language={language} />
+            <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
+                <AppHeader onBack={onBack} gameState={gameState} language={language} />
 
                 <div style={{
                     display: 'grid',
@@ -141,11 +143,10 @@ export default function JawiWordsPage({ onBack, onHome, language }) {
 
     // Word List View
     return (
-        <div className="game-container fade-in">
-            <GameHeader
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
+            <AppHeader
                 onBack={() => setSelectedTopic(null)}
-                onHome={onHome}
-                title={language === 'bm' ? selectedTopic.title : selectedTopic.titleEng || selectedTopic.title}
+                gameState={gameState}
                 language={language}
             />
 

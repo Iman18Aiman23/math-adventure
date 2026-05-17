@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { ArrowLeft } from 'lucide-react';
 import { useGameStateContext } from '../App';
 import { getGameData } from '../utils/gameStatsManager';
 import HeartShopModal from './HeartShopModal';
+
+const DESIGN_SYSTEM = {
+  colors: {
+    hair: '#E5E7EB',
+    muted: '#6B7280',
+  }
+};
 
 export default function AppHeader({ onBack, gameState, language, hearts, gems, stars }) {
   const [displayHearts, setDisplayHearts] = useState(3);
@@ -47,222 +55,124 @@ export default function AppHeader({ onBack, gameState, language, hearts, gems, s
     <>
       <div className="duo-home-header" style={{
         background: '#fff',
-        padding: '0.85rem 1.25rem',
+        padding: '0.75rem 1rem',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        borderBottom: '1px solid #E5E5E5',
-        gap: '1rem',
+        gap: '0.75rem',
         flexShrink: 0,
+        flexWrap: 'wrap',
       }}>
         {/* Back Button */}
         <button
           onClick={onBack}
           style={{
-            background: 'transparent',
-            border: 'none',
-            fontSize: '1.3rem',
-            color: '#AFAFAF',
-            cursor: 'pointer',
-            padding: 0,
+            background: '#fff',
+            border: `2px solid ${DESIGN_SYSTEM.colors.hair}`,
+            borderRadius: '50%',
+            width: 44,
+            height: 44,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width: '32px',
-            height: '32px',
+            color: DESIGN_SYSTEM.colors.muted,
+            cursor: 'pointer',
+            boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`,
+            transition: 'transform 0.12s',
             flexShrink: 0,
           }}
+          onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
         >
-          ←
+          <ArrowLeft size={24} />
         </button>
 
-        {/* Spacer */}
-        <div style={{ flex: 1 }} />
-
-        {/* Stats on the Right */}
+        {/* Stats on the Right - Badge Style */}
         <div className="duo-home-stats" style={{
           display: 'flex',
-          gap: '12px',
+          gap: '0.5rem',
           flexShrink: 0,
+          alignItems: 'center',
         }}>
-          {/* Stars Button */}
+          {/* Stars Badge */}
           <button
             onClick={() => setIsHeartShopOpen(true)}
-            className="duo-home-stat desktop-stat"
             style={{
+              background: '#fff',
+              border: `2px solid ${DESIGN_SYSTEM.colors.hair}`,
+              borderRadius: '999px',
+              padding: '6px 12px',
+              fontWeight: 800,
+              fontSize: '0.85rem',
               color: '#FFC800',
+              cursor: 'pointer',
+              boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`,
+              transition: 'transform 0.12s',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
-              fontWeight: 700,
-              fontSize: '0.9rem',
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-              transition: 'all 0.2s ease'
+              gap: '4px',
+              flexShrink: 0,
             }}
-            onMouseEnter={e => {
-              e.currentTarget.style.transform = 'scale(1.1)';
-              e.currentTarget.style.opacity = '0.8';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.opacity = '1';
-            }}
+            onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
+            title={language === 'bm' ? 'Bintang' : 'Stars'}
           >
-            <span style={{ fontSize: '1.4rem' }}>⭐</span>
-            <span>{displayStars} {language === 'bm' ? 'bintang' : 'stars'}</span>
-          </button>
-          <button
-            onClick={() => setIsHeartShopOpen(true)}
-            className="duo-home-stat mobile-stat"
-            style={{
-              color: '#FFC800',
-              display: 'none',
-              alignItems: 'center',
-              gap: '2px',
-              fontWeight: 700,
-              fontSize: '0.9rem',
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.transform = 'scale(1.1)';
-              e.currentTarget.style.opacity = '0.8';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.opacity = '1';
-            }}
-          >
-            <span style={{ fontSize: '1.4rem' }}>⭐</span>
-            <span>{displayStars}</span>
+            <span>⭐</span>
+            <span className="desktop-stat">{displayStars}</span>
           </button>
 
-          {/* Separator dot - desktop only */}
-          <span className="desktop-stat" style={{ color: '#ccc' }}>·</span>
-
-          {/* Hearts Button */}
+          {/* Hearts Badge */}
           <button
             onClick={() => setIsHeartShopOpen(true)}
-            className="duo-home-stat desktop-stat"
             style={{
+              background: '#fff',
+              border: `2px solid ${DESIGN_SYSTEM.colors.hair}`,
+              borderRadius: '999px',
+              padding: '6px 12px',
+              fontWeight: 800,
+              fontSize: '0.85rem',
               color: '#FF4B4B',
+              cursor: 'pointer',
+              boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`,
+              transition: 'transform 0.12s',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
-              fontWeight: 700,
-              fontSize: '0.9rem',
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-              transition: 'all 0.2s ease'
+              gap: '4px',
+              flexShrink: 0,
             }}
-            onMouseEnter={e => {
-              e.currentTarget.style.transform = 'scale(1.1)';
-              e.currentTarget.style.opacity = '0.8';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.opacity = '1';
-            }}
+            onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
+            title={language === 'bm' ? 'Nyawa' : 'Hearts'}
           >
-            <span style={{ fontSize: '1.4rem' }}>❤️</span>
-            <span>{displayHearts} {language === 'bm' ? 'nyawa' : 'hearts'}</span>
-          </button>
-          <button
-            onClick={() => setIsHeartShopOpen(true)}
-            className="duo-home-stat mobile-stat"
-            style={{
-              color: '#FF4B4B',
-              display: 'none',
-              alignItems: 'center',
-              gap: '2px',
-              fontWeight: 700,
-              fontSize: '0.9rem',
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.transform = 'scale(1.1)';
-              e.currentTarget.style.opacity = '0.8';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.opacity = '1';
-            }}
-          >
-            <span style={{ fontSize: '1.4rem' }}>❤️</span>
-            <span>{displayHearts}</span>
+            <span>❤️</span>
+            <span className="desktop-stat">{displayHearts}</span>
           </button>
 
-          {/* Separator dot - desktop only */}
-          <span className="desktop-stat" style={{ color: '#ccc' }}>·</span>
-
-          {/* Gems Button */}
+          {/* Gems Badge */}
           <button
             onClick={() => setIsHeartShopOpen(true)}
-            className="duo-home-stat desktop-stat"
             style={{
+              background: '#fff',
+              border: `2px solid ${DESIGN_SYSTEM.colors.hair}`,
+              borderRadius: '999px',
+              padding: '6px 12px',
+              fontWeight: 800,
+              fontSize: '0.85rem',
               color: '#CE82FF',
+              cursor: 'pointer',
+              boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`,
+              transition: 'transform 0.12s',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
-              fontWeight: 700,
-              fontSize: '0.9rem',
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-              transition: 'all 0.2s ease'
+              gap: '4px',
+              flexShrink: 0,
             }}
-            onMouseEnter={e => {
-              e.currentTarget.style.transform = 'scale(1.1)';
-              e.currentTarget.style.opacity = '0.8';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.opacity = '1';
-            }}
+            onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
+            title={language === 'bm' ? 'Permata' : 'Gems'}
           >
-            <span style={{ fontSize: '1.4rem' }}>💎</span>
-            <span>{displayGems} {language === 'bm' ? 'permata' : 'gems'}</span>
-          </button>
-          <button
-            onClick={() => setIsHeartShopOpen(true)}
-            className="duo-home-stat mobile-stat"
-            style={{
-              color: '#CE82FF',
-              display: 'none',
-              alignItems: 'center',
-              gap: '2px',
-              fontWeight: 700,
-              fontSize: '0.9rem',
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.transform = 'scale(1.1)';
-              e.currentTarget.style.opacity = '0.8';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.opacity = '1';
-            }}
-          >
-            <span style={{ fontSize: '1.4rem' }}>💎</span>
-            <span>{displayGems}</span>
+            <span>💎</span>
+            <span className="desktop-stat">{displayGems}</span>
           </button>
         </div>
       </div>

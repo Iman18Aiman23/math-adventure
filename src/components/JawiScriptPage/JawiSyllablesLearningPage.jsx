@@ -1,7 +1,8 @@
 import React from 'react';
-import { ArrowLeft } from 'lucide-react';
 import { LOCALIZATION } from '../../utils/localization';
 import { JAWI_ALPHABET } from '../../utils/jawiData';
+import { useGameStateContext } from '../../App';
+import AppHeader from '../AppHeader';
 import JawiSyllablesGame from './JawiSyllablesGame';
 import JawiKVLearningPage from './JawiKVLearningPage';
 import JawiKVKLearningPage from './JawiKVKLearningPage';
@@ -28,8 +29,9 @@ const SYLLABLE_LEVELS = {
   }
 };
 
-export default function JawiSyllablesLearningPage({ onBack, onHome, language }) {
+export default function JawiSyllablesLearningPage({ onBack, language }) {
   const t = LOCALIZATION[language].jawi;
+  const gameState = useGameStateContext();
   const [gameStarted, setGameStarted] = React.useState(false);
   const [selectedLevel, setSelectedLevel] = React.useState(null);
 
@@ -84,20 +86,7 @@ export default function JawiSyllablesLearningPage({ onBack, onHome, language }) 
   // Main learning page
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
-      {/* Header */}
-      <div style={{
-        background: '#fff', borderBottom: '2px solid #E5E5E5',
-        padding: '0 1rem', height: '56px',
-        display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0,
-      }}>
-        <button onClick={onBack} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
-          <ArrowLeft size={24} />
-        </button>
-        <div style={{ flex: 1, textAlign: 'center', fontWeight: 900, fontSize: '1.3rem', color: '#3C3C3C' }}>
-          {t.learnSyllables}
-        </div>
-        <div style={{ width: 24 }} />
-      </div>
+      <AppHeader onBack={onBack} gameState={gameState} language={language} />
 
       {/* Scrollable content */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 1rem' }}>

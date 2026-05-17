@@ -356,6 +356,13 @@ export default function ReadingPage({ onBack, language }) {
       }
     }
 
+    /* Landscape orientation on mobile */
+    @media (orientation: landscape) and (max-height: 500px) {
+      .app-container {
+        padding: 6px 8px 40px;
+      }
+    }
+
     /* Responsive Tiles */
     .tile-button {
       aspect-ratio: 1 / 1.18;

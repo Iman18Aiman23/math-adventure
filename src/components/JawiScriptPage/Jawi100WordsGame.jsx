@@ -196,8 +196,8 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
 
     if (localGameState === 'setup') {
         return (
-            <div className="game-container">
-                <GameHeader onBack={onBack} onHome={onHome} title={t.wordsTitle} language={language} />
+            <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
+                <AppHeader onBack={onBack} gameState={gameState} language={language} />
 
                 <div className="card fade-in" style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem' }}>
                     <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
@@ -281,8 +281,8 @@ export default function Jawi100WordsGame({ onBack, onHome, language }) {
         const percentage = totalPossibleScore > 0 ? Math.round((score / totalPossibleScore) * 100) : 0;
 
         return (
-            <div className="game-container fade-in">
-                <GameHeader onBack={onBack} onHome={onHome} title={t.wordsTitle} language={language} />
+            <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
+                <AppHeader onBack={onBack} gameState={gameState} language={language} />
 
                 <div className="card" style={{ textAlign: 'center', padding: '2rem 1.5rem', maxWidth: '600px', margin: '1rem auto' }}>
                     <Trophy size={64} color="#FFD93D" style={{ marginBottom: '1rem' }} />
