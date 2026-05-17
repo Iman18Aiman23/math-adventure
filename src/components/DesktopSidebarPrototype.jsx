@@ -27,11 +27,11 @@ const sidebarLogoStyles = `
   
   /* Soft Purple Gradient for active tab */
   .desktop-sidebar .sidebar-item.active {
-    background: linear-gradient(130deg, #7a73ccff 25%, #875edaff 65%);
+    background-image: linear-gradient(144deg,#AF40FF, #42f3a9 50%,#00DDEB);
     border: none !important;
     box-shadow: none !important;
     backdrop-filter: none;
-    color: #1E1E1E !important;
+    color: #ffffff !important;
     border-radius: 12px !important;
   }
   
