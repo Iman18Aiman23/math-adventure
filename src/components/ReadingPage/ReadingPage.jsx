@@ -523,6 +523,42 @@ export default function ReadingPage({ onBack, language }) {
       <div style={{ background: DESIGN_SYSTEM.colors.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 2, width: '100%' }}>
         <style>{globalStyles}</style>
 
+        {/* Header with Back Button and Stats */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem 1rem', gap: '0.75rem', flexWrap: 'wrap', background: '#fff', borderBottom: `2px solid ${DESIGN_SYSTEM.colors.hair}` }}>
+          <button
+            onClick={onBack}
+            style={{ background: '#fff', border: `2px solid ${DESIGN_SYSTEM.colors.hair}`, borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', color: DESIGN_SYSTEM.colors.muted, cursor: 'pointer', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`, transition: 'transform .12s', flexShrink: 0 }}
+            onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
+          >
+            <ArrowLeft size={24} />
+          </button>
+
+          {/* Stats Badges */}
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginLeft: 'auto', flexShrink: 0 }}>
+            {/* Stars Badge */}
+            <div style={{ background: '#fff', border: `2px solid ${DESIGN_SYSTEM.colors.hair}`, borderRadius: '999px', padding: '6px 12px', fontWeight: 800, fontSize: '0.85rem', color: '#FFC800', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`, display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span>⭐</span>
+              <span className="desktop-stat">{displayStars} {language === 'bm' ? 'bintang' : 'stars'}</span>
+              <span className="mobile-stat">{displayStars}</span>
+            </div>
+
+            {/* Hearts Badge */}
+            <div style={{ background: '#fff', border: `2px solid ${DESIGN_SYSTEM.colors.hair}`, borderRadius: '999px', padding: '6px 12px', fontWeight: 800, fontSize: '0.85rem', color: '#FF4B4B', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`, display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span>❤️</span>
+              <span className="desktop-stat">{displayHearts} {language === 'bm' ? 'nyawa' : 'hearts'}</span>
+              <span className="mobile-stat">{displayHearts}</span>
+            </div>
+
+            {/* Gems Badge */}
+            <div style={{ background: '#fff', border: `2px solid ${DESIGN_SYSTEM.colors.hair}`, borderRadius: '999px', padding: '6px 12px', fontWeight: 800, fontSize: '0.85rem', color: '#CE82FF', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`, display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span>💎</span>
+              <span className="desktop-stat">{displayGems} {language === 'bm' ? 'permata' : 'gems'}</span>
+              <span className="mobile-stat">{displayGems}</span>
+            </div>
+          </div>
+        </div>
+
         {/* Floating Background Decorations */}
         <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 1, overflow: 'hidden' }}>
           <svg style={{ position: 'absolute', top: '8%', left: '6%', opacity: 0.5 }} width="34" height="34" viewBox="0 0 34 34" fill="#FF9600"><path d="M17 2l3 11 11 4-11 4-3 11-3-11L3 17l11-4z"/></svg>
@@ -531,7 +567,7 @@ export default function ReadingPage({ onBack, language }) {
           <svg style={{ position: 'absolute', bottom: '8%', right: '6%', opacity: 0.5 }} width="30" height="30" viewBox="0 0 24 24" fill="#58CC02"><circle cx="12" cy="12" r="10"/></svg>
         </div>
 
-        {/* Main Content - Now includes header */}
+        {/* Main Content */}
         <div className="app-container" style={{ flex: 1, overflowY: 'auto' }}>
 
           {/* Hero Section */}
