@@ -189,7 +189,7 @@ const LetterCard = React.memo(function LetterCard({ letter, onSpeak, language })
         fontWeight: 900,
         color: '#7B1FA2',
         letterSpacing: '0.08em',
-        fontFamily: "'Baloo 2', cursive",
+        fontFamily: 'var(--font-heading)',
         textShadow: '0 2px 8px rgba(123,31,162,0.2)'
       }}>
         ✨ {language === 'bm' ? 'CARI HURUF' : 'FIND THE LETTER'} ✨
@@ -208,7 +208,7 @@ const LetterCard = React.memo(function LetterCard({ letter, onSpeak, language })
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           boxShadow: '0 12px 30px rgba(186,104,200,0.5), inset 0 -6px 0 rgba(0,0,0,0.15), inset 0 4px 0 rgba(255,255,255,0.3)',
           cursor: 'pointer',
-          fontFamily: "'Baloo 2', cursive",
+          fontFamily: 'var(--font-heading)',
           lineHeight: 1,
           textShadow: '0 4px 12px rgba(0,0,0,0.3)',
           animation: 'rainbowShift 4s ease infinite, letterCardBounce 1.5s ease-in-out infinite',
@@ -267,7 +267,7 @@ const AnimalCard = React.memo(function AnimalCard({ option, feedback, disabled, 
         justifyContent: 'center',
         transition: 'transform 0.2s cubic-bezier(0.34,1.56,0.64,1)',
         color: 'white',
-        fontFamily: "'Baloo 2', cursive",
+        fontFamily: 'var(--font-heading)',
         textShadow: '0 2px 6px rgba(0,0,0,0.3)'
       }}
     >
@@ -508,7 +508,7 @@ export default function AlphabetSafari({ onBack, language = 'bm' }) {
             color: 'white',
             fontWeight: 800,
             fontSize: '0.95rem',
-            fontFamily: "'Baloo 2', cursive",
+            fontFamily: 'var(--font-heading)',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',

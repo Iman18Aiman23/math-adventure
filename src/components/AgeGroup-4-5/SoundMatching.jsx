@@ -419,7 +419,7 @@ export default function SoundMatching({ onBack, onHome, isMuted, language }) {
               fontWeight: 800,
               marginBottom: '1.2rem',
               fontSize: '1.2rem',
-              fontFamily: "'Baloo 2', cursive"
+              fontFamily: "var(--font-heading)"
             }}>
               👂 Listen and tap the matching letter!
             </p>
@@ -482,7 +482,7 @@ export default function SoundMatching({ onBack, onHome, isMuted, language }) {
               fontSize: '1.1rem',
               boxShadow: '0 6px 20px rgba(255,179,0,0.35)',
               animation: 'rainbowShift 2s ease infinite, bounceIn 0.4s ease',
-              fontFamily: "'Baloo 2', cursive"
+              fontFamily: "var(--font-heading)"
             }}>
               ✨ Hint: The correct letter is <span style={{ fontSize: '1.4rem', fontWeight: 900 }}>{correctLetter}</span> ✨
             </div>

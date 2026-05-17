@@ -134,7 +134,7 @@ const AchievementCertificate = ({ achievement, playerName, gameState, language, 
             fontSize: '1.2rem',
             fontWeight: 900,
             color: '#2D4059',
-            fontFamily: "'Fredoka One', cursive",
+            fontFamily: "var(--font-heading)",
             margin: '0',
             letterSpacing: '1px',
             lineHeight: 1.1
@@ -144,7 +144,7 @@ const AchievementCertificate = ({ achievement, playerName, gameState, language, 
           <div style={{
             fontSize: '0.75rem',
             color: '#F4C430',
-            fontFamily: "'Fredoka One', cursive",
+            fontFamily: "var(--font-heading)",
             letterSpacing: '2px',
             textTransform: 'uppercase',
             margin: '0'
@@ -1188,7 +1188,7 @@ export default function AchievementPage({ onBack, onHome, language, gameState, o
           justifyContent: 'center',
           zIndex: 999999,
           color: 'white',
-          fontFamily: "'Fredoka One', cursive"
+          fontFamily: "var(--font-heading)"
         }}>
           <div style={{ position: 'relative', width: '90px', height: '90px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{

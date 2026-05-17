@@ -580,7 +580,7 @@ export default function PhoneticsSprint({ onBack, onHome, isMuted, language }) {
               fontWeight: 800,
               fontSize: '1.2rem',
               margin: 0,
-              fontFamily: "'Baloo 2', cursive"
+              fontFamily: "var(--font-heading)"
             }}>
               ✨ {currentData?.word} ✨
             </p>

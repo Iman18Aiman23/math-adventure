@@ -17,7 +17,7 @@ const Certificate = ({ assessment, score, onRetry, onBack, language = 'eng' }) =
           height: 100vh;
           overflow: hidden;
           padding: 1rem;
-          font-family: 'Fredoka One', cursive;
+          font-family: var(--font-heading);
         }
         .cert-page.cert-passed {
           background: linear-gradient(135deg, #E8F5E9, #F1F8E9);

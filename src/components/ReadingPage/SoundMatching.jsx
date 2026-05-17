@@ -199,7 +199,7 @@ export default function SoundMatching({ onBack, onHome, isMuted, language }) {
                 padding: '0.6rem 1.4rem',
                 borderRadius: '14px',
                 border: '2px solid #ddd',
-                fontFamily: "'Baloo 2', cursive",
+                fontFamily: "var(--font-heading)",
                 fontWeight: 700,
                 fontSize: '0.95rem',
                 cursor: 'pointer',
@@ -221,7 +221,7 @@ export default function SoundMatching({ onBack, onHome, isMuted, language }) {
                 padding: '0.6rem 1.4rem',
                 borderRadius: '14px',
                 border: '2px solid #4FC3F7',
-                fontFamily: "'Baloo 2', cursive",
+                fontFamily: "var(--font-heading)",
                 fontWeight: 700,
                 fontSize: '0.95rem',
                 cursor: 'pointer',
@@ -272,7 +272,7 @@ export default function SoundMatching({ onBack, onHome, isMuted, language }) {
                 padding: '0.6rem 1.4rem',
                 borderRadius: '14px',
                 border: '2px solid #ddd',
-                fontFamily: "'Baloo 2', cursive",
+                fontFamily: "var(--font-heading)",
                 fontWeight: 700,
                 fontSize: '0.95rem',
                 cursor: 'pointer',
@@ -294,7 +294,7 @@ export default function SoundMatching({ onBack, onHome, isMuted, language }) {
                 padding: '0.6rem 1.4rem',
                 borderRadius: '14px',
                 border: '2px solid #FF6B9D',
-                fontFamily: "'Baloo 2', cursive",
+                fontFamily: "var(--font-heading)",
                 fontWeight: 700,
                 fontSize: '0.95rem',
                 cursor: 'pointer',
@@ -419,7 +419,7 @@ export default function SoundMatching({ onBack, onHome, isMuted, language }) {
               fontWeight: 800,
               marginBottom: '1.2rem',
               fontSize: '1.2rem',
-              fontFamily: "'Baloo 2', cursive"
+              fontFamily: "var(--font-heading)"
             }}>
               👂 Listen and tap the matching letter!
             </p>
@@ -455,7 +455,7 @@ export default function SoundMatching({ onBack, onHome, isMuted, language }) {
                   alignItems: 'center',
                   gap: '0.6rem',
                   fontSize: '1.2rem',
-                  fontFamily: "'Baloo 2', cursive",
+                  fontFamily: "var(--font-heading)",
                   boxShadow: '0 10px 30px rgba(186,104,200,0.5)',
                   animation: 'rainbowShift 3s ease infinite, soundPulse 1.8s ease-in-out infinite',
                   position: 'relative',
@@ -482,7 +482,7 @@ export default function SoundMatching({ onBack, onHome, isMuted, language }) {
               fontSize: '1.1rem',
               boxShadow: '0 6px 20px rgba(255,179,0,0.35)',
               animation: 'rainbowShift 2s ease infinite, bounceIn 0.4s ease',
-              fontFamily: "'Baloo 2', cursive"
+              fontFamily: "var(--font-heading)"
             }}>
               ✨ Hint: The correct letter is <span style={{ fontSize: '1.4rem', fontWeight: 900 }}>{correctLetter}</span> ✨
             </div>
@@ -512,7 +512,7 @@ export default function SoundMatching({ onBack, onHome, isMuted, language }) {
                   fontSize: '3rem',
                   fontWeight: 900,
                   cursor: isLocked ? 'not-allowed' : 'pointer',
-                  fontFamily: "'Baloo 2', cursive",
+                  fontFamily: "var(--font-heading)",
                   transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)',
                   transform: isLocked ? 'scale(0.95)' : 'scale(1)',
                   boxShadow: '0 10px 30px rgba(0,0,0,0.2), inset 0 -6px 0 rgba(0,0,0,0.15), inset 0 4px 0 rgba(255,255,255,0.3)',
@@ -552,7 +552,7 @@ export default function SoundMatching({ onBack, onHome, isMuted, language }) {
               padding: '0.7rem 1.6rem',
               borderRadius: '50px',
               border: 'none',
-              fontFamily: "'Baloo 2', cursive",
+              fontFamily: "var(--font-heading)",
               fontWeight: 800,
               fontSize: '1rem',
               cursor: 'pointer',
@@ -575,7 +575,7 @@ export default function SoundMatching({ onBack, onHome, isMuted, language }) {
               padding: '0.7rem 1.6rem',
               borderRadius: '50px',
               border: '3px solid #FF6B9D',
-              fontFamily: "'Baloo 2', cursive",
+              fontFamily: "var(--font-heading)",
               fontWeight: 800,
               fontSize: '1rem',
               cursor: 'pointer',

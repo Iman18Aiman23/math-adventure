@@ -12,13 +12,13 @@ const sidebarLogoStyles = `
     -webkit-text-fill-color: transparent;
     background-clip: text;
     letter-spacing: 1px;
-    font-family: 'Fredoka One', cursive;
+    font-family: var(--font-heading);
     margin: 0;
     line-height: 1.1;
   }
   .sidebar-subtitle-text {
     color: #F4C430;
-    font-family: 'Fredoka One', cursive;
+    font-family: var(--font-heading);
     font-size: 0.75rem;
     letter-spacing: 2px;
     margin: 0;

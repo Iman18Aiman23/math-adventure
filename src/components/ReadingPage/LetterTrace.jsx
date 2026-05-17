@@ -272,7 +272,7 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
               paddingBottom: '0.25rem', borderBottom: '2px solid rgba(186,104,200,0.2)', flex: 'none'
             }}>
               <div style={{
-                fontFamily: "'Baloo 2', cursive",
+                fontFamily: "var(--font-heading)",
                 fontWeight: 900,
                 fontSize: '1.4rem',
                 lineHeight: 1,
@@ -289,7 +289,7 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
                 color: upperDone ? '#43A047' : '#7B1FA2',
                 letterSpacing: '0.08em',
                 textAlign: 'right',
-                fontFamily: "'Baloo 2', cursive"
+                fontFamily: "var(--font-heading)"
               }}>
                 {upperDone ? '✅ ' : '✏️ '}{language === 'bm' ? 'BESAR' : 'UPPER'} — {upperLetter.char}
               </div>
@@ -333,7 +333,7 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
                 paddingBottom: '0.25rem', borderBottom: '2px solid rgba(255,152,0,0.2)', flex: 'none'
               }}>
                 <div style={{
-                  fontFamily: "'Baloo 2', cursive",
+                  fontFamily: "var(--font-heading)",
                   fontWeight: 900,
                   fontSize: '1.4rem',
                   lineHeight: 1,
@@ -350,7 +350,7 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
                   color: lowerDone ? '#43A047' : '#E65100',
                   letterSpacing: '0.08em',
                   textAlign: 'right',
-                  fontFamily: "'Baloo 2', cursive"
+                  fontFamily: "var(--font-heading)"
                 }}>
                   {lowerDone ? '✅ ' : '✏️ '}{language === 'bm' ? 'KECIL' : 'LOWER'} — {lowerLetter.char}
                 </div>
@@ -390,7 +390,7 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
               color: 'white',
               fontWeight: 800,
               fontSize: '0.85rem',
-              fontFamily: "'Baloo 2', cursive",
+              fontFamily: "var(--font-heading)",
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -415,7 +415,7 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
               color: '#FF6B9D',
               fontWeight: 800,
               fontSize: '0.85rem',
-              fontFamily: "'Baloo 2', cursive",
+              fontFamily: "var(--font-heading)",
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -466,7 +466,7 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
               fontWeight: 900,
               fontSize: '1rem',
               cursor: 'pointer',
-              fontFamily: "'Baloo 2', cursive",
+              fontFamily: "var(--font-heading)",
               letterSpacing: '0.05em',
               display: 'flex',
               alignItems: 'center',
@@ -489,7 +489,7 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
             textAlign: 'center',
             maxWidth: '420px',
             margin: 0,
-            fontFamily: "'Baloo 2', cursive",
+            fontFamily: "var(--font-heading)",
             flex: 'none'
           }}>
             ✨ {language === 'bm'

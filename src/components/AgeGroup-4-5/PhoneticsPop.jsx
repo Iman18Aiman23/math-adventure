@@ -563,7 +563,7 @@ export default function PhoneticsPop({ onBack, onHome, isMuted, language }) {
               fontWeight: 800,
               marginBottom: '0.4rem',
               fontSize: '1rem',
-              fontFamily: "'Baloo 2', cursive"
+              fontFamily: "var(--font-heading)"
             }}>
               ✨ {currentSound.word} ✨
             </p>

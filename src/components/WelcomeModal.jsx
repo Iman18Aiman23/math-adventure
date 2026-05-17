@@ -10,12 +10,12 @@ const welcomeStyles = `
     -webkit-text-fill-color: transparent;
     background-clip: text;
     letter-spacing: 1px;
-    font-family: 'Fredoka One', cursive;
+    font-family: var(--font-heading);
     margin: 0;
   }
   .welcome-subtitle-text {
     color: #F4C430;
-    font-family: 'Fredoka One', cursive;
+    font-family: var(--font-heading);
     font-size: 1.2rem;
     letter-spacing: 3px;
     margin: 0;

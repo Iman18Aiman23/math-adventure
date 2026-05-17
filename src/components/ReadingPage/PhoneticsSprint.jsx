@@ -199,7 +199,7 @@ export default function PhoneticsSprint({ onBack, onHome, isMuted, language }) {
                 padding: '0.6rem 1.4rem',
                 borderRadius: '14px',
                 border: '2px solid #ddd',
-                fontFamily: "'Baloo 2', cursive",
+                fontFamily: "var(--font-heading)",
                 fontWeight: 700,
                 fontSize: '0.95rem',
                 cursor: 'pointer',
@@ -224,7 +224,7 @@ export default function PhoneticsSprint({ onBack, onHome, isMuted, language }) {
                 padding: '0.6rem 1.4rem',
                 borderRadius: '14px',
                 border: '2px solid #4FC3F7',
-                fontFamily: "'Baloo 2', cursive",
+                fontFamily: "var(--font-heading)",
                 fontWeight: 700,
                 fontSize: '0.95rem',
                 cursor: 'pointer',
@@ -275,7 +275,7 @@ export default function PhoneticsSprint({ onBack, onHome, isMuted, language }) {
                 padding: '0.6rem 1.4rem',
                 borderRadius: '14px',
                 border: '2px solid #ddd',
-                fontFamily: "'Baloo 2', cursive",
+                fontFamily: "var(--font-heading)",
                 fontWeight: 700,
                 fontSize: '0.95rem',
                 cursor: 'pointer',
@@ -300,7 +300,7 @@ export default function PhoneticsSprint({ onBack, onHome, isMuted, language }) {
                 padding: '0.6rem 1.4rem',
                 borderRadius: '14px',
                 border: '2px solid #FF6B9D',
-                fontFamily: "'Baloo 2', cursive",
+                fontFamily: "var(--font-heading)",
                 fontWeight: 700,
                 fontSize: '0.95rem',
                 cursor: 'pointer',
@@ -526,7 +526,7 @@ export default function PhoneticsSprint({ onBack, onHome, isMuted, language }) {
             <div style={{
               textAlign: 'center',
               fontWeight: 800,
-              fontFamily: "'Baloo 2', cursive",
+              fontFamily: "var(--font-heading)",
               fontSize: '0.85rem',
               background: 'linear-gradient(135deg, #FF6B9D, #E91E63)',
               WebkitBackgroundClip: 'text',
@@ -555,7 +555,7 @@ export default function PhoneticsSprint({ onBack, onHome, isMuted, language }) {
               fontWeight: 800,
               margin: 0,
               marginBottom: '0.4rem',
-              fontFamily: "'Baloo 2', cursive",
+              fontFamily: "var(--font-heading)",
               fontSize: '1.05rem'
             }}>
               ⚡ Tap the matching item! ⚡
@@ -563,7 +563,7 @@ export default function PhoneticsSprint({ onBack, onHome, isMuted, language }) {
             <div style={{
               fontSize: '3.4rem',
               fontWeight: 900,
-              fontFamily: "'Baloo 2', cursive",
+              fontFamily: "var(--font-heading)",
               background: 'linear-gradient(135deg, #FF6B9D, #FFD54F, #4FC3F7, #BA68C8)',
               backgroundSize: '300% 300%',
               WebkitBackgroundClip: 'text',
@@ -580,7 +580,7 @@ export default function PhoneticsSprint({ onBack, onHome, isMuted, language }) {
               fontWeight: 800,
               fontSize: '1.2rem',
               margin: 0,
-              fontFamily: "'Baloo 2', cursive"
+              fontFamily: "var(--font-heading)"
             }}>
               ✨ {currentData?.word} ✨
             </p>
@@ -613,7 +613,7 @@ export default function PhoneticsSprint({ onBack, onHome, isMuted, language }) {
                     cursor: isAnswered ? 'not-allowed' : 'pointer',
                     transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)',
                     opacity: isAnswered ? 0.6 : 1,
-                    fontFamily: "'Baloo 2', cursive",
+                    fontFamily: "var(--font-heading)",
                     boxShadow: '0 10px 26px rgba(0,0,0,0.2), inset 0 -6px 0 rgba(0,0,0,0.15), inset 0 4px 0 rgba(255,255,255,0.3)',
                     textShadow: '0 2px 6px rgba(0,0,0,0.3)',
                     animation: `obstacleFloat ${2.5 + (idx * 0.3)}s ease-in-out infinite`,
@@ -662,7 +662,7 @@ export default function PhoneticsSprint({ onBack, onHome, isMuted, language }) {
               padding: '0.7rem 1.6rem',
               borderRadius: '50px',
               border: 'none',
-              fontFamily: "'Baloo 2', cursive",
+              fontFamily: "var(--font-heading)",
               fontWeight: 800,
               fontSize: '1rem',
               cursor: 'pointer',
@@ -685,7 +685,7 @@ export default function PhoneticsSprint({ onBack, onHome, isMuted, language }) {
               padding: '0.7rem 1.6rem',
               borderRadius: '50px',
               border: '3px solid #FF6B9D',
-              fontFamily: "'Baloo 2', cursive",
+              fontFamily: "var(--font-heading)",
               fontWeight: 800,
               fontSize: '1rem',
               cursor: 'pointer',

@@ -289,7 +289,7 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
                 color: upperDone ? '#43A047' : '#7B1FA2',
                 letterSpacing: '0.08em',
                 textAlign: 'right',
-                fontFamily: "'Baloo 2', cursive"
+                fontFamily: "var(--font-heading)"
               }}>
                 {upperDone ? '✅ ' : '✏️ '}{language === 'bm' ? 'BESAR' : 'UPPER'} — {upperLetter.char}
               </div>
@@ -350,7 +350,7 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
                   color: lowerDone ? '#43A047' : '#E65100',
                   letterSpacing: '0.08em',
                   textAlign: 'right',
-                  fontFamily: "'Baloo 2', cursive"
+                  fontFamily: "var(--font-heading)"
                 }}>
                   {lowerDone ? '✅ ' : '✏️ '}{language === 'bm' ? 'KECIL' : 'LOWER'} — {lowerLetter.char}
                 </div>

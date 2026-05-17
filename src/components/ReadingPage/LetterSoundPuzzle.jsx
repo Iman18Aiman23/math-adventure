@@ -278,7 +278,7 @@ export default function LetterSoundPuzzle({ onBack, onHome, isMuted, language })
                 padding: '0.6rem 1.4rem',
                 borderRadius: '14px',
                 border: '2px solid #ddd',
-                fontFamily: "'Baloo 2', cursive",
+                fontFamily: "var(--font-heading)",
                 fontWeight: 700,
                 fontSize: '0.95rem',
                 cursor: 'pointer',
@@ -301,7 +301,7 @@ export default function LetterSoundPuzzle({ onBack, onHome, isMuted, language })
                 padding: '0.6rem 1.4rem',
                 borderRadius: '14px',
                 border: '2px solid #4FC3F7',
-                fontFamily: "'Baloo 2', cursive",
+                fontFamily: "var(--font-heading)",
                 fontWeight: 700,
                 fontSize: '0.95rem',
                 cursor: 'pointer',
@@ -352,7 +352,7 @@ export default function LetterSoundPuzzle({ onBack, onHome, isMuted, language })
                 padding: '0.6rem 1.4rem',
                 borderRadius: '14px',
                 border: '2px solid #ddd',
-                fontFamily: "'Baloo 2', cursive",
+                fontFamily: "var(--font-heading)",
                 fontWeight: 700,
                 fontSize: '0.95rem',
                 cursor: 'pointer',
@@ -375,7 +375,7 @@ export default function LetterSoundPuzzle({ onBack, onHome, isMuted, language })
                 padding: '0.6rem 1.4rem',
                 borderRadius: '14px',
                 border: '2px solid #FF6B9D',
-                fontFamily: "'Baloo 2', cursive",
+                fontFamily: "var(--font-heading)",
                 fontWeight: 700,
                 fontSize: '0.95rem',
                 cursor: 'pointer',
@@ -494,7 +494,7 @@ export default function LetterSoundPuzzle({ onBack, onHome, isMuted, language })
             fontWeight: 800,
             marginBottom: '0.4rem',
             fontSize: '1rem',
-            fontFamily: "'Baloo 2', cursive",
+            fontFamily: "var(--font-heading)",
             textAlign: 'center',
             flex: 'none'
           }}>
@@ -517,7 +517,7 @@ export default function LetterSoundPuzzle({ onBack, onHome, isMuted, language })
                 ? '0 6px 20px rgba(102,187,106,0.5)'
                 : '0 6px 20px rgba(233,30,99,0.4)',
               animation: 'bounceIn 0.4s ease',
-              fontFamily: "'Baloo 2', cursive",
+              fontFamily: "var(--font-heading)",
               flex: 'none'
             }}>
               {feedback}
@@ -541,7 +541,7 @@ export default function LetterSoundPuzzle({ onBack, onHome, isMuted, language })
                 fontWeight: 900,
                 color: '#7B1FA2',
                 margin: 0,
-                fontFamily: "'Baloo 2', cursive",
+                fontFamily: "var(--font-heading)",
                 fontSize: '1rem',
                 textAlign: 'center',
                 textShadow: '0 2px 8px rgba(123,31,162,0.2)',
@@ -586,7 +586,7 @@ export default function LetterSoundPuzzle({ onBack, onHome, isMuted, language })
                         fontSize: '1.6rem',
                         fontWeight: 900,
                         color: 'white',
-                        fontFamily: "'Baloo 2', cursive",
+                        fontFamily: "var(--font-heading)",
                         textShadow: '0 3px 10px rgba(0,0,0,0.3)',
                         lineHeight: 1
                       }}>
@@ -602,7 +602,7 @@ export default function LetterSoundPuzzle({ onBack, onHome, isMuted, language })
                         fontSize: '1.9rem',
                         color: slot.color,
                         fontWeight: 900,
-                        fontFamily: "'Baloo 2', cursive",
+                        fontFamily: "var(--font-heading)",
                         lineHeight: 1,
                         textShadow: `0 4px 12px ${slot.color}50`
                       }}>
@@ -628,7 +628,7 @@ export default function LetterSoundPuzzle({ onBack, onHome, isMuted, language })
                 fontWeight: 900,
                 color: '#0277BD',
                 margin: 0,
-                fontFamily: "'Baloo 2', cursive",
+                fontFamily: "var(--font-heading)",
                 fontSize: '1rem',
                 textAlign: 'center',
                 textShadow: '0 2px 8px rgba(2,119,189,0.2)',
@@ -660,7 +660,7 @@ export default function LetterSoundPuzzle({ onBack, onHome, isMuted, language })
                       transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)',
                       opacity: draggedLetter?.id === letter.id ? 0.5 : completedPairs.has(letter.slotId) ? 0.5 : 1,
                       transform: draggedLetter?.id === letter.id ? 'scale(1.15) rotate(-5deg)' : 'scale(1)',
-                      fontFamily: "'Baloo 2', cursive",
+                      fontFamily: "var(--font-heading)",
                       boxShadow: completedPairs.has(letter.slotId)
                         ? '0 4px 10px rgba(0,0,0,0.1)'
                         : `0 6px 18px ${slotColor}50, inset 0 -5px 0 rgba(0,0,0,0.15), inset 0 3px 0 rgba(255,255,255,0.3)`,
@@ -712,7 +712,7 @@ export default function LetterSoundPuzzle({ onBack, onHome, isMuted, language })
               padding: '0.7rem 1.6rem',
               borderRadius: '50px',
               border: 'none',
-              fontFamily: "'Baloo 2', cursive",
+              fontFamily: "var(--font-heading)",
               fontWeight: 800,
               fontSize: '1rem',
               cursor: 'pointer',
@@ -735,7 +735,7 @@ export default function LetterSoundPuzzle({ onBack, onHome, isMuted, language })
               padding: '0.7rem 1.6rem',
               borderRadius: '50px',
               border: '3px solid #FF6B9D',
-              fontFamily: "'Baloo 2', cursive",
+              fontFamily: "var(--font-heading)",
               fontWeight: 800,
               fontSize: '1rem',
               cursor: 'pointer',
