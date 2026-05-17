@@ -339,43 +339,6 @@ export default function ReadingPage({ onBack, language }) {
       }
     }
 
-    /* Responsive main container */
-    .app-container {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 14px 20px 80px;
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      overflow-x: hidden;
-      box-sizing: border-box;
-    }
-
-    @media (max-width: 768px) {
-      .app-container {
-        padding: 10px 14px 60px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .app-container {
-        padding: 8px 10px 50px;
-      }
-    }
-
-    @media (max-width: 360px) {
-      .app-container {
-        padding: 6px 8px 50px;
-      }
-    }
-
-    /* Landscape orientation on mobile */
-    @media (orientation: landscape) and (max-height: 500px) {
-      .app-container {
-        padding: 6px 8px 40px;
-      }
-    }
-
     /* Responsive Tiles */
     .tile-button {
       aspect-ratio: 1 / 1.18;
