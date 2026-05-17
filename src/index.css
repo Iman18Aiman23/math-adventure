@@ -222,13 +222,11 @@ button {
 .duo-tab-container {
   display: flex;
   flex: 1;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-  gap: 0;
+  justify-content: space-evenly;
   align-items: stretch;
-  scroll-snap-type: x mandatory;
+  gap: 0;
+  flex-wrap: nowrap;
+  width: 100%;
 }
 
 .duo-tab-container::-webkit-scrollbar {
@@ -236,8 +234,7 @@ button {
 }
 
 .duo-tab-item {
-  flex-shrink: 0;
-  min-width: 80px;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -255,7 +252,7 @@ button {
   border: none;
   cursor: pointer;
   font-family: var(--font-body);
-  scroll-snap-align: start;
+  min-height: 56px;
 }
 
 .duo-tab-item:active {
