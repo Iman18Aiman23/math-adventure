@@ -511,6 +511,8 @@ export default function ReadingPage({ onBack, language }) {
           <svg style={{ position: 'absolute', bottom: '8%', right: '6%', opacity: 0.5 }} width="30" height="30" viewBox="0 0 24 24" fill="#58CC02"><circle cx="12" cy="12" r="10"/></svg>
         </div>
 
+        {/* Main Content - Now includes header */}
+        <div className="app-container" style={{ flex: 1, overflowY: 'auto' }}>
 
           {/* Top Bar with Stats */}
           <div className="top-bar">
@@ -565,9 +567,6 @@ export default function ReadingPage({ onBack, language }) {
               {language === 'bm' ? 'Dari suku kata hingga ayat penuh. Mulai dari tahap mudah dan berkembang dengan kepercayaan diri!' : 'From syllables to complete sentences. Start easy and progress with confidence!'}
             </p>
           </div>
-
-        {/* Main Content */}
-        <div className="app-container" style={{ flex: 1, overflowY: 'auto' }}>
 
           {/* Level Tiles Grid */}
           <div className="level-grid">
