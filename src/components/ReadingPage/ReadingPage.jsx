@@ -479,11 +479,19 @@ export default function ReadingPage({ onBack, language }) {
 
     /* Landscape orientation on mobile */
     @media (orientation: landscape) and (max-height: 500px) {
+      body, html {
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow-x: hidden;
+      }
       div {
         overflow-x: hidden;
       }
       .landscape-content {
         padding: 0 !important;
+        width: 100vw !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
       }
     }
   `;
