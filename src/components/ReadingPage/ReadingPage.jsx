@@ -521,41 +521,15 @@ export default function ReadingPage({ onBack, language }) {
       <div style={{ background: DESIGN_SYSTEM.colors.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 2, width: '100%' }}>
         <style>{globalStyles}</style>
 
-        {/* Header with Back Button and Stats */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem 1rem', gap: '0.75rem', flexWrap: 'wrap', background: '#fff', borderBottom: `2px solid ${DESIGN_SYSTEM.colors.hair}` }}>
-          <button
-            onClick={onBack}
-            style={{ background: '#fff', border: `2px solid ${DESIGN_SYSTEM.colors.hair}`, borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', color: DESIGN_SYSTEM.colors.muted, cursor: 'pointer', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`, transition: 'transform .12s', flexShrink: 0 }}
-            onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
-          >
-            <ArrowLeft size={24} />
-          </button>
-
-          {/* Stats Badges */}
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginLeft: 'auto', flexShrink: 0 }}>
-            {/* Stars Badge */}
-            <div style={{ background: '#fff', border: `2px solid ${DESIGN_SYSTEM.colors.hair}`, borderRadius: '999px', padding: '6px 12px', fontWeight: 800, fontSize: '0.85rem', color: '#FFC800', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`, display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <span>⭐</span>
-              <span className="desktop-stat">{displayStars} {language === 'bm' ? 'bintang' : 'stars'}</span>
-              <span className="mobile-stat">{displayStars}</span>
-            </div>
-
-            {/* Hearts Badge */}
-            <div style={{ background: '#fff', border: `2px solid ${DESIGN_SYSTEM.colors.hair}`, borderRadius: '999px', padding: '6px 12px', fontWeight: 800, fontSize: '0.85rem', color: '#FF4B4B', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`, display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <span>❤️</span>
-              <span className="desktop-stat">{displayHearts} {language === 'bm' ? 'nyawa' : 'hearts'}</span>
-              <span className="mobile-stat">{displayHearts}</span>
-            </div>
-
-            {/* Gems Badge */}
-            <div style={{ background: '#fff', border: `2px solid ${DESIGN_SYSTEM.colors.hair}`, borderRadius: '999px', padding: '6px 12px', fontWeight: 800, fontSize: '0.85rem', color: '#CE82FF', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`, display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <span>💎</span>
-              <span className="desktop-stat">{displayGems} {language === 'bm' ? 'permata' : 'gems'}</span>
-              <span className="mobile-stat">{displayGems}</span>
-            </div>
-          </div>
-        </div>
+        {/* Back Button - Top Left */}
+        <button
+          onClick={onBack}
+          style={{ position: 'absolute', top: '1rem', left: '1rem', background: '#fff', border: `2px solid ${DESIGN_SYSTEM.colors.hair}`, borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', color: DESIGN_SYSTEM.colors.muted, cursor: 'pointer', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`, transition: 'transform .12s', zIndex: 10 }}
+          onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
+        >
+          <ArrowLeft size={24} />
+        </button>
 
         {/* Floating Background Decorations */}
         <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 1, overflow: 'hidden' }}>
@@ -674,22 +648,24 @@ export default function ReadingPage({ onBack, language }) {
   // View: Flashcard Interface
   const theme = getTheme(selectedLevel);
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: DESIGN_SYSTEM.colors.bg }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: DESIGN_SYSTEM.colors.bg, position: 'relative' }}>
       <style>{globalStyles}</style>
 
-      {/* Header with Script Buttons - Fixed */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', gap: '0.75rem', flexWrap: 'wrap', background: '#fff', borderBottom: `2px solid ${DESIGN_SYSTEM.colors.hair}`, flexShrink: 0 }}>
-        <button
-          onClick={() => setSelectedLevel(null)}
-          style={{ background: '#fff', border: `2px solid ${DESIGN_SYSTEM.colors.hair}`, borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', color: DESIGN_SYSTEM.colors.muted, cursor: 'pointer', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`, transition: 'transform .12s' }}
-          onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
-        >
-          <ArrowLeft size={24} />
-        </button>
+      {/* Back Button - Top Left */}
+      <button
+        onClick={() => setSelectedLevel(null)}
+        style={{ position: 'absolute', top: '1rem', left: '1rem', background: '#fff', border: `2px solid ${DESIGN_SYSTEM.colors.hair}`, borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', color: DESIGN_SYSTEM.colors.muted, cursor: 'pointer', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`, transition: 'transform .12s', zIndex: 10 }}
+        onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
+      >
+        <ArrowLeft size={24} />
+      </button>
 
-        {/* Script Buttons */}
-        <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', flex: 1 }}>
+      {/* Main Content - Single Scrollable Container */}
+      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.5rem', padding: '1rem' }}>
+
+        {/* Script Buttons - Inside Content */}
+        <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', marginTop: '2rem' }}>
           {SCRIPTS.map(script => (
             <button
               key={script.key}
@@ -711,49 +687,6 @@ export default function ReadingPage({ onBack, language }) {
             </button>
           ))}
         </div>
-
-        {/* Stats Badges */}
-        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-          {/* Stars Badge */}
-          <div style={{ background: '#fff', border: `2px solid ${DESIGN_SYSTEM.colors.hair}`, borderRadius: '999px', padding: '6px 12px', fontWeight: 800, fontSize: '0.85rem', color: '#FFC800', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`, display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <span>⭐</span>
-            <span className="desktop-stat">{displayStars} {language === 'bm' ? 'bintang' : 'stars'}</span>
-            <span className="mobile-stat">{displayStars}</span>
-          </div>
-
-          {/* Hearts Badge */}
-          <div style={{ background: '#fff', border: `2px solid ${DESIGN_SYSTEM.colors.hair}`, borderRadius: '999px', padding: '6px 12px', fontWeight: 800, fontSize: '0.85rem', color: '#FF4B4B', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`, display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <span>❤️</span>
-            <span className="desktop-stat">{displayHearts} {language === 'bm' ? 'nyawa' : 'hearts'}</span>
-            <span className="mobile-stat">{displayHearts}</span>
-          </div>
-
-          {/* Gems Badge */}
-          <div style={{ background: '#fff', border: `2px solid ${DESIGN_SYSTEM.colors.hair}`, borderRadius: '999px', padding: '6px 12px', fontWeight: 800, fontSize: '0.85rem', color: '#CE82FF', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`, display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <span>💎</span>
-            <span className="desktop-stat">{displayGems} {language === 'bm' ? 'permata' : 'gems'}</span>
-            <span className="mobile-stat">{displayGems}</span>
-          </div>
-        </div>
-
-        <div style={{ background: '#fff', border: `2px solid ${DESIGN_SYSTEM.colors.hair}`, borderRadius: '999px', padding: '6px 16px', fontWeight: 800, color: theme.color, fontSize: '0.9rem', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}` }}>
-          Tahap {selectedLevel} {currentIndex + 1}/{currentLevelData.length}
-        </div>
-      </div>
-
-      <style>{`
-        @media (max-width: 768px) {
-          .desktop-stat {
-            display: none !important;
-          }
-          .mobile-stat {
-            display: inline !important;
-          }
-        }
-      `}</style>
-
-      {/* Main Content - Single Scrollable Container */}
-      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.5rem', padding: '1rem' }}>
 
         {/* Flashcard Box */}
         <div className="flashcard-box" style={{
