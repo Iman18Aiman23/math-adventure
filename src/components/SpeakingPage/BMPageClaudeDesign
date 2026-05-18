@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>ImanCore · Sebutan</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@600;700;800;900&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --bg:#FFFDF8;
+    --ink:#1A1A2E;
+    --muted:#6B7280;
+    --hair:#E8E5DD;
+
+    /* Activity palette (same DNA as Jawi v3 / Mathematics) */
+    --c-sky:#1CB0F6;     --c-sky-deep:#06628A;     --c-sky-tint:#C7ECFB;     /* KV — Sky */
+    --c-purple:#9D4EDD;  --c-purple-deep:#5B2A8A;  --c-purple-tint:#F1E2FF;  /* KVK — Purple */
+    --c-pink:#FF1F7A;    --c-pink-deep:#8C0438;    --c-pink-tint:#FFD6E6;    /* English Phonics — Pink */
+    --c-gold:#FFB300;    --c-gold-deep:#8C5D00;    --c-gold-tint:#FFEFC2;    /* Numbers — Gold */
+    --c-green:#16A87A;   --c-green-deep:#0B5C44;   --c-green-tint:#C7F5E1;   /* Common Objects — Green */
+
+    --c-heart:#FF4B4B; --c-gem:#1CB0F6; --c-star:#FFC800;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Nunito',system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  body{
+    background:
+      radial-gradient(900px 600px at 12% -10%, #E6F2FF 0%, transparent 60%),
+      radial-gradient(900px 600px at 95% -5%,  #F4E4FF 0%, transparent 55%),
+      radial-gradient(700px 500px at 50% 110%, #DFF5E6 0%, transparent 60%),
+      #FFFDF8;
+    min-height:100vh;
+  }
+
+  .bg-deco{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+  .bg-deco i{position:absolute;display:block;animation:floaty 7s ease-in-out infinite}
+  .bg-deco i:nth-child(odd){animation-duration:9s}
+  @keyframes floaty{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-14px) rotate(8deg)}}
+
+  .shell{max-width:980px;margin:0 auto;padding:18px 18px 80px;position:relative;z-index:2}
+
+  /* Header */
+  .header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 0 18px;flex-wrap:wrap}
+  .back-btn{
+    background:#fff;border:2px solid var(--hair);border-radius:50%;
+    width:48px;height:48px;display:flex;align-items:center;justify-content:center;
+    color:var(--muted);cursor:pointer;box-shadow:0 3px 0 var(--hair);transition:transform .14s ease;
+  }
+  .back-btn:hover{transform:translateY(-2px)}
+  .stats{display:flex;gap:8px;align-items:center}
+  .stat{
+    background:#fff;border:2px solid var(--hair);border-radius:999px;
+    padding:6px 14px;font-family:'Baloo 2';font-weight:800;font-size:14px;
+    display:inline-flex;align-items:center;gap:6px;
+    box-shadow:0 3px 0 var(--hair);transition:transform .14s;
+  }
+  .stat:hover{transform:translateY(-2px)}
+  .stat.star{color:var(--c-star)} .stat.heart{color:var(--c-heart)} .stat.gem{color:var(--c-gem)}
+
+  /* Hero — speaking */
+  .hero{text-align:center;padding:10px 8px 4px;margin-bottom:6px;position:relative}
+  .hero-emoji-wrap{position:relative;display:flex;justify-content:center;align-items:center;height:130px}
+  .hero-emoji{
+    font-size:4.5rem;line-height:1;display:inline-block;
+    animation:bounce 2.4s cubic-bezier(.34,1.56,.64,1) infinite;
+    filter:drop-shadow(0 8px 14px rgba(22,168,122,.28));
+    position:relative;
+  }
+  @keyframes bounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-10px) scale(1.04)}}
+  .hero-emoji::before{
+    content:"";position:absolute;left:50%;top:50%;width:140px;height:140px;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(closest-side, rgba(28,176,246,.45), transparent 70%);
+    z-index:-1;border-radius:50%;animation:pulseGlow 2.4s ease-in-out infinite;
+  }
+  @keyframes pulseGlow{0%,100%{opacity:.55;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.18)}}
+  /* concentric sound rings radiating out (speaking metaphor) */
+  .hero-rings{position:absolute;left:50%;top:50%;width:140px;height:140px;transform:translate(-50%,-50%);pointer-events:none}
+  .hero-rings span{
+    position:absolute;inset:0;border-radius:50%;border:2.5px solid;
+    animation:ringPulse 2.4s ease-out infinite;
+  }
+  .hero-rings span:nth-child(1){border-color:rgba(28,176,246,.55);animation-delay:0s}
+  .hero-rings span:nth-child(2){border-color:rgba(157,78,221,.45);animation-delay:.8s}
+  .hero-rings span:nth-child(3){border-color:rgba(255,31,122,.4);animation-delay:1.6s}
+  @keyframes ringPulse{
+    0%{transform:scale(.6);opacity:.85}
+    100%{transform:scale(1.6);opacity:0}
+  }
+  .hero-sub{
+    font-family:'Fredoka','Nunito',sans-serif;
+    font-weight:600;font-size:1.2rem;color:#374151;
+    margin:6px auto 0;max-width:520px;line-height:1.4;
+    display:flex;align-items:center;gap:8px;justify-content:center;
+  }
+
+  .section-label{
+    font-family:'Fredoka',sans-serif;font-weight:700;font-size:1rem;
+    color:var(--muted);text-align:center;letter-spacing:.18em;text-transform:uppercase;
+    margin:18px 0 18px;display:flex;align-items:center;gap:14px;justify-content:center;
+  }
+  .section-label::before,.section-label::after{
+    content:"";height:3px;width:60px;border-radius:999px;
+    background:linear-gradient(90deg,transparent,#FFD60A,#FF1F7A,#9D4EDD,transparent);
+  }
+
+  /* Grid of illustrated tiles (same DNA as Jawi v3) */
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  @media (min-width:760px){.grid{grid-template-columns:repeat(3,1fr);gap:22px}}
+
+  .tile{
+    --base:var(--c-sky);
+    --deep:var(--c-sky-deep);
+    --tint:var(--c-sky-tint);
+
+    position:relative;border:0;padding:0;
+    aspect-ratio:1/1.05;width:100%;
+    border-radius:32px;cursor:pointer;font-family:inherit;color:#fff;text-align:left;
+    background:linear-gradient(165deg, color-mix(in srgb, var(--base) 75%, white) 0%, var(--base) 60%, var(--deep) 100%);
+    box-shadow:
+      inset 0 -8px 0 rgba(0,0,0,.18),
+      inset 0 8px 0 rgba(255,255,255,.18),
+      0 10px 0 var(--deep),
+      0 22px 36px -12px color-mix(in srgb, var(--base) 60%, transparent);
+    overflow:hidden;
+    transition:transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .25s ease;
+    opacity:0;transform:translateY(28px);
+    animation:tileIn .6s cubic-bezier(.34,1.56,.64,1) forwards;
+  }
+  .tile:nth-child(1){animation-delay:.05s}
+  .tile:nth-child(2){animation-delay:.12s}
+  .tile:nth-child(3){animation-delay:.19s}
+  .tile:nth-child(4){animation-delay:.26s}
+  .tile:nth-child(5){animation-delay:.33s}
+  @keyframes tileIn{
+    0%{opacity:0;transform:translateY(28px) scale(.94)}
+    70%{opacity:1;transform:translateY(-6px) scale(1.02)}
+    100%{opacity:1;transform:translateY(0) scale(1)}
+  }
+  .tile:hover{
+    transform:translateY(-6px) rotate(-1.2deg);
+    box-shadow:
+      inset 0 -8px 0 rgba(0,0,0,.18),
+      inset 0 8px 0 rgba(255,255,255,.22),
+      0 14px 0 var(--deep),
+      0 30px 44px -12px color-mix(in srgb, var(--base) 70%, transparent);
+  }
+  .tile:active{
+    transform:translateY(6px) rotate(0deg);
+    box-shadow:
+      inset 0 -8px 0 rgba(0,0,0,.18),
+      inset 0 8px 0 rgba(255,255,255,.18),
+      0 4px 0 var(--deep),
+      0 10px 14px -8px rgba(0,0,0,.25);
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .tile:focus-visible{outline:none;box-shadow:0 0 0 5px rgba(255,255,255,.6), 0 0 0 8px var(--base), 0 10px 0 var(--deep)}
+
+  .tile::before{
+    content:"";position:absolute;inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.18) 1.4px, transparent 1.6px);
+    background-size:20px 20px;opacity:.7;pointer-events:none;z-index:1;
+  }
+  .tile::after{
+    content:"";position:absolute;top:8px;left:14px;right:14px;height:38%;border-radius:28px 28px 80% 80%;
+    background:linear-gradient(180deg, rgba(255,255,255,.42) 0%, rgba(255,255,255,.06) 75%, transparent 100%);
+    pointer-events:none;z-index:1;
+  }
+
+  /* Color variants */
+  .t-kv{--base:var(--c-sky); --deep:var(--c-sky-deep); --tint:var(--c-sky-tint)}
+  .t-kvk{--base:var(--c-purple); --deep:var(--c-purple-deep); --tint:var(--c-purple-tint)}
+  .t-phonics{--base:var(--c-pink); --deep:var(--c-pink-deep); --tint:var(--c-pink-tint)}
+  .t-numbers{--base:var(--c-gold); --deep:var(--c-gold-deep); --tint:var(--c-gold-tint)}
+  .t-objects{--base:var(--c-green); --deep:var(--c-green-deep); --tint:var(--c-green-tint)}
+
+  .tile-num{
+    position:absolute;top:14px;left:14px;z-index:5;
+    width:38px;height:38px;border-radius:50%;
+    background:#fff;color:var(--deep);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fredoka',sans-serif;font-weight:700;font-size:18px;
+    box-shadow:0 3px 0 rgba(0,0,0,.18);
+    transition:transform .3s;
+  }
+  .tile:hover .tile-num{transform:rotate(-12deg) scale(1.1)}
+
+  /* small mic icon top-right (speaking page motif instead of the spinning star) */
+  .tile-mic{
+    position:absolute;top:14px;right:14px;z-index:5;
+    width:38px;height:38px;border-radius:50%;
+    background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.45);
+    display:flex;align-items:center;justify-content:center;color:#fff;
+    animation:micPulse 2s ease-in-out infinite;
+  }
+  @keyframes micPulse{
+    0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.45)}
+    50%{box-shadow:0 0 0 8px rgba(255,255,255,0)}
+  }
+
+  .illo{
+    position:absolute;top:14%;left:0;right:0;bottom:30%;
+    display:flex;align-items:center;justify-content:center;z-index:2;
+  }
+  .illo svg{width:80%;height:auto;max-height:100%;
+    filter:drop-shadow(0 10px 8px rgba(0,0,0,.22));
+    transition:transform .45s cubic-bezier(.34,1.56,.64,1);
+  }
+  .tile:hover .illo svg{transform:scale(1.08) translateY(-4px) rotate(-3deg)}
+
+  .illo .wobble{animation:wobble 4s ease-in-out infinite;transform-origin:center}
+  @keyframes wobble{0%,100%{transform:rotate(-3deg) translateY(0)}50%{transform:rotate(3deg) translateY(-4px)}}
+  .illo .float-a{animation:floata 3s ease-in-out infinite;transform-origin:center}
+  .illo .float-b{animation:floata 3.6s ease-in-out infinite -1.2s;transform-origin:center}
+  .illo .float-c{animation:floata 3.2s ease-in-out infinite -.6s;transform-origin:center}
+  @keyframes floata{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+  .spark{position:absolute;z-index:3;opacity:0;transition:opacity .3s, transform .5s;pointer-events:none}
+  .tile:hover .spark{opacity:1}
+  .tile:hover .spark.s1{transform:translate(-6px,-8px) scale(1.2) rotate(20deg)}
+  .tile:hover .spark.s2{transform:translate(6px,-6px) scale(1.15) rotate(-15deg)}
+
+  /* Caption */
+  .cap{
+    position:absolute;bottom:14px;left:14px;right:14px;z-index:4;
+    background:#fff;border-radius:22px;padding:12px 16px;
+    box-shadow:0 4px 0 rgba(0,0,0,.10);
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+  }
+  .cap-title{
+    font-family:'Fredoka','Baloo 2',sans-serif;font-weight:700;
+    font-size:1.05rem;color:var(--ink);line-height:1.05;
+    text-wrap:balance;
+  }
+  .cap-title small{
+    display:block;font-family:'Nunito';font-weight:600;font-size:.7rem;
+    color:var(--muted);letter-spacing:.04em;margin-top:3px;text-transform:none;
+  }
+  .cap-go{
+    width:36px;height:36px;border-radius:50%;flex-shrink:0;
+    background:radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--base) 30%, white) 0%, var(--base) 55%, var(--deep) 100%);
+    display:flex;align-items:center;justify-content:center;color:#fff;
+    box-shadow:0 3px 0 var(--deep), 0 0 0 2px rgba(255,255,255,.8);
+    position:relative;
+    transition:transform .25s;
+  }
+  .cap-go::before{content:"";position:absolute;top:3px;left:7px;right:7px;height:10px;border-radius:50%;background:radial-gradient(ellipse at 50% 0, rgba(255,255,255,.9), transparent 70%)}
+  .tile:hover .cap-go{transform:translateX(4px) rotate(8deg)}
+
+  @media (max-width:560px){
+    .shell{padding:14px 12px 80px}
+    .grid{gap:14px}
+    .cap{border-radius:18px;padding:10px 12px}
+    .cap-title{font-size:.95rem}
+    .cap-go{width:32px;height:32px}
+    .tile-num,.tile-mic{width:32px;height:32px;font-size:15px}
+    .illo{top:16%;bottom:30%}
+  }
+
+  /* ─── How to play row ─── */
+  .howto{
+    margin-top:30px;
+    background:#fff;border-radius:24px;padding:20px;
+    box-shadow:0 0 0 1px var(--hair), 0 14px 28px -16px rgba(0,0,0,.10);
+  }
+  .howto-title{
+    font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.05rem;
+    color:var(--ink);margin:0 0 14px;display:flex;align-items:center;gap:8px;
+  }
+  .howto-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media (max-width:560px){.howto-grid{grid-template-columns:1fr}}
+  .step{
+    display:flex;align-items:center;gap:12px;
+    padding:14px;background:#FFF8EB;border-radius:18px;border:2px solid #FFE9B5;
+  }
+  .step-n{
+    flex-shrink:0;width:36px;height:36px;border-radius:50%;
+    background:linear-gradient(180deg,#FFD86B,#FFB300);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fredoka';font-weight:700;font-size:18px;
+    box-shadow:0 3px 0 #8C5D00;
+  }
+  .step-t{font-family:'Nunito';font-weight:700;font-size:.95rem;color:var(--ink);line-height:1.25}
+
+  .hint{
+    margin-top:22px;font-family:'Nunito';font-style:italic;font-size:.95rem;
+    color:var(--muted);text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;
+  }
+
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body data-screen-label="Speaking Page — illustrated kids tiles">
+
+<div class="bg-deco" aria-hidden="true">
+  <i style="top:9%;left:5%"><svg width="34" height="34" viewBox="0 0 24 24" fill="#9D4EDD" opacity=".55"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg></i>
+  <i style="top:18%;right:7%"><svg width="22" height="22" viewBox="0 0 24 24" fill="#FFD60A" opacity=".7"><circle cx="12" cy="12" r="10"/></svg></i>
+  <i style="top:42%;left:3%"><svg width="20" height="20" viewBox="0 0 24 24" fill="#1CB0F6" opacity=".55"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></i>
+  <i style="bottom:18%;left:6%"><svg width="28" height="28" viewBox="0 0 24 24" fill="#FF1F7A" opacity=".55"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg></i>
+  <i style="bottom:24%;right:5%"><svg width="26" height="26" viewBox="0 0 24 24" fill="#16A87A" opacity=".55"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg></i>
+  <i style="top:60%;right:4%"><svg width="18" height="18" viewBox="0 0 24 24" fill="#9D4EDD" opacity=".55"><circle cx="12" cy="12" r="10"/></svg></i>
+</div>
+
+<div class="shell">
+
+  <header class="header">
+    <button class="back-btn" aria-label="Back">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5 7.6 11.6a.5.5 0 0 0 0 .8L14.5 19"/></svg>
+    </button>
+    <div class="stats">
+      <button class="stat star" type="button"><span>⭐</span><span>7</span></button>
+      <button class="stat heart" type="button"><span>❤️</span><span>3</span></button>
+      <button class="stat gem" type="button"><span>💎</span><span>81</span></button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-emoji-wrap">
+      <span class="hero-rings" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span class="hero-emoji" role="img" aria-label="microphone">🎤</span>
+    </div>
+    <p class="hero-sub">
+      Sebut &amp; Main! Bercakap untuk bermain.
+      <span aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="#1CB0F6"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1A7 7 0 0 0 19 11h-2Z"/></svg></span>
+    </p>
+  </section>
+
+  <div class="section-label">Pilih Kategori</div>
+
+  <div class="grid">
+
+    <!-- 1. SUKU KATA KV (Sky) — Colorful KV syllable blocks -->
+    <button class="tile t-kv" data-mode="bm_kv">
+      <span class="tile-num">1</span>
+      <span class="tile-mic" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1A7 7 0 0 0 19 11h-2Z"/></svg>
+      </span>
+
+      <span class="spark s1" style="top:24%;left:14%"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></span>
+      <span class="spark s2" style="top:30%;right:14%"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="10"/></svg></span>
+
+      <div class="illo">
+        <svg viewBox="0 0 200 160">
+          <ellipse cx="100" cy="150" rx="76" ry="7" fill="rgba(0,0,0,.22)"/>
+          <g class="float-a">
+            <g transform="translate(8 26) rotate(-10 35 35)">
+              <rect width="70" height="70" rx="14" fill="#fff" stroke="#06628A" stroke-width="3.5"/>
+              <rect x="6" y="6" width="58" height="12" rx="6" fill="rgba(28,176,246,.25)"/>
+              <text x="35" y="48" text-anchor="middle" font-family="'Fredoka',sans-serif" font-weight="700" font-size="34" fill="#06628A">ba</text>
+            </g>
+          </g>
+          <g class="float-b">
+            <g transform="translate(66 12) rotate(6 36 36)">
+              <rect width="72" height="72" rx="14" fill="#FFD60A" stroke="#06628A" stroke-width="3.5"/>
+              <rect x="6" y="6" width="60" height="12" rx="6" fill="rgba(255,255,255,.5)"/>
+              <text x="36" y="50" text-anchor="middle" font-family="'Fredoka',sans-serif" font-weight="700" font-size="34" fill="#06628A">bi</text>
+            </g>
+          </g>
+          <g class="float-c">
+            <g transform="translate(124 30) rotate(-6 34 34)">
+              <rect width="68" height="68" rx="14" fill="#FF1F7A" stroke="#06628A" stroke-width="3.5"/>
+              <rect x="6" y="6" width="56" height="12" rx="6" fill="rgba(255,255,255,.5)"/>
+              <text x="34" y="46" text-anchor="middle" font-family="'Fredoka',sans-serif" font-weight="700" font-size="32" fill="#fff">bu</text>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <div class="cap">
+        <span class="cap-title">Suku Kata KV<small>ba · bi · bu · be · bo</small></span>
+        <span class="cap-go" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+      </div>
+    </button>
+
+    <!-- 2. SUKU KATA KVK (Purple) — closed syllable blocks -->
+    <button class="tile t-kvk" data-mode="bm_kvk">
+      <span class="tile-num">2</span>
+      <span class="tile-mic" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1A7 7 0 0 0 19 11h-2Z"/></svg>
+      </span>
+
+      <span class="spark s1" style="top:24%;left:14%"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></span>
+      <span class="spark s2" style="top:30%;right:14%"><svg width="14" height="14" viewBox="0 0 24 24" fill="#F1E2FF"><circle cx="12" cy="12" r="10"/></svg></span>
+
+      <div class="illo">
+        <svg viewBox="0 0 200 160">
+          <ellipse cx="100" cy="150" rx="76" ry="7" fill="rgba(0,0,0,.22)"/>
+          <g class="wobble">
+            <!-- pill-shaped KVK chunk "ban" -->
+            <g transform="translate(20 30) rotate(-4 80 30)">
+              <rect width="160" height="60" rx="30" fill="#fff" stroke="#5B2A8A" stroke-width="3.5"/>
+              <text x="80" y="42" text-anchor="middle" font-family="'Fredoka',sans-serif" font-weight="700" font-size="36" fill="#5B2A8A">ban</text>
+              <!-- mini speech dots -->
+              <circle cx="14" cy="14" r="3" fill="#FFD60A"/>
+              <circle cx="146" cy="46" r="3" fill="#FF1F7A"/>
+            </g>
+          </g>
+          <g class="float-b">
+            <g transform="translate(48 88) rotate(3 50 22)">
+              <rect width="100" height="44" rx="22" fill="#FFD60A" stroke="#5B2A8A" stroke-width="3"/>
+              <text x="50" y="32" text-anchor="middle" font-family="'Fredoka',sans-serif" font-weight="700" font-size="26" fill="#5B2A8A">bin</text>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <div class="cap">
+        <span class="cap-title">Suku Kata KVK<small>ban · bin · bun · ben · bon</small></span>
+        <span class="cap-go" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+      </div>
+    </button>
+
+    <!-- 3. ENGLISH PHONICS (Pink) — A B C with phonetic -->
+    <button class="tile t-phonics" data-mode="en_long_vowels">
+      <span class="tile-num">3</span>
+      <span class="tile-mic" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1A7 7 0 0 0 19 11h-2Z"/></svg>
+      </span>
+
+      <span class="spark s1" style="top:24%;left:14%"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></span>
+
+      <div class="illo">
+        <svg viewBox="0 0 200 160">
+          <ellipse cx="100" cy="152" rx="76" ry="7" fill="rgba(0,0,0,.22)"/>
+          <!-- Big cake letter A -->
+          <g class="float-a">
+            <g transform="translate(14 16) rotate(-8 38 38)">
+              <rect width="76" height="76" rx="16" fill="#fff" stroke="#8C0438" stroke-width="3.5"/>
+              <text x="38" y="58" text-anchor="middle" font-family="'Fredoka',sans-serif" font-weight="700" font-size="56" fill="#8C0438">A</text>
+              <text x="38" y="72" text-anchor="middle" font-family="'Nunito',sans-serif" font-weight="700" font-size="9" fill="#8C0438">/eɪ/</text>
+            </g>
+          </g>
+          <!-- B -->
+          <g class="float-b">
+            <g transform="translate(74 24) rotate(4 36 36)">
+              <rect width="72" height="72" rx="14" fill="#FF1F7A" stroke="#8C0438" stroke-width="3.5"/>
+              <text x="36" y="54" text-anchor="middle" font-family="'Fredoka',sans-serif" font-weight="700" font-size="52" fill="#fff">B</text>
+              <text x="36" y="66" text-anchor="middle" font-family="'Nunito',sans-serif" font-weight="700" font-size="8" fill="#fff">/biː/</text>
+            </g>
+          </g>
+          <!-- C -->
+          <g class="float-c">
+            <g transform="translate(124 30) rotate(-5 34 34)">
+              <rect width="68" height="68" rx="14" fill="#FFD60A" stroke="#8C0438" stroke-width="3.5"/>
+              <text x="34" y="52" text-anchor="middle" font-family="'Fredoka',sans-serif" font-weight="700" font-size="48" fill="#8C0438">C</text>
+              <text x="34" y="62" text-anchor="middle" font-family="'Nunito',sans-serif" font-weight="700" font-size="8" fill="#8C0438">/siː/</text>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <div class="cap">
+        <span class="cap-title">English Phonics<small>Cake · Bike · Home · Tune</small></span>
+        <span class="cap-go" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+      </div>
+    </button>
+
+    <!-- 4. NOMBOR 1-100 (Gold) — counting numbers / calculator -->
+    <button class="tile t-numbers" data-mode="numbers">
+      <span class="tile-num">4</span>
+      <span class="tile-mic" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1A7 7 0 0 0 19 11h-2Z"/></svg>
+      </span>
+
+      <span class="spark s1" style="top:24%;left:14%"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></span>
+      <span class="spark s2" style="top:30%;right:14%"><svg width="14" height="14" viewBox="0 0 24 24" fill="#FFEFC2"><circle cx="12" cy="12" r="10"/></svg></span>
+
+      <div class="illo">
+        <svg viewBox="0 0 200 160">
+          <ellipse cx="100" cy="150" rx="76" ry="7" fill="rgba(0,0,0,.22)"/>
+          <!-- "1" -->
+          <g class="float-a">
+            <g transform="translate(10 22) rotate(-8 32 32)">
+              <rect width="64" height="64" rx="14" fill="#fff" stroke="#8C5D00" stroke-width="3.5"/>
+              <text x="32" y="48" text-anchor="middle" font-family="'Fredoka',sans-serif" font-weight="700" font-size="42" fill="#8C5D00">1</text>
+            </g>
+          </g>
+          <!-- "2" -->
+          <g class="float-b">
+            <g transform="translate(58 12) rotate(5 32 32)">
+              <rect width="64" height="64" rx="14" fill="#1CB0F6" stroke="#8C5D00" stroke-width="3.5"/>
+              <text x="32" y="48" text-anchor="middle" font-family="'Fredoka',sans-serif" font-weight="700" font-size="42" fill="#fff">2</text>
+            </g>
+          </g>
+          <!-- "3" -->
+          <g class="float-c">
+            <g transform="translate(106 18) rotate(-4 32 32)">
+              <rect width="64" height="64" rx="14" fill="#FF1F7A" stroke="#8C5D00" stroke-width="3.5"/>
+              <text x="32" y="48" text-anchor="middle" font-family="'Fredoka',sans-serif" font-weight="700" font-size="42" fill="#fff">3</text>
+            </g>
+          </g>
+          <!-- Big "100" badge bottom-right -->
+          <g transform="translate(140 96)">
+            <ellipse cx="0" cy="0" rx="34" ry="22" fill="#FFD60A" stroke="#8C5D00" stroke-width="3"/>
+            <text text-anchor="middle" dominant-baseline="central" font-family="'Fredoka',sans-serif" font-weight="700" font-size="22" fill="#8C5D00">100</text>
+          </g>
+          <!-- dots indicating sequence -->
+          <circle cx="40" cy="116" r="3" fill="#fff"/>
+          <circle cx="56" cy="120" r="3" fill="#fff"/>
+          <circle cx="72" cy="124" r="3" fill="#fff"/>
+          <circle cx="88" cy="120" r="3" fill="#fff"/>
+        </svg>
+      </div>
+
+      <div class="cap">
+        <span class="cap-title">Nombor 1–100<small>Sebut nombor 1 hingga 100!</small></span>
+        <span class="cap-go" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+      </div>
+    </button>
+
+    <!-- 5. OBJEK BIASA (Green) — cat + flower + cup + book -->
+    <button class="tile t-objects" data-mode="common_objects">
+      <span class="tile-num">5</span>
+      <span class="tile-mic" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1A7 7 0 0 0 19 11h-2Z"/></svg>
+      </span>
+
+      <span class="spark s1" style="top:24%;left:14%"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></span>
+
+      <div class="illo">
+        <svg viewBox="0 0 200 160">
+          <ellipse cx="100" cy="152" rx="80" ry="6" fill="rgba(0,0,0,.22)"/>
+
+          <!-- CAT (left, big) -->
+          <g transform="translate(2 16)"><g class="float-a">
+            <!-- ears -->
+            <path d="M10 30 L22 6 L34 30 Z" fill="#fff" stroke="#0B5C44" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M58 30 L70 6 L82 30 Z" fill="#fff" stroke="#0B5C44" stroke-width="3" stroke-linejoin="round"/>
+            <!-- inner ears -->
+            <path d="M16 26 L22 14 L28 26 Z" fill="#FF9DA8"/>
+            <path d="M64 26 L70 14 L76 26 Z" fill="#FF9DA8"/>
+            <!-- head -->
+            <circle cx="46" cy="46" r="32" fill="#fff" stroke="#0B5C44" stroke-width="3.5"/>
+            <!-- cheeks -->
+            <circle cx="32" cy="56" r="5" fill="#FFB5C8" opacity=".8"/>
+            <circle cx="60" cy="56" r="5" fill="#FFB5C8" opacity=".8"/>
+            <!-- eyes (full with pupils + glints) -->
+            <ellipse cx="34" cy="42" rx="5" ry="6" fill="#fff" stroke="#0B5C44" stroke-width="2"/>
+            <ellipse cx="58" cy="42" rx="5" ry="6" fill="#fff" stroke="#0B5C44" stroke-width="2"/>
+            <ellipse cx="34" cy="44" rx="2.5" ry="3.5" fill="#0B5C44"/>
+            <ellipse cx="58" cy="44" rx="2.5" ry="3.5" fill="#0B5C44"/>
+            <circle cx="35" cy="42" r="1.2" fill="#fff"/>
+            <circle cx="59" cy="42" r="1.2" fill="#fff"/>
+            <!-- nose -->
+            <path d="M41 54 l5 6 l5 -6 z" fill="#FF6B9D" stroke="#0B5C44" stroke-width="2" stroke-linejoin="round"/>
+            <!-- whiskers -->
+            <line x1="6" y1="50" x2="22" y2="52" stroke="#0B5C44" stroke-width="2" stroke-linecap="round"/>
+            <line x1="6" y1="56" x2="22" y2="56" stroke="#0B5C44" stroke-width="2" stroke-linecap="round"/>
+            <line x1="70" y1="52" x2="86" y2="50" stroke="#0B5C44" stroke-width="2" stroke-linecap="round"/>
+            <line x1="70" y1="56" x2="86" y2="56" stroke="#0B5C44" stroke-width="2" stroke-linecap="round"/>
+            <!-- mouth -->
+            <path d="M46 60 v3" stroke="#0B5C44" stroke-width="2" stroke-linecap="round"/>
+            <path d="M38 64 q8 8 16 0" stroke="#0B5C44" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+          </g></g>
+
+          <!-- FLOWER (top-right, big) -->
+          <g transform="translate(106 4)"><g class="float-b">
+            <!-- petals -->
+            <g stroke="#0B5C44" stroke-width="2.8" stroke-linejoin="round">
+              <ellipse cx="36" cy="14" rx="11" ry="14" fill="#FF6B9D"/>
+              <ellipse cx="58" cy="36" rx="14" ry="11" fill="#FF6B9D"/>
+              <ellipse cx="36" cy="58" rx="11" ry="14" fill="#FF6B9D"/>
+              <ellipse cx="14" cy="36" rx="14" ry="11" fill="#FF6B9D"/>
+            </g>
+            <!-- center -->
+            <circle cx="36" cy="36" r="13" fill="#FFD60A" stroke="#0B5C44" stroke-width="3"/>
+            <!-- smiley center -->
+            <circle cx="32" cy="34" r="1.6" fill="#0B5C44"/>
+            <circle cx="40" cy="34" r="1.6" fill="#0B5C44"/>
+            <path d="M31 38 q5 4 10 0" stroke="#0B5C44" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+            <!-- stem -->
+            <path d="M36 72 q-4 22 2 44" stroke="#16A87A" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+            <!-- leaf -->
+            <path d="M37 92 q14 -4 22 8 q-14 4 -22 -8 z" fill="#16A87A" stroke="#0B5C44" stroke-width="2.4"/>
+          </g></g>
+
+          <!-- CUP (bottom-center, big) -->
+          <g transform="translate(56 100)"><g class="float-c">
+            <!-- steam wiggles above cup -->
+            <path d="M20 -8 q4 -8 -2 -16 q4 -4 0 -10" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".95"/>
+            <path d="M38 -8 q4 -8 -2 -16 q4 -4 0 -10" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".95"/>
+            <path d="M56 -8 q4 -8 -2 -16 q4 -4 0 -10" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".95"/>
+            <!-- handle -->
+            <path d="M76 8 q22 6 0 30" stroke="#0B5C44" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+            <!-- body -->
+            <path d="M4 8 h74 v22 q0 16 -37 16 t-37 -16 V8 Z" fill="#1CB0F6" stroke="#0B5C44" stroke-width="3.5" stroke-linejoin="round"/>
+            <!-- rim -->
+            <ellipse cx="41" cy="8" rx="38" ry="5" fill="#9EE2FF" stroke="#0B5C44" stroke-width="3"/>
+            <!-- coffee surface -->
+            <ellipse cx="41" cy="8" rx="32" ry="3.5" fill="#8B5A3C"/>
+            <!-- side stripe -->
+            <path d="M4 18 h74" stroke="#fff" stroke-width="2" opacity=".55"/>
+            <!-- happy face on cup -->
+            <circle cx="32" cy="26" r="2" fill="#0B5C44"/>
+            <circle cx="50" cy="26" r="2" fill="#0B5C44"/>
+            <path d="M30 32 q11 6 22 0" stroke="#0B5C44" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+          </g></g>
+
+        </svg>
+      </div>
+
+      <div class="cap">
+        <span class="cap-title">Objek Biasa<small>Kucing · Bunga · Buku · Cawan</small></span>
+        <span class="cap-go" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+      </div>
+    </button>
+
+  </div>
+
+  <!-- How to play -->
+  <div class="howto">
+    <div class="howto-title">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFB300"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+      Cara Bermain
+    </div>
+    <div class="howto-grid">
+      <div class="step"><span class="step-n">1</span><span class="step-t">Pilih kategori</span></div>
+      <div class="step"><span class="step-n">2</span><span class="step-t">Dengar arahan suara</span></div>
+      <div class="step"><span class="step-n">3</span><span class="step-t">Sebut jawapan anda dengan kuat!</span></div>
+    </div>
+  </div>
+
+  <div class="hint">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+    Lebih banyak kategori akan datang!
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF1F7A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+  </div>
+
+</div>
+
+<script>
+  document.querySelectorAll('.tile').forEach(tile => {
+    tile.addEventListener('click', (e) => {
+      const mode = tile.dataset.mode;
+      tile.animate(
+        [
+          { transform: 'translateY(0) scale(1)' },
+          { transform: 'translateY(-4px) scale(1.06)' },
+          { transform: 'translateY(0) scale(1)' }
+        ],
+        { duration: 380, easing: 'cubic-bezier(.34,1.56,.64,1)' }
+      );
+      const rect = tile.getBoundingClientRect();
+      const ripple = document.createElement('span');
+      ripple.style.cssText = `
+        position:absolute;left:${e.clientX - rect.left - 10}px;top:${e.clientY - rect.top - 10}px;
+        width:20px;height:20px;border-radius:50%;
+        background:radial-gradient(circle, rgba(255,255,255,.85) 0%, transparent 70%);
+        pointer-events:none;z-index:6;
+      `;
+      tile.appendChild(ripple);
+      ripple.animate(
+        [{ transform: 'scale(1)', opacity: .85 }, { transform: 'scale(30)', opacity: 0 }],
+        { duration: 700, easing: 'ease-out' }
+      ).onfinish = () => ripple.remove();
+      console.log('handleCategory:', mode);
+    });
+  });
+</script>
+</body>
+</html>

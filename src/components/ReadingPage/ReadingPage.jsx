@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import './ReadingPage.css';
 import { readingData } from '../../data/curriculum/readingData';
 import { Volume2, ArrowLeft, Play } from 'lucide-react';
 import { playHoverSound } from '../../utils/soundManager';
@@ -199,10 +200,9 @@ export default function ReadingPage({ onBack, language }) {
 
   // ── Views ─────────────────────────────────────────────────────────────
 
-  // Global Styles with Responsive Design
-  const globalStyles = `
-    @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@600;700;800;900&display=swap');
-
+  // Global Styles — memoised so the template literal is only allocated once.
+  // @import for fonts removed (already preloaded via index.html) to avoid re-parse cost.
+  const globalStyles = useMemo(() => `
     @keyframes floaty { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-6px) rotate(2deg); } }
     @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
     @keyframes nudge { 0%,90%,100% { transform: rotate(-1deg); } 45% { transform: rotate(1deg); } }
@@ -580,7 +580,7 @@ export default function ReadingPage({ onBack, language }) {
         margin: 0 !important;
       }
     }
-  `;
+  `, []);
 
   // View: Level Selection
   if (!selectedLevel) {
@@ -614,7 +614,7 @@ export default function ReadingPage({ onBack, language }) {
         </div>
 
         {/* Main Content - Single Scrollable Container */}
-        <div className="landscape-content" style={{ flex: 1, overflowY: 'auto', padding: 'clamp(0.75rem, 3vw, 1.5rem) clamp(0.5rem, 2vw, 1rem)', width: '100%', boxSizing: 'border-box', maxWidth: '100%' }}>
+        <div className="landscape-content" style={{ flex: 1, overflowY: 'auto', padding: '14px 14px 80px', width: '100%', boxSizing: 'border-box', maxWidth: '100%' }}>
 
           {/* Hero Section */}
           <div className="hero-section">
@@ -641,94 +641,53 @@ export default function ReadingPage({ onBack, language }) {
           </div>
 
           {/* Level Tiles Grid */}
-          <div className="level-grid">
+          <div className="rp-grid">
             {levelData.map((lvl) => {
-              const colorScheme = DESIGN_SYSTEM.levels[lvl.level];
               return (
                 <button
                   key={lvl.level}
-                  className="tile-button"
+                  className={`rp-tile level-${lvl.level}`}
                   onClick={() => handleSelectLevel(lvl.level)}
                   onMouseEnter={playHoverSound}
-                  style={{
-                    position: 'relative',
-                    border: 0,
-                    cursor: 'pointer',
-                    padding: 0,
-                    width: '100%',
-                    fontFamily: 'inherit',
-                    background: `linear-gradient(180deg, ${colorScheme.c1} 0%, ${colorScheme.c2} 55%, ${colorScheme.c3} 100%)`,
-                    boxShadow: `0 0 0 5px ${DESIGN_SYSTEM.bezel[1]}, 0 0 0 8px ${DESIGN_SYSTEM.bezel[2]}, 0 0 0 9px ${DESIGN_SYSTEM.bezel[3]}, 0 12px 0 -2px ${colorScheme.cd}, 0 22px 28px -10px rgba(0,0,0,.22)`,
-                    overflow: 'hidden',
-                    textAlign: 'left',
-                    color: '#fff',
-                  }}
-                  onMouseDown={(e) => { e.currentTarget.style.transform = 'translateY(-4px) rotate(-1deg)'; e.currentTarget.style.boxShadow = `0 0 0 5px ${DESIGN_SYSTEM.bezel[1]}, 0 0 0 8px ${DESIGN_SYSTEM.bezel[2]}, 0 0 0 9px ${DESIGN_SYSTEM.bezel[3]}, 0 16px 0 -2px ${colorScheme.cd}, 0 30px 38px -10px rgba(0,0,0,.28)`; }}
-                  onMouseUp={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 0 0 5px ${DESIGN_SYSTEM.bezel[1]}, 0 0 0 8px ${DESIGN_SYSTEM.bezel[2]}, 0 0 0 9px ${DESIGN_SYSTEM.bezel[3]}, 0 12px 0 -2px ${colorScheme.cd}, 0 22px 28px -10px rgba(0,0,0,.22)`; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 0 0 5px ${DESIGN_SYSTEM.bezel[1]}, 0 0 0 8px ${DESIGN_SYSTEM.bezel[2]}, 0 0 0 9px ${DESIGN_SYSTEM.bezel[3]}, 0 12px 0 -2px ${colorScheme.cd}, 0 22px 28px -10px rgba(0,0,0,.22)`; }}
+                  type="button"
                 >
 
-                  {/* ─────────────────────────────────── */}
-                  {/* 1️⃣ HEADER SECTION (Top Decorations) */}
-                  {/* ─────────────────────────────────── */}
-
-                  {/* Glossy highlight */}
-                  <div style={{ content: '""', position: 'absolute', top: 8, left: 18, right: 18, height: '42%', borderRadius: '28px 28px 80% 80%', background: 'linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,.12) 70%, transparent 100%)', pointerEvents: 'none', zIndex: 1 }} />
-
-                  {/* Number Badge (1, 2, 3, 4) */}
-                  <div style={{ position: 'absolute', top: 14, left: 14, zIndex: 3, width: 56, height: 56, borderRadius: '50%', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 34, color: colorScheme.cd, boxShadow: `0 4px 0 rgba(0,0,0,.18), 0 0 0 4px rgba(255,255,255,.4)` }}>
-                    {lvl.icon}
-                  </div>
-
-                  {/* Corner Star (Spinning Animation) */}
-                  <svg style={{ position: 'absolute', top: 10, right: 10, zIndex: 3, transform: 'rotate(12deg)', animation: 'spin 6s linear infinite', opacity: 0.95 }} width="44" height="44" viewBox="0 0 24 24" fill="#FFE066">
+                  {/* Spinning star badge (top-right) */}
+                  <svg className="rp-badge-corner" width="40" height="40" viewBox="0 0 24 24" fill="#FFE066">
                     <path d="M12 2l2.6 6.4L21 9l-5 4.4L17.4 20 12 16.7 6.6 20 8 13.4 3 9l6.4-.6L12 2z"/>
                   </svg>
 
-                  {/* ─────────────────────────────────── */}
-                  {/* 2️⃣ BODY SECTION (Illustration) */}
-                  {/* ─────────────────────────────────── */}
+                  {/* Hover sparkles */}
+                  <span className="rp-spark s1" style={{ top: '24%', left: '14%' }}>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="#FFF">
+                      <path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/>
+                    </svg>
+                  </span>
+                  <span className="rp-spark s2" style={{ top: '30%', right: '14%' }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff">
+                      <circle cx="12" cy="12" r="10"/>
+                    </svg>
+                  </span>
+                  <span className="rp-spark s3" style={{ bottom: '38%', right: '14%' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,.7)">
+                      <circle cx="12" cy="12" r="10"/>
+                    </svg>
+                  </span>
 
-                  {/* Tile Illustration Container */}
-                  <div style={{ position: 'absolute', top: 14, left: 0, right: 0, bottom: 130, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2, minHeight: '140px' }}>
-                    {getTileIllustration(lvl.level)}
-                  </div>
+                  {/* SVG illustration */}
+                  <div className="rp-illo">{getTileIllustration(lvl.level)}</div>
 
-                  {/* ─────────────────────────────────── */}
-                  {/* 3️⃣ FOOTER SECTION (Bottom Plate) */}
-                  {/* ─────────────────────────────────── */}
-
-                  {/* Bottom Plate Container */}
-                  <div style={{ position: 'absolute', bottom: 14, left: 14, right: 14, background: '#fff', borderRadius: 22, padding: '14px 16px 12px', boxShadow: '0 4px 0 rgba(0,0,0,.08)', zIndex: 3 }}>
-
-                    {/* Title with Tag */}
-                    <div className="plate-title">
-                      {lvl.title}
-                      <span className="plate-tag" style={{ background: colorScheme.c3, boxShadow: `0 2px 0 ${colorScheme.cd}` }}>
-                        {lvl.tag}
-                      </span>
+                  {/* Bottom white plate */}
+                  <div className="rp-plate">
+                    <div className="rp-plate-content">
+                      <div className="rp-plate-title">{lvl.title}</div>
+                      <div className="rp-plate-desc">{lvl.desc}</div>
                     </div>
-
-                    {/* Description Text */}
-                    <div className="plate-desc">
-                      {lvl.desc}
-                    </div>
-
-                    {/* Stars & Play Button Row */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
-                      {/* Star Rating (1 filled, 2 empty) */}
-                      <div style={{ display: 'flex', gap: 2 }}>
-                        {[0, 0, 0].map((_, i) => (
-                          <svg key={i} width="18" height="18" viewBox="0 0 24 24" fill={i === 0 ? '#F4B400' : '#E5E0D2'}>
-                            <path d="M12 2.6 14.7 8.4l6.3.6-4.7 4.3 1.4 6.2L12 16.7l-5.7 2.8 1.4-6.2L3 9l6.3-.6L12 2.6Z"/>
-                          </svg>
-                        ))}
-                      </div>
-
-                      {/* Play Button */}
-                      <div style={{ width: 38, height: 38, borderRadius: '50%', background: `radial-gradient(circle at 50% 30%, ${colorScheme.c1} 0%, ${colorScheme.c2} 55%, ${colorScheme.c3} 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 3px 0 ${colorScheme.cd}, 0 0 0 2px rgba(255,255,255,.7), 0 6px 10px -4px rgba(0,0,0,.25)`, position: 'relative' }}>
-                        <div style={{ content: '""', position: 'absolute', top: 4, left: 7, right: 7, height: 10, borderRadius: '50%', background: 'radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.9), transparent 70%)' }} />
-                        <Play size={18} fill="#fff" color="#fff" style={{ position: 'relative', zIndex: 2, filter: `drop-shadow(0 1px 0 ${colorScheme.cd})` }} />
+                    <div className="rp-plate-row">
+                      <div className="rp-go">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff">
+                          <path d="M8 5.5v13a.6.6 0 0 0 .9.5l11.5-6.5a.6.6 0 0 0 0-1L8.9 5a.6.6 0 0 0-.9.5Z"/>
+                        </svg>
                       </div>
                     </div>
                   </div>

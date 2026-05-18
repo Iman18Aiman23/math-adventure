@@ -101,9 +101,8 @@ body {
   color: var(--text-primary);
   height: 100%;
   overflow: hidden;
-  background: #E8E8E8;
+  background: var(--bg-body);
   display: flex;
-  justify-content: center;
   align-items: stretch;
 }
 
@@ -111,13 +110,12 @@ body {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 480px;
+  max-width: 100%;
   height: 100%;
-  margin: 0 auto;
+  margin: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 0 40px rgba(0,0,0,0.15);
   background: var(--bg-body);
 }
 
