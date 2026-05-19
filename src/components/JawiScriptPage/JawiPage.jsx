@@ -9,6 +9,7 @@ import JawiSyllablesLearningPage from './JawiSyllablesLearningPage';
 import Jawi100WordsGame from './Jawi100WordsGame';
 import JawiShortStoriesPage from './JawiShortStoriesPage';
 import AppHeader from '../AppHeader';
+import { QuranIcon } from '../icons/GameIcons';
 
 // ── Tile SVG illustrations ───────────────────────────────────────────────────
 
@@ -19,7 +20,7 @@ const AlphabetIllo = () => (
             <g transform="translate(6 26) rotate(-10 35 35)">
                 <rect width="70" height="70" rx="14" fill="#fff" stroke="#5B2A8A" strokeWidth="3" />
                 <rect x="6" y="6" width="58" height="12" rx="6" fill="rgba(157,78,221,.25)" />
-                <text x="35" y="46" textAnchor="middle" fontFamily="Amiri,serif" fontWeight="700" fontSize="44" fill="#5B2A8A">ا</text>
+                <text x="35" y="46" textAnchor="middle" fontFamily="Amiri,serif" fontWeight="700" fontSize="44" fill="#5B2A8A">ت</text>
             </g>
         </g>
         <g className="float-b">
@@ -33,7 +34,7 @@ const AlphabetIllo = () => (
             <g transform="translate(124 30) rotate(-6 34 34)">
                 <rect width="68" height="68" rx="14" fill="#FF1F7A" stroke="#5B2A8A" strokeWidth="3" />
                 <rect x="6" y="6" width="56" height="12" rx="6" fill="rgba(255,255,255,.45)" />
-                <text x="34" y="44" textAnchor="middle" fontFamily="Amiri,serif" fontWeight="700" fontSize="42" fill="#fff">ت</text>
+                <text x="34" y="44" textAnchor="middle" fontFamily="Amiri,serif" fontWeight="700" fontSize="42" fill="#fff">ا</text>
             </g>
         </g>
     </svg>
@@ -105,23 +106,21 @@ const SpellingIllo = () => (
         <g className="wobble">
             <rect x="16" y="60" width="168" height="80" rx="16" fill="#fff" stroke="#005B66" strokeWidth="3" />
             <rect x="26" y="70" width="26" height="22" rx="6" fill="#C7F4F9" stroke="#005B66" strokeWidth="2" />
-            <text x="39" y="82" textAnchor="middle" fontFamily="Amiri,serif" fontSize="16" fontWeight="700" fill="#005B66">ا</text>
+            <text x="39" y="86" textAnchor="middle" fontFamily="Amiri,serif" fontSize="16" fontWeight="700" fill="#005B66">ث</text>
             <rect x="56" y="70" width="26" height="22" rx="6" fill="#FFD60A" stroke="#005B66" strokeWidth="2" />
-            <text x="69" y="82" textAnchor="middle" fontFamily="Amiri,serif" fontSize="16" fontWeight="700" fill="#005B66">ب</text>
+            <text x="69" y="86" textAnchor="middle" fontFamily="Amiri,serif" fontSize="16" fontWeight="700" fill="#005B66">ت</text>
             <rect x="86" y="70" width="26" height="22" rx="6" fill="#C7F4F9" stroke="#005B66" strokeWidth="2" />
-            <text x="99" y="82" textAnchor="middle" fontFamily="Amiri,serif" fontSize="16" fontWeight="700" fill="#005B66">ت</text>
+            <text x="99" y="84" textAnchor="middle" fontFamily="Amiri,serif" fontSize="16" fontWeight="700" fill="#005B66">ب</text>
             <rect x="116" y="70" width="26" height="22" rx="6" fill="#C7F4F9" stroke="#005B66" strokeWidth="2" />
-            <text x="129" y="82" textAnchor="middle" fontFamily="Amiri,serif" fontSize="16" fontWeight="700" fill="#005B66">ث</text>
-            <rect x="146" y="70" width="26" height="22" rx="6" fill="#C7F4F9" stroke="#005B66" strokeWidth="2" />
-            <text x="159" y="82" textAnchor="middle" fontFamily="Amiri,serif" fontSize="16" fontWeight="700" fill="#005B66">ج</text>
+            <text x="129" y="86" textAnchor="middle" fontFamily="Amiri,serif" fontSize="16" fontWeight="700" fill="#005B66">ا</text>
             <rect x="36" y="98" width="26" height="22" rx="6" fill="#C7F4F9" stroke="#005B66" strokeWidth="2" />
-            <text x="49" y="110" textAnchor="middle" fontFamily="Amiri,serif" fontSize="16" fontWeight="700" fill="#005B66">ح</text>
+            <text x="49" y="114" textAnchor="middle" fontFamily="Amiri,serif" fontSize="16" fontWeight="700" fill="#005B66">ذ</text>
             <rect x="66" y="98" width="26" height="22" rx="6" fill="#C7F4F9" stroke="#005B66" strokeWidth="2" />
-            <text x="79" y="110" textAnchor="middle" fontFamily="Amiri,serif" fontSize="16" fontWeight="700" fill="#005B66">خ</text>
+            <text x="79" y="114" textAnchor="middle" fontFamily="Amiri,serif" fontSize="16" fontWeight="700" fill="#005B66">د</text>
             <rect x="96" y="98" width="26" height="22" rx="6" fill="#FF1F7A" stroke="#005B66" strokeWidth="2" />
-            <text x="109" y="110" textAnchor="middle" fontFamily="Amiri,serif" fontSize="16" fontWeight="700" fill="#fff">د</text>
+            <text x="109" y="108" textAnchor="middle" fontFamily="Amiri,serif" fontSize="16" fontWeight="700" fill="#fff">خ</text>
             <rect x="126" y="98" width="26" height="22" rx="6" fill="#C7F4F9" stroke="#005B66" strokeWidth="2" />
-            <text x="139" y="110" textAnchor="middle" fontFamily="Amiri,serif" fontSize="16" fontWeight="700" fill="#005B66">ذ</text>
+            <text x="139" y="108" textAnchor="middle" fontFamily="Amiri,serif" fontSize="16" fontWeight="700" fill="#005B66">ح</text>
             <rect x="58" y="124" width="84" height="12" rx="5" fill="#C7F4F9" stroke="#005B66" strokeWidth="2" />
         </g>
     </svg>
@@ -239,27 +238,12 @@ export default function JawiPage({ onBack, onHome, language, onGameStart, onGame
             <div style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
                 <div className="jw-body" style={{ minHeight: '100%' }}>
 
-                    {/* Floating background decorations — span instead of i */}
-                    <div className="jw-bg-deco" aria-hidden="true">
-                        <span style={{ top: '9%',   left:  '5%' }}><svg width="34" height="34" viewBox="0 0 24 24" fill="#9D4EDD" opacity=".55"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg></span>
-                        <span style={{ top: '18%',  right: '7%' }}><svg width="22" height="22" viewBox="0 0 24 24" fill="#FFD60A" opacity=".7"><circle cx="12" cy="12" r="10"/></svg></span>
-                        <span style={{ top: '42%',  left:  '3%' }}><svg width="20" height="20" viewBox="0 0 24 24" fill="#00B8C9" opacity=".55"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></span>
-                        <span style={{ bottom: '18%', left: '6%' }}><svg width="28" height="28" viewBox="0 0 24 24" fill="#FF1F7A" opacity=".55"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg></span>
-                        <span style={{ bottom: '24%', right:'5%' }}><svg width="26" height="26" viewBox="0 0 24 24" fill="#FF9500" opacity=".55"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg></span>
-                        <span style={{ top: '60%',  right: '4%' }}><svg width="18" height="18" viewBox="0 0 24 24" fill="#D946EF" opacity=".55"><circle cx="12" cy="12" r="10"/></svg></span>
-                    </div>
-
                     <div className="jw-shell">
 
                         {/* Hero */}
                         <section className="jw-hero">
                             <div className="jw-hero-emoji-wrap">
-                                <span className="jw-hero-emoji" role="img" aria-label="open book">📖</span>
-                                <span className="jw-hero-stars" aria-hidden="true">
-                                    <span className="s1"><svg viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg></span>
-                                    <span className="s2"><svg viewBox="0 0 24 24" fill="#FF1F7A"><circle cx="12" cy="12" r="10"/></svg></span>
-                                    <span className="s3"><svg viewBox="0 0 24 24" fill="#9D4EDD"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg></span>
-                                </span>
+                                <span className="jw-hero-emoji" role="img" aria-label="Quran"><QuranIcon size={96} /></span>
                             </div>
                             <p className="jw-hero-sub">
                                 {t.subtitle}

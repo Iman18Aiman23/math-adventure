@@ -22,15 +22,6 @@
         #FFFDF8;
 }
 
-/* ── Background floating decorations ── */
-.jw-bg-deco { position: absolute; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; }
-.jw-bg-deco span { position: absolute; display: block; animation: jw-floaty 7s ease-in-out infinite; }
-.jw-bg-deco span:nth-child(odd) { animation-duration: 9s; }
-@keyframes jw-floaty {
-    0%,100% { transform: translateY(0) rotate(0deg); }
-    50%     { transform: translateY(-14px) rotate(8deg); }
-}
-
 /* ── Shell ── */
 .jw-shell {
     max-width: 980px;
@@ -66,15 +57,6 @@
     0%,100% { opacity:.55; transform:translate(-50%,-50%) scale(1); }
     50%     { opacity:1;   transform:translate(-50%,-50%) scale(1.18); }
 }
-
-/* ── Orbiting hero stars ── */
-.jw-hero-stars { position: absolute; inset: 0; pointer-events: none; }
-.jw-hero-stars span { position: absolute; left: 50%; top: 35px; width: 18px; height: 18px; transform-origin: 0 60px; }
-.jw-hero-stars svg { display: block; width: 100%; height: 100%; }
-.jw-hero-stars .s1 { animation: jw-orbit 9s linear infinite; }
-.jw-hero-stars .s2 { animation: jw-orbit 9s linear infinite; animation-delay: -3s; }
-.jw-hero-stars .s3 { animation: jw-orbit 9s linear infinite; animation-delay: -6s; }
-@keyframes jw-orbit { from { transform: rotate(0); } to { transform: rotate(360deg); } }
 
 .jw-hero-sub {
     font-family: 'Fredoka','Nunito',sans-serif;

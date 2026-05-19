@@ -8,6 +8,8 @@ import { useGameStateContext } from '../../App';
 import { getGameData } from '../../utils/gameStatsManager';
 import KVLearningPage from './KVLearningPage';
 import KVKLearningPage from './KVKLearningPage';
+import AppHeader from '../AppHeader';
+import { OpenBookIcon } from '../icons/GameIcons';
 
 // ── Design System ────────────────────────────────────────────────────────────
 const DESIGN_SYSTEM = {
@@ -88,7 +90,7 @@ const getTileIllustration = (level) => {
       return (
         <div className="tile-illustration">
           {/* Book illustration */}
-          <div style={{ animation: 'bob 2.2s ease-in-out infinite', width: '120px', height: '90px', background: 'linear-gradient(to right, #FFF 50%, #EDD9FF 50%)', border: '3px solid #6E3B85', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ animation: 'bob 2.2s ease-in-out infinite', width: '100%', height: '100%', background: 'linear-gradient(to right, #FFF 50%, #EDD9FF 50%)', border: '3px solid #6E3B85', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', left: '50%', top: '12px', bottom: '12px', width: '2px', background: '#6E3B85' }} />
             <div style={{ width: '40%', display: 'flex', flexDirection: 'column', gap: '6px', paddingLeft: '8px' }}>
               <div style={{ height: '3px', background: '#CE82FF', borderRadius: '2px', width: '80%' }} />
@@ -107,7 +109,7 @@ const getTileIllustration = (level) => {
       return (
         <div className="tile-illustration">
           {/* Scroll illustration */}
-          <div style={{ animation: 'bob 2.2s ease-in-out infinite', width: '120px', height: '90px', background: '#FFF', border: '3px solid #2E6B00', borderRadius: '10px', display: 'flex', flexDirection: 'column', padding: '12px', gap: '6px', justifyContent: 'center' }}>
+          <div style={{ animation: 'bob 2.2s ease-in-out infinite', width: '100%', height: '100%', background: '#FFF', border: '3px solid #2E6B00', borderRadius: '10px', display: 'flex', flexDirection: 'column', padding: '10px', gap: '6px', justifyContent: 'center' }}>
             <div style={{ height: '2px', background: '#58CC02', borderRadius: '1px', width: '90%' }} />
             <div style={{ height: '2px', background: '#58CC02', borderRadius: '1px', width: '70%' }} />
             <div style={{ height: '2px', background: '#58CC02', borderRadius: '1px', width: '85%' }} />
@@ -130,6 +132,8 @@ export default function ReadingPage({ onBack, language }) {
   const [displayHearts, setDisplayHearts] = useState(3);
   const [displayGems, setDisplayGems] = useState(0);
   const [displayStars, setDisplayStars] = useState(0);
+
+  const gameState = useGameStateContext();
 
   // Load game stats
   useEffect(() => {
@@ -213,294 +217,30 @@ export default function ReadingPage({ onBack, language }) {
 
     * { box-sizing: border-box; }
 
-    /* Responsive Grid Layout */
-    .level-grid {
-      display: grid;
-      gap: 24px;
-      margin-top: 32px;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    /* Mobile: 1 column */
-    @media (max-width: 520px) {
-      .level-grid {
-        grid-template-columns: 1fr;
-        row-gap: 28px;
-        column-gap: 20px;
-        margin-top: 40px;
-        padding: 0 16px;
-      }
-    }
-
-    /* Tablet: 2 columns */
-    @media (min-width: 521px) and (max-width: 1100px) {
-      .level-grid {
-        grid-template-columns: repeat(2, 1fr);
-        row-gap: 32px;
-        column-gap: 32px;
-        margin-top: 24px;
-        padding: 0 12px;
-      }
-    }
-
-    /* Desktop: 4 columns */
-    @media (min-width: 1101px) {
-      .level-grid {
-        grid-template-columns: repeat(4, 1fr);
-        row-gap: 28px;
-        column-gap: 24px;
-        margin-top: 32px;
-        padding: 0 20px;
-      }
-    }
-
-    /* Very small phones */
-    @media (max-width: 360px) {
-      .level-grid {
-        row-gap: 24px;
-        column-gap: 16px;
-        padding: 0 8px;
-      }
-    }
-
-    /* Responsive top bar */
-    .top-bar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 6px 4px 18px;
-      flex-wrap: wrap;
-    }
-
-    .top-bar > .spacer {
-      flex: 1;
-      min-width: 12px;
-    }
-
-    .stat-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-family: 'Baloo 2', sans-serif;
-      font-weight: 800;
-      font-size: 14px;
-      padding: 6px 4px;
-      white-space: nowrap;
-    }
-
-    .stat-label {
-      color: #6B7280;
-      font-weight: 700;
-    }
-
-    @media (max-width: 768px) {
-      .stat-item {
-        font-size: 12px;
-      }
-      .stat-label {
-        display: none;
-      }
-    }
-
-    /* Responsive hero */
-    .hero-section {
-      text-align: center;
-      padding: 10px 12px 22px;
-    }
-
-    .hero-title {
-      font-family: 'Baloo 2', sans-serif;
-      font-weight: 800;
-      font-size: 40px;
-      letter-spacing: -0.01em;
-      margin: 0 0 8px;
-      color: #111827;
-      text-shadow: 0 2px 0 #fff, 0 3px 0 rgba(0,0,0,.04);
-    }
-
-    .hero-subtitle {
-      margin: 0 auto;
-      max-width: 680px;
-      color: #6B7280;
-      font-weight: 700;
-      font-size: 15px;
-      line-height: 1.5;
-    }
-
-    @media (max-width: 768px) {
-      .hero-title {
-        font-size: 32px;
-      }
-      .hero-subtitle {
-        font-size: 14px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .hero-title {
-        font-size: 24px;
-        margin: 0 0 6px;
-      }
-      .hero-subtitle {
-        font-size: 12px;
-      }
-    }
-
-    /* Responsive Tiles */
-    .tile-button {
-      aspect-ratio: 1 / 1.18;
-      border-radius: 32px;
-      transition: transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .18s ease;
-    }
-
-    @media (max-width: 768px) {
-      .tile-button {
-        border-radius: 24px;
-        aspect-ratio: 1 / 1.15;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .tile-button {
-        border-radius: 20px;
-        aspect-ratio: 1 / 1.12;
-      }
-    }
-
-    /* Responsive Text in Tiles */
-    .plate-title {
-      font-family: 'Baloo 2', sans-serif;
-      font-weight: 800;
-      font-size: 20px;
-      color: #111827;
-      line-height: 1.05;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .plate-desc {
-      margin-top: 4px;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 700;
-      font-size: 12px;
-      color: #6B7280;
-      line-height: 1.35;
-    }
-
-    .plate-tag {
-      display: inline-block;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 800;
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      color: #fff;
-      padding: 3px 8px;
-      border-radius: 999px;
-    }
-
-    @media (max-width: 768px) {
-      .plate-title {
-        font-size: 18px;
-      }
-      .plate-desc {
-        font-size: 11px;
-      }
-      .plate-tag {
-        font-size: 9px;
-        padding: 2px 6px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .plate-title {
-        font-size: 16px;
-      }
-      .plate-desc {
-        font-size: 10px;
-        margin-top: 2px;
-      }
-      .plate-tag {
-        font-size: 8px;
-        padding: 2px 5px;
-      }
-    }
-
-    /* Responsive Tile Illustrations */
+    /* Tile illustration container (sized to fit inside .rp-illo band) */
     .tile-illustration {
-      width: 140px;
-      height: 120px;
+      width: 110px;
+      height: 90px;
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 560px) {
       .tile-illustration {
-        width: 180px;
-        height: 160px;
-      }
-    }
-
-    @media (max-width: 520px) {
-      .tile-illustration {
-        width: 220px;
-        height: 200px;
-      }
-    }
-
-    @media (max-width: 360px) {
-      .tile-illustration {
-        width: 200px;
-        height: 180px;
-      }
-    }
-
-    /* Responsive Illustration Blocks (Ba, Ca, Ma, kan) */
-    .tile-block-lg {
-      width: 55px;
-      height: 55px;
-    }
-
-    .tile-block-md {
-      width: 50px;
-      height: 50px;
-    }
-
-    @media (max-width: 768px) {
-      .tile-block-lg {
-        width: 80px;
-        height: 80px;
-      }
-      .tile-block-md {
-        width: 80px;
+        width: 95px;
         height: 80px;
       }
     }
 
-    @media (max-width: 520px) {
-      .tile-block-lg {
-        width: 90px;
-        height: 90px;
-      }
-      .tile-block-md {
-        width: 90px;
-        height: 90px;
-      }
-    }
+    /* Illustration blocks (Ba, Ca, Ma, kan) */
+    .tile-block-lg { width: 45px; height: 45px; }
+    .tile-block-md { width: 42px; height: 42px; }
 
-    @media (max-width: 360px) {
-      .tile-block-lg {
-        width: 85px;
-        height: 85px;
-      }
-      .tile-block-md {
-        width: 85px;
-        height: 85px;
-      }
+    @media (max-width: 560px) {
+      .tile-block-lg { width: 38px; height: 38px; }
+      .tile-block-md { width: 36px; height: 36px; }
     }
 
     /* Responsive Flashcard */
@@ -585,115 +325,87 @@ export default function ReadingPage({ onBack, language }) {
   // View: Level Selection
   if (!selectedLevel) {
     const levelData = [
-      { level: 1, title: 'Tahap 1', tag: 'KV', desc: 'Sebutan ringkas (Contoh: Ba · Ca)', icon: '1' },
-      { level: 2, title: 'Tahap 2', tag: 'KVK', desc: 'Perkataan tertutup (Contoh: Ma · kan)', icon: '2' },
-      { level: 3, title: 'Tahap 3', tag: 'AYAT PENDEK', desc: 'Gabungan perkataan (Buku Baru)', icon: '3' },
-      { level: 4, title: 'Tahap 4', tag: 'AYAT PANJANG', desc: 'Membaca ayat penuh berserta makna', icon: '4' },
+      { level: 1, num: 1, capTitle: language === 'bm' ? 'Tahap 1' : 'Level 1' },
+      { level: 2, num: 2, capTitle: language === 'bm' ? 'Tahap 2' : 'Level 2' },
+      { level: 3, num: 3, capTitle: language === 'bm' ? 'Tahap 3' : 'Level 3' },
+      { level: 4, num: 4, capTitle: language === 'bm' ? 'Tahap 4' : 'Level 4' },
     ];
 
     return (
-      <div className="reading-page-wrapper" style={{ background: DESIGN_SYSTEM.colors.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 2, width: '100%', boxSizing: 'border-box' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
         <style>{globalStyles}</style>
 
-        {/* Back Button - Top Left */}
-        <button
-          onClick={onBack}
-          style={{ position: 'absolute', top: '1rem', left: '1rem', background: '#fff', border: `2px solid ${DESIGN_SYSTEM.colors.hair}`, borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', color: DESIGN_SYSTEM.colors.muted, cursor: 'pointer', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`, transition: 'transform .12s', zIndex: 10 }}
-          onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
-        >
-          <ArrowLeft size={24} />
-        </button>
+        <AppHeader onBack={onBack} gameState={gameState} language={language} />
 
-        {/* Floating Background Decorations */}
-        <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 1, overflow: 'hidden' }}>
-          <svg style={{ position: 'absolute', top: '8%', left: '6%', opacity: 0.5 }} width="34" height="34" viewBox="0 0 34 34" fill="#FF9600"><path d="M17 2l3 11 11 4-11 4-3 11-3-11L3 17l11-4z"/></svg>
-          <svg style={{ position: 'absolute', top: '14%', right: '8%', opacity: 0.5 }} width="22" height="22" viewBox="0 0 24 24" fill="#1CB0F6"><circle cx="12" cy="12" r="10"/></svg>
-          <svg style={{ position: 'absolute', bottom: '18%', left: '4%', opacity: 0.45 }} width="28" height="28" viewBox="0 0 24 24" fill="#CE82FF"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg>
-          <svg style={{ position: 'absolute', bottom: '8%', right: '6%', opacity: 0.5 }} width="30" height="30" viewBox="0 0 24 24" fill="#58CC02"><circle cx="12" cy="12" r="10"/></svg>
-        </div>
+        <div style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
+          <div className="rp-body" style={{ minHeight: '100%' }}>
 
-        {/* Main Content - Single Scrollable Container */}
-        <div className="landscape-content" style={{ flex: 1, overflowY: 'auto', padding: '14px 14px 80px', width: '100%', boxSizing: 'border-box', maxWidth: '100%' }}>
+            <div className="rp-shell">
 
-          {/* Hero Section */}
-          <div className="hero-section">
-            <div style={{ width: 96, height: 96, margin: '0 auto 4px', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'floaty 3.6s ease-in-out infinite' }}>
-              <svg viewBox="0 0 100 100" width="92" height="92" fill="none">
-                <defs>
-                  <linearGradient id="bookL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#FFF0CC"/><stop offset="1" stopColor="#FFD699"/></linearGradient>
-                  <linearGradient id="bookR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#FFC766"/><stop offset="1" stopColor="#FF9600"/></linearGradient>
-                </defs>
-                <ellipse cx="50" cy="88" rx="38" ry="5" fill="rgba(0,0,0,.12)"/>
-                <path d="M10 30c12-6 28-6 38 2v52c-10-8-26-8-38-2V30Z" fill="url(#bookL)" stroke="#8F5300" strokeWidth="2.4" strokeLinejoin="round"/>
-                <path d="M90 30c-12-6-28-6-38 2v52c10-8 26-8 38-2V30Z" fill="url(#bookR)" stroke="#8F5300" strokeWidth="2.4" strokeLinejoin="round"/>
-                <path d="M48 32v52M52 32v52" stroke="#8F5300" strokeWidth="1.6"/>
-                <path d="M18 44h22M18 50h18M18 56h22M18 62h16" stroke="rgba(143,83,0,.45)" strokeWidth="1.8" strokeLinecap="round"/>
-                <path d="M60 44h22M60 50h18M60 56h22M60 62h16" stroke="rgba(255,255,255,.75)" strokeWidth="1.8" strokeLinecap="round"/>
-              </svg>
-            </div>
-            <h1 className="hero-title">
-              {language === 'bm' ? 'Kuasai Seni Membaca' : 'Master Reading'}
-            </h1>
-            <p className="hero-subtitle">
-              {language === 'bm' ? 'Dari suku kata hingga ayat penuh. Mulai dari tahap mudah dan berkembang dengan kepercayaan diri!' : 'From syllables to complete sentences. Start easy and progress with confidence!'}
-            </p>
-          </div>
-
-          {/* Level Tiles Grid */}
-          <div className="rp-grid">
-            {levelData.map((lvl) => {
-              return (
-                <button
-                  key={lvl.level}
-                  className={`rp-tile level-${lvl.level}`}
-                  onClick={() => handleSelectLevel(lvl.level)}
-                  onMouseEnter={playHoverSound}
-                  type="button"
-                >
-
-                  {/* Spinning star badge (top-right) */}
-                  <svg className="rp-badge-corner" width="40" height="40" viewBox="0 0 24 24" fill="#FFE066">
-                    <path d="M12 2l2.6 6.4L21 9l-5 4.4L17.4 20 12 16.7 6.6 20 8 13.4 3 9l6.4-.6L12 2z"/>
-                  </svg>
-
-                  {/* Hover sparkles */}
-                  <span className="rp-spark s1" style={{ top: '24%', left: '14%' }}>
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="#FFF">
-                      <path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/>
-                    </svg>
+              {/* Hero */}
+              <section className="rp-hero">
+                <div className="rp-hero-emoji-wrap">
+                  <span className="rp-hero-emoji" role="img" aria-label="open book"><OpenBookIcon size={96} /></span>
+                </div>
+                <p className="rp-hero-sub">
+                  {language === 'bm' ? 'Dari suku kata hingga ayat penuh. Mulai dari tahap mudah dan berkembang dengan kepercayaan diri!' : 'From syllables to complete sentences. Start easy and progress with confidence!'}
+                  <span aria-hidden="true">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
                   </span>
-                  <span className="rp-spark s2" style={{ top: '30%', right: '14%' }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff">
-                      <circle cx="12" cy="12" r="10"/>
-                    </svg>
-                  </span>
-                  <span className="rp-spark s3" style={{ bottom: '38%', right: '14%' }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,.7)">
-                      <circle cx="12" cy="12" r="10"/>
-                    </svg>
-                  </span>
+                </p>
+              </section>
 
-                  {/* SVG illustration */}
-                  <div className="rp-illo">{getTileIllustration(lvl.level)}</div>
+              {/* Section label */}
+              <div className="rp-section-label">
+                {language === 'bm' ? 'Pilih Tahap' : 'Choose Level'}
+              </div>
 
-                  {/* Bottom white plate */}
-                  <div className="rp-plate">
-                    <div className="rp-plate-content">
-                      <div className="rp-plate-title">{lvl.title}</div>
-                      <div className="rp-plate-desc">{lvl.desc}</div>
+              {/* Level tiles */}
+              <div className="rp-grid">
+                {levelData.map((lvl) => (
+                  <button
+                    key={lvl.level}
+                    className={`rp-tile level-${lvl.level}`}
+                    onClick={() => handleSelectLevel(lvl.level)}
+                    onMouseEnter={playHoverSound}
+                    type="button"
+                  >
+                    <span className="rp-tile-num">{lvl.num}</span>
+
+                    <span className="rp-spark s1" style={{ top:'24%', left:'14%' }}>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg>
+                    </span>
+                    <span className="rp-spark s2" style={{ top:'30%', right:'14%' }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="10"/></svg>
+                    </span>
+                    <span className="rp-spark s3" style={{ bottom:'38%', right:'14%' }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,.7)"><circle cx="12" cy="12" r="10"/></svg>
+                    </span>
+
+                    <div className="rp-illo">
+                      {getTileIllustration(lvl.level)}
                     </div>
-                    <div className="rp-plate-row">
-                      <div className="rp-go">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff">
-                          <path d="M8 5.5v13a.6.6 0 0 0 .9.5l11.5-6.5a.6.6 0 0 0 0-1L8.9 5a.6.6 0 0 0-.9.5Z"/>
+
+                    <div className="rp-cap">
+                      <span className="rp-cap-title">{lvl.capTitle}</span>
+                      <span className="rp-cap-go" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M9 6l6 6-6 6"/>
                         </svg>
-                      </div>
+                      </span>
                     </div>
-                  </div>
-                </button>
-              );
-            })}
+                  </button>
+                ))}
+              </div>
+
+              {/* Hint footer */}
+              <div className="rp-hint">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+                {language === 'bm' ? 'Pilih tahap untuk mula belajar!' : 'Pick a level to start learning!'}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF1F7A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+              </div>
+
+            </div>
           </div>
         </div>
       </div>

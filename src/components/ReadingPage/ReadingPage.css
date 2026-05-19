@@ -1,36 +1,93 @@
-/* ── ReadingPage Level Tiles (standard UI/UX) ── */
+/* ── ReadingPage Level Tiles — mirrors JawiPage UI/UX ── */
 
-/* Grid layout */
-.rp-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  column-gap: 24px;
-  row-gap: 28px;
-  margin-top: 32px;
+/* ── Background ── */
+.rp-body {
+  background:
+    radial-gradient(900px 600px at 12% -10%, #E6F2FF 0%, transparent 60%),
+    radial-gradient(900px 600px at 95% -5%,  #F4E4FF 0%, transparent 55%),
+    radial-gradient(700px 500px at 50% 110%, #FFF1D6 0%, transparent 60%),
+    #FFFDF8;
+}
+
+/* ── Shell ── */
+.rp-shell {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 14px 14px 80px;
+  position: relative;
+  z-index: 2;
   width: 100%;
   box-sizing: border-box;
 }
 
-@media (max-width: 1100px) {
-  .rp-grid { grid-template-columns: repeat(2, 1fr); column-gap: 22px; row-gap: 28px; }
+/* ── Hero ── */
+.rp-hero { text-align: center; padding: 10px 8px 4px; margin-bottom: 6px; position: relative; }
+.rp-hero-emoji-wrap { position: relative; display: flex; justify-content: center; align-items: center; height: 130px; }
+.rp-hero-emoji {
+  font-size: 4.5rem; line-height: 1; display: inline-block;
+  animation: rp-bounce 2.4s cubic-bezier(.34,1.56,.64,1) infinite;
+  position: relative;
+}
+@keyframes rp-bounce {
+  0%,100% { transform: translateY(0) scale(1); }
+  50%     { transform: translateY(-10px) scale(1.04); }
+}
+.rp-hero-emoji::before {
+  content: ""; position: absolute; left: 50%; top: 50%;
+  width: 140px; height: 140px;
+  transform: translate(-50%,-50%);
+  background: radial-gradient(closest-side, rgba(255,214,10,.55), transparent 70%);
+  z-index: -1; border-radius: 50%;
+  animation: rp-pulseGlow 2.4s ease-in-out infinite;
+}
+@keyframes rp-pulseGlow {
+  0%,100% { opacity:.55; transform:translate(-50%,-50%) scale(1); }
+  50%     { opacity:1;   transform:translate(-50%,-50%) scale(1.18); }
 }
 
-@media (max-width: 680px) {
-  .rp-grid { grid-template-columns: 1fr; column-gap: 14px; row-gap: 28px; }
+.rp-hero-sub {
+  font-family: 'Fredoka','Nunito',sans-serif;
+  font-weight: 600; font-size: 1.2rem; color: #374151;
+  margin: 6px auto 0; max-width: 520px; line-height: 1.4;
+  display: flex; align-items: center; gap: 8px; justify-content: center;
 }
 
-/* Tile base */
+/* ── Section label ── */
+.rp-section-label {
+  font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 1rem;
+  color: #6B7280; text-align: center; letter-spacing: .18em; text-transform: uppercase;
+  margin: 18px 0;
+  display: flex; align-items: center; gap: 14px; justify-content: center;
+}
+.rp-section-label::before, .rp-section-label::after {
+  content: ""; height: 3px; width: 60px; border-radius: 999px;
+  background: linear-gradient(90deg, transparent, #FFD60A, #FF1F7A, #9D4EDD, transparent);
+}
+
+/* ── Tile grid ── */
+.rp-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 14px;
+  row-gap: 22px;
+}
+@media (min-width: 760px) { .rp-grid { grid-template-columns: repeat(3, 1fr); column-gap: 22px; row-gap: 28px; } }
+
+/* Center the 4th tile when it lands alone on row 2 (3-col desktop) */
+@media (min-width: 760px) {
+  .rp-tile:nth-child(4):last-child { grid-column: 2; }
+}
+
+/* ── Tile base ── */
 .rp-tile {
   --base:        #FF9600;
   --deep:        #8F5300;
   --base-light:  #FFC066;
-  --base-glow60: rgba(255, 150, 0, 0.6);
-  --base-glow70: rgba(255, 150, 0, 0.7);
   --base-soft:   #FFF0CC;
 
   position: relative; border: 0; padding: 0;
-  aspect-ratio: 1/1.18; width: 100%;
-  border-radius: 30px; cursor: pointer; font-family: inherit; color: #fff; text-align: left;
+  aspect-ratio: 1/1.05; width: 100%;
+  border-radius: 32px; cursor: pointer; font-family: inherit; color: #fff; text-align: left;
   background: linear-gradient(165deg, var(--base-light) 0%, var(--base) 60%, var(--deep) 100%);
   box-shadow:
     inset 0 -8px 0 rgba(0,0,0,.18),
@@ -63,39 +120,9 @@
     0 4px 0 var(--deep);
   transition: transform .12s ease;
 }
-
-/* Color variants by level */
-.rp-tile.level-1 {
-  --base:        #FF9600;
-  --deep:        #8F5300;
-  --base-light:  #FFC066;
-  --base-glow60: rgba(255, 150, 0, 0.6);
-  --base-glow70: rgba(255, 150, 0, 0.7);
-  --base-soft:   #FFF0CC;
-}
-.rp-tile.level-2 {
-  --base:        #1CB0F6;
-  --deep:        #06628A;
-  --base-light:  #77D0FA;
-  --base-glow60: rgba(28, 176, 246, 0.6);
-  --base-glow70: rgba(28, 176, 246, 0.7);
-  --base-soft:   #D0F0FF;
-}
-.rp-tile.level-3 {
-  --base:        #CE82FF;
-  --deep:        #6E3B85;
-  --base-light:  #E5A3FF;
-  --base-glow60: rgba(206, 130, 255, 0.6);
-  --base-glow70: rgba(206, 130, 255, 0.7);
-  --base-soft:   #EDD9FF;
-}
-.rp-tile.level-4 {
-  --base:        #58CC02;
-  --deep:        #2E6B00;
-  --base-light:  #9BE067;
-  --base-glow60: rgba(88, 204, 2, 0.6);
-  --base-glow70: rgba(88, 204, 2, 0.7);
-  --base-soft:   #E6FFD4;
+.rp-tile:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 5px rgba(255,255,255,.6), 0 0 0 8px var(--base), 0 10px 0 var(--deep);
 }
 
 /* Dot pattern + gloss highlight */
@@ -111,85 +138,104 @@
   pointer-events: none; z-index: 1;
 }
 
-/* Spinning star badge */
-.rp-badge-corner {
-  position: absolute; top: 12px; right: 12px; z-index: 5;
-  animation: rp-spin 8s linear infinite; opacity: .95;
+/* ── Color variants by level ── */
+.rp-tile.level-1 {
+  --base:        #FF9600;
+  --deep:        #8F5300;
+  --base-light:  #FFC066;
+  --base-soft:   #FFF0CC;
 }
-@keyframes rp-spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+.rp-tile.level-2 {
+  --base:        #1CB0F6;
+  --deep:        #06628A;
+  --base-light:  #77D0FA;
+  --base-soft:   #D0F0FF;
+}
+.rp-tile.level-3 {
+  --base:        #CE82FF;
+  --deep:        #6E3B85;
+  --base-light:  #E5A3FF;
+  --base-soft:   #EDD9FF;
+}
+.rp-tile.level-4 {
+  --base:        #58CC02;
+  --deep:        #2E6B00;
+  --base-light:  #9BE067;
+  --base-soft:   #E6FFD4;
+}
 
-/* Illustration area */
+/* ── Number badge ── */
+.rp-tile-num {
+  position: absolute; top: 14px; left: 14px; z-index: 5;
+  width: 38px; height: 38px; border-radius: 50%;
+  background: #fff; color: var(--deep);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 18px;
+  box-shadow: 0 3px 0 rgba(0,0,0,.18);
+  transition: transform .3s;
+}
+.rp-tile:hover .rp-tile-num { transform: rotate(-12deg) scale(1.1); }
+
+/* ── Illustration area ── */
 .rp-illo {
   position: absolute; top: 14%; left: 0; right: 0; bottom: 30%;
   display: flex; align-items: center; justify-content: center; z-index: 2;
 }
-.rp-illo > div {
+.rp-illo > div,
+.rp-illo svg {
   transition: transform .45s cubic-bezier(.34,1.56,.64,1);
 }
-.rp-tile:hover .rp-illo > div { transform: scale(1.08) translateY(-4px) rotate(-3deg); }
+.rp-tile:hover .rp-illo > div,
+.rp-tile:hover .rp-illo svg { transform: scale(1.08) translateY(-4px) rotate(-3deg); }
 
-/* Hover sparkles */
+/* ── Hover sparkles ── */
 .rp-spark { position: absolute; z-index: 3; opacity: 0; transition: opacity .3s, transform .5s; pointer-events: none; }
 .rp-tile:hover .rp-spark        { opacity: 1; }
 .rp-tile:hover .rp-spark.s1     { transform: translate(-6px,-8px) scale(1.2) rotate(20deg); }
 .rp-tile:hover .rp-spark.s2     { transform: translate(6px,-6px) scale(1.15) rotate(-15deg); }
 .rp-tile:hover .rp-spark.s3     { transform: translate(0,8px) scale(1.1) rotate(10deg); }
 
-/* Caption strip (white plate) */
-.rp-plate {
+/* ── Caption strip ── */
+.rp-cap {
   position: absolute; bottom: 14px; left: 14px; right: 14px; z-index: 4;
-  background: #fff; border-radius: 22px; padding: 18px 24px;
+  background: #fff; border-radius: 22px; padding: 12px 16px;
   box-shadow: 0 4px 0 rgba(0,0,0,.10);
   display: flex; align-items: center; justify-content: space-between; gap: 8px;
 }
-
-.rp-plate-content {
-  flex: 1; min-width: 0;
-  display: flex; flex-direction: column; gap: 2px;
+.rp-cap-title {
+  font-family: 'Fredoka','Baloo 2',sans-serif; font-weight: 700;
+  font-size: 1.15rem; color: #1A1A2E; line-height: 1;
 }
-
-.rp-plate-title {
-  font-family: 'Baloo 2', sans-serif; font-weight: 800;
-  font-size: 16px; color: #111827; line-height: 1.1;
-}
-
-.rp-plate-desc {
-  font-family: 'Nunito', sans-serif; font-weight: 600;
-  font-size: 11px; color: #6B7280; line-height: 1.2;
-  overflow: hidden; text-overflow: ellipsis;
-  display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
-}
-
-.rp-plate-row {
-  display: flex; align-items: center; gap: 0; flex-shrink: 0;
-}
-
-/* Go button */
-.rp-go {
+.rp-cap-go {
   width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
   background: radial-gradient(circle at 50% 30%, var(--base-soft) 0%, var(--base) 55%, var(--deep) 100%);
   display: flex; align-items: center; justify-content: center; color: #fff;
   box-shadow: 0 3px 0 var(--deep), 0 0 0 2px rgba(255,255,255,.8);
   position: relative; transition: transform .25s;
 }
-.rp-go::before {
+.rp-cap-go::before {
   content: ""; position: absolute; top: 3px; left: 7px; right: 7px; height: 10px;
   border-radius: 50%;
   background: radial-gradient(ellipse at 50% 0, rgba(255,255,255,.9), transparent 70%);
 }
-.rp-go svg {
-  position: relative; z-index: 2; filter: drop-shadow(0 1px 0 var(--deep));
-}
-.rp-tile:hover .rp-go { transform: translateX(4px) rotate(8deg); }
+.rp-tile:hover .rp-cap-go { transform: translateX(4px) rotate(8deg); }
 
-/* Responsive */
+/* ── Hint footer ── */
+.rp-hint {
+  margin-top: 26px; font-family: 'Nunito'; font-style: italic; font-size: .95rem;
+  color: #6B7280; text-align: center;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+
+/* ── Responsive ── */
 @media (max-width: 560px) {
-  .rp-grid { column-gap: 14px; row-gap: 28px; }
-  .rp-plate { border-radius: 18px; padding: 15px 18px; }
-  .rp-plate-title { font-size: 14px; }
-  .rp-plate-desc { font-size: 10px; }
-  .rp-go { width: 32px; height: 32px; }
-  .rp-illo { top: 16%; bottom: 30%; }
+  .rp-shell     { padding: 10px 10px 80px; }
+  .rp-grid      { column-gap: 10px; row-gap: 18px; }
+  .rp-cap       { border-radius: 18px; padding: 10px 12px; }
+  .rp-cap-title { font-size: .98rem; }
+  .rp-cap-go    { width: 32px; height: 32px; }
+  .rp-tile-num  { width: 32px; height: 32px; font-size: 15px; }
+  .rp-illo      { top: 16%; bottom: 30%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
