@@ -88,7 +88,7 @@ Each reading level button.
 
 - `padding: 0` — the tile is a positioning context, not a flow container. Every child is absolutely placed.
 - `aspect-ratio: 1/1.05` keeps a near-square shape regardless of column width.
-- `border-radius: 32px`, layered `box-shadow` for the 3D "stacked" look (top highlight, bottom inner shadow, 10px solid drop = "puff" effect).
+- `border-radius: 32px`, clean button without layered shadow effects.
 - Color theme injected via `--base`, `--deep`, etc. — overridden per tile by the `.t-*` classes.
 
 ### Children of `.rp-tile` (all absolutely positioned — no margin used)
@@ -97,7 +97,7 @@ Each reading level button.
 |---|---|---|
 | `.rp-tile-num` ([css:222](ReadingPage.css#L222)) | `top:14px; left:14px` | 38×38 white circle badge (1–4). Mobile: 32×32. |
 | `.rp-spark` ×3 ([css:254](ReadingPage.css#L254)) | inline `top/left/right/bottom` % | Hidden until `:hover`. |
-| `.rp-illo` ([css:234](ReadingPage.css#L234)) | `top:14%; left:0; right:0; bottom:30%` | Reserves the upper-middle band of the tile for the SVG illustration. Mobile: `top:16%`. |
+| `.rp-illo` ([css:234](ReadingPage.css#L234)) | `top:14%; left:0; right:0; bottom:30%` | Reserves the upper-middle band of the tile for the SVG illustration. Mobile: `top:16%; bottom:45%` (increased bottom spacing for mobile to prevent overlap with caption). |
 | `.rp-cap` ([css:261](ReadingPage.css#L261)) | `bottom:14px; left:14px; right:14px` | White caption pill at the bottom. |
 
 ### `.rp-cap` internal spacing

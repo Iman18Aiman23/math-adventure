@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LearnIcon, LeaderboardIcon, ProfileIcon, AchievementIcon, LanguageIcon } from './icons/SidebarIcons';
+import { GradCapIcon, TrophyIcon, MedalIcon, ProfileIcon, LanguageIcon } from './icons/GameIcons';
 import MascotIcon from './icons/MascotIcon';
 import { getGameData } from '../utils/gameStatsManager';
 
@@ -48,10 +48,10 @@ const sidebarLogoStyles = `
 `;
 
 const SIDEBAR_TABS = [
-  { id: 'learn', icon: LearnIcon, label: { bm: 'Kursus', eng: 'Course' } },
-  { id: 'leaderboard', icon: LeaderboardIcon, label: { bm: 'Papan Juara', eng: 'Leaderboard' } },
+  { id: 'learn', icon: GradCapIcon, label: { bm: 'Kursus', eng: 'Course' } },
+  { id: 'leaderboard', icon: TrophyIcon, label: { bm: 'Papan Juara', eng: 'Leaderboard' } },
   { id: 'profile', icon: ProfileIcon, label: { bm: 'Profil', eng: 'Profile' } },
-  { id: 'achievement', icon: AchievementIcon, label: { bm: 'Pencapaian', eng: 'Achievement' } },
+  { id: 'achievement', icon: MedalIcon, label: { bm: 'Pencapaian', eng: 'Achievement' } },
 ];
 
 export default function DesktopSidebar({
@@ -97,6 +97,7 @@ export default function DesktopSidebar({
                   onTabChange(tab.id);
                 }
               }}
+              style={{ gap: '2rem' }}
             >
               <span className="sidebar-item-icon">
                 {React.createElement(tab.icon)}
@@ -109,7 +110,7 @@ export default function DesktopSidebar({
           <div style={{ height: 2, background: 'var(--border-color)', margin: '12px 0', borderRadius: 1 }} />
 
           {/* Language Toggle */}
-          <button className="sidebar-item" onClick={onToggleLanguage}>
+          <button className="sidebar-item" onClick={onToggleLanguage} style={{ gap: '2rem' }}>
             <span className="sidebar-item-icon">
               <LanguageIcon />
             </span>

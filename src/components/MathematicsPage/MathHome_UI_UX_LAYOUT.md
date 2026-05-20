@@ -88,7 +88,7 @@ Each mathematics topic button.
 
 - `padding: 0` — the tile is a positioning context, not a flow container. Every child is absolutely placed.
 - `aspect-ratio: 1/1.05` keeps a near-square shape regardless of column width.
-- `border-radius: 32px`, layered `box-shadow` for the 3D "stacked" look (top highlight, bottom inner shadow, 10px solid drop = "puff" effect).
+- `border-radius: 32px`, clean button without layered shadow effects.
 - Color theme injected via `--base`, `--deep`, etc. — overridden per tile by the `.t-*` classes (`.t-green`, `.t-orange`, `.t-sky`).
 
 ### Children of `.mh-tile` (all absolutely positioned — no margin used)
@@ -97,7 +97,7 @@ Each mathematics topic button.
 |---|---|---|
 | `.mh-tile-num` ([css:222](MathHome.css#L222)) | `top:14px; left:14px` | 38×38 white circle badge (1–3). Mobile: 32×32. |
 | `.mh-spark` ×3 ([css:254](MathHome.css#L254)) | inline `top/left/right/bottom` % | Hidden until `:hover`. |
-| `.mh-illo` ([css:234](MathHome.css#L234)) | `top:14%; left:0; right:0; bottom:30%` | Reserves the upper-middle band of the tile for the SVG illustration. Mobile: `top:16%`. |
+| `.mh-illo` ([css:234](MathHome.css#L234)) | `top:14%; left:0; right:0; bottom:30%` | Reserves the upper-middle band of the tile for the SVG illustration. Mobile: `top:16%; bottom:45%` (increased bottom spacing for mobile to prevent overlap with caption). |
 | `.mh-plate` ([css:261](MathHome.css#L261)) | `bottom:14px; left:14px; right:14px` | White caption pill at the bottom. |
 
 ### `.mh-plate` internal spacing

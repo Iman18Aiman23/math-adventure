@@ -261,7 +261,7 @@ export const CoinIcon = ({ size = 64, className, ...rest }) => {
   );
 };
 
-export const TrophyIcon = ({ size = 64, className, ...rest }) => {
+export const TrophyIcon = React.memo(({ size = 64, className, ...rest }) => {
   const id = cleanId(useId());
   return (
     <svg viewBox="0 0 100 100" width={size} height={size} className={className} {...rest}>
@@ -275,9 +275,9 @@ export const TrophyIcon = ({ size = 64, className, ...rest }) => {
       <rect x="28" y="82" width="44" height="6" rx="2" fill="#8F5300"/>
     </svg>
   );
-};
+});
 
-export const MedalIcon = ({ size = 64, className, ...rest }) => {
+export const MedalIcon = React.memo(({ size = 64, className, ...rest }) => {
   const id = cleanId(useId());
   return (
     <svg viewBox="0 0 100 100" width={size} height={size} className={className} {...rest}>
@@ -289,7 +289,7 @@ export const MedalIcon = ({ size = 64, className, ...rest }) => {
       <text x="50" y="74" textAnchor="middle" fontFamily="'Baloo 2', sans-serif" fontWeight="800" fontSize="30" fill="#8F5300">1</text>
     </svg>
   );
-};
+});
 
 export const CrownIcon = ({ size = 64, className, ...rest }) => {
   const id = cleanId(useId());
@@ -1203,3 +1203,157 @@ export const JawiMatchGameIcon = ({ size = 64, className, ...rest }) => {
     </svg>
   );
 };
+
+// ════════════════════════════════════════════════════════════════════════════
+//  NAVIGATION / MENU ICONS
+// ════════════════════════════════════════════════════════════════════════════
+
+export const ProfileIcon = ({ size = 64, className, ...rest }) => (
+  <svg viewBox="0 0 580 580" width={size} height={size} className={className} {...rest} fill="#000000">
+    <path style={{ fill: '#E89A1A' }} d="M105.938,350.942c14.578-18.889,32.633-34.958,53.203-47.243c8.548-5.106,17.528-9.563,26.875-13.29 c9.177-3.661,18.707-6.619,28.521-8.818c-23.486-21.657-54.275-33.83-86.64-33.83C57.373,247.761,0,305.135,0,375.657 c0,13.649,11.066,24.715,24.715,24.715H78.43c3.192-8.546,6.979-16.801,11.321-24.715 C94.508,366.983,99.929,358.725,105.938,350.942z"/>
+    <path style={{ fill: '#C2FB3B' }} d="M512,375.657c0-70.521-57.373-127.896-127.896-127.896c-32.365,0-63.153,12.173-86.64,33.83 c9.813,2.2,19.343,5.157,28.521,8.818c9.347,3.729,18.325,8.184,26.873,13.29c20.569,12.285,38.624,28.356,53.203,47.243 c6.007,7.784,11.43,16.042,16.187,24.715c4.342,7.914,8.129,16.168,11.321,24.715h53.717C500.934,400.371,512,389.306,512,375.657z"/>
+    <g>
+      <path style={{ fill: '#EFC27B' }} d="M171.712,183.951c-4.821-6.778-8.841-14.157-11.932-22.004c-4.608-11.705-7.171-24.435-7.171-37.758 s2.562-26.053,7.172-37.758c3.091-7.849,7.11-15.228,11.931-22.004c-12.283-9.031-27.433-14.382-43.818-14.382 c-40.883,0-74.144,33.261-74.144,74.146c0,40.883,33.261,74.143,74.144,74.143C144.275,198.331,159.427,192.981,171.712,183.951z"/>
+      <path style={{ fill: '#EFC27B' }} d="M359.389,124.189c0,13.323-2.562,26.051-7.171,37.758c-3.091,7.848-7.111,15.226-11.932,22.004 c12.285,9.031,27.435,14.381,43.818,14.381c40.885,0,74.144-33.261,74.144-74.143c0-40.885-33.26-74.146-74.144-74.146 c-16.383,0-31.534,5.352-43.818,14.382c4.821,6.778,8.84,14.157,11.931,22.004C356.827,98.136,359.389,110.866,359.389,124.189z"/>
+      <path style={{ fill: '#EFC27B' }} d="M152.609,124.189c0,13.323,2.562,26.051,7.171,37.758c3.091,7.848,7.111,15.226,11.932,22.004 c18.754,26.374,49.533,43.628,84.287,43.628c34.756,0,65.534-17.254,84.287-43.628c4.821-6.778,8.841-14.157,11.932-22.004 c4.608-11.705,7.171-24.435,7.171-37.758s-2.562-26.053-7.171-37.758c-3.091-7.849-7.111-15.228-11.931-22.004 C321.533,38.054,290.753,20.8,256.001,20.8s-65.532,17.254-84.287,43.627c-4.821,6.778-8.84,14.157-11.931,22.004 C155.171,98.136,152.609,110.866,152.609,124.189z"/>
+    </g>
+    <path style={{ fill: '#FFA6D2' }} d="M406.061,350.942c-14.578-18.889-32.633-34.958-53.203-47.243 c-8.548-5.106-17.528-9.561-26.873-13.29c-9.176-3.661-18.707-6.619-28.521-8.818c-13.349-2.992-27.224-4.582-41.465-4.582 s-28.112,1.59-41.465,4.582c-9.812,2.2-19.342,5.157-28.521,8.818c-9.347,3.729-18.325,8.186-26.875,13.29 c-20.569,12.285-38.624,28.354-53.203,47.243c-6.007,7.784-11.43,16.042-16.187,24.715c-4.342,7.914-8.13,16.168-11.321,24.715 c-7.695,20.594-11.911,42.87-11.911,66.115c0,13.649,11.066,24.715,24.715,24.715h329.531c13.649,0,24.715-11.066,24.715-24.715 c0-23.245-4.216-45.52-11.909-66.115c-3.193-8.546-6.979-16.801-11.321-24.715C417.491,366.983,412.07,358.725,406.061,350.942z"/>
+    <path style={{ fill: '#FFD78F' }} d="M171.712,64.425c-4.821,6.778-8.84,14.157-11.931,22.004c-4.61,11.705-7.172,24.435-7.172,37.759 c0,13.323,2.562,26.051,7.171,37.758c3.091,7.848,7.111,15.226,11.932,22.004c18.754,26.374,49.533,43.628,84.287,43.628l0,0V20.798 c0,0,0,0-0.002,0C221.245,20.798,190.467,38.053,171.712,64.425z"/>
+    <path style={{ fill: '#E84BA0' }} d="M255.999,277.008c-14.241,0-28.112,1.59-41.465,4.582c-9.812,2.2-19.342,5.157-28.521,8.818 c-9.347,3.729-18.325,8.186-26.873,13.29c-20.569,12.285-38.624,28.354-53.203,47.243c-6.007,7.784-11.43,16.042-16.187,24.715 c-4.342,7.914-8.13,16.168-11.321,24.715c-7.695,20.596-11.911,42.87-11.911,66.115c0,13.649,11.066,24.715,24.715,24.715h164.765 V277.008C256.001,277.008,255.999,277.008,255.999,277.008z"/>
+    <g>
+      <path style={{ fill: '#FFD78F' }} d="M53.75,124.189c0,40.883,33.26,74.143,74.144,74.143V50.043 C87.011,50.043,53.75,83.304,53.75,124.189z"/>
+      <path style={{ fill: '#FFD78F' }} d="M340.287,64.425c4.821,6.778,8.84,14.157,11.931,22.004c4.61,11.705,7.171,24.435,7.171,37.759 c0,13.323-2.562,26.051-7.171,37.758c-3.091,7.848-7.111,15.226-11.932,22.004c11.698,8.599,26,13.85,41.485,14.333V50.09 C366.285,50.573,351.985,55.824,340.287,64.425z"/>
+    </g>
+  </svg>
+);
+
+export const AchievementIcon = ({ size = 64, className, ...rest }) => {
+  const id = cleanId(useId());
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} className={className} {...rest}>
+      <defs>
+        <linearGradient id={`${id}-achBadge`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#FFE066"/><stop offset=".5" stopColor="#FFC107"/><stop offset="1" stopColor="#8F5300"/>
+        </linearGradient>
+        <linearGradient id={`${id}-achRibbonL`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#FF8B95"/><stop offset="1" stopColor="#9D1A40"/>
+        </linearGradient>
+        <linearGradient id={`${id}-achRibbonR`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#FF8B95"/><stop offset="1" stopColor="#9D1A40"/>
+        </linearGradient>
+      </defs>
+      <ellipse cx="50" cy="94" rx="26" ry="4" fill="rgba(0,0,0,.18)"/>
+      <path d="M30 52l-10 38 14-8 6 8 8-22z" fill={`url(#${id}-achRibbonL)`} stroke="#7E0F20" strokeWidth="2.6" strokeLinejoin="round"/>
+      <path d="M70 52l10 38-14-8-6 8-8-22z" fill={`url(#${id}-achRibbonR)`} stroke="#7E0F20" strokeWidth="2.6" strokeLinejoin="round"/>
+      <g>
+        <g transform="translate(50 44)">
+          <g>
+            <rect x="-4" y="-32" width="8" height="10" rx="2" fill={`url(#${id}-achBadge)`} stroke="#8F5300" strokeWidth="2"/>
+            <rect x="-4" y="22" width="8" height="10" rx="2" fill={`url(#${id}-achBadge)`} stroke="#8F5300" strokeWidth="2"/>
+            <rect x="-32" y="-4" width="10" height="8" rx="2" fill={`url(#${id}-achBadge)`} stroke="#8F5300" strokeWidth="2"/>
+            <rect x="22" y="-4" width="10" height="8" rx="2" fill={`url(#${id}-achBadge)`} stroke="#8F5300" strokeWidth="2"/>
+            <g transform="rotate(45)">
+              <rect x="-4" y="-32" width="8" height="10" rx="2" fill={`url(#${id}-achBadge)`} stroke="#8F5300" strokeWidth="2"/>
+              <rect x="-4" y="22" width="8" height="10" rx="2" fill={`url(#${id}-achBadge)`} stroke="#8F5300" strokeWidth="2"/>
+              <rect x="-32" y="-4" width="10" height="8" rx="2" fill={`url(#${id}-achBadge)`} stroke="#8F5300" strokeWidth="2"/>
+              <rect x="22" y="-4" width="10" height="8" rx="2" fill={`url(#${id}-achBadge)`} stroke="#8F5300" strokeWidth="2"/>
+            </g>
+          </g>
+          <circle r="24" fill={`url(#${id}-achBadge)`} stroke="#8F5300" strokeWidth="3"/>
+          <circle r="18" fill="none" stroke="#8F5300" strokeWidth="1.6" strokeDasharray="2 3"/>
+          <path d="M0 -14l3.5 8 8.5 1-6.5 5.5 2 8.5L0 4.5l-7.5 4 2-8.5L-12 -5l8.5-1z" fill="#fff" stroke="#8F5300" strokeWidth="2" strokeLinejoin="round"/>
+        </g>
+      </g>
+    </svg>
+  );
+};
+
+export const CoursesIcon = ({ size = 64, className, ...rest }) => {
+  const id = cleanId(useId());
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} className={className} {...rest}>
+      <defs>
+        <linearGradient id={`${id}-courseB1`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#FF8B95"/><stop offset="1" stopColor="#D32A2A"/></linearGradient>
+        <linearGradient id={`${id}-courseB2`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#9EE2FF"/><stop offset="1" stopColor="#1F6FA0"/></linearGradient>
+        <linearGradient id={`${id}-courseB3`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#B6F08A"/><stop offset="1" stopColor="#3F8F12"/></linearGradient>
+      </defs>
+      <ellipse cx="50" cy="92" rx="32" ry="4" fill="rgba(0,0,0,.18)"/>
+      <rect x="14" y="72" width="72" height="14" rx="3" fill={`url(#${id}-courseB3)`} stroke="#1F4A00" strokeWidth="3"/>
+      <rect x="14" y="74" width="72" height="3" fill="rgba(255,255,255,.35)"/>
+      <rect x="22" y="76" width="14" height="6" rx="1.5" fill="#FFE066" stroke="#1F4A00" strokeWidth="1.4"/>
+      <rect x="18" y="54" width="64" height="16" rx="3" fill={`url(#${id}-courseB2)`} stroke="#0A4D74" strokeWidth="3"/>
+      <rect x="18" y="56" width="64" height="3.5" fill="rgba(255,255,255,.4)"/>
+      <rect x="56" y="57" width="14" height="10" rx="1.5" fill="#FFE066" stroke="#0A4D74" strokeWidth="1.4"/>
+      <rect x="22" y="34" width="56" height="18" rx="3" fill={`url(#${id}-courseB1)`} stroke="#7E0F20" strokeWidth="3"/>
+      <rect x="22" y="36" width="56" height="4" fill="rgba(255,255,255,.4)"/>
+      <rect x="28" y="40" width="18" height="9" rx="1.5" fill="#FFE066" stroke="#7E0F20" strokeWidth="1.4"/>
+      <path d="M50 10L26 20l24 10 24-10z" fill="#1B1D29" stroke="#000" strokeWidth="2.4" strokeLinejoin="round"/>
+      <path d="M36 24v8c0 3 6 6 14 6s14-3 14-6v-8L50 30z" fill="#1B1D29" stroke="#000" strokeWidth="2.4" strokeLinejoin="round"/>
+      <path d="M74 20v12" stroke="#FFC107" strokeWidth="2.4" strokeLinecap="round"/>
+      <circle cx="74" cy="34" r="2.6" fill="#FFC107"/>
+    </svg>
+  );
+};
+
+export const LeaderboardIcon = ({ size = 64, className, ...rest }) => {
+  const id = cleanId(useId());
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} className={className} {...rest}>
+      <defs>
+        <linearGradient id={`${id}-podGold`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#FFE066"/><stop offset=".55" stopColor="#FFC107"/><stop offset="1" stopColor="#8F5300"/></linearGradient>
+        <linearGradient id={`${id}-podSilver`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#F2F4F7"/><stop offset=".55" stopColor="#C8CDD6"/><stop offset="1" stopColor="#6E7682"/></linearGradient>
+        <linearGradient id={`${id}-podBronze`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#F8B98B"/><stop offset=".55" stopColor="#C97A33"/><stop offset="1" stopColor="#6A3A0E"/></linearGradient>
+      </defs>
+      <ellipse cx="50" cy="92" rx="34" ry="4" fill="rgba(0,0,0,.2)"/>
+      <path d="M50 8l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#FFE066" stroke="#8F5300" strokeWidth="2" strokeLinejoin="round"/>
+      <rect x="10" y="50" width="26" height="38" rx="3" fill={`url(#${id}-podSilver)`} stroke="#3E3E46" strokeWidth="3"/>
+      <rect x="10" y="52" width="26" height="4" fill="rgba(255,255,255,.6)"/>
+      <text x="23" y="76" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="16" fill="#3E3E46">2</text>
+      <rect x="36" y="34" width="28" height="54" rx="3" fill={`url(#${id}-podGold)`} stroke="#8F5300" strokeWidth="3"/>
+      <rect x="36" y="36" width="28" height="4" fill="rgba(255,255,255,.65)"/>
+      <text x="50" y="72" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="22" fill="#8F5300">1</text>
+      <rect x="64" y="58" width="26" height="30" rx="3" fill={`url(#${id}-podBronze)`} stroke="#5C3702" strokeWidth="3"/>
+      <rect x="64" y="60" width="26" height="4" fill="rgba(255,255,255,.5)"/>
+      <text x="77" y="80" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="14" fill="#5C3702">3</text>
+    </svg>
+  );
+};
+
+export const LanguageIcon = React.memo(({ size = 64, className, ...rest }) => {
+  const id = cleanId(useId());
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} className={className} {...rest}>
+      <defs>
+        <radialGradient id={`${id}-langGlobe`} cx=".35" cy=".3" r=".85">
+          <stop offset="0" stopColor="#C7F2FF"/><stop offset=".55" stopColor="#3FB7F1"/><stop offset="1" stopColor="#06628A"/>
+        </radialGradient>
+        <linearGradient id={`${id}-langPillBM`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#FF8B95"/><stop offset="1" stopColor="#D32A2A"/>
+        </linearGradient>
+        <linearGradient id={`${id}-langPillEN`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#FFE066"/><stop offset="1" stopColor="#E89A1A"/>
+        </linearGradient>
+      </defs>
+      <ellipse cx="50" cy="92" rx="30" ry="4" fill="rgba(0,0,0,.18)"/>
+      <circle cx="50" cy="48" r="34" fill={`url(#${id}-langGlobe)`} stroke="#06628A" strokeWidth="3"/>
+      <ellipse cx="50" cy="48" rx="34" ry="14" fill="none" stroke="#06628A" strokeWidth="2" opacity=".6"/>
+      <ellipse cx="50" cy="48" rx="14" ry="34" fill="none" stroke="#06628A" strokeWidth="2" opacity=".6"/>
+      <path d="M16 48h68" stroke="#06628A" strokeWidth="2" opacity=".6"/>
+      <path d="M26 28a30 30 0 0 1 18-12" stroke="rgba(255,255,255,.7)" strokeWidth="4" fill="none" strokeLinecap="round"/>
+      <g transform="rotate(-8 30 74)">
+        <rect x="10" y="62" width="36" height="20" rx="10" fill={`url(#${id}-langPillBM)`} stroke="#7E0F20" strokeWidth="2.6"/>
+        <rect x="12" y="64" width="32" height="6" rx="6" fill="rgba(255,255,255,.45)"/>
+        <text x="28" y="77" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="13" fill="#fff" stroke="#7E0F20" strokeWidth=".5">BM</text>
+      </g>
+      <g transform="rotate(8 70 78)">
+        <rect x="54" y="68" width="36" height="20" rx="10" fill={`url(#${id}-langPillEN)`} stroke="#8F5300" strokeWidth="2.6"/>
+        <rect x="56" y="70" width="32" height="6" rx="6" fill="rgba(255,255,255,.55)"/>
+        <text x="72" y="83" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="13" fill="#fff" stroke="#8F5300" strokeWidth=".5">EN</text>
+      </g>
+      <g stroke="#fff" strokeWidth="2.4" strokeLinecap="round" fill="none">
+        <path d="M46 72l4-3-4-3"/>
+        <path d="M54 78l-4 3 4 3"/>
+      </g>
+    </svg>
+  );
+});

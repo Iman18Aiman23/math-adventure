@@ -461,9 +461,9 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
           </div>
         </div>
 
-        {/* YOUR COURSES Header */}
+        {/* SUBJECT Header */}
         <h2 className="section-header">
-          {language === 'bm' ? 'KURSUS ANDA' : 'YOUR COURSES'}
+          {language === 'bm' ? 'SUBJEK' : 'SUBJECT'}
         </h2>
 
         {/* 2x2 Grid with WIDE horizontal cards matching image */}

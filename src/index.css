@@ -279,6 +279,11 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.duo-tab-item:hover .duo-tab-icon {
+  transform: scale(1.5);
 }
 
 .duo-tab-label {
@@ -297,7 +302,7 @@ button {
   padding: 0 1rem;
   height: var(--header-h);
   min-height: var(--header-h);
-  background: var(--bg-white);
+  background: transparent;
   border-bottom: 2px solid var(--border-color);
   flex-shrink: 0;
   z-index: 50;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, useEffect, createContext, useContext, Suspense } from 'react';
 import HomePage from './components/HomePage';
 import BMPage from './components/SpeakingPage/BMPage';
 import JawiPage from './components/JawiScriptPage/JawiPage';
@@ -14,7 +14,7 @@ import ColumnMathGame from './components/MathematicsPage/ColumnMathGame';
 import LevelUpToast from './components/LevelUpToast';
 import WelcomeModal from './components/WelcomeModal';
 import DesktopSidebar from './components/DesktopSidebar';
-import { LearnIcon, LeaderboardIcon, ProfileIcon, AchievementIcon, LanguageIcon } from './components/icons/SidebarIcons';
+import { GradCapIcon, TrophyIcon, ProfileIcon, MedalIcon, LanguageIcon } from './components/icons/GameIcons';
 import MascotIcon from './components/icons/MascotIcon';
 import ReadingPage from './components/ReadingPage/ReadingPage';
 import AgeGroupPage from './components/AgeGroups/AgeGroupPage';
@@ -25,7 +25,7 @@ import SoundMatching from './components/AgeGroup-4-5/SoundMatching';
 import LetterSoundPuzzle from './components/AgeGroup-4-5/LetterSoundPuzzle';
 import PhoneticsSprint from './components/AgeGroup-4-5/PhoneticsSprint';
 import HeartShopModal from './components/HeartShopModal';
-import AchievementPage from './components/AchievementPage';
+const AchievementPage = React.lazy(() => import('./components/AchievementPage'));
 import AssessmentSelector from './pages/AssessmentSelector';
 import AssessmentPage from './pages/AssessmentPage';
 import { getMuted, setMuted, preloadSounds, unlockAudio, playHoverSound } from './utils/soundManager';
@@ -83,10 +83,10 @@ function findMatchingAssessment(achievement) {
 
 // Tab definitions (mobile bottom bar)
 const TABS = [
-  { id: 'learn',       icon: LearnIcon, label: { bm: 'Kursus',   eng: 'Course'   } },
-  { id: 'leaderboard', icon: LeaderboardIcon, label: { bm: 'Ranking',  eng: 'Ranking'  } },
+  { id: 'learn',       icon: GradCapIcon, label: { bm: 'Kursus',   eng: 'Course'   } },
+  { id: 'leaderboard', icon: TrophyIcon, label: { bm: 'Ranking',  eng: 'Ranking'  } },
   { id: 'profile',     icon: ProfileIcon, label: { bm: 'Profil',   eng: 'Profile'  } },
-  { id: 'achievement', icon: AchievementIcon, label: { bm: 'Pencapaian', eng: 'Achievement' } },
+  { id: 'achievement', icon: MedalIcon, label: { bm: 'Pencapaian', eng: 'Achievement' } },
 ];
 
 export default function App() {
@@ -146,12 +146,13 @@ export default function App() {
         return <AssessmentPage assessment={selectedAssessment} onBack={() => setSelectedAssessment(null)} language={language} gameState={gameState} />;
       }
       // Otherwise show AchievementPage with callback to select assessment
-      return <AchievementPage
-        onBack={handleBackToHome}
-        onHome={handleBackToHome}
-        language={language}
-        gameState={gameState}
-        onTakeAssessment={(achievement) => {
+      return <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading achievements...</div>}>
+        <AchievementPage
+          onBack={handleBackToHome}
+          onHome={handleBackToHome}
+          language={language}
+          gameState={gameState}
+          onTakeAssessment={(achievement) => {
           console.log('Taking assessment:', achievement);
           // The achievement from baseAssessments can be used directly as an assessment
           // if it has all required properties (totalQuestions, duration, topic, level, questionType)
@@ -171,7 +172,8 @@ export default function App() {
             }
           }
         }}
-      />;
+        />
+      </Suspense>;
     }
 
     switch (currentSubject) {
@@ -275,16 +277,14 @@ export default function App() {
                     }
                   }}
                 >
-                  <span className="duo-tab-icon">{React.createElement(tab.icon)}</span>
-                  <span className="duo-tab-label">{tab.label[language] || tab.label.bm}</span>
+                  <span className="duo-tab-icon">{React.createElement(tab.icon, { size: 32 })}</span>
                 </button>
               ))}
               <button
                 className="duo-tab-item"
                 onClick={handleToggleLang}
               >
-                <span className="duo-tab-icon"><LanguageIcon /></span>
-                <span className="duo-tab-label">{language === 'bm' ? 'English' : 'BM'}</span>
+                <span className="duo-tab-icon"><LanguageIcon size={24} /></span>
               </button>
             </div>
           </div>
