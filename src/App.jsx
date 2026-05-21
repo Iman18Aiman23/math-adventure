@@ -18,6 +18,11 @@ import { GradCapIcon, TrophyIcon, ProfileIcon, MedalIcon, LanguageIcon } from '.
 import MascotIcon from './components/icons/MascotIcon';
 import ReadingPage from './components/ReadingPage/ReadingPage';
 import AgeGroupPage from './components/AgeGroups/AgeGroupPage';
+import EarlyExplorersHome from './components/AgeGroup-4-5/EarlyExplorersHome';
+import KindergartenScholarsHome from './components/AgeGroup-5-6/KindergartenScholarsHome';
+import Grade1AdventurersHome from './components/AgeGroup-6-7/Grade1AdventurersHome';
+import Grade2DiscoverersHome from './components/AgeGroup-7-8/Grade2DiscoverersHome';
+import Grade3AchieversHome from './components/AgeGroup-8-9/Grade3AchieversHome';
 import AlphabetSafari from './components/AgeGroup-4-5/AlphabetSafari';
 import LetterTrace from './components/AgeGroup-4-5/LetterTrace';
 import PhoneticsPop from './components/AgeGroup-4-5/PhoneticsPop';
@@ -221,14 +226,23 @@ export default function App() {
           return <PhoneticsSprint onBack={() => setCurrentAgeGame(null)} language={language} />;
         }
         if (currentAgeGroup) {
-          return (
-            <AgeGroupPage
-              ageGroupId={currentAgeGroup}
-              onBack={() => setCurrentAgeGroup(null)}
-              onPlayGame={(gameId) => setCurrentAgeGame(gameId)}
-              language={language}
-            />
-          );
+          const ageGroupComponents = {
+            'age-4-5': EarlyExplorersHome,
+            'age-5-6': KindergartenScholarsHome,
+            'age-6-7': Grade1AdventurersHome,
+            'age-7-8': Grade2DiscoverersHome,
+            'age-8-9': Grade3AchieversHome,
+          };
+          const AgeGroupComponent = ageGroupComponents[currentAgeGroup];
+          if (AgeGroupComponent) {
+            return (
+              <AgeGroupComponent
+                onBack={() => setCurrentAgeGroup(null)}
+                onPlayGame={(gameId) => setCurrentAgeGame(gameId)}
+                language={language}
+              />
+            );
+          }
         }
         return <HomePage onSelectSubject={setCurrentSubject} onSelectAgeGroup={setCurrentAgeGroup} language={language} playerName={playerName} gameState={gameState} streak={streak} />;
     }
@@ -256,7 +270,7 @@ export default function App() {
 
         {/* Page Content */}
         <div className="app-content">
-          <div key={viewKey} className="view-container swipe-enter">
+          <div key={viewKey} className="view-container">
             {renderContent()}
           </div>
         </div>

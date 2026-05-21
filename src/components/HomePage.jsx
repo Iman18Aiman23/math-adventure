@@ -689,66 +689,109 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
           {language === 'bm' ? 'KUMPULAN UMUR' : 'AGE GROUPS'}
         </h2>
 
-        {/* AGE GROUPS List - High-Contrast Colorful Style */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingBottom: '2.5rem' }}>
-          {AGE_GROUPS.map((group, i) => (
-            <button
-              key={group.id}
-              className="age-group-card"
-              onClick={() => onSelectAgeGroup && onSelectAgeGroup(group.id)}
-              onMouseEnter={playHoverSound}
-              style={{
-                backgroundColor: group.color,
-                padding: '1.25rem 1.5rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '1.25rem',
-                cursor: 'pointer',
-                textAlign: 'left',
-                width: '100%',
-                outline: 'none',
-                color: '#FFFFFF'
-              }}
-            >
-              <div style={{ flexShrink: 0 }}>
-                {renderAgeIcon(group.id)}
-              </div>
+        {/* Rainbow color palette for age groups */}
+        <style>{`
+          @keyframes rainbowShift {
+            0% { filter: brightness(1); }
+            50% { filter: brightness(1.1); }
+            100% { filter: brightness(1); }
+          }
+          .rainbow-age-group:hover {
+            animation: rainbowShift 0.6s ease-in-out;
+          }
+        `}</style>
 
-              <div style={{ flex: 1 }}>
+        {/* AGE GROUPS List - Rainbow Colors */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingBottom: '2.5rem' }}>
+          {AGE_GROUPS.map((group, i) => {
+            const rainbowColors = [
+              { main: '#FF4757', dark: '#FF3838', light: '#FFE5E5' },     // Red
+              { main: '#FFA502', dark: '#FF8C00', light: '#FFE4CC' },     // Orange
+              { main: '#FFD60A', dark: '#FFC300', light: '#FFF8E5' },     // Yellow
+              { main: '#00BCD4', dark: '#0097A7', light: '#B2EBF2' },     // Cyan
+              { main: '#7C4DFF', dark: '#512DA8', light: '#EDE7F6' },     // Purple
+            ];
+            const colors = rainbowColors[i];
+            return (
+              <button
+                key={group.id}
+                className="age-group-card rainbow-age-group"
+                onClick={() => onSelectAgeGroup && onSelectAgeGroup(group.id)}
+                onMouseEnter={playHoverSound}
+                style={{
+                  background: `linear-gradient(135deg, ${colors.main} 0%, ${colors.dark} 100%)`,
+                  padding: '1.25rem 1.5rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '1.25rem',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  width: '100%',
+                  outline: 'none',
+                  color: '#FFFFFF',
+                  boxShadow: `0 8px 0 ${colors.dark}, inset 0 2px 4px rgba(255,255,255,0.3)`,
+                  border: 'none',
+                  borderRadius: '20px',
+                  transition: 'all 0.25s ease',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+              >
+                {/* Rainbow background shimmer */}
                 <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: `linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%)`,
+                  pointerEvents: 'none',
+                  opacity: 0.3
+                }}></div>
+
+                <div style={{ flexShrink: 0, position: 'relative', zIndex: 1 }}>
+                  {renderAgeIcon(group.id)}
+                </div>
+
+                <div style={{ flex: 1, position: 'relative', zIndex: 1 }}>
+                  <div style={{
+                    fontWeight: 900,
+                    fontSize: '1.2rem',
+                    lineHeight: 1.2,
+                    letterSpacing: '-0.02em',
+                  }}>
+                    {group.title[language] || group.title.bm}
+                  </div>
+                  <div style={{
+                    fontSize: '0.9rem',
+                    fontWeight: 600,
+                    opacity: 0.95,
+                    marginTop: '6px',
+                  }}>
+                    {group.subtitle[language] || group.subtitle.bm}
+                  </div>
+                </div>
+
+                <div style={{
+                  background: 'rgba(255,255,255,0.3)',
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   fontWeight: 900,
                   fontSize: '1.2rem',
-                  lineHeight: 1.2,
-                  letterSpacing: '-0.02em',
+                  transition: 'transform 0.2s, background 0.3s',
+                  position: 'relative',
+                  zIndex: 1,
+                  backdropFilter: 'blur(4px)'
                 }}>
-                  {group.title[language] || group.title.bm}
+                  →
                 </div>
-                <div style={{
-                  fontSize: '0.9rem',
-                  fontWeight: 600,
-                  opacity: 0.95,
-                  marginTop: '6px',
-                }}>
-                  {group.subtitle[language] || group.subtitle.bm}
-                </div>
-              </div>
-
-              <div style={{
-                background: 'rgba(255,255,255,0.25)',
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 900,
-                fontSize: '1.2rem',
-                transition: 'transform 0.2s',
-              }}>
-                →
-              </div>
-            </button>
-          ))}
+              </button>
+            );
+          })}
         </div>
 
       </div>
