@@ -40,7 +40,7 @@ export default function PageLayout({
   const hintClass = `${classPrefix}-hint`;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#ffffff' }}>
       <div style={{ flex: 1, overflowY: 'auto', position: 'relative', background: '#ffffff' }}>
         <div className={bodyClass} style={{ minHeight: '100%' }}>
           <div className={shellClass}>
