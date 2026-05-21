@@ -62,6 +62,7 @@ export default function AppHeader({ onBack, gameState, language, hearts, gems, s
         gap: '0.75rem',
         flexShrink: 0,
         flexWrap: 'wrap',
+        borderBottom: '1px solid #EDE9FE',
       }}>
         {/* Back Button */}
         <button
@@ -104,7 +105,7 @@ export default function AppHeader({ onBack, gameState, language, hearts, gems, s
               padding: '6px 12px',
               fontWeight: 800,
               fontSize: '0.85rem',
-              color: '#FFC800',
+              color: '#FACC15',
               cursor: 'pointer',
               boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`,
               transition: 'transform 0.12s',
@@ -131,7 +132,7 @@ export default function AppHeader({ onBack, gameState, language, hearts, gems, s
               padding: '6px 12px',
               fontWeight: 800,
               fontSize: '0.85rem',
-              color: '#FF4B4B',
+              color: '#F43F5E',
               cursor: 'pointer',
               boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`,
               transition: 'transform 0.12s',
@@ -158,7 +159,7 @@ export default function AppHeader({ onBack, gameState, language, hearts, gems, s
               padding: '6px 12px',
               fontWeight: 800,
               fontSize: '0.85rem',
-              color: '#CE82FF',
+              color: '#7C3AED',
               cursor: 'pointer',
               boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`,
               transition: 'transform 0.12s',

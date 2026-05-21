@@ -57,7 +57,7 @@
 }
 .mh-section-label::before, .mh-section-label::after {
   content: ""; height: 3px; width: 60px; border-radius: 999px;
-  background: linear-gradient(90deg, transparent, #FFD60A, #FF1F7A, #9D4EDD, transparent);
+  background: linear-gradient(90deg, transparent, #FACC15, #F97316, #7C3AED, transparent);
 }
 
 /* ── Tile grid ── */
@@ -127,22 +127,22 @@
 
 /* ── Color variants ── */
 .t-green {
-  --base:        #58CC02;
-  --deep:        #2E6B00;
-  --base-light:  #9BE067;
-  --base-soft:   #E6FFD4;
+  --base:        #10B981;
+  --deep:        #065F46;
+  --base-light:  #6EE7B7;
+  --base-soft:   #D1FAE5;
 }
 .t-orange {
-  --base:        #FF9600;
-  --deep:        #8F5300;
-  --base-light:  #FFC066;
-  --base-soft:   #FFF0CC;
+  --base:        #F97316;
+  --deep:        #9A3412;
+  --base-light:  #FB923C;
+  --base-soft:   #FFF1E6;
 }
 .t-sky {
-  --base:        #1CB0F6;
-  --deep:        #06628A;
-  --base-light:  #77D0FA;
-  --base-soft:   #D0F0FF;
+  --base:        #0D9488;
+  --deep:        #134E4A;
+  --base-light:  #2D9A94;
+  --base-soft:   #E0F9F8;
 }
 
 /* ── Number badge ── */

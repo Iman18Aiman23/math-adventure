@@ -55,33 +55,33 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#F8FAFC', color: '#111827', fontFamily: 'Inter, sans-serif' }}>
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&family=Fredoka:wght@500;600;700&display=swap');
 
         :root {
-            --primary: #4A90E2; 
-            --secondary: #9013FE;
+            --primary: #7C3AED;
+            --secondary: #F97316;
             --surface: #FFFFFF;
-            --text-main: #111827;
+            --text-main: #1F1F2E;
 
-            /* Soft Pink (Reading) */
-            --coral: #EF4444;
-            --coral-light: #FFF0F3;
-            --coral-mid: #FF6B9E;
+            /* Teal (Reading) */
+            --coral: #0D9488;
+            --coral-light: #E0F9F8;
+            --coral-mid: #06B6D4;
 
-            /* Cyan Mint (Speaking) */
-            --teal: #0D9488;
-            --teal-light: #E5F9F6;
-            --teal-mid: #2BBF9F;
+            /* Coral (Speaking) */
+            --teal: #F97316;
+            --teal-light: #FFF1E6;
+            --teal-mid: #FB923C;
 
-            /* Warm Yellow (Jawi) */
-            --gold: #D97706;
-            --gold-light: #FEF3C7;
-            --gold-mid: #FFAA00;
+            /* Gold (Jawi) */
+            --gold: #FACC15;
+            --gold-light: #FFFBEB;
+            --gold-mid: #F59E0B;
 
-            /* Soft Green (Math) */
+            /* Emerald (Math) */
             --green: #10B981;
             --green-light: #ECFDF5;
-            --green-mid: #5ABF77;
+            --green-mid: #6EE7B7;
         }
 
         /* Horizontal Subject Cards */
@@ -289,11 +289,11 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
 
         {/* HERO SECTION - Matching the image */}
         <div className="hero-section" style={{
-          background: 'linear-gradient(130deg, #5A4FCF 30%, #7645D9 70%)',
+          background: 'linear-gradient(135deg, #7C3AED 0%, #0D9488 100%)',
           borderRadius: '24px',
           padding: '2.5rem 2rem 1.5rem 2rem',
           marginBottom: '3rem',
-          boxShadow: '0 20px 40px rgba(90, 79, 207, 0.25), inset 0 2px 6px rgba(255, 255, 255, 0.2)',
+          boxShadow: '0 20px 40px rgba(124, 58, 237, 0.25), inset 0 2px 6px rgba(255, 255, 255, 0.2)',
           color: '#FFFFFF',
           position: 'relative',
           overflow: 'hidden'

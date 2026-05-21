@@ -1,40 +1,50 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
 
 /* =============================================
-   DESIGN TOKENS — Duolingo-Authentic Palette
+   DESIGN TOKENS — Modern & Playful Palette
    ============================================= */
 :root {
-  --font-heading: 'Nunito', sans-serif;
+  --font-heading: 'Fredoka', 'Nunito', sans-serif;
   --font-body: 'Nunito', sans-serif;
 
-  /* Core Brand */
-  --duo-green:       #58CC02;
-  --duo-green-dark:  #46A302;
-  --duo-blue:        #1CB0F6;
-  --duo-blue-dark:   #0B8DC0;
-  --duo-red:         #FF4B4B;
-  --duo-red-dark:    #CC3B3B;
-  --duo-yellow:      #FFC800;
-  --duo-yellow-dark: #CC9C00;
-  --duo-purple:      #CE82FF;
-  --duo-purple-dark: #9B59B6;
-  --duo-orange:      #FF9600;
+  /* Primary — Violet */
+  --primary:       #7C3AED;
+  --primary-dark:  #6D28D9;
+
+  /* Secondary — Coral/Orange */
+  --secondary:     #F97316;
+  --secondary-dark:#EA580C;
+
+  /* Accent — Teal */
+  --teal:          #0D9488;
+  --teal-dark:     #0F766E;
+
+  /* Highlight — Gold */
+  --gold:          #FACC15;
+  --gold-dark:     #EAB308;
+
+  /* Success / Error */
+  --success:       #10B981;
+  --success-dark:  #059669;
+  --danger:        #F43F5E;
+  --danger-dark:   #E11D48;
 
   /* Text */
-  --text-primary: #3C3C3C;
-  --text-secondary: #777;
-  --text-light: #AFAFAF;
+  --text-primary:   #1F1F2E;
+  --text-secondary: #6B7280;
+  --text-light:     #9CA3AF;
 
   /* Backgrounds */
-  --bg-body:   #F7F7F7;
+  --bg-body:   #F5F3FF;
   --bg-white:  #FFFFFF;
   --bg-card:   #FFFFFF;
 
   /* Borders */
-  --border-color: #E5E5E5;
+  --border-color: #EDE9FE;
   --border-radius-sm: 12px;
   --border-radius-md: 16px;
   --border-radius-lg: 24px;
+  --border-radius-pill: 100px;
 
   /* Shadows */
   --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
@@ -56,16 +66,28 @@
   --sp-6: 48px;
   --sp-8: 64px;
 
-  /* Legacy compat */
-  --grape:  #CE82FF;
-  --sky:    #1CB0F6;
-  --coral:  #FF4B4B;
-  --mint:   #58CC02;
-  --sunshine: #FFC800;
-  --navy:   #3C3C3C;
-  --color-primary: var(--duo-green);
-  --color-success: var(--duo-green);
-  --color-error:   var(--duo-red);
+  /* Legacy compat — map to new palette */
+  --duo-green:      var(--success);
+  --duo-green-dark: var(--success-dark);
+  --duo-blue:       var(--teal);
+  --duo-blue-dark:  var(--teal-dark);
+  --duo-purple:     var(--primary);
+  --duo-purple-dark:var(--primary-dark);
+  --duo-yellow:     var(--gold);
+  --duo-yellow-dark:var(--gold-dark);
+  --duo-red:        var(--danger);
+  --duo-red-dark:   var(--danger-dark);
+  --duo-orange:     var(--secondary);
+
+  --grape:      var(--primary);
+  --sky:        var(--teal);
+  --coral:      var(--danger);
+  --mint:       var(--success);
+  --sunshine:   var(--gold);
+  --navy:       var(--text-primary);
+  --color-primary: var(--primary);
+  --color-success: var(--success);
+  --color-error:   var(--danger);
   --radius-card:   var(--border-radius-lg);
   --shadow-card:   var(--shadow-sm);
 }
@@ -258,18 +280,20 @@ button {
 }
 
 .duo-tab-item.active {
-  color: var(--duo-blue);
+  color: var(--primary);
 }
 
 .duo-tab-item.active::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 20%;
-  right: 20%;
-  height: 4px;
-  background: var(--duo-blue);
-  border-radius: 0 0 4px 4px;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 32px;
+  background: #EDE9FE;
+  border-radius: 20px;
+  z-index: -1;
 }
 
 .duo-tab-icon {
@@ -458,7 +482,7 @@ button {
   display: flex;
   align-items: center;
   gap: 1.25rem;
-  background: var(--bg-white);
+  background: linear-gradient(135deg, #FAF8FF 0%, #FFFFFF 50%);
   border: 2px solid;
   border-radius: 20px;
   padding: 1.25rem 1.5rem;
@@ -466,8 +490,9 @@ button {
   text-align: left;
   cursor: pointer;
   transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-  border-bottom: 4px solid;
+  border-bottom: 4px solid var(--border-color);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  border-left: 4px solid var(--primary);
 }
 .duo-course-card:active {
   transform: translateY(3px);
@@ -750,7 +775,7 @@ button {
 }
 .lesson-progress-fill {
   height: 100%;
-  background: var(--duo-green);
+  background: linear-gradient(90deg, var(--primary) 0%, var(--teal) 100%);
   border-radius: 8px;
   transition: width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
@@ -832,13 +857,13 @@ button {
    BUTTONS — 3D Squishy System
    ============================================= */
 .btn-primary {
-  background: var(--duo-green);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
   color: white;
   padding: 0.9rem 2rem;
   font-size: 1.05rem;
-  border-radius: var(--border-radius-md);
+  border-radius: var(--border-radius-pill);
   border: none;
-  border-bottom: 4px solid var(--duo-green-dark);
+  border-bottom: 4px solid var(--primary-dark);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -846,8 +871,10 @@ button {
   font-weight: 800;
   letter-spacing: 0.3px;
   transition: transform 0.1s, border-bottom-width 0.1s;
+  font-family: var(--font-heading);
 }
 .btn-primary:active {
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
   transform: translateY(3px);
   border-bottom-width: 1px;
 }

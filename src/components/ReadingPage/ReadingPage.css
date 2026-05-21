@@ -61,7 +61,7 @@
 }
 .rp-section-label::before, .rp-section-label::after {
   content: ""; height: 3px; width: 60px; border-radius: 999px;
-  background: linear-gradient(90deg, transparent, #FFD60A, #FF1F7A, #9D4EDD, transparent);
+  background: linear-gradient(90deg, transparent, #FACC15, #F97316, #7C3AED, transparent);
 }
 
 /* ── Tile grid ── */
@@ -137,28 +137,28 @@
 
 /* ── Color variants by level ── */
 .rp-tile.level-1 {
-  --base:        #FF9600;
-  --deep:        #8F5300;
-  --base-light:  #FFC066;
-  --base-soft:   #FFF0CC;
+  --base:        #7C3AED;
+  --deep:        #5B21B6;
+  --base-light:  #A78BFA;
+  --base-soft:   #EDE9FE;
 }
 .rp-tile.level-2 {
-  --base:        #1CB0F6;
-  --deep:        #06628A;
-  --base-light:  #77D0FA;
-  --base-soft:   #D0F0FF;
+  --base:        #F97316;
+  --deep:        #9A3412;
+  --base-light:  #FB923C;
+  --base-soft:   #FFF1E6;
 }
 .rp-tile.level-3 {
-  --base:        #CE82FF;
-  --deep:        #6E3B85;
-  --base-light:  #E5A3FF;
-  --base-soft:   #EDD9FF;
+  --base:        #0D9488;
+  --deep:        #134E4A;
+  --base-light:  #2D9A94;
+  --base-soft:   #E0F9F8;
 }
 .rp-tile.level-4 {
-  --base:        #58CC02;
-  --deep:        #2E6B00;
-  --base-light:  #9BE067;
-  --base-soft:   #E6FFD4;
+  --base:        #FACC15;
+  --deep:        #92400E;
+  --base-light:  #FCD34D;
+  --base-soft:   #FFFBEB;
 }
 
 /* ── Number badge ── */
