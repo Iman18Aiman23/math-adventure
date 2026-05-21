@@ -143,69 +143,7 @@ export default function ReadingPage({ onBack, language }) {
     setDisplayStars(gameData.stars);
   }, []);
 
-  // ── Route Tahap 1 → dedicated KV page ─────────────────────────────────
-  if (selectedLevel === 1) {
-    return <KVLearningPage onBack={() => setSelectedLevel(null)} language={language} />;
-  }
-
-  // ── Route Tahap 2 → dedicated KVK page ────────────────────────────────
-  if (selectedLevel === 2) {
-    return <KVKLearningPage onBack={() => setSelectedLevel(null)} language={language} />;
-  }
-
-  // ── Derived Data ──────────────────────────────────────────────────────
-  const currentLevelData = selectedLevel 
-    ? readingData.filter(item => item.level === selectedLevel) 
-    : [];
-  
-  const currentItem = currentLevelData[currentIndex] || null;
-
-  // ── Handlers ──────────────────────────────────────────────────────────
-  const handleSelectLevel = (level) => {
-    playHoverSound();
-    setSelectedLevel(level);
-    setCurrentIndex(0);
-    setScriptType('RUMI');
-    setShowHelp(false);
-    setActiveSyllable(null);
-  };
-
-  const handleNext = () => {
-    if (currentIndex < currentLevelData.length - 1) {
-      playHoverSound();
-      setCurrentIndex(prev => prev + 1);
-      setShowHelp(false);
-      setActiveSyllable(null);
-    }
-  };
-
-  const handlePrev = () => {
-    if (currentIndex > 0) {
-      playHoverSound();
-      setCurrentIndex(prev => prev - 1);
-      setShowHelp(false);
-      setActiveSyllable(null);
-    }
-  };
-
-  const handleVolumeClick = () => {
-    playHoverSound();
-    const speakText = scriptType === 'ENG' ? currentItem?.eng : currentItem?.rumi.replace(/-/g, '');
-    const lang = scriptType === 'ENG' ? 'en-US' : 'ms-MY';
-    SpeechManager.speak(speakText, lang);
-    setShowHelp(true);
-  };
-
-  const handleSyllableClick = (index, text) => {
-    playHoverSound();
-    SpeechManager.speak(text, 'ms-MY');
-    setActiveSyllable(index);
-  };
-
-  // ── Views ─────────────────────────────────────────────────────────────
-
-  // Global Styles — memoised so the template literal is only allocated once.
-  // @import for fonts removed (already preloaded via index.html) to avoid re-parse cost.
+  // Global Styles — must be declared before any early returns to obey Rules of Hooks
   const globalStyles = useMemo(() => `
     @keyframes floaty { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-6px) rotate(2deg); } }
     @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
@@ -321,6 +259,65 @@ export default function ReadingPage({ onBack, language }) {
       }
     }
   `, []);
+
+  // ── Route Tahap 1 → dedicated KV page ─────────────────────────────────
+  if (selectedLevel === 1) {
+    return <KVLearningPage onBack={() => setSelectedLevel(null)} language={language} />;
+  }
+
+  // ── Route Tahap 2 → dedicated KVK page ────────────────────────────────
+  if (selectedLevel === 2) {
+    return <KVKLearningPage onBack={() => setSelectedLevel(null)} language={language} />;
+  }
+
+  // ── Derived Data ──────────────────────────────────────────────────────
+  const currentLevelData = selectedLevel
+    ? readingData.filter(item => item.level === selectedLevel)
+    : [];
+
+  const currentItem = currentLevelData[currentIndex] || null;
+
+  // ── Handlers ──────────────────────────────────────────────────────────
+  const handleSelectLevel = (level) => {
+    playHoverSound();
+    setSelectedLevel(level);
+    setCurrentIndex(0);
+    setScriptType('RUMI');
+    setShowHelp(false);
+    setActiveSyllable(null);
+  };
+
+  const handleNext = () => {
+    if (currentIndex < currentLevelData.length - 1) {
+      playHoverSound();
+      setCurrentIndex(prev => prev + 1);
+      setShowHelp(false);
+      setActiveSyllable(null);
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      playHoverSound();
+      setCurrentIndex(prev => prev - 1);
+      setShowHelp(false);
+      setActiveSyllable(null);
+    }
+  };
+
+  const handleVolumeClick = () => {
+    playHoverSound();
+    const speakText = scriptType === 'ENG' ? currentItem?.eng : currentItem?.rumi.replace(/-/g, '');
+    const lang = scriptType === 'ENG' ? 'en-US' : 'ms-MY';
+    SpeechManager.speak(speakText, lang);
+    setShowHelp(true);
+  };
+
+  const handleSyllableClick = (index, text) => {
+    playHoverSound();
+    SpeechManager.speak(text, 'ms-MY');
+    setActiveSyllable(index);
+  };
 
   // View: Level Selection
   if (!selectedLevel) {
