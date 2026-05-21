@@ -2,11 +2,7 @@
 
 /* ── Background ── */
 .mh-body {
-  background:
-    radial-gradient(900px 600px at 12% -10%, #E6F2FF 0%, transparent 60%),
-    radial-gradient(900px 600px at 95% -5%,  #F4E4FF 0%, transparent 55%),
-    radial-gradient(700px 500px at 50% 110%, #FFF1D6 0%, transparent 60%),
-    #FFFDF8;
+  background: transparent;
 }
 
 /* ── Shell ── */
