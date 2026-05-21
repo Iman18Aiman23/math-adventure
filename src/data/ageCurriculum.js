@@ -2,6 +2,8 @@
 // Mirrors the Project Curriculum Status block in Game_Development_Protocol.md.
 // When a new game is built, add its entry here AND update the protocol MD.
 
+import { OpenBookIcon, MicrophoneIcon, PencilIcon, CalculatorIcon } from '../components/icons/GameIcons';
+
 export const AGE_GROUPS = [
   {
     id: 'age-4-5',
@@ -72,10 +74,10 @@ export const AGE_GROUPS = [
 
 // Pillars displayed inside each Age Group page.
 export const PILLARS = [
-  { id: 'reading',  emoji: '📖', label: { bm: 'Membaca',    eng: 'Reading'      } },
-  { id: 'speaking', emoji: '🗣', label: { bm: 'Bertutur',   eng: 'Speaking'     } },
-  { id: 'jawi',     emoji: '✒',  label: { bm: 'Tulisan Jawi', eng: 'Jawi Script' } },
-  { id: 'math',     emoji: '🔢', label: { bm: 'Matematik',  eng: 'Mathematics'  } },
+  { id: 'reading',  icon: OpenBookIcon, label: { bm: 'Membaca',    eng: 'Reading'      } },
+  { id: 'speaking', icon: MicrophoneIcon, label: { bm: 'Bertutur',   eng: 'Speaking'     } },
+  { id: 'jawi',     icon: PencilIcon, label: { bm: 'Tulisan Jawi', eng: 'Jawi Script' } },
+  { id: 'math',     icon: CalculatorIcon, label: { bm: 'Matematik',  eng: 'Mathematics'  } },
 ];
 
 // CURRICULUM[ageId][pillarId] = array of games, or null/[] if no games planned yet.
