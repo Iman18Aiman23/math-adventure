@@ -13,7 +13,7 @@ export default function OpsGameMenu({ onStart, onBack, onHome, language }) {
   const gameState = useGameStateContext();
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7', padding: '0 14px', maxWidth: '980px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#ffffff', padding: '0 14px', maxWidth: '980px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
       <BackButton onClick={onBack} />
 
       {/* Content */}
