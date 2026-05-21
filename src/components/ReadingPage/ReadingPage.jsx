@@ -420,6 +420,7 @@ export default function ReadingPage({ onBack, language }) {
 
       {/* Back Button - Top Left */}
       <button
+        type="button"
         onClick={() => setSelectedLevel(null)}
         style={{ position: 'absolute', top: '1rem', left: '1rem', background: '#fff', border: `2px solid ${DESIGN_SYSTEM.colors.hair}`, borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', color: DESIGN_SYSTEM.colors.muted, cursor: 'pointer', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`, transition: 'transform .12s', zIndex: 10 }}
         onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
@@ -435,6 +436,7 @@ export default function ReadingPage({ onBack, language }) {
         <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', marginTop: '2rem' }}>
           {SCRIPTS.map(script => (
             <button
+              type="button"
               key={script.key}
               onClick={() => { playHoverSound(); setScriptType(script.key); setActiveSyllable(null); setShowHelp(false); }}
               style={{
@@ -463,6 +465,7 @@ export default function ReadingPage({ onBack, language }) {
 
           {/* Sound Button */}
           <button
+            type="button"
             onClick={handleVolumeClick}
             title="Read Full Text"
             style={{ position: 'absolute', top: 16, right: 16, background: '#f0f0f0', border: 'none', borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', color: theme.color, cursor: 'pointer', transition: 'transform 0.1s', boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}` }}
@@ -511,6 +514,7 @@ export default function ReadingPage({ onBack, language }) {
           {/* Jawi Display */}
           {scriptType === 'JAWI' && (
             <button
+              type="button"
               onClick={() => {
                 playHoverSound();
                 SpeechManager.speak(currentItem?.rumi.replace(/-/g, ''), 'ms-MY');
@@ -539,6 +543,7 @@ export default function ReadingPage({ onBack, language }) {
           {/* English Display */}
           {scriptType === 'ENG' && (
             <button
+              type="button"
               onClick={() => {
                 playHoverSound();
                 SpeechManager.speak(currentItem?.eng, 'en-US');
@@ -581,6 +586,7 @@ export default function ReadingPage({ onBack, language }) {
       <div className="nav-controls">
         {/* Previous Button */}
         <button
+          type="button"
           onClick={handlePrev}
           disabled={currentIndex === 0}
           style={{
@@ -601,6 +607,7 @@ export default function ReadingPage({ onBack, language }) {
 
         {/* Listen Button */}
         <button
+          type="button"
           onClick={handleVolumeClick}
           style={{
             flex: 1, padding: '0.9rem 1.2rem', borderRadius: '16px',
@@ -619,6 +626,7 @@ export default function ReadingPage({ onBack, language }) {
 
         {/* Next Button */}
         <button
+          type="button"
           onClick={handleNext}
           disabled={currentIndex === currentLevelData.length - 1}
           style={{
