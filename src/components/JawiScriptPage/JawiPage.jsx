@@ -235,13 +235,10 @@ export default function JawiPage({ onBack, onHome, language, onGameStart, onGame
             <div style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
                 <div className="jw-body" style={{ minHeight: '100%' }}>
 
-                    <div style={{ display: 'flex', alignItems: 'center', padding: '0 1rem', height: '52px', background: '#fff', borderBottom: '2px solid #E5E7EB' }}>
+                    <div className="jw-shell">
                       <button type="button" onClick={onBack} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#6B7280', display: 'flex', alignItems: 'center', padding: '4px', borderRadius: '8px' }}>
                         <ArrowLeft size={24} />
                       </button>
-                    </div>
-
-                    <div className="jw-shell">
 
                         {/* Hero */}
                         <section className="jw-hero">
