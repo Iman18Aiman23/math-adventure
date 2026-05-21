@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { ChevronDown, ChevronRight, Lock, Play } from 'lucide-react';
+import { ChevronDown, ChevronRight, Lock } from 'lucide-react';
 import { playHoverSound } from '../../utils/soundManager';
 import { useGameStateContext } from '../../App';
 import AppHeader from '../AppHeader';
@@ -103,83 +103,148 @@ const PillarBlock = React.memo(function PillarBlock({
       </button>
 
       {expanded && hasGames && (
-        <div style={{ padding: '0.5rem 0.75rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.6rem', backgroundColor: '#f9fafb', marginTop: '0.5rem', borderRadius: '0 0 16px 16px' }}>
+        <div style={{ padding: '1rem 0.75rem 1.25rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(145px, 1fr))', gap: '0.875rem', background: 'linear-gradient(180deg, #f0f4ff 0%, #fafbff 100%)', marginTop: '0.5rem', borderRadius: '0 0 20px 20px', borderTop: '2px dashed rgba(0,0,0,0.06)' }}>
           <style>{`
-            .game-button-${pillar.id} {
-              display: flex;
-              align-items: center;
-              gap: 0.75rem;
-              padding: 1rem 1rem;
-              border: none;
-              border-radius: 12px;
-              font-weight: 700;
-              font-size: 0.95rem;
-              text-align: left;
-              font-family: var(--font-body);
-              transition: transform 0.12s ease, box-shadow 0.12s ease;
-              will-change: transform, box-shadow;
-              contain: layout style;
+            @keyframes card-pop {
+              0%   { transform: scale(1) translateY(0); }
+              40%  { transform: scale(1.12) translateY(-10px); }
+              70%  { transform: scale(1.06) translateY(-6px); }
+              100% { transform: scale(1.08) translateY(-8px); }
+            }
+            @keyframes emoji-bounce {
+              0%, 100% { transform: scale(1) rotate(0deg); }
+              30%       { transform: scale(1.25) rotate(-8deg); }
+              60%       { transform: scale(1.2)  rotate(6deg); }
+            }
+            @keyframes sparkle-spin {
+              from { transform: rotate(0deg) scale(1); opacity: 0.9; }
+              to   { transform: rotate(360deg) scale(1.1); opacity: 0.6; }
+            }
+            @keyframes shine-sweep {
+              0%   { left: -100%; }
+              100% { left: 150%; }
             }
 
-            .game-button-${pillar.id}.complete {
-              background: linear-gradient(135deg, ${colors.main}, ${colors.dark});
-              color: #fff;
-              box-shadow: 0 6px 0 ${colors.shadow};
-              cursor: pointer;
+            .game-card { position: relative; border: none; border-radius: 22px; padding: 0; font-family: var(--font-body); cursor: pointer; transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.18s ease; will-change: transform; overflow: visible; background: transparent; }
+
+            .game-card.complete:hover { animation: card-pop 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+            .game-card.complete:hover .game-card-emoji { animation: emoji-bounce 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+            .game-card.complete:hover .game-card-shine { animation: shine-sweep 0.55s ease forwards; }
+
+            .game-card.complete:active { transform: scale(0.94) translateY(3px) !important; }
+
+            .game-card-inner {
+              display: flex; flex-direction: column; align-items: center; gap: 0;
+              border-radius: 22px; overflow: hidden;
+              box-shadow: 0 6px 0 var(--card-shadow), 0 8px 20px rgba(0,0,0,0.18);
+              transition: box-shadow 0.18s ease;
+            }
+            .game-card.complete:hover .game-card-inner {
+              box-shadow: 0 10px 0 var(--card-shadow), 0 16px 32px rgba(0,0,0,0.22);
+            }
+            .game-card.complete:active .game-card-inner {
+              box-shadow: 0 2px 0 var(--card-shadow), 0 4px 10px rgba(0,0,0,0.14);
+            }
+            .game-card.disabled .game-card-inner {
+              box-shadow: 0 5px 0 #9CA3AF, 0 6px 14px rgba(0,0,0,0.12);
+              opacity: 0.65;
             }
 
-            .game-button-${pillar.id}.complete:hover {
-              transform: translateY(-2px);
-              box-shadow: 0 8px 0 ${colors.shadow};
+            .game-card-top {
+              width: 100%; padding: 1.4rem 0.75rem 1rem;
+              display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
+              position: relative;
+            }
+            .game-card-bottom {
+              width: 100%; padding: 0.7rem 0.5rem;
+              background: rgba(0,0,0,0.18);
+              display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
             }
 
-            .game-button-${pillar.id}.complete:active {
-              transform: translateY(4px);
-              box-shadow: 0 2px 0 ${colors.shadow};
+            .game-card-emoji-bubble {
+              width: 72px; height: 72px;
+              background: rgba(255,255,255,0.95);
+              border-radius: 50%;
+              display: flex; align-items: center; justify-content: center;
+              font-size: 2.6rem; line-height: 1;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.2), inset 0 -3px 0 rgba(0,0,0,0.08);
+              position: relative; z-index: 1;
+            }
+            .game-card-emoji { display: block; }
+
+            .game-card-dots {
+              position: absolute; top: 8px; right: 10px;
+              display: flex; gap: 3px;
+            }
+            .game-card-dot {
+              width: 6px; height: 6px; border-radius: 50%;
+              background: rgba(255,255,255,0.5);
             }
 
-            .game-button-${pillar.id}.disabled {
-              background: #E5E7EB;
-              color: #9CA3AF;
-              cursor: not-allowed;
-              box-shadow: none;
+            .game-card-shine {
+              position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+              background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+              pointer-events: none; z-index: 2;
             }
 
-            .game-button-${pillar.id} .game-label {
-              flex: 1;
+            .game-card-label {
+              font-size: 0.82rem; font-weight: 900; color: #fff;
+              line-height: 1.25; text-align: center;
+              text-shadow: 0 1px 3px rgba(0,0,0,0.25);
+            }
+            .game-card-status {
+              font-size: 0.62rem; font-weight: 800; letter-spacing: 0.1em;
+              text-transform: uppercase; color: rgba(255,255,255,0.85);
             }
 
-            .game-button-${pillar.id} .game-status {
-              font-size: 0.75rem;
-              font-weight: 800;
-              letter-spacing: 0.05em;
-            }
-
-            .game-button-${pillar.id}.complete .game-status {
-              opacity: 0.95;
-            }
-
-            .game-button-${pillar.id}.disabled .game-status {
-              opacity: 0.7;
+            .game-card-lock {
+              position: absolute; top: -8px; right: -8px;
+              width: 28px; height: 28px; border-radius: 50%;
+              background: #9CA3AF; display: flex; align-items: center; justify-content: center;
+              box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+              z-index: 3;
             }
           `}</style>
+
           {games.map(game => {
             const isComplete = game.status === 'complete';
+            const bg    = isComplete ? (game.cardColor || colors.main) : '#C4C9D4';
+            const dark  = isComplete ? (game.cardDark  || colors.dark) : '#9CA3AF';
             return (
               <button
                 key={game.id}
-                className={`game-button-${pillar.id} ${isComplete ? 'complete' : 'disabled'}`}
+                className={`game-card ${isComplete ? 'complete' : 'disabled'}`}
                 disabled={!isComplete}
                 onClick={() => isComplete && onPlayGame(game.id)}
                 onMouseEnter={isComplete ? playHoverSound : undefined}
+                style={{ '--card-shadow': dark + 'CC' }}
               >
-                {isComplete ? <Play size={18} fill="#fff" /> : <Lock size={18} />}
-                <span className="game-label">{game.name}</span>
-                <span className="game-status">
-                  {isComplete
-                    ? (language === 'bm' ? 'MAIN' : 'PLAY')
-                    : (language === 'bm' ? 'KUNCI' : 'LOCKED')}
-                </span>
+                <div className="game-card-inner">
+                  {/* Coloured top zone */}
+                  <div className="game-card-top" style={{ background: `linear-gradient(160deg, ${bg} 0%, ${dark} 100%)` }}>
+                    <div className="game-card-shine" />
+                    <div className="game-card-dots">
+                      <span className="game-card-dot" />
+                      <span className="game-card-dot" />
+                      <span className="game-card-dot" />
+                    </div>
+                    <div className="game-card-emoji-bubble">
+                      <span className="game-card-emoji">
+                        {isComplete ? (game.emoji || '🎮') : '🔒'}
+                      </span>
+                    </div>
+                    <span className="game-card-label">{game.name}</span>
+                  </div>
+
+                  {/* Bottom action strip */}
+                  <div className="game-card-bottom" style={{ background: `${dark}CC` }}>
+                    <span className="game-card-status">
+                      {isComplete
+                        ? (language === 'bm' ? '▶ MAIN' : '▶ PLAY')
+                        : (language === 'bm' ? '🔒 KUNCI' : '🔒 LOCKED')}
+                    </span>
+                  </div>
+                </div>
               </button>
             );
           })}
@@ -231,21 +296,26 @@ export default function AgeGroupPage({ ageGroupId, onBack, onPlayGame, language 
       <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem 1rem', background: 'transparent', contain: 'layout style' }}>
         {/* Hero card */}
         <div style={{
-          background: `linear-gradient(135deg, ${theme ? theme.primary : ageGroup.color}, ${theme ? theme.dark : ageGroup.colorDark})`,
-          borderRadius: '24px', padding: '1.5rem 1.25rem',
-          color: '#fff', marginBottom: '1.5rem',
-          boxShadow: `0 6px 0 ${theme ? theme.dark : ageGroup.colorDark}`,
-          display: 'flex', alignItems: 'center', gap: '1rem',
+          background: `linear-gradient(135deg, ${theme ? theme.primary : ageGroup.color}15, ${theme ? theme.dark : ageGroup.colorDark}08)`,
+          borderLeft: `6px solid ${theme ? theme.primary : ageGroup.color}`,
+          borderRadius: '12px',
+          padding: '2rem 1.75rem',
+          color: '#1F2937',
+          marginBottom: '1.5rem',
+          boxShadow: `0 2px 8px rgba(0, 0, 0, 0.06)`,
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: '1.5rem',
         }}>
-          <span style={{ fontSize: '3rem', lineHeight: 1 }}>{ageGroup.emoji}</span>
+          <span style={{ fontSize: '3.5rem', lineHeight: 1, flexShrink: 0 }}>{ageGroup.emoji}</span>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: '0.8rem', fontWeight: 800, opacity: 0.9, letterSpacing: '0.08em' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 700, opacity: 0.6, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
               {(ageGroup.subtitle[language] || ageGroup.subtitle.bm).toUpperCase()}
             </div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 900, fontFamily: 'var(--font-heading)', lineHeight: 1.2, margin: '2px 0' }}>
+            <div style={{ fontSize: '1.75rem', fontWeight: 900, fontFamily: 'var(--font-heading)', lineHeight: 1.3, margin: '0.25rem 0 0.75rem 0', color: theme ? theme.primary : ageGroup.color }}>
               {ageGroup.title[language] || ageGroup.title.bm}
             </div>
-            <div style={{ fontSize: '0.85rem', fontWeight: 600, opacity: 0.95 }}>
+            <div style={{ fontSize: '0.9rem', fontWeight: 500, opacity: 0.75, lineHeight: 1.5 }}>
               {ageGroup.focus[language] || ageGroup.focus.bm}
             </div>
           </div>

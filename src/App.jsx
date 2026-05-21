@@ -30,7 +30,8 @@ import SoundMatching from './components/AgeGroup-4-5/SoundMatching';
 import LetterSoundPuzzle from './components/AgeGroup-4-5/LetterSoundPuzzle';
 import PhoneticsSprint from './components/AgeGroup-4-5/PhoneticsSprint';
 import HeartShopModal from './components/HeartShopModal';
-const AchievementPage = React.lazy(() => import('./components/AchievementPage'));
+const AchievementPage  = React.lazy(() => import('./components/AchievementPage'));
+const LeaderboardHome  = React.lazy(() => import('./components/Leaderboard/LeaderboardHome'));
 import AssessmentSelector from './pages/AssessmentSelector';
 import AssessmentPage from './pages/AssessmentPage';
 import { getMuted, setMuted, preloadSounds, unlockAudio, playHoverSound } from './utils/soundManager';
@@ -143,7 +144,11 @@ export default function App() {
 
   // ── Content renderer ──────────────────────────────────────────────────────
   const renderContent = () => {
-    if (activeTab === 'leaderboard') return <LeaderboardPlaceholder language={language} />;
+    if (activeTab === 'leaderboard') return (
+      <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>}>
+        <LeaderboardHome language={language} gameState={gameState} />
+      </Suspense>
+    );
     if (activeTab === 'profile')     return <ProfilePlaceholder playerName={playerName} gameState={gameState} language={language} streak={streak} />;
     if (activeTab === 'achievement') {
       // If an assessment is selected, show AssessmentPage
@@ -263,7 +268,7 @@ export default function App() {
         />
       )}
 
-      <div className="app-container">
+      <div className={`app-container${activeTab === 'leaderboard' ? ' app-leaderboard' : ''}`}>
         {!playerName && <WelcomeModal onSave={handleSaveName} />}
         <LevelUpToast level={levelUpInfo?.newLevel} onDismiss={clearLevelUp} />
 
@@ -309,16 +314,6 @@ export default function App() {
 }
 
 // ── Placeholder screens for tabs ─────────────────────────────────────────────
-function LeaderboardPlaceholder({ language }) {
-  return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem', background: '#fff', padding: '2rem' }}>
-      <div style={{ fontSize: '4rem' }}>🏆</div>
-      <h2 style={{ fontWeight: 900, fontSize: '1.4rem', color: '#3C3C3C' }}>{language === 'bm' ? 'Papan Juara' : 'Leaderboard'}</h2>
-      <p style={{ color: '#AFAFAF', fontWeight: 600, textAlign: 'center' }}>{language === 'bm' ? 'Segera hadir!' : 'Coming soon!'}</p>
-    </div>
-  );
-}
-
 function ProfilePlaceholder({ playerName, gameState, language, streak = 0 }) {
   // Load game data from localStorage
   const gameData = getGameData();

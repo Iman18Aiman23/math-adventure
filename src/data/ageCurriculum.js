@@ -85,12 +85,12 @@ export const PILLARS = [
 export const CURRICULUM = {
   'age-4-5': {
     reading: [
-      { id: 'alphabet-safari',      name: 'Alphabet Safari',      status: 'complete' },
-      { id: 'letter-trace',         name: 'Letter Trace',         status: 'complete' },
-      { id: 'phonics-pop',          name: 'Phonics Pop',          status: 'complete'  },
-      { id: 'sound-matching',       name: 'Sound Matching',       status: 'complete'  },
-      { id: 'letter-sound-puzzle',  name: 'Letter-Sound Puzzle',  status: 'complete'  },
-      { id: 'phonics-sprint',       name: 'Phonics Sprint',       status: 'complete'  },
+      { id: 'alphabet-safari',     name: 'Alphabet Safari',     emoji: '🦁', cardColor: '#FF6B35', cardDark: '#E55A25', status: 'complete' },
+      { id: 'letter-trace',        name: 'Letter Trace',        emoji: '✏️', cardColor: '#7C4DFF', cardDark: '#6B3EE6', status: 'complete' },
+      { id: 'phonics-pop',         name: 'Phonics Pop',         emoji: '🎈', cardColor: '#FF3D8B', cardDark: '#E52E7A', status: 'complete' },
+      { id: 'sound-matching',      name: 'Sound Matching',      emoji: '🎵', cardColor: '#00BCD4', cardDark: '#0097A7', status: 'complete' },
+      { id: 'letter-sound-puzzle', name: 'Letter-Sound Puzzle', emoji: '🧩', cardColor: '#FF9800', cardDark: '#E68900', status: 'complete' },
+      { id: 'phonics-sprint',      name: 'Phonics Sprint',      emoji: '🚀', cardColor: '#4CAF50', cardDark: '#388E3C', status: 'complete' },
     ],
     speaking: null,
     jawi: null,

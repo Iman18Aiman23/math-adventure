@@ -7,7 +7,7 @@ const sidebarLogoStyles = `
   .sidebar-logo-text {
     font-size: 1.2rem;
     font-weight: 900;
-    background: linear-gradient(135deg, #2D4059 0%, #4A6FA5 50%, #A3D8F4 100%);
+    background: linear-gradient(135deg, #E9D5FF 0%, #A78BFA 50%, #7C3AED 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -17,33 +17,42 @@ const sidebarLogoStyles = `
     line-height: 1.1;
   }
   .sidebar-subtitle-text {
-    color: #F4C430;
+    color: #FDE68A;
     font-family: var(--font-heading);
     font-size: 0.75rem;
     letter-spacing: 2px;
     margin: 0;
     text-transform: uppercase;
   }
-  
-  /* Soft Purple Gradient for active tab */
+
+  /* Inactive sidebar items */
+  .desktop-sidebar .sidebar-item {
+    color: rgba(255,255,255,0.55) !important;
+  }
+  .desktop-sidebar .sidebar-item:hover:not(.active) {
+    background: rgba(167,139,250,0.12) !important;
+    color: rgba(255,255,255,0.9) !important;
+  }
+
+  /* Active tab — vivid cosmic gradient */
   .desktop-sidebar .sidebar-item.active {
-    background-image: linear-gradient(144deg,#AF40FF, #5B42F3  50%,#00DDEB);
+    background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEB) !important;
     border: none !important;
-    box-shadow: none !important;
+    box-shadow: 0 4px 20px rgba(124,58,237,0.5) !important;
     backdrop-filter: none;
     color: #ffffff !important;
     border-radius: 12px !important;
   }
-  
+
   .desktop-sidebar .sidebar-item.active .sidebar-item-icon {
-    color: #4338CA !important;
+    color: #ffffff !important;
   }
 
-  /* Ambient sidebar shadow */
+  /* Sidebar shell — space dark with glowing right border */
   .desktop-sidebar {
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.04) !important;
-    border-right: 2px solid rgba(255,255,255,0.8) !important;
-    background: #FAFAFB !important;
+    background: linear-gradient(180deg, #130D2E 0%, #1E1145 50%, #130D2E 100%) !important;
+    border-right: 2.5px solid #A78BFA !important;
+    box-shadow: 4px 0 32px rgba(124,58,237,0.35), inset -1px 0 0 rgba(167,139,250,0.1) !important;
   }
 `;
 
@@ -107,7 +116,7 @@ export default function DesktopSidebar({
           ))}
 
           {/* Divider */}
-          <div style={{ height: 2, background: 'var(--border-color)', margin: '12px 0', borderRadius: 1 }} />
+          <div style={{ height: 1, background: 'rgba(167,139,250,0.25)', margin: '12px 0', borderRadius: 1 }} />
 
           {/* Language Toggle */}
           <button className="sidebar-item" onClick={onToggleLanguage} style={{ gap: '2rem' }}>
@@ -126,21 +135,21 @@ export default function DesktopSidebar({
           alignItems: 'flex-start',
           gap: '0.75rem',
           padding: '1.5rem',
-          borderTop: '1px solid rgba(0,0,0,0.05)',
+          borderTop: '1px solid rgba(167,139,250,0.2)',
           marginTop: 'auto',
           background: 'transparent'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '1rem', filter: 'drop-shadow(0 2px 2px rgba(255, 200, 0, 0.2))' }}>⭐</span>
-            <span style={{ color: '#4B5563', fontWeight: 600, fontSize: '0.85rem' }}>{stars} {language === 'bm' ? 'bintang' : 'stars'}</span>
+            <span style={{ fontSize: '1rem', filter: 'drop-shadow(0 2px 6px rgba(253,230,138,0.7))' }}>⭐</span>
+            <span style={{ color: '#FDE68A', fontWeight: 700, fontSize: '0.85rem' }}>{stars} {language === 'bm' ? 'bintang' : 'stars'}</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '1rem', filter: 'drop-shadow(0 2px 2px rgba(255, 75, 75, 0.2))' }}>❤️</span>
-            <span style={{ color: '#EF4444', fontWeight: 600, fontSize: '0.85rem' }}>{hearts} {language === 'bm' ? 'nyawa' : 'hearts'}</span>
+            <span style={{ fontSize: '1rem', filter: 'drop-shadow(0 2px 6px rgba(252,165,165,0.7))' }}>❤️</span>
+            <span style={{ color: '#FCA5A5', fontWeight: 700, fontSize: '0.85rem' }}>{hearts} {language === 'bm' ? 'nyawa' : 'hearts'}</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '1rem', filter: 'drop-shadow(0 2px 2px rgba(139, 92, 246, 0.2))' }}>💎</span>
-            <span style={{ color: '#8B5CF6', fontWeight: 600, fontSize: '0.85rem' }}>{gems} {language === 'bm' ? 'permata' : 'gems'}</span>
+            <span style={{ fontSize: '1rem', filter: 'drop-shadow(0 2px 6px rgba(167,139,250,0.7))' }}>💎</span>
+            <span style={{ color: '#C4B5FD', fontWeight: 700, fontSize: '0.85rem' }}>{gems} {language === 'bm' ? 'permata' : 'gems'}</span>
           </div>
         </div>
       </aside>
