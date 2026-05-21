@@ -4,7 +4,7 @@ import { LOCALIZATION } from '../../utils/localization';
 import { useGameStateContext } from '../../App';
 import SpeechManager from '../../services/SpeechManager';
 import BMSpeakGame from './BMSpeakGame';
-import AppHeader from '../AppHeader';
+import { ArrowLeft } from 'lucide-react';
 import { MusicNoteIcon } from '../icons/GameIcons';
 
 // ── SVG Illustrations ──────────────────────────────────────────────────────
@@ -253,7 +253,11 @@ export default function BMPage({ onBack, onHome, language }) {
   // ── Category Selection ─────────────────────────────────────────────────────
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
-      <AppHeader onBack={onBack} gameState={gameState} language={language} />
+      <div style={{ display: 'flex', alignItems: 'center', padding: '0 1rem', height: '52px', background: '#fff', borderBottom: '2px solid #E5E7EB', flexShrink: 0 }}>
+        <button type="button" onClick={onBack} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#6B7280', display: 'flex', alignItems: 'center', padding: '4px', borderRadius: '8px' }}>
+          <ArrowLeft size={24} />
+        </button>
+      </div>
 
       <div style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
         <div className="bp-body" style={{ minHeight: '100%' }}>

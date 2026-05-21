@@ -8,7 +8,6 @@ import { useGameStateContext } from '../../App';
 import { getGameData } from '../../utils/gameStatsManager';
 import KVLearningPage from './KVLearningPage';
 import KVKLearningPage from './KVKLearningPage';
-import AppHeader from '../AppHeader';
 import { OpenBookIcon } from '../icons/GameIcons';
 
 // ── Design System ────────────────────────────────────────────────────────────
@@ -332,7 +331,11 @@ export default function ReadingPage({ onBack, language }) {
       <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
         <style>{globalStyles}</style>
 
-        <AppHeader onBack={onBack} gameState={gameState} language={language} />
+        <div style={{ display: 'flex', alignItems: 'center', padding: '0 1rem', height: '52px', background: '#fff', borderBottom: '2px solid #E5E7EB', flexShrink: 0 }}>
+          <button type="button" onClick={onBack} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#6B7280', display: 'flex', alignItems: 'center', padding: '4px', borderRadius: '8px' }}>
+            <ArrowLeft size={24} />
+          </button>
+        </div>
 
         <div style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
           <div className="rp-body" style={{ minHeight: '100%' }}>
