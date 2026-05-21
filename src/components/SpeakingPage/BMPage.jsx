@@ -4,7 +4,7 @@ import { LOCALIZATION } from '../../utils/localization';
 import { useGameStateContext } from '../../App';
 import SpeechManager from '../../services/SpeechManager';
 import BMSpeakGame from './BMSpeakGame';
-import BackButton from '../BackButton';
+import PageLayout from '../PageLayout';
 import { MusicNoteIcon } from '../icons/GameIcons';
 
 // ── SVG Illustrations ──────────────────────────────────────────────────────
@@ -251,105 +251,97 @@ export default function BMPage({ onBack, onHome, language }) {
   }
 
   // ── Category Selection ─────────────────────────────────────────────────────
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
-      <div style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
-        <div className="bp-body" style={{ minHeight: '100%' }}>
+  const heroSubtitle = (
+    <>
+      {t.heroSubtitle}
+      <span aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+      </span>
+    </>
+  );
 
-          <div className="bp-shell">
-            <BackButton onClick={onBack} />
+  const hintContent = (
+    <>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+      {language === 'bm' ? 'Pilih kategori untuk mula bercakap!' : 'Pick a category to start speaking!'}
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF1F7A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+    </>
+  );
 
-            {/* Hero */}
-            <section className="bp-hero">
-              <div className="bp-hero-emoji-wrap">
-                <span className="bp-hero-emoji" role="img" aria-label="music note"><MusicNoteIcon size={96} /></span>
-              </div>
-              <p className="bp-hero-sub">
-                {t.heroSubtitle}
-                <span aria-hidden="true">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-                </span>
-              </p>
-            </section>
-
-            {/* Browser / mic warning */}
-            {!isSupported && (
-              <div className="bm-warning-card">
-                <span style={{ fontSize: '1.5rem' }}>⚠️</span>
-                <p>{unsupportedReason || t.notSupported}</p>
-              </div>
-            )}
-
-            {/* Section label */}
-            <div className="bp-section-label">
-              {language === 'bm' ? 'Pilih Kategori' : 'Choose Category'}
-            </div>
-
-            {/* Category tiles */}
-            <div className="bp-grid">
-              {CATEGORIES.map((cat) => {
-                const categoryData = t.categories[cat.titleKey];
-                return (
-                  <button
-                    key={cat.key}
-                    className={`bp-tile ${cat.tClass}`}
-                    onClick={() => isSupported && setSelectedCategory(cat.key)}
-                    disabled={!isSupported}
-                    type="button"
-                    style={{ opacity: !isSupported ? 0.5 : 1 }}
-                  >
-                    <span className="bp-tile-num">{cat.num}</span>
-
-                    <span className="bp-spark s1" style={{ top:'24%', left:'14%' }}>
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg>
-                    </span>
-                    <span className="bp-spark s2" style={{ top:'30%', right:'14%' }}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="10"/></svg>
-                    </span>
-                    <span className="bp-spark s3" style={{ bottom:'38%', right:'14%' }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,.7)"><circle cx="12" cy="12" r="10"/></svg>
-                    </span>
-
-                    <div className="bp-illo">{ILLOS[cat.key]}</div>
-
-                    <div className="bp-plate">
-                      <span className="bp-plate-title">{categoryData?.title}</span>
-                      <span className="bp-go" aria-hidden="true">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M9 6l6 6-6 6"/>
-                        </svg>
-                      </span>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Hint footer */}
-            <div className="bp-hint">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-              {language === 'bm' ? 'Pilih kategori untuk mula bercakap!' : 'Pick a category to start speaking!'}
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF1F7A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-            </div>
-
-            {/* How to play (BMPage extra, lives after the hint) */}
-            <div className="bm-howto">
-              <div className="bm-howto-title">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFB300" aria-hidden="true">
-                  <path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/>
-                </svg>
-                {t.howToPlayTitle}
-              </div>
-              <div className="bm-howto-steps">
-                <div className="bm-howto-step"><span className="bm-step-num">1</span><span>{t.howToStep1}</span></div>
-                <div className="bm-howto-step"><span className="bm-step-num">2</span><span>{t.howToStep2}</span></div>
-                <div className="bm-howto-step"><span className="bm-step-num">3</span><span>{t.howToStep3}</span></div>
-              </div>
-            </div>
-
-          </div>
+  const gridContent = (
+    <>
+      {!isSupported && (
+        <div className="bm-warning-card">
+          <span style={{ fontSize: '1.5rem' }}>⚠️</span>
+          <p>{unsupportedReason || t.notSupported}</p>
         </div>
+      )}
+      {CATEGORIES.map((cat) => {
+        const categoryData = t.categories[cat.titleKey];
+        return (
+          <button
+            key={cat.key}
+            className={`bp-tile ${cat.tClass}`}
+            onClick={() => isSupported && setSelectedCategory(cat.key)}
+            disabled={!isSupported}
+            type="button"
+            style={{ opacity: !isSupported ? 0.5 : 1 }}
+          >
+            <span className="bp-tile-num">{cat.num}</span>
+
+            <span className="bp-spark s1" style={{ top:'24%', left:'14%' }}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg>
+            </span>
+            <span className="bp-spark s2" style={{ top:'30%', right:'14%' }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="10"/></svg>
+            </span>
+            <span className="bp-spark s3" style={{ bottom:'38%', right:'14%' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,.7)"><circle cx="12" cy="12" r="10"/></svg>
+            </span>
+
+            <div className="bp-illo">{ILLOS[cat.key]}</div>
+
+            <div className="bp-plate">
+              <span className="bp-plate-title">{categoryData?.title}</span>
+              <span className="bp-go" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 6l6 6-6 6"/>
+                </svg>
+              </span>
+            </div>
+          </button>
+        );
+      })}
+    </>
+  );
+
+  const additionalSection = (
+    <div className="bm-howto">
+      <div className="bm-howto-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFB300" aria-hidden="true">
+          <path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/>
+        </svg>
+        {t.howToPlayTitle}
+      </div>
+      <div className="bm-howto-steps">
+        <div className="bm-howto-step"><span className="bm-step-num">1</span><span>{t.howToStep1}</span></div>
+        <div className="bm-howto-step"><span className="bm-step-num">2</span><span>{t.howToStep2}</span></div>
+        <div className="bm-howto-step"><span className="bm-step-num">3</span><span>{t.howToStep3}</span></div>
       </div>
     </div>
+  );
+
+  return (
+    <PageLayout
+      classPrefix="bp"
+      heroIcon={<MusicNoteIcon size={96} />}
+      heroSubtitle={heroSubtitle}
+      sectionLabel={language === 'bm' ? 'Pilih Kategori' : 'Choose Category'}
+      hintText={hintContent}
+      onBack={onBack}
+      additionalSection={additionalSection}
+    >
+      {gridContent}
+    </PageLayout>
   );
 }

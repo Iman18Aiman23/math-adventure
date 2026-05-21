@@ -9,7 +9,7 @@ import { getGameData } from '../../utils/gameStatsManager';
 import KVLearningPage from './KVLearningPage';
 import KVKLearningPage from './KVKLearningPage';
 import { OpenBookIcon } from '../icons/GameIcons';
-import BackButton from '../BackButton';
+import PageLayout from '../PageLayout';
 
 // ── Design System ────────────────────────────────────────────────────────────
 const DESIGN_SYSTEM = {
@@ -328,83 +328,72 @@ export default function ReadingPage({ onBack, language }) {
       { level: 4, num: 4, capTitle: language === 'bm' ? 'Tahap 4' : 'Level 4' },
     ];
 
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
-        <style>{globalStyles}</style>
+    const heroSubtitle = (
+      <>
+        {language === 'bm' ? 'Dari suku kata hingga ayat penuh. Mulai dari tahap mudah dan berkembang dengan kepercayaan diri!' : 'From syllables to complete sentences. Start easy and progress with confidence!'}
+        <span aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+        </span>
+      </>
+    );
 
-        <div style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
-          <div className="rp-body" style={{ minHeight: '100%' }}>
+    const hintContent = (
+      <>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+        {language === 'bm' ? 'Pilih tahap untuk mula belajar!' : 'Pick a level to start learning!'}
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF1F7A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+      </>
+    );
 
-            <div className="rp-shell">
-              <BackButton onClick={onBack} />
+    const gridTiles = levelData.map((lvl) => (
+      <button
+        key={lvl.level}
+        className={`rp-tile level-${lvl.level}`}
+        onClick={() => handleSelectLevel(lvl.level)}
+        onMouseEnter={playHoverSound}
+        type="button"
+      >
+        <span className="rp-tile-num">{lvl.num}</span>
 
-              {/* Hero */}
-              <section className="rp-hero">
-                <div className="rp-hero-emoji-wrap">
-                  <span className="rp-hero-emoji" role="img" aria-label="open book"><OpenBookIcon size={96} /></span>
-                </div>
-                <p className="rp-hero-sub">
-                  {language === 'bm' ? 'Dari suku kata hingga ayat penuh. Mulai dari tahap mudah dan berkembang dengan kepercayaan diri!' : 'From syllables to complete sentences. Start easy and progress with confidence!'}
-                  <span aria-hidden="true">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-                  </span>
-                </p>
-              </section>
+        <span className="rp-spark s1" style={{ top:'24%', left:'14%' }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg>
+        </span>
+        <span className="rp-spark s2" style={{ top:'30%', right:'14%' }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="10"/></svg>
+        </span>
+        <span className="rp-spark s3" style={{ bottom:'38%', right:'14%' }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,.7)"><circle cx="12" cy="12" r="10"/></svg>
+        </span>
 
-              {/* Section label */}
-              <div className="rp-section-label">
-                {language === 'bm' ? 'Pilih Tahap' : 'Choose Level'}
-              </div>
-
-              {/* Level tiles */}
-              <div className="rp-grid">
-                {levelData.map((lvl) => (
-                  <button
-                    key={lvl.level}
-                    className={`rp-tile level-${lvl.level}`}
-                    onClick={() => handleSelectLevel(lvl.level)}
-                    onMouseEnter={playHoverSound}
-                    type="button"
-                  >
-                    <span className="rp-tile-num">{lvl.num}</span>
-
-                    <span className="rp-spark s1" style={{ top:'24%', left:'14%' }}>
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg>
-                    </span>
-                    <span className="rp-spark s2" style={{ top:'30%', right:'14%' }}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="10"/></svg>
-                    </span>
-                    <span className="rp-spark s3" style={{ bottom:'38%', right:'14%' }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,.7)"><circle cx="12" cy="12" r="10"/></svg>
-                    </span>
-
-                    <div className="rp-illo">
-                      {getTileIllustration(lvl.level)}
-                    </div>
-
-                    <div className="rp-cap">
-                      <span className="rp-cap-title">{lvl.capTitle}</span>
-                      <span className="rp-cap-go" aria-hidden="true">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M9 6l6 6-6 6"/>
-                        </svg>
-                      </span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-
-              {/* Hint footer */}
-              <div className="rp-hint">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-                {language === 'bm' ? 'Pilih tahap untuk mula belajar!' : 'Pick a level to start learning!'}
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF1F7A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-              </div>
-
-            </div>
-          </div>
+        <div className="rp-illo">
+          {getTileIllustration(lvl.level)}
         </div>
-      </div>
+
+        <div className="rp-cap">
+          <span className="rp-cap-title">{lvl.capTitle}</span>
+          <span className="rp-cap-go" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 6l6 6-6 6"/>
+            </svg>
+          </span>
+        </div>
+      </button>
+    ));
+
+    return (
+      <>
+        <style>{globalStyles}</style>
+        <PageLayout
+          classPrefix="rp"
+          heroIcon={<OpenBookIcon size={96} />}
+          heroSubtitle={heroSubtitle}
+          sectionLabel={language === 'bm' ? 'Pilih Tahap' : 'Choose Level'}
+          hintText={hintContent}
+          onBack={onBack}
+        >
+          {gridTiles}
+        </PageLayout>
+      </>
     );
   }
 

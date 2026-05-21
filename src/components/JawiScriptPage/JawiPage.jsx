@@ -8,7 +8,7 @@ import JawiWordsPage from './JawiWordsPage';
 import JawiSyllablesLearningPage from './JawiSyllablesLearningPage';
 import Jawi100WordsGame from './Jawi100WordsGame';
 import JawiShortStoriesPage from './JawiShortStoriesPage';
-import BackButton from '../BackButton';
+import PageLayout from '../PageLayout';
 import { QuranIcon } from '../icons/GameIcons';
 
 // ── Tile SVG illustrations ───────────────────────────────────────────────────
@@ -230,79 +230,67 @@ export default function JawiPage({ onBack, onHome, language, onGameStart, onGame
     if (mode === 'spelling_game') return <Jawi100WordsGame onBack={handleBackFromGame} onHome={onHome} language={language} />;
     if (mode === 'short_stories') return <JawiShortStoriesPage onBack={handleBackFromGame} onHome={onHome} language={language} />;
 
-    return (
-        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
-            <div style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
-                <div className="jw-body" style={{ minHeight: '100%' }}>
+    const heroSubtitle = (
+        <>
+            {t.subtitle}
+            <span aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+            </span>
+        </>
+    );
 
-                    <div className="jw-shell">
-                      <BackButton onClick={onBack} />
+    const hintContent = (
+        <>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+            {t.comingSoon}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF1F7A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+        </>
+    );
 
-                        {/* Hero */}
-                        <section className="jw-hero">
-                            <div className="jw-hero-emoji-wrap">
-                                <span className="jw-hero-emoji" role="img" aria-label="Quran"><QuranIcon size={96} /></span>
-                            </div>
-                            <p className="jw-hero-sub">
-                                {t.subtitle}
-                                <span aria-hidden="true">
-                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-                                </span>
-                            </p>
-                        </section>
+    const gridTiles = activities.map((item) => (
+        <button
+            key={item.mode}
+            className={`jw-tile ${item.tClass}`}
+            onClick={() => handleGameModeChange(item.mode)}
+            type="button"
+        >
+            <span className="jw-tile-num">{item.num}</span>
 
-                        {/* Section label */}
-                        <div className="jw-section-label">
-                            {language === 'bm' ? 'Pilih Aktiviti' : 'Choose Activity'}
-                        </div>
+            <span className="jw-spark s1" style={{ top:'24%', left:'14%' }}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg>
+            </span>
+            <span className="jw-spark s2" style={{ top:'30%', right:'14%' }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="10"/></svg>
+            </span>
+            <span className="jw-spark s3" style={{ bottom:'38%', right:'14%' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,.7)"><circle cx="12" cy="12" r="10"/></svg>
+            </span>
 
-                        {/* Activity tiles */}
-                        <div className="jw-grid">
-                            {activities.map((item) => (
-                                <button
-                                    key={item.mode}
-                                    className={`jw-tile ${item.tClass}`}
-                                    onClick={() => handleGameModeChange(item.mode)}
-                                    type="button"
-                                >
-                                    <span className="jw-tile-num">{item.num}</span>
-
-                                    <span className="jw-spark s1" style={{ top:'24%', left:'14%' }}>
-                                        <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg>
-                                    </span>
-                                    <span className="jw-spark s2" style={{ top:'30%', right:'14%' }}>
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="10"/></svg>
-                                    </span>
-                                    <span className="jw-spark s3" style={{ bottom:'38%', right:'14%' }}>
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,.7)"><circle cx="12" cy="12" r="10"/></svg>
-                                    </span>
-
-                                    <div className="jw-illo">
-                                        {ILLOS[item.mode]}
-                                    </div>
-
-                                    <div className="jw-cap">
-                                        <span className="jw-cap-title">{item.capTitle}</span>
-                                        <span className="jw-cap-go" aria-hidden="true">
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                                                <path d="M9 6l6 6-6 6"/>
-                                            </svg>
-                                        </span>
-                                    </div>
-                                </button>
-                            ))}
-                        </div>
-
-                        {/* Hint footer */}
-                        <div className="jw-hint">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-                            {t.comingSoon}
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF1F7A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-                        </div>
-
-                    </div>
-                </div>
+            <div className="jw-illo">
+                {ILLOS[item.mode]}
             </div>
-        </div>
+
+            <div className="jw-cap">
+                <span className="jw-cap-title">{item.capTitle}</span>
+                <span className="jw-cap-go" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M9 6l6 6-6 6"/>
+                    </svg>
+                </span>
+            </div>
+        </button>
+    ));
+
+    return (
+        <PageLayout
+            classPrefix="jw"
+            heroIcon={<QuranIcon size={96} />}
+            heroSubtitle={heroSubtitle}
+            sectionLabel={language === 'bm' ? 'Pilih Aktiviti' : 'Choose Activity'}
+            hintText={hintContent}
+            onBack={onBack}
+        >
+            {gridTiles}
+        </PageLayout>
     );
 }

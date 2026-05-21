@@ -2,7 +2,7 @@ import React from 'react';
 import './MathHome.css';
 import { LOCALIZATION } from '../../utils/localization';
 import { useGameStateContext } from '../../App';
-import BackButton from '../BackButton';
+import PageLayout from '../PageLayout';
 import { CalculatorIcon } from '../icons/GameIcons';
 
 // ── SVG Illustrations ──────────────────────────────────────────────────────
@@ -116,81 +116,69 @@ export default function MathHome({ onSelectSubGame, onBack, onHome, language }) 
   const t = LOCALIZATION[language].math;
   const gameState = useGameStateContext();
 
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
-      <div style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
-        <div className="mh-body" style={{ minHeight: '100%' }}>
+  const heroSubtitle = (
+    <>
+      {language === 'bm' ? 'Dari operasi asas hingga penyelesaian masalah. Belajar dengan percaya diri!' : 'From basic operations to problem solving. Learn with confidence!'}
+      <span aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+      </span>
+    </>
+  );
 
-          <div className="mh-shell">
-            <BackButton onClick={onBack} />
+  const hintContent = (
+    <>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+      {language === 'bm' ? 'Pilih topik untuk mula belajar!' : 'Pick a topic to start learning!'}
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF1F7A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+    </>
+  );
 
-            {/* Hero */}
-            <section className="mh-hero">
-              <div className="mh-hero-emoji-wrap">
-                <span className="mh-hero-emoji" role="img" aria-label="calculator"><CalculatorIcon size={96} /></span>
-              </div>
-              <p className="mh-hero-sub">
-                {language === 'bm' ? 'Dari operasi asas hingga penyelesaian masalah. Belajar dengan percaya diri!' : 'From basic operations to problem solving. Learn with confidence!'}
-                <span aria-hidden="true">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-                </span>
-              </p>
-            </section>
+  const gridTiles = SUB_GAMES.map((game) => {
+    const title = game.titleKey ? t[game.titleKey] : (game.title[language] || game.title.bm);
 
-            {/* Section label */}
-            <div className="mh-section-label">
-              {language === 'bm' ? 'Pilih Topik' : 'Choose Topic'}
-            </div>
+    return (
+      <button
+        key={game.id}
+        className={`mh-tile ${game.tClass}`}
+        onClick={() => onSelectSubGame(game.id)}
+        type="button"
+      >
+        <span className="mh-tile-num">{game.num}</span>
 
-            {/* Tile grid */}
-            <div className="mh-grid">
-              {SUB_GAMES.map((game) => {
-                const title = game.titleKey ? t[game.titleKey] : (game.title[language] || game.title.bm);
+        <span className="mh-spark s1" style={{ top:'24%', left:'14%' }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg>
+        </span>
+        <span className="mh-spark s2" style={{ top:'30%', right:'14%' }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="10"/></svg>
+        </span>
+        <span className="mh-spark s3" style={{ bottom:'38%', right:'14%' }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,.7)"><circle cx="12" cy="12" r="10"/></svg>
+        </span>
 
-                return (
-                  <button
-                    key={game.id}
-                    className={`mh-tile ${game.tClass}`}
-                    onClick={() => onSelectSubGame(game.id)}
-                    type="button"
-                  >
-                    <span className="mh-tile-num">{game.num}</span>
+        <div className="mh-illo">{ILLOS[game.id]}</div>
 
-                    <span className="mh-spark s1" style={{ top:'24%', left:'14%' }}>
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg>
-                    </span>
-                    <span className="mh-spark s2" style={{ top:'30%', right:'14%' }}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="10"/></svg>
-                    </span>
-                    <span className="mh-spark s3" style={{ bottom:'38%', right:'14%' }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,.7)"><circle cx="12" cy="12" r="10"/></svg>
-                    </span>
-
-                    <div className="mh-illo">{ILLOS[game.id]}</div>
-
-                    <div className="mh-plate">
-                      <span className="mh-plate-title">{title}</span>
-                      <span className="mh-go" aria-hidden="true">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M9 6l6 6-6 6"/>
-                        </svg>
-                      </span>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Hint footer */}
-            <div className="mh-hint">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-              {language === 'bm' ? 'Pilih topik untuk mula belajar!' : 'Pick a topic to start learning!'}
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF1F7A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-            </div>
-
-          </div>
+        <div className="mh-plate">
+          <span className="mh-plate-title">{title}</span>
+          <span className="mh-go" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 6l6 6-6 6"/>
+            </svg>
+          </span>
         </div>
-      </div>
-    </div>
+      </button>
+    );
+  });
+
+  return (
+    <PageLayout
+      classPrefix="mh"
+      heroIcon={<CalculatorIcon size={96} />}
+      heroSubtitle={heroSubtitle}
+      sectionLabel={language === 'bm' ? 'Pilih Topik' : 'Choose Topic'}
+      hintText={hintContent}
+      onBack={onBack}
+    >
+      {gridTiles}
+    </PageLayout>
   );
 }
