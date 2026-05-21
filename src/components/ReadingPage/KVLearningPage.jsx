@@ -115,7 +115,7 @@ export default function KVLearningPage({ onBack, language }) {
           background: '#fff', borderBottom: '2px solid #E5E5E5',
           padding: '0 1rem', height: '56px', flexShrink: 0,
         }}>
-          <button onClick={onBack} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
+          <button type="button" onClick={onBack} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
             <ArrowLeft size={24} />
           </button>
           <div style={{ flex: 1, textAlign: 'center', fontWeight: 900, fontSize: '1rem', color: '#3C3C3C' }}>
@@ -144,6 +144,7 @@ export default function KVLearningPage({ onBack, language }) {
               const ci = idx % VOWEL_COLORS.length;
               return (
                 <button
+                  type="button"
                   key={letter}
                   onClick={() => handleSelectLetter(letter)}
                   style={{
@@ -187,7 +188,7 @@ export default function KVLearningPage({ onBack, language }) {
           background: '#fff', borderBottom: '2px solid #E5E5E5',
           padding: '0 1rem', height: '56px', flexShrink: 0,
         }}>
-          <button onClick={handleBackToLetters} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
+          <button type="button" onClick={handleBackToLetters} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
             <ArrowLeft size={24} />
           </button>
           <div style={{ flex: 1, textAlign: 'center', fontWeight: 900, fontSize: '1rem', color: '#3C3C3C' }}>
@@ -209,7 +210,7 @@ export default function KVLearningPage({ onBack, language }) {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', maxWidth: '320px' }}>
             {nextLetter && (
-              <button onClick={handleNextLetter} style={{
+              <button type="button" onClick={handleNextLetter} style={{
                 width: '100%', padding: '1.1rem',
                 background: '#58CC02', color: '#fff',
                 border: 'none', borderBottom: '4px solid #46A302',
@@ -219,7 +220,7 @@ export default function KVLearningPage({ onBack, language }) {
                 Siri {nextLetter} →
               </button>
             )}
-            <button onClick={handleBackToLetters} style={{
+            <button type="button" onClick={handleBackToLetters} style={{
               width: '100%', padding: '1rem',
               background: '#fff', color: '#3C3C3C',
               border: '2px solid #E5E5E5', borderBottom: '4px solid #D0D0D0',
@@ -252,7 +253,7 @@ export default function KVLearningPage({ onBack, language }) {
         background: '#fff', borderBottom: '2px solid #E5E5E5',
         padding: '0 1rem', height: '56px', flexShrink: 0, gap: '0.5rem',
       }}>
-        <button onClick={handleBackToLetters} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
+        <button type="button" onClick={handleBackToLetters} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
           <ArrowLeft size={22} />
         </button>
 
@@ -279,7 +280,7 @@ export default function KVLearningPage({ onBack, language }) {
       {/* ── Script Toggle ── */}
       <div style={{ display: 'flex', gap: '0.5rem', padding: '0.75rem 1rem 0.25rem', justifyContent: 'center', flexShrink: 0 }}>
         {SCRIPTS.map(s => (
-          <button key={s.key} onClick={() => { setScript(s.key); setActiveSyl(null); }} style={{
+          <button type="button" key={s.key} onClick={() => { setScript(s.key); setActiveSyl(null); }} style={{
             flex: 1, maxWidth: 100, padding: '0.5rem 0',
             background: script === s.key ? s.color : '#fff',
             color:      script === s.key ? '#fff'   : s.color,
@@ -317,7 +318,7 @@ export default function KVLearningPage({ onBack, language }) {
           display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         }}>
           {/* Sound button */}
-          <button onClick={() => speak(currentItem)} title="Play sound" style={{
+          <button type="button" onClick={() => speak(currentItem)} title="Play sound" style={{
             position: 'absolute', top: 12, right: 12,
             background: vowelBg, border: 'none', borderRadius: '50%',
             width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -388,7 +389,7 @@ export default function KVLearningPage({ onBack, language }) {
             const c = VOWEL_COLORS[i % VOWEL_COLORS.length];
             const b = VOWEL_BG[i % VOWEL_BG.length];
             return (
-              <button key={it.id} onClick={() => { setCardIndex(i); setActiveSyl(null); }} style={{
+              <button type="button" key={it.id} onClick={() => { setCardIndex(i); setActiveSyl(null); }} style={{
                 flex: '1 0 auto', minWidth: 44, maxWidth: 64,
                 padding: '0.35rem 0.1rem',
                 background: isA ? c : isDone ? b : '#fff',
@@ -412,7 +413,7 @@ export default function KVLearningPage({ onBack, language }) {
         paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))',
         background: '#fff', borderTop: '2px solid #E5E5E5', flexShrink: 0,
       }}>
-        <button onClick={handlePrev} disabled={cardIndex === 0} style={{
+        <button type="button" onClick={handlePrev} disabled={cardIndex === 0} style={{
           flex: '0 0 50px', height: '50px', borderRadius: '14px',
           background: cardIndex === 0 ? '#f0f0f0' : '#fff',
           border: `2px solid ${cardIndex === 0 ? '#E5E5E5' : '#D0D0D0'}`,
@@ -424,7 +425,7 @@ export default function KVLearningPage({ onBack, language }) {
           <ChevronLeft size={22} />
         </button>
 
-        <button onClick={() => speak(currentItem)} style={{
+        <button type="button" onClick={() => speak(currentItem)} style={{
           flex: 1, height: '50px', borderRadius: '14px',
           background: vowelBg, color: vowelColor,
           border: `2px solid ${vowelColor}44`, borderBottom: `4px solid ${vowelColor}`,
@@ -435,7 +436,7 @@ export default function KVLearningPage({ onBack, language }) {
           {language === 'bm' ? 'Dengar' : 'Listen'}
         </button>
 
-        <button onClick={handleNext} style={{
+        <button type="button" onClick={handleNext} style={{
           flex: '0 0 auto', padding: '0 1.1rem', height: '50px', borderRadius: '14px',
           background: cardIndex === seriesItems.length - 1 ? '#58CC02' : vowelColor,
           color: '#fff', border: 'none',
