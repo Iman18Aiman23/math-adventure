@@ -41,7 +41,7 @@ export default function PageLayout({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
-      <div style={{ flex: 1, overflowY: 'auto', position: 'relative', background: 'var(--bg-body)' }}>
+      <div style={{ flex: 1, overflowY: 'auto', position: 'relative', background: '#ffffff' }}>
         <div className={bodyClass} style={{ minHeight: '100%' }}>
           <div className={shellClass}>
             {/* Back Button */}
