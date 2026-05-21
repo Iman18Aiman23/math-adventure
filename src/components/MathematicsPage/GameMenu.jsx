@@ -65,7 +65,7 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
           display: flex;
           flex-direction: column;
           height: 100%;
-          background: #ffffff;
+          background: var(--bg-body);
           overflow-y: auto;
           overflow-x: hidden;
           padding: 0 14px;

@@ -2,7 +2,7 @@
 
 /* ── Background ── */
 .mh-body {
-  background: #ffffff;
+  background: var(--bg-body);
 }
 
 /* ── Shell ── */
