@@ -9,6 +9,7 @@ import { getGameData } from '../../utils/gameStatsManager';
 import KVLearningPage from './KVLearningPage';
 import KVKLearningPage from './KVKLearningPage';
 import { OpenBookIcon } from '../icons/GameIcons';
+import BackButton from '../BackButton';
 
 // ── Design System ────────────────────────────────────────────────────────────
 const DESIGN_SYSTEM = {
@@ -335,9 +336,7 @@ export default function ReadingPage({ onBack, language }) {
           <div className="rp-body" style={{ minHeight: '100%' }}>
 
             <div className="rp-shell">
-              <button type="button" onClick={onBack} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#6B7280', display: 'flex', alignItems: 'center', padding: '4px', borderRadius: '8px' }}>
-                <ArrowLeft size={24} />
-              </button>
+              <BackButton onClick={onBack} />
 
               {/* Hero */}
               <section className="rp-hero">

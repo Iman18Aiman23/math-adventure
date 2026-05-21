@@ -4,7 +4,7 @@ import { LOCALIZATION } from '../../utils/localization';
 import { useGameStateContext } from '../../App';
 import SpeechManager from '../../services/SpeechManager';
 import BMSpeakGame from './BMSpeakGame';
-import { ArrowLeft } from 'lucide-react';
+import BackButton from '../BackButton';
 import { MusicNoteIcon } from '../icons/GameIcons';
 
 // ── SVG Illustrations ──────────────────────────────────────────────────────
@@ -257,9 +257,7 @@ export default function BMPage({ onBack, onHome, language }) {
         <div className="bp-body" style={{ minHeight: '100%' }}>
 
           <div className="bp-shell">
-            <button type="button" onClick={onBack} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#6B7280', display: 'flex', alignItems: 'center', padding: '4px', borderRadius: '8px' }}>
-              <ArrowLeft size={24} />
-            </button>
+            <BackButton onClick={onBack} />
 
             {/* Hero */}
             <section className="bp-hero">

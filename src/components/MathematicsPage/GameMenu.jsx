@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
 import { useGameStateContext } from '../../App';
-import AppHeader from '../AppHeader';
+import BackButton from '../BackButton';
 
 const OPERATIONS = [
   { id: 'add',      emoji: '➕', labelBm: 'Tambah',  labelEn: 'Addition',       color: '#00DD5F', dark: '#00AA40', light: '#C8FFE0' },
@@ -69,32 +68,11 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
           background: linear-gradient(135deg, #FFF9E6 0%, #FFF9E6 50%, #E6F3FF 100%);
           overflow-y: auto;
           overflow-x: hidden;
-        }
-        .math-header {
-          display: flex;
-          align-items: center;
-          padding: 8px 12px;
-          background: linear-gradient(135deg, #FFFFFF 0%, #FFF5E6 100%);
-          border-bottom: 3px solid #FFD700;
-          position: sticky;
-          top: 0;
-          z-index: 10;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
-        .math-back-btn {
-          background: transparent;
-          color: #000000;
-          padding: 8px;
-          border-radius: 50%;
-          font-weight: bold;
-        }
-        .math-header-title {
-          flex: 1;
-          text-align: center;
-          font-weight: 900;
-          color: #000000;
-          font-size: 1.3rem;
-          margin-right: 38px;
+          padding: 0 14px;
+          max-width: 980px;
+          margin: 0 auto;
+          width: 100%;
+          box-sizing: border-box;
         }
         .math-scroll-area {
           padding: 1rem;
@@ -232,7 +210,10 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
             gap: 0.8rem;
           }
         }
-        @media (max-width: 767px) {
+        @media (max-width: 560px) {
+          .math-menu-fullscreen {
+            padding: 0 10px;
+          }
           .math-btn-icon {
             width: 32px;
             height: 32px;
@@ -268,7 +249,7 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
 
       `}</style>
 
-      <AppHeader onBack={onBack} gameState={gameState} language={language} />
+      <BackButton onClick={onBack} style={{ margin: '8px 0 0 0' }} />
 
       <div className="math-scroll-area">
 

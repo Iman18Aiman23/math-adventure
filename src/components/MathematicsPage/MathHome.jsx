@@ -2,7 +2,7 @@ import React from 'react';
 import './MathHome.css';
 import { LOCALIZATION } from '../../utils/localization';
 import { useGameStateContext } from '../../App';
-import { ArrowLeft } from 'lucide-react';
+import BackButton from '../BackButton';
 import { CalculatorIcon } from '../icons/GameIcons';
 
 // ── SVG Illustrations ──────────────────────────────────────────────────────
@@ -122,9 +122,7 @@ export default function MathHome({ onSelectSubGame, onBack, onHome, language }) 
         <div className="mh-body" style={{ minHeight: '100%' }}>
 
           <div className="mh-shell">
-            <button type="button" onClick={onBack} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#6B7280', display: 'flex', alignItems: 'center', padding: '4px', borderRadius: '8px' }}>
-              <ArrowLeft size={24} />
-            </button>
+            <BackButton onClick={onBack} />
 
             {/* Hero */}
             <section className="mh-hero">

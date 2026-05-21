@@ -8,7 +8,7 @@ import JawiWordsPage from './JawiWordsPage';
 import JawiSyllablesLearningPage from './JawiSyllablesLearningPage';
 import Jawi100WordsGame from './Jawi100WordsGame';
 import JawiShortStoriesPage from './JawiShortStoriesPage';
-import { ArrowLeft } from 'lucide-react';
+import BackButton from '../BackButton';
 import { QuranIcon } from '../icons/GameIcons';
 
 // ── Tile SVG illustrations ───────────────────────────────────────────────────
@@ -236,9 +236,7 @@ export default function JawiPage({ onBack, onHome, language, onGameStart, onGame
                 <div className="jw-body" style={{ minHeight: '100%' }}>
 
                     <div className="jw-shell">
-                      <button type="button" onClick={onBack} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#6B7280', display: 'flex', alignItems: 'center', padding: '4px', borderRadius: '8px' }}>
-                        <ArrowLeft size={24} />
-                      </button>
+                      <BackButton onClick={onBack} />
 
                         {/* Hero */}
                         <section className="jw-hero">
