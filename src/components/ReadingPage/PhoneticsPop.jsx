@@ -6,7 +6,7 @@ import { LOCALIZATION } from '../../utils/localization';
 import { Volume2, Heart, RotateCcw, ArrowLeft } from 'lucide-react';
 import { useGameStateContext } from '../../App';
 import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
-import AppHeader from '../AppHeader';
+import BackButton from '../BackButton';
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
@@ -181,7 +181,7 @@ export default function PhoneticsPop({ onBack, onHome, isMuted, language }) {
   if (gameState_ === 'intro') {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#FFF8E1' }}>
-        <AppHeader onBack={onBack} gameState={gameState} language={language} hearts={hearts} gems={gems} stars={stars} />
+        <BackButton onClick={onBack} />
         <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '2rem 1rem', gap: '1.5rem', textAlign: 'center' }}>
           <h1 style={{
             fontSize: 'clamp(2rem, 5vw, 3rem)',
@@ -465,7 +465,7 @@ export default function PhoneticsPop({ onBack, onHome, isMuted, language }) {
         ))}
       </div>
 
-      <AppHeader onBack={onBack} gameState={gameState} language={language} hearts={hearts} gems={gems} stars={stars} />
+      <BackButton onClick={onBack} />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', width: '100%', position: 'relative', zIndex: 1, minHeight: 0 }}>
         {/* HEADER - Stats */}
         <div style={{

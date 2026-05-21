@@ -249,7 +249,7 @@ export default function GameMenu({ onStart, onBack, onHome, language }) {
 
       `}</style>
 
-      <BackButton onClick={onBack} style={{ margin: '8px 0 0 0' }} />
+      <BackButton onClick={onBack} />
 
       <div className="math-scroll-area">
 

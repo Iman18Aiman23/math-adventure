@@ -15,7 +15,7 @@ export default function TimeGameMenu({ onStart, onBack, onHome, language }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7', padding: '0 14px', maxWidth: '980px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
-      <BackButton onClick={onBack} style={{ margin: '8px 0 12px 0' }} />
+      <BackButton onClick={onBack} />
 
       {/* Content */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 1rem' }}>

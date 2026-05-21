@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { LOCALIZATION } from '../../utils/localization';
 import { JAWI_STORIES } from '../../utils/jawiStoriesData';
 import { useGameStateContext } from '../../App';
-import AppHeader from '../AppHeader';
+import BackButton from '../BackButton';
 
 export default function JawiShortStoriesPage({ onBack, language }) {
     const t = LOCALIZATION[language].jawi;
@@ -57,7 +57,7 @@ export default function JawiShortStoriesPage({ onBack, language }) {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
-            <AppHeader onBack={onBack} gameState={gameState} language={language} />
+            <BackButton onClick={onBack} />
 
             {/* Story Selector & Language Tabs - Same Line */}
             <div style={{

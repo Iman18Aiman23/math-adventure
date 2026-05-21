@@ -2,7 +2,7 @@ import React from 'react';
 import { LOCALIZATION } from '../../utils/localization';
 import { JAWI_ALPHABET } from '../../utils/jawiData';
 import { useGameStateContext } from '../../App';
-import AppHeader from '../AppHeader';
+import BackButton from '../BackButton';
 import JawiSyllablesGame from './JawiSyllablesGame';
 import JawiKVLearningPage from './JawiKVLearningPage';
 import JawiKVKLearningPage from './JawiKVKLearningPage';
@@ -86,7 +86,7 @@ export default function JawiSyllablesLearningPage({ onBack, language }) {
   // Main learning page
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
-      <AppHeader onBack={onBack} gameState={gameState} language={language} />
+      <BackButton onClick={onBack} />
 
       {/* Scrollable content */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 1rem' }}>
