@@ -52,16 +52,16 @@ export default function HomePagePrototype({ onSelectSubject, onSelectAgeGroup, l
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#F8FAFC', color: '#111827', fontFamily: 'Inter, sans-serif' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#2A2420', color: '#F1F5F9', fontFamily: 'Inter, sans-serif' }}>
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
 
         :root {
-            --primary: #4A90E2; 
-            --secondary: #9013FE;
-            --surface: #FFFFFF;
-            --text-main: #111827;
+            --primary: #6366F1;
+            --secondary: #F97316;
+            --surface: #1E293B;
+            --text-main: #F1F5F9;
 
             /* Soft Pink (Reading) */
             --coral: #EF4444;
@@ -84,13 +84,13 @@ export default function HomePagePrototype({ onSelectSubject, onSelectAgeGroup, l
             --green-mid: #5ABF77;
         }
 
-        /* Horizontal Subject Cards */
+        /* Horizontal Subject Cards - Dark Theme */
         .subject-card {
             background-color: var(--subject-bg);
             border-radius: 20px;
             padding: 1.2rem 1.5rem;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
             display: flex;
@@ -98,38 +98,42 @@ export default function HomePagePrototype({ onSelectSubject, onSelectAgeGroup, l
             align-items: center;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
-            
-            border: 2px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04), inset 0 2px 6px rgba(255,255,255,0.6);
+
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 2px 6px rgba(255, 255, 255, 0.08);
             margin-bottom: 8px;
             text-align: left;
         }
 
         .subject-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.06), 0 0 20px var(--subject-bg);
-            filter: brightness(1.02);
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 12px 28px rgba(99, 102, 241, 0.2), 0 0 20px rgba(99, 102, 241, 0.1), inset 0 2px 6px rgba(255, 255, 255, 0.1);
+            filter: brightness(1.08);
         }
 
         .subject-card:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            transform: translateY(0);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .arrow-btn {
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: #FFFFFF;
+            background: var(--primary);
+            color: #FFFFFF;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transition: transform 0.2s ease;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+            transition: all 0.2s ease;
         }
         .subject-card:hover .arrow-btn {
-            transform: translateX(4px) scale(1.05);
+            transform: translateX(4px) scale(1.1);
+            background: #F97316;
+            box-shadow: 0 6px 16px rgba(249, 115, 22, 0.3);
         }
 
         /* SVG Animations */
@@ -169,22 +173,23 @@ export default function HomePagePrototype({ onSelectSubject, onSelectAgeGroup, l
 
         @keyframes jello { 0% { transform: scale(1); } 20% { transform: scale(0.94, 1.06); } 40% { transform: scale(1.04, 0.96); } 60% { transform: scale(0.98, 1.02); } 80% { transform: scale(1.01, 0.99); } 100% { transform: scale(1); } }
         
-        /* Age Group Buttons - Colored & Interactive */
+        /* Age Group Buttons - Dark Theme */
         .age-group-card {
             border-radius: 20px;
             transition: all 0.25s ease;
-            border: 2px solid rgba(255,255,255,0.8);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04), inset 0 2px 4px rgba(255,255,255,0.6);
-            margin-bottom: 8px; /* space for the shadow */
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.08);
+            margin-bottom: 8px;
         }
         .age-group-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.06), 0 0 20px rgba(255,255,255,0.4);
-            filter: brightness(1.02);
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 12px 28px rgba(99, 102, 241, 0.2), 0 0 20px rgba(99, 102, 241, 0.1), inset 0 2px 4px rgba(255, 255, 255, 0.1);
+            filter: brightness(1.1);
         }
         .age-group-card:active {
-            transform: translateY(2px) !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03) !important;
+            transform: translateY(0) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
         }
         .age-group-card:hover .age-icon-bounce {
             animation: jello 0.6s ease;
@@ -277,13 +282,14 @@ export default function HomePagePrototype({ onSelectSubject, onSelectAgeGroup, l
       {/* Main Content Area */}
       <div className="main-content-area" style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 2.5rem' }}>
 
-        {/* HERO SECTION - Matching the image */}
+        {/* HERO SECTION - Dark Theme */}
         <div className="hero-section" style={{
-          background: 'linear-gradient(130deg, #5A4FCF 30%, #7645D9 70%)',
+          background: 'linear-gradient(130deg, #1E293B 0%, #0F766E 30%, #1E293B 60%, #334155 100%)',
           borderRadius: '24px',
           padding: '2.5rem 2rem 1.5rem 2rem',
           marginBottom: '3rem',
-          boxShadow: '0 20px 40px rgba(90, 79, 207, 0.25), inset 0 2px 6px rgba(255, 255, 255, 0.2)',
+          boxShadow: '0 20px 40px rgba(99, 102, 241, 0.15), inset 0 2px 6px rgba(255, 255, 255, 0.05)',
+          border: '1px solid rgba(148, 163, 184, 0.2)',
           color: '#FFFFFF',
           position: 'relative',
           overflow: 'hidden'
@@ -460,7 +466,7 @@ export default function HomePagePrototype({ onSelectSubject, onSelectAgeGroup, l
         <div className="course-grid">
 
           {/* 1. Belajar Membaca */}
-          <div className="subject-card" style={{ '--subject-bg': 'var(--coral-light)', color: 'var(--coral)' }} onClick={() => onSelectSubject('reading')} role="button" tabIndex="0" aria-label="Belajar Membaca">
+          <div className="subject-card" style={{ '--subject-bg': '#1E293B', color: '#FFFFFF' }} onClick={() => onSelectSubject('reading')} role="button" tabIndex="0" aria-label="Belajar Membaca">
             <div className="card-deco" style={{ width: '150px', height: '150px', background: 'radial-gradient(circle, rgba(239,68,68,0.15) 0%, rgba(239,68,68,0) 70%)', top: '-40px', right: '-40px' }}></div>
             <div className="card-deco" style={{ width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(239,68,68,0.15) 0%, rgba(239,68,68,0) 70%)', bottom: '-20px', left: '-20px' }}></div>
 
@@ -508,7 +514,7 @@ export default function HomePagePrototype({ onSelectSubject, onSelectAgeGroup, l
           </div>
 
           {/* 2. Belajar Sebutan */}
-          <div className="subject-card" style={{ '--subject-bg': 'var(--teal-light)', color: 'var(--teal)' }} onClick={() => onSelectSubject('bm')} role="button" tabIndex="0" aria-label="Belajar Sebutan">
+          <div className="subject-card" style={{ '--subject-bg': '#0F766E', color: '#FFFFFF' }} onClick={() => onSelectSubject('bm')} role="button" tabIndex="0" aria-label="Belajar Sebutan">
             <div className="card-deco" style={{ width: '150px', height: '150px', background: 'radial-gradient(circle, rgba(13,148,136,0.15) 0%, rgba(13,148,136,0) 70%)', top: '-40px', right: '-40px' }}></div>
             <div className="card-deco" style={{ width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(13,148,136,0.15) 0%, rgba(13,148,136,0) 70%)', bottom: '-20px', left: '-20px' }}></div>
 
@@ -559,7 +565,7 @@ export default function HomePagePrototype({ onSelectSubject, onSelectAgeGroup, l
           </div>
 
           {/* 3. Jawi */}
-          <div className="subject-card" style={{ '--subject-bg': 'var(--gold-light)', color: 'var(--gold)' }} onClick={() => onSelectSubject('jawi')} role="button" tabIndex="0" aria-label="Jawi">
+          <div className="subject-card" style={{ '--subject-bg': '#1E293B', color: '#FFFFFF' }} onClick={() => onSelectSubject('jawi')} role="button" tabIndex="0" aria-label="Jawi">
             <div className="card-deco" style={{ width: '150px', height: '150px', background: 'radial-gradient(circle, rgba(217,119,6,0.15) 0%, rgba(217,119,6,0) 70%)', top: '-40px', right: '-40px' }}></div>
             <div className="card-deco" style={{ width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(217,119,6,0.15) 0%, rgba(217,119,6,0) 70%)', bottom: '-20px', left: '-20px' }}></div>
 
@@ -611,7 +617,7 @@ export default function HomePagePrototype({ onSelectSubject, onSelectAgeGroup, l
           </div>
 
           {/* 4. Matematik */}
-          <div className="subject-card" style={{ '--subject-bg': 'var(--green-light)', color: 'var(--green)' }} onClick={() => onSelectSubject('math')} role="button" tabIndex="0" aria-label="Matematik">
+          <div className="subject-card" style={{ '--subject-bg': '#334155', color: '#FFFFFF' }} onClick={() => onSelectSubject('math')} role="button" tabIndex="0" aria-label="Matematik">
             <div className="card-deco" style={{ width: '150px', height: '150px', background: 'radial-gradient(circle, rgba(16,185,129,0.15) 0%, rgba(16,185,129,0) 70%)', top: '-40px', right: '-40px' }}></div>
             <div className="card-deco" style={{ width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(16,185,129,0.15) 0%, rgba(16,185,129,0) 70%)', bottom: '-20px', left: '-20px' }}></div>
 
@@ -688,7 +694,7 @@ export default function HomePagePrototype({ onSelectSubject, onSelectAgeGroup, l
               onClick={() => onSelectAgeGroup && onSelectAgeGroup(group.id)}
               onMouseEnter={playHoverSound}
               style={{
-                backgroundColor: group.color,
+                backgroundColor: i === 0 ? '#1E293B' : i === 1 ? '#0F766E' : '#334155',
                 padding: '1.25rem 1.5rem',
                 display: 'flex',
                 alignItems: 'center',

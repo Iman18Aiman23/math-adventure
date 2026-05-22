@@ -2,7 +2,7 @@
 
 ## Overview
 
-The **Math Adventure** application uses a responsive, dual-layout design that adapts seamlessly between mobile and desktop experiences. The layout is inspired by Duolingo's interface pattern, featuring a sidebar on desktop and a bottom tab bar on mobile.
+The **Math Adventure** application uses a responsive, dual-layout design that adapts seamlessly between mobile and desktop experiences. The layout is inspired by Duolingo's interface pattern, featuring a sidebar on desktop and **CosmicMobileNav** bottom navigation on mobile.
 
 ---
 
@@ -31,18 +31,18 @@ The **Math Adventure** application uses a responsive, dual-layout design that ad
 
 #### Mobile Layout (<768px)
 ```
-┌──────────────────────────────┐
-│  #root (Flexbox Column)      │
-├──────────────────────────────┤
-│  .app-container              │
-│                              │
-│  - Header (varies by page)   │
-│  - Content                   │
-│  - Tab Bar (visible)         │
-│                              │
-│  .duo-tab-bar                │
-│  (5 Tabs at bottom)          │
-└──────────────────────────────┘
+┌──────────────────────────────────────┐
+│  #root (Flexbox Column)              │
+├──────────────────────────────────────┤
+│  .app-container                      │
+│                                      │
+│  - Header (varies by page)           │
+│  - Content                           │
+│  - Tab Bar (visible)                 │
+│                                      │
+│  .duo-tab-bar                        │
+│  CosmicMobileNav                     │
+└──────────────────────────────────────┘
 ```
 
 ---
@@ -428,7 +428,7 @@ Stats Grid (2 columns)
 
 ## 6. Footer / Bottom Tab Bar
 
-### `.duo-tab-bar` (Mobile Bottom Navigation)
+### `CosmicMobileNav` / `.duo-tab-bar` (Mobile Bottom Navigation)
 
 **Display**: Flex, space-around, stretch
 **Position**: Sticky bottom
@@ -437,7 +437,7 @@ Stats Grid (2 columns)
 **Border Top**: 2px solid `var(--border-color)`
 **Box Shadow**: 0 -2px 8px rgba(0, 0, 0, 0.06)
 **Padding Bottom**: `calc(var(--safe-bottom))` (for mobile notches)
-**Visibility**: Mobile only (hidden on desktop via `.duo-tab-bar { display: none !important }`)
+**Visibility**: Mobile only — `CosmicMobileNav` is rendered conditionally in `App.jsx` (hidden during active quiz, Jawi game, assessment, age game, or 'learn' tab). The `.duo-tab-bar` wrapper is hidden on desktop via `.duo-tab-bar { display: none !important }`
 
 ### `.duo-tab-container` (Tab Items Wrapper)
 
@@ -555,7 +555,7 @@ Used in game screens at bottom
 ### Mobile (< 768px)
 - **Layout**: Single column
 - **Sidebar**: Hidden
-- **Tab Bar**: Visible (bottom)
+- **CosmicMobileNav**: Visible (bottom)
 - **Content**: Full width minus padding
 - **Header**: Sticky top
 - **Footer**: Sticky bottom
@@ -594,7 +594,7 @@ Used in game screens at bottom
 ### Tablet (768px - 1023px)
 - **Layout**: Sidebar + Content (768px width breakpoint)
 - **Sidebar**: Visible (240px fixed)
-- **Tab Bar**: Hidden
+- **CosmicMobileNav**: Hidden
 - **Content**: Flex: 1 (fills remaining space)
 - **Max Content**: 700px (centered with margins)
 
@@ -661,7 +661,7 @@ Used in game screens at bottom
 | App Content | `.app-content` | Scrollable content area | Always |
 | Game Header | `.game-header` | In-game top bar | Games/Lessons |
 | Home Header | `.duo-home-header` | Dashboard top bar | Home page |
-| Tab Bar | `.duo-tab-bar` | Mobile bottom nav | <768px |
+| CosmicMobileNav | `.duo-tab-bar` | Mobile bottom nav | <768px |
 | Course Cards | `.duo-course-card` | Course selection | Home page |
 | Header Sections | `.header-section` | Header parts (left/middle/right) | With game header |
 
@@ -678,7 +678,7 @@ Used in game screens at bottom
    - Click "Leaderboard" → Leaderboard (placeholder)
    - Click "Language" → Toggle language
 
-3. **Mobile Tab Navigation**:
+3. **Mobile Navigation (CosmicMobileNav)**:
    - Tap "Kursus" → Home
    - Tap "Profil" → Profile
    - Tap "Ranking" → Leaderboard
@@ -706,7 +706,7 @@ Used in game screens at bottom
 ## 13. File References
 
 **Key Component Files**:
-- `src/App.jsx` - Main app logic, layout, and TABS definition for mobile menu bar
+- `src/App.jsx` - Main app logic, layout, and TABS definition; renders `CosmicMobileNav` for mobile bottom navigation
 - `src/components/DesktopSidebar.jsx` - Sidebar component
 - `src/components/GameHeader.jsx` - Game header component
 - `src/components/HomePage.jsx` - Home page layout
@@ -842,7 +842,7 @@ Used in game screens at bottom
 
 The **Math Adventure** UI is built with a **mobile-first responsive design**:
 
-- **Mobile**: Bottom-tab navigation, full-width content
+- **Mobile**: CosmicMobileNav bottom navigation, full-width content
 - **Desktop**: Left sidebar navigation, centered content
 - **Consistent headers**: Game headers for lessons, home headers for dashboard
 - **Color-coded sections**: Each course has distinct color theming

@@ -182,7 +182,7 @@ export default function LeaderboardHome({ language = 'eng', gameState }) {
   const t = (bm, eng) => language === 'bm' ? bm : eng;
 
   return (
-    <div className="lb-shell">
+    <div className="page-shell lb-shell">
 
       {/* ── Full-page star field ── */}
       {STARS.map(s => (

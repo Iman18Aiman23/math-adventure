@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { getGameData } from '../utils/gameStatsManager';
 import { AGE_GROUPS } from '../data/ageCurriculum';
 import { playHoverSound } from '../utils/soundManager';
-import CosmicMobileNav from './CosmicMobileNav';
 
 // ── 28 animated star particles for the hero (stable, never re-generated) ──────
 const HERO_STARS = Array.from({ length: 28 }, (_, i) => ({
@@ -14,7 +13,7 @@ const HERO_STARS = Array.from({ length: 28 }, (_, i) => ({
   o: [0.4,0.65,0.35,0.7,0.5,0.25,0.6,0.45,0.55,0.72,0.3,0.58,0.42,0.68,0.38,0.62,0.28,0.5,0.75,0.33,0.6,0.48,0.4,0.7,0.32,0.56,0.78,0.44][i],
 }));
 
-export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, playerName, gameState, streak = 0, activeTab, onTabChange, onHome, onToggleLang }) {
+export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, playerName, gameState, streak = 0, activeTab, onTabChange, onHome, onToggleLang, theme }) {
   const currentLevel = gameState?.level ?? 1;
 
   /* Streak logic */
@@ -63,7 +62,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#F8FAFC', color: '#111827', fontFamily: 'Inter, sans-serif' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#130B1E', color: '#F1F5F9', fontFamily: 'Inter, sans-serif' }}>
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&family=Fredoka:wght@500;600;700&display=swap');
@@ -95,11 +94,9 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             --green-mid: #6EE7B7;
         }
 
-        /* Horizontal Subject Cards — Space theme */
+        /* Horizontal Subject Cards — Light cards on white */
         .subject-card {
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
+            background: #FFFFFF;
             border-radius: 20px;
             padding: 1.2rem 1.5rem;
             cursor: pointer;
@@ -108,43 +105,63 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             overflow: hidden;
             display: flex;
             flex-direction: row;
+            flex-wrap: wrap;
             align-items: center;
+            gap: 1rem;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
-            border: 1.5px solid rgba(255,255,255,0.1);
-            border-left: 4px solid var(--subject-accent, #7C3AED);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1.5px solid #E5E7EB;
+            border-left: 5px solid var(--subject-accent, #7C3AED);
+            box-shadow: 0 2px 6px rgba(17,24,39,0.04), 0 6px 18px rgba(17,24,39,0.06);
             margin-bottom: 8px;
             text-align: left;
+        }
+        .subject-card > .subject-card-body {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 1rem;
+            flex: 1 1 200px;
+            min-width: 0;
+        }
+        .subject-card-text {
+            flex: 1 1 140px;
+            min-width: 0;
         }
 
         .subject-card:hover {
             transform: translateY(-4px);
-            background: rgba(255,255,255,0.1);
-            box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 0 28px var(--subject-glow, rgba(124,58,237,0.3));
+            background: #FFFFFF;
+            border-color: var(--subject-accent, #7C3AED);
+            border-left-color: var(--subject-accent, #7C3AED);
+            box-shadow: 0 14px 36px rgba(17,24,39,0.10), 0 0 0 4px var(--subject-glow, rgba(124,58,237,0.18));
         }
 
         .subject-card:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+            transform: translateY(1px);
+            box-shadow: 0 2px 8px rgba(17,24,39,0.08);
         }
 
         .arrow-btn {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(6px);
-            border: 1.5px solid rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.04);
+            border: 1.5px solid rgba(0,0,0,0.06);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            transition: transform 0.2s ease, background 0.2s ease;
+            transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
         }
         .subject-card:hover .arrow-btn {
             transform: translateX(4px) scale(1.05);
             background: var(--subject-accent, #7C3AED);
+            border-color: var(--subject-accent, #7C3AED);
+        }
+        .subject-card:hover .arrow-btn svg {
+            stroke: #FFFFFF !important;
         }
 
         /* SVG Animations */
@@ -186,33 +203,36 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
 
         @keyframes jello { 0% { transform: scale(1); } 20% { transform: scale(0.94, 1.06); } 40% { transform: scale(1.04, 0.96); } 60% { transform: scale(0.98, 1.02); } 80% { transform: scale(1.01, 0.99); } 100% { transform: scale(1); } }
         
-        /* Age Group Buttons — Space nebula theme */
+        /* Age Group Buttons — Colorful gradient buttons on white */
         .age-group-card {
             border-radius: 20px;
             transition: all 0.25s ease;
-            border: 1.5px solid rgba(255,255,255,0.25);
-            box-shadow: 0 6px 0 rgba(0,0,0,0.35), inset 0 2px 4px rgba(255,255,255,0.2);
+            border: 1.5px solid rgba(255,255,255,0.4);
+            box-shadow: 0 4px 0 rgba(17,24,39,0.12), 0 6px 18px rgba(17,24,39,0.08), inset 0 2px 4px rgba(255,255,255,0.25);
             margin-bottom: 8px;
         }
         .age-group-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 14px 0 rgba(0,0,0,0.3), 0 0 32px var(--age-glow, rgba(124,58,237,0.5)), inset 0 2px 4px rgba(255,255,255,0.2);
+            box-shadow: 0 8px 0 rgba(17,24,39,0.1), 0 16px 32px var(--age-glow, rgba(124,58,237,0.35)), inset 0 2px 4px rgba(255,255,255,0.25);
         }
         .age-group-card:active {
-            transform: translateY(3px) !important;
-            box-shadow: 0 2px 0 rgba(0,0,0,0.3) !important;
+            transform: translateY(2px) !important;
+            box-shadow: 0 2px 0 rgba(17,24,39,0.12) !important;
         }
         .age-group-card:hover .age-icon-bounce {
             animation: jello 0.6s ease;
         }
 
         .section-header {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 900;
-            color: rgba(255,255,255,0.5);
-            letter-spacing: 0.12em;
+            color: #1F2937;
+            letter-spacing: 0.15em;
             margin-bottom: 1.2rem;
             text-transform: uppercase;
+            padding-left: 14px;
+            border-left: 4px solid var(--theme-hero-border, #A78BFA);
+            line-height: 1;
         }
 
         .course-grid {
@@ -249,11 +269,11 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
                 justify-content: space-between !important;
             }
             .planet-svg-container {
-                width: 140px !important;
-                height: 140px !important;
-                right: 8% !important;
-                top: 5% !important;
-                opacity: 0.4 !important;
+                width: 110px !important;
+                height: 110px !important;
+                right: 6% !important;
+                top: 50% !important;
+                transform: translateY(-50%) !important;
             }
             .streak-bar-container {
                 flex-wrap: nowrap !important;
@@ -301,15 +321,15 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
       `}</style>
 
       {/* Main Content Area */}
-      <div className="main-content-area" style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 2.5rem', background: 'linear-gradient(175deg, #0F0B1E 0%, #1A1040 35%, #2D1B69 65%, #1A1040 100%)' }}>
+      <div className="page-shell main-content-area" style={{ paddingTop: '1.5rem', paddingLeft: '2.5rem', paddingRight: '2.5rem', paddingBottom: 0 }}>
 
         {/* HERO SECTION - Matching the image */}
         <div className="hero-section" style={{
-          background: 'linear-gradient(175deg, #0F0B1E 0%, #1A1040 35%, #2D1B69 65%, #1A1040 100%)',
+          background: 'var(--theme-hero-bg, linear-gradient(175deg, #0F0B1E 0%, #1A1040 35%, #2D1B69 65%, #1A1040 100%))',
           borderRadius: '24px',
           padding: '2.5rem 2rem 1.5rem 2rem',
           marginBottom: '3rem',
-          border: '2px solid #A78BFA',
+          border: '2px solid var(--theme-hero-border, #A78BFA)',
           boxShadow: '0 20px 60px rgba(15,11,30,0.6), 0 0 28px rgba(167,139,250,0.4)',
           color: '#FFFFFF',
           position: 'relative',
@@ -333,67 +353,33 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             }} />
           ))}
 
-          {/* Planet Illustration - 3D Styled */}
-          <div className="planet-svg-container" style={{ position: 'absolute', top: '-10%', right: '12%', width: '220px', height: '220px', pointerEvents: 'none' }}>
-            <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0 15px 25px rgba(0,0,0,0.2))' }}>
-              {/* Soft outer glow */}
-              <circle cx="100" cy="100" r="55" fill="url(#planetGlow)" opacity="0.6" />
-
-              {/* Back part of the ring */}
-              <path d="M30,120 C40,90 160,70 170,100" fill="none" stroke="url(#ringBackGrad)" strokeWidth="12" strokeLinecap="round" />
-
-              {/* Main Planet Sphere */}
-              <circle cx="100" cy="100" r="45" fill="url(#planetSphereGrad)" />
-
-              {/* Inner shadow/highlight for 3D effect */}
-              <circle cx="90" cy="90" r="40" fill="url(#planetHighlight)" opacity="0.6" />
-              <path d="M55,100 A45,45 0 0,0 145,100 A45,30 0 0,1 55,100 Z" fill="#3B0764" opacity="0.4" />
-
-              {/* Front part of the ring */}
-              <path d="M25,115 C35,145 165,125 175,95" fill="none" stroke="url(#ringFrontGrad)" strokeWidth="14" strokeLinecap="round" />
-
-              {/* Ring reflection/highlight */}
-              <path d="M40,123 C60,135 120,125 155,105" fill="none" stroke="#FFFFFF" strokeWidth="2" opacity="0.5" strokeLinecap="round" />
-
-              {/* Floating stars around the planet */}
-              <path d="M30,60 L33,68 L41,71 L33,74 L30,82 L27,74 L19,71 L27,68 Z" fill="#E9D5FF" opacity="0.8" />
-              <path d="M160,40 L162,45 L167,47 L162,49 L160,54 L158,49 L153,47 L158,45 Z" fill="#E9D5FF" opacity="0.6" />
-              <circle cx="150" cy="140" r="2" fill="#E9D5FF" opacity="0.5" />
-              <circle cx="45" cy="145" r="1.5" fill="#E9D5FF" opacity="0.4" />
-
-              <defs>
-                <radialGradient id="planetGlow" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stopColor="#A855F7" />
-                  <stop offset="100%" stopColor="#A855F7" stopOpacity="0" />
-                </radialGradient>
-
-                <linearGradient id="planetSphereGrad" x1="30" y1="30" x2="170" y2="170" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stopColor="#D8B4FE" />
-                  <stop offset="30%" stopColor="#A855F7" />
-                  <stop offset="80%" stopColor="#6B21A8" />
-                  <stop offset="100%" stopColor="#3B0764" />
-                </linearGradient>
-
-                <radialGradient id="planetHighlight" cx="30%" cy="30%" r="60%">
-                  <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.4" />
-                  <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
-                </radialGradient>
-
-                <linearGradient id="ringBackGrad" x1="30" y1="120" x2="170" y2="100" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stopColor="#581C87" />
-                  <stop offset="50%" stopColor="#7E22CE" stopOpacity="0.5" />
-                  <stop offset="100%" stopColor="#581C87" />
-                </linearGradient>
-
-                <linearGradient id="ringFrontGrad" x1="25" y1="115" x2="175" y2="95" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stopColor="#D8B4FE" />
-                  <stop offset="20%" stopColor="#A855F7" />
-                  <stop offset="50%" stopColor="#7E22CE" />
-                  <stop offset="80%" stopColor="#A855F7" />
-                  <stop offset="100%" stopColor="#D8B4FE" stopOpacity="0.8" />
-                </linearGradient>
-              </defs>
-            </svg>
+          {/* Planet — colorpalette.html style: body + ring, fully % based */}
+          <div className="planet-svg-container" style={{ position: 'absolute', top: '50%', right: '12%', transform: 'translateY(-50%)', width: '160px', height: '160px', pointerEvents: 'none' }}>
+            <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+              {/* Planet body — 75% of container, centered */}
+              <div style={{
+                width: '75%',
+                height: '75%',
+                borderRadius: '50%',
+                background: 'var(--theme-planet-body, radial-gradient(circle at 30% 30%, #C084FC, #6B21A8))',
+                position: 'absolute',
+                top: '12.5%',
+                left: '12.5%',
+                boxShadow: '0 0 40px rgba(168,85,247,0.45), inset 0 0 20px rgba(255,255,255,0.08)',
+              }} />
+              {/* Planet ring — 120% wide × 35% tall, anchored to center */}
+              <div style={{
+                position: 'absolute',
+                width: '120%',
+                height: '35%',
+                border: '2.5px solid var(--theme-planet-ring, #A78BFA)',
+                borderRadius: '50%',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%) rotate(-15deg)',
+                opacity: 0.7,
+              }} />
+            </div>
           </div>
 
           <div className="hero-header" style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2.5rem' }}>
@@ -501,7 +487,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             <div className="card-deco" style={{ width: '160px', height: '160px', background: 'radial-gradient(circle, rgba(6,182,212,0.25) 0%, transparent 70%)', top: '-40px', right: '-40px' }}></div>
             <div className="card-deco" style={{ width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(6,182,212,0.15) 0%, transparent 70%)', bottom: '-20px', left: '-20px' }}></div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flex: 1 }}>
+            <div className="subject-card-body">
               <div className="svg-wrap">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <ellipse cx="100" cy="180" rx="52" ry="7" fill="rgba(0,0,0,0.07)" />
@@ -530,17 +516,17 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
                   <g className="ps"><polygon points="22,14 24,21 31,21 26,25 28,32 22,27 16,32 18,25 13,21 20,21" fill="#FFD93D" /></g>
                 </svg>
               </div>
-              <div style={{ flex: 1, paddingRight: '1rem' }}>
-                <div style={{ fontWeight: 900, fontSize: '1.25rem', letterSpacing: '-0.02em', color: '#67E8F9', marginBottom: '6px' }}>
+              <div className="subject-card-text">
+                <div style={{ fontWeight: 900, fontSize: '1.25rem', letterSpacing: '-0.02em', color: '#0E7490', marginBottom: '6px' }}>
                   {language === 'bm' ? 'Membaca' : 'Reading'}
                 </div>
-                <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', fontWeight: 500, lineHeight: 1.4 }}>
+                <div style={{ fontSize: '0.85rem', color: '#6B7280', fontWeight: 500, lineHeight: 1.4 }}>
                   {language === 'bm' ? 'Kuasai kemahiran membaca dengan seronok!' : 'Master reading skills with fun!'}
                 </div>
               </div>
             </div>
             <div className="arrow-btn">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#67E8F9" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0E7490" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
             </div>
           </div>
 
@@ -549,7 +535,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             <div className="card-deco" style={{ width: '160px', height: '160px', background: 'radial-gradient(circle, rgba(249,115,22,0.25) 0%, transparent 70%)', top: '-40px', right: '-40px' }}></div>
             <div className="card-deco" style={{ width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(249,115,22,0.15) 0%, transparent 70%)', bottom: '-20px', left: '-20px' }}></div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flex: 1 }}>
+            <div className="subject-card-body">
               <div className="svg-wrap">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <ellipse cx="100" cy="182" rx="35" ry="6" fill="rgba(0,0,0,0.07)" />
@@ -581,17 +567,17 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
                   <g className="fl3"><text x="165" y="42" fontSize="18" fill="#7EDDD7" fontFamily="Inter, serif">&#9835;</text></g>
                 </svg>
               </div>
-              <div style={{ flex: 1, paddingRight: '1rem' }}>
-                <div style={{ fontWeight: 900, fontSize: '1.25rem', letterSpacing: '-0.02em', color: '#FED7AA', marginBottom: '6px' }}>
+              <div className="subject-card-text">
+                <div style={{ fontWeight: 900, fontSize: '1.25rem', letterSpacing: '-0.02em', color: '#C2410C', marginBottom: '6px' }}>
                   {language === 'bm' ? 'Sebutan' : 'Speaking'}
                 </div>
-                <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', fontWeight: 500, lineHeight: 1.4 }}>
+                <div style={{ fontSize: '0.85rem', color: '#6B7280', fontWeight: 500, lineHeight: 1.4 }}>
                   {language === 'bm' ? 'Perbaiki sebutan dengan yakin!' : 'Improve pronunciation with confidence!'}
                 </div>
               </div>
             </div>
             <div className="arrow-btn">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FED7AA" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C2410C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
             </div>
           </div>
 
@@ -600,7 +586,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             <div className="card-deco" style={{ width: '160px', height: '160px', background: 'radial-gradient(circle, rgba(250,204,21,0.25) 0%, transparent 70%)', top: '-40px', right: '-40px' }}></div>
             <div className="card-deco" style={{ width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(250,204,21,0.15) 0%, transparent 70%)', bottom: '-20px', left: '-20px' }}></div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flex: 1 }}>
+            <div className="subject-card-body">
               <div className="svg-wrap">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <ellipse cx="100" cy="182" rx="45" ry="6" fill="rgba(0,0,0,0.07)" />
@@ -633,17 +619,17 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
                   <g className="ps"><polygon points="55,28 56.5,33 61,33 57.5,36 58.5,41 55,38 51.5,41 52.5,36 49,33 53.5,33" fill="#FF6B6B" /></g>
                 </svg>
               </div>
-              <div style={{ flex: 1, paddingRight: '1rem' }}>
-                <div style={{ fontWeight: 900, fontSize: '1.25rem', letterSpacing: '-0.02em', color: '#FDE68A', marginBottom: '6px' }}>
+              <div className="subject-card-text">
+                <div style={{ fontWeight: 900, fontSize: '1.25rem', letterSpacing: '-0.02em', color: '#B45309', marginBottom: '6px' }}>
                   Jawi
                 </div>
-                <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', fontWeight: 500, lineHeight: 1.4 }}>
+                <div style={{ fontSize: '0.85rem', color: '#6B7280', fontWeight: 500, lineHeight: 1.4 }}>
                   {language === 'bm' ? 'Belajar Jawi dengan mudah!' : 'Learn Jawi easily!'}
                 </div>
               </div>
             </div>
             <div className="arrow-btn">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FDE68A" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
             </div>
           </div>
 
@@ -652,7 +638,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             <div className="card-deco" style={{ width: '160px', height: '160px', background: 'radial-gradient(circle, rgba(16,185,129,0.25) 0%, transparent 70%)', top: '-40px', right: '-40px' }}></div>
             <div className="card-deco" style={{ width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%)', bottom: '-20px', left: '-20px' }}></div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flex: 1 }}>
+            <div className="subject-card-body">
               <div className="svg-wrap">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <ellipse cx="100" cy="182" rx="40" ry="6" fill="rgba(0,0,0,0.07)" />
@@ -696,17 +682,17 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
                   </g>
                 </svg>
               </div>
-              <div style={{ flex: 1, paddingRight: '1rem' }}>
-                <div style={{ fontWeight: 900, fontSize: '1.25rem', letterSpacing: '-0.02em', color: '#6EE7B7', marginBottom: '6px' }}>
+              <div className="subject-card-text">
+                <div style={{ fontWeight: 900, fontSize: '1.25rem', letterSpacing: '-0.02em', color: '#047857', marginBottom: '6px' }}>
                   {language === 'bm' ? 'Matematik' : 'Math'}
                 </div>
-                <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', fontWeight: 500, lineHeight: 1.4 }}>
+                <div style={{ fontSize: '0.85rem', color: '#6B7280', fontWeight: 500, lineHeight: 1.4 }}>
                   {language === 'bm' ? 'Teroka dunia nombor dan logik!' : 'Explore the world of numbers and logic!'}
                 </div>
               </div>
             </div>
             <div className="arrow-btn">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6EE7B7" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#047857" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
             </div>
           </div>
         </div>
@@ -729,7 +715,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
         `}</style>
 
         {/* AGE GROUPS List - Rainbow Colors */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingBottom: '2.5rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingBottom: 'calc(140px + var(--safe-bottom))' }}>
           {AGE_GROUPS.map((group, i) => {
             const nebulaColors = [
               { main: '#FF4757', dark: '#991B1B', glow: 'rgba(255,71,87,0.55)'   },  // Red nebula
@@ -755,10 +741,10 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
                   textAlign: 'left',
                   width: '100%',
                   outline: 'none',
-                  color: '#FFFFFF',
+                  color: '#F1F5F9',
                   '--age-glow': colors.glow,
-                  boxShadow: `0 8px 0 ${colors.dark}, inset 0 2px 4px rgba(255,255,255,0.25)`,
-                  border: '1.5px solid rgba(255,255,255,0.2)',
+                  boxShadow: `0 4px 0 ${colors.dark}, 0 8px 20px ${colors.glow}, inset 0 1px 2px rgba(255,255,255,0.2)`,
+                  border: '1.5px solid rgba(255,255,255,0.3)',
                   borderRadius: '20px',
                   transition: 'all 0.25s ease',
                   position: 'relative',
@@ -824,13 +810,6 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
 
       </div>
 
-      <CosmicMobileNav
-        activeTab={activeTab}
-        language={language}
-        onTabChange={onTabChange}
-        onHome={onHome}
-        onToggleLang={onToggleLang}
-      />
     </div >
   );
 }

@@ -3,7 +3,6 @@ import HomePage from './components/HomePage';
 import BMPage from './components/SpeakingPage/BMPage';
 import JawiPage from './components/JawiScriptPage/JawiPage';
 import MathHome from './components/MathematicsPage/MathHome';
-import GameMenu from './components/MathematicsPage/GameMenu';
 import OpsLandingPage from './components/MathematicsPage/OpsLandingPage';
 import TimeGameMenu from './components/MathematicsPage/TimeGameMenu';
 import MonthsGame from './components/MathematicsPage/MonthsGame';
@@ -15,9 +14,7 @@ import LevelUpToast from './components/LevelUpToast';
 import WelcomeModal from './components/WelcomeModal';
 import DesktopSidebar from './components/DesktopSidebar';
 import CosmicMobileNav from './components/CosmicMobileNav';
-import MascotIcon from './components/icons/MascotIcon';
 import ReadingPage from './components/ReadingPage/ReadingPage';
-import AgeGroupPage from './components/AgeGroups/AgeGroupPage';
 import EarlyExplorersHome from './components/AgeGroup-4-5/EarlyExplorersHome';
 import KindergartenScholarsHome from './components/AgeGroup-5-6/KindergartenScholarsHome';
 import Grade1AdventurersHome from './components/AgeGroup-6-7/Grade1AdventurersHome';
@@ -29,8 +26,8 @@ import PhoneticsPop from './components/AgeGroup-4-5/PhoneticsPop';
 import SoundMatching from './components/AgeGroup-4-5/SoundMatching';
 import LetterSoundPuzzle from './components/AgeGroup-4-5/LetterSoundPuzzle';
 import PhoneticsSprint from './components/AgeGroup-4-5/PhoneticsSprint';
-import HeartShopModal from './components/HeartShopModal';
-const AchievementPage  = React.lazy(() => import('./components/AchievementPage'));
+import ProfileHome from './components/Profile/ProfileHome';
+const AchievementHome  = React.lazy(() => import('./components/Achievement/AchievementHome'));
 const LeaderboardHome  = React.lazy(() => import('./components/Leaderboard/LeaderboardHome'));
 import AssessmentSelector from './pages/AssessmentSelector';
 import AssessmentPage from './pages/AssessmentPage';
@@ -39,6 +36,50 @@ import { useGameState } from './hooks/useGameState';
 import { loadPlayerName, savePlayerName, recordLogin, calcStreak } from './services/storageService';
 import { getGameData } from './utils/gameStatsManager';
 import { baseAssessments } from './data/curriculum/assessment';
+
+// ── Themes ───────────────────────────────────────────────────────────────────
+export const THEMES = {
+  cosmic: {
+    key: 'cosmic', label: 'Cosmic', swatch: '#5B42D4',
+    sidebarBg: 'linear-gradient(180deg, #332881 0%, #4B39BB 35%, #3E309C 65%, #332881 100%)',
+    appBg: '#FAF6F0',
+    contentBg: 'linear-gradient(175deg, #1F184E 0%, #3E309C 40%, #5B42D4 70%, #3A2A8A 100%)',
+    heroBg: 'linear-gradient(175deg, #0F0B1E 0%, #1A1040 35%, #2D1B69 65%, #1A1040 100%)',
+    heroBorder: '#A78BFA',
+    planetBody: 'radial-gradient(circle at 30% 30%, #C084FC, #6B21A8)',
+    planetRing: '#A78BFA',
+  },
+  ocean: {
+    key: 'ocean', label: 'Ocean', swatch: '#1565c0',
+    sidebarBg: 'linear-gradient(180deg, #0d3b66 0%, #1565c0 50%, #0a2d4d 100%)',
+    appBg: '#071929',
+    contentBg: 'linear-gradient(175deg, #0a2d4d 0%, #0d3b66 40%, #1565c0 70%, #0a2d4d 100%)',
+    heroBg: 'linear-gradient(135deg, #0d3b66 0%, #1565c0 50%, #42a5f5 100%)',
+    heroBorder: '#80cbc4',
+    planetBody: 'radial-gradient(circle at 30% 30%, #42a5f5, #1565c0)',
+    planetRing: '#80cbc4',
+  },
+  sunny: {
+    key: 'sunny', label: 'Sunny', swatch: '#f57c00',
+    sidebarBg: 'linear-gradient(180deg, #e65100 0%, #f57c00 50%, #bf360c 100%)',
+    appBg: '#7a2608',
+    contentBg: 'linear-gradient(175deg, #bf360c 0%, #e65100 40%, #f57c00 70%, #bf360c 100%)',
+    heroBg: 'linear-gradient(135deg, #e65100 0%, #f57c00 50%, #ffa000 100%)',
+    heroBorder: '#fdd835',
+    planetBody: 'radial-gradient(circle at 30% 30%, #ffa000, #f57c00)',
+    planetRing: '#fdd835',
+  },
+  forest: {
+    key: 'forest', label: 'Forest', swatch: '#2e7d32',
+    sidebarBg: 'linear-gradient(180deg, #1b5e20 0%, #2e7d32 50%, #0d3b11 100%)',
+    appBg: '#0a1f0a',
+    contentBg: 'linear-gradient(175deg, #0d3b11 0%, #1b5e20 40%, #2e7d32 70%, #0d3b11 100%)',
+    heroBg: 'linear-gradient(135deg, #1b5e20 0%, #2e7d32 50%, #43a047 100%)',
+    heroBorder: '#8bc34a',
+    planetBody: 'radial-gradient(circle at 30% 30%, #43a047, #2e7d32)',
+    planetRing: '#8bc34a',
+  },
+};
 
 // ── Context ──────────────────────────────────────────────────────────────────
 export const GameStateContext = createContext(null);
@@ -104,6 +145,7 @@ export default function App() {
   const [selectedAssessment, setSelectedAssessment] = useState(null);
   const [currentAgeGroup, setCurrentAgeGroup] = useState(null);
   const [currentAgeGame, setCurrentAgeGame] = useState(null);
+  const [currentTheme, setCurrentTheme] = useState('cosmic');
 
   const activeGameId = getActiveGameId(currentSubject, mathSubGame);
   const { gameState, levelUpInfo, clearLevelUp } = useGameState(activeGameId);
@@ -142,15 +184,15 @@ export default function App() {
         <LeaderboardHome language={language} gameState={gameState} />
       </Suspense>
     );
-    if (activeTab === 'profile')     return <ProfilePlaceholder playerName={playerName} gameState={gameState} language={language} streak={streak} />;
+    if (activeTab === 'profile')     return <ProfileHome playerName={playerName} gameState={gameState} language={language} streak={streak} />;
     if (activeTab === 'achievement') {
       // If an assessment is selected, show AssessmentPage
       if (selectedAssessment) {
         return <AssessmentPage assessment={selectedAssessment} onBack={() => setSelectedAssessment(null)} language={language} gameState={gameState} />;
       }
-      // Otherwise show AchievementPage with callback to select assessment
+      // Otherwise show achievement home
       return <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading achievements...</div>}>
-        <AchievementPage
+        <AchievementHome
           onBack={handleBackToHome}
           onHome={handleBackToHome}
           language={language}
@@ -253,6 +295,7 @@ export default function App() {
           onTabChange={setActiveTab}
           onHome={handleBackToHome}
           onToggleLang={handleToggleLang}
+          theme={THEMES[currentTheme]}
         />;
     }
   };
@@ -269,10 +312,21 @@ export default function App() {
           playerName={playerName}
           gameState={gameState}
           onHome={handleBackToHome}
+          theme={THEMES[currentTheme]}
+          onThemeChange={setCurrentTheme}
+          themes={THEMES}
         />
       )}
 
-      <div className={`app-container${activeTab === 'leaderboard' ? ' app-leaderboard' : ''}`}>
+      <div
+        className={`app-container${activeTab === 'leaderboard' ? ' app-leaderboard' : ''}${activeTab === 'learn' && !currentSubject && !currentAgeGroup ? ' app-home' : ''}`}
+        style={{
+          '--theme-hero-bg':     THEMES[currentTheme].heroBg,
+          '--theme-hero-border': THEMES[currentTheme].heroBorder,
+          '--theme-planet-body': THEMES[currentTheme].planetBody,
+          '--theme-planet-ring': THEMES[currentTheme].planetRing,
+        }}
+      >
         {!playerName && <WelcomeModal onSave={handleSaveName} />}
         <LevelUpToast level={levelUpInfo?.newLevel} onDismiss={clearLevelUp} />
 
@@ -284,97 +338,20 @@ export default function App() {
           </div>
         </div>
 
-        {/* CosmicMobileNav for non-home tabs — HomePage renders its own */}
-        {!inActiveQuiz && !isPlayingJawiGame && !selectedAssessment && !currentAgeGame && activeTab !== 'learn' && (
+        {/* CosmicMobileNav — rendered outside view-container so position:fixed works correctly */}
+        {!inActiveQuiz && !isPlayingJawiGame && !selectedAssessment && !currentAgeGame && (
           <CosmicMobileNav
             activeTab={activeTab}
             language={language}
             onTabChange={setActiveTab}
             onHome={handleBackToHome}
             onToggleLang={handleToggleLang}
+            theme={THEMES[currentTheme]}
+            themes={THEMES}
+            onThemeChange={setCurrentTheme}
           />
         )}
       </div>
     </GameStateContext.Provider>
-  );
-}
-
-// ── Placeholder screens for tabs ─────────────────────────────────────────────
-function ProfilePlaceholder({ playerName, gameState, language, streak = 0 }) {
-  // Load game data from localStorage
-  const gameData = getGameData();
-  const totalXP = gameData.stars; // Each star = 1 XP
-  const gems = gameData.gems;
-  const hearts = gameData.hearts;
-  const [isHeartShopOpen, setIsHeartShopOpen] = useState(false);
-
-  const openHeartShop = () => setIsHeartShopOpen(true);
-  const closeHeartShop = () => setIsHeartShopOpen(false);
-
-  return (
-    <div style={{ flex: 1, overflowY: 'auto', background: '#f7f7f7' }}>
-      <div style={{ background: '#fff', padding: '2rem 1.5rem', textAlign: 'center', borderBottom: '2px solid #E5E5E5' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.5rem' }}>
-          <div style={{ width: '80px', height: '80px' }}>
-            <MascotIcon size={80} />
-          </div>
-        </div>
-        <h2 style={{ fontWeight: 900, fontSize: '1.4rem', color: '#3C3C3C', marginBottom: '4px' }}>{playerName || 'Player'}</h2>
-        <p style={{ color: '#AFAFAF', fontWeight: 600, fontSize: '0.85rem' }}>Level {gameState?.level ?? 1} Explorer</p>
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', padding: '1.25rem 1rem', maxWidth: '700px', margin: '0 auto' }}>
-        {[
-          { label: language === 'bm' ? 'Hari Aktif' : 'Streak', value: streak, color: '#FF9600', emoji: '🔥' },
-          { label: 'Level',   value: gameState?.level ?? 1,   color: '#CE82FF', emoji: '🏆' },
-          { label: language === 'bm' ? 'Nyawa' : 'Hearts', value: hearts, color: '#FF4B4B', emoji: '❤️' },
-          { label: 'Stars', value: totalXP, color: '#FFC800', emoji: '⭐' },
-          { label: language === 'bm' ? 'Permata' : 'Gems', value: gems, color: '#CE82FF', emoji: '💎'},
-        ].map(stat => {
-          const isClickable = stat.emoji === '❤️' || stat.emoji === '⭐' || stat.emoji === '💎';
-          return (
-            <button
-              key={stat.label}
-              className="profile-stat-card"
-              onMouseEnter={playHoverSound}
-              onClick={isClickable ? openHeartShop : undefined}
-              style={{
-                background: '#fff',
-                border: '2px solid #E5E5E5',
-                borderRadius: '16px',
-                padding: '1rem',
-                textAlign: 'center',
-                cursor: isClickable ? 'pointer' : 'default'
-              }}
-            >
-              <div style={{ fontSize: '1.8rem', marginBottom: '4px' }}>{stat.emoji}</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 900, color: stat.color }}>{stat.value}</div>
-              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#AFAFAF', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{stat.label}</div>
-            </button>
-          );
-        })}
-      </div>
-      <style>{`
-        .profile-stat-card {
-          border: none;
-          cursor: pointer;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .profile-stat-card:hover {
-          transform: translateY(-8px) scale(1.05);
-          box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-          border-color: #999 !important;
-        }
-
-        .profile-stat-card:active {
-          transform: translateY(-4px) scale(1.02);
-        }
-      `}</style>
-      <HeartShopModal isOpen={isHeartShopOpen} onClose={closeHeartShop} language={language} />
-    </div>
   );
 }
