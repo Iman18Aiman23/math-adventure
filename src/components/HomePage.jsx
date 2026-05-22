@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getGameData } from '../utils/gameStatsManager';
 import { AGE_GROUPS } from '../data/ageCurriculum';
 import { playHoverSound } from '../utils/soundManager';
+import CosmicMobileNav from './CosmicMobileNav';
 
 // ── 28 animated star particles for the hero (stable, never re-generated) ──────
 const HERO_STARS = Array.from({ length: 28 }, (_, i) => ({
@@ -13,7 +14,7 @@ const HERO_STARS = Array.from({ length: 28 }, (_, i) => ({
   o: [0.4,0.65,0.35,0.7,0.5,0.25,0.6,0.45,0.55,0.72,0.3,0.58,0.42,0.68,0.38,0.62,0.28,0.5,0.75,0.33,0.6,0.48,0.4,0.7,0.32,0.56,0.78,0.44][i],
 }));
 
-export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, playerName, gameState, streak = 0 }) {
+export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, playerName, gameState, streak = 0, activeTab, onTabChange, onHome, onToggleLang }) {
   const currentLevel = gameState?.level ?? 1;
 
   /* Streak logic */
@@ -822,6 +823,14 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
         </div>
 
       </div>
+
+      <CosmicMobileNav
+        activeTab={activeTab}
+        language={language}
+        onTabChange={onTabChange}
+        onHome={onHome}
+        onToggleLang={onToggleLang}
+      />
     </div >
   );
 }

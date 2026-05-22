@@ -62,6 +62,7 @@ function buildPlayerList(playerName, gameData, period, subject) {
 }
 
 // ── Star particles (static, memoised to avoid rerenders) ─────────────────────
+const PASTEL_STAR_COLORS = ['#EDE0FF', '#FFB8E0', '#B8EEFF', '#FFE4A0', '#C8F5E8'];
 const STARS = Array.from({ length: 28 }, (_, i) => ({
   key: i,
   x:   Math.round(Math.random() * 100),
@@ -69,6 +70,7 @@ const STARS = Array.from({ length: 28 }, (_, i) => ({
   s:   +(Math.random() * 2.5 + 0.8).toFixed(1),
   d:   +(Math.random() * 4 + 1.5).toFixed(1),
   o:   +(Math.random() * 0.55 + 0.2).toFixed(2),
+  c:   PASTEL_STAR_COLORS[i % PASTEL_STAR_COLORS.length],
 }));
 
 // ── Podium card ───────────────────────────────────────────────────────────────
@@ -162,8 +164,8 @@ export default function LeaderboardHome({ language = 'eng', gameState }) {
   const [period,  setPeriod]  = useState('weekly');
   const [subject, setSubject] = useState('all');
 
-  const gameData   = getGameData();
-  const playerName = loadPlayerName() || gameState?.playerName || 'You';
+  const gameData   = useMemo(() => getGameData(), []);
+  const playerName = useMemo(() => loadPlayerName() || gameState?.playerName || 'You', [gameState?.playerName]);
 
   const players  = useMemo(
     () => buildPlayerList(playerName, gameData, period, subject),
@@ -189,12 +191,14 @@ export default function LeaderboardHome({ language = 'eng', gameState }) {
           width: `${s.s}px`, height: `${s.s}px`,
           opacity: s.o,
           animationDuration: `${s.d}s`,
+          background: s.c,
         }} />
       ))}
 
       {/* ── Full-page radial glows ── */}
       <div className="lb-glow lb-glow-1" />
       <div className="lb-glow lb-glow-2" />
+      <div className="lb-glow lb-glow-3" />
 
       {/* ══ HERO ══════════════════════════════════════════════════════════════ */}
       <div className="lb-hero">

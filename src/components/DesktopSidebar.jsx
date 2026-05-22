@@ -7,7 +7,7 @@ const sidebarLogoStyles = `
   .sidebar-logo-text {
     font-size: 1.2rem;
     font-weight: 900;
-    background: linear-gradient(135deg, #E9D5FF 0%, #A78BFA 50%, #7C3AED 100%);
+    background: linear-gradient(135deg, #B8EEFF 0%, #7B6ECF 50%, #3B2AAA 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -17,7 +17,7 @@ const sidebarLogoStyles = `
     line-height: 1.1;
   }
   .sidebar-subtitle-text {
-    color: #FDE68A;
+    color: #FFE4A0;
     font-family: var(--font-heading);
     font-size: 0.75rem;
     letter-spacing: 2px;
@@ -27,18 +27,19 @@ const sidebarLogoStyles = `
 
   /* Inactive sidebar items */
   .desktop-sidebar .sidebar-item {
-    color: rgba(255,255,255,0.55) !important;
+    color: rgba(255,255,255,0.65) !important;
   }
   .desktop-sidebar .sidebar-item:hover:not(.active) {
-    background: rgba(167,139,250,0.12) !important;
-    color: rgba(255,255,255,0.9) !important;
+    background: rgba(184,174,255,0.15) !important;
+    border-color: rgba(184,174,255,0.25) !important;
+    color: #fff !important;
   }
 
-  /* Active tab — vivid cosmic gradient */
+  /* Active tab — aurora gradient matching leaderboard buttons */
   .desktop-sidebar .sidebar-item.active {
-    background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEB) !important;
+    background: linear-gradient(135deg, #5B42D4, #3B2AAA) !important;
     border: none !important;
-    box-shadow: 0 4px 20px rgba(124,58,237,0.5) !important;
+    box-shadow: 0 4px 20px rgba(91,66,212,0.5), 0 0 0 1px rgba(184,174,255,0.25) !important;
     backdrop-filter: none;
     color: #ffffff !important;
     border-radius: 12px !important;
@@ -48,11 +49,11 @@ const sidebarLogoStyles = `
     color: #ffffff !important;
   }
 
-  /* Sidebar shell — space dark with glowing right border */
+  /* Sidebar shell — soft aurora mid-tones */
   .desktop-sidebar {
-    background: linear-gradient(180deg, #130D2E 0%, #1E1145 50%, #130D2E 100%) !important;
-    border-right: 2.5px solid #A78BFA !important;
-    box-shadow: 4px 0 32px rgba(124,58,237,0.35), inset -1px 0 0 rgba(167,139,250,0.1) !important;
+    background: linear-gradient(180deg, #332881 0%, #4B39BB 35%, #3E309C 65%, #332881 100%) !important;
+    border-right: 2px solid rgba(184,174,255,0.3) !important;
+    box-shadow: 4px 0 32px rgba(59,42,170,0.35), inset -1px 0 0 rgba(184,174,255,0.12) !important;
   }
 `;
 

@@ -14,7 +14,7 @@ import ColumnMathGame from './components/MathematicsPage/ColumnMathGame';
 import LevelUpToast from './components/LevelUpToast';
 import WelcomeModal from './components/WelcomeModal';
 import DesktopSidebar from './components/DesktopSidebar';
-import { GradCapIcon, TrophyIcon, ProfileIcon, MedalIcon, LanguageIcon } from './components/icons/GameIcons';
+import CosmicMobileNav from './components/CosmicMobileNav';
 import MascotIcon from './components/icons/MascotIcon';
 import ReadingPage from './components/ReadingPage/ReadingPage';
 import AgeGroupPage from './components/AgeGroups/AgeGroupPage';
@@ -87,13 +87,6 @@ function findMatchingAssessment(achievement) {
   }) || baseAssessments.find(a => a.topic === achievement.topic);
 }
 
-// Tab definitions (mobile bottom bar)
-const TABS = [
-  { id: 'learn',       icon: GradCapIcon, label: { bm: 'Kursus',   eng: 'Course'   } },
-  { id: 'leaderboard', icon: TrophyIcon, label: { bm: 'Ranking',  eng: 'Ranking'  } },
-  { id: 'profile',     icon: ProfileIcon, label: { bm: 'Profil',   eng: 'Profile'  } },
-  { id: 'achievement', icon: MedalIcon, label: { bm: 'Pencapaian', eng: 'Achievement' } },
-];
 
 export default function App() {
   const isDesktop = useIsDesktop();
@@ -249,7 +242,18 @@ export default function App() {
             );
           }
         }
-        return <HomePage onSelectSubject={setCurrentSubject} onSelectAgeGroup={setCurrentAgeGroup} language={language} playerName={playerName} gameState={gameState} streak={streak} />;
+        return <HomePage
+          onSelectSubject={setCurrentSubject}
+          onSelectAgeGroup={setCurrentAgeGroup}
+          language={language}
+          playerName={playerName}
+          gameState={gameState}
+          streak={streak}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          onHome={handleBackToHome}
+          onToggleLang={handleToggleLang}
+        />;
     }
   };
 
@@ -280,33 +284,15 @@ export default function App() {
           </div>
         </div>
 
-        {/* Mobile Bottom Tab Bar — hidden on desktop via CSS */}
-        {!inActiveQuiz && !isPlayingJawiGame && !selectedAssessment && !currentAgeGame && (
-          <div className="duo-tab-bar">
-            <div className="duo-tab-container">
-              {TABS.map(tab => (
-                <button
-                  key={tab.id}
-                  className={`duo-tab-item${activeTab === tab.id ? ' active' : ''}`}
-                  onClick={() => {
-                    if (tab.id === 'learn') {
-                      handleBackToHome();
-                    } else {
-                      setActiveTab(tab.id);
-                    }
-                  }}
-                >
-                  <span className="duo-tab-icon">{React.createElement(tab.icon, { size: 32 })}</span>
-                </button>
-              ))}
-              <button
-                className="duo-tab-item"
-                onClick={handleToggleLang}
-              >
-                <span className="duo-tab-icon"><LanguageIcon size={24} /></span>
-              </button>
-            </div>
-          </div>
+        {/* CosmicMobileNav for non-home tabs — HomePage renders its own */}
+        {!inActiveQuiz && !isPlayingJawiGame && !selectedAssessment && !currentAgeGame && activeTab !== 'learn' && (
+          <CosmicMobileNav
+            activeTab={activeTab}
+            language={language}
+            onTabChange={setActiveTab}
+            onHome={handleBackToHome}
+            onToggleLang={handleToggleLang}
+          />
         )}
       </div>
     </GameStateContext.Provider>
