@@ -1,0 +1,928 @@
+<svg width="100%" height="100%" viewBox="-20 -20 1420 1160" preserveAspectRatio="xMidYMid meet" style="display:block" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- ===== VEHICLE 1 - CAR GRADIENTS & FILTERS ===== -->
+    <linearGradient id="car1Body" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCA5A5"/>
+      <stop offset="100%" stop-color="#DC2626"/>
+    </linearGradient>
+    <linearGradient id="car1Windshield" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="car1Hood" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#EF4444"/>
+      <stop offset="100%" stop-color="#B91C1C"/>
+    </linearGradient>
+    <filter id="car1Shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-opacity="0.18"/>
+    </filter>
+    <filter id="car1Glow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="car1SoftGlow">
+      <feGaussianBlur stdDeviation="3.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- ===== VEHICLE 2 - BUS GRADIENTS & FILTERS ===== -->
+    <linearGradient id="bus2Body" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE68A"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <linearGradient id="bus2Windshield" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <filter id="bus2Shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-opacity="0.18"/>
+    </filter>
+    <filter id="bus2Glow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="bus2SoftGlow">
+      <feGaussianBlur stdDeviation="3.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- ===== VEHICLE 3 - TRAIN GRADIENTS & FILTERS ===== -->
+    <linearGradient id="trn3Body" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#93C5FD"/>
+      <stop offset="100%" stop-color="#2563EB"/>
+    </linearGradient>
+    <linearGradient id="trn3Windshield" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="trn3Smoke" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#E2E8F0"/>
+      <stop offset="100%" stop-color="#94A3B8"/>
+    </linearGradient>
+    <filter id="trn3Shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-opacity="0.18"/>
+    </filter>
+    <filter id="trn3Glow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="trn3SoftGlow">
+      <feGaussianBlur stdDeviation="3.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- ===== VEHICLE 4 - AIRPLANE GRADIENTS & FILTERS ===== -->
+    <linearGradient id="air4Body" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E0F2FE"/>
+      <stop offset="100%" stop-color="#0284C7"/>
+    </linearGradient>
+    <linearGradient id="air4Windshield" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="air4Wing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#BAE6FD"/>
+      <stop offset="100%" stop-color="#0369A1"/>
+    </linearGradient>
+    <filter id="air4Shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-opacity="0.18"/>
+    </filter>
+    <filter id="air4Glow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="air4SoftGlow">
+      <feGaussianBlur stdDeviation="3.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- ===== VEHICLE 5 - BOAT GRADIENTS & FILTERS ===== -->
+    <linearGradient id="boat5Body" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#99F6E4"/>
+      <stop offset="100%" stop-color="#0D9488"/>
+    </linearGradient>
+    <linearGradient id="boat5Windshield" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="boat5Sail" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#E2E8F0"/>
+    </linearGradient>
+    <filter id="boat5Shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-opacity="0.18"/>
+    </filter>
+    <filter id="boat5Glow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="boat5SoftGlow">
+      <feGaussianBlur stdDeviation="3.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- ===== VEHICLE 6 - HELICOPTER GRADIENTS & FILTERS ===== -->
+    <linearGradient id="heli6Body" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#BBF7D0"/>
+      <stop offset="100%" stop-color="#16A34A"/>
+    </linearGradient>
+    <linearGradient id="heli6Windshield" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <filter id="heli6Shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-opacity="0.18"/>
+    </filter>
+    <filter id="heli6Glow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="heli6SoftGlow">
+      <feGaussianBlur stdDeviation="3.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- ============================================================ -->
+  <!-- VEHICLE 1 - RED CAR (Top Left) — Big D-Smile -->
+  <!-- ============================================================ -->
+  <g transform="translate(70,100)">
+    <circle cx="160" cy="130" r="110" fill="#FCA5A5" opacity="0.1"/>
+    <circle cx="160" cy="130" r="75" fill="#EF4444" opacity="0.06"/>
+
+    <!-- Floating traffic elements -->
+    <g filter="url(#car1SoftGlow)">
+      <text font-size="30" font-family="Fredoka, sans-serif" font-weight="700" fill="#EF4444" text-anchor="middle" dominant-baseline="central" opacity="0.8">
+        <animateTransform attributeName="transform" type="translate" values="14,50;24,34;14,50" dur="3.8s" repeatCount="indefinite"/>
+        &#9989;
+      </text>
+    </g>
+    <g filter="url(#car1SoftGlow)">
+      <polygon points="298,48 308,28 318,48" fill="#EF4444" opacity="0.7">
+        <animateTransform attributeName="transform" type="translate" values="0,0;-6,-10;0,0" dur="4s" repeatCount="indefinite"/>
+      </polygon>
+    </g>
+    <g filter="url(#car1SoftGlow)">
+      <circle cx="10" cy="185" r="14" fill="#EF4444" opacity="0.25" stroke="#EF4444" stroke-width="3">
+        <animateTransform attributeName="transform" type="translate" values="0,0;7,-8;0,0" dur="4.5s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+    <g filter="url(#car1SoftGlow)">
+      <rect x="300" y="176" width="16" height="16" rx="3" fill="#22C55E" opacity="0.5">
+        <animateTransform attributeName="transform" type="translate" values="0,0;-5,-7;0,0" dur="3.5s" repeatCount="indefinite"/>
+      </rect>
+    </g>
+    <g filter="url(#car1SoftGlow)">
+      <polygon points="20,270 24,280 34,280 26,286 29,296 20,290 11,296 14,286 6,280 16,280" fill="#FFD93D" opacity="0.7">
+        <animateTransform attributeName="transform" type="translate" values="0,0;5,-6;0,0" dur="5s" repeatCount="indefinite"/>
+      </polygon>
+    </g>
+    <line x1="4" y1="120" x2="30" y2="120" stroke="#FCA5A5" stroke-width="3" stroke-linecap="round" opacity="0.5">
+      <animate attributeName="opacity" values="0.5;0.1;0.5" dur="1.5s" repeatCount="indefinite"/>
+    </line>
+    <line x1="0" y1="138" x2="35" y2="138" stroke="#EF4444" stroke-width="3" stroke-linecap="round" opacity="0.4">
+      <animate attributeName="opacity" values="0.4;0.08;0.4" dur="2s" repeatCount="indefinite"/>
+    </line>
+    <line x1="8" y1="156" x2="28" y2="156" stroke="#FCA5A5" stroke-width="2" stroke-linecap="round" opacity="0.4">
+      <animate attributeName="opacity" values="0.4;0.1;0.4" dur="1.8s" repeatCount="indefinite"/>
+    </line>
+    <line x1="295" y1="118" x2="320" y2="118" stroke="#FCA5A5" stroke-width="3" stroke-linecap="round" opacity="0.5">
+      <animate attributeName="opacity" values="0.5;0.1;0.5" dur="1.6s" repeatCount="indefinite"/>
+    </line>
+    <line x1="298" y1="138" x2="318" y2="138" stroke="#EF4444" stroke-width="2" stroke-linecap="round" opacity="0.4">
+      <animate attributeName="opacity" values="0.4;0.08;0.4" dur="2.2s" repeatCount="indefinite"/>
+    </line>
+    <circle cx="28" cy="80" r="3" fill="#FCA5A5" opacity="0.6">
+      <animate attributeName="opacity" values="0.6;0.15;0.6" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="298" cy="95" r="3" fill="#EF4444" opacity="0.5">
+      <animate attributeName="opacity" values="0.5;0.1;0.5" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="14" cy="248" r="3" fill="#DC2626" opacity="0.5">
+      <animate attributeName="opacity" values="0.5;0.1;0.5" dur="3s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Car lower body -->
+    <rect x="55" y="180" width="210" height="80" rx="20" fill="url(#car1Body)" stroke="#FFFFFF" stroke-width="4" filter="url(#car1Shadow)"/>
+    <!-- Car roof -->
+    <path d="M90,180 L110,115 Q115,105 130,105 L190,105 Q205,105 210,115 L230,180" fill="url(#car1Body)" stroke="#FFFFFF" stroke-width="4" filter="url(#car1Shadow)"/>
+    <path d="M115,115 Q118,108 135,108 L185,108 Q200,108 203,115" fill="#FFFFFF" opacity="0.2"/>
+
+    <!-- Windshield -->
+    <path d="M115,172 L118,118 Q120,112 135,112 L175,112 Q190,112 192,118 L195,172" fill="url(#car1Windshield)"/>
+    <line x1="155" y1="112" x2="155" y2="172" stroke="#334155" stroke-width="2"/>
+    <path d="M120,120 L125,112 L140,112 L135,120 Z" fill="#FFFFFF" opacity="0.15"/>
+
+    <!-- Eyes -->
+    <circle cx="135" cy="136" r="13" fill="#FFFFFF"/>
+    <circle cx="175" cy="136" r="13" fill="#FFFFFF"/>
+    <circle cx="137" cy="138" r="6.5" fill="#DC2626"/>
+    <circle cx="177" cy="138" r="6.5" fill="#DC2626"/>
+    <circle cx="139" cy="134" r="2.5" fill="#FFFFFF"/>
+    <circle cx="179" cy="134" r="2.5" fill="#FFFFFF"/>
+    <!-- Eyelashes -->
+    <line x1="127" y1="126" x2="124" y2="121" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="133" y1="124" x2="131" y2="118" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="143" y1="125" x2="146" y2="120" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="167" y1="124" x2="164" y2="118" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="177" y1="125" x2="180" y2="120" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="183" y1="126" x2="186" y2="121" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Big D-Smile -->
+    <path d="M130 150 Q130 170 155 170 Q180 170 180 150" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M133 152 Q133 168 155 168 Q177 168 177 152" fill="#FFFFFF" opacity="0.15"/>
+    <path d="M140 166 Q148 172 155 166 Q162 172 170 166" stroke="#FF9DBB" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
+
+    <!-- Cheeks -->
+    <circle cx="122" cy="155" r="5" fill="#FF9DBB" opacity="0.5"/>
+    <circle cx="188" cy="155" r="5" fill="#FF9DBB" opacity="0.5"/>
+
+    <!-- Headlights -->
+    <ellipse cx="68" cy="200" rx="12" ry="10" fill="#FDE68A" stroke="#F59E0B" stroke-width="2" filter="url(#car1Glow)"/>
+    <ellipse cx="252" cy="200" rx="12" ry="10" fill="#FDE68A" stroke="#F59E0B" stroke-width="2" filter="url(#car1Glow)"/>
+    <circle cx="55" cy="200" r="8" fill="#FDE68A" opacity="0.2">
+      <animate attributeName="opacity" values="0.2;0.05;0.2" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="265" cy="200" r="8" fill="#FDE68A" opacity="0.2">
+      <animate attributeName="opacity" values="0.2;0.05;0.2" dur="2s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Tail lights -->
+    <rect x="55" y="188" width="8" height="16" rx="3" fill="#FF5E7E" stroke="#DC2626" stroke-width="1"/>
+    <rect x="257" y="188" width="8" height="16" rx="3" fill="#FF5E7E" stroke="#DC2626" stroke-width="1"/>
+
+    <!-- Door handles -->
+    <rect x="128" y="200" width="18" height="4" rx="2" fill="#FFFFFF" opacity="0.4"/>
+    <rect x="178" y="200" width="4" height="4" rx="2" fill="#FFFFFF" opacity="0.4"/>
+
+    <!-- Side mirrors -->
+    <ellipse cx="52" cy="168" rx="10" ry="7" fill="#DC2626" stroke="#FFFFFF" stroke-width="2"/>
+    <ellipse cx="268" cy="168" rx="10" ry="7" fill="#DC2626" stroke="#FFFFFF" stroke-width="2"/>
+
+    <!-- Wheels -->
+    <circle cx="110" cy="260" r="28" fill="#1E293B" stroke="#334155" stroke-width="3"/>
+    <circle cx="110" cy="260" r="18" fill="#475569" stroke="#64748B" stroke-width="2"/>
+    <circle cx="110" cy="260" r="6" fill="#94A3B8"/>
+    <line x1="110" y1="243" x2="110" y2="277" stroke="#64748B" stroke-width="2"/>
+    <line x1="93" y1="260" x2="127" y2="260" stroke="#64748B" stroke-width="2"/>
+    <line x1="98" y1="248" x2="122" y2="272" stroke="#64748B" stroke-width="2"/>
+    <line x1="122" y1="248" x2="98" y2="272" stroke="#64748B" stroke-width="2"/>
+    <circle cx="110" cy="260" r="14" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4 6">
+      <animateTransform attributeName="transform" type="rotate" values="0,110,260;360,110,260" dur="2s" repeatCount="indefinite"/>
+    </circle>
+
+    <circle cx="210" cy="260" r="28" fill="#1E293B" stroke="#334155" stroke-width="3"/>
+    <circle cx="210" cy="260" r="18" fill="#475569" stroke="#64748B" stroke-width="2"/>
+    <circle cx="210" cy="260" r="6" fill="#94A3B8"/>
+    <line x1="210" y1="243" x2="210" y2="277" stroke="#64748B" stroke-width="2"/>
+    <line x1="193" y1="260" x2="227" y2="260" stroke="#64748B" stroke-width="2"/>
+    <line x1="198" y1="248" x2="222" y2="272" stroke="#64748B" stroke-width="2"/>
+    <line x1="222" y1="248" x2="198" y2="272" stroke="#64748B" stroke-width="2"/>
+    <circle cx="210" cy="260" r="14" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4 6">
+      <animateTransform attributeName="transform" type="rotate" values="0,210,260;360,210,260" dur="2s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Road -->
+    <ellipse cx="160" cy="292" rx="120" ry="10" fill="#1E293B" opacity="0.15"/>
+    <line x1="100" y1="292" x2="120" y2="292" stroke="#FDE68A" stroke-width="3" stroke-linecap="round" opacity="0.4">
+      <animate attributeName="opacity" values="0.4;0.1;0.4" dur="1s" repeatCount="indefinite"/>
+    </line>
+    <line x1="140" y1="292" x2="160" y2="292" stroke="#FDE68A" stroke-width="3" stroke-linecap="round" opacity="0.3">
+      <animate attributeName="opacity" values="0.3;0.08;0.3" dur="1.3s" repeatCount="indefinite"/>
+    </line>
+    <line x1="180" y1="292" x2="200" y2="292" stroke="#FDE68A" stroke-width="3" stroke-linecap="round" opacity="0.4">
+      <animate attributeName="opacity" values="0.4;0.1;0.4" dur="1.1s" repeatCount="indefinite"/>
+    </line>
+
+    <g filter="url(#car1Glow)">
+      <polygon points="48,70 52,80 62,80 54,86 57,96 48,90 39,96 42,86 34,80 44,80" fill="#FFD93D"/>
+      <polygon points="272,80 276,90 286,90 278,96 281,106 272,100 263,106 266,96 258,90 268,90" fill="#FFD93D"/>
+    </g>
+
+    <text x="160" y="330" font-size="22" font-family="'Baloo 2', sans-serif" font-weight="800" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central" stroke="#DC2626" stroke-width="3" paint-order="stroke" letter-spacing="1">CAR</text>
+  </g>
+
+  <!-- ============================================================ -->
+  <!-- VEHICLE 2 - SCHOOL BUS (Top Center) — Laughing Mouth -->
+  <!-- ============================================================ -->
+  <g transform="translate(530,100)">
+    <circle cx="160" cy="130" r="110" fill="#FDE68A" opacity="0.1"/>
+    <circle cx="160" cy="130" r="75" fill="#F59E0B" opacity="0.06"/>
+
+    <g filter="url(#bus2SoftGlow)">
+      <text font-size="28" font-family="Fredoka, sans-serif" font-weight="700" fill="#F59E0B" text-anchor="middle" dominant-baseline="central" opacity="0.75">
+        <animateTransform attributeName="transform" type="translate" values="16,55;26,40;16,55" dur="4s" repeatCount="indefinite"/>
+        &#9998;
+      </text>
+    </g>
+    <g filter="url(#bus2SoftGlow)">
+      <polygon points="300,52 310,32 320,52" fill="#F59E0B" opacity="0.6">
+        <animateTransform attributeName="transform" type="translate" values="0,0;-5,-8;0,0" dur="3.5s" repeatCount="indefinite"/>
+      </polygon>
+    </g>
+    <g filter="url(#bus2SoftGlow)">
+      <rect x="6" y="178" width="18" height="18" rx="3" fill="#FDE68A" opacity="0.6" stroke="#F59E0B" stroke-width="2">
+        <animateTransform attributeName="transform" type="translate" values="0,0;6,-8;0,0" dur="4.2s" repeatCount="indefinite"/>
+      </rect>
+      <text x="15" y="191" font-size="10" font-family="Fredoka, sans-serif" font-weight="700" fill="#92400E" text-anchor="middle" dominant-baseline="central">A</text>
+    </g>
+    <g filter="url(#bus2SoftGlow)">
+      <rect x="296" y="168" width="18" height="18" rx="3" fill="#FDE68A" opacity="0.5" stroke="#F59E0B" stroke-width="2">
+        <animateTransform attributeName="transform" type="translate" values="0,0;-4,-6;0,0" dur="3.8s" repeatCount="indefinite"/>
+      </rect>
+      <text x="305" y="181" font-size="10" font-family="Fredoka, sans-serif" font-weight="700" fill="#92400E" text-anchor="middle" dominant-baseline="central">B</text>
+    </g>
+    <g filter="url(#bus2SoftGlow)">
+      <g transform="translate(22,265) rotate(-20)">
+        <rect x="-3" y="-20" width="6" height="28" rx="1" fill="#FDE68A" stroke="#D97706" stroke-width="1"/>
+        <polygon points="-3,-20 3,-20 0,-26" fill="#FDEBD0"/>
+        <animateTransform attributeName="transform" type="translate" values="22,265;28,252;22,265" dur="4.5s" repeatCount="indefinite"/>
+      </g>
+    </g>
+    <circle cx="24" cy="85" r="3" fill="#FDE68A" opacity="0.6">
+      <animate attributeName="opacity" values="0.6;0.15;0.6" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="302" cy="100" r="3" fill="#F59E0B" opacity="0.5">
+      <animate attributeName="opacity" values="0.5;0.1;0.5" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Bus body -->
+    <rect x="48" y="105" width="224" height="150" rx="18" fill="url(#bus2Body)" stroke="#FFFFFF" stroke-width="4" filter="url(#bus2Shadow)"/>
+    <rect x="58" y="108" width="204" height="12" rx="6" fill="#FFFFFF" opacity="0.25"/>
+
+    <!-- Bus front hood -->
+    <rect x="238" y="200" width="38" height="55" rx="8" fill="#D97706" stroke="#FFFFFF" stroke-width="3"/>
+
+    <!-- Windshield -->
+    <rect x="244" y="130" width="26" height="55" rx="8" fill="url(#bus2Windshield)"/>
+    <rect x="248" y="134" width="6" height="18" rx="3" fill="#FFFFFF" opacity="0.15"/>
+
+    <!-- Big side window -->
+    <rect x="60" y="130" width="170" height="65" rx="10" fill="url(#bus2Windshield)"/>
+    <line x1="103" y1="130" x2="103" y2="195" stroke="#334155" stroke-width="2"/>
+    <line x1="146" y1="130" x2="146" y2="195" stroke="#334155" stroke-width="2"/>
+    <line x1="189" y1="130" x2="189" y2="195" stroke="#334155" stroke-width="2"/>
+
+    <!-- Eyes -->
+    <circle cx="145" cy="155" r="16" fill="#FFFFFF"/>
+    <circle cx="188" cy="155" r="16" fill="#FFFFFF"/>
+    <circle cx="147" cy="157" r="8" fill="#B45309"/>
+    <circle cx="190" cy="157" r="8" fill="#B45309"/>
+    <circle cx="149" cy="153" r="3" fill="#FFFFFF"/>
+    <circle cx="192" cy="153" r="3" fill="#FFFFFF"/>
+    <!-- Eyelashes -->
+    <line x1="135" y1="142" x2="132" y2="136" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="143" y1="140" x2="141" y2="133" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="155" y1="141" x2="158" y2="135" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="178" y1="140" x2="175" y2="133" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="190" y1="141" x2="193" y2="135" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="198" y1="142" x2="201" y2="136" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Laughing Mouth -->
+    <path d="M142 170 Q142 192 165 192 Q188 192 188 170" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <ellipse cx="165" cy="186" rx="16" ry="10" fill="#FF9DBB" opacity="0.6"/>
+    <path d="M148 172 Q148 190 165 190 Q182 190 182 172" fill="#0F172A" opacity="0.4"/>
+
+    <!-- Cheeks -->
+    <circle cx="130" cy="174" r="6" fill="#FF9DBB" opacity="0.5"/>
+    <circle cx="202" cy="174" r="6" fill="#FF9DBB" opacity="0.5"/>
+
+    <!-- Bus stop sign -->
+    <rect x="72" y="118" width="36" height="14" rx="4" fill="#EF4444"/>
+    <text x="90" y="127" font-size="8" font-family="Fredoka, sans-serif" font-weight="700" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central">STOP</text>
+
+    <!-- Headlight -->
+    <ellipse cx="256" cy="232" rx="10" ry="8" fill="#FDE68A" stroke="#F59E0B" stroke-width="2" filter="url(#bus2Glow)"/>
+
+    <!-- Side mirrors -->
+    <ellipse cx="40" cy="160" rx="10" ry="7" fill="#D97706" stroke="#FFFFFF" stroke-width="2"/>
+    <ellipse cx="280" cy="160" rx="10" ry="7" fill="#D97706" stroke="#FFFFFF" stroke-width="2"/>
+
+    <!-- Bus door -->
+    <rect x="58" y="205" width="24" height="44" rx="5" fill="#D97706" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="76" cy="227" r="3" fill="#FDE68A"/>
+
+    <!-- Wheels -->
+    <circle cx="110" cy="260" r="28" fill="#1E293B" stroke="#334155" stroke-width="3"/>
+    <circle cx="110" cy="260" r="18" fill="#475569" stroke="#64748B" stroke-width="2"/>
+    <circle cx="110" cy="260" r="6" fill="#94A3B8"/>
+    <circle cx="110" cy="260" r="14" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4 6">
+      <animateTransform attributeName="transform" type="rotate" values="0,110,260;360,110,260" dur="2s" repeatCount="indefinite"/>
+    </circle>
+
+    <circle cx="210" cy="260" r="28" fill="#1E293B" stroke="#334155" stroke-width="3"/>
+    <circle cx="210" cy="260" r="18" fill="#475569" stroke="#64748B" stroke-width="2"/>
+    <circle cx="210" cy="260" r="6" fill="#94A3B8"/>
+    <circle cx="210" cy="260" r="14" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4 6">
+      <animateTransform attributeName="transform" type="rotate" values="0,210,260;360,210,260" dur="2s" repeatCount="indefinite"/>
+    </circle>
+
+    <ellipse cx="160" cy="292" rx="120" ry="10" fill="#1E293B" opacity="0.15"/>
+
+    <g filter="url(#bus2Glow)">
+      <polygon points="48,70 52,80 62,80 54,86 57,96 48,90 39,96 42,86 34,80 44,80" fill="#FFD93D"/>
+      <polygon points="272,80 276,90 286,90 278,96 281,106 272,100 263,106 266,96 258,90 268,90" fill="#FFD93D"/>
+    </g>
+
+    <text x="160" y="330" font-size="22" font-family="'Baloo 2', sans-serif" font-weight="800" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central" stroke="#B45309" stroke-width="3" paint-order="stroke" letter-spacing="1">SCHOOL BUS</text>
+  </g>
+
+  <!-- ============================================================ -->
+  <!-- VEHICLE 3 - TRAIN (Top Right) — Excited Open Mouth -->
+  <!-- ============================================================ -->
+  <g transform="translate(990,100)">
+    <circle cx="160" cy="130" r="110" fill="#93C5FD" opacity="0.1"/>
+    <circle cx="160" cy="130" r="75" fill="#2563EB" opacity="0.06"/>
+
+    <g filter="url(#trn3SoftGlow)">
+      <polygon points="18,60 28,40 38,60" fill="#2563EB" opacity="0.6">
+        <animateTransform attributeName="transform" type="translate" values="0,0;6,-10;0,0" dur="3.5s" repeatCount="indefinite"/>
+      </polygon>
+    </g>
+    <g filter="url(#trn3SoftGlow)">
+      <rect x="296" y="50" width="18" height="18" rx="3" fill="#93C5FD" opacity="0.5" stroke="#2563EB" stroke-width="2">
+        <animateTransform attributeName="transform" type="translate" values="0,0;-5,-8;0,0" dur="4s" repeatCount="indefinite"/>
+      </rect>
+    </g>
+    <circle cx="10" cy="180" r="10" fill="#E2E8F0" opacity="0.4">
+      <animate attributeName="cy" values="180;168;180" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.4;0.1;0.4" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="312" cy="170" r="8" fill="#CBD5E1" opacity="0.35">
+      <animate attributeName="cy" values="170;160;170" dur="4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.35;0.08;0.35" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="20" cy="260" r="6" fill="#E2E8F0" opacity="0.3">
+      <animate attributeName="cy" values="260;250;260" dur="3.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="26" cy="100" r="3" fill="#93C5FD" opacity="0.6">
+      <animate attributeName="opacity" values="0.6;0.15;0.6" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="300" cy="115" r="3" fill="#2563EB" opacity="0.5">
+      <animate attributeName="opacity" values="0.5;0.1;0.5" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Train engine body -->
+    <rect x="50" y="145" width="220" height="110" rx="16" fill="url(#trn3Body)" stroke="#FFFFFF" stroke-width="4" filter="url(#trn3Shadow)"/>
+    <rect x="60" y="148" width="200" height="12" rx="6" fill="#FFFFFF" opacity="0.25"/>
+
+    <!-- Smokestack -->
+    <rect x="195" y="95" width="30" height="55" rx="8" fill="url(#trn3Body)" stroke="#FFFFFF" stroke-width="3"/>
+    <rect x="189" y="88" width="42" height="14" rx="6" fill="#2563EB" stroke="#FFFFFF" stroke-width="2"/>
+    <!-- Smoke puffs -->
+    <circle cx="210" cy="72" r="12" fill="#E2E8F0" opacity="0.6">
+      <animate attributeName="cy" values="72;55;72" dur="2.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;0.1;0.6" dur="2.5s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="12;18;12" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="222" cy="58" r="8" fill="#CBD5E1" opacity="0.4">
+      <animate attributeName="cy" values="58;42;58" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.4;0.05;0.4" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="8;14;8" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="200" cy="48" r="6" fill="#F1F5F9" opacity="0.3">
+      <animate attributeName="cy" values="48;32;48" dur="3.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.3;0.02;0.3" dur="3.5s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Front cabin -->
+    <path d="M248,145 L280,170 L280,240 Q280,255 268,255 L248,255 Z" fill="#1D4ED8" stroke="#FFFFFF" stroke-width="3"/>
+    <rect x="258" y="170" width="22" height="40" rx="8" fill="url(#trn3Windshield)"/>
+
+    <!-- Eyes -->
+    <circle cx="120" cy="185" r="16" fill="#FFFFFF"/>
+    <circle cx="175" cy="185" r="16" fill="#FFFFFF"/>
+    <circle cx="122" cy="187" r="8" fill="#1D4ED8"/>
+    <circle cx="177" cy="187" r="8" fill="#1D4ED8"/>
+    <circle cx="124" cy="183" r="3" fill="#FFFFFF"/>
+    <circle cx="179" cy="183" r="3" fill="#FFFFFF"/>
+    <!-- Eyelashes -->
+    <line x1="110" y1="172" x2="107" y2="166" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="118" y1="170" x2="116" y2="163" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="130" y1="171" x2="133" y2="165" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="165" y1="170" x2="162" y2="163" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="177" y1="171" x2="180" y2="165" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="185" y1="172" x2="188" y2="166" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Excited Open Mouth -->
+    <path d="M125 200 Q125 222 147 222 Q169 222 169 200 Z" fill="#0F172A" opacity="0.5"/>
+    <path d="M125 200 Q125 222 147 222 Q169 222 169 200" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <ellipse cx="147" cy="216" rx="12" ry="8" fill="#FF9DBB" opacity="0.55"/>
+
+    <!-- Cheeks -->
+    <circle cx="105" cy="206" r="6" fill="#FF9DBB" opacity="0.5"/>
+    <circle cx="190" cy="206" r="6" fill="#FF9DBB" opacity="0.5"/>
+
+    <!-- Front headlight -->
+    <circle cx="275" cy="218" r="8" fill="#FDE68A" stroke="#F59E0B" stroke-width="2" filter="url(#trn3Glow)"/>
+
+    <!-- Cowcatcher -->
+    <path d="M260,255 L290,255 L275,270 Z" fill="#64748B" stroke="#FFFFFF" stroke-width="2"/>
+
+    <!-- Number on side -->
+    <circle cx="85" cy="220" r="12" fill="#FFFFFF" opacity="0.2"/>
+    <text x="85" y="222" font-size="12" font-family="Fredoka, sans-serif" font-weight="700" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central">3</text>
+
+    <!-- Wheels -->
+    <circle cx="95" cy="260" r="24" fill="#1E293B" stroke="#334155" stroke-width="3"/>
+    <circle cx="95" cy="260" r="15" fill="#475569" stroke="#64748B" stroke-width="2"/>
+    <circle cx="95" cy="260" r="5" fill="#94A3B8"/>
+    <circle cx="95" cy="260" r="12" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="3 5">
+      <animateTransform attributeName="transform" type="rotate" values="0,95,260;360,95,260" dur="2s" repeatCount="indefinite"/>
+    </circle>
+
+    <circle cx="160" cy="260" r="24" fill="#1E293B" stroke="#334155" stroke-width="3"/>
+    <circle cx="160" cy="260" r="15" fill="#475569" stroke="#64748B" stroke-width="2"/>
+    <circle cx="160" cy="260" r="5" fill="#94A3B8"/>
+    <circle cx="160" cy="260" r="12" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="3 5">
+      <animateTransform attributeName="transform" type="rotate" values="0,160,260;360,160,260" dur="2s" repeatCount="indefinite"/>
+    </circle>
+
+    <circle cx="225" cy="260" r="24" fill="#1E293B" stroke="#334155" stroke-width="3"/>
+    <circle cx="225" cy="260" r="15" fill="#475569" stroke="#64748B" stroke-width="2"/>
+    <circle cx="225" cy="260" r="5" fill="#94A3B8"/>
+    <circle cx="225" cy="260" r="12" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="3 5">
+      <animateTransform attributeName="transform" type="rotate" values="0,225,260;360,225,260" dur="2s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Connecting rod -->
+    <line x1="95" y1="260" x2="225" y2="260" stroke="#64748B" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Rails -->
+    <line x1="40" y1="286" x2="290" y2="286" stroke="#94A3B8" stroke-width="4"/>
+    <line x1="40" y1="292" x2="290" y2="292" stroke="#64748B" stroke-width="3"/>
+    <line x1="60" y1="284" x2="60" y2="294" stroke="#78716C" stroke-width="4" stroke-linecap="round"/>
+    <line x1="100" y1="284" x2="100" y2="294" stroke="#78716C" stroke-width="4" stroke-linecap="round"/>
+    <line x1="140" y1="284" x2="140" y2="294" stroke="#78716C" stroke-width="4" stroke-linecap="round"/>
+    <line x1="180" y1="284" x2="180" y2="294" stroke="#78716C" stroke-width="4" stroke-linecap="round"/>
+    <line x1="220" y1="284" x2="220" y2="294" stroke="#78716C" stroke-width="4" stroke-linecap="round"/>
+    <line x1="260" y1="284" x2="260" y2="294" stroke="#78716C" stroke-width="4" stroke-linecap="round"/>
+
+    <g filter="url(#trn3Glow)">
+      <polygon points="48,70 52,80 62,80 54,86 57,96 48,90 39,96 42,86 34,80 44,80" fill="#FFD93D"/>
+      <polygon points="272,80 276,90 286,90 278,96 281,106 272,100 263,106 266,96 258,90 268,90" fill="#FFD93D"/>
+    </g>
+
+    <text x="160" y="330" font-size="22" font-family="'Baloo 2', sans-serif" font-weight="800" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central" stroke="#1D4ED8" stroke-width="3" paint-order="stroke" letter-spacing="1">TRAIN</text>
+  </g>
+
+  <!-- ============================================================ -->
+  <!-- VEHICLE 4 - AIRPLANE (Bottom Left) — Happy Toothy Grin -->
+  <!-- ============================================================ -->
+  <g transform="translate(70,660)">
+    <circle cx="160" cy="130" r="110" fill="#BAE6FD" opacity="0.1"/>
+    <circle cx="160" cy="130" r="75" fill="#0284C7" opacity="0.06"/>
+
+    <!-- Floating clouds -->
+    <g filter="url(#air4SoftGlow)">
+      <g opacity="0.7">
+        <animateTransform attributeName="transform" type="translate" values="14,55;24,40;14,55" dur="5s" repeatCount="indefinite"/>
+        <circle cx="22" cy="60" r="10" fill="#E0F2FE"/>
+        <circle cx="34" cy="58" r="12" fill="#E0F2FE"/>
+        <circle cx="46" cy="60" r="9" fill="#E0F2FE"/>
+      </g>
+    </g>
+    <g filter="url(#air4SoftGlow)">
+      <g opacity="0.5">
+        <animateTransform attributeName="transform" type="translate" values="288,45;278,32;288,45" dur="6s" repeatCount="indefinite"/>
+        <circle cx="296" cy="50" r="8" fill="#BAE6FD"/>
+        <circle cx="306" cy="48" r="10" fill="#BAE6FD"/>
+        <circle cx="316" cy="50" r="7" fill="#BAE6FD"/>
+      </g>
+    </g>
+    <g filter="url(#air4SoftGlow)">
+      <g opacity="0.4">
+        <animateTransform attributeName="transform" type="translate" values="4,200;14,188;4,200" dur="7s" repeatCount="indefinite"/>
+        <circle cx="12" cy="206" r="7" fill="#E0F2FE"/>
+        <circle cx="20" cy="204" r="9" fill="#E0F2FE"/>
+        <circle cx="28" cy="206" r="6" fill="#E0F2FE"/>
+      </g>
+    </g>
+    <path d="M300,180 Q305,174 310,180 Q315,174 320,180" stroke="#0284C7" stroke-width="2" fill="none" opacity="0.5">
+      <animateTransform attributeName="transform" type="translate" values="0,0;-8,-4;0,0" dur="4s" repeatCount="indefinite"/>
+    </path>
+    <path d="M10,250 Q15,244 20,250 Q25,244 30,250" stroke="#0369A1" stroke-width="2" fill="none" opacity="0.4">
+      <animateTransform attributeName="transform" type="translate" values="0,0;6,-3;0,0" dur="5s" repeatCount="indefinite"/>
+    </path>
+    <circle cx="26" cy="130" r="3" fill="#BAE6FD" opacity="0.6">
+      <animate attributeName="opacity" values="0.6;0.15;0.6" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="300" cy="140" r="3" fill="#0284C7" opacity="0.5">
+      <animate attributeName="opacity" values="0.5;0.1;0.5" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Fuselage -->
+    <ellipse cx="160" cy="180" rx="110" ry="40" fill="url(#air4Body)" stroke="#FFFFFF" stroke-width="4" filter="url(#air4Shadow)"/>
+    <ellipse cx="155" cy="160" rx="90" ry="10" fill="#FFFFFF" opacity="0.2"/>
+
+    <!-- Nose cone -->
+    <ellipse cx="260" cy="180" rx="20" ry="32" fill="#0369A1" stroke="#FFFFFF" stroke-width="3"/>
+    <ellipse cx="265" cy="170" rx="5" ry="10" fill="#FFFFFF" opacity="0.2"/>
+
+    <!-- Tail fin (vertical) -->
+    <path d="M52,180 L52,110 L80,145 Z" fill="#0369A1" stroke="#FFFFFF" stroke-width="3"/>
+    <path d="M56,115 L72,140" stroke="#FFFFFF" stroke-width="2" opacity="0.3"/>
+    <!-- Tail fin (horizontal) -->
+    <path d="M55,175 L30,155 L55,165 Z" fill="#0284C7" stroke="#FFFFFF" stroke-width="2"/>
+    <path d="M55,185 L30,205 L55,195 Z" fill="#0284C7" stroke="#FFFFFF" stroke-width="2"/>
+
+    <!-- Wings -->
+    <path d="M120,180 L60,220 L60,230 L140,200 Z" fill="url(#air4Wing)" stroke="#FFFFFF" stroke-width="3"/>
+    <path d="M120,180 L60,140 L60,130 L140,160 Z" fill="url(#air4Wing)" stroke="#FFFFFF" stroke-width="3"/>
+    <line x1="85" y1="145" x2="130" y2="165" stroke="#FFFFFF" stroke-width="1.5" opacity="0.3"/>
+    <line x1="85" y1="215" x2="130" y2="195" stroke="#FFFFFF" stroke-width="1.5" opacity="0.3"/>
+
+    <!-- Engine pods -->
+    <ellipse cx="90" cy="225" rx="18" ry="10" fill="#475569" stroke="#FFFFFF" stroke-width="2"/>
+    <ellipse cx="90" cy="135" rx="18" ry="10" fill="#475569" stroke="#FFFFFF" stroke-width="2"/>
+
+    <!-- Propeller -->
+    <g transform="translate(278,180)">
+      <animateTransform attributeName="transform" type="rotate" values="0,0,0;360,0,0" dur="0.5s" repeatCount="indefinite"/>
+      <rect x="-4" y="-30" width="8" height="60" rx="3" fill="#64748B" stroke="#FFFFFF" stroke-width="1"/>
+      <rect x="-30" y="-4" width="60" height="8" rx="3" fill="#64748B" stroke="#FFFFFF" stroke-width="1"/>
+    </g>
+
+    <!-- Windshield -->
+    <path d="M218,162 Q230,158 240,165 L240,190 Q230,196 218,192 Z" fill="url(#air4Windshield)"/>
+    <path d="M222,166 L230,163 L228,175 Z" fill="#FFFFFF" opacity="0.12"/>
+
+    <!-- Eyes -->
+    <circle cx="160" cy="172" r="14" fill="#FFFFFF"/>
+    <circle cx="195" cy="172" r="14" fill="#FFFFFF"/>
+    <circle cx="162" cy="174" r="7" fill="#0284C7"/>
+    <circle cx="197" cy="174" r="7" fill="#0284C7"/>
+    <circle cx="164" cy="170" r="2.5" fill="#FFFFFF"/>
+    <circle cx="199" cy="170" r="2.5" fill="#FFFFFF"/>
+    <!-- Eyelashes -->
+    <line x1="150" y1="160" x2="147" y2="154" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="158" y1="158" x2="156" y2="151" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="168" y1="159" x2="171" y2="153" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="185" y1="158" x2="182" y2="151" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="197" y1="159" x2="200" y2="153" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="205" y1="160" x2="208" y2="154" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Happy Toothy Grin -->
+    <path d="M155 188 Q155 204 177 204 Q199 204 199 188" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <rect x="162" y="188" width="7" height="8" rx="2" fill="#FFFFFF" opacity="0.7"/>
+    <rect x="173" y="188" width="7" height="8" rx="2" fill="#FFFFFF" opacity="0.7"/>
+    <rect x="184" y="188" width="7" height="8" rx="2" fill="#FFFFFF" opacity="0.7"/>
+
+    <!-- Cheeks -->
+    <circle cx="146" cy="190" r="5" fill="#FF9DBB" opacity="0.5"/>
+    <circle cx="210" cy="190" r="5" fill="#FF9DBB" opacity="0.5"/>
+
+    <!-- Passenger windows -->
+    <circle cx="110" cy="178" r="5" fill="#0F172A" stroke="#334155" stroke-width="1"/>
+    <circle cx="128" cy="178" r="5" fill="#0F172A" stroke="#334155" stroke-width="1"/>
+
+    <!-- Airline stripe -->
+    <line x1="80" y1="195" x2="250" y2="195" stroke="#FFFFFF" stroke-width="3" opacity="0.3"/>
+
+    <g filter="url(#air4Glow)">
+      <polygon points="48,70 52,80 62,80 54,86 57,96 48,90 39,96 42,86 34,80 44,80" fill="#FFD93D"/>
+      <polygon points="272,80 276,90 286,90 278,96 281,106 272,100 263,106 266,96 258,90 268,90" fill="#FFD93D"/>
+    </g>
+
+    <text x="160" y="280" font-size="22" font-family="'Baloo 2', sans-serif" font-weight="800" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central" stroke="#0369A1" stroke-width="3" paint-order="stroke" letter-spacing="1">AIRPLANE</text>
+  </g>
+
+  <!-- ============================================================ -->
+  <!-- VEHICLE 5 - BOAT (Bottom Center) — Cheeky Tongue-Out -->
+  <!-- ============================================================ -->
+  <g transform="translate(530,660)">
+    <circle cx="160" cy="130" r="110" fill="#99F6E4" opacity="0.1"/>
+    <circle cx="160" cy="130" r="75" fill="#0D9488" opacity="0.06"/>
+
+    <g filter="url(#boat5SoftGlow)">
+      <path d="M4,60 Q14,50 24,60 Q34,70 44,60" stroke="#14B8A6" stroke-width="3" fill="none" opacity="0.6">
+        <animateTransform attributeName="transform" type="translate" values="0,0;5,-6;0,0" dur="3.5s" repeatCount="indefinite"/>
+      </path>
+    </g>
+    <g filter="url(#boat5SoftGlow)">
+      <path d="M286,55 Q296,45 306,55 Q316,65 326,55" stroke="#14B8A6" stroke-width="3" fill="none" opacity="0.5">
+        <animateTransform attributeName="transform" type="translate" values="0,0;-4,-5;0,0" dur="4s" repeatCount="indefinite"/>
+      </path>
+    </g>
+    <g filter="url(#boat5SoftGlow)">
+      <path d="M8,200 Q18,190 28,200 Q38,210 48,200" stroke="#0D9488" stroke-width="2.5" fill="none" opacity="0.5">
+        <animateTransform attributeName="transform" type="translate" values="0,0;6,-5;0,0" dur="4.5s" repeatCount="indefinite"/>
+      </path>
+    </g>
+    <!-- Floating fish -->
+    <g opacity="0.6">
+      <animateTransform attributeName="transform" type="translate" values="295,190;285,185;295,190" dur="5s" repeatCount="indefinite"/>
+      <ellipse cx="302" cy="192" rx="10" ry="6" fill="#FDE68A"/>
+      <polygon points="312,192 320,186 320,198" fill="#FDE68A"/>
+      <circle cx="297" cy="190" r="2" fill="#1E293B"/>
+    </g>
+    <g opacity="0.4">
+      <animateTransform attributeName="transform" type="translate" values="14,265;24,258;14,265" dur="6s" repeatCount="indefinite"/>
+      <ellipse cx="22" cy="268" rx="8" ry="5" fill="#FDA4AF"/>
+      <polygon points="30,268 36,263 36,273" fill="#FDA4AF"/>
+      <circle cx="18" cy="266" r="1.5" fill="#1E293B"/>
+    </g>
+    <g filter="url(#boat5SoftGlow)">
+      <polygon points="300,260 303,268 311,268 305,273 307,281 300,276 293,281 295,273 289,268 297,268" fill="#F59E0B" opacity="0.5">
+        <animateTransform attributeName="transform" type="rotate" values="0,300,270;360,300,270" dur="12s" repeatCount="indefinite"/>
+      </polygon>
+    </g>
+    <circle cx="24" cy="100" r="3" fill="#99F6E4" opacity="0.6">
+      <animate attributeName="opacity" values="0.6;0.15;0.6" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="302" cy="120" r="3" fill="#0D9488" opacity="0.5">
+      <animate attributeName="opacity" values="0.5;0.1;0.5" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Water waves -->
+    <path d="M30,280 Q70,268 110,280 Q150,292 190,280 Q230,268 270,280 Q290,288 310,280" fill="#0D9488" opacity="0.3">
+      <animate attributeName="d" values="M30,280 Q70,268 110,280 Q150,292 190,280 Q230,268 270,280 Q290,288 310,280;M30,280 Q70,292 110,280 Q150,268 190,280 Q230,292 270,280 Q290,272 310,280;M30,280 Q70,268 110,280 Q150,292 190,280 Q230,268 270,280 Q290,288 310,280" dur="3s" repeatCount="indefinite"/>
+    </path>
+    <path d="M20,290 Q60,278 100,290 Q140,302 180,290 Q220,278 260,290 Q300,302 320,290" fill="#14B8A6" opacity="0.2">
+      <animate attributeName="d" values="M20,290 Q60,278 100,290 Q140,302 180,290 Q220,278 260,290 Q300,302 320,290;M20,290 Q60,302 100,290 Q140,278 180,290 Q220,302 260,290 Q300,278 320,290;M20,290 Q60,278 100,290 Q140,302 180,290 Q220,278 260,290 Q300,302 320,290" dur="3.5s" repeatCount="indefinite"/>
+    </path>
+
+    <!-- Hull -->
+    <path d="M60,220 L80,265 Q120,278 160,278 Q200,278 240,265 L260,220 Z" fill="url(#boat5Body)" stroke="#FFFFFF" stroke-width="4" filter="url(#boat5Shadow)"/>
+    <path d="M68,230 L76,255 Q120,265 160,265 Q200,265 244,255 L252,230" fill="#0F766E" opacity="0.3"/>
+    <!-- Portholes -->
+    <circle cx="110" cy="245" r="8" fill="#0F172A" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="160" cy="250" r="8" fill="#0F172A" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="210" cy="245" r="8" fill="#0F172A" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="108" cy="243" r="2" fill="#FFFFFF" opacity="0.3"/>
+    <circle cx="158" cy="248" r="2" fill="#FFFFFF" opacity="0.3"/>
+    <circle cx="208" cy="243" r="2" fill="#FFFFFF" opacity="0.3"/>
+
+    <!-- Cabin -->
+    <rect x="100" y="170" width="120" height="55" rx="12" fill="#0F766E" stroke="#FFFFFF" stroke-width="3"/>
+    <rect x="112" y="180" width="30" height="22" rx="6" fill="url(#boat5Windshield)"/>
+    <rect x="178" y="180" width="30" height="22" rx="6" fill="url(#boat5Windshield)"/>
+    <rect x="115" y="182" width="5" height="10" rx="2" fill="#FFFFFF" opacity="0.12"/>
+    <rect x="181" y="182" width="5" height="10" rx="2" fill="#FFFFFF" opacity="0.12"/>
+
+    <!-- Eyes -->
+    <circle cx="127" cy="190" r="9" fill="#FFFFFF"/>
+    <circle cx="193" cy="190" r="9" fill="#FFFFFF"/>
+    <circle cx="128" cy="192" r="5" fill="#0D9488"/>
+    <circle cx="194" cy="192" r="5" fill="#0D9488"/>
+    <circle cx="130" cy="189" r="2" fill="#FFFFFF"/>
+    <circle cx="196" cy="189" r="2" fill="#FFFFFF"/>
+    <!-- Eyelashes -->
+    <line x1="120" y1="182" x2="118" y2="177" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="126" y1="181" x2="125" y2="175" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="134" y1="181" x2="136" y2="176" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="186" y1="181" x2="184" y2="175" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="194" y1="181" x2="196" y2="176" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="200" y1="182" x2="202" y2="177" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- Cheeky Tongue-Out -->
+    <path d="M145 200 Q145 216 160 216 Q175 216 175 200" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <ellipse cx="160" cy="212" rx="8" ry="6" fill="#FF9DBB" opacity="0.7"/>
+    <path d="M148 202 Q148 214 160 214 Q172 214 172 202" fill="#0F172A" opacity="0.35"/>
+
+    <!-- Cheeks -->
+    <circle cx="115" cy="204" r="4" fill="#FF9DBB" opacity="0.5"/>
+    <circle cx="205" cy="204" r="4" fill="#FF9DBB" opacity="0.5"/>
+
+    <!-- Mast -->
+    <line x1="160" y1="60" x2="160" y2="170" stroke="#78716C" stroke-width="5" stroke-linecap="round"/>
+    <!-- Sail -->
+    <path d="M160,70 L160,160 L100,150 Z" fill="url(#boat5Sail)" stroke="#94A3B8" stroke-width="2"/>
+    <path d="M160,75 L160,155 L218,148 Z" fill="url(#boat5Sail)" stroke="#94A3B8" stroke-width="2"/>
+    <line x1="160" y1="100" x2="120" y2="145" stroke="#CBD5E1" stroke-width="1" opacity="0.4"/>
+    <line x1="160" y1="100" x2="200" y2="142" stroke="#CBD5E1" stroke-width="1" opacity="0.4"/>
+
+    <!-- Flag -->
+    <path d="M160,60 L160,48 L182,54 L160,60" fill="#EF4444">
+      <animate attributeName="d" values="M160,60 L160,48 L182,54 L160,60;M160,60 L160,48 L180,55 L160,60;M160,60 L160,48 L182,54 L160,60" dur="2s" repeatCount="indefinite"/>
+    </path>
+
+    <!-- Mast light -->
+    <circle cx="160" cy="58" r="4" fill="#FDE68A" filter="url(#boat5Glow)">
+      <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite"/>
+    </circle>
+
+    <g filter="url(#boat5Glow)">
+      <polygon points="48,70 52,80 62,80 54,86 57,96 48,90 39,96 42,86 34,80 44,80" fill="#FFD93D"/>
+      <polygon points="272,80 276,90 286,90 278,96 281,106 272,100 263,106 266,96 258,90 268,90" fill="#FFD93D"/>
+    </g>
+
+    <text x="160" y="330" font-size="22" font-family="'Baloo 2', sans-serif" font-weight="800" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central" stroke="#0F766E" stroke-width="3" paint-order="stroke" letter-spacing="1">BOAT</text>
+  </g>
+
+  <!-- ============================================================ -->
+  <!-- VEHICLE 6 - HELICOPTER (Bottom Right) — Cheerful O-Mouth + Static Blades -->
+  <!-- ============================================================ -->
+  <g transform="translate(990,660)">
+    <circle cx="160" cy="130" r="110" fill="#BBF7D0" opacity="0.1"/>
+    <circle cx="160" cy="130" r="75" fill="#16A34A" opacity="0.06"/>
+
+    <g filter="url(#heli6SoftGlow)">
+      <g opacity="0.6">
+        <animateTransform attributeName="transform" type="translate" values="16,60;26,48;16,60" dur="5.5s" repeatCount="indefinite"/>
+        <circle cx="24" cy="65" r="9" fill="#D1FAE5"/>
+        <circle cx="34" cy="63" r="11" fill="#D1FAE5"/>
+        <circle cx="44" cy="65" r="8" fill="#D1FAE5"/>
+      </g>
+    </g>
+    <g filter="url(#heli6SoftGlow)">
+      <g opacity="0.45">
+        <animateTransform attributeName="transform" type="translate" values="290,50;280,38;290,50" dur="6.5s" repeatCount="indefinite"/>
+        <circle cx="298" cy="55" r="7" fill="#BBF7D0"/>
+        <circle cx="306" cy="53" r="9" fill="#BBF7D0"/>
+        <circle cx="314" cy="55" r="6" fill="#BBF7D0"/>
+      </g>
+    </g>
+    <g filter="url(#heli6SoftGlow)">
+      <polygon points="16,200 20,210 30,210 22,216 25,226 16,220 7,226 10,216 2,210 12,210" fill="#86EFAC" opacity="0.6">
+        <animateTransform attributeName="transform" type="translate" values="0,0;5,-6;0,0" dur="4s" repeatCount="indefinite"/>
+      </polygon>
+    </g>
+    <g filter="url(#heli6SoftGlow)">
+      <path d="M300,190 C300,184 306,180 306,186 C306,180 312,184 312,190 C312,196 306,202 306,202 C306,202 300,196 300,190Z" fill="#FF5E7E" opacity="0.5">
+        <animateTransform attributeName="transform" type="translate" values="0,0;-4,-5;0,0" dur="3.5s" repeatCount="indefinite"/>
+      </path>
+    </g>
+    <circle cx="24" cy="130" r="3" fill="#BBF7D0" opacity="0.6">
+      <animate attributeName="opacity" values="0.6;0.15;0.6" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="302" cy="145" r="3" fill="#16A34A" opacity="0.5">
+      <animate attributeName="opacity" values="0.5;0.1;0.5" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Main rotor mast -->
+    <rect x="155" y="68" width="10" height="22" rx="3" fill="#475569" stroke="#FFFFFF" stroke-width="2"/>
+
+    <!-- Main rotor blades (static - no animation) -->
+    <g transform="translate(160,68)">
+      <rect x="-110" y="-4" width="220" height="8" rx="4" fill="#64748B" stroke="#FFFFFF" stroke-width="1.5" opacity="0.85"/>
+      <rect x="-4" y="-110" width="8" height="220" rx="4" fill="#64748B" stroke="#FFFFFF" stroke-width="1.5" opacity="0.85"/>
+    </g>
+
+    <!-- Main body -->
+    <ellipse cx="160" cy="175" rx="85" ry="52" fill="url(#heli6Body)" stroke="#FFFFFF" stroke-width="4" filter="url(#heli6Shadow)"/>
+    <ellipse cx="152" cy="150" rx="65" ry="12" fill="#FFFFFF" opacity="0.2"/>
+
+    <!-- Cockpit windshield -->
+    <path d="M200,155 Q230,160 235,180 Q235,200 215,205 L185,205 L185,155 Z" fill="url(#heli6Windshield)"/>
+    <line x1="200" y1="155" x2="200" y2="205" stroke="#334155" stroke-width="1.5"/>
+    <path d="M205,160 L215,158 L212,170 Z" fill="#FFFFFF" opacity="0.12"/>
+
+    <!-- Eyes -->
+    <circle cx="135" cy="170" r="15" fill="#FFFFFF"/>
+    <circle cx="175" cy="170" r="15" fill="#FFFFFF"/>
+    <circle cx="137" cy="172" r="7.5" fill="#15803D"/>
+    <circle cx="177" cy="172" r="7.5" fill="#15803D"/>
+    <circle cx="139" cy="168" r="2.5" fill="#FFFFFF"/>
+    <circle cx="179" cy="168" r="2.5" fill="#FFFFFF"/>
+    <!-- Eyelashes -->
+    <line x1="125" y1="158" x2="122" y2="152" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="133" y1="156" x2="131" y2="149" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="143" y1="157" x2="146" y2="151" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="165" y1="156" x2="162" y2="149" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="177" y1="157" x2="180" y2="151" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <line x1="185" y1="158" x2="188" y2="152" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Cheerful O-Mouth -->
+    <ellipse cx="155" cy="195" rx="10" ry="12" fill="#0F172A" opacity="0.45"/>
+    <ellipse cx="155" cy="195" rx="10" ry="12" stroke="#FFFFFF" stroke-width="3.5" fill="none"/>
+    <ellipse cx="155" cy="200" rx="6" ry="5" fill="#FF9DBB" opacity="0.5"/>
+
+    <!-- Cheeks -->
+    <circle cx="120" cy="190" r="5" fill="#FF9DBB" opacity="0.5"/>
+    <circle cx="190" cy="190" r="5" fill="#FF9DBB" opacity="0.5"/>
+
+    <!-- Tail boom -->
+    <path d="M75,175 L30,160 L25,165 L75,185 Z" fill="#16A34A" stroke="#FFFFFF" stroke-width="3"/>
+    <!-- Tail fin -->
+    <path d="M28,155 L15,120 L40,155 Z" fill="#15803D" stroke="#FFFFFF" stroke-width="2"/>
+
+    <!-- Tail rotor (static) -->
+    <g transform="translate(27,140)">
+      <rect x="19" y="136" width="16" height="8" rx="3" fill="#64748B" stroke="#FFFFFF" stroke-width="1" opacity="0.8"/>
+    </g>
+
+    <!-- Landing skids -->
+    <line x1="110" y1="228" x2="210" y2="228" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
+    <line x1="120" y1="218" x2="120" y2="228" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
+    <line x1="200" y1="218" x2="200" y2="228" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
+    <line x1="105" y1="232" x2="135" y2="232" stroke="#64748B" stroke-width="3" stroke-linecap="round"/>
+    <line x1="185" y1="232" x2="215" y2="232" stroke="#64748B" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Red cross (rescue) -->
+    <g transform="translate(160,205)">
+      <rect x="-8" y="-2" width="16" height="4" rx="1" fill="#FFFFFF" opacity="0.4"/>
+      <rect x="-2" y="-8" width="4" height="16" rx="1" fill="#FFFFFF" opacity="0.4"/>
+    </g>
+
+    <!-- Side door -->
+    <rect x="185" y="165" width="20" height="30" rx="4" fill="#0F766E" stroke="#FFFFFF" stroke-width="1.5" opacity="0.5"/>
+
+    <g filter="url(#heli6Glow)">
+      <polygon points="48,70 52,80 62,80 54,86 57,96 48,90 39,96 42,86 34,80 44,80" fill="#FFD93D"/>
+      <polygon points="272,80 276,90 286,90 278,96 281,106 272,100 263,106 266,96 258,90 268,90" fill="#FFD93D"/>
+    </g>
+
+    <text x="160" y="280" font-size="22" font-family="'Baloo 2', sans-serif" font-weight="800" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central" stroke="#15803D" stroke-width="3" paint-order="stroke" letter-spacing="1">HELICOPTER</text>
+  </g>
+</svg>
