@@ -57,7 +57,7 @@ const LEVEL_THEMES = {
 const getTheme = (level) => LEVEL_THEMES[level] || LEVEL_THEMES[1];
 
 // ── Level tile SVG illustrations ────────────────────────────────────────────
-const getTileIllustration = (level) => {
+const getTileIllustration = (level, language) => {
   switch (level) {
     case 1:
       return (
@@ -68,8 +68,8 @@ const getTileIllustration = (level) => {
               <stop offset="100%" stopColor="#00C875" />
             </linearGradient>
             <linearGradient id="rbt1Body" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%"  stopColor="#FFBB52" />
-              <stop offset="100%" stopColor="#FF6A00" />
+              <stop offset="0%"  stopColor="#B8FFE0" />
+              <stop offset="100%" stopColor="#00C875" />
             </linearGradient>
             <linearGradient id="rbt1Screen" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%"  stopColor="#263238" />
@@ -162,7 +162,7 @@ const getTileIllustration = (level) => {
             </g>
 
             {/* Label */}
-            <text x="160" y="358" fontSize="20" fontFamily="Fredoka, sans-serif" fontWeight="700" fill="#FFFFFF" textAnchor="middle" stroke="#15803D" strokeWidth="3" paintOrder="stroke">BELAJAR KV</text>
+            <text x="160" y="358" fontSize="22" fontFamily="'Baloo 2', sans-serif" fontWeight="800" fill="#FFFFFF" textAnchor="middle" stroke="#15803D" strokeWidth="3" paintOrder="stroke" letterSpacing="1">{language === 'bm' ? 'BELAJAR KV' : 'LEARN KV'}</text>
           </g>
         </svg>
       );
@@ -280,7 +280,7 @@ const getTileIllustration = (level) => {
             </g>
 
             {/* Label */}
-            <text x="160" y="358" fontSize="20" fontFamily="Fredoka, sans-serif" fontWeight="700" fill="#FFFFFF" textAnchor="middle" stroke="#9A3412" strokeWidth="3" paintOrder="stroke">BELAJAR KVK</text>
+            <text x="160" y="358" fontSize="22" fontFamily="'Baloo 2', sans-serif" fontWeight="800" fill="#FFFFFF" textAnchor="middle" stroke="#9A3412" strokeWidth="3" paintOrder="stroke" letterSpacing="1">{language === 'bm' ? 'BELAJAR KVK' : 'LEARN KVK'}</text>
           </g>
         </svg>
       );
@@ -295,8 +295,8 @@ const getTileIllustration = (level) => {
               <stop offset="100%" stopColor="#3CCBFF" />
             </linearGradient>
             <linearGradient id="rbt3Body" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%"   stopColor="#FFBB52" />
-              <stop offset="100%" stopColor="#FF7A00" />
+              <stop offset="0%"   stopColor="#B8F7FF" />
+              <stop offset="100%" stopColor="#3CCBFF" />
             </linearGradient>
             <linearGradient id="rbt3Screen" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%"   stopColor="#263238" />
@@ -370,13 +370,13 @@ const getTileIllustration = (level) => {
             <g className="rbt3-wave">
               <circle cx="88"  cy="218" r="14" fill="#3CCBFF" />
               <rect   x="38"   y="208" width="52" height="20" rx="10" fill="#3CCBFF" />
-              <circle cx="34"  cy="218" r="12" fill="#FFBB52" />
+              <circle cx="34"  cy="218" r="12" fill="#B8F7FF" />
             </g>
 
             {/* Right arm */}
             <circle cx="232" cy="218" r="14" fill="#3CCBFF" />
             <rect   x="230"  y="208" width="52" height="20" rx="10" fill="#3CCBFF" />
-            <circle cx="286" cy="218" r="12" fill="#FFBB52" />
+            <circle cx="286" cy="218" r="12" fill="#B8F7FF" />
 
             {/* Legs */}
             <rect x="118" y="286" width="24" height="36" rx="12" fill="#263238" />
@@ -393,7 +393,7 @@ const getTileIllustration = (level) => {
             </g>
 
             {/* Label */}
-            <text x="160" y="358" fontSize="20" fontFamily="Fredoka, sans-serif" fontWeight="700" fill="#FFFFFF" textAnchor="middle" stroke="#0891B2" strokeWidth="3" paintOrder="stroke">BELAJAR KATA</text>
+            <text x="160" y="358" fontSize="22" fontFamily="'Baloo 2', sans-serif" fontWeight="800" fill="#FFFFFF" textAnchor="middle" stroke="#0891B2" strokeWidth="3" paintOrder="stroke" letterSpacing="1">{language === 'bm' ? 'BELAJAR KATA' : 'LEARN WORDS'}</text>
           </g>
         </svg>
       );
@@ -407,8 +407,8 @@ const getTileIllustration = (level) => {
               <stop offset="100%" stopColor="#8B5CF6" />
             </linearGradient>
             <linearGradient id="rbt4Body" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%"  stopColor="#FFBB52" />
-              <stop offset="100%" stopColor="#FF7A00" />
+              <stop offset="0%"  stopColor="#E0C7FF" />
+              <stop offset="100%" stopColor="#8B5CF6" />
             </linearGradient>
             <linearGradient id="rbt4Screen" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%"  stopColor="#263238" />
@@ -470,8 +470,8 @@ const getTileIllustration = (level) => {
 
             {/* Chest screen */}
             <rect x="122" y="216" width="76" height="38" rx="14" fill="#1E293B" />
-            <text x="160" y="234" fontSize="13" fontFamily="Fredoka, sans-serif" fontWeight="700" fill="#FFFFFF" textAnchor="middle">cerita</text>
-            <text x="160" y="248" fontSize="13" fontFamily="Fredoka, sans-serif" fontWeight="700" fill="#6EE7FF" textAnchor="middle">saya</text>
+            <text x="160" y="234" fontSize="13" fontFamily="Fredoka, sans-serif" fontWeight="700" fill="#FFFFFF" textAnchor="middle">{language === 'bm' ? 'cerita' : 'my'}</text>
+            <text x="160" y="248" fontSize="13" fontFamily="Fredoka, sans-serif" fontWeight="700" fill="#6EE7FF" textAnchor="middle">{language === 'bm' ? 'saya' : 'story'}</text>
 
             {/* Buttons */}
             <circle cx="132" cy="266" r="6" fill="#FF5E7E" />
@@ -481,12 +481,12 @@ const getTileIllustration = (level) => {
             {/* Left arm */}
             <circle cx="88"  cy="218" r="14" fill="#8B5CF6" />
             <rect   x="38"   y="208" width="52" height="20" rx="10" fill="#8B5CF6" />
-            <circle cx="34"  cy="218" r="12" fill="#FFBB52" />
+            <circle cx="34"  cy="218" r="12" fill="#E0C7FF" />
 
             {/* Right arm */}
             <circle cx="232" cy="218" r="14" fill="#8B5CF6" />
             <rect   x="230"  y="208" width="52" height="20" rx="10" fill="#8B5CF6" />
-            <circle cx="286" cy="218" r="12" fill="#FFBB52" />
+            <circle cx="286" cy="218" r="12" fill="#E0C7FF" />
 
             {/* Legs */}
             <rect x="118" y="286" width="24" height="36" rx="12" fill="#263238" />
@@ -503,7 +503,7 @@ const getTileIllustration = (level) => {
             </g>
 
             {/* Label */}
-            <text x="160" y="358" fontSize="20" fontFamily="Fredoka, sans-serif" fontWeight="700" fill="#FFFFFF" textAnchor="middle" stroke="#6D28D9" strokeWidth="3" paintOrder="stroke">AYAT PANJANG</text>
+            <text x="160" y="358" fontSize="22" fontFamily="'Baloo 2', sans-serif" fontWeight="800" fill="#FFFFFF" textAnchor="middle" stroke="#6D28D9" strokeWidth="3" paintOrder="stroke" letterSpacing="1">{language === 'bm' ? 'AYAT PANJANG' : 'LONG SENTENCES'}</text>
           </g>
         </svg>
       );
@@ -651,6 +651,14 @@ export default function ReadingPage({ onBack, language }) {
     }
   `, []);
 
+  // Memoize SVG illustrations — update when language changes
+  const tileIllustrations = useMemo(() => ({
+    1: getTileIllustration(1, language),
+    2: getTileIllustration(2, language),
+    3: getTileIllustration(3, language),
+    4: getTileIllustration(4, language),
+  }), [language]);
+
   // ── Route Tahap 1 → dedicated KV page ─────────────────────────────────
   if (selectedLevel === 1) {
     return <KVLearningPage onBack={() => setSelectedLevel(null)} language={language} />;
@@ -709,14 +717,6 @@ export default function ReadingPage({ onBack, language }) {
     SpeechManager.speak(text, 'ms-MY');
     setActiveSyllable(index);
   };
-
-  // Memoize SVG illustrations — each is ~100 React elements; never needs to change
-  const tileIllustrations = useMemo(() => ({
-    1: getTileIllustration(1),
-    2: getTileIllustration(2),
-    3: getTileIllustration(3),
-    4: getTileIllustration(4),
-  }), []);
 
   // View: Level Selection
   if (!selectedLevel) {
