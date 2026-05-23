@@ -27,6 +27,7 @@ import SoundMatching from './components/AgeGroup-4-5/SoundMatching';
 import LetterSoundPuzzle from './components/AgeGroup-4-5/LetterSoundPuzzle';
 import PhoneticsSprint from './components/AgeGroup-4-5/PhoneticsSprint';
 import ProfileHome from './components/Profile/ProfileHome';
+import RobotComponentPage from './components/RobotComponentPage';
 const AchievementHome  = React.lazy(() => import('./components/Achievement/AchievementHome'));
 const LeaderboardHome  = React.lazy(() => import('./components/Leaderboard/LeaderboardHome'));
 import AssessmentSelector from './pages/AssessmentSelector';
@@ -146,6 +147,7 @@ export default function App() {
   const [currentAgeGroup, setCurrentAgeGroup] = useState(null);
   const [currentAgeGame, setCurrentAgeGame] = useState(null);
   const [currentTheme, setCurrentTheme] = useState('cosmic');
+  const [showRobotComponent, setShowRobotComponent] = useState(false);
 
   const activeGameId = getActiveGameId(currentSubject, mathSubGame);
   const { gameState, levelUpInfo, clearLevelUp } = useGameState(activeGameId);
@@ -159,8 +161,14 @@ export default function App() {
     setStreak(calcStreak(dates));
     const handleFirstClick = () => { unlockAudio(); document.removeEventListener('click', handleFirstClick); };
     document.addEventListener('click', handleFirstClick);
+    // Preload lazy tab bundles after initial paint so first-click is instant
+    const t = setTimeout(() => {
+      import('./components/Achievement/AchievementHome');
+      import('./components/Leaderboard/LeaderboardHome');
+    }, 2000);
     return () => {
       document.removeEventListener('click', handleFirstClick);
+      clearTimeout(t);
     };
   }, []);
 
@@ -175,7 +183,7 @@ export default function App() {
   const viewKey = `${activeTab}-${currentSubject}-${mathSubGame}-${dateTimeSubGame}-${isPlaying}-${selectedAssessment?.id}`;
 
   // Hide sidebar during game play or assessment
-  const shouldHideSidebar = isPlaying || (currentSubject === 'math' && mathSubGame === 'faq') || isPlayingJawiGame || selectedAssessment || !!currentAgeGame;
+  const shouldHideSidebar = isPlaying || (currentSubject === 'math' && mathSubGame === 'faq') || isPlayingJawiGame || selectedAssessment || !!currentAgeGame || showRobotComponent;
 
   // ── Content renderer ──────────────────────────────────────────────────────
   const renderContent = () => {
@@ -184,7 +192,12 @@ export default function App() {
         <LeaderboardHome language={language} gameState={gameState} theme={THEMES[currentTheme]} />
       </Suspense>
     );
-    if (activeTab === 'profile')     return <ProfileHome playerName={playerName} gameState={gameState} language={language} streak={streak} />;
+    if (activeTab === 'profile') {
+      if (showRobotComponent) {
+        return <RobotComponentPage onBack={() => setShowRobotComponent(false)} />;
+      }
+      return <ProfileHome playerName={playerName} gameState={gameState} language={language} streak={streak} onNavigateToRobot={() => setShowRobotComponent(true)} />;
+    }
     if (activeTab === 'achievement') {
       // If an assessment is selected, show AssessmentPage
       if (selectedAssessment) {

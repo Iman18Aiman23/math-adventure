@@ -4,7 +4,7 @@ import HeartShopModal from '../HeartShopModal';
 import { getGameData } from '../../utils/gameStatsManager';
 import { playHoverSound } from '../../utils/soundManager';
 
-export default function ProfileHome({ playerName, gameState, language, streak = 0 }) {
+export default function ProfileHome({ playerName, gameState, language, streak = 0, onNavigateToRobot }) {
   const gameData = getGameData();
   const totalXP = gameData.stars;
   const gems = gameData.gems;
@@ -23,7 +23,33 @@ export default function ProfileHome({ playerName, gameState, language, streak = 
     <div className="page-shell">
 
       {/* Header */}
-      <div style={{ background: '#fff', padding: '2rem 1.5rem', textAlign: 'center', borderBottom: '2px solid #E5E5E5' }}>
+      <div style={{ background: '#fff', padding: '2rem 1.5rem', textAlign: 'center', borderBottom: '2px solid #E5E5E5', position: 'relative' }}>
+        <button
+          onClick={() => onNavigateToRobot?.()}
+          onMouseEnter={playHoverSound}
+          style={{
+            position: 'absolute',
+            top: '1rem',
+            right: '1rem',
+            width: '48px',
+            height: '48px',
+            borderRadius: '50%',
+            border: '2px solid #CE82FF',
+            background: '#EDD9FF',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '1.5rem',
+            transition: 'all 0.2s ease',
+          }}
+          onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
+          onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+        >
+          🤖
+        </button>
+
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.5rem' }}>
           <MascotIcon size={80} />
         </div>

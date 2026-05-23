@@ -1,5 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { GradCapIcon, TrophyIcon, ProfileIcon, MedalIcon, GearsIcon } from './icons/GameIcons';
+
+const hexToRgb = (hex) => {
+  const h = (hex || '#6366F1').replace('#', '');
+  return `${parseInt(h.slice(0,2),16)},${parseInt(h.slice(2,4),16)},${parseInt(h.slice(4,6),16)}`;
+};
 
 const TABS = [
   { id: 'learn',       icon: GradCapIcon, label: { bm: 'Kursus',     eng: 'Course'      }, badge: false },
@@ -20,10 +25,14 @@ export default function CosmicMobileNav({
 }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const settingsRef = useRef(null);
+  const settingsBtnRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (settingsRef.current && !settingsRef.current.contains(event.target)) {
+      if (
+        settingsRef.current && !settingsRef.current.contains(event.target) &&
+        settingsBtnRef.current && !settingsBtnRef.current.contains(event.target)
+      ) {
         setSettingsOpen(false);
       }
     };
@@ -60,6 +69,16 @@ export default function CosmicMobileNav({
 
   const hasSettings = (themes && onThemeChange) || onToggleLang;
 
+  const accentColor = theme?.swatch    || '#6366F1';
+  const glowColor   = theme?.heroBorder || '#a5b4fc';
+
+  const navCssVars = useMemo(() => ({
+    '--nav-accent':     accentColor,
+    '--nav-glow':       glowColor,
+    '--nav-accent-rgb': hexToRgb(accentColor),
+    '--nav-glow-rgb':   hexToRgb(glowColor),
+  }), [accentColor, glowColor]);
+
   return (
     <>
       {/* Settings popup (language + theme) */}
@@ -76,7 +95,8 @@ export default function CosmicMobileNav({
             padding: '14px 18px',
             background: '#ffffff',
             borderRadius: '24px',
-            boxShadow: '0 12px 32px rgba(17,24,39,0.18), 0 0 0 1px rgba(17,24,39,0.06)',
+            border: `1.5px solid rgba(${hexToRgb(accentColor)}, 0.2)`,
+            boxShadow: `0 12px 32px rgba(17,24,39,0.16), 0 0 0 1px rgba(${hexToRgb(glowColor)}, 0.12), 0 -6px 20px rgba(${hexToRgb(glowColor)}, 0.1)`,
             zIndex: 999,
             animation: 'settingsPickerIn 0.18s ease-out',
             minWidth: '220px',
@@ -152,7 +172,7 @@ export default function CosmicMobileNav({
         </>
       )}
 
-      <nav className="cosmic-nav">
+      <nav className="cosmic-nav" style={navCssVars}>
         <div className="nav-glass">
           <div className="nav-items">
             {TABS.map(tab => (
@@ -175,6 +195,7 @@ export default function CosmicMobileNav({
             {/* Settings toggle (language + theme) */}
             {hasSettings && (
               <button
+                ref={settingsBtnRef}
                 className={`nav-item${settingsOpen ? ' active' : ''}`}
                 onClick={() => {
                   if (navigator.vibrate) navigator.vibrate(20);

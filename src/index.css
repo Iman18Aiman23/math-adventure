@@ -270,11 +270,42 @@ button {
   -webkit-backdrop-filter: none;
   border-radius: 24px;
   padding: 6px;
+  position: relative;
+  border: 1.5px solid rgba(var(--nav-accent-rgb, 99,102,241), 0.18);
   box-shadow:
-    0 -6px 20px rgba(15, 23, 42, 0.1),
-    0 4px 12px rgba(99, 102, 241, 0.12);
-  border: 1px solid rgba(99, 102, 241, 0.08);
+    /* Themed outer glow ring */
+    0 0 0 1px rgba(var(--nav-glow-rgb, 139,92,246), 0.1),
+    /* Upward ambient glow — feels like the nav emits the theme color */
+    0 -16px 40px rgba(var(--nav-glow-rgb, 139,92,246), 0.22),
+    0 -6px 16px rgba(var(--nav-glow-rgb, 139,92,246), 0.14),
+    /* Drop shadow */
+    0 6px 24px rgba(15, 23, 42, 0.08),
+    /* Inner top specular highlight */
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.9),
+    /* Inner top tinted tint */
+    inset 0 3px 12px rgba(var(--nav-glow-rgb, 139,92,246), 0.06);
+  transition: border-color 0.5s ease, box-shadow 0.5s ease;
   pointer-events: all;
+}
+
+/* Top accent shimmer bar */
+.nav-glass::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 18%;
+  right: 18%;
+  height: 2.5px;
+  border-radius: 0 0 3px 3px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(var(--nav-glow-rgb, 139,92,246), 0.55) 40%,
+    rgba(var(--nav-glow-rgb, 139,92,246), 0.55) 60%,
+    transparent
+  );
+  pointer-events: none;
+  transition: background 0.5s ease;
 }
 
 .nav-items {
@@ -322,17 +353,19 @@ button {
 }
 
 .nav-item:not(.active) .nav-sphere {
-  background: rgba(99, 102, 241, 0.12);
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.1);
+  background: rgba(var(--nav-accent-rgb, 99,102,241), 0.1);
+  box-shadow: 0 2px 8px rgba(var(--nav-accent-rgb, 99,102,241), 0.08);
+  transition: background 0.5s ease, box-shadow 0.5s ease;
 }
 
 .nav-item.active .nav-sphere {
-  background: linear-gradient(135deg, #6366F1, #ec4899);
+  background: linear-gradient(135deg, var(--nav-accent, #6366F1), var(--nav-glow, #ec4899));
   transform: translateY(-14px) scale(1.1);
   box-shadow:
-    0 8px 24px rgba(99, 102, 241, 0.35),
+    0 8px 24px rgba(var(--nav-accent-rgb, 99,102,241), 0.38),
     0 0 0 3px rgba(255,255,255,0.92),
-    0 0 20px rgba(99, 102, 241, 0.15);
+    0 0 24px rgba(var(--nav-glow-rgb, 139,92,246), 0.2);
+  transition: background 0.5s ease, box-shadow 0.5s ease;
 }
 
 .nav-item.active .nav-sphere::before {
@@ -340,7 +373,7 @@ button {
   position: absolute;
   inset: -8px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(139,92,246,0.18) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(var(--nav-glow-rgb, 139,92,246), 0.2) 0%, transparent 70%);
   animation: nav-atmosphere 3s ease-in-out infinite;
   z-index: -1;
 }
@@ -353,10 +386,10 @@ button {
 .nav-orbit {
   position: absolute;
   inset: -8px;
-  border: 1.5px dashed rgba(139,92,246,0.28);
+  border: 1.5px dashed rgba(var(--nav-glow-rgb, 139,92,246), 0.45);
   border-radius: 50%;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease, border-color 0.5s ease;
   pointer-events: none;
 }
 
@@ -396,7 +429,8 @@ button {
 .nav-item.active .nav-label {
   opacity: 1;
   transform: translateY(0);
-  color: #8b5cf6;
+  color: var(--nav-accent, #8b5cf6);
+  transition: color 0.5s ease;
 }
 
 .nav-badge {

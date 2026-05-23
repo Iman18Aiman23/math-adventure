@@ -1032,7 +1032,7 @@ const CertificateModal = ({ achievement, playerName, gameState, language, onClos
 
 export default function AchievementHome({ onBack, onHome, language, gameState, onTakeAssessment }) {
   const [currentTab, setCurrentTab] = useState('assessments');
-  const gameData = getGameData();
+  const gameData = useMemo(() => getGameData(), []);
   const [downloadingBadge, setDownloadingBadge] = useState(null);
   const [selectedAchievement, setSelectedAchievement] = useState(null);
 
@@ -1365,37 +1365,31 @@ export default function AchievementHome({ onBack, onHome, language, gameState, o
         </div>
       </div>
 
-      {/* Hidden ID Cards for Download */}
-      <div style={{ position: 'absolute', left: '-9999px', top: '-9999px', pointerEvents: 'none' }}>
-        {BADGE_CONFIG.map(badge => {
-          const idCardRef = React.createRef();
-          return (
+      {/* Hidden ID Cards for Download — rendered only when a download is in progress */}
+      {downloadingBadge && (
+        <div style={{ position: 'absolute', left: '-9999px', top: '-9999px', pointerEvents: 'none' }}>
+          {BADGE_CONFIG.filter(badge => badge.id === downloadingBadge).map(badge => (
             <div key={badge.id} id={`badge-id-${badge.id}`} style={{ width: '794px', padding: '38px', boxSizing: 'border-box', background: '#fff' }}>
               <BadgeIDCard
-                ref={idCardRef}
                 badge={badge}
                 playerName={localStorage.getItem('playerName') || 'Player'}
                 gameState={gameState}
                 language={language}
               />
             </div>
-          );
-        })}
-        {baseAssessments.map(achievement => {
-          const certRef = React.createRef();
-          return (
+          ))}
+          {baseAssessments.filter(a => a.id === downloadingBadge).map(achievement => (
             <div key={achievement.id} id={`achievement-cert-${achievement.id}`} style={{ width: '794px', padding: '38px', boxSizing: 'border-box', background: '#FAFAF8' }}>
               <AchievementCertificate
-                ref={certRef}
                 achievement={achievement}
                 playerName={localStorage.getItem('playerName') || 'Player'}
                 gameState={gameState}
                 language={language}
               />
             </div>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Certificate Modal */}
       {selectedAchievement && (
