@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { GradCapIcon, TrophyIcon, MedalIcon, ProfileIcon, LanguageIcon } from './icons/GameIcons';
+import React, { useState, useEffect, useRef } from 'react';
+import { GradCapIcon, TrophyIcon, MedalIcon, ProfileIcon, GearsIcon } from './icons/GameIcons';
 import MascotIcon from './icons/MascotIcon';
 import { getGameData } from '../utils/gameStatsManager';
 
@@ -92,6 +92,8 @@ export default function DesktopSidebar({
   const [hearts, setHearts] = useState(3);
   const [gems, setGems] = useState(0);
   const [stars, setStars] = useState(0);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const settingsRef = useRef(null);
 
   useEffect(() => {
     const gameData = getGameData();
@@ -100,9 +102,36 @@ export default function DesktopSidebar({
     setStars(gameData.stars);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (settingsRef.current && !settingsRef.current.contains(event.target)) {
+        setSettingsOpen(false);
+      }
+    };
+
+    if (settingsOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [settingsOpen]);
+
+  const handleLanguagePick = (lang) => {
+    if (lang === language) return;
+    onToggleLanguage?.();
+  };
+
+  const hasSettings = onToggleLanguage || (themes && onThemeChange);
+
   return (
     <>
       <style>{getSidebarStyles(theme?.sidebarBg || 'linear-gradient(180deg, #332881 0%, #4B39BB 35%, #3E309C 65%, #332881 100%)')}</style>
+      <style>{`
+        @keyframes settingsDropdownIn {
+          from { opacity: 0; transform: translateY(-8px); }
+          to   { opacity: 1; transform: translateY(0);    }
+        }
+      `}</style>
+
       <aside className="desktop-sidebar">
         {/* Logo */}
         <div className="sidebar-logo" onClick={onHome} style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
@@ -140,34 +169,106 @@ export default function DesktopSidebar({
           {/* Divider */}
           <div style={{ height: 1, background: 'rgba(167,139,250,0.25)', margin: '12px 0', borderRadius: 1 }} />
 
-          {/* Language Toggle */}
-          <button className="sidebar-item" onClick={onToggleLanguage} style={{ gap: '2rem' }}>
-            <span className="sidebar-item-icon">
-              <LanguageIcon />
-            </span>
-            <span>{language === 'bm' ? 'English' : 'Bahasa Melayu'}</span>
-          </button>
+          {/* Settings Button with Dropdown */}
+          {hasSettings && (
+            <div ref={settingsRef} style={{ position: 'relative', zIndex: 100 }}>
+              <button
+                className={`sidebar-item${settingsOpen ? ' active' : ''}`}
+                onClick={() => setSettingsOpen(p => !p)}
+                style={{ gap: '2rem' }}
+              >
+                <span className="sidebar-item-icon">
+                  <GearsIcon size={64} />
+                </span>
+                <span>{language === 'bm' ? 'Tetapan' : 'Settings'}</span>
+              </button>
 
-          {/* Theme Divider */}
-          <div style={{ height: 1, background: 'rgba(255,255,255,0.15)', margin: '12px 0', borderRadius: 1 }} />
+              {/* Settings Dropdown */}
+              {settingsOpen && (
+                <div
+                  style={{
+                    position: 'fixed',
+                    top: '50%',
+                    left: 'calc(var(--sidebar-w, 240px) + 16px)',
+                    transform: 'translateY(-50%)',
+                    background: 'white',
+                    borderRadius: '12px',
+                    padding: '20px',
+                    boxShadow: '0 10px 32px rgba(0,0,0,0.15)',
+                    minWidth: '280px',
+                    animation: 'settingsDropdownIn 0.2s ease-out',
+                    zIndex: 1000,
+                  }}
+                >
+                  <h3 style={{ margin: '0 0 18px 0', fontSize: '1rem', fontWeight: 700, color: '#1F2937' }}>
+                    {language === 'bm' ? 'Tetapan' : 'Settings'}
+                  </h3>
 
-          {/* Theme Selector */}
-          {themes && onThemeChange && (
-            <div style={{ padding: '4px 0 4px 0' }}>
-              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', margin: '0 0 10px 0' }}>
-                {language === 'bm' ? 'TEMA' : 'THEME'}
-              </p>
-              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                {Object.values(themes).map(t => (
-                  <button
-                    key={t.key}
-                    className={`theme-swatch-btn${theme?.key === t.key ? ' active' : ''}`}
-                    title={t.label}
-                    onClick={() => onThemeChange(t.key)}
-                    style={{ background: t.swatch }}
-                  />
-                ))}
-              </div>
+                  {onToggleLanguage && (
+                    <div style={{ marginBottom: '18px' }}>
+                      <p style={{ margin: '0 0 10px 0', fontSize: '0.75rem', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        {language === 'bm' ? 'Bahasa' : 'Language'}
+                      </p>
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        {['bm', 'eng'].map(lang => {
+                          const isActive = language === lang;
+                          return (
+                            <button
+                              key={lang}
+                              onClick={() => handleLanguagePick(lang)}
+                              style={{
+                                flex: 1,
+                                padding: '8px 12px',
+                                borderRadius: '6px',
+                                border: isActive ? '2px solid #6366F1' : '1px solid #E5E7EB',
+                                background: isActive ? '#EEF2FF' : '#F9FAFB',
+                                color: isActive ? '#4F46E5' : '#374151',
+                                fontFamily: 'var(--font-body)',
+                                fontWeight: 600,
+                                fontSize: '0.85rem',
+                                cursor: 'pointer',
+                                transition: 'all 0.15s ease',
+                              }}
+                            >
+                              {lang === 'bm' ? 'BM' : 'EN'}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {themes && onThemeChange && (
+                    <div>
+                      <p style={{ margin: '0 0 10px 0', fontSize: '0.75rem', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        {language === 'bm' ? 'Tema' : 'Theme'}
+                      </p>
+                      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                        {Object.values(themes).map(t => {
+                          const isActive = theme?.key === t.key;
+                          return (
+                            <button
+                              key={t.key}
+                              onClick={() => onThemeChange(t.key)}
+                              title={t.label}
+                              style={{
+                                width: '36px',
+                                height: '36px',
+                                borderRadius: '6px',
+                                background: t.swatch,
+                                border: isActive ? '3px solid #1F2937' : '1px solid rgba(0,0,0,0.1)',
+                                cursor: 'pointer',
+                                transition: 'all 0.15s ease',
+                                transform: isActive ? 'scale(1.05)' : 'scale(1)',
+                              }}
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </nav>

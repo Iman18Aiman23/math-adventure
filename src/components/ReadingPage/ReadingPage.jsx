@@ -61,61 +61,451 @@ const getTileIllustration = (level) => {
   switch (level) {
     case 1:
       return (
-        <div className="tile-illustration" style={{ gap: '12px' }}>
-          {/* Block 1: Ba */}
-          <div className="tile-block-lg" style={{ animation: 'bob 2.2s ease-in-out infinite', background: '#FFFFFF', border: '3px solid #8F5300', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', fontWeight: 800, color: '#8F5300', fontFamily: 'Baloo 2, sans-serif', position: 'relative' }}>
-            Ba
-            <div style={{ position: 'absolute', top: '-8px', right: '-8px', width: '14px', height: '14px', background: '#FF9600', borderRadius: '50%' }} />
-          </div>
-          {/* Block 2: Ca */}
-          <div className="tile-block-lg" style={{ animation: 'bob 2.2s ease-in-out infinite 0.6s', background: '#FFF0CC', border: '3px solid #8F5300', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', fontWeight: 800, color: '#8F5300', fontFamily: 'Baloo 2, sans-serif' }}>
-            Ca
-          </div>
-        </div>
+        <svg width="100%" height="100%" viewBox="-50 -40 420 448" preserveAspectRatio="xMidYMid meet" style={{ display: 'block' }} xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="rbt1Head" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"  stopColor="#B8FFE0" />
+              <stop offset="100%" stopColor="#00C875" />
+            </linearGradient>
+            <linearGradient id="rbt1Body" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"  stopColor="#FFBB52" />
+              <stop offset="100%" stopColor="#FF6A00" />
+            </linearGradient>
+            <linearGradient id="rbt1Screen" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"  stopColor="#263238" />
+              <stop offset="100%" stopColor="#0F172A" />
+            </linearGradient>
+            <filter id="rbt1Shadow" x="-50%" y="-50%" width="200%" height="200%">
+              <feDropShadow dx="0" dy="4" stdDeviation="5" floodOpacity="0.18" />
+            </filter>
+            <filter id="rbt1Glow">
+              <feGaussianBlur stdDeviation="2" result="blur" />
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
+
+          <g className="rbt1-float">
+            {/* Background glow */}
+            <circle cx="160" cy="120" r="100" fill="#86EFAC" opacity="0.14" className="rbt1-glow" />
+
+            {/* Antenna */}
+            <line x1="160" y1="28" x2="160" y2="52" stroke="#FFD93D" strokeWidth="6" strokeLinecap="round" />
+            <circle cx="160" cy="20" r="12" fill="#FFD93D" filter="url(#rbt1Glow)" className="rbt1-glow" />
+
+            {/* Head */}
+            <rect x="95" y="58" width="130" height="108" rx="34"
+              fill="url(#rbt1Head)" stroke="#FFFFFF" strokeWidth="5" filter="url(#rbt1Shadow)" />
+            <rect x="108" y="70" width="96" height="12" rx="6" fill="#FFFFFF" opacity="0.3" />
+
+            {/* Ear pods */}
+            <circle cx="82"  cy="112" r="16" fill="#FF9A00" stroke="#FFFFFF" strokeWidth="4" />
+            <circle cx="238" cy="112" r="16" fill="#FF9A00" stroke="#FFFFFF" strokeWidth="4" />
+
+            {/* Face screen */}
+            <rect x="115" y="88" width="90" height="58" rx="22" fill="url(#rbt1Screen)" />
+
+            {/* Eyes */}
+            <g className="rbt1-blink">
+              <path d="M 128 118 Q 140 102 152 118" stroke="#6BFF95" strokeWidth="7" fill="none" strokeLinecap="round" />
+              <path d="M 168 118 Q 180 102 192 118" stroke="#6BFF95" strokeWidth="7" fill="none" strokeLinecap="round" />
+            </g>
+
+            {/* Smile */}
+            <path d="M 142 136 Q 160 148 178 136" stroke="#FFFFFF" strokeWidth="5" fill="none" strokeLinecap="round" />
+
+            {/* Cheeks */}
+            <circle cx="123" cy="134" r="6" fill="#FF9DBB" opacity="0.45" />
+            <circle cx="197" cy="134" r="6" fill="#FF9DBB" opacity="0.45" />
+
+            {/* Neck */}
+            <rect x="146" y="166" width="28" height="18" rx="8" fill="#263238" />
+
+            {/* Body */}
+            <rect x="88" y="184" width="144" height="102" rx="28"
+              fill="url(#rbt1Body)" stroke="#FFFFFF" strokeWidth="5" filter="url(#rbt1Shadow)" />
+            <rect x="104" y="198" width="105" height="10" rx="5" fill="#FFFFFF" opacity="0.22" />
+
+            {/* Chest screen */}
+            <rect x="122" y="216" width="76" height="38" rx="14" fill="#1E293B" />
+            <text x="150" y="242" fontSize="23" fontFamily="Fredoka, sans-serif" fontWeight="700" fill="#FFD93D" textAnchor="middle">K</text>
+            <text x="170" y="238" fontSize="26" fontFamily="Fredoka, sans-serif" fontWeight="700" fill="#6BFF95" textAnchor="middle">V</text>
+
+            {/* Buttons */}
+            <circle cx="132" cy="266" r="6" fill="#FF5E7E" />
+            <circle cx="160" cy="266" r="6" fill="#6EE7FF" />
+            <circle cx="188" cy="266" r="6" fill="#6BFF95" />
+
+            {/* Left arm (waving) */}
+            <g className="rbt1-wave">
+              <circle cx="88"  cy="218" r="14" fill="#00C875" />
+              <rect   x="38"   y="208" width="52" height="20" rx="10" fill="#00C875" />
+              <circle cx="34"  cy="218" r="12" fill="#B8FFE0" />
+            </g>
+
+            {/* Right arm */}
+            <circle cx="232" cy="218" r="14" fill="#00C875" />
+            <rect   x="230"  y="208" width="52" height="20" rx="10" fill="#00C875" />
+            <circle cx="286" cy="218" r="12" fill="#B8FFE0" />
+
+            {/* Legs */}
+            <rect x="118" y="286" width="24" height="36" rx="12" fill="#263238" />
+            <rect x="178" y="286" width="24" height="36" rx="12" fill="#263238" />
+
+            {/* Feet */}
+            <ellipse cx="130" cy="322" rx="22" ry="10" fill="#00C875" />
+            <ellipse cx="190" cy="322" rx="22" ry="10" fill="#00C875" />
+
+            {/* Floating stars */}
+            <g className="rbt1-glow">
+              <polygon points="66,82 70,90 79,90 72,96 75,105 66,100 57,105 60,96 53,90 62,90" fill="#FFD93D" />
+              <polygon points="252,94 256,102 265,102 258,108 261,117 252,112 243,117 246,108 239,102 248,102" fill="#FFD93D" />
+            </g>
+
+            {/* Label */}
+            <text x="160" y="358" fontSize="20" fontFamily="Fredoka, sans-serif" fontWeight="700" fill="#FFFFFF" textAnchor="middle" stroke="#15803D" strokeWidth="3" paintOrder="stroke">BELAJAR KV</text>
+          </g>
+        </svg>
       );
     case 2:
       return (
-        <div className="tile-illustration" style={{ gap: '12px' }}>
-          {/* Block 1: Ma */}
-          <div className="tile-block-md" style={{ animation: 'bob 2.2s ease-in-out infinite', background: '#fff', border: '3px solid #06628A', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: 800, color: '#06628A', fontFamily: 'Baloo 2, sans-serif' }}>
-            Ma
-          </div>
-          {/* Block 2: kan */}
-          <div className="tile-block-md" style={{ animation: 'bob 2.2s ease-in-out infinite 0.6s', background: '#D0F0FF', border: '3px solid #06628A', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', fontWeight: 800, color: '#06628A', fontFamily: 'Baloo 2, sans-serif' }}>
-            kan
-          </div>
-        </div>
+        <svg width="100%" height="100%" viewBox="-50 -40 420 448" preserveAspectRatio="xMidYMid meet" style={{ display: 'block' }} xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="rbt2Head" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"  stopColor="#FFD9A8" />
+              <stop offset="100%" stopColor="#FF8A00" />
+            </linearGradient>
+            <linearGradient id="rbt2Body" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"  stopColor="#FFBB52" />
+              <stop offset="100%" stopColor="#FF6A00" />
+            </linearGradient>
+            <linearGradient id="rbt2Screen" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"  stopColor="#263238" />
+              <stop offset="100%" stopColor="#0F172A" />
+            </linearGradient>
+            <linearGradient id="rbt2Eye" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"  stopColor="#FFE66D" />
+              <stop offset="100%" stopColor="#FFB800" />
+            </linearGradient>
+            <filter id="rbt2Shadow" x="-50%" y="-50%" width="200%" height="200%">
+              <feDropShadow dx="0" dy="4" stdDeviation="5" floodOpacity="0.18" />
+            </filter>
+            <filter id="rbt2Glow">
+              <feGaussianBlur stdDeviation="2" result="blur" />
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
+
+          <g className="rbt2-float">
+            {/* Background glow */}
+            <circle cx="160" cy="110" r="90" fill="#FFB86B" opacity="0.14" className="rbt2-glow" />
+
+            {/* Antenna */}
+            <line x1="160" y1="28" x2="160" y2="52" stroke="#FFD93D" strokeWidth="6" strokeLinecap="round" />
+            <circle cx="160" cy="20" r="12" fill="#FFD93D" filter="url(#rbt2Glow)" className="rbt2-glow" />
+
+            {/* Head */}
+            <rect x="95" y="58" width="130" height="108" rx="34"
+              fill="url(#rbt2Head)" stroke="#FFFFFF" strokeWidth="5" filter="url(#rbt2Shadow)" />
+            <rect x="108" y="70" width="96" height="12" rx="6" fill="#FFFFFF" opacity="0.28" />
+
+            {/* Ear pods */}
+            <circle cx="82"  cy="112" r="16" fill="#FF9A00" stroke="#FFFFFF" strokeWidth="4" />
+            <circle cx="238" cy="112" r="16" fill="#FF9A00" stroke="#FFFFFF" strokeWidth="4" />
+
+            {/* Face screen */}
+            <rect x="115" y="88" width="90" height="58" rx="22" fill="url(#rbt2Screen)" />
+
+            {/* Eyes */}
+            <g className="rbt2-blink">
+              <rect x="128" y="108" width="24" height="16" rx="5" fill="url(#rbt2Eye)" filter="url(#rbt2Glow)" />
+              <rect x="133" y="112" width="14" height="8"  rx="3" fill="#FFF8CC" />
+              <rect x="168" y="108" width="24" height="16" rx="5" fill="url(#rbt2Eye)" filter="url(#rbt2Glow)" />
+              <rect x="173" y="112" width="14" height="8"  rx="3" fill="#FFF8CC" />
+            </g>
+
+            {/* Eyebrows */}
+            <line x1="128" y1="102" x2="152" y2="102" stroke="#FFDD55" strokeWidth="3" strokeLinecap="round" />
+            <line x1="168" y1="102" x2="192" y2="102" stroke="#FFDD55" strokeWidth="3" strokeLinecap="round" />
+
+            {/* Mouth */}
+            <path d="M 140 132 Q 160 150 180 132" stroke="#FFFFFF" strokeWidth="5" fill="none" strokeLinecap="round" />
+
+            {/* Cheeks */}
+            <circle cx="123" cy="134" r="6" fill="#FFD0B0" opacity="0.45" />
+            <circle cx="197" cy="134" r="6" fill="#FFD0B0" opacity="0.45" />
+
+            {/* Neck */}
+            <rect x="146" y="166" width="28" height="18" rx="8" fill="#263238" />
+
+            {/* Body */}
+            <rect x="88" y="184" width="144" height="102" rx="28"
+              fill="url(#rbt2Body)" stroke="#FFFFFF" strokeWidth="5" filter="url(#rbt2Shadow)" />
+            <rect x="104" y="198" width="105" height="10" rx="5" fill="#FFFFFF" opacity="0.22" />
+
+            {/* Chest screen */}
+            <rect x="122" y="216" width="76" height="38" rx="14" fill="#1E293B" />
+            <text x="141" y="242" fontSize="23" fontFamily="Fredoka, sans-serif" fontWeight="700" fill="#FF5E7E" textAnchor="middle">K</text>
+            <text x="160" y="238" fontSize="26" fontFamily="Fredoka, sans-serif" fontWeight="700" fill="#FFD93D" textAnchor="middle">V</text>
+            <text x="179" y="242" fontSize="23" fontFamily="Fredoka, sans-serif" fontWeight="700" fill="#6BFF95" textAnchor="middle">K</text>
+
+            {/* Buttons */}
+            <circle cx="132" cy="266" r="6" fill="#FF5E7E" />
+            <circle cx="160" cy="266" r="6" fill="#6EE7FF" />
+            <circle cx="188" cy="266" r="6" fill="#6BFF95" />
+
+            {/* Left arm (waving) */}
+            <g className="rbt2-wave">
+              <circle cx="88"  cy="218" r="14" fill="#FF8A00" />
+              <rect   x="38"   y="208" width="52" height="20" rx="10" fill="#FF8A00" />
+              <circle cx="34"  cy="218" r="12" fill="#FFBB52" />
+            </g>
+
+            {/* Right arm */}
+            <circle cx="232" cy="218" r="14" fill="#FF8A00" />
+            <rect   x="230"  y="208" width="52" height="20" rx="10" fill="#FF8A00" />
+            <circle cx="286" cy="218" r="12" fill="#FFBB52" />
+
+            {/* Legs */}
+            <rect x="118" y="286" width="24" height="36" rx="12" fill="#263238" />
+            <rect x="178" y="286" width="24" height="36" rx="12" fill="#263238" />
+
+            {/* Feet */}
+            <ellipse cx="130" cy="322" rx="22" ry="10" fill="#FF8A00" />
+            <ellipse cx="190" cy="322" rx="22" ry="10" fill="#FF8A00" />
+
+            {/* Floating stars */}
+            <g className="rbt2-glow">
+              <polygon points="66,82 70,90 79,90 72,96 75,105 66,100 57,105 60,96 53,90 62,90" fill="#FFD93D" />
+              <polygon points="252,94 256,102 265,102 258,108 261,117 252,112 243,117 246,108 239,102 248,102" fill="#FFD93D" />
+            </g>
+
+            {/* Label */}
+            <text x="160" y="358" fontSize="20" fontFamily="Fredoka, sans-serif" fontWeight="700" fill="#FFFFFF" textAnchor="middle" stroke="#9A3412" strokeWidth="3" paintOrder="stroke">BELAJAR KVK</text>
+          </g>
+        </svg>
       );
+
     case 3:
+      /* ── New Robot — matches tile level-3 teal (#0D9488) ── */
       return (
-        <div className="tile-illustration">
-          {/* Book illustration */}
-          <div style={{ animation: 'bob 2.2s ease-in-out infinite', width: '100%', height: '100%', background: 'linear-gradient(to right, #FFF 50%, #EDD9FF 50%)', border: '3px solid #6E3B85', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', left: '50%', top: '12px', bottom: '12px', width: '2px', background: '#6E3B85' }} />
-            <div style={{ width: '40%', display: 'flex', flexDirection: 'column', gap: '6px', paddingLeft: '8px' }}>
-              <div style={{ height: '3px', background: '#CE82FF', borderRadius: '2px', width: '80%' }} />
-              <div style={{ height: '3px', background: '#CE82FF', borderRadius: '2px', width: '60%' }} />
-              <div style={{ height: '3px', background: '#CE82FF', borderRadius: '2px', width: '75%' }} />
-            </div>
-            <div style={{ width: '40%', display: 'flex', flexDirection: 'column', gap: '6px', paddingRight: '8px' }}>
-              <div style={{ height: '3px', background: '#CE82FF', borderRadius: '2px', width: '80%', marginLeft: 'auto' }} />
-              <div style={{ height: '3px', background: '#CE82FF', borderRadius: '2px', width: '70%', marginLeft: 'auto' }} />
-              <div style={{ height: '3px', background: '#CE82FF', borderRadius: '2px', width: '80%', marginLeft: 'auto' }} />
-            </div>
-          </div>
-        </div>
+        <svg width="100%" height="100%" viewBox="-50 -40 420 448" preserveAspectRatio="xMidYMid meet" style={{ display: 'block' }} xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="rbt3Head" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"   stopColor="#B8F7FF" />
+              <stop offset="100%" stopColor="#3CCBFF" />
+            </linearGradient>
+            <linearGradient id="rbt3Body" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"   stopColor="#FFBB52" />
+              <stop offset="100%" stopColor="#FF7A00" />
+            </linearGradient>
+            <linearGradient id="rbt3Screen" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"   stopColor="#263238" />
+              <stop offset="100%" stopColor="#111827" />
+            </linearGradient>
+            <filter id="rbt3Shadow" x="-50%" y="-50%" width="200%" height="200%">
+              <feDropShadow dx="0" dy="4" stdDeviation="5" floodOpacity="0.18" />
+            </filter>
+            <filter id="rbt3Glow">
+              <feGaussianBlur stdDeviation="2" result="blur" />
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
+
+          <g className="rbt3-float">
+            {/* Background glow */}
+            <circle cx="160" cy="120" r="100" fill="#6EE7FF" opacity="0.12" className="rbt3-glow" />
+
+            {/* Antenna */}
+            <line x1="160" y1="28" x2="160" y2="52" stroke="#FFD93D" strokeWidth="6" strokeLinecap="round" />
+            <circle cx="160" cy="20" r="12" fill="#FFD93D" filter="url(#rbt3Glow)" className="rbt3-glow" />
+
+            {/* Head */}
+            <rect x="95" y="58" width="130" height="108" rx="34"
+              fill="url(#rbt3Head)" stroke="#FFFFFF" strokeWidth="5" filter="url(#rbt3Shadow)" />
+            <rect x="108" y="70" width="96" height="12" rx="6" fill="#FFFFFF" opacity="0.3" />
+
+            {/* Ear pods */}
+            <circle cx="82"  cy="112" r="16" fill="#FF9A00" stroke="#FFFFFF" strokeWidth="4" />
+            <circle cx="238" cy="112" r="16" fill="#FF9A00" stroke="#FFFFFF" strokeWidth="4" />
+
+            {/* Face screen */}
+            <rect x="115" y="88" width="90" height="58" rx="22" fill="url(#rbt3Screen)" />
+
+            {/* Eyes */}
+            <g className="rbt3-blink">
+              <ellipse cx="140" cy="116" rx="12" ry="14" fill="#FFFFFF" />
+              <circle  cx="140" cy="118" r="6"            fill="#33C7FF" />
+              <circle  cx="143" cy="115" r="2"            fill="#FFFFFF" />
+              <ellipse cx="180" cy="116" rx="12" ry="14" fill="#FFFFFF" />
+              <circle  cx="180" cy="118" r="6"            fill="#33C7FF" />
+              <circle  cx="183" cy="115" r="2"            fill="#FFFFFF" />
+            </g>
+
+            {/* Smile */}
+            <path d="M 142 136 Q 160 148 178 136" stroke="#FFFFFF" strokeWidth="5" fill="none" strokeLinecap="round" />
+
+            {/* Cheeks */}
+            <circle cx="123" cy="134" r="6" fill="#FF9DBB" opacity="0.45" />
+            <circle cx="197" cy="134" r="6" fill="#FF9DBB" opacity="0.45" />
+
+            {/* Neck */}
+            <rect x="146" y="166" width="28" height="18" rx="8" fill="#263238" />
+
+            {/* Body */}
+            <rect x="88" y="184" width="144" height="102" rx="28"
+              fill="url(#rbt3Body)" stroke="#FFFFFF" strokeWidth="5" filter="url(#rbt3Shadow)" />
+            <rect x="104" y="198" width="105" height="10" rx="5" fill="#FFFFFF" opacity="0.22" />
+
+            {/* Chest screen */}
+            <rect x="122" y="216" width="76" height="38" rx="14" fill="#1E293B" />
+            <circle cx="160" cy="235" r="12" fill="#6EE7FF" />
+            <text x="160" y="240" fontSize="14" fontFamily="Arial" fontWeight="bold" fill="#FFFFFF" textAnchor="middle">3</text>
+
+            {/* Buttons */}
+            <circle cx="132" cy="266" r="6" fill="#FF5E7E" />
+            <circle cx="160" cy="266" r="6" fill="#6EE7FF" />
+            <circle cx="188" cy="266" r="6" fill="#6BFF95" />
+
+            {/* Left arm (waving) */}
+            <g className="rbt3-wave">
+              <circle cx="88"  cy="218" r="14" fill="#3CCBFF" />
+              <rect   x="38"   y="208" width="52" height="20" rx="10" fill="#3CCBFF" />
+              <circle cx="34"  cy="218" r="12" fill="#FFBB52" />
+            </g>
+
+            {/* Right arm */}
+            <circle cx="232" cy="218" r="14" fill="#3CCBFF" />
+            <rect   x="230"  y="208" width="52" height="20" rx="10" fill="#3CCBFF" />
+            <circle cx="286" cy="218" r="12" fill="#FFBB52" />
+
+            {/* Legs */}
+            <rect x="118" y="286" width="24" height="36" rx="12" fill="#263238" />
+            <rect x="178" y="286" width="24" height="36" rx="12" fill="#263238" />
+
+            {/* Feet */}
+            <ellipse cx="130" cy="322" rx="22" ry="10" fill="#3CCBFF" />
+            <ellipse cx="190" cy="322" rx="22" ry="10" fill="#3CCBFF" />
+
+            {/* Floating stars */}
+            <g className="rbt3-glow">
+              <polygon points="66,82 70,90 79,90 72,96 75,105 66,100 57,105 60,96 53,90 62,90" fill="#FFD93D" />
+              <polygon points="252,94 256,102 265,102 258,108 261,117 252,112 243,117 246,108 239,102 248,102" fill="#FFD93D" />
+            </g>
+
+            {/* Label */}
+            <text x="160" y="358" fontSize="20" fontFamily="Fredoka, sans-serif" fontWeight="700" fill="#FFFFFF" textAnchor="middle" stroke="#0891B2" strokeWidth="3" paintOrder="stroke">BELAJAR KATA</text>
+          </g>
+        </svg>
       );
+
     case 4:
       return (
-        <div className="tile-illustration">
-          {/* Scroll illustration */}
-          <div style={{ animation: 'bob 2.2s ease-in-out infinite', width: '100%', height: '100%', background: '#FFF', border: '3px solid #2E6B00', borderRadius: '10px', display: 'flex', flexDirection: 'column', padding: '10px', gap: '6px', justifyContent: 'center' }}>
-            <div style={{ height: '2px', background: '#58CC02', borderRadius: '1px', width: '90%' }} />
-            <div style={{ height: '2px', background: '#58CC02', borderRadius: '1px', width: '70%' }} />
-            <div style={{ height: '2px', background: '#58CC02', borderRadius: '1px', width: '85%' }} />
-            <div style={{ height: '2px', background: '#58CC02', borderRadius: '1px', width: '60%' }} />
-          </div>
-        </div>
+        <svg width="100%" height="100%" viewBox="-50 -40 420 448" preserveAspectRatio="xMidYMid meet" style={{ display: 'block' }} xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="rbt4Head" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"  stopColor="#E0C7FF" />
+              <stop offset="100%" stopColor="#8B5CF6" />
+            </linearGradient>
+            <linearGradient id="rbt4Body" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"  stopColor="#FFBB52" />
+              <stop offset="100%" stopColor="#FF7A00" />
+            </linearGradient>
+            <linearGradient id="rbt4Screen" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"  stopColor="#263238" />
+              <stop offset="100%" stopColor="#111827" />
+            </linearGradient>
+            <filter id="rbt4Shadow" x="-50%" y="-50%" width="200%" height="200%">
+              <feDropShadow dx="0" dy="4" stdDeviation="5" floodOpacity="0.18" />
+            </filter>
+            <filter id="rbt4Glow">
+              <feGaussianBlur stdDeviation="2" result="blur" />
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
+
+          <g className="rbt4-float">
+            {/* Background glow */}
+            <circle cx="160" cy="110" r="90" fill="#B98CFF" opacity="0.12" className="rbt4-glow" />
+
+            {/* Antenna */}
+            <line x1="160" y1="28" x2="160" y2="52" stroke="#FFD93D" strokeWidth="6" strokeLinecap="round" />
+            <circle cx="160" cy="20" r="12" fill="#FFD93D" filter="url(#rbt4Glow)" className="rbt4-glow" />
+
+            {/* Head */}
+            <rect x="95" y="58" width="130" height="108" rx="34"
+              fill="url(#rbt4Head)" stroke="#FFFFFF" strokeWidth="5" filter="url(#rbt4Shadow)" />
+            <rect x="108" y="70" width="96" height="12" rx="6" fill="#FFFFFF" opacity="0.3" />
+
+            {/* Ear pods */}
+            <circle cx="82"  cy="112" r="16" fill="#FF9A00" stroke="#FFFFFF" strokeWidth="4" />
+            <circle cx="238" cy="112" r="16" fill="#FF9A00" stroke="#FFFFFF" strokeWidth="4" />
+
+            {/* Face screen */}
+            <rect x="115" y="88" width="90" height="58" rx="22" fill="url(#rbt4Screen)" />
+
+            {/* Eyes */}
+            <g className="rbt4-blink">
+              <circle cx="140" cy="116" r="14" fill="#FFFFFF" />
+              <circle cx="180" cy="116" r="14" fill="#FFFFFF" />
+              <circle cx="140" cy="118" r="7"  fill="#8B5CF6" />
+              <circle cx="180" cy="118" r="7"  fill="#8B5CF6" />
+              <circle cx="143" cy="114" r="2"  fill="#FFFFFF" />
+              <circle cx="183" cy="114" r="2"  fill="#FFFFFF" />
+            </g>
+
+            {/* UWU mouth */}
+            <path d="M 146 138 Q 152 146 160 138 Q 168 146 174 138" stroke="#FFFFFF" strokeWidth="5" fill="none" strokeLinecap="round" />
+
+            {/* Cheeks */}
+            <circle cx="123" cy="134" r="6" fill="#FF9DBB" opacity="0.45" />
+            <circle cx="197" cy="134" r="6" fill="#FF9DBB" opacity="0.45" />
+
+            {/* Neck */}
+            <rect x="146" y="166" width="28" height="18" rx="8" fill="#263238" />
+
+            {/* Body */}
+            <rect x="88" y="184" width="144" height="102" rx="28"
+              fill="url(#rbt4Body)" stroke="#FFFFFF" strokeWidth="5" filter="url(#rbt4Shadow)" />
+            <rect x="104" y="198" width="105" height="10" rx="5" fill="#FFFFFF" opacity="0.22" />
+
+            {/* Chest screen */}
+            <rect x="122" y="216" width="76" height="38" rx="14" fill="#1E293B" />
+            <text x="160" y="234" fontSize="13" fontFamily="Fredoka, sans-serif" fontWeight="700" fill="#FFFFFF" textAnchor="middle">cerita</text>
+            <text x="160" y="248" fontSize="13" fontFamily="Fredoka, sans-serif" fontWeight="700" fill="#6EE7FF" textAnchor="middle">saya</text>
+
+            {/* Buttons */}
+            <circle cx="132" cy="266" r="6" fill="#FF5E7E" />
+            <circle cx="160" cy="266" r="6" fill="#6EE7FF" />
+            <circle cx="188" cy="266" r="6" fill="#6BFF95" />
+
+            {/* Left arm */}
+            <circle cx="88"  cy="218" r="14" fill="#8B5CF6" />
+            <rect   x="38"   y="208" width="52" height="20" rx="10" fill="#8B5CF6" />
+            <circle cx="34"  cy="218" r="12" fill="#FFBB52" />
+
+            {/* Right arm */}
+            <circle cx="232" cy="218" r="14" fill="#8B5CF6" />
+            <rect   x="230"  y="208" width="52" height="20" rx="10" fill="#8B5CF6" />
+            <circle cx="286" cy="218" r="12" fill="#FFBB52" />
+
+            {/* Legs */}
+            <rect x="118" y="286" width="24" height="36" rx="12" fill="#263238" />
+            <rect x="178" y="286" width="24" height="36" rx="12" fill="#263238" />
+
+            {/* Feet */}
+            <ellipse cx="130" cy="322" rx="22" ry="10" fill="#8B5CF6" />
+            <ellipse cx="190" cy="322" rx="22" ry="10" fill="#8B5CF6" />
+
+            {/* Floating stars */}
+            <g className="rbt4-glow">
+              <polygon points="66,82 70,90 79,90 72,96 75,105 66,100 57,105 60,96 53,90 62,90" fill="#FFD93D" />
+              <polygon points="252,94 256,102 265,102 258,108 261,117 252,112 243,117 246,108 239,102 248,102" fill="#FFD93D" />
+            </g>
+
+            {/* Label */}
+            <text x="160" y="358" fontSize="20" fontFamily="Fredoka, sans-serif" fontWeight="700" fill="#FFFFFF" textAnchor="middle" stroke="#6D28D9" strokeWidth="3" paintOrder="stroke">AYAT PANJANG</text>
+          </g>
+        </svg>
       );
     default:
       return null;
@@ -149,6 +539,7 @@ export default function ReadingPage({ onBack, language }) {
     @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
     @keyframes nudge { 0%,90%,100% { transform: rotate(-1deg); } 45% { transform: rotate(1deg); } }
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.15); opacity: 0.8; } }
 
     svg .bob1 { animation: bob 2.2s ease-in-out infinite; }
     svg .bob2 { animation: bob 2.2s ease-in-out infinite 0.6s; }
@@ -319,13 +710,21 @@ export default function ReadingPage({ onBack, language }) {
     setActiveSyllable(index);
   };
 
+  // Memoize SVG illustrations — each is ~100 React elements; never needs to change
+  const tileIllustrations = useMemo(() => ({
+    1: getTileIllustration(1),
+    2: getTileIllustration(2),
+    3: getTileIllustration(3),
+    4: getTileIllustration(4),
+  }), []);
+
   // View: Level Selection
   if (!selectedLevel) {
     const levelData = [
-      { level: 1, num: 1, capTitle: language === 'bm' ? 'Tahap 1' : 'Level 1' },
-      { level: 2, num: 2, capTitle: language === 'bm' ? 'Tahap 2' : 'Level 2' },
-      { level: 3, num: 3, capTitle: language === 'bm' ? 'Tahap 3' : 'Level 3' },
-      { level: 4, num: 4, capTitle: language === 'bm' ? 'Tahap 4' : 'Level 4' },
+      { level: 1, num: 1, capTitle: language === 'bm' ? 'Suku Kata KV'  : 'KV Syllables'   },
+      { level: 2, num: 2, capTitle: language === 'bm' ? 'Suku Kata KVK' : 'KVK Syllables'  },
+      { level: 3, num: 3, capTitle: language === 'bm' ? 'Baca Perkataan': 'Read Words'     },
+      { level: 4, num: 4, capTitle: language === 'bm' ? 'Baca Ayat'     : 'Read Sentences' },
     ];
 
     const heroSubtitle = (
@@ -366,17 +765,9 @@ export default function ReadingPage({ onBack, language }) {
         </span>
 
         <div className="rp-illo">
-          {getTileIllustration(lvl.level)}
+          {tileIllustrations[lvl.level]}
         </div>
 
-        <div className="rp-cap">
-          <span className="rp-cap-title">{lvl.capTitle}</span>
-          <span className="rp-cap-go" aria-hidden="true">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 6l6 6-6 6"/>
-            </svg>
-          </span>
-        </div>
       </button>
     ));
 

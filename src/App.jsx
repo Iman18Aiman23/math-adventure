@@ -181,7 +181,7 @@ export default function App() {
   const renderContent = () => {
     if (activeTab === 'leaderboard') return (
       <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>}>
-        <LeaderboardHome language={language} gameState={gameState} />
+        <LeaderboardHome language={language} gameState={gameState} theme={THEMES[currentTheme]} />
       </Suspense>
     );
     if (activeTab === 'profile')     return <ProfileHome playerName={playerName} gameState={gameState} language={language} streak={streak} />;

@@ -3,10 +3,10 @@
    Uses --theme-hero-border / --theme-hero-bg for theme accent
 ══════════════════════════════════════════════════════════════ */
 
-/* ── Standardized white background ── */
+/* ── Theme-aware background ── */
 .app-leaderboard,
 .app-leaderboard .app-content {
-  background: #ffffff !important;
+  background: transparent;
 }
 .app-leaderboard .view-container {
   background: transparent !important;
@@ -30,10 +30,10 @@
   overflow: visible;
 }
 
-/* Hide the cosmic glows + star field on white — they belonged to the dark theme */
+/* Show cosmic glows + star field for dark theme backgrounds */
 .lb-glow,
 .lb-star {
-  display: none !important;
+  display: block;
 }
 
 /* Live dot */
@@ -96,14 +96,15 @@
   font-family: var(--font-heading, 'Fredoka', sans-serif);
   font-size: 2.1rem;
   font-weight: 700;
-  color: #111827;
+  color: #FFFFFF;
   margin: 0 0 0.2rem;
   letter-spacing: 1px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 .lb-hero-sub {
   position: relative;
   z-index: 1;
-  color: #6B7280;
+  color: #E5E7EB;
   font-size: 0.85rem;
   font-weight: 600;
   margin: 0 0 1.25rem;
@@ -221,13 +222,14 @@
 .lb-pod-name {
   font-size: 0.68rem;
   font-weight: 800;
-  color: #1F2937;
+  color: #FFFFFF;
   text-align: center;
   max-width: 88px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   margin-bottom: 0.2rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 .lb-pod-score {
   display: flex;
@@ -235,8 +237,9 @@
   gap: 3px;
   font-size: 0.78rem;
   font-weight: 900;
-  color: #B45309;
+  color: #FCD34D;
   margin-bottom: 0.4rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 /* Blocks */
@@ -307,10 +310,10 @@
   align-items: center;
   gap: 5px;
   white-space: nowrap;
-  background: #F3F4F6;
-  border: 1.5px solid #E5E7EB;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
   border-radius: 100px;
-  color: #4B5563;
+  color: #E5E7EB;
   font-family: var(--font-body, 'Nunito', sans-serif);
   font-size: 0.78rem;
   font-weight: 700;
@@ -318,17 +321,19 @@
   cursor: pointer;
   transition: all 0.15s ease;
   flex-shrink: 0;
+  backdrop-filter: blur(10px);
 }
 .lb-subject-chip.active {
   background: var(--theme-hero-bg, linear-gradient(135deg, #6B55E8, #3B2AAA));
   border-color: var(--theme-hero-border, #A78BFA);
   color: #fff;
   box-shadow: 0 4px 14px rgba(17,24,39,0.15);
+  backdrop-filter: blur(10px);
 }
 .lb-subject-chip:hover:not(.active) {
-  background: #E5E7EB;
-  border-color: #D1D5DB;
-  color: #1F2937;
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #FFFFFF;
 }
 .lb-chip-emoji { font-size: 1rem; }
 
@@ -337,12 +342,13 @@
   display: flex;
   align-items: center;
   justify-content: space-around;
-  background: #FFFFFF;
-  border: 1.5px solid #E5E7EB;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
   border-radius: 16px;
   padding: 0.85rem 1rem;
   margin-bottom: 1rem;
-  box-shadow: 0 2px 6px rgba(17,24,39,0.04), 0 6px 18px rgba(17,24,39,0.06);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
 }
 .lb-stat-item {
   display: flex;
@@ -397,13 +403,14 @@
   grid-template-columns: 38px 48px 1fr auto;
   gap: 0.5rem;
   align-items: center;
-  background: #FFFFFF;
-  border: 1.5px solid #E5E7EB;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
   border-radius: 16px;
   padding: 0.7rem 0.85rem 0.7rem 0.6rem;
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-  box-shadow: 0 2px 6px rgba(17,24,39,0.04);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   animation: lb-row-in 0.35s ease both;
+  backdrop-filter: blur(10px);
 }
 @keyframes lb-row-in {
   from { opacity: 0; transform: translateY(10px); }
@@ -413,14 +420,15 @@
 .lb-row:hover {
   transform: translateY(-2px);
   border-color: var(--theme-hero-border, #A78BFA);
-  box-shadow: 0 8px 24px rgba(17,24,39,0.08);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .lb-row.lb-row-me {
-  background: #FFFFFF;
+  background: rgba(255, 255, 255, 0.12);
   border-color: var(--theme-hero-border, #A78BFA);
   border-left: 4px solid var(--theme-hero-border, #A78BFA);
-  box-shadow: 0 4px 18px rgba(17,24,39,0.08);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
 }
 
 /* Rank circle */
@@ -433,15 +441,16 @@
   font-family: var(--font-heading, 'Fredoka', sans-serif);
   font-size: 1rem;
   font-weight: 700;
-  color: #4B5563;
+  color: #FFFFFF;
   width: 30px;
   height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #F3F4F6;
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 50%;
-  border: 1.5px solid #E5E7EB;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* Row avatar */
@@ -453,9 +462,9 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #F9FAFB;
-  border: 2.5px solid var(--badge-color, #E5E7EB);
-  box-shadow: 0 0 0 3px var(--badge-glow, rgba(17,24,39,0.04));
+  background: rgba(255, 255, 255, 0.1);
+  border: 2.5px solid var(--badge-color, rgba(255, 255, 255, 0.2));
+  box-shadow: 0 0 0 3px var(--badge-glow, rgba(0, 0, 0, 0.2));
   flex-shrink: 0;
   transition: transform 0.15s;
 }
@@ -476,10 +485,11 @@
 .lb-row-name {
   font-size: 0.85rem;
   font-weight: 800;
-  color: #111827;
+  color: #FFFFFF;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 .lb-row-you {
   background: var(--theme-hero-bg, linear-gradient(135deg, #6B55E8, #3B2AAA));
@@ -499,12 +509,12 @@
   gap: 4px;
   font-size: 0.7rem;
   font-weight: 700;
-  color: #6B7280;
+  color: #D1D5DB;
 }
 .lb-meta-dot {
   width: 3px; height: 3px;
   border-radius: 50%;
-  background: #D1D5DB;
+  background: #9CA3AF;
   flex-shrink: 0;
 }
 .lb-row-badge {
@@ -521,7 +531,7 @@
 /* Score bar */
 .lb-score-bar-wrap {
   height: 3px;
-  background: #F3F4F6;
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 100px;
   overflow: hidden;
   margin-top: 3px;
@@ -532,6 +542,7 @@
   background: var(--bar-color, #6B55E8);
   border-radius: 100px;
   transition: width 0.5s ease;
+  box-shadow: 0 0 8px rgba(107, 85, 232, 0.4);
 }
 
 /* Row score */
@@ -546,7 +557,8 @@
   font-family: var(--font-heading, 'Fredoka', sans-serif);
   font-size: 1rem;
   font-weight: 700;
-  color: #B45309;
+  color: #FCD34D;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* ══ YOUR RANK CARD — themed gradient ═══════════════════════════ */

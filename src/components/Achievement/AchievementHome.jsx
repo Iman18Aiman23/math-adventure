@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { getGameData } from '../../utils/gameStatsManager';
 import { baseAssessments } from '../../data/curriculum/assessment';
-import AppHeader from '../AppHeader';
 import MascotIcon from '../icons/MascotIcon';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
@@ -1220,8 +1219,6 @@ export default function AchievementHome({ onBack, onHome, language, gameState, o
           </style>
         </div>
       )}
-
-      <AppHeader onBack={onBack} gameState={gameState} language={language} />
 
       {/* Tabs */}
       <div style={{

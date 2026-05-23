@@ -105,9 +105,11 @@
   70%  { opacity: 1; transform: translateY(-6px) scale(1.02); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
+.rp-tile {
+  will-change: transform;
+}
 .rp-tile:hover {
   transform: translateY(-6px) rotate(-1.2deg);
-  will-change: transform;
 }
 .rp-tile:active {
   transform: translateY(6px) rotate(0deg);
@@ -137,10 +139,10 @@
 
 /* ── Color variants by level ── */
 .rp-tile.level-1 {
-  --base:        #7C3AED;
-  --deep:        #5B21B6;
-  --base-light:  #A78BFA;
-  --base-soft:   #EDE9FE;
+  --base:        #22C55E;
+  --deep:        #15803D;
+  --base-light:  #86EFAC;
+  --base-soft:   #F0FDF4;
 }
 .rp-tile.level-2 {
   --base:        #F97316;
@@ -149,16 +151,16 @@
   --base-soft:   #FFF1E6;
 }
 .rp-tile.level-3 {
-  --base:        #0D9488;
-  --deep:        #134E4A;
-  --base-light:  #2D9A94;
-  --base-soft:   #E0F9F8;
+  --base:        #3CCBFF;
+  --deep:        #0891B2;
+  --base-light:  #7AE3FF;
+  --base-soft:   #E0F7FF;
 }
 .rp-tile.level-4 {
-  --base:        #FACC15;
-  --deep:        #92400E;
-  --base-light:  #FCD34D;
-  --base-soft:   #FFFBEB;
+  --base:        #8B5CF6;
+  --deep:        #6D28D9;
+  --base-light:  #C4B5FD;
+  --base-soft:   #F5F3FF;
 }
 
 /* ── Number badge ── */
@@ -178,12 +180,12 @@
   position: absolute; top: 14%; left: 0; right: 0; bottom: 30%;
   display: flex; align-items: center; justify-content: center; z-index: 2;
 }
-.rp-illo > div,
-.rp-illo svg {
+/* Hover scale applied to the illo container, not the svg — avoids fighting the
+   robot's own float animation which runs on the inner <g>, not the <svg> element */
+.rp-illo {
   transition: transform .45s cubic-bezier(.34,1.56,.64,1);
 }
-.rp-tile:hover .rp-illo > div,
-.rp-tile:hover .rp-illo svg { transform: scale(1.08) translateY(-4px) rotate(-3deg); }
+.rp-tile:hover .rp-illo { transform: scale(1.08) translateY(-4px) rotate(-3deg); }
 
 /* ── Hover sparkles ── */
 .rp-spark { position: absolute; z-index: 3; opacity: 0; transition: opacity .3s, transform .5s; pointer-events: none; }
@@ -191,6 +193,12 @@
 .rp-tile:hover .rp-spark.s1     { transform: translate(-6px,-8px) scale(1.2) rotate(20deg); }
 .rp-tile:hover .rp-spark.s2     { transform: translate(6px,-6px) scale(1.15) rotate(-15deg); }
 .rp-tile:hover .rp-spark.s3     { transform: translate(0,8px) scale(1.1) rotate(10deg); }
+
+/* All levels: cover full tile so SVG centers vertically in the button */
+.rp-tile.level-1 .rp-illo,
+.rp-tile.level-2 .rp-illo,
+.rp-tile.level-3 .rp-illo,
+.rp-tile.level-4 .rp-illo { top: 0; bottom: 0; }
 
 /* ── Caption strip ── */
 .rp-cap {
@@ -234,6 +242,47 @@
   .rp-tile-num  { width: 32px; height: 32px; font-size: 15px; }
   .rp-illo      { top: 16%; bottom: 45%; }
 }
+
+/* ── Robot tile animations ── */
+
+/* Float groups: no will-change — browser auto-promotes active transform animations.
+   Explicit will-change on 4 float groups + 4 tiles = 8 layers; too many for low-end Android. */
+.rbt1-float { animation: rbt1float 3s ease-in-out infinite; transform-origin: center; }
+.rbt1-glow  { animation: rbt1glow  2s ease-in-out infinite; }
+/* transform-box: fill-box makes transform-origin: center use the element's own bbox,
+   fixing Safari where the default view-box origin maps to the SVG viewport center. */
+.rbt1-blink { animation: rbt1blink 5s infinite; transform-origin: center; transform-box: fill-box; }
+/* wave uses absolute SVG coords for transform-origin — keep view-box (browser default) */
+.rbt1-wave  { animation: rbt1wave  2.4s ease-in-out infinite; transform-origin: 95px 210px; transform-box: view-box; }
+@keyframes rbt1float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+@keyframes rbt1blink { 0%,92%,100%{transform:scaleY(1);} 95%{transform:scaleY(0.08);} }
+@keyframes rbt1wave  { 0%,100%{transform:rotate(0deg);} 50%{transform:rotate(10deg);} }
+@keyframes rbt1glow  { 0%,100%{opacity:0.75;} 50%{opacity:1;} }
+
+.rbt2-float { animation: rbt2float 3s ease-in-out infinite; transform-origin: center; }
+.rbt2-glow  { animation: rbt2glow  2s ease-in-out infinite; }
+.rbt2-blink { animation: rbt2blink 5s infinite; transform-origin: center; transform-box: fill-box; }
+.rbt2-wave  { animation: rbt2wave  2.4s ease-in-out infinite; transform-origin: 95px 210px; transform-box: view-box; }
+@keyframes rbt2float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+@keyframes rbt2blink { 0%,92%,100%{transform:scaleY(1);} 95%{transform:scaleY(0.08);} }
+@keyframes rbt2wave  { 0%,100%{transform:rotate(0deg);} 50%{transform:rotate(10deg);} }
+@keyframes rbt2glow  { 0%,100%{opacity:0.75;} 50%{opacity:1;} }
+
+.rbt3-float { animation: rbt3float 3s ease-in-out infinite; transform-origin: center; }
+.rbt3-glow  { animation: rbt3glow  2s ease-in-out infinite; }
+.rbt3-blink { animation: rbt3blink 5s infinite; transform-origin: center; transform-box: fill-box; }
+.rbt3-wave  { animation: rbt3wave  2.4s ease-in-out infinite; transform-origin: 95px 210px; transform-box: view-box; }
+@keyframes rbt3float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+@keyframes rbt3blink { 0%,92%,100%{transform:scaleY(1);} 95%{transform:scaleY(0.08);} }
+@keyframes rbt3wave  { 0%,100%{transform:rotate(0deg);} 50%{transform:rotate(10deg);} }
+@keyframes rbt3glow  { 0%,100%{opacity:0.75;} 50%{opacity:1;} }
+
+.rbt4-float { animation: rbt4float 3s ease-in-out infinite; transform-origin: center; }
+.rbt4-glow  { animation: rbt4glow  2s ease-in-out infinite; }
+.rbt4-blink { animation: rbt4blink 5s infinite; transform-origin: center; transform-box: fill-box; }
+@keyframes rbt4float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+@keyframes rbt4blink { 0%,92%,100%{transform:scaleY(1);} 95%{transform:scaleY(0.08);} }
+@keyframes rbt4glow  { 0%,100%{opacity:0.75;} 50%{opacity:1;} }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }

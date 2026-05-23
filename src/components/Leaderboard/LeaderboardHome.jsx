@@ -160,7 +160,7 @@ function RankRow({ player, rank, maxGems, language, delay }) {
 }
 
 // ── Main ─────────────────────────────────────────────────────────────────────
-export default function LeaderboardHome({ language = 'eng', gameState }) {
+export default function LeaderboardHome({ language = 'eng', gameState, theme }) {
   const [period,  setPeriod]  = useState('weekly');
   const [subject, setSubject] = useState('all');
 
@@ -182,7 +182,12 @@ export default function LeaderboardHome({ language = 'eng', gameState }) {
   const t = (bm, eng) => language === 'bm' ? bm : eng;
 
   return (
-    <div className="page-shell lb-shell">
+    <div
+      className="page-shell lb-shell"
+      style={{
+        background: theme?.contentBg || 'linear-gradient(175deg, #1F184E 0%, #3E309C 40%, #5B42D4 70%, #3A2A8A 100%)',
+      }}
+    >
 
       {/* ── Full-page star field ── */}
       {STARS.map(s => (
