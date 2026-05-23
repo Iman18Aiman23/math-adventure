@@ -727,14 +727,9 @@ export default function ReadingPage({ onBack, language }) {
       { level: 4, num: 4, capTitle: language === 'bm' ? 'Baca Ayat'     : 'Read Sentences' },
     ];
 
-    const heroSubtitle = (
-      <>
-        {language === 'bm' ? 'Dari suku kata hingga ayat penuh. Mulai dari tahap mudah dan berkembang dengan kepercayaan diri!' : 'From syllables to complete sentences. Start easy and progress with confidence!'}
-        <span aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-        </span>
-      </>
-    );
+    const heroSubtitle = language === 'bm'
+      ? 'Dari suku kata ke ayat penuh — satu langkah pada satu masa!'
+      : 'From syllables to full sentences — one step at a time!';
 
     const hintContent = (
       <>
@@ -776,7 +771,8 @@ export default function ReadingPage({ onBack, language }) {
         <style>{globalStyles}</style>
         <PageLayout
           classPrefix="rp"
-          heroIcon={<OpenBookIcon size={96} />}
+          heroIcon={<OpenBookIcon size={72} />}
+          heroTitle={language === 'bm' ? 'Belajar Membaca' : 'Learn to Read'}
           heroSubtitle={heroSubtitle}
           sectionLabel={language === 'bm' ? 'Pilih Tahap' : 'Choose Level'}
           hintText={hintContent}

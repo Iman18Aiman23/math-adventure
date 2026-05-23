@@ -21,6 +21,7 @@ import BackButton from './BackButton';
 export default function PageLayout({
   classPrefix,
   heroIcon,
+  heroTitle,
   heroSubtitle,
   sectionLabel,
   hintText,
@@ -54,6 +55,7 @@ export default function PageLayout({
                   {heroIcon}
                 </span>
               </div>
+              {heroTitle && <h1 className={`${classPrefix}-hero-title`}>{heroTitle}</h1>}
               <p className={heroSubClass}>
                 {heroSubtitle}
               </p>

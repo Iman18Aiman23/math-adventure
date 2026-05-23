@@ -1,11 +1,12 @@
 /* ── ReadingPage Level Tiles — mirrors JawiPage UI/UX ── */
 
-/* ── Background ── */
+/* ── Background — soft 4-corner glow matching the 4 robot colors ── */
 .rp-body {
   background:
-    radial-gradient(900px 600px at 12% -10%, #E6F2FF 0%, transparent 60%),
-    radial-gradient(900px 600px at 95% -5%,  #F4E4FF 0%, transparent 55%),
-    radial-gradient(700px 500px at 50% 110%, #FFF1D6 0%, transparent 60%),
+    radial-gradient(ellipse 75% 55% at   0%   0%, rgba(134,239,172,.22) 0%, transparent 70%),
+    radial-gradient(ellipse 75% 55% at 100%   0%, rgba(251,146, 60,.22) 0%, transparent 70%),
+    radial-gradient(ellipse 75% 55% at   0% 100%, rgba(122,227,255,.20) 0%, transparent 70%),
+    radial-gradient(ellipse 75% 55% at 100% 100%, rgba(196,181,253,.22) 0%, transparent 70%),
     #FFFDF8;
 }
 
@@ -21,47 +22,46 @@
 }
 
 /* ── Hero ── */
-.rp-hero { text-align: center; padding: 10px 8px 4px; margin-bottom: 6px; position: relative; }
-.rp-hero-emoji-wrap { position: relative; display: flex; justify-content: center; align-items: center; height: 130px; }
+.rp-hero { text-align: center; padding: 8px 8px 4px; margin-bottom: 4px; position: relative; }
+.rp-hero-emoji-wrap { position: relative; display: flex; justify-content: center; align-items: center; height: 110px; }
 .rp-hero-emoji {
-  font-size: 4.5rem; line-height: 1; display: inline-block;
-  animation: rp-bounce 2.4s cubic-bezier(.34,1.56,.64,1) infinite;
+  font-size: 4rem; line-height: 1; display: inline-block;
   position: relative;
 }
-@keyframes rp-bounce {
-  0%,100% { transform: translateY(0) scale(1); }
-  50%     { transform: translateY(-10px) scale(1.04); }
-}
-.rp-hero-emoji::before {
-  content: ""; position: absolute; left: 50%; top: 50%;
-  width: 140px; height: 140px;
-  transform: translate(-50%,-50%);
-  background: radial-gradient(closest-side, rgba(255,214,10,.55), transparent 70%);
-  z-index: -1; border-radius: 50%;
-  animation: rp-pulseGlow 2.4s ease-in-out infinite;
-}
-@keyframes rp-pulseGlow {
-  0%,100% { opacity:.55; transform:translate(-50%,-50%) scale(1); }
-  50%     { opacity:1;   transform:translate(-50%,-50%) scale(1.18); }
+
+/* ── Hero title — big gradient display headline ── */
+.rp-hero-title {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.2rem, 8vw, 3rem);
+  line-height: 1;
+  letter-spacing: -0.5px;
+  margin: 6px auto 8px;
+  background: linear-gradient(120deg, #22C55E 0%, #F97316 38%, #3CCBFF 68%, #8B5CF6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .rp-hero-sub {
-  font-family: 'Fredoka','Nunito',sans-serif;
-  font-weight: 600; font-size: 1.2rem; color: #374151;
-  margin: 6px auto 0; max-width: 520px; line-height: 1.4;
-  display: flex; align-items: center; gap: 8px; justify-content: center;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600; font-size: .95rem; color: #6B7280;
+  margin: 0 auto 0; max-width: 380px; line-height: 1.45;
+  display: block; text-align: center;
 }
 
 /* ── Section label ── */
 .rp-section-label {
-  font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 1rem;
-  color: #6B7280; text-align: center; letter-spacing: .18em; text-transform: uppercase;
-  margin: 18px 0;
+  font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 1.05rem;
+  color: #374151; text-align: center; letter-spacing: .04em;
+  margin: 16px 0;
   display: flex; align-items: center; gap: 14px; justify-content: center;
 }
 .rp-section-label::before, .rp-section-label::after {
-  content: ""; height: 3px; width: 60px; border-radius: 999px;
-  background: linear-gradient(90deg, transparent, #FACC15, #F97316, #7C3AED, transparent);
+  content: ""; height: 3px; flex: 1; max-width: 80px; border-radius: 999px;
+  background: linear-gradient(90deg,
+    rgba(34,197,94,.6), rgba(249,115,22,.7), rgba(60,203,255,.7), rgba(139,92,246,.6)
+  );
 }
 
 /* ── Tile grid ── */
@@ -234,13 +234,14 @@
 
 /* ── Responsive ── */
 @media (max-width: 560px) {
-  .rp-shell     { padding: 10px 10px 80px; }
-  .rp-grid      { column-gap: 10px; row-gap: 18px; }
-  .rp-cap       { border-radius: 18px; padding: 10px 12px; }
-  .rp-cap-title { font-size: .98rem; }
-  .rp-cap-go    { width: 32px; height: 32px; }
-  .rp-tile-num  { width: 32px; height: 32px; font-size: 15px; }
-  .rp-illo      { top: 16%; bottom: 45%; }
+  .rp-shell       { padding: 10px 10px 80px; }
+  .rp-grid        { column-gap: 10px; row-gap: 18px; }
+  .rp-hero-title  { font-size: 2rem; letter-spacing: -.3px; }
+  .rp-cap         { border-radius: 18px; padding: 10px 12px; }
+  .rp-cap-title   { font-size: .98rem; }
+  .rp-cap-go      { width: 32px; height: 32px; }
+  .rp-tile-num    { width: 32px; height: 32px; font-size: 15px; }
+  .rp-illo        { top: 16%; bottom: 45%; }
 }
 
 /* ── Robot tile animations ── */
