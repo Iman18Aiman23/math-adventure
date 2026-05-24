@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { CURRICULUM, getAgeGroup } from '../../data/ageCurriculum';
 import { playHoverSound } from '../../utils/soundManager';
 import BackButton from '../BackButton';
@@ -52,6 +52,27 @@ export default function EarlyExplorersHome(props) {
           .games-grid {
             grid-template-columns: repeat(4, 1fr);
           }
+        }
+
+        /* Game Card Styling */
+        .game-card {
+          cursor: pointer;
+          display: block;
+          width: 100%;
+          transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+                      filter 0.25s ease-out;
+          transform: scale(1);
+          filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+          will-change: transform, filter;
+        }
+
+        .game-card--hovered {
+          transform: scale(1.08);
+          filter: brightness(1.1) drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
+        }
+
+        .game-card--pressed {
+          transform: scale(0.95);
         }
       `}</style>
       {/* Back button */}
@@ -141,29 +162,38 @@ const SVG_MAP = {
   'phonics-sprint':     PhonicsSprintSvg,
 };
 
-function GameCard({ game, onPlay, language, index }) {
+const GameCard = React.memo(function GameCard({ game, onPlay, language, index }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
+  const soundPlayedRef = useRef(false);
+
+  const handleMouseEnter = useCallback(() => {
+    setIsHovered(true);
+    if (!soundPlayedRef.current) {
+      soundPlayedRef.current = true;
+      playHoverSound();
+      setTimeout(() => { soundPlayedRef.current = false; }, 500);
+    }
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setIsHovered(false);
+    setIsPressed(false);
+  }, []);
+
+  const handleMouseDown = useCallback(() => setIsPressed(true), []);
+  const handleMouseUp = useCallback(() => setIsPressed(false), []);
 
   return (
     <div
       onClick={onPlay}
-      onMouseEnter={() => { setIsHovered(true); playHoverSound(); }}
-      onMouseLeave={() => { setIsHovered(false); setIsPressed(false); }}
-      onMouseDown={() => setIsPressed(true)}
-      onMouseUp={() => setIsPressed(false)}
-      onTouchStart={() => setIsPressed(true)}
-      onTouchEnd={() => setIsPressed(false)}
-      style={{
-        cursor: 'pointer',
-        display: 'block',
-        width: '100%',
-        transition: 'all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)',
-        transform: isPressed ? 'scale(0.95)' : isHovered ? 'scale(1.08)' : 'scale(1)',
-        filter: isHovered
-          ? 'brightness(1.1) drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2))'
-          : 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1))',
-      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      onTouchStart={handleMouseDown}
+      onTouchEnd={handleMouseUp}
+      className={`game-card ${isHovered ? 'game-card--hovered' : ''} ${isPressed ? 'game-card--pressed' : ''}`}
     >
       <img
         src={SVG_MAP[game.id]}
@@ -173,4 +203,4 @@ function GameCard({ game, onPlay, language, index }) {
       />
     </div>
   );
-}
+});
