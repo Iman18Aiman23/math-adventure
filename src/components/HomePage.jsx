@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { getGameData } from '../utils/gameStatsManager';
 import { AGE_GROUPS } from '../data/ageCurriculum';
 import { playHoverSound } from '../utils/soundManager';
+import RobotReading from './icons/robotReading';
+import RobotSpeaking from './icons/robotSpeaking';
+import RobotJawi from './icons/robotJawi';
+import RobotMath from './icons/robotMath';
 
 // ── 28 animated star particles for the hero (stable, never re-generated) ──────
 const HERO_STARS = Array.from({ length: 28 }, (_, i) => ({
@@ -94,40 +98,49 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             --green-mid: #6EE7B7;
         }
 
-        /* Horizontal Subject Cards — Light cards on white */
+        /* Vertical Subject Cards — Column layout */
         .subject-card {
-            background: #FFFFFF;
+            background: var(--subject-bg, #FFFFFF);
             border-radius: 20px;
-            padding: 1.2rem 1.5rem;
+            padding: 1.5rem 1.5rem;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
             overflow: hidden;
             display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             gap: 1rem;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
             border: 1.5px solid #E5E7EB;
             border-left: 5px solid var(--subject-accent, #7C3AED);
             box-shadow: 0 2px 6px rgba(17,24,39,0.04), 0 6px 18px rgba(17,24,39,0.06);
-            margin-bottom: 8px;
-            text-align: left;
+            margin-bottom: 0;
+            text-align: center;
+            height: 360px;
+            min-height: 360px;
         }
         .subject-card > .subject-card-body {
             display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
+            flex-direction: column;
             align-items: center;
-            gap: 1rem;
-            flex: 1 1 200px;
+            justify-content: center;
+            gap: 0.25rem;
+            flex: 1;
+            width: 100%;
             min-width: 0;
         }
         .subject-card-text {
-            flex: 1 1 140px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
             min-width: 0;
+            margin: 0;
         }
 
         .subject-card:hover {
@@ -143,30 +156,10 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             box-shadow: 0 2px 8px rgba(17,24,39,0.08);
         }
 
-        .arrow-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(0,0,0,0.04);
-            border: 1.5px solid rgba(0,0,0,0.06);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
-        }
-        .subject-card:hover .arrow-btn {
-            transform: translateX(4px) scale(1.05);
-            background: var(--subject-accent, #7C3AED);
-            border-color: var(--subject-accent, #7C3AED);
-        }
-        .subject-card:hover .arrow-btn svg {
-            stroke: #FFFFFF !important;
-        }
 
         /* SVG Animations */
         .card-deco { position: absolute; border-radius: 50%; opacity: 0.2; pointer-events: none; }
-        .svg-wrap { width: 90px; height: 90px; flex-shrink: 0; margin-right: 1.5rem; }
+        .svg-wrap { width: 210px; height: 210px; flex-shrink: 0; margin: 0; }
 
         @keyframes bounceUp { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-10px); } }
         @keyframes floatLetter { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-5px) rotate(4deg); } }
@@ -307,12 +300,13 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
                 gap: 1rem !important;
             }
             .subject-card {
-                padding: 1rem !important;
+                padding: 1.5rem !important;
+                height: 360px !important;
+                min-height: 360px !important;
             }
             .svg-wrap {
-                width: 70px !important;
-                height: 70px !important;
-                margin-right: 0.5rem !important;
+                width: 210px !important;
+                height: 210px !important;
             }
             .hero-title {
                 font-size: 1.8rem !important;
@@ -483,216 +477,70 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
         <div className="course-grid">
 
           {/* 1. Belajar Membaca */}
-          <div className="subject-card" style={{ '--subject-accent': '#06B6D4', '--subject-glow': 'rgba(6,182,212,0.35)' }} onClick={() => onSelectSubject('reading')} role="button" tabIndex="0" aria-label="Belajar Membaca">
+          <div className="subject-card" style={{ '--subject-accent': '#45B7D1', '--subject-glow': 'rgba(69,183,209,0.35)', '--subject-bg': '#F0FEFA' }} onClick={() => onSelectSubject('reading')} role="button" tabIndex="0" aria-label="Belajar Membaca">
             <div className="card-deco" style={{ width: '160px', height: '160px', background: 'radial-gradient(circle, rgba(6,182,212,0.25) 0%, transparent 70%)', top: '-40px', right: '-40px' }}></div>
             <div className="card-deco" style={{ width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(6,182,212,0.15) 0%, transparent 70%)', bottom: '-20px', left: '-20px' }}></div>
 
             <div className="subject-card-body">
               <div className="svg-wrap">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <ellipse cx="100" cy="180" rx="52" ry="7" fill="rgba(0,0,0,0.07)" />
-                  <path d="M95,46 L20,36 C16,35 14,38 14,42 L14,150 C14,154 16,156 20,155 L95,160 Z" fill="var(--coral)" />
-                  <path d="M92,52 L26,43 L26,146 L92,153 Z" fill="#FFFAF5" />
-                  <line x1="38" y1="72" x2="80" y2="75" stroke="#FFD4D4" strokeWidth="2.5" strokeLinecap="round" />
-                  <line x1="38" y1="85" x2="80" y2="88" stroke="#FFD4D4" strokeWidth="2.5" strokeLinecap="round" />
-                  <line x1="38" y1="98" x2="66" y2="100" stroke="#FFD4D4" strokeWidth="2.5" strokeLinecap="round" />
-                  <path d="M105,46 L180,36 C184,35 186,38 186,42 L186,150 C186,154 184,156 180,155 L105,160 Z" fill="var(--coral-mid)" />
-                  <path d="M108,52 L174,43 L174,146 L108,153 Z" fill="#FFFAF5" />
-                  <line x1="120" y1="75" x2="162" y2="72" stroke="#FFD4D4" strokeWidth="2.5" strokeLinecap="round" />
-                  <line x1="120" y1="88" x2="162" y2="85" stroke="#FFD4D4" strokeWidth="2.5" strokeLinecap="round" />
-                  <line x1="120" y1="98" x2="150" y2="100" stroke="#FFD4D4" strokeWidth="2.5" strokeLinecap="round" />
-                  <rect x="92" y="43" width="16" height="118" rx="3" fill="#E05555" />
-                  <g className="eyes">
-                    <circle cx="72" cy="114" r="6.5" fill="#333" />
-                    <circle cx="128" cy="114" r="6.5" fill="#333" />
-                    <circle cx="74" cy="112" r="2.8" fill="#FFF" />
-                    <circle cx="130" cy="112" r="2.8" fill="#FFF" />
-                  </g>
-                  <circle cx="57" cy="128" r="8" fill="#FF9999" opacity="0.45" />
-                  <circle cx="143" cy="128" r="8" fill="#FF9999" opacity="0.45" />
-                  <path d="M84,130 Q100,148 116,130" fill="none" stroke="#333" strokeWidth="2.5" strokeLinecap="round" />
-                  <g className="fl1"><text x="30" y="28" fontSize="22" fill="var(--coral)" fontWeight="900" fontFamily="Inter, sans-serif">A</text></g>
-                  <g className="fl2"><text x="150" y="22" fontSize="18" fill="var(--coral-mid)" fontWeight="900" fontFamily="Inter, sans-serif">B</text></g>
-                  <g className="ps"><polygon points="22,14 24,21 31,21 26,25 28,32 22,27 16,32 18,25 13,21 20,21" fill="#FFD93D" /></g>
-                </svg>
+                <RobotReading language={language} />
               </div>
               <div className="subject-card-text">
-                <div style={{ fontWeight: 900, fontSize: '1.25rem', letterSpacing: '-0.02em', color: '#0E7490', marginBottom: '6px' }}>
-                  {language === 'bm' ? 'Membaca' : 'Reading'}
-                </div>
                 <div style={{ fontSize: '0.85rem', color: '#6B7280', fontWeight: 500, lineHeight: 1.4 }}>
                   {language === 'bm' ? 'Kuasai kemahiran membaca dengan seronok!' : 'Master reading skills with fun!'}
                 </div>
               </div>
             </div>
-            <div className="arrow-btn">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0E7490" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
-            </div>
           </div>
 
           {/* 2. Belajar Sebutan */}
-          <div className="subject-card" style={{ '--subject-accent': '#F97316', '--subject-glow': 'rgba(249,115,22,0.35)' }} onClick={() => onSelectSubject('bm')} role="button" tabIndex="0" aria-label="Belajar Sebutan">
+          <div className="subject-card" style={{ '--subject-accent': '#8E44AD', '--subject-glow': 'rgba(142,68,173,0.35)', '--subject-bg': '#F8F5FF' }} onClick={() => onSelectSubject('bm')} role="button" tabIndex="0" aria-label="Belajar Sebutan">
             <div className="card-deco" style={{ width: '160px', height: '160px', background: 'radial-gradient(circle, rgba(249,115,22,0.25) 0%, transparent 70%)', top: '-40px', right: '-40px' }}></div>
             <div className="card-deco" style={{ width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(249,115,22,0.15) 0%, transparent 70%)', bottom: '-20px', left: '-20px' }}></div>
 
             <div className="subject-card-body">
               <div className="svg-wrap">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <ellipse cx="100" cy="182" rx="35" ry="6" fill="rgba(0,0,0,0.07)" />
-                  <rect x="95" y="142" width="10" height="32" rx="5" fill="var(--teal-mid)" />
-                  <ellipse cx="100" cy="178" rx="22" ry="5" fill="var(--teal-mid)" />
-                  <rect x="76" y="52" width="48" height="96" rx="24" fill="var(--teal)" />
-                  <line x1="88" y1="68" x2="112" y2="68" stroke="var(--teal-mid)" strokeWidth="1.5" opacity="0.45" />
-                  <line x1="86" y1="77" x2="114" y2="77" stroke="var(--teal-mid)" strokeWidth="1.5" opacity="0.45" />
-                  <line x1="86" y1="86" x2="114" y2="86" stroke="var(--teal-mid)" strokeWidth="1.5" opacity="0.45" />
-                  <line x1="88" y1="95" x2="112" y2="95" stroke="var(--teal-mid)" strokeWidth="1.5" opacity="0.45" />
-                  <line x1="90" y1="104" x2="110" y2="104" stroke="var(--teal-mid)" strokeWidth="1.5" opacity="0.45" />
-                  <rect x="80" y="56" width="8" height="38" rx="4" fill="#7EDDD7" opacity="0.5" />
-                  <g className="eyes">
-                    <circle cx="90" cy="118" r="5.5" fill="#333" />
-                    <circle cx="110" cy="118" r="5.5" fill="#333" />
-                    <circle cx="91.5" cy="116.5" r="2.2" fill="#FFF" />
-                    <circle cx="111.5" cy="116.5" r="2.2" fill="#FFF" />
-                  </g>
-                  <circle cx="81" cy="130" r="6" fill="var(--teal-mid)" opacity="0.35" />
-                  <circle cx="119" cy="130" r="6" fill="var(--teal-mid)" opacity="0.35" />
-                  <path d="M93,131 Q100,141 107,131" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" />
-                  <g className="wa"><path d="M70,78 Q58,100 70,122" fill="none" stroke="var(--teal)" strokeWidth="3.5" strokeLinecap="round" opacity="0.7" /></g>
-                  <g className="wa2"><path d="M58,68 Q40,100 58,132" fill="none" stroke="var(--teal)" strokeWidth="3" strokeLinecap="round" opacity="0.45" /></g>
-                  <g className="wa3"><path d="M46,58 Q22,100 46,142" fill="none" stroke="var(--teal)" strokeWidth="2.5" strokeLinecap="round" opacity="0.25" /></g>
-                  <g className="war"><path d="M130,78 Q142,100 130,122" fill="none" stroke="var(--teal)" strokeWidth="3.5" strokeLinecap="round" opacity="0.7" /></g>
-                  <g className="war2"><path d="M142,68 Q160,100 142,132" fill="none" stroke="var(--teal)" strokeWidth="3" strokeLinecap="round" opacity="0.45" /></g>
-                  <g className="war3"><path d="M154,58 Q178,100 154,142" fill="none" stroke="var(--teal)" strokeWidth="2.5" strokeLinecap="round" opacity="0.25" /></g>
-                  <g className="fl2"><text x="18" y="40" fontSize="22" fill="var(--teal)" fontFamily="Inter, serif">&#9834;</text></g>
-                  <g className="fl3"><text x="165" y="42" fontSize="18" fill="#7EDDD7" fontFamily="Inter, serif">&#9835;</text></g>
-                </svg>
+                <RobotSpeaking language={language} />
               </div>
               <div className="subject-card-text">
-                <div style={{ fontWeight: 900, fontSize: '1.25rem', letterSpacing: '-0.02em', color: '#C2410C', marginBottom: '6px' }}>
-                  {language === 'bm' ? 'Sebutan' : 'Speaking'}
-                </div>
                 <div style={{ fontSize: '0.85rem', color: '#6B7280', fontWeight: 500, lineHeight: 1.4 }}>
                   {language === 'bm' ? 'Perbaiki sebutan dengan yakin!' : 'Improve pronunciation with confidence!'}
                 </div>
               </div>
             </div>
-            <div className="arrow-btn">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C2410C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
-            </div>
           </div>
 
           {/* 3. Jawi */}
-          <div className="subject-card" style={{ '--subject-accent': '#FACC15', '--subject-glow': 'rgba(250,204,21,0.35)' }} onClick={() => onSelectSubject('jawi')} role="button" tabIndex="0" aria-label="Jawi">
+          <div className="subject-card" style={{ '--subject-accent': '#27AE60', '--subject-glow': 'rgba(39,174,96,0.35)', '--subject-bg': '#F0FAF5' }} onClick={() => onSelectSubject('jawi')} role="button" tabIndex="0" aria-label="Jawi">
             <div className="card-deco" style={{ width: '160px', height: '160px', background: 'radial-gradient(circle, rgba(250,204,21,0.25) 0%, transparent 70%)', top: '-40px', right: '-40px' }}></div>
             <div className="card-deco" style={{ width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(250,204,21,0.15) 0%, transparent 70%)', bottom: '-20px', left: '-20px' }}></div>
 
             <div className="subject-card-body">
               <div className="svg-wrap">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <ellipse cx="100" cy="182" rx="45" ry="6" fill="rgba(0,0,0,0.07)" />
-                  <rect x="118" y="55" width="62" height="80" rx="6" fill="#FFF9F0" stroke="#E8D5B7" strokeWidth="1.5" />
-                  <ellipse cx="149" cy="55" rx="33" ry="6" fill="#F5E6D0" stroke="#E8D5B7" strokeWidth="1" />
-                  <ellipse cx="149" cy="135" rx="33" ry="6" fill="#F5E6D0" stroke="#E8D5B7" strokeWidth="1" />
-                  <line x1="128" y1="75" x2="170" y2="75" stroke="#EDE0CF" strokeWidth="1.2" />
-                  <line x1="128" y1="88" x2="170" y2="88" stroke="#EDE0CF" strokeWidth="1.2" />
-                  <line x1="128" y1="101" x2="170" y2="101" stroke="#EDE0CF" strokeWidth="1.2" />
-                  <line x1="128" y1="114" x2="170" y2="114" stroke="#EDE0CF" strokeWidth="1.2" />
-                  <text x="149" y="97" fontSize="26" fill="var(--gold-mid)" textAnchor="middle" fontFamily="Inter, serif" className="wg">ب</text>
-                  <rect x="83" y="16" width="28" height="16" rx="8" fill="#FF8FA3" />
-                  <rect x="80" y="30" width="34" height="10" rx="2" fill="#D4A373" />
-                  <rect x="82" y="40" width="30" height="105" rx="2" fill="var(--gold)" />
-                  <rect x="82" y="40" width="30" height="18" fill="#E89F2C" />
-                  <rect x="86" y="44" width="6" height="50" rx="3" fill="#FFD080" opacity="0.5" />
-                  <polygon points="82,145 112,145 97,172" fill="#FFD4A3" />
-                  <polygon points="92,163 102,163 97,174" fill="#444" />
-                  <g className="eyes">
-                    <circle cx="91" cy="88" r="5" fill="#333" />
-                    <circle cx="105" cy="88" r="5" fill="#333" />
-                    <circle cx="92.2" cy="86.5" r="2" fill="#FFF" />
-                    <circle cx="106.2" cy="86.5" r="2" fill="#FFF" />
-                  </g>
-                  <circle cx="84" cy="100" r="5.5" fill="#E89F2C" opacity="0.35" />
-                  <circle cx="112" cy="100" r="5.5" fill="#E89F2C" opacity="0.35" />
-                  <path d="M93,101 Q97,110 103,101" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" />
-                  <g className="ink fl1"><circle cx="130" cy="45" r="3" fill="var(--gold)" opacity="0.6" /></g>
-                  <g className="ink fl3"><circle cx="165" cy="38" r="2.5" fill="var(--gold-mid)" opacity="0.5" /></g>
-                  <g className="ps"><polygon points="55,28 56.5,33 61,33 57.5,36 58.5,41 55,38 51.5,41 52.5,36 49,33 53.5,33" fill="#FF6B6B" /></g>
-                </svg>
+                <RobotJawi language={language} />
               </div>
               <div className="subject-card-text">
-                <div style={{ fontWeight: 900, fontSize: '1.25rem', letterSpacing: '-0.02em', color: '#B45309', marginBottom: '6px' }}>
-                  Jawi
-                </div>
                 <div style={{ fontSize: '0.85rem', color: '#6B7280', fontWeight: 500, lineHeight: 1.4 }}>
                   {language === 'bm' ? 'Belajar Jawi dengan mudah!' : 'Learn Jawi easily!'}
                 </div>
               </div>
             </div>
-            <div className="arrow-btn">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
-            </div>
           </div>
 
           {/* 4. Matematik */}
-          <div className="subject-card" style={{ '--subject-accent': '#10B981', '--subject-glow': 'rgba(16,185,129,0.35)' }} onClick={() => onSelectSubject('math')} role="button" tabIndex="0" aria-label="Matematik">
+          <div className="subject-card" style={{ '--subject-accent': '#E67E22', '--subject-glow': 'rgba(230,126,34,0.35)', '--subject-bg': '#FFF9E6' }} onClick={() => onSelectSubject('math')} role="button" tabIndex="0" aria-label="Matematik">
             <div className="card-deco" style={{ width: '160px', height: '160px', background: 'radial-gradient(circle, rgba(16,185,129,0.25) 0%, transparent 70%)', top: '-40px', right: '-40px' }}></div>
             <div className="card-deco" style={{ width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%)', bottom: '-20px', left: '-20px' }}></div>
 
             <div className="subject-card-body">
               <div className="svg-wrap">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <ellipse cx="100" cy="182" rx="40" ry="6" fill="rgba(0,0,0,0.07)" />
-                  <rect x="55" y="22" width="90" height="150" rx="16" fill="var(--green)" />
-                  <rect x="66" y="34" width="68" height="36" rx="7" fill="#2D6A4F" />
-                  <g className="eyes">
-                    <circle cx="84" cy="48" r="4" fill="#95E1C3" />
-                    <circle cx="108" cy="48" r="4" fill="#95E1C3" />
-                    <circle cx="85" cy="46.5" r="1.6" fill="#2D6A4F" />
-                    <circle cx="109" cy="46.5" r="1.6" fill="#2D6A4F" />
-                  </g>
-                  <path d="M86,57 Q96,66 106,57" fill="none" stroke="#95E1C3" strokeWidth="1.8" strokeLinecap="round" />
-                  <rect x="70" y="80" width="15" height="14" rx="4" fill="#A8E6CF" />
-                  <rect x="90" y="80" width="15" height="14" rx="4" fill="#A8E6CF" />
-                  <rect x="110" y="80" width="15" height="14" rx="4" fill="#FF8E72" />
-                  <text x="77.5" y="91" fontSize="9" fill="#2D6A4F" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontWeight="700">7</text>
-                  <text x="97.5" y="91" fontSize="9" fill="#2D6A4F" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontWeight="700">8</text>
-                  <text x="117.5" y="91" fontSize="11" fill="#FFF" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontWeight="700">+</text>
-                  <rect x="70" y="100" width="15" height="14" rx="4" fill="#A8E6CF" />
-                  <rect x="90" y="100" width="15" height="14" rx="4" fill="#A8E6CF" />
-                  <rect x="110" y="100" width="15" height="14" rx="4" fill="#FF8E72" />
-                  <text x="77.5" y="111" fontSize="9" fill="#2D6A4F" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontWeight="700">4</text>
-                  <text x="97.5" y="111" fontSize="9" fill="#2D6A4F" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontWeight="700">5</text>
-                  <text x="117.5" y="111" fontSize="11" fill="#FFF" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontWeight="700">&minus;</text>
-                  <rect x="70" y="120" width="15" height="14" rx="4" fill="#A8E6CF" />
-                  <rect x="90" y="120" width="15" height="14" rx="4" fill="#A8E6CF" />
-                  <rect x="110" y="120" width="15" height="14" rx="4" fill="#FF8E72" />
-                  <text x="77.5" y="131" fontSize="9" fill="#2D6A4F" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontWeight="700">1</text>
-                  <text x="97.5" y="131" fontSize="9" fill="#2D6A4F" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontWeight="700">2</text>
-                  <text x="117.5" y="131" fontSize="10" fill="#FFF" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontWeight="700">&times;</text>
-                  <rect x="70" y="140" width="35" height="14" rx="4" fill="#A8E6CF" />
-                  <rect x="110" y="140" width="15" height="14" rx="4" fill="var(--gold)" />
-                  <text x="87.5" y="151" fontSize="9" fill="#2D6A4F" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontWeight="700">0</text>
-                  <text x="117.5" y="151.5" fontSize="10" fill="#2D6A4F" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontWeight="700">=</text>
-                  <rect x="60" y="26" width="10" height="40" rx="5" fill="#95E1C3" opacity="0.25" />
-                  <g className="np fl1"><text x="25" y="50" fontSize="20" fill="var(--green)" fontWeight="900" fontFamily="JetBrains Mono, monospace">3</text></g>
-                  <g className="np2 fl2"><text x="168" y="45" fontSize="18" fill="var(--green-mid)" fontWeight="900" fontFamily="JetBrains Mono, monospace">9</text></g>
-                  <g className="np3 fl4"><text x="30" y="165" fontSize="16" fill="#A8E6CF" fontWeight="900" fontFamily="JetBrains Mono, monospace">6</text></g>
-                  <g className="msp fl3">
-                    <polygon points="170,155 180,175 160,175" fill="none" stroke="var(--green)" strokeWidth="2.5" strokeLinejoin="round" />
-                  </g>
-                </svg>
+                <RobotMath language={language} />
               </div>
               <div className="subject-card-text">
-                <div style={{ fontWeight: 900, fontSize: '1.25rem', letterSpacing: '-0.02em', color: '#047857', marginBottom: '6px' }}>
-                  {language === 'bm' ? 'Matematik' : 'Math'}
-                </div>
                 <div style={{ fontSize: '0.85rem', color: '#6B7280', fontWeight: 500, lineHeight: 1.4 }}>
                   {language === 'bm' ? 'Teroka dunia nombor dan logik!' : 'Explore the world of numbers and logic!'}
                 </div>
               </div>
-            </div>
-            <div className="arrow-btn">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#047857" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
             </div>
           </div>
         </div>

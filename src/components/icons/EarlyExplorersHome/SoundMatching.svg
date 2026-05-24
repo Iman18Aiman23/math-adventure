@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <radialGradient id="matchHead4" cx="25%" cy="25%" r="75%">
+      <stop offset="0%" stop-color="#26C6DA"/>
+      <stop offset="50%" stop-color="#00ACC1"/>
+      <stop offset="100%" stop-color="#006064"/>
+    </radialGradient>
+    <radialGradient id="matchFace4" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#0D2832"/>
+      <stop offset="100%" stop-color="#051419"/>
+    </radialGradient>
+    <linearGradient id="barGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFEB3B"/>
+      <stop offset="100%" stop-color="#FBC02D"/>
+    </linearGradient>
+    <linearGradient id="barGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4FC3F7"/>
+      <stop offset="100%" stop-color="#0288D1"/>
+    </linearGradient>
+    <linearGradient id="barGrad3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF8A65"/>
+      <stop offset="100%" stop-color="#FF5722"/>
+    </linearGradient>
+    <filter id="matchGlow4" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#00ACC1" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Button Background -->
+  <rect x="10" y="10" width="180" height="180" rx="30" ry="30" fill="#00ACC1" stroke="#212121" stroke-width="4"/>
+
+  <!-- Antenna -->
+  <line x1="100" y1="12" x2="100" y2="32" stroke="#B2EBF2" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="100" cy="8" r="8" fill="#FFEB3B" filter="url(#matchGlow4)"/>
+  <circle cx="100" cy="8" r="3" fill="#FFF"/>
+
+  <!-- Head -->
+  <rect x="22" y="32" width="156" height="136" rx="42" ry="42" fill="url(#matchHead4)" filter="url(#matchGlow4)"/>
+  <rect x="22" y="32" width="156" height="136" rx="42" ry="42" fill="none" stroke="#B2EBF2" stroke-width="3"/>
+
+  <!-- Ears -->
+  <ellipse cx="15" cy="100" rx="12" ry="22" fill="url(#matchHead4)" filter="url(#matchGlow4)"/>
+  <ellipse cx="15" cy="100" rx="12" ry="22" fill="none" stroke="#B2EBF2" stroke-width="2"/>
+  <ellipse cx="185" cy="100" rx="12" ry="22" fill="url(#matchHead4)" filter="url(#matchGlow4)"/>
+  <ellipse cx="185" cy="100" rx="12" ry="22" fill="none" stroke="#B2EBF2" stroke-width="2"/>
+
+  <!-- Face Screen -->
+  <rect x="38" y="52" width="124" height="96" rx="32" ry="32" fill="url(#matchFace4)"/>
+  <rect x="38" y="52" width="124" height="96" rx="32" ry="32" fill="none" stroke="#26C6DA" stroke-width="2" opacity="0.5"/>
+
+  <g transform="translate(0, 17)">
+  <!-- === HEADPHONES + EQUALIZER inside face === -->
+  <!-- Headphones band -->
+  <path d="M 58 95 Q 58 58 100 58 Q 142 58 142 95" fill="none" stroke="#26C6DA" stroke-width="4" stroke-linecap="round" opacity="0.8"/>
+  <!-- Left ear cup -->
+  <rect x="50" y="82" width="16" height="26" rx="6" fill="#00ACC1" opacity="0.9"/>
+  <rect x="54" y="86" width="8" height="18" rx="3" fill="#4DD0E1" opacity="0.7"/>
+  <!-- Right ear cup -->
+  <rect x="134" y="82" width="16" height="26" rx="6" fill="#00ACC1" opacity="0.9"/>
+  <rect x="138" y="86" width="8" height="18" rx="3" fill="#4DD0E1" opacity="0.7"/>
+
+  <!-- Equalizer bars in center -->
+  <rect x="75" y="88" width="8" height="20" rx="3" fill="url(#barGrad1)" opacity="0.95"/>
+  <rect x="87" y="78" width="8" height="30" rx="3" fill="url(#barGrad2)" opacity="0.95"/>
+  <rect x="99" y="72" width="8" height="36" rx="3" fill="url(#barGrad3)" opacity="0.95"/>
+  <rect x="111" y="82" width="8" height="26" rx="3" fill="url(#barGrad1)" opacity="0.95"/>
+  <rect x="123" y="90" width="8" height="18" rx="3" fill="url(#barGrad2)" opacity="0.95"/>
+
+  <!-- Sound wave lines connecting -->
+  <path d="M 66 95 Q 75 88 82 95" fill="none" stroke="#FFEB3B" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+  <path d="M 134 95 Q 125 88 118 95" fill="none" stroke="#FFEB3B" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+
+  <!-- Sparkle decorations -->
+  <polygon points="50,62 52,66 56,68 52,70 50,74 48,70 44,68 48,66" fill="#FFEB3B" opacity="0.8"/>
+  <polygon points="150,58 152,62 156,64 152,66 150,70 148,66 144,64 148,62" fill="#FFEB3B" opacity="0.6"/>
+  </g>
+
+  <!-- Title Text -->
+  <text x="100" y="178" font-size="16" font-family="'Fredoka One', 'Quicksand', sans-serif" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="central" stroke="#00000066" stroke-width="2" paint-order="stroke">Sound Matching</text>
+</svg>

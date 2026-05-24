@@ -27,7 +27,6 @@ import SoundMatching from './components/AgeGroup-4-5/SoundMatching';
 import LetterSoundPuzzle from './components/AgeGroup-4-5/LetterSoundPuzzle';
 import PhoneticsSprint from './components/AgeGroup-4-5/PhoneticsSprint';
 import ProfileHome from './components/Profile/ProfileHome';
-import RobotComponentPage from './components/RobotComponentPage';
 const AchievementHome  = React.lazy(() => import('./components/Achievement/AchievementHome'));
 const LeaderboardHome  = React.lazy(() => import('./components/Leaderboard/LeaderboardHome'));
 import AssessmentSelector from './pages/AssessmentSelector';
@@ -41,14 +40,14 @@ import { baseAssessments } from './data/curriculum/assessment';
 // ── Themes ───────────────────────────────────────────────────────────────────
 export const THEMES = {
   cosmic: {
-    key: 'cosmic', label: 'Cosmic', swatch: '#5B42D4',
-    sidebarBg: 'linear-gradient(180deg, #332881 0%, #4B39BB 35%, #3E309C 65%, #332881 100%)',
-    appBg: '#FAF6F0',
-    contentBg: 'linear-gradient(175deg, #1F184E 0%, #3E309C 40%, #5B42D4 70%, #3A2A8A 100%)',
-    heroBg: 'linear-gradient(175deg, #0F0B1E 0%, #1A1040 35%, #2D1B69 65%, #1A1040 100%)',
-    heroBorder: '#A78BFA',
-    planetBody: 'radial-gradient(circle at 30% 30%, #C084FC, #6B21A8)',
-    planetRing: '#A78BFA',
+    key: 'cosmic', label: 'Cosmic', swatch: '#A855F7',
+    sidebarBg: 'linear-gradient(180deg, #7C3AED 0%, #A855F7 40%, #C026D3 75%, #9333EA 100%)',
+    appBg: '#2E1065',
+    contentBg: 'linear-gradient(175deg, #3B0764 0%, #6D28D9 40%, #9333EA 70%, #6D28D9 100%)',
+    heroBg: 'linear-gradient(135deg, #5B21B6 0%, #9333EA 50%, #EC4899 100%)',
+    heroBorder: '#F0ABFC',
+    planetBody: 'radial-gradient(circle at 30% 30%, #F472B6, #9333EA)',
+    planetRing: '#DDD6FE',
   },
   ocean: {
     key: 'ocean', label: 'Ocean', swatch: '#1565c0',
@@ -61,24 +60,24 @@ export const THEMES = {
     planetRing: '#80cbc4',
   },
   sunny: {
-    key: 'sunny', label: 'Sunny', swatch: '#f57c00',
-    sidebarBg: 'linear-gradient(180deg, #e65100 0%, #f57c00 50%, #bf360c 100%)',
-    appBg: '#7a2608',
-    contentBg: 'linear-gradient(175deg, #bf360c 0%, #e65100 40%, #f57c00 70%, #bf360c 100%)',
-    heroBg: 'linear-gradient(135deg, #e65100 0%, #f57c00 50%, #ffa000 100%)',
-    heroBorder: '#fdd835',
-    planetBody: 'radial-gradient(circle at 30% 30%, #ffa000, #f57c00)',
-    planetRing: '#fdd835',
+    key: 'sunny', label: 'Sunny', swatch: '#F59E0B',
+    sidebarBg: 'linear-gradient(180deg, #D97706 0%, #F59E0B 45%, #FBBF24 80%, #D97706 100%)',
+    appBg: '#451A03',
+    contentBg: 'linear-gradient(175deg, #78350F 0%, #B45309 40%, #D97706 70%, #B45309 100%)',
+    heroBg: 'linear-gradient(135deg, #B45309 0%, #F59E0B 50%, #FCD34D 100%)',
+    heroBorder: '#FDE68A',
+    planetBody: 'radial-gradient(circle at 30% 30%, #FCD34D, #F59E0B)',
+    planetRing: '#FDE68A',
   },
   forest: {
-    key: 'forest', label: 'Forest', swatch: '#2e7d32',
-    sidebarBg: 'linear-gradient(180deg, #1b5e20 0%, #2e7d32 50%, #0d3b11 100%)',
-    appBg: '#0a1f0a',
-    contentBg: 'linear-gradient(175deg, #0d3b11 0%, #1b5e20 40%, #2e7d32 70%, #0d3b11 100%)',
-    heroBg: 'linear-gradient(135deg, #1b5e20 0%, #2e7d32 50%, #43a047 100%)',
-    heroBorder: '#8bc34a',
-    planetBody: 'radial-gradient(circle at 30% 30%, #43a047, #2e7d32)',
-    planetRing: '#8bc34a',
+    key: 'forest', label: 'Forest', swatch: '#22C55E',
+    sidebarBg: 'linear-gradient(180deg, #15803D 0%, #16A34A 40%, #22C55E 75%, #15803D 100%)',
+    appBg: '#052E16',
+    contentBg: 'linear-gradient(175deg, #064E3B 0%, #065F46 40%, #059669 70%, #064E3B 100%)',
+    heroBg: 'linear-gradient(135deg, #15803D 0%, #16A34A 50%, #4ADE80 100%)',
+    heroBorder: '#86EFAC',
+    planetBody: 'radial-gradient(circle at 30% 30%, #4ADE80, #16A34A)',
+    planetRing: '#86EFAC',
   },
 };
 
@@ -147,7 +146,6 @@ export default function App() {
   const [currentAgeGroup, setCurrentAgeGroup] = useState(null);
   const [currentAgeGame, setCurrentAgeGame] = useState(null);
   const [currentTheme, setCurrentTheme] = useState('cosmic');
-  const [showRobotComponent, setShowRobotComponent] = useState(false);
 
   const activeGameId = getActiveGameId(currentSubject, mathSubGame);
   const { gameState, levelUpInfo, clearLevelUp } = useGameState(activeGameId);
@@ -183,7 +181,7 @@ export default function App() {
   const viewKey = `${activeTab}-${currentSubject}-${mathSubGame}-${dateTimeSubGame}-${isPlaying}-${selectedAssessment?.id}`;
 
   // Hide sidebar during game play or assessment
-  const shouldHideSidebar = isPlaying || (currentSubject === 'math' && mathSubGame === 'faq') || isPlayingJawiGame || selectedAssessment || !!currentAgeGame || showRobotComponent;
+  const shouldHideSidebar = isPlaying || (currentSubject === 'math' && mathSubGame === 'faq') || isPlayingJawiGame || selectedAssessment || !!currentAgeGame;
 
   // ── Content renderer ──────────────────────────────────────────────────────
   const renderContent = () => {
@@ -193,10 +191,7 @@ export default function App() {
       </Suspense>
     );
     if (activeTab === 'profile') {
-      if (showRobotComponent) {
-        return <RobotComponentPage onBack={() => setShowRobotComponent(false)} />;
-      }
-      return <ProfileHome playerName={playerName} gameState={gameState} language={language} streak={streak} onNavigateToRobot={() => setShowRobotComponent(true)} />;
+      return <ProfileHome playerName={playerName} gameState={gameState} language={language} streak={streak} />;
     }
     if (activeTab === 'achievement') {
       // If an assessment is selected, show AssessmentPage
@@ -261,22 +256,22 @@ export default function App() {
       default:
         // Age-group routing takes precedence over the default home screen.
         if (currentAgeGame === 'alphabet-safari') {
-          return <AlphabetSafari onBack={() => setCurrentAgeGame(null)} language={language} />;
+          return <AlphabetSafari onBack={() => setCurrentAgeGame(null)} language={language} theme={THEMES[currentTheme]} />;
         }
         if (currentAgeGame === 'letter-trace') {
-          return <LetterTrace onBack={() => setCurrentAgeGame(null)} language={language} />;
+          return <LetterTrace onBack={() => setCurrentAgeGame(null)} language={language} theme={THEMES[currentTheme]} />;
         }
         if (currentAgeGame === 'phonics-pop') {
-          return <PhoneticsPop onBack={() => setCurrentAgeGame(null)} language={language} />;
+          return <PhoneticsPop onBack={() => setCurrentAgeGame(null)} language={language} theme={THEMES[currentTheme]} />;
         }
         if (currentAgeGame === 'sound-matching') {
-          return <SoundMatching onBack={() => setCurrentAgeGame(null)} language={language} />;
+          return <SoundMatching onBack={() => setCurrentAgeGame(null)} language={language} theme={THEMES[currentTheme]} />;
         }
         if (currentAgeGame === 'letter-sound-puzzle') {
-          return <LetterSoundPuzzle onBack={() => setCurrentAgeGame(null)} language={language} />;
+          return <LetterSoundPuzzle onBack={() => setCurrentAgeGame(null)} language={language} theme={THEMES[currentTheme]} />;
         }
         if (currentAgeGame === 'phonics-sprint') {
-          return <PhoneticsSprint onBack={() => setCurrentAgeGame(null)} language={language} />;
+          return <PhoneticsSprint onBack={() => setCurrentAgeGame(null)} language={language} theme={THEMES[currentTheme]} />;
         }
         if (currentAgeGroup) {
           const ageGroupComponents = {
@@ -352,7 +347,7 @@ export default function App() {
         </div>
 
         {/* CosmicMobileNav — rendered outside view-container so position:fixed works correctly */}
-        {!inActiveQuiz && !isPlayingJawiGame && !selectedAssessment && !currentAgeGame && currentSubject !== 'reading' && (
+        {!inActiveQuiz && !isPlayingJawiGame && !selectedAssessment && !currentAgeGame && !currentAgeGroup && currentSubject !== 'reading' && (
           <CosmicMobileNav
             activeTab={activeTab}
             language={language}

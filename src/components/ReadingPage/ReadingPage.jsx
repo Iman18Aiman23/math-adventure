@@ -125,25 +125,26 @@ const getTileIllustration = (level, language) => {
             <circle cx="160" cy="266" r="6" fill="#6EE7FF" />
             <circle cx="188" cy="266" r="6" fill="#6BFF95" />
 
-            {/* Left arm (waving) */}
+            {/* Left and Right Arms */}
             <g className="rbt1-wave">
-              <circle cx="88"  cy="218" r="14" fill="#00C875" />
-              <rect   x="38"   y="208" width="52" height="20" rx="10" fill="#00C875" />
-              <circle cx="34"  cy="218" r="12" fill="#B8FFE0" />
-            </g>
+              {/* Left Arm */}
+              <ellipse cx="60" cy="220" rx="18" ry="28" fill="url(#rbt1Body)" transform="rotate(-15 60 220)" filter="url(#rbt1Shadow)"/>
+              <ellipse cx="60" cy="220" rx="18" ry="28" fill="none" stroke="#f0f0f0" strokeWidth="2" transform="rotate(-15 60 220)"/>
 
-            {/* Right arm */}
-            <circle cx="232" cy="218" r="14" fill="#00C875" />
-            <rect   x="230"  y="208" width="52" height="20" rx="10" fill="#00C875" />
-            <circle cx="286" cy="218" r="12" fill="#B8FFE0" />
+              {/* Right Arm */}
+              <ellipse cx="260" cy="220" rx="18" ry="28" fill="url(#rbt1Body)" transform="rotate(15 260 220)" filter="url(#rbt1Shadow)"/>
+              <ellipse cx="260" cy="220" rx="18" ry="28" fill="none" stroke="#f0f0f0" strokeWidth="2" transform="rotate(15 260 220)"/>
+            </g>
 
             {/* Legs */}
             <rect x="118" y="286" width="24" height="36" rx="12" fill="#263238" />
             <rect x="178" y="286" width="24" height="36" rx="12" fill="#263238" />
 
             {/* Feet */}
-            <ellipse cx="130" cy="322" rx="22" ry="10" fill="#00C875" />
-            <ellipse cx="190" cy="322" rx="22" ry="10" fill="#00C875" />
+            <ellipse cx="130" cy="322" rx="22" ry="10" fill="url(#rbt1Body)" filter="url(#rbt1Shadow)"/>
+            <ellipse cx="130" cy="322" rx="22" ry="10" fill="none" stroke="#f0f0f0" strokeWidth="2"/>
+            <ellipse cx="190" cy="322" rx="22" ry="10" fill="url(#rbt1Body)" filter="url(#rbt1Shadow)"/>
+            <ellipse cx="190" cy="322" rx="22" ry="10" fill="none" stroke="#f0f0f0" strokeWidth="2"/>
 
             {/* Floating stars */}
             <g className="rbt1-glow">
@@ -243,25 +244,26 @@ const getTileIllustration = (level, language) => {
             <circle cx="160" cy="266" r="6" fill="#6EE7FF" />
             <circle cx="188" cy="266" r="6" fill="#6BFF95" />
 
-            {/* Left arm (waving) */}
+            {/* Left and Right Arms */}
             <g className="rbt2-wave">
-              <circle cx="88"  cy="218" r="14" fill="#FF8A00" />
-              <rect   x="38"   y="208" width="52" height="20" rx="10" fill="#FF8A00" />
-              <circle cx="34"  cy="218" r="12" fill="#FFBB52" />
-            </g>
+              {/* Left Arm */}
+              <ellipse cx="60" cy="220" rx="18" ry="28" fill="url(#rbt2Body)" transform="rotate(-15 60 220)" filter="url(#rbt2Shadow)"/>
+              <ellipse cx="60" cy="220" rx="18" ry="28" fill="none" stroke="#f0f0f0" strokeWidth="2" transform="rotate(-15 60 220)"/>
 
-            {/* Right arm */}
-            <circle cx="232" cy="218" r="14" fill="#FF8A00" />
-            <rect   x="230"  y="208" width="52" height="20" rx="10" fill="#FF8A00" />
-            <circle cx="286" cy="218" r="12" fill="#FFBB52" />
+              {/* Right Arm */}
+              <ellipse cx="260" cy="220" rx="18" ry="28" fill="url(#rbt2Body)" transform="rotate(15 260 220)" filter="url(#rbt2Shadow)"/>
+              <ellipse cx="260" cy="220" rx="18" ry="28" fill="none" stroke="#f0f0f0" strokeWidth="2" transform="rotate(15 260 220)"/>
+            </g>
 
             {/* Legs */}
             <rect x="118" y="286" width="24" height="36" rx="12" fill="#263238" />
             <rect x="178" y="286" width="24" height="36" rx="12" fill="#263238" />
 
             {/* Feet */}
-            <ellipse cx="130" cy="322" rx="22" ry="10" fill="#FF8A00" />
-            <ellipse cx="190" cy="322" rx="22" ry="10" fill="#FF8A00" />
+            <ellipse cx="130" cy="322" rx="22" ry="10" fill="url(#rbt2Body)" filter="url(#rbt2Shadow)"/>
+            <ellipse cx="130" cy="322" rx="22" ry="10" fill="none" stroke="#f0f0f0" strokeWidth="2"/>
+            <ellipse cx="190" cy="322" rx="22" ry="10" fill="url(#rbt2Body)" filter="url(#rbt2Shadow)"/>
+            <ellipse cx="190" cy="322" rx="22" ry="10" fill="none" stroke="#f0f0f0" strokeWidth="2"/>
 
             {/* Floating stars */}
             <g className="rbt2-glow">
@@ -356,25 +358,26 @@ const getTileIllustration = (level, language) => {
             <circle cx="160" cy="266" r="6" fill="#6EE7FF" />
             <circle cx="188" cy="266" r="6" fill="#6BFF95" />
 
-            {/* Left arm (waving) */}
+            {/* Left and Right Arms */}
             <g className="rbt3-wave">
-              <circle cx="88"  cy="218" r="14" fill="#3CCBFF" />
-              <rect   x="38"   y="208" width="52" height="20" rx="10" fill="#3CCBFF" />
-              <circle cx="34"  cy="218" r="12" fill="#B8F7FF" />
-            </g>
+              {/* Left Arm */}
+              <ellipse cx="60" cy="220" rx="18" ry="28" fill="url(#rbt3Body)" transform="rotate(-15 60 220)" filter="url(#rbt3Shadow)"/>
+              <ellipse cx="60" cy="220" rx="18" ry="28" fill="none" stroke="#f0f0f0" strokeWidth="2" transform="rotate(-15 60 220)"/>
 
-            {/* Right arm */}
-            <circle cx="232" cy="218" r="14" fill="#3CCBFF" />
-            <rect   x="230"  y="208" width="52" height="20" rx="10" fill="#3CCBFF" />
-            <circle cx="286" cy="218" r="12" fill="#B8F7FF" />
+              {/* Right Arm */}
+              <ellipse cx="260" cy="220" rx="18" ry="28" fill="url(#rbt3Body)" transform="rotate(15 260 220)" filter="url(#rbt3Shadow)"/>
+              <ellipse cx="260" cy="220" rx="18" ry="28" fill="none" stroke="#f0f0f0" strokeWidth="2" transform="rotate(15 260 220)"/>
+            </g>
 
             {/* Legs */}
             <rect x="118" y="286" width="24" height="36" rx="12" fill="#263238" />
             <rect x="178" y="286" width="24" height="36" rx="12" fill="#263238" />
 
             {/* Feet */}
-            <ellipse cx="130" cy="322" rx="22" ry="10" fill="#3CCBFF" />
-            <ellipse cx="190" cy="322" rx="22" ry="10" fill="#3CCBFF" />
+            <ellipse cx="130" cy="322" rx="22" ry="10" fill="url(#rbt3Body)" filter="url(#rbt3Shadow)"/>
+            <ellipse cx="130" cy="322" rx="22" ry="10" fill="none" stroke="#f0f0f0" strokeWidth="2"/>
+            <ellipse cx="190" cy="322" rx="22" ry="10" fill="url(#rbt3Body)" filter="url(#rbt3Shadow)"/>
+            <ellipse cx="190" cy="322" rx="22" ry="10" fill="none" stroke="#f0f0f0" strokeWidth="2"/>
 
             {/* Floating stars */}
             <g className="rbt3-glow">
@@ -468,23 +471,26 @@ const getTileIllustration = (level, language) => {
             <circle cx="160" cy="266" r="6" fill="#6EE7FF" />
             <circle cx="188" cy="266" r="6" fill="#6BFF95" />
 
-            {/* Left arm */}
-            <circle cx="88"  cy="218" r="14" fill="#8B5CF6" />
-            <rect   x="38"   y="208" width="52" height="20" rx="10" fill="#8B5CF6" />
-            <circle cx="34"  cy="218" r="12" fill="#E0C7FF" />
+            {/* Left and Right Arms */}
+            <g className="rbt4-wave">
+              {/* Left Arm */}
+              <ellipse cx="60" cy="220" rx="18" ry="28" fill="url(#rbt4Body)" transform="rotate(-15 60 220)" filter="url(#rbt4Shadow)"/>
+              <ellipse cx="60" cy="220" rx="18" ry="28" fill="none" stroke="#f0f0f0" strokeWidth="2" transform="rotate(-15 60 220)"/>
 
-            {/* Right arm */}
-            <circle cx="232" cy="218" r="14" fill="#8B5CF6" />
-            <rect   x="230"  y="208" width="52" height="20" rx="10" fill="#8B5CF6" />
-            <circle cx="286" cy="218" r="12" fill="#E0C7FF" />
+              {/* Right Arm */}
+              <ellipse cx="260" cy="220" rx="18" ry="28" fill="url(#rbt4Body)" transform="rotate(15 260 220)" filter="url(#rbt4Shadow)"/>
+              <ellipse cx="260" cy="220" rx="18" ry="28" fill="none" stroke="#f0f0f0" strokeWidth="2" transform="rotate(15 260 220)"/>
+            </g>
 
             {/* Legs */}
             <rect x="118" y="286" width="24" height="36" rx="12" fill="#263238" />
             <rect x="178" y="286" width="24" height="36" rx="12" fill="#263238" />
 
             {/* Feet */}
-            <ellipse cx="130" cy="322" rx="22" ry="10" fill="#8B5CF6" />
-            <ellipse cx="190" cy="322" rx="22" ry="10" fill="#8B5CF6" />
+            <ellipse cx="130" cy="322" rx="22" ry="10" fill="url(#rbt4Body)" filter="url(#rbt4Shadow)"/>
+            <ellipse cx="130" cy="322" rx="22" ry="10" fill="none" stroke="#f0f0f0" strokeWidth="2"/>
+            <ellipse cx="190" cy="322" rx="22" ry="10" fill="url(#rbt4Body)" filter="url(#rbt4Shadow)"/>
+            <ellipse cx="190" cy="322" rx="22" ry="10" fill="none" stroke="#f0f0f0" strokeWidth="2"/>
 
             {/* Floating stars */}
             <g className="rbt4-glow">
@@ -529,6 +535,12 @@ export default function ReadingPage({ onBack, language }) {
 
     svg .bob1 { animation: bob 2.2s ease-in-out infinite; }
     svg .bob2 { animation: bob 2.2s ease-in-out infinite 0.6s; }
+
+    /* Robot arm waving animations */
+    svg .rbt1-wave { animation: nudge 0.8s ease-in-out infinite; transform-origin: 160px 220px; }
+    svg .rbt2-wave { animation: nudge 0.8s ease-in-out infinite; transform-origin: 160px 220px; }
+    svg .rbt3-wave { animation: nudge 0.8s ease-in-out infinite; transform-origin: 160px 220px; }
+    svg .rbt4-wave { animation: nudge 0.8s ease-in-out infinite; transform-origin: 160px 220px; }
 
     * { box-sizing: border-box; }
 

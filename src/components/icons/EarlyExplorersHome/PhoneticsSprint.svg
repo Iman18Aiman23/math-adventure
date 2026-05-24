@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <radialGradient id="sprintHead6" cx="25%" cy="25%" r="75%">
+      <stop offset="0%" stop-color="#FF8A65"/>
+      <stop offset="50%" stop-color="#FF5722"/>
+      <stop offset="100%" stop-color="#BF360C"/>
+    </radialGradient>
+    <radialGradient id="sprintFace6" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#3E2723"/>
+      <stop offset="100%" stop-color="#1A1008"/>
+    </radialGradient>
+    <linearGradient id="timerGrad6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFEB3B"/>
+      <stop offset="100%" stop-color="#FF9800"/>
+    </linearGradient>
+    <filter id="sprintGlow6" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#FF5722" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Button Background -->
+  <rect x="10" y="10" width="180" height="180" rx="30" ry="30" fill="#FF5722" stroke="#212121" stroke-width="4"/>
+
+  <!-- Antenna -->
+  <line x1="100" y1="12" x2="100" y2="32" stroke="#FFAB91" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="100" cy="8" r="8" fill="#FFEB3B" filter="url(#sprintGlow6)"/>
+  <circle cx="100" cy="8" r="3" fill="#FFF"/>
+
+  <!-- Head -->
+  <rect x="22" y="32" width="156" height="136" rx="42" ry="42" fill="url(#sprintHead6)" filter="url(#sprintGlow6)"/>
+  <rect x="22" y="32" width="156" height="136" rx="42" ry="42" fill="none" stroke="#FFAB91" stroke-width="3"/>
+
+  <!-- Ears -->
+  <ellipse cx="15" cy="100" rx="12" ry="22" fill="url(#sprintHead6)" filter="url(#sprintGlow6)"/>
+  <ellipse cx="15" cy="100" rx="12" ry="22" fill="none" stroke="#FFAB91" stroke-width="2"/>
+  <ellipse cx="185" cy="100" rx="12" ry="22" fill="url(#sprintHead6)" filter="url(#sprintGlow6)"/>
+  <ellipse cx="185" cy="100" rx="12" ry="22" fill="none" stroke="#FFAB91" stroke-width="2"/>
+
+  <!-- Face Screen -->
+  <rect x="38" y="52" width="124" height="96" rx="32" ry="32" fill="url(#sprintFace6)"/>
+  <rect x="38" y="52" width="124" height="96" rx="32" ry="32" fill="none" stroke="#FF8A65" stroke-width="2" opacity="0.5"/>
+
+  <g transform="translate(0, 5)">
+  <!-- === CENTERED STOPWATCH + RUNNER === -->
+  <!-- Timer outer ring -->
+  <circle cx="100" cy="95" r="30" fill="none" stroke="url(#timerGrad6)" stroke-width="4" opacity="0.9"/>
+  <circle cx="100" cy="95" r="26" fill="none" stroke="#FF9800" stroke-width="1.5" opacity="0.3"/>
+
+  <!-- Timer ticks (12 positions) -->
+  <line x1="100" y1="67" x2="100" y2="71" stroke="#FFEB3B" stroke-width="2" stroke-linecap="round"/>
+  <line x1="100" y1="119" x2="100" y2="123" stroke="#FFEB3B" stroke-width="2" stroke-linecap="round"/>
+  <line x1="74" y1="95" x2="78" y2="95" stroke="#FFEB3B" stroke-width="2" stroke-linecap="round"/>
+  <line x1="122" y1="95" x2="126" y2="95" stroke="#FFEB3B" stroke-width="2" stroke-linecap="round"/>
+  <!-- Diagonal ticks -->
+  <line x1="80" y1="75" x2="83" y2="78" stroke="#FFEB3B" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="117" y1="75" x2="120" y2="78" stroke="#FFEB3B" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="80" y1="115" x2="83" y2="112" stroke="#FFEB3B" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="117" y1="115" x2="120" y2="112" stroke="#FFEB3B" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+
+  <!-- Timer button top -->
+  <rect x="96" y="61" width="8" height="6" rx="2" fill="#FF9800" opacity="0.9"/>
+  <!-- Side button -->
+  <rect x="128" y="92" width="5" height="6" rx="2" fill="#FF9800" opacity="0.9"/>
+
+  <!-- Timer hands -->
+  <line x1="100" y1="95" x2="100" y2="74" stroke="#FFEB3B" stroke-width="2.5" stroke-linecap="round" opacity="0.95"/>
+  <line x1="100" y1="95" x2="116" y2="103" stroke="#FF6B6B" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+  <!-- Center dot -->
+  <circle cx="100" cy="95" r="4.5" fill="#FFEB3B" opacity="0.95"/>
+  <circle cx="100" cy="95" r="2" fill="#FF9800"/>
+
+  <!-- Speed lines (centered around timer) -->
+  <line x1="50" y1="75" x2="62" y2="75" stroke="#FFAB91" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+  <line x1="46" y1="83" x2="58" y2="83" stroke="#FFAB91" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+  <line x1="138" y1="72" x2="152" y2="72" stroke="#FFAB91" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+  <line x1="142" y1="80" x2="155" y2="80" stroke="#FFAB91" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+
+  <!-- Sparkle decorations -->
+  <polygon points="50,62 52,66 56,68 52,70 50,74 48,70 44,68 48,66" fill="#FFEB3B" opacity="0.8"/>
+  <polygon points="150,58 152,62 156,64 152,66 150,70 148,66 144,64 148,62" fill="#FFEB3B" opacity="0.6"/>
+  </g>
+
+  <!-- Title Text -->
+  <text x="100" y="178" font-size="16" font-family="'Fredoka One', 'Quicksand', sans-serif" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="central" stroke="#00000066" stroke-width="2" paint-order="stroke">Phonics Sprint</text>
+</svg>

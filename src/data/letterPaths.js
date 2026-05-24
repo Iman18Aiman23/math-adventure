@@ -225,9 +225,9 @@ const RAW = {
       { type: 'L', points: [{ x: 65, y: 18 }, { x: 65, y: 65 }] },
       { type: 'C', points: [
         { x: 65, y: 65 },
-        { x: 65, y: 80 },
-        { x: 30, y: 80 },
-        { x: 30, y: 70 },
+        { x: 65, y: 82 },
+        { x: 30, y: 82 },
+        { x: 30, y: 75 },
       ]},
     ],
   },
@@ -643,15 +643,37 @@ const RAW_LOWER = {
   },
 };
 
+// Shift a letter's y-coords so its bounding box (control-point hull) is
+// vertically centered at `targetCenterY`. Used for lowercase to keep each
+// glyph optically centered regardless of ascender/descender extent.
+const centerLetterY = (segments, targetCenterY = 50) => {
+  let minY = Infinity, maxY = -Infinity;
+  for (const seg of segments) {
+    for (const p of seg.points) {
+      if (p.y < minY) minY = p.y;
+      if (p.y > maxY) maxY = p.y;
+    }
+  }
+  const shift = targetCenterY - (minY + maxY) / 2;
+  if (Math.abs(shift) < 0.5) return segments;
+  return segments.map(seg => ({
+    ...seg,
+    points: seg.points.map(p => ({ x: p.x, y: p.y + shift })),
+  }));
+};
+
 // Compile each letter once at module load; the engine consumes the
 // pre-sampled Float32Array directly.
-const compile = (raw, displayChar) => ({
-  char: displayChar,
-  start: raw.segments[0].points[0],
-  end: raw.segments[raw.segments.length - 1].points.at(-1),
-  segments: raw.segments,
-  ...sampleLetter(raw.segments),
-});
+const compile = (raw, displayChar, { center = false } = {}) => {
+  const segments = center ? centerLetterY(raw.segments) : raw.segments;
+  return {
+    char: displayChar,
+    start: segments[0].points[0],
+    end: segments[segments.length - 1].points.at(-1),
+    segments,
+    ...sampleLetter(segments),
+  };
+};
 
 export const LETTERS_UPPER = [
   compile(RAW.A, 'A'),
@@ -682,34 +704,37 @@ export const LETTERS_UPPER = [
   compile(RAW.Z, 'Z'),
 ];
 
-// Lowercase letters with proper x-height, ascenders, and descenders.
+// Lowercase letters — each auto-centered vertically in the 100x100 box
+// (centerLetterY shifts the bbox center to y:50) so individual glyphs
+// sit in the middle of the drawing area regardless of ascenders/descenders.
+const lc = (raw, ch) => compile(raw, ch, { center: true });
 export const LETTERS_LOWER = [
-  compile(RAW_LOWER.a, 'a'),
-  compile(RAW_LOWER.b, 'b'),
-  compile(RAW_LOWER.c, 'c'),
-  compile(RAW_LOWER.d, 'd'),
-  compile(RAW_LOWER.e, 'e'),
-  compile(RAW_LOWER.f, 'f'),
-  compile(RAW_LOWER.g, 'g'),
-  compile(RAW_LOWER.h, 'h'),
-  compile(RAW_LOWER.i, 'i'),
-  compile(RAW_LOWER.j, 'j'),
-  compile(RAW_LOWER.k, 'k'),
-  compile(RAW_LOWER.l, 'l'),
-  compile(RAW_LOWER.m, 'm'),
-  compile(RAW_LOWER.n, 'n'),
-  compile(RAW_LOWER.o, 'o'),
-  compile(RAW_LOWER.p, 'p'),
-  compile(RAW_LOWER.q, 'q'),
-  compile(RAW_LOWER.r, 'r'),
-  compile(RAW_LOWER.s, 's'),
-  compile(RAW_LOWER.t, 't'),
-  compile(RAW_LOWER.u, 'u'),
-  compile(RAW_LOWER.v, 'v'),
-  compile(RAW_LOWER.w, 'w'),
-  compile(RAW_LOWER.x, 'x'),
-  compile(RAW_LOWER.y, 'y'),
-  compile(RAW_LOWER.z, 'z'),
+  lc(RAW_LOWER.a, 'a'),
+  lc(RAW_LOWER.b, 'b'),
+  lc(RAW_LOWER.c, 'c'),
+  lc(RAW_LOWER.d, 'd'),
+  lc(RAW_LOWER.e, 'e'),
+  lc(RAW_LOWER.f, 'f'),
+  lc(RAW_LOWER.g, 'g'),
+  lc(RAW_LOWER.h, 'h'),
+  lc(RAW_LOWER.i, 'i'),
+  lc(RAW_LOWER.j, 'j'),
+  lc(RAW_LOWER.k, 'k'),
+  lc(RAW_LOWER.l, 'l'),
+  lc(RAW_LOWER.m, 'm'),
+  lc(RAW_LOWER.n, 'n'),
+  lc(RAW_LOWER.o, 'o'),
+  lc(RAW_LOWER.p, 'p'),
+  lc(RAW_LOWER.q, 'q'),
+  lc(RAW_LOWER.r, 'r'),
+  lc(RAW_LOWER.s, 's'),
+  lc(RAW_LOWER.t, 't'),
+  lc(RAW_LOWER.u, 'u'),
+  lc(RAW_LOWER.v, 'v'),
+  lc(RAW_LOWER.w, 'w'),
+  lc(RAW_LOWER.x, 'x'),
+  lc(RAW_LOWER.y, 'y'),
+  lc(RAW_LOWER.z, 'z'),
 ];
 
 export const VIEW_BOX = 100;

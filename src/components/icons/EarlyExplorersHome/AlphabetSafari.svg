@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" class="button-icon">
+  <defs>
+    <style>
+      .button-icon {
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .button-icon:hover {
+        filter: brightness(1.15) drop-shadow(0 0 8px rgba(0, 0, 0, 0.3));
+        transform: scale(1.05);
+      }
+      .button-icon:active {
+        transform: scale(0.98);
+      }
+    </style>
+    <radialGradient id="pandaHead" cx="25%" cy="25%" r="75%">
+      <stop offset="0%" stop-color="#F5F5F5"/>
+      <stop offset="50%" stop-color="#E0E0E0"/>
+      <stop offset="100%" stop-color="#BDBDBD"/>
+    </radialGradient>
+    <radialGradient id="pandaFace" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="100%" stop-color="#0f0f1a"/>
+    </radialGradient>
+    <radialGradient id="pandaEar" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#424242"/>
+      <stop offset="100%" stop-color="#212121"/>
+    </radialGradient>
+    <filter id="pandaGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#9E9E9E" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Button Background -->
+  <rect x="10" y="10" width="180" height="180" rx="30" ry="30" fill="#4CAF50" stroke="#212121" stroke-width="4"/>
+
+  <!-- Panda Ears (round on top) -->
+  <circle cx="38" cy="42" r="22" fill="url(#pandaEar)" filter="url(#pandaGlow)"/>
+  <circle cx="162" cy="42" r="22" fill="url(#pandaEar)" filter="url(#pandaGlow)"/>
+
+  <!-- Head outline (round panda shape) -->
+  <rect x="22" y="32" width="156" height="136" rx="60" ry="60" fill="url(#pandaHead)" filter="url(#pandaGlow)"/>
+  <rect x="22" y="32" width="156" height="136" rx="60" ry="60" fill="none" stroke="#9E9E9E" stroke-width="3"/>
+
+  <!-- Face Screen (panda eye patch style) -->
+  <rect x="38" y="52" width="124" height="96" rx="40" ry="40" fill="url(#pandaFace)"/>
+  <rect x="38" y="52" width="124" height="96" rx="40" ry="40" fill="none" stroke="#66BB6A" stroke-width="2" opacity="0.5"/>
+
+  <!-- === CUTE PANDA inside face === -->
+  <!-- Panda ears inside -->
+  <circle cx="62" cy="82" r="14" fill="#424242" opacity="0.9"/>
+  <circle cx="138" cy="82" r="14" fill="#424242" opacity="0.9"/>
+
+  <!-- Panda head -->
+  <ellipse cx="100" cy="100" rx="32" ry="28" fill="#F5F5F5" opacity="0.95"/>
+
+  <!-- Eye patches -->
+  <ellipse cx="85" cy="96" rx="10" ry="8" fill="#424242" opacity="0.9" transform="rotate(-15 85 96)"/>
+  <ellipse cx="115" cy="96" rx="10" ry="8" fill="#424242" opacity="0.9" transform="rotate(15 115 96)"/>
+
+  <!-- Eyes -->
+  <circle cx="87" cy="96" r="4" fill="#FFF"/>
+  <circle cx="87" cy="96" r="2" fill="#212121"/>
+  <circle cx="113" cy="96" r="4" fill="#FFF"/>
+  <circle cx="113" cy="96" r="2" fill="#212121"/>
+
+  <!-- Eye shine -->
+  <circle cx="88" cy="95" r="1" fill="#FFF"/>
+  <circle cx="114" cy="95" r="1" fill="#FFF"/>
+
+  <!-- Nose -->
+  <ellipse cx="100" cy="106" rx="5" ry="4" fill="#212121" opacity="0.9"/>
+
+  <!-- Mouth -->
+  <path d="M 94 110 Q 100 114 106 110" fill="none" stroke="#212121" stroke-width="1.5" stroke-linecap="round" opacity="0.8"/>
+
+  <!-- Blush -->
+  <ellipse cx="78" cy="106" rx="5" ry="3" fill="#FFAB91" opacity="0.4"/>
+  <ellipse cx="122" cy="106" rx="5" ry="3" fill="#FFAB91" opacity="0.4"/>
+
+  <!-- Leaf decorations -->
+  <path d="M 48 58 Q 52 51 56 58 Q 52 64 48 58" fill="#4CAF50" opacity="0.7"/>
+  <path d="M 144 54 Q 148 47 152 54 Q 148 60 144 54" fill="#4CAF50" opacity="0.5"/>
+
+  <text x="100" y="178" font-size="16" font-family="'Fredoka One', 'Quicksand', sans-serif" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="central" stroke="#00000066" stroke-width="2" paint-order="stroke">Alphabet Safari</text>
+</svg>

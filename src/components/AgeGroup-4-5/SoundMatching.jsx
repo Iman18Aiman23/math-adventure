@@ -1,635 +1,419 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { playSound } from '../../utils/soundManager';
+import { playSound, playHoverSound } from '../../utils/soundManager';
 import SpeechManager from '../../services/SpeechManager';
 import confetti from 'canvas-confetti';
-import { LOCALIZATION } from '../../utils/localization';
-import { Volume2, RotateCcw, ArrowLeft } from 'lucide-react';
-import { useGameStateContext } from '../../App';
-import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
-import AppHeader from '../AppHeader';
+import { Volume2, RefreshCw, Trophy } from 'lucide-react';
+import BackButton from '../BackButton';
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
 const PHONETIC_SOUNDS = {
-  'A': { sound: 'æ', word: 'Apple', phonetic: '/æ/' },
-  'B': { sound: 'b', word: 'Ball', phonetic: '/b/' },
-  'C': { sound: 'k', word: 'Cat', phonetic: '/k/' },
-  'D': { sound: 'd', word: 'Dog', phonetic: '/d/' },
-  'E': { sound: 'ɛ', word: 'Egg', phonetic: '/ɛ/' },
-  'F': { sound: 'f', word: 'Fish', phonetic: '/f/' },
-  'G': { sound: 'g', word: 'Gate', phonetic: '/g/' },
-  'H': { sound: 'h', word: 'Hat', phonetic: '/h/' },
-  'I': { sound: 'ɪ', word: 'Ice', phonetic: '/ɪ/' },
-  'J': { sound: 'dʒ', word: 'Jump', phonetic: '/dʒ/' },
-  'K': { sound: 'k', word: 'Kite', phonetic: '/k/' },
-  'L': { sound: 'l', word: 'Lion', phonetic: '/l/' },
-  'M': { sound: 'm', word: 'Moon', phonetic: '/m/' },
-  'N': { sound: 'n', word: 'Nest', phonetic: '/n/' },
-  'O': { sound: 'ɑ', word: 'Orange', phonetic: '/ɑ/' },
-  'P': { sound: 'p', word: 'Pig', phonetic: '/p/' },
-  'Q': { sound: 'kw', word: 'Queen', phonetic: '/kw/' },
-  'R': { sound: 'r', word: 'Rabbit', phonetic: '/r/' },
-  'S': { sound: 's', word: 'Sun', phonetic: '/s/' },
-  'T': { sound: 't', word: 'Tiger', phonetic: '/t/' },
-  'U': { sound: 'ʌ', word: 'Umbrella', phonetic: '/ʌ/' },
-  'V': { sound: 'v', word: 'Van', phonetic: '/v/' },
-  'W': { sound: 'w', word: 'Water', phonetic: '/w/' },
-  'X': { sound: 'ks', word: 'Xylophone', phonetic: '/ks/' },
-  'Y': { sound: 'j', word: 'Yellow', phonetic: '/j/' },
-  'Z': { sound: 'z', word: 'Zebra', phonetic: '/z/' }
+  A: { word: 'Apple',     wordBm: 'Epal',      icon: '🍎' },
+  B: { word: 'Ball',      wordBm: 'Bola',      icon: '⚽' },
+  C: { word: 'Cat',       wordBm: 'Kucing',     icon: '🐱' },
+  D: { word: 'Dog',       wordBm: 'Anjing',     icon: '🐶' },
+  E: { word: 'Egg',       wordBm: 'Telur',      icon: '🥚' },
+  F: { word: 'Fish',      wordBm: 'Ikan',       icon: '🐟' },
+  G: { word: 'Gate',      wordBm: 'Pintu',      icon: '🚪' },
+  H: { word: 'Hat',       wordBm: 'Topi',       icon: '🎩' },
+  I: { word: 'Ice',       wordBm: 'Ais',        icon: '🧊' },
+  J: { word: 'Jump',      wordBm: 'Lompat',     icon: '🦘' },
+  K: { word: 'Kite',      wordBm: 'Layang-layang', icon: '🪁' },
+  L: { word: 'Lion',      wordBm: 'Singa',      icon: '🦁' },
+  M: { word: 'Moon',      wordBm: 'Bulan',      icon: '🌙' },
+  N: { word: 'Nest',      wordBm: 'Sarang',     icon: '🪺' },
+  O: { word: 'Orange',    wordBm: 'Oren',       icon: '🍊' },
+  P: { word: 'Pig',       wordBm: 'Babi',       icon: '🐷' },
+  Q: { word: 'Queen',     wordBm: 'Permaisuri', icon: '👑' },
+  R: { word: 'Rabbit',    wordBm: 'Arnab',      icon: '🐰' },
+  S: { word: 'Sun',       wordBm: 'Matahari',   icon: '☀️' },
+  T: { word: 'Tiger',     wordBm: 'Harimau',    icon: '🐯' },
+  U: { word: 'Umbrella',  wordBm: 'Payung',     icon: '☂️' },
+  V: { word: 'Van',       wordBm: 'Van',        icon: '🚐' },
+  W: { word: 'Water',     wordBm: 'Air',        icon: '💧' },
+  X: { word: 'Xylophone', wordBm: 'Xilofon',   icon: '🎵' },
+  Y: { word: 'Yellow',    wordBm: 'Kuning',     icon: '🌻' },
+  Z: { word: 'Zebra',     wordBm: 'Zebra',      icon: '🦓' },
 };
 
-export default function SoundMatching({ onBack, onHome, isMuted, language }) {
-  const t = LOCALIZATION[language].reading || LOCALIZATION[language];
-  const gameState = useGameStateContext();
-  const [gameState_, setGameState_] = useState('playing');
-  const [currentRound, setCurrentRound] = useState(0);
-  const [score, setScore] = useState(0);
-  const [hearts, setHearts] = useState(3);
-  const [gems, setGems] = useState(0);
-  const [stars, setStars] = useState(0);
-  const [choices, setChoices] = useState([]);
+const CARD_COLORS = [
+  { bg: '#FFF0F6', border: '#F48FB1', text: '#C2185B' },
+  { bg: '#FFF8E1', border: '#FFD54F', text: '#F57F17' },
+  { bg: '#E8F5E9', border: '#A5D6A7', text: '#2E7D32' },
+  { bg: '#E3F2FD', border: '#90CAF9', text: '#1565C0' },
+];
+
+const TOTAL_ROUNDS = 10;
+
+export default function SoundMatching({ onBack, language = 'bm', theme = {} }) {
+  const [gameState, setGameState]       = useState('menu');
   const [correctLetter, setCorrectLetter] = useState('');
-  const [isLocked, setIsLocked] = useState(false);
-  const [showHint, setShowHint] = useState(false);
+  const [choices, setChoices]           = useState([]);
+  const [feedback, setFeedback]         = useState({ idx: null, type: null });
+  const [locked, setLocked]             = useState(false);
+  const [showHint, setShowHint]         = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
-
-  useEffect(() => {
-    const gameData = getGameData();
-    setHearts(gameData.hearts);
-    setGems(gameData.gems);
-    setStars(gameData.stars);
-  }, []);
-
-  useEffect(() => {
-    if (gameState_ === 'playing') {
-      generateRound();
-    }
-  }, [currentRound, gameState_]);
+  const [score, setScore]               = useState(0);
 
   const generateRound = useCallback(() => {
-    const randomLetter = ALPHABET[Math.floor(Math.random() * ALPHABET.length)];
-    setCorrectLetter(randomLetter);
-
-    const wrongLetters = ALPHABET.filter(l => l !== randomLetter)
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 3);
-
-    const allChoices = [randomLetter, ...wrongLetters].sort(() => Math.random() - 0.5);
-    setChoices(allChoices);
+    const letter = ALPHABET[Math.floor(Math.random() * ALPHABET.length)];
+    const wrongs = ALPHABET.filter(l => l !== letter).sort(() => Math.random() - 0.5).slice(0, 3);
+    const all    = [letter, ...wrongs].sort(() => Math.random() - 0.5);
+    setCorrectLetter(letter);
+    setChoices(all);
+    setFeedback({ idx: null, type: null });
     setShowHint(false);
-    setIsLocked(false);
-
-    setTimeout(() => {
-      playLetterSound(randomLetter);
-    }, 500);
+    setLocked(false);
+    setTimeout(() => SpeechManager.speak(`${letter} for ${PHONETIC_SOUNDS[letter].word}`, 'en-US', { rate: 0.4 }), 400);
   }, []);
 
-  const playLetterSound = useCallback((letter) => {
-    const data = PHONETIC_SOUNDS[letter];
-    if (data) {
-      SpeechManager.speak(`${letter} for ${data.word}`, 'en-US', { rate: 0.4 });
-    }
-  }, []);
+  useEffect(() => {
+    if (gameState === 'playing') generateRound();
+  }, [gameState]);           // only on state change, not on generateRound identity change
 
-  const handleChoice = useCallback((letter) => {
-    if (isLocked) return;
+  const playLetterSound = useCallback(() => {
+    if (!correctLetter) return;
+    SpeechManager.speak(`${correctLetter} for ${PHONETIC_SOUNDS[correctLetter].word}`, 'en-US', { rate: 0.4 });
+  }, [correctLetter]);
 
-    setIsLocked(true);
+  const handleChoice = useCallback((letter, idx) => {
+    if (locked || !correctLetter) return;
+    setLocked(true);
 
     if (letter === correctLetter) {
+      setFeedback({ idx, type: 'correct' });
       playSound('correct');
       setScore(s => s + 100);
-
-      const gameData = addCorrectAnswer();
-      setGems(gameData.gems);
-      setStars(gameData.stars);
-
-      const newCount = correctCount + 1;
-      setCorrectCount(newCount);
-
+      const next = correctCount + 1;
+      setCorrectCount(next);
       setTimeout(() => {
-        if (newCount >= 10) {
-          playSound('correct');
-          confetti({
-            particleCount: 150,
-            spread: 70,
-            origin: { y: 0.6 }
-          });
-          setGameState_('won');
+        if (next >= TOTAL_ROUNDS) {
+          confetti({ particleCount: 150, spread: 90, origin: { y: 0.55 } });
+          setGameState('won');
         } else {
-          setCurrentRound(newCount);
+          generateRound();
         }
-      }, 800);
+      }, 900);
     } else {
+      setFeedback({ idx, type: 'wrong' });
       playSound('wrong');
-      const gameData = deductHeart();
-      setHearts(gameData.hearts);
-
-      if (gameData.hearts <= 0) {
-        setTimeout(() => {
-          setGameState_('lost');
-        }, 500);
-      } else {
-        setShowHint(true);
-        setTimeout(() => {
-          setIsLocked(false);
-        }, 1000);
-      }
+      setShowHint(true);
+      setTimeout(() => {
+        setFeedback({ idx: null, type: null });
+        setLocked(false);
+      }, 900);
     }
-  }, [correctLetter, isLocked, correctCount]);
+  }, [locked, correctLetter, correctCount, generateRound]);
 
-  const currentSound = PHONETIC_SOUNDS[correctLetter];
+  const handleRestart = useCallback(() => {
+    setCorrectCount(0);
+    setScore(0);
+    setFeedback({ idx: null, type: null });
+    setLocked(false);
+    setGameState('playing');
+  }, []);
 
-  if (gameState_ === 'won') {
+  const progress = (correctCount / TOTAL_ROUNDS) * 100;
+  const currentData = correctLetter ? PHONETIC_SOUNDS[correctLetter] : null;
+
+  // ── Menu ─────────────────────────────────────────────────────────
+  const heroBg     = theme.heroBg     || 'linear-gradient(135deg, #1565C0 0%, #1CB0F6 50%, #7C4DFF 100%)';
+  const heroBorder = theme.heroBorder || '#90CAF9';
+  const swatch     = theme.swatch     || '#1565C0';
+
+  if (gameState === 'menu') {
     return (
       <div style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(0,0,0,0.45)',
-        backdropFilter: 'blur(8px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '1.5rem',
-        zIndex: 200
+        display: 'flex', flexDirection: 'column', flex: 1,
+        background: '#F8FAFC',
       }}>
+        <style>{`
+          .sm-start-btn:hover { transform: translateY(-3px) scale(1.04) !important; }
+          .sm-start-btn:active { transform: translateY(2px) scale(0.97) !important; }
+        `}</style>
+        <BackButton onClick={onBack} />
         <div style={{
-          background: 'white',
-          borderRadius: '30px',
-          padding: '2.5rem 2rem',
-          textAlign: 'center',
-          maxWidth: '400px',
-          width: '100%',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
+          flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
+          justifyContent: 'center', padding: '2rem 1.5rem', gap: '1.5rem',
         }}>
-          <h2 style={{
-            fontSize: '2rem',
-            fontWeight: 800,
-            marginBottom: '0.5rem',
-            background: 'linear-gradient(135deg, #FFD700, #FF9800)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
-          }}>
-            🎉 Excellent Listener!
-          </h2>
-          <p style={{ color: '#636E72', marginBottom: '1.5rem', fontWeight: 600 }}>
-            You matched 10 sounds perfectly!
-          </p>
           <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '0.7rem',
-            margin: '1.2rem 0'
+            background: heroBg,
+            borderRadius: '28px', padding: '1.5rem 2rem',
+            border: `2px solid ${heroBorder}`,
+            boxShadow: `0 12px 40px ${swatch}40`,
+            textAlign: 'center', maxWidth: '360px', width: '100%',
           }}>
-            <div style={{ background: '#f8f9fa', borderRadius: '14px', padding: '0.7rem' }}>
-              <div style={{ fontSize: '0.82rem', color: '#636E72', fontWeight: 600 }}>Matches</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800 }}>10/10</div>
+            <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'rgba(255,255,255,0.85)', letterSpacing: '0.2em', marginBottom: '0.4rem' }}>
+              🎵 GAME 🎵
             </div>
-            <div style={{ background: '#f8f9fa', borderRadius: '14px', padding: '0.7rem' }}>
-              <div style={{ fontSize: '0.82rem', color: '#636E72', fontWeight: 600 }}>Score</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#FF6B9D' }}>{score}</div>
-            </div>
-          </div>
-          <div style={{ display: 'flex', gap: '0.7rem', justifyContent: 'center', marginTop: '1.2rem' }}>
-            <button
-              onClick={() => onBack?.()}
-              style={{
-                padding: '0.6rem 1.4rem',
-                borderRadius: '14px',
-                border: '2px solid #ddd',
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 700,
-                fontSize: '0.95rem',
-                cursor: 'pointer',
-                background: 'white',
-                color: '#2D3436'
-              }}
-            >
-              Menu
-            </button>
-            <button
-              onClick={() => {
-                setCurrentRound(0);
-                setScore(0);
-                setCorrectCount(0);
-                setHearts(3);
-                setGameState_('playing');
-              }}
-              style={{
-                padding: '0.6rem 1.4rem',
-                borderRadius: '14px',
-                border: '2px solid #4FC3F7',
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 700,
-                fontSize: '0.95rem',
-                cursor: 'pointer',
-                background: 'linear-gradient(135deg, #4FC3F7, #0288D1)',
-                color: 'white'
-              }}
-            >
-              Play Again
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (gameState_ === 'lost') {
-    return (
-      <div style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(0,0,0,0.45)',
-        backdropFilter: 'blur(8px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '1.5rem',
-        zIndex: 200
-      }}>
-        <div style={{
-          background: 'white',
-          borderRadius: '30px',
-          padding: '2.5rem 2rem',
-          textAlign: 'center',
-          maxWidth: '400px',
-          width: '100%',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
-        }}>
-          <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '0.5rem' }}>
-            💪 Keep Practicing!
-          </h2>
-          <p style={{ color: '#636E72', marginBottom: '1.5rem', fontWeight: 600 }}>
-            You matched {correctCount} sounds. Try again!
-          </p>
-          <div style={{ display: 'flex', gap: '0.7rem', justifyContent: 'center', marginTop: '1.2rem' }}>
-            <button
-              onClick={() => onBack?.()}
-              style={{
-                padding: '0.6rem 1.4rem',
-                borderRadius: '14px',
-                border: '2px solid #ddd',
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 700,
-                fontSize: '0.95rem',
-                cursor: 'pointer',
-                background: 'white',
-                color: '#2D3436'
-              }}
-            >
-              Menu
-            </button>
-            <button
-              onClick={() => {
-                setCurrentRound(0);
-                setScore(0);
-                setCorrectCount(0);
-                setHearts(3);
-                setGameState_('playing');
-              }}
-              style={{
-                padding: '0.6rem 1.4rem',
-                borderRadius: '14px',
-                border: '2px solid #FF6B9D',
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 700,
-                fontSize: '0.95rem',
-                cursor: 'pointer',
-                background: 'linear-gradient(135deg, #FFB0B0, #FF8787)',
-                color: 'white'
-              }}
-            >
-              Try Again
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const CHOICE_COLORS = [
-    'linear-gradient(135deg, #FF6B9D, #E91E63, #C2185B)',
-    'linear-gradient(135deg, #FFD54F, #FFB300, #FF6F00)',
-    'linear-gradient(135deg, #4FC3F7, #29B6F6, #0277BD)',
-    'linear-gradient(135deg, #BA68C8, #9C27B0, #6A1B9A)'
-  ];
-
-  return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100vh',
-      background: 'linear-gradient(135deg, #E0F7FA 0%, #F3E5F5 50%, #FFF3E0 100%)',
-      position: 'relative',
-      overflow: 'hidden'
-    }}>
-      {/* Animated Background */}
-      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
-        {['🎵', '🎶', '🎼', '🔊', '🎤', '🎧', '🌟', '✨'].map((emoji, i) => (
-          <div key={i} style={{
-            position: 'absolute',
-            fontSize: '1.8rem',
-            opacity: 0.35,
-            top: `${(i * 11 + 8) % 90}%`,
-            left: `${(i * 19 + 5) % 95}%`,
-            animation: `floatBg ${4 + (i % 3)}s ease-in-out infinite`,
-            animationDelay: `${i * 0.4}s`
-          }}>{emoji}</div>
-        ))}
-      </div>
-
-      <AppHeader onBack={onBack} gameState={gameState} language={language} hearts={hearts} gems={gems} stars={stars} />
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', width: '100%', position: 'relative', zIndex: 1 }}>
-        {/* HEADER */}
-        <div style={{
-          flex: 'none',
-          padding: '1.25rem 1rem 0.75rem',
-          display: 'flex',
-          gap: '1rem',
-          flexWrap: 'wrap',
-          justifyContent: 'center'
-        }}>
-          <div style={{
-            background: 'linear-gradient(135deg, #FFFFFF, #E1F5FE)',
-            borderRadius: '20px',
-            padding: '0.6rem 1.3rem',
-            boxShadow: '0 6px 20px rgba(79,195,247,0.3), 0 0 0 3px rgba(255,255,255,0.6)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            fontWeight: 700,
-            border: '2px solid #4FC3F7',
-            animation: 'statPulse 2s ease-in-out infinite'
-          }}>
-            <span style={{ fontSize: '1.5rem' }}>🎵</span>
-            <span style={{
-              fontWeight: 800,
-              fontSize: '1.6rem',
-              minWidth: '2ch',
-              background: 'linear-gradient(135deg, #0277BD, #4FC3F7)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
+            <h1 style={{
+              fontWeight: 900, fontSize: '2.2rem', margin: '0 0 0.75rem',
+              background: 'linear-gradient(135deg, #fff 0%, #E1F5FE 100%)',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+              filter: 'drop-shadow(0 3px 6px rgba(0,0,0,0.2))',
+              fontFamily: 'var(--font-heading)',
             }}>
-              {correctCount}/10
-            </span>
-          </div>
-          <div style={{
-            background: 'linear-gradient(135deg, #FFFFFF, #FFF9C4)',
-            borderRadius: '20px',
-            padding: '0.6rem 1.3rem',
-            boxShadow: '0 6px 20px rgba(255,213,79,0.35), 0 0 0 3px rgba(255,255,255,0.6)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            fontWeight: 700,
-            border: '2px solid #FFD54F'
-          }}>
-            <span style={{ fontSize: '1.5rem', animation: 'spinSlow 3s linear infinite', display: 'inline-block' }}>⭐</span>
-            <span style={{
-              fontWeight: 800,
-              fontSize: '1.6rem',
-              minWidth: '3ch',
-              background: 'linear-gradient(135deg, #FFB300, #FF6F00)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}>
-              {score}
-            </span>
-          </div>
-        </div>
-
-        {/* BODY */}
-        <div style={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '1.5rem 1rem',
-          width: '100%'
-        }}>
-          <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-            <p style={{
-              color: '#7B1FA2',
-              fontWeight: 800,
-              marginBottom: '1.2rem',
-              fontSize: '1.2rem',
-              fontFamily: "var(--font-heading)"
-            }}>
-              👂 Listen and tap the matching letter!
+              {language === 'bm' ? 'Padanan Bunyi' : 'Sound Matching'}
+            </h1>
+            <p style={{ color: '#fff', fontWeight: 700, fontSize: '0.95rem', margin: 0, lineHeight: 1.5 }}>
+              {language === 'bm'
+                ? 'Dengar bunyi dan ketuk huruf yang betul!'
+                : 'Listen to the sound and tap the correct letter!'}
             </p>
-            <div style={{ position: 'relative', display: 'inline-block' }}>
-              {/* Sound wave rings */}
-              <div style={{
-                position: 'absolute',
-                inset: '-20px',
-                borderRadius: '50%',
-                border: '3px solid rgba(79,195,247,0.4)',
-                animation: 'soundRing 1.8s ease-out infinite'
-              }} />
-              <div style={{
-                position: 'absolute',
-                inset: '-30px',
-                borderRadius: '50%',
-                border: '3px solid rgba(186,104,200,0.3)',
-                animation: 'soundRing 1.8s ease-out infinite',
-                animationDelay: '0.6s'
-              }} />
-              <button
-                onClick={() => playLetterSound(correctLetter)}
-                style={{
-                  padding: '1.3rem 2.5rem',
-                  borderRadius: '50px',
-                  border: 'none',
-                  background: 'linear-gradient(135deg, #4FC3F7, #BA68C8, #FF6B9D)',
-                  backgroundSize: '200% 200%',
-                  color: 'white',
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.6rem',
-                  fontSize: '1.2rem',
-                  fontFamily: 'var(--font-heading)',
-                  boxShadow: '0 10px 30px rgba(186,104,200,0.5)',
-                  animation: 'rainbowShift 3s ease infinite, soundPulse 1.8s ease-in-out infinite',
-                  position: 'relative',
-                  transition: 'transform 0.2s'
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.08)'}
-                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-              >
-                <Volume2 size={28} /> Play Sound 🔊
-              </button>
-            </div>
           </div>
 
-          {showHint && (
-            <div style={{
-              background: 'linear-gradient(135deg, #FFE66D, #FFD54F, #FFB300)',
-              backgroundSize: '200% 200%',
-              color: '#E65100',
-              padding: '1rem 1.5rem',
-              borderRadius: '20px',
-              marginBottom: '1.5rem',
-              fontWeight: 800,
-              textAlign: 'center',
-              fontSize: '1.1rem',
-              boxShadow: '0 6px 20px rgba(255,179,0,0.35)',
-              animation: 'rainbowShift 2s ease infinite, bounceIn 0.4s ease',
-              fontFamily: "var(--font-heading)"
-            }}>
-              ✨ Hint: The correct letter is <span style={{ fontSize: '1.4rem', fontWeight: 900 }}>{correctLetter}</span> ✨
-            </div>
-          )}
-
-          {/* Choice Buttons */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
-            gap: '1.2rem',
-            maxWidth: '500px',
-            width: '100%'
-          }}>
-            {choices.map((letter, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleChoice(letter)}
-                disabled={isLocked}
-                style={{
-                  padding: '2rem',
-                  borderRadius: '24px',
-                  border: '4px solid rgba(255,255,255,0.8)',
-                  background: letter === correctLetter && showHint
-                    ? 'linear-gradient(135deg, #66BB6A, #43A047, #2E7D32)'
-                    : CHOICE_COLORS[idx % CHOICE_COLORS.length],
-                  color: 'white',
-                  fontSize: '3rem',
-                  fontWeight: 900,
-                  cursor: isLocked ? 'not-allowed' : 'pointer',
-                  fontFamily: 'var(--font-heading)',
-                  transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)',
-                  transform: isLocked ? 'scale(0.95)' : 'scale(1)',
-                  boxShadow: '0 10px 30px rgba(0,0,0,0.2), inset 0 -6px 0 rgba(0,0,0,0.15), inset 0 4px 0 rgba(255,255,255,0.3)',
-                  opacity: isLocked ? 0.7 : 1,
-                  textShadow: '0 3px 10px rgba(0,0,0,0.3)',
-                  animation: `choiceFloat ${2.5 + (idx * 0.3)}s ease-in-out infinite`,
-                  animationDelay: `${idx * 0.15}s`
-                }}
-                onMouseEnter={(e) => !isLocked && (e.currentTarget.style.transform = 'scale(1.08) rotate(-2deg)')}
-                onMouseLeave={(e) => !isLocked && (e.currentTarget.style.transform = 'scale(1)')}
-              >
-                {letter}
-              </button>
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+            {[
+              ['👂', language === 'bm' ? '10 Pusingan' : '10 Rounds'],
+              ['🎵', language === 'bm' ? '4 Pilihan'  : '4 Choices'],
+              ['⭐', language === 'bm' ? 'Kumpul Mata' : 'Earn Points'],
+            ].map(([icon, label]) => (
+              <div key={label} style={{
+                background: `${swatch}18`,
+                border: `2px solid ${heroBorder}`, borderRadius: '999px',
+                padding: '0.35rem 0.9rem', display: 'flex', alignItems: 'center', gap: '0.35rem',
+                fontWeight: 800, fontSize: '0.82rem', color: swatch,
+              }}>
+                {icon} {label}
+              </div>
             ))}
           </div>
-        </div>
 
-        {/* FOOTER */}
-        <div style={{
-          flex: 'none',
-          padding: '0.75rem 1rem 1.25rem',
-          display: 'flex',
-          gap: '0.8rem',
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-          width: '100%'
-        }}>
           <button
-            onClick={() => {
-              setCurrentRound(0);
-              setScore(0);
-              setCorrectCount(0);
-              setHearts(3);
-              setGameState_('playing');
-            }}
+            className="sm-start-btn"
+            onClick={() => { playHoverSound(); setGameState('playing'); }}
             style={{
-              padding: '0.7rem 1.6rem',
-              borderRadius: '50px',
-              border: 'none',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 800,
-              fontSize: '1rem',
-              cursor: 'pointer',
-              background: 'linear-gradient(135deg, #4FC3F7, #29B6F6, #0288D1)',
-              color: 'white',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.45rem',
-              boxShadow: '0 6px 20px rgba(79,195,247,0.5)',
-              transition: 'transform 0.2s'
+              padding: '1.1rem 3.5rem',
+              background: heroBg,
+              color: '#fff', border: `2px solid ${heroBorder}`,
+              borderRadius: '999px', fontWeight: 900, fontSize: '1.5rem',
+              cursor: 'pointer', fontFamily: 'var(--font-heading)',
+              boxShadow: `0 8px 0 rgba(0,0,0,0.25), 0 12px 24px ${swatch}40`,
+              transition: 'transform 0.18s cubic-bezier(0.34,1.56,0.64,1)',
             }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.08)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
           >
-            <RotateCcw size={18} /> Restart
-          </button>
-          <button
-            onClick={onBack}
-            style={{
-              padding: '0.7rem 1.6rem',
-              borderRadius: '50px',
-              border: '3px solid #FF6B9D',
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 800,
-              fontSize: '1rem',
-              cursor: 'pointer',
-              background: 'white',
-              color: '#FF6B9D',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.45rem',
-              boxShadow: '0 6px 20px rgba(255,107,157,0.25)',
-              transition: 'transform 0.2s'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.08)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-          >
-            🏠 Menu
+            {language === 'bm' ? '🚀 MULA!' : '🚀 START!'}
           </button>
         </div>
       </div>
+    );
+  }
 
+  // ── Won ──────────────────────────────────────────────────────────
+  if (gameState === 'won') {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', flex: 1, background: '#F8FAFC' }}>
+        <BackButton onClick={onBack} />
+        <div style={{
+          flex: 1, display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          padding: '1.5rem', gap: '1.25rem',
+        }}>
+          <Trophy size={80} color="#FFC800" />
+          <h1 style={{ fontWeight: 900, fontSize: '2rem', color: '#58CC02', margin: 0, fontFamily: 'var(--font-heading)' }}>
+            {language === 'bm' ? '🎉 Syabas!' : '🎉 Excellent Listener!'}
+          </h1>
+          <p style={{ color: '#64748B', fontWeight: 700, margin: 0, fontSize: '1.05rem', textAlign: 'center' }}>
+            {language === 'bm' ? `Kamu padankan ${TOTAL_ROUNDS} bunyi dengan betul!` : `You matched ${TOTAL_ROUNDS} sounds perfectly!`}
+          </p>
+          <div style={{
+            background: '#fff', border: '2px solid #E2E8F0', borderRadius: '20px',
+            padding: '1rem 2rem', display: 'flex', gap: '2rem',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
+          }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase' }}>{language === 'bm' ? 'Padanan' : 'Matches'}</div>
+              <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#1CB0F6' }}>{TOTAL_ROUNDS}/{TOTAL_ROUNDS}</div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase' }}>Score</div>
+              <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#58CC02' }}>{score}</div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <button
+              onClick={handleRestart}
+              onMouseEnter={playHoverSound}
+              style={{
+                padding: '0.9rem 1.75rem', background: '#1CB0F6', color: '#fff',
+                border: 'none', borderRadius: '16px', boxShadow: '0 6px 0 #0091D0',
+                fontWeight: 900, fontSize: '1.1rem', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                fontFamily: 'var(--font-heading)',
+              }}
+            >
+              <RefreshCw size={20} />
+              {language === 'bm' ? 'Main Lagi' : 'Play Again'}
+            </button>
+            <button
+              onClick={onBack}
+              onMouseEnter={playHoverSound}
+              style={{
+                padding: '0.9rem 1.75rem', background: '#fff', color: '#64748B',
+                border: '2px solid #E2E8F0', borderRadius: '16px', boxShadow: '0 6px 0 #E2E8F0',
+                fontWeight: 900, fontSize: '1.1rem', cursor: 'pointer',
+                fontFamily: 'var(--font-heading)',
+              }}
+            >
+              {language === 'bm' ? 'Keluar' : 'Exit'}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Playing ──────────────────────────────────────────────────────
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, background: '#F8FAFC', overflow: 'hidden' }}>
       <style>{`
-        @keyframes floatBg {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-25px) rotate(15deg); }
-        }
-        @keyframes rainbowShift {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-        @keyframes soundPulse {
-          0%, 100% { box-shadow: 0 10px 30px rgba(186,104,200,0.5); }
-          50% { box-shadow: 0 10px 40px rgba(186,104,200,0.8), 0 0 0 10px rgba(186,104,200,0.15); }
-        }
-        @keyframes soundRing {
-          0% { transform: scale(1); opacity: 0.6; }
-          100% { transform: scale(1.5); opacity: 0; }
-        }
-        @keyframes choiceFloat {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-8px); }
-        }
-        @keyframes statPulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.03); }
-        }
-        @keyframes spinSlow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        @keyframes bounceIn {
-          0% { transform: scale(0.3); opacity: 0; }
-          50% { transform: scale(1.1); }
-          100% { transform: scale(1); opacity: 1; }
-        }
+        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+        @keyframes soundRing { 0%{transform:scale(1);opacity:0.6} 100%{transform:scale(1.5);opacity:0} }
       `}</style>
+
+      {/* Top bar */}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: '0.75rem',
+        padding: 'max(0.75rem, env(safe-area-inset-top)) 1rem 0.5rem',
+      }}>
+        <BackButton onClick={onBack} style={{ position: 'static', flexShrink: 0 }} />
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+          <div style={{ height: 10, borderRadius: 999, background: '#E2E8F0', overflow: 'hidden' }}>
+            <div style={{
+              height: '100%', borderRadius: 999,
+              background: 'linear-gradient(90deg, #4FC3F7, #7C4DFF)',
+              width: `${progress}%`,
+              transition: 'width 0.4s cubic-bezier(0.4,0,0.2,1)',
+            }} />
+          </div>
+          <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94A3B8', textAlign: 'right' }}>
+            {correctCount} / {TOTAL_ROUNDS}
+          </div>
+        </div>
+        <div style={{
+          background: '#FFF7ED', border: '2px solid #FED7AA',
+          borderRadius: '999px', padding: '0.2rem 0.65rem',
+          fontWeight: 800, fontSize: '0.85rem', color: '#EA580C', flexShrink: 0,
+        }}>
+          ⭐ {score}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div style={{
+        flex: 1, display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'space-evenly',
+        padding: '0.5rem 1.25rem 1rem', gap: '1rem', overflowY: 'auto',
+      }}>
+        {/* Listen section */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', width: '100%' }}>
+          <p style={{ margin: 0, fontSize: '0.82rem', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+            {language === 'bm' ? 'Dengar dan ketuk huruf yang betul!' : 'Listen and tap the correct letter!'}
+          </p>
+
+          {/* Sound wave button */}
+          <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{
+              position: 'absolute', inset: '-16px', borderRadius: '50%',
+              border: '3px solid rgba(79,195,247,0.35)',
+              animation: 'soundRing 2s ease-out infinite',
+              pointerEvents: 'none',
+            }} />
+            <div style={{
+              position: 'absolute', inset: '-28px', borderRadius: '50%',
+              border: '3px solid rgba(124,77,255,0.25)',
+              animation: 'soundRing 2s ease-out infinite',
+              animationDelay: '0.7s',
+              pointerEvents: 'none',
+            }} />
+            <button
+              onClick={playLetterSound}
+              onMouseEnter={playHoverSound}
+              style={{
+                width: 120, height: 120, borderRadius: '50%',
+                background: 'linear-gradient(135deg, #4FC3F7, #7C4DFF)',
+                boxShadow: '0 8px 0 rgba(0,0,0,0.18), 0 16px 40px rgba(79,195,247,0.4)',
+                border: 'none', cursor: 'pointer',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '0.25rem',
+                color: '#fff',
+              }}
+            >
+              <Volume2 size={36} />
+              <span style={{ fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.08em' }}>
+                {language === 'bm' ? 'DENGAR' : 'LISTEN'}
+              </span>
+            </button>
+          </div>
+
+          {/* Hint */}
+          {showHint && correctLetter && (
+            <div style={{
+              background: '#FFF9C4', border: '2px solid #FFD54F',
+              borderRadius: '14px', padding: '0.6rem 1.2rem',
+              fontWeight: 800, color: '#F57F17', fontSize: '1rem',
+              fontFamily: 'var(--font-heading)',
+            }}>
+              {language === 'bm' ? `Petunjuk: Huruf ` : `Hint: The letter is `}
+              <span style={{ fontSize: '1.3rem' }}>{correctLetter}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Divider */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', width: '100%', maxWidth: 480 }}>
+          <div style={{ flex: 1, height: 1, background: '#E2E8F0' }} />
+          <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+            {language === 'bm' ? 'Pilih Huruf' : 'Choose Letter'}
+          </span>
+          <div style={{ flex: 1, height: 1, background: '#E2E8F0' }} />
+        </div>
+
+        {/* Choice grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', width: '100%', maxWidth: 480 }}>
+          {choices.map((letter, idx) => {
+            const isCorrect = feedback.idx === idx && feedback.type === 'correct';
+            const isWrong   = feedback.idx === idx && feedback.type === 'wrong';
+            const isHintLit = showHint && letter === correctLetter && !isCorrect;
+            const col = CARD_COLORS[idx % CARD_COLORS.length];
+            return (
+              <button
+                key={`${correctLetter}-${idx}`}
+                onClick={() => { playHoverSound(); handleChoice(letter, idx); }}
+                disabled={locked}
+                style={{
+                  background: isCorrect ? '#D7FFB8' : isWrong ? '#FFDFE0' : isHintLit ? '#FFFDE7' : '#FFFFFF',
+                  border: `3px solid ${isCorrect ? '#58CC02' : isWrong ? '#FF4B4B' : isHintLit ? '#FFD54F' : '#E2E8F0'}`,
+                  borderRadius: '20px',
+                  padding: '1.5rem 0.75rem',
+                  boxShadow: isCorrect
+                    ? '0 6px 0 #46A302, 0 10px 24px rgba(88,204,2,0.2)'
+                    : isWrong
+                    ? '0 6px 0 #CC0000, 0 10px 24px rgba(255,75,75,0.2)'
+                    : '0 4px 0 #CBD5E1, 0 8px 20px rgba(0,0,0,0.06)',
+                  cursor: locked ? 'default' : 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  animation: isWrong ? 'shake 0.4s ease-in-out' : 'none',
+                  transition: 'transform 0.15s cubic-bezier(0.34,1.56,0.64,1), border-color 0.2s, box-shadow 0.2s, background 0.2s',
+                  fontFamily: 'var(--font-heading)',
+                  minHeight: 90,
+                }}
+                onMouseEnter={(e) => { if (!locked) { playHoverSound(); e.currentTarget.style.transform = 'translateY(-4px)'; } }}
+                onMouseLeave={(e) => { if (!locked) e.currentTarget.style.transform = 'translateY(0)'; }}
+                onMouseDown={(e)  => { if (!locked) e.currentTarget.style.transform = 'translateY(1px)'; }}
+                onMouseUp={(e)    => { if (!locked) e.currentTarget.style.transform = 'translateY(-4px)'; }}
+              >
+                <span style={{
+                  fontSize: '3rem', fontWeight: 900,
+                  color: isCorrect ? '#46A302' : isWrong ? '#CC0000' : col.text,
+                  transition: 'color 0.2s',
+                }}>
+                  {isCorrect ? '✓' : isWrong ? '✕' : letter}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
