@@ -43,22 +43,23 @@ const CARD_COLORS = [
   { bg: '#E3F2FD', border: '#90CAF9', text: '#1565C0' },
 ];
 
-const TOTAL_ROUNDS = 10;
+const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
 
 export default function SoundMatching({ onBack, language = 'bm', theme = {} }) {
-  const [gameState, setGameState]       = useState('menu');
+  const [gameState, setGameState]         = useState('menu');
+  const [letterQueue, setLetterQueue]     = useState([]);
+  const [queueIdx, setQueueIdx]           = useState(0);
   const [correctLetter, setCorrectLetter] = useState('');
-  const [choices, setChoices]           = useState([]);
-  const [feedback, setFeedback]         = useState({ idx: null, type: null });
-  const [locked, setLocked]             = useState(false);
-  const [showHint, setShowHint]         = useState(false);
-  const [correctCount, setCorrectCount] = useState(0);
-  const [score, setScore]               = useState(0);
+  const [choices, setChoices]             = useState([]);
+  const [feedback, setFeedback]           = useState({ idx: null, type: null });
+  const [locked, setLocked]               = useState(false);
+  const [showHint, setShowHint]           = useState(false);
+  const [correctCount, setCorrectCount]   = useState(0);
+  const [score, setScore]                 = useState(0);
 
-  const generateRound = useCallback(() => {
-    const letter = ALPHABET[Math.floor(Math.random() * ALPHABET.length)];
+  const loadRound = useCallback((letter) => {
     const wrongs = ALPHABET.filter(l => l !== letter).sort(() => Math.random() - 0.5).slice(0, 3);
-    const all    = [letter, ...wrongs].sort(() => Math.random() - 0.5);
+    const all    = shuffle([letter, ...wrongs]);
     setCorrectLetter(letter);
     setChoices(all);
     setFeedback({ idx: null, type: null });
@@ -67,9 +68,25 @@ export default function SoundMatching({ onBack, language = 'bm', theme = {} }) {
     setTimeout(() => SpeechManager.speak(`${letter} for ${PHONETIC_SOUNDS[letter].word}`, 'en-US', { rate: 0.4 }), 400);
   }, []);
 
+  const startGame = useCallback(() => {
+    const q = shuffle(ALPHABET);
+    setLetterQueue(q);
+    setQueueIdx(0);
+    setCorrectCount(0);
+    setScore(0);
+    setFeedback({ idx: null, type: null });
+    setLocked(false);
+    setShowHint(false);
+    setGameState('playing');
+    setTimeout(() => loadRound(q[0]), 50);
+  }, [loadRound]);
+
+  // Load new round whenever queueIdx advances (skip index 0 — startGame handles it)
   useEffect(() => {
-    if (gameState === 'playing') generateRound();
-  }, [gameState]);           // only on state change, not on generateRound identity change
+    if (gameState === 'playing' && queueIdx > 0 && letterQueue.length > 0) {
+      loadRound(letterQueue[queueIdx]);
+    }
+  }, [queueIdx]);              // eslint-disable-line react-hooks/exhaustive-deps
 
   const playLetterSound = useCallback(() => {
     if (!correctLetter) return;
@@ -87,11 +104,11 @@ export default function SoundMatching({ onBack, language = 'bm', theme = {} }) {
       const next = correctCount + 1;
       setCorrectCount(next);
       setTimeout(() => {
-        if (next >= TOTAL_ROUNDS) {
+        if (next >= ALPHABET.length) {
           confetti({ particleCount: 150, spread: 90, origin: { y: 0.55 } });
           setGameState('won');
         } else {
-          generateRound();
+          setQueueIdx(i => i + 1);
         }
       }, 900);
     } else {
@@ -103,17 +120,11 @@ export default function SoundMatching({ onBack, language = 'bm', theme = {} }) {
         setLocked(false);
       }, 900);
     }
-  }, [locked, correctLetter, correctCount, generateRound]);
+  }, [locked, correctLetter, correctCount]);
 
-  const handleRestart = useCallback(() => {
-    setCorrectCount(0);
-    setScore(0);
-    setFeedback({ idx: null, type: null });
-    setLocked(false);
-    setGameState('playing');
-  }, []);
+  const handleRestart = useCallback(() => startGame(), [startGame]);
 
-  const progress = (correctCount / TOTAL_ROUNDS) * 100;
+  const progress = (correctCount / ALPHABET.length) * 100;
   const currentData = correctLetter ? PHONETIC_SOUNDS[correctLetter] : null;
 
   // ── Menu ─────────────────────────────────────────────────────────
@@ -157,14 +168,14 @@ export default function SoundMatching({ onBack, language = 'bm', theme = {} }) {
             </h1>
             <p style={{ color: '#fff', fontWeight: 700, fontSize: '0.95rem', margin: 0, lineHeight: 1.5 }}>
               {language === 'bm'
-                ? 'Dengar bunyi dan ketuk huruf yang betul!'
-                : 'Listen to the sound and tap the correct letter!'}
+                ? 'Dengar bunyi dan pecahkan huruf yang betul!'
+                : 'Listen and find the correct letter!'}
             </p>
           </div>
 
           <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
             {[
-              ['👂', language === 'bm' ? '10 Pusingan' : '10 Rounds'],
+              ['👂', language === 'bm' ? '26 Huruf'   : '26 Letters'],
               ['🎵', language === 'bm' ? '4 Pilihan'  : '4 Choices'],
               ['⭐', language === 'bm' ? 'Kumpul Mata' : 'Earn Points'],
             ].map(([icon, label]) => (
@@ -181,7 +192,7 @@ export default function SoundMatching({ onBack, language = 'bm', theme = {} }) {
 
           <button
             className="sm-start-btn"
-            onClick={() => { playHoverSound(); setGameState('playing'); }}
+            onClick={() => { playHoverSound(); startGame(); }}
             style={{
               padding: '1.1rem 3.5rem',
               background: heroBg,
@@ -214,7 +225,7 @@ export default function SoundMatching({ onBack, language = 'bm', theme = {} }) {
             {language === 'bm' ? '🎉 Syabas!' : '🎉 Excellent Listener!'}
           </h1>
           <p style={{ color: '#64748B', fontWeight: 700, margin: 0, fontSize: '1.05rem', textAlign: 'center' }}>
-            {language === 'bm' ? `Kamu padankan ${TOTAL_ROUNDS} bunyi dengan betul!` : `You matched ${TOTAL_ROUNDS} sounds perfectly!`}
+            {language === 'bm' ? `Kamu padankan semua 26 huruf dengan betul!` : `You matched all 26 letters perfectly!`}
           </p>
           <div style={{
             background: '#fff', border: '2px solid #E2E8F0', borderRadius: '20px',
@@ -223,7 +234,7 @@ export default function SoundMatching({ onBack, language = 'bm', theme = {} }) {
           }}>
             <div style={{ textAlign: 'center' }}>
               <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase' }}>{language === 'bm' ? 'Padanan' : 'Matches'}</div>
-              <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#1CB0F6' }}>{TOTAL_ROUNDS}/{TOTAL_ROUNDS}</div>
+              <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#1CB0F6' }}>26/26</div>
             </div>
             <div style={{ textAlign: 'center' }}>
               <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase' }}>Score</div>
@@ -287,7 +298,7 @@ export default function SoundMatching({ onBack, language = 'bm', theme = {} }) {
             }} />
           </div>
           <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94A3B8', textAlign: 'right' }}>
-            {correctCount} / {TOTAL_ROUNDS}
+            {correctCount} / {ALPHABET.length}
           </div>
         </div>
         <div style={{

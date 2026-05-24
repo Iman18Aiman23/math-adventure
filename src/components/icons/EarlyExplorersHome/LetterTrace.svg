@@ -19,7 +19,7 @@
   </defs>
 
   <!-- Button Background -->
-  <rect x="10" y="10" width="180" height="180" rx="30" ry="30" fill="#FF9800" stroke="#212121" stroke-width="4"/>
+  <rect x="10" y="10" width="180" height="180" rx="30" ry="30" fill="#FFFFFF" stroke="#FF9800" stroke-width="4"/>
 
   <!-- Antenna -->
   <line x1="100" y1="12" x2="100" y2="32" stroke="#FFE0B2" stroke-width="4" stroke-linecap="round"/>
@@ -71,5 +71,5 @@
   </g>
 
   <!-- Title Text -->
-  <text x="100" y="178" font-size="16" font-family="'Fredoka One', 'Quicksand', sans-serif" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="central" stroke="#00000066" stroke-width="2" paint-order="stroke">Letter Trace</text>
+  <text x="100" y="178" font-size="16" font-family="'Fredoka One', 'Quicksand', sans-serif" font-weight="700" fill="#FF9800" text-anchor="middle" dominant-baseline="central">Tulis Huruf</text>
 </svg>

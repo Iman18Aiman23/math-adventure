@@ -153,7 +153,7 @@ function GameCard({ game, onPlay, language, index }) {
       onMouseDown={() => setIsPressed(true)}
       onMouseUp={() => setIsPressed(false)}
       onTouchStart={() => setIsPressed(true)}
-      onTouchEnd={() => { setIsPressed(false); onPlay(); }}
+      onTouchEnd={() => setIsPressed(false)}
       style={{
         cursor: 'pointer',
         display: 'block',

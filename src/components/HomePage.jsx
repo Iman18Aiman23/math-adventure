@@ -2,10 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getGameData } from '../utils/gameStatsManager';
 import { AGE_GROUPS } from '../data/ageCurriculum';
 import { playHoverSound } from '../utils/soundManager';
-import RobotReading from './icons/robotReading';
-import RobotSpeaking from './icons/robotSpeaking';
-import RobotJawi from './icons/robotJawi';
-import RobotMath from './icons/robotMath';
+import { RobotDefs, RobotReading, RobotSpeaking, RobotArabic, RobotMath } from './SubjectRobots';
 
 // ── 28 animated star particles for the hero (stable, never re-generated) ──────
 const HERO_STARS = Array.from({ length: 28 }, (_, i) => ({
@@ -67,9 +64,10 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#130B1E', color: '#F1F5F9', fontFamily: 'Inter, sans-serif' }}>
+      <RobotDefs />
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&family=Fredoka:wght@500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&family=Fredoka:wght@500;600;700&family=Baloo+2:wght@600;700;800&display=swap');
 
         :root {
             --primary: #7C3AED;
@@ -98,101 +96,96 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             --green-mid: #6EE7B7;
         }
 
-        /* Vertical Subject Cards — Column layout */
+        /* ─── Subject Cards (Subject.html design) ─── */
         .subject-card {
-            background: var(--subject-bg, #FFFFFF);
-            border-radius: 20px;
-            padding: 1.5rem 1.5rem;
+            background: linear-gradient(180deg, #ffffff 0%, #F4FAFF 100%);
+            border-radius: 32px;
+            padding: 22px 20px 28px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 1rem;
+            gap: 14px;
+            border: 2px solid rgba(70,216,255,.18);
+            box-shadow:
+              0 2px 0 rgba(255,255,255,1) inset,
+              0 -2px 0 rgba(70,216,255,.08) inset,
+              0 14px 36px -12px rgba(11,124,168,.25),
+              0 2px 6px rgba(11,124,168,.08);
+            transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .35s;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
-            border: 1.5px solid #E5E7EB;
-            border-left: 5px solid var(--subject-accent, #7C3AED);
-            box-shadow: 0 2px 6px rgba(17,24,39,0.04), 0 6px 18px rgba(17,24,39,0.06);
-            margin-bottom: 0;
-            text-align: center;
-            height: 360px;
-            min-height: 360px;
         }
-        .subject-card > .subject-card-body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 0.25rem;
-            flex: 1;
-            width: 100%;
-            min-width: 0;
-        }
-        .subject-card-text {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            min-width: 0;
-            margin: 0;
-        }
-
         .subject-card:hover {
-            transform: translateY(-4px);
-            background: #FFFFFF;
-            border-color: var(--subject-accent, #7C3AED);
-            border-left-color: var(--subject-accent, #7C3AED);
-            box-shadow: 0 14px 36px rgba(17,24,39,0.10), 0 0 0 4px var(--subject-glow, rgba(124,58,237,0.18));
+            transform: translateY(-6px) scale(1.015);
+            box-shadow:
+              0 2px 0 rgba(255,255,255,1) inset,
+              0 -2px 0 rgba(70,216,255,.08) inset,
+              0 20px 56px -12px rgba(11,124,168,.35),
+              0 4px 14px rgba(11,124,168,.14);
         }
-
         .subject-card:active {
-            transform: translateY(1px);
-            box-shadow: 0 2px 8px rgba(17,24,39,0.08);
+            transform: translateY(2px) scale(0.99);
+            box-shadow: 0 4px 12px rgba(11,124,168,.12);
         }
 
+        /* Coloured robot stage */
+        .rb-stage {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 -8px 28px rgba(11,124,168,.12), inset 0 2px 0 rgba(255,255,255,.5);
+        }
+        .rb-stage > svg { width: 96%; height: 96%; display: block; overflow: visible; }
 
-        /* SVG Animations */
-        .card-deco { position: absolute; border-radius: 50%; opacity: 0.2; pointer-events: none; }
-        .svg-wrap { width: 210px; height: 210px; flex-shrink: 0; margin: 0; }
+        .rb-stage.bg-reading { background: radial-gradient(ellipse at 50% 38%, #FFF1D8 0%, #FFD9A2 55%, #FFB060 100%); }
+        .rb-stage.bg-speak   { background: radial-gradient(ellipse at 50% 38%, #FFE0F0 0%, #FFB3D6 55%, #FF80BB 100%); }
+        .rb-stage.bg-math    { background: radial-gradient(ellipse at 50% 38%, #E7D9FF 0%, #B79CFF 55%, #7A55E0 100%); }
+        .rb-stage.bg-arabic  { background: radial-gradient(ellipse at 50% 38%, #D6F5DD 0%, #8AD9A8 55%, #2A9A6C 100%); }
 
-        @keyframes bounceUp { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-10px); } }
-        @keyframes floatLetter { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-5px) rotate(4deg); } }
-        @keyframes pulseStar { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } }
-        @keyframes waveArc { 0%, 100% { transform: scaleX(1); opacity: 0.7; } 50% { transform: scaleX(1.3); opacity: 1; } }
-        @keyframes wiggle { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-6deg); } 75% { transform: rotate(6deg); } }
-        @keyframes blinkEyes { 0%, 92%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.08); } }
-        @keyframes inkDrip { 0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; } 50% { transform: translateY(4px) scale(0.8); opacity: 0.5; } }
-        @keyframes mathSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes numberPop { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        /* Floating deco dots inside each stage */
+        .rb-deco-dot { position: absolute; border-radius: 50%; pointer-events: none; }
+        .rb-d1 { width: 10px; height: 10px; background: rgba(255,255,255,.7);  top: 14%; left: 12%;  animation: rb-drift1 6s ease-in-out infinite; }
+        .rb-d2 { width:  6px; height:  6px; background: rgba(255,255,255,.6);  top: 78%; right: 14%; animation: rb-drift2 7s ease-in-out infinite; }
+        .rb-d3 { width: 14px; height: 14px; background: rgba(255,255,255,.4);  top: 62%; left:  9%;  animation: rb-drift1 8s ease-in-out infinite; }
+        .rb-d4 { width:  8px; height:  8px; background: rgba(255,255,255,.55); top: 22%; right: 18%; animation: rb-drift2 9s ease-in-out infinite; }
+        @keyframes rb-drift1 { 50% { transform: translate(10px, -8px); } }
+        @keyframes rb-drift2 { 50% { transform: translate(-10px, 8px); } }
+
+        /* Pill label */
+        .rb-pill {
+            font-family: 'Baloo 2', sans-serif;
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 999px;
+            background: linear-gradient(180deg, #7BE7FF 0%, #46D8FF 60%, #0F9CC8 100%);
+            box-shadow: 0 2px 0 #0B7CA8, 0 6px 14px -4px rgba(11,124,168,.4);
+            text-shadow: 0 1px 0 rgba(11,124,168,.4);
+        }
+
+        /* Card description */
+        .rb-desc {
+            font-family: 'Fredoka', system-ui, sans-serif;
+            font-weight: 500;
+            font-size: 13.5px;
+            color: #5B6F86;
+            margin: 0;
+            text-align: center;
+            line-height: 1.5;
+            padding: 0 8px;
+        }
+
         @keyframes heroStarTwinkle { from { opacity: var(--base-op, 0.25); transform: scale(1); } to { opacity: 1; transform: scale(1.7); } }
         .hero-star-particle { animation: heroStarTwinkle var(--dur, 2s) ease-in-out infinite alternate; }
-
-        .subject-card:hover .svg-wrap { animation: bounceUp 0.8s ease-in-out infinite; }
-        .subject-card:hover .fl1 { animation: floatLetter 1s ease-in-out infinite; }
-        .subject-card:hover .fl2 { animation: floatLetter 1s ease-in-out infinite 0.4s; }
-        .subject-card:hover .fl3 { animation: floatLetter 1s ease-in-out infinite 0.9s; }
-        .subject-card:hover .fl4 { animation: floatLetter 1s ease-in-out infinite 0.2s; }
-        .subject-card:hover .ps { animation: pulseStar 0.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-        .subject-card:hover .ps2 { animation: pulseStar 0.8s ease-in-out infinite 0.6s; transform-box: fill-box; transform-origin: center; }
-        .subject-card:hover .wa { animation: waveArc 0.5s ease-in-out infinite; transform-box: fill-box; transform-origin: left center; }
-        .subject-card:hover .wa2 { animation: waveArc 0.5s ease-in-out infinite 0.25s; transform-box: fill-box; transform-origin: left center; }
-        .subject-card:hover .wa3 { animation: waveArc 0.5s ease-in-out infinite 0.5s; transform-box: fill-box; transform-origin: left center; }
-        .subject-card:hover .war { animation: waveArc 0.5s ease-in-out infinite; transform-box: fill-box; transform-origin: right center; }
-        .subject-card:hover .war2 { animation: waveArc 0.5s ease-in-out infinite 0.25s; transform-box: fill-box; transform-origin: right center; }
-        .subject-card:hover .war3 { animation: waveArc 0.5s ease-in-out infinite 0.5s; transform-box: fill-box; transform-origin: right center; }
-        .subject-card:hover .wg { animation: wiggle 1s ease-in-out infinite; transform-box: fill-box; transform-origin: center bottom; }
-        .subject-card:hover .eyes { animation: blinkEyes 2s ease-in-out infinite; transform-origin: center; }
-        .subject-card:hover .ink { animation: inkDrip 1.5s ease-in-out infinite; transform-box: fill-box; transform-origin: center top; }
-        .subject-card:hover .msp { animation: mathSpin 3s linear infinite; transform-box: fill-box; transform-origin: center; }
-        .subject-card:hover .np { animation: numberPop 0.7s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-        .subject-card:hover .np2 { animation: numberPop 0.7s ease-in-out infinite 0.5s; transform-box: fill-box; transform-origin: center; }
-        .subject-card:hover .np3 { animation: numberPop 0.7s ease-in-out infinite 1s; transform-box: fill-box; transform-origin: center; }
 
         @keyframes jello { 0% { transform: scale(1); } 20% { transform: scale(0.94, 1.06); } 40% { transform: scale(1.04, 0.96); } 60% { transform: scale(0.98, 1.02); } 80% { transform: scale(1.01, 0.99); } 100% { transform: scale(1); } }
         
@@ -300,13 +293,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
                 gap: 1rem !important;
             }
             .subject-card {
-                padding: 1.5rem !important;
-                height: 360px !important;
-                min-height: 360px !important;
-            }
-            .svg-wrap {
-                width: 210px !important;
-                height: 210px !important;
+                padding: 1.25rem 1rem !important;
             }
             .hero-title {
                 font-size: 1.8rem !important;
@@ -477,71 +464,47 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
         <div className="course-grid">
 
           {/* 1. Belajar Membaca */}
-          <div className="subject-card" style={{ '--subject-accent': '#45B7D1', '--subject-glow': 'rgba(69,183,209,0.35)', '--subject-bg': '#F0FEFA' }} onClick={() => onSelectSubject('reading')} role="button" tabIndex="0" aria-label="Belajar Membaca">
-            <div className="card-deco" style={{ width: '160px', height: '160px', background: 'radial-gradient(circle, rgba(6,182,212,0.25) 0%, transparent 70%)', top: '-40px', right: '-40px' }}></div>
-            <div className="card-deco" style={{ width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(6,182,212,0.15) 0%, transparent 70%)', bottom: '-20px', left: '-20px' }}></div>
-
-            <div className="subject-card-body">
-              <div className="svg-wrap">
-                <RobotReading language={language} />
-              </div>
-              <div className="subject-card-text">
-                <div style={{ fontSize: '0.85rem', color: '#6B7280', fontWeight: 500, lineHeight: 1.4 }}>
-                  {language === 'bm' ? 'Kuasai kemahiran membaca dengan seronok!' : 'Master reading skills with fun!'}
-                </div>
-              </div>
+          <div className="subject-card" onClick={() => onSelectSubject('reading')} role="button" tabIndex="0" aria-label="Belajar Membaca">
+            <div className="rb-stage bg-reading">
+              <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
+              <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
+              <RobotReading />
             </div>
+            <span className="rb-pill">{language === 'bm' ? 'MEMBACA' : 'READING'}</span>
+            <p className="rb-desc">{language === 'bm' ? 'Kuasai kemahiran membaca dengan seronok!' : 'From syllables to full sentences — one step at a time!'}</p>
           </div>
 
           {/* 2. Belajar Sebutan */}
-          <div className="subject-card" style={{ '--subject-accent': '#8E44AD', '--subject-glow': 'rgba(142,68,173,0.35)', '--subject-bg': '#F8F5FF' }} onClick={() => onSelectSubject('bm')} role="button" tabIndex="0" aria-label="Belajar Sebutan">
-            <div className="card-deco" style={{ width: '160px', height: '160px', background: 'radial-gradient(circle, rgba(249,115,22,0.25) 0%, transparent 70%)', top: '-40px', right: '-40px' }}></div>
-            <div className="card-deco" style={{ width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(249,115,22,0.15) 0%, transparent 70%)', bottom: '-20px', left: '-20px' }}></div>
-
-            <div className="subject-card-body">
-              <div className="svg-wrap">
-                <RobotSpeaking language={language} />
-              </div>
-              <div className="subject-card-text">
-                <div style={{ fontSize: '0.85rem', color: '#6B7280', fontWeight: 500, lineHeight: 1.4 }}>
-                  {language === 'bm' ? 'Perbaiki sebutan dengan yakin!' : 'Improve pronunciation with confidence!'}
-                </div>
-              </div>
+          <div className="subject-card" onClick={() => onSelectSubject('bm')} role="button" tabIndex="0" aria-label="Belajar Sebutan">
+            <div className="rb-stage bg-speak">
+              <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
+              <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
+              <RobotSpeaking />
             </div>
+            <span className="rb-pill">{language === 'bm' ? 'SEBUTAN' : 'SPEAKING'}</span>
+            <p className="rb-desc">{language === 'bm' ? 'Perbaiki sebutan dengan yakin!' : 'Improve pronunciation with confidence!'}</p>
           </div>
 
           {/* 3. Jawi */}
-          <div className="subject-card" style={{ '--subject-accent': '#27AE60', '--subject-glow': 'rgba(39,174,96,0.35)', '--subject-bg': '#F0FAF5' }} onClick={() => onSelectSubject('jawi')} role="button" tabIndex="0" aria-label="Jawi">
-            <div className="card-deco" style={{ width: '160px', height: '160px', background: 'radial-gradient(circle, rgba(250,204,21,0.25) 0%, transparent 70%)', top: '-40px', right: '-40px' }}></div>
-            <div className="card-deco" style={{ width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(250,204,21,0.15) 0%, transparent 70%)', bottom: '-20px', left: '-20px' }}></div>
-
-            <div className="subject-card-body">
-              <div className="svg-wrap">
-                <RobotJawi language={language} />
-              </div>
-              <div className="subject-card-text">
-                <div style={{ fontSize: '0.85rem', color: '#6B7280', fontWeight: 500, lineHeight: 1.4 }}>
-                  {language === 'bm' ? 'Belajar Jawi dengan mudah!' : 'Learn Jawi easily!'}
-                </div>
-              </div>
+          <div className="subject-card" onClick={() => onSelectSubject('jawi')} role="button" tabIndex="0" aria-label="Jawi">
+            <div className="rb-stage bg-arabic">
+              <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
+              <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
+              <RobotArabic />
             </div>
+            <span className="rb-pill">PENDIDIKAN ISLAM</span>
+            <p className="rb-desc">{language === 'bm' ? 'Belajar Jawi dengan mudah!' : 'Learn Jawi easily!'}</p>
           </div>
 
           {/* 4. Matematik */}
-          <div className="subject-card" style={{ '--subject-accent': '#E67E22', '--subject-glow': 'rgba(230,126,34,0.35)', '--subject-bg': '#FFF9E6' }} onClick={() => onSelectSubject('math')} role="button" tabIndex="0" aria-label="Matematik">
-            <div className="card-deco" style={{ width: '160px', height: '160px', background: 'radial-gradient(circle, rgba(16,185,129,0.25) 0%, transparent 70%)', top: '-40px', right: '-40px' }}></div>
-            <div className="card-deco" style={{ width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%)', bottom: '-20px', left: '-20px' }}></div>
-
-            <div className="subject-card-body">
-              <div className="svg-wrap">
-                <RobotMath language={language} />
-              </div>
-              <div className="subject-card-text">
-                <div style={{ fontSize: '0.85rem', color: '#6B7280', fontWeight: 500, lineHeight: 1.4 }}>
-                  {language === 'bm' ? 'Teroka dunia nombor dan logik!' : 'Explore the world of numbers and logic!'}
-                </div>
-              </div>
+          <div className="subject-card" onClick={() => onSelectSubject('math')} role="button" tabIndex="0" aria-label="Matematik">
+            <div className="rb-stage bg-math">
+              <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
+              <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
+              <RobotMath />
             </div>
+            <span className="rb-pill">{language === 'bm' ? 'MATEMATIK' : 'MATHEMATICS'}</span>
+            <p className="rb-desc">{language === 'bm' ? 'Teroka dunia nombor dan logik!' : 'Explore the world of numbers and shapes!'}</p>
           </div>
         </div>
 

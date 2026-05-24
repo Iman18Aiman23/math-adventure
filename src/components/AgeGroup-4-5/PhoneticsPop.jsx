@@ -36,12 +36,17 @@ const PHONETIC_SOUNDS = {
   Z: { word: 'Zebra',     wordBm: 'Zebra',           icon: '🦓' },
 };
 
-const BALLOON_FILLS = [
-  'linear-gradient(145deg, #FF6B9D, #E91E63)',
-  'linear-gradient(145deg, #FFD54F, #FF9800)',
-  'linear-gradient(145deg, #4FC3F7, #0288D1)',
-  'linear-gradient(145deg, #BA68C8, #7B1FA2)',
+const BALLOON_COLORS = [
+  { fill: 'linear-gradient(145deg, #FF80AB 0%, #FF1744 100%)', shadow: 'rgba(255,23,68,0.45)',   knot: '#B71C1C' },
+  { fill: 'linear-gradient(145deg, #FFD740 0%, #FF6D00 100%)', shadow: 'rgba(255,109,0,0.45)',  knot: '#E65100' },
+  { fill: 'linear-gradient(145deg, #40C4FF 0%, #0091EA 100%)', shadow: 'rgba(0,145,234,0.45)',  knot: '#01579B' },
+  { fill: 'linear-gradient(145deg, #CE93D8 0%, #8E24AA 100%)', shadow: 'rgba(142,36,170,0.45)', knot: '#6A1B9A' },
+  { fill: 'linear-gradient(145deg, #A5D6A7 0%, #2E7D32 100%)', shadow: 'rgba(46,125,50,0.45)',  knot: '#1B5E20' },
+  { fill: 'linear-gradient(145deg, #FFCC80 0%, #F57C00 100%)', shadow: 'rgba(245,124,0,0.45)',  knot: '#BF360C' },
 ];
+
+const PARTICLE_COLORS = ['#FF6B9D','#FFD740','#40C4FF','#B388FF','#69F0AE','#FF8A65','#4DD0E1','#FFAB40'];
+const BURST_ANGLES    = [0, 45, 90, 135, 180, 225, 270, 315];
 
 const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
 
@@ -66,8 +71,8 @@ const makeBubbles = (letter) => {
     x:          shuffledQ[idx].xBase + Math.random() * 22,
     y:          shuffledQ[idx].yBase + Math.random() * 20,
     popped:     false,
-    colorIdx:   idx,
-    floatDelay: idx * 0.3,
+    colorIdx:   idx % BALLOON_COLORS.length,
+    floatDelay: idx * 0.35,
   }));
 };
 
@@ -258,20 +263,39 @@ export default function PhoneticsPop({ onBack, language = 'bm', theme = {} }) {
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, background: '#F8FAFC', overflow: 'hidden' }}>
       <style>{`
         @keyframes balloonFloat {
-          0%, 100% { transform: translateY(0px) rotate(-2deg); }
-          50%       { transform: translateY(-14px) rotate(2deg); }
+          0%   { transform: translateY(0px)   rotate(-3deg) scale(1);    }
+          25%  { transform: translateY(-18px) rotate(2deg)  scale(1.03); }
+          50%  { transform: translateY(-24px) rotate(-1deg) scale(1.01); }
+          75%  { transform: translateY(-12px) rotate(3deg)  scale(1.02); }
+          100% { transform: translateY(0px)   rotate(-3deg) scale(1);    }
         }
         @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          20%       { transform: translateX(-8px); }
-          40%       { transform: translateX(8px); }
-          60%       { transform: translateX(-6px); }
-          80%       { transform: translateX(6px); }
+          0%,100% { transform: translateX(0) rotate(0deg); }
+          20%     { transform: translateX(-10px) rotate(-6deg); }
+          40%     { transform: translateX(10px)  rotate(6deg); }
+          60%     { transform: translateX(-7px)  rotate(-4deg); }
+          80%     { transform: translateX(7px)   rotate(4deg); }
         }
-        @keyframes popBurst {
-          0%   { transform: scale(1); opacity: 1; }
-          50%  { transform: scale(1.5); opacity: 0.5; }
-          100% { transform: scale(0); opacity: 0; }
+        @keyframes particleFly {
+          0%   { transform: rotate(var(--a)) translateX(0)    scale(1.4); opacity: 1; }
+          100% { transform: rotate(var(--a)) translateX(62px) scale(0);   opacity: 0; }
+        }
+        @keyframes shockwave {
+          0%   { transform: scale(0.4); opacity: 0.9; border-width: 7px; }
+          100% { transform: scale(2.6); opacity: 0;   border-width: 1px; }
+        }
+        @keyframes popFlash {
+          0%   { transform: translate(-50%,-50%) scale(0.4); opacity: 1; }
+          55%  { transform: translate(-50%,-50%) scale(1.4); opacity: 1; }
+          100% { transform: translate(-50%,-50%) scale(1.8); opacity: 0; }
+        }
+        @keyframes cloudDrift {
+          0%,100% { transform: translateX(0) translateY(0); }
+          50%     { transform: translateX(10px) translateY(-4px); }
+        }
+        @keyframes sparkle {
+          0%,100% { transform: scale(1) rotate(0deg);   opacity: 0.5; }
+          50%     { transform: scale(1.5) rotate(180deg); opacity: 1; }
         }
       `}</style>
 
@@ -299,11 +323,8 @@ export default function PhoneticsPop({ onBack, language = 'bm', theme = {} }) {
             <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.15rem' }}>
               {language === 'bm' ? 'Pecahkan belon huruf ini' : 'Pop the balloon for this letter'}
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <span style={{ fontSize: '1.4rem' }}>{currentData?.icon}</span>
-              <span style={{ fontWeight: 800, fontSize: '1.1rem', color: '#1E293B' }}>
-                {language === 'bm' ? currentData?.wordBm : currentData?.word}
-              </span>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ fontSize: '2rem' }}>{currentData?.icon}</span>
             </div>
           </div>
           <button onClick={playLetterSound} onMouseEnter={playHoverSound} style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', background: '#F1F5F9', border: '2px solid #E2E8F0', borderRadius: '999px', padding: '0.4rem 0.8rem', color: '#475569', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer', boxShadow: '0 2px 0 #CBD5E1', flexShrink: 0 }}>
@@ -314,43 +335,159 @@ export default function PhoneticsPop({ onBack, language = 'bm', theme = {} }) {
 
       {/* Balloon play area */}
       <div style={{ flex: 1, padding: '0.75rem 1.25rem 1rem', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-        <div style={{ position: 'relative', flex: 1, minHeight: 220, background: 'linear-gradient(180deg, #EEF2FF 0%, #F0FDF4 100%)', borderRadius: '24px', border: '2px solid #E2E8F0', overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.05) inset' }}>
-          {['☁️', '☁️', '☁️'].map((c, i) => (
-            <div key={i} style={{ position: 'absolute', fontSize: '2rem', opacity: 0.25, top: `${10 + i * 25}%`, left: `${i * 30 + 5}%`, pointerEvents: 'none' }}>{c}</div>
+        <div style={{
+          position: 'relative', flex: 1, minHeight: 220,
+          background: 'linear-gradient(160deg, #B3E5FC 0%, #CE93D8 35%, #F48FB1 65%, #FFE082 100%)',
+          borderRadius: '28px',
+          border: '3px solid rgba(255,255,255,0.7)',
+          overflow: 'hidden',
+          boxShadow: '0 8px 28px rgba(0,0,0,0.12), inset 0 2px 0 rgba(255,255,255,0.6)',
+        }}>
+          {/* Inner glow overlay */}
+          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.35) 0%, transparent 65%)', pointerEvents: 'none' }} />
+
+          {/* Clouds */}
+          {[
+            { top: '5%',  left: '4%',  size: '2.4rem', opacity: 0.65, dur: 8  },
+            { top: '3%',  left: '58%', size: '1.7rem', opacity: 0.5,  dur: 11 },
+            { top: '22%', left: '26%', size: '1.5rem', opacity: 0.4,  dur: 9  },
+            { top: '18%', left: '74%', size: '1.3rem', opacity: 0.35, dur: 13 },
+          ].map((c, i) => (
+            <div key={i} style={{
+              position: 'absolute', top: c.top, left: c.left, fontSize: c.size, opacity: c.opacity,
+              animation: `cloudDrift ${c.dur}s ease-in-out infinite`, animationDelay: `${i * 1.5}s`,
+              pointerEvents: 'none', filter: 'drop-shadow(0 2px 4px rgba(255,255,255,0.5))',
+            }}>☁️</div>
           ))}
+
+          {/* Colorful sparkle dots */}
+          {[
+            { top: '8%',  left: '83%', color: '#FF6B9D', size: 14 },
+            { top: '16%', left: '10%', color: '#FFD740', size: 10 },
+            { top: '38%', left: '91%', color: '#40C4FF', size: 12 },
+            { top: '52%', left: '4%',  color: '#B388FF', size: 10 },
+            { top: '68%', left: '68%', color: '#69F0AE', size: 14 },
+            { top: '78%', left: '18%', color: '#FF8A65', size: 10 },
+            { top: '85%', left: '85%', color: '#FFD740', size: 8  },
+            { top: '45%', left: '48%', color: '#FF6B9D', size: 8  },
+          ].map((dot, i) => (
+            <div key={i} style={{
+              position: 'absolute', top: dot.top, left: dot.left,
+              width: dot.size, height: dot.size, borderRadius: '50%',
+              background: dot.color,
+              animation: `sparkle ${1.8 + i * 0.3}s ease-in-out infinite`,
+              animationDelay: `${i * 0.28}s`,
+              pointerEvents: 'none',
+              boxShadow: `0 0 8px ${dot.color}, 0 0 14px ${dot.color}55`,
+            }} />
+          ))}
+
+          {/* Star emojis */}
+          {[
+            { top: '12%', left: '44%', emoji: '⭐', size: '1.1rem', delay: 0   },
+            { top: '30%', left: '62%', emoji: '✨', size: '0.9rem', delay: 0.9 },
+            { top: '60%', left: '35%', emoji: '🌟', size: '1rem',   delay: 0.5 },
+          ].map((s, i) => (
+            <div key={i} style={{
+              position: 'absolute', top: s.top, left: s.left, fontSize: s.size, opacity: 0.6,
+              animation: `sparkle ${2.2 + i * 0.5}s ease-in-out infinite`,
+              animationDelay: `${s.delay}s`, pointerEvents: 'none',
+            }}>{s.emoji}</div>
+          ))}
+
+          {/* Balloons */}
           {bubbles.map((bubble) => {
-            const fill = BALLOON_FILLS[bubble.colorIdx % BALLOON_FILLS.length];
+            const bc = BALLOON_COLORS[bubble.colorIdx];
             return (
               <div
                 key={bubble.id}
+                onClick={!locked && !bubble.popped ? () => handleBubbleClick(bubble) : undefined}
                 style={{
                   position: 'absolute', left: `${bubble.x}%`, top: `${bubble.y}%`,
-                  width: 80, height: 88,
-                  cursor: (locked && !bubble.popped) ? 'default' : bubble.popped ? 'default' : 'pointer',
-                  animation: bubble.popped
-                    ? 'popBurst 0.4s ease forwards'
-                    : bubble.shaking
-                    ? 'shake 0.5s ease'
-                    : `balloonFloat ${2.5 + bubble.floatDelay}s ease-in-out infinite`,
-                  animationDelay: bubble.popped || bubble.shaking ? '0s' : `${bubble.floatDelay}s`,
-                  userSelect: 'none',
+                  width: 84, height: 104, userSelect: 'none',
+                  cursor: (!locked && !bubble.popped) ? 'pointer' : 'default',
                 }}
-                onClick={() => handleBubbleClick(bubble)}
               >
-                <div style={{
-                  width: 76, height: 76,
-                  borderRadius: '50% 50% 50% 50% / 55% 55% 45% 45%',
-                  background: fill,
-                  boxShadow: '0 8px 20px rgba(0,0,0,0.2), inset -8px -8px 16px rgba(0,0,0,0.15), inset 6px 6px 12px rgba(255,255,255,0.35)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  border: '2px solid rgba(255,255,255,0.5)', position: 'relative',
-                }}>
-                  <span style={{ fontSize: '2.4rem', fontWeight: 900, color: '#fff', fontFamily: 'var(--font-heading)', textShadow: '0 2px 6px rgba(0,0,0,0.3)' }}>
-                    {bubble.letter}
-                  </span>
-                  <div style={{ position: 'absolute', top: 10, left: 14, width: 20, height: 12, borderRadius: '50%', background: 'rgba(255,255,255,0.4)', pointerEvents: 'none' }} />
-                </div>
-                <div style={{ width: 2, height: 12, background: 'rgba(0,0,0,0.2)', margin: '0 auto' }} />
+                {!bubble.popped ? (
+                  /* ── Floating balloon ── */
+                  <div style={{
+                    animation: bubble.shaking
+                      ? 'shake 0.5s ease'
+                      : `balloonFloat ${2.8 + bubble.floatDelay}s ease-in-out infinite`,
+                    animationDelay: bubble.shaking ? '0s' : `${bubble.floatDelay}s`,
+                  }}>
+                    {/* Body */}
+                    <div style={{
+                      width: 80, height: 86,
+                      borderRadius: '50% 50% 48% 48% / 56% 56% 44% 44%',
+                      background: bc.fill,
+                      boxShadow: `0 10px 28px ${bc.shadow}, inset -10px -8px 18px rgba(0,0,0,0.15), inset 10px 10px 16px rgba(255,255,255,0.28)`,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      border: '2.5px solid rgba(255,255,255,0.55)', position: 'relative',
+                    }}>
+                      <span style={{ fontSize: '2.6rem', fontWeight: 900, color: '#fff', fontFamily: 'var(--font-heading)', textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
+                        {bubble.letter}
+                      </span>
+                      {/* Main shine */}
+                      <div style={{ position: 'absolute', top: 10, left: 14, width: 22, height: 13, borderRadius: '50%', background: 'rgba(255,255,255,0.48)', transform: 'rotate(-32deg)', pointerEvents: 'none' }} />
+                      {/* Secondary shine */}
+                      <div style={{ position: 'absolute', top: 22, left: 13, width: 10, height: 6, borderRadius: '50%', background: 'rgba(255,255,255,0.28)', transform: 'rotate(-32deg)', pointerEvents: 'none' }} />
+                    </div>
+                    {/* Knot */}
+                    <div style={{ width: 10, height: 7, margin: '0 auto', background: bc.knot, borderRadius: '50% 50% 45% 45% / 55% 55% 45% 45%' }} />
+                    {/* String */}
+                    <svg width={14} height={18} style={{ display: 'block', margin: '0 auto' }}>
+                      <path d="M7 0 Q4 9 7 18" stroke="rgba(0,0,0,0.22)" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+                    </svg>
+                  </div>
+                ) : (
+                  /* ── Pop burst ── */
+                  <div style={{ position: 'relative', width: 84, height: 90, pointerEvents: 'none' }}>
+                    {/* Outer shockwave ring */}
+                    <div style={{
+                      position: 'absolute', top: 0, left: 2,
+                      width: 80, height: 80, borderRadius: '50%',
+                      border: `7px solid ${bc.shadow}`,
+                      animation: 'shockwave 0.52s ease-out forwards',
+                    }} />
+                    {/* Inner shockwave ring */}
+                    <div style={{
+                      position: 'absolute', top: 14, left: 16,
+                      width: 52, height: 52, borderRadius: '50%',
+                      border: '4px solid rgba(255,240,80,0.85)',
+                      animation: 'shockwave 0.42s 0.06s ease-out forwards',
+                    }} />
+                    {/* 8 round particles */}
+                    {BURST_ANGLES.map((angle, i) => (
+                      <div key={i} style={{
+                        position: 'absolute', top: 32, left: 32,
+                        width: 13, height: 13, borderRadius: '50%',
+                        background: PARTICLE_COLORS[i % PARTICLE_COLORS.length],
+                        '--a': `${angle}deg`,
+                        animation: 'particleFly 0.55s ease-out forwards',
+                        animationDelay: `${i * 0.015}s`,
+                        boxShadow: `0 0 7px ${PARTICLE_COLORS[i % PARTICLE_COLORS.length]}`,
+                      }} />
+                    ))}
+                    {/* 8 diamond particles (offset angles) */}
+                    {[22,67,112,157,202,247,292,337].map((angle, i) => (
+                      <div key={`d${i}`} style={{
+                        position: 'absolute', top: 34, left: 34,
+                        width: 8, height: 8,
+                        background: PARTICLE_COLORS[(i + 3) % PARTICLE_COLORS.length],
+                        '--a': `${angle}deg`,
+                        transform: 'rotate(45deg)',
+                        animation: 'particleFly 0.5s 0.04s ease-out forwards',
+                      }} />
+                    ))}
+                    {/* Center flash emoji */}
+                    <div style={{
+                      position: 'absolute', top: '50%', left: '50%',
+                      fontSize: '2.6rem', lineHeight: 1,
+                      animation: 'popFlash 0.48s ease forwards',
+                    }}>💥</div>
+                  </div>
+                )}
               </div>
             );
           })}

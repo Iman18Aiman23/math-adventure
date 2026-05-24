@@ -32,7 +32,7 @@
   </defs>
 
   <!-- Button Background -->
-  <rect x="10" y="10" width="180" height="180" rx="30" ry="30" fill="#4CAF50" stroke="#212121" stroke-width="4"/>
+  <rect x="10" y="10" width="180" height="180" rx="30" ry="30" fill="#FFFFFF" stroke="#4CAF50" stroke-width="4"/>
 
   <!-- Panda Ears (round on top) -->
   <circle cx="38" cy="42" r="22" fill="url(#pandaEar)" filter="url(#pandaGlow)"/>
@@ -82,5 +82,5 @@
   <path d="M 48 58 Q 52 51 56 58 Q 52 64 48 58" fill="#4CAF50" opacity="0.7"/>
   <path d="M 144 54 Q 148 47 152 54 Q 148 60 144 54" fill="#4CAF50" opacity="0.5"/>
 
-  <text x="100" y="178" font-size="16" font-family="'Fredoka One', 'Quicksand', sans-serif" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="central" stroke="#00000066" stroke-width="2" paint-order="stroke">Alphabet Safari</text>
+  <text x="100" y="178" font-size="16" font-family="'Fredoka One', 'Quicksand', sans-serif" font-weight="700" fill="#4CAF50" text-anchor="middle" dominant-baseline="central">Alphabet Safari</text>
 </svg>

@@ -9,6 +9,16 @@ const VOWEL_LABELS = ['a', 'i', 'u', 'e (taling)', 'o', 'e (pepet)'];
 const VOWEL_COLORS = ['#FF9600', '#1CB0F6', '#58CC02', '#CE82FF', '#FF4B4B', '#00C2A8'];
 const VOWEL_BG     = ['#FFF4E0', '#E0F4FF', '#E6FFD4', '#F3DDFF', '#FFE0E0', '#D4FFF8'];
 
+// ── Tile palette — mirrors ReadingPage rp-tile color variants ─────────────────
+const TILE_PALETTE = [
+  { base: '#FF9600', light: '#FFD9A0', deep: '#8F5300' },
+  { base: '#1CB0F6', light: '#A0E4FF', deep: '#0B6EA0' },
+  { base: '#58CC02', light: '#B4F576', deep: '#2E7001' },
+  { base: '#CE82FF', light: '#ECD0FF', deep: '#7A3FA0' },
+  { base: '#FF4B4B', light: '#FFB0B0', deep: '#A01010' },
+  { base: '#00C2A8', light: '#A0F0E8', deep: '#007A6A' },
+];
+
 // ── Script button config ──────────────────────────────────────────────────────
 const SCRIPTS = [
   { key: 'RUMI', label: 'RUMI', color: '#1CB0F6', bg: '#D0F0FF' },
@@ -109,54 +119,99 @@ export default function KVLearningPage({ onBack, language }) {
   // ─────────────────────────────────────────────────────────────────────────
   if (!selectedLetter) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#F7F7F7', overflowY: 'auto' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto',
+        background: 'radial-gradient(ellipse 75% 55% at 0% 0%, rgba(134,239,172,.18) 0%, transparent 70%), radial-gradient(ellipse 75% 55% at 100% 0%, rgba(251,146,60,.18) 0%, transparent 70%), radial-gradient(ellipse 75% 55% at 0% 100%, rgba(122,227,255,.16) 0%, transparent 70%), radial-gradient(ellipse 75% 55% at 100% 100%, rgba(196,181,253,.18) 0%, transparent 70%), #FFFDF8',
+      }}>
+        <style>{`
+          .kv-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+          }
+          @media (min-width: 500px) { .kv-grid { grid-template-columns: repeat(4, 1fr); gap: 14px; } }
+          @media (min-width: 760px) { .kv-grid { grid-template-columns: repeat(5, 1fr); gap: 16px; } }
+          .kv-letter-tile {
+            position: relative; border: 0; padding: 0;
+            aspect-ratio: 1 / 1.05; width: 100%;
+            border-radius: 24px; cursor: pointer; font-family: inherit;
+            overflow: hidden;
+            transition: transform .25s cubic-bezier(.34,1.56,.64,1);
+            -webkit-tap-highlight-color: transparent;
+            opacity: 0; transform: translateY(22px);
+            animation: kvTileIn .5s cubic-bezier(.34,1.56,.64,1) forwards;
+          }
+          @keyframes kvTileIn {
+            0%   { opacity: 0; transform: translateY(22px) scale(.94); }
+            70%  { opacity: 1; transform: translateY(-4px) scale(1.02); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+          }
+          .kv-letter-tile:hover  { transform: translateY(-6px) rotate(-1.2deg); }
+          .kv-letter-tile:active { transform: translateY(5px) rotate(0deg); transition: transform .1s ease; }
+          .kv-letter-tile::before {
+            content: ""; position: absolute; inset: 0;
+            background-image: radial-gradient(rgba(255,255,255,.18) 1.4px, transparent 1.6px);
+            background-size: 18px 18px; opacity: .65; pointer-events: none; z-index: 1;
+          }
+          .kv-letter-tile::after {
+            content: ""; position: absolute; top: 6px; left: 10px; right: 10px; height: 38%;
+            border-radius: 20px 20px 0 0;
+            background: linear-gradient(180deg, rgba(255,255,255,.42) 0%, rgba(255,255,255,.06) 75%, transparent 100%);
+            pointer-events: none; z-index: 1;
+          }
+          .kv-tile-letter {
+            position: absolute; inset: 0; padding-bottom: 28%;
+            display: flex; align-items: center; justify-content: center; z-index: 2;
+            font-family: 'Fredoka','Baloo 2',sans-serif; font-weight: 700;
+            font-size: clamp(1.8rem, 7vw, 2.8rem); color: #fff;
+            text-shadow: 0 2px 0 rgba(0,0,0,.18);
+          }
+          .kv-tile-cap {
+            position: absolute; bottom: 8px; left: 8px; right: 8px; z-index: 4;
+            background: #fff; border-radius: 14px; padding: 6px 10px;
+            box-shadow: 0 3px 0 rgba(0,0,0,.10);
+            text-align: center; font-family: 'Fredoka',sans-serif; font-weight: 700;
+            font-size: 0.8rem; line-height: 1;
+          }
+          .kv-section-label {
+            font-family: 'Fredoka',sans-serif; font-weight: 700; font-size: 1.05rem;
+            color: #374151; text-align: center; letter-spacing: .04em;
+            margin: 12px 0 16px;
+            display: flex; align-items: center; gap: 14px; justify-content: center;
+          }
+          .kv-section-label::before, .kv-section-label::after {
+            content: ""; height: 3px; flex: 1; max-width: 80px; border-radius: 999px;
+            background: linear-gradient(90deg, rgba(34,197,94,.6), rgba(249,115,22,.7), rgba(60,203,255,.7), rgba(139,92,246,.6));
+          }
+          @media (max-width: 400px) {
+            .kv-letter-tile { border-radius: 18px; }
+            .kv-tile-letter { font-size: 1.6rem; }
+            .kv-tile-cap { bottom: 5px; left: 5px; right: 5px; padding: 5px 6px; font-size: 0.68rem; border-radius: 10px; }
+          }
+        `}</style>
+
         <BackButton onClick={onBack} />
 
-        <div style={{ margin: 'auto 0', padding: '1.5rem 1rem' }}>
-          {/* Subtitle */}
-          <div style={{ paddingBottom: '0.75rem', textAlign: 'center' }}>
-            <p style={{ fontSize: '0.8rem', fontWeight: 700, color: '#AFAFAF', textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>
-              {language === 'bm' ? 'Pilih Huruf untuk Belajar' : 'Select a Letter to Learn'}
-            </p>
+        <div style={{ padding: '68px 0.75rem 1.5rem', maxWidth: '600px', margin: '0 auto', width: '100%' }}>
+          <div className="kv-section-label">
+            {language === 'bm' ? 'Pilih Huruf untuk Belajar' : 'Select a Letter to Learn'}
           </div>
 
-          {/* Letter Grid */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(72px, 1fr))',
-            gap: 'clamp(1rem, 3vw, 1.5rem)',
-            maxWidth: '600px',
-            margin: '0 auto',
-            padding: 'clamp(0.5rem, 2vw, 1rem)',
-          }}>
+          <div className="kv-grid">
             {KV_LETTERS.map((letter, idx) => {
-              const ci = idx % VOWEL_COLORS.length;
+              const pal = TILE_PALETTE[idx % TILE_PALETTE.length];
               return (
                 <button
                   type="button"
                   key={letter}
+                  className="kv-letter-tile"
                   onClick={() => handleSelectLetter(letter)}
                   style={{
-                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                    background: '#fff',
-                    border: 'none',
-                    borderRadius: '16px',
-                    width: 'clamp(60px, 10vw, 90px)',
-                    height: 'clamp(60px, 10vw, 90px)',
-                    padding: '0',
-                    margin: 'clamp(0.5rem, 2vw, 1rem)',
-                    cursor: 'pointer',
-                    transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                    boxShadow: `0 2px 0 ${VOWEL_BG[ci]}, 0 8px 0 ${VOWEL_COLORS[ci]}, 0 12px 16px rgba(0,0,0,0.1)`,
-                    fontFamily: 'inherit',
+                    background: `linear-gradient(165deg, ${pal.light} 0%, ${pal.base} 60%, ${pal.deep} 100%)`,
+                    animationDelay: `${0.04 + idx * 0.025}s`,
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = `0 12px 0 ${VOWEL_COLORS[ci]}, 0 18px 24px rgba(0,0,0,0.15)`; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 8px 0 ${VOWEL_COLORS[ci]}, 0 12px 16px rgba(0,0,0,0.1)`; }}
-                  onMouseDown={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = `0 4px 0 ${VOWEL_COLORS[ci]}, 0 6px 8px rgba(0,0,0,0.08)`; }}
-                  onMouseUp={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = `0 12px 0 ${VOWEL_COLORS[ci]}, 0 18px 24px rgba(0,0,0,0.15)`; }}
                 >
-                  <span style={{ fontSize: '2rem', fontWeight: 900, color: VOWEL_COLORS[ci], lineHeight: 1 }}>{letter}</span>
-                  <span style={{ fontSize: '0.62rem', fontWeight: 700, color: '#AFAFAF', marginTop: '4px' }}>
+                  <span className="kv-tile-letter">{letter}</span>
+                  <span className="kv-tile-cap" style={{ color: pal.deep }}>
                     {getKVSeriesByLetter(letter).length} kad
                   </span>
                 </button>

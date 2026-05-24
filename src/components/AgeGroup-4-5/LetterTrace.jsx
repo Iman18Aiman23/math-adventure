@@ -78,7 +78,7 @@ export default function LetterTrace({ onBack, language = 'bm', theme = {} }) {
     if (localGameState !== 'playing' || !upperLetter) return;
     const t = setTimeout(() => {
       const phrase = language === 'bm'
-        ? `Surih huruf ${upperLetter.char} dan ${lowerLetter.char}`
+        ? `Tulis huruf ${upperLetter.char} dan ${lowerLetter.char}`
         : `Trace the letter ${upperLetter.char} and ${lowerLetter.char}`;
       SpeechManager.speak(phrase, language === 'bm' ? 'ms-MY' : 'en-US');
     }, 250);
@@ -152,7 +152,7 @@ export default function LetterTrace({ onBack, language = 'bm', theme = {} }) {
   const handleSpeakLetter = useCallback(() => {
     if (!upperLetter) return;
     const phrase = language === 'bm'
-      ? `Surih huruf ${upperLetter.char} dan ${lowerLetter.char}`
+      ? `Tulis huruf ${upperLetter.char} dan ${lowerLetter.char}`
       : `Trace the letter ${upperLetter.char} and ${lowerLetter.char}`;
     SpeechManager.speak(phrase, language === 'bm' ? 'ms-MY' : 'en-US');
   }, [upperLetter, lowerLetter, language]);
@@ -210,13 +210,13 @@ export default function LetterTrace({ onBack, language = 'bm', theme = {} }) {
               color: '#fff', fontFamily: 'var(--font-heading)',
               textShadow: '0 3px 8px rgba(0,0,0,0.25)',
             }}>
-              Letter Trace
+              {language === 'bm' ? 'Tulis Huruf' : 'Letter Trace'}
             </h1>
             <p style={{
               color: 'rgba(255,255,255,0.92)', fontWeight: 700, fontSize: '1rem', margin: 0, lineHeight: 1.5,
             }}>
               {language === 'bm'
-                ? 'Surih huruf besar dan kecil dengan satu gerakan lancar!'
+                ? 'Tulis huruf besar dan kecil dengan satu gerakan lancar!'
                 : 'Trace each uppercase and lowercase letter with one smooth motion!'}
             </p>
           </div>
@@ -356,9 +356,9 @@ export default function LetterTrace({ onBack, language = 'bm', theme = {} }) {
 
       {/* Heading */}
       <div style={{ textAlign: 'center', flexShrink: 0, padding: '0 1rem 0.25rem' }}>
-        <p style={{ margin: 0, fontSize: '0.78rem', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+        <p style={{ margin: 0, fontSize: '0.78rem', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.1em' }}>
           {language === 'bm'
-            ? `Surih huruf ${upperLetter.char} dan ${lowerLetter.char}`
+            ? `Tulis huruf ${upperLetter.char} dan ${lowerLetter.char}`
             : `Trace letter ${upperLetter.char} and ${lowerLetter.char}`}
         </p>
       </div>
@@ -366,42 +366,31 @@ export default function LetterTrace({ onBack, language = 'bm', theme = {} }) {
       {/* Canvas area */}
       <div style={{ flex: 1, minHeight: 0, position: 'relative', overflow: 'hidden' }}>
 
-        {/* ── Phase 3: both complete — side by side with captured drawings ── */}
+        {/* ── Phase 3: both complete — side by side ── */}
         {showSideBySide && (
           <div style={{
             position: 'absolute', inset: 0,
             display: 'flex', flexDirection: 'row',
-            gap: '0.5rem', padding: '0.5rem 0.75rem',
+            gap: '0.75rem', padding: '1rem',
+            alignItems: 'center', justifyContent: 'center',
             animation: 'sideBySideIn 0.5s cubic-bezier(0.34,1.56,0.64,1)',
           }}>
             {[
-              { char: upperLetter.char, label: language === 'bm' ? 'BESAR' : 'UPPER', img: upperImageData },
-              { char: lowerLetter.char, label: language === 'bm' ? 'KECIL' : 'LOWER', img: lowerImageData },
-            ].map(({ char, label, img }) => (
-              <div key={char} style={{
-                flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column',
+              { char: upperLetter.char, label: language === 'bm' ? 'HURUF BESAR' : 'UPPERCASE' },
+              { char: lowerLetter.char, label: language === 'bm' ? 'HURUF KECIL' : 'LOWERCASE' },
+            ].map(({ char, label }) => (
+              <div key={label} style={{
+                flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                 background: '#F0FDF4', borderRadius: '20px',
                 border: '3px solid #58CC02',
                 boxShadow: '0 6px 0 #46A302, 0 8px 20px rgba(88,204,2,0.12)',
-                padding: '0.5rem', overflow: 'hidden',
+                padding: '1.25rem 0.75rem', gap: '0.5rem',
               }}>
-                <div style={{
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                  paddingBottom: '0.3rem', marginBottom: '0.3rem', flexShrink: 0,
-                  borderBottom: '2px solid #D7FFB8',
-                }}>
-                  <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 900, fontSize: '1.5rem', color: '#46A302' }}>
-                    {char}
-                  </span>
-                  <span style={{ fontWeight: 800, fontSize: '0.65rem', color: '#46A302', letterSpacing: '0.08em' }}>
-                    ✓ {label}
-                  </span>
+                <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 900, fontSize: '5rem', color: '#46A302', lineHeight: 1 }}>
+                  {char}
                 </div>
-                <div style={{ flex: 1, minHeight: 0, borderRadius: '12px', overflow: 'hidden', background: '#F8FAFC', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  {img
-                    ? <img src={img} alt={char} style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
-                    : <span style={{ fontSize: '4rem', fontFamily: 'var(--font-heading)', fontWeight: 900, color: '#58CC02' }}>{char}</span>
-                  }
+                <div style={{ fontWeight: 800, fontSize: '0.7rem', color: '#46A302', letterSpacing: '0.1em' }}>
+                  ✓ {label}
                 </div>
               </div>
             ))}
@@ -500,7 +489,7 @@ export default function LetterTrace({ onBack, language = 'bm', theme = {} }) {
             {currentLetterIndex < LETTERS_UPPER.length - 1 ? (
               <>
                 ✏️ {language === 'bm'
-                  ? `Surih huruf ${LETTERS_UPPER[currentLetterIndex + 1].char}${LETTERS_LOWER[currentLetterIndex + 1].char}`
+                  ? `Tulis huruf ${LETTERS_UPPER[currentLetterIndex + 1].char}${LETTERS_LOWER[currentLetterIndex + 1].char}`
                   : `Trace letter ${LETTERS_UPPER[currentLetterIndex + 1].char}${LETTERS_LOWER[currentLetterIndex + 1].char}`}
                 <ArrowRight size={16} />
               </>
@@ -565,7 +554,7 @@ export default function LetterTrace({ onBack, language = 'bm', theme = {} }) {
               }}
             >
               ✏️ {language === 'bm'
-                ? `Surih huruf ${lowerLetter.char}`
+                ? `Tulis huruf ${lowerLetter.char}`
                 : `Trace letter ${lowerLetter.char}`}
               <ArrowRight size={15} />
             </button>

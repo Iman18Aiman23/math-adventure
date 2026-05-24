@@ -202,12 +202,12 @@ export default function LetterSoundPuzzle({ onBack, language = 'bm', theme = {} 
               filter: 'drop-shadow(0 3px 6px rgba(0,0,0,0.2))',
               fontFamily: 'var(--font-heading)',
             }}>
-              {language === 'bm' ? 'Teka-teki Huruf' : 'Letter Sound Puzzle'}
+              {language === 'bm' ? 'Padan Huruf' : 'Letter Match'}
             </h1>
             <p style={{ color: 'rgba(255,255,255,0.92)', fontWeight: 700, fontSize: '0.95rem', margin: 0, lineHeight: 1.5 }}>
               {language === 'bm'
-                ? 'Seret huruf besar ke pasangan huruf kecil yang betul!'
-                : 'Drag uppercase letters to match their lowercase pairs!'}
+                ? 'Padankan huruf besar dan huruf kecil dengan betul!'
+                : 'Match uppercase and lowercase letters correctly!'}
             </p>
           </div>
 
@@ -378,7 +378,7 @@ export default function LetterSoundPuzzle({ onBack, language = 'bm', theme = {} 
         fontSize: '0.82rem', fontWeight: 700,
         color: '#94A3B8', letterSpacing: '0.1em', textTransform: 'uppercase',
       }}>
-        {language === 'bm' ? 'Seret huruf besar ke ruang yang betul' : 'Drag uppercase to the correct slot'}
+        {language === 'bm' ? 'Padankan huruf besar dan huruf kecil' : 'Match uppercase and lowercase letters'}
       </p>
 
       {/* Main drag area */}
@@ -387,15 +387,51 @@ export default function LetterSoundPuzzle({ onBack, language = 'bm', theme = {} 
         gap: '0.75rem', padding: '0 1rem 1rem',
         minHeight: 0, overflow: 'hidden',
       }}>
-        {/* Drop targets (lowercase + word) */}
+        {/* Drag items (uppercase) — LEFT */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', minHeight: 0 }}>
-          <div style={{
-            fontSize: '0.72rem', fontWeight: 800, color: '#94A3B8',
-            textTransform: 'uppercase', letterSpacing: '0.12em', textAlign: 'center',
-            flexShrink: 0,
-          }}>
-            {language === 'bm' ? '🎯 Letak Sini' : '🎯 Drop Here'}
-          </div>
+          {letterItems.map((item) => {
+            const placed = completedPairs.has(item.slotId);
+            const col = SOUND_DATA[item.letter]?.color || '#64748B';
+            return (
+              <div
+                key={item.id}
+                draggable={!placed}
+                onDragStart={() => !placed && setDraggedLetter(item)}
+                onTouchStart={(e) => handleTouchStart(e, item)}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                style={{
+                  flex: 1, minHeight: 0,
+                  borderRadius: '16px',
+                  background: placed ? '#F1F5F9' : '#fff',
+                  border: `3px solid ${placed ? '#E2E8F0' : col}`,
+                  boxShadow: placed
+                    ? '0 2px 0 #E2E8F0'
+                    : `0 6px 0 ${col}60, 0 8px 20px rgba(0,0,0,0.08)`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  cursor: placed ? 'not-allowed' : 'grab',
+                  opacity: placed ? 0.4 : draggedLetter?.id === item.id ? 0.4 : 1,
+                  transition: 'all 0.2s',
+                  userSelect: 'none',
+                }}
+                onMouseEnter={(e) => { if (!placed) { playHoverSound(); e.currentTarget.style.transform = 'translateY(-3px)'; } }}
+                onMouseLeave={(e) => { if (!placed) e.currentTarget.style.transform = 'translateY(0)'; }}
+              >
+                <span style={{
+                  fontSize: '2.8rem', fontWeight: 900,
+                  color: placed ? '#CBD5E1' : col,
+                  fontFamily: 'var(--font-heading)',
+                  textShadow: placed ? 'none' : `0 3px 8px ${col}40`,
+                }}>
+                  {item.letter}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Drop targets (lowercase + word) — RIGHT */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', minHeight: 0 }}>
           {soundSlots.map((slot) => {
             const matched = completedPairs.has(slot.id);
             return (
@@ -438,56 +474,6 @@ export default function LetterSoundPuzzle({ onBack, language = 'bm', theme = {} 
                     </span>
                   </>
                 )}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Drag items (uppercase) */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', minHeight: 0 }}>
-          <div style={{
-            fontSize: '0.72rem', fontWeight: 800, color: '#94A3B8',
-            textTransform: 'uppercase', letterSpacing: '0.12em', textAlign: 'center',
-            flexShrink: 0,
-          }}>
-            {language === 'bm' ? '🖐️ Seret Saya' : '🖐️ Drag Me'}
-          </div>
-          {letterItems.map((item) => {
-            const placed = completedPairs.has(item.slotId);
-            const col = SOUND_DATA[item.letter]?.color || '#64748B';
-            return (
-              <div
-                key={item.id}
-                draggable={!placed}
-                onDragStart={() => !placed && setDraggedLetter(item)}
-                onTouchStart={(e) => handleTouchStart(e, item)}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
-                style={{
-                  flex: 1, minHeight: 0,
-                  borderRadius: '16px',
-                  background: placed ? '#F1F5F9' : '#fff',
-                  border: `3px solid ${placed ? '#E2E8F0' : col}`,
-                  boxShadow: placed
-                    ? '0 2px 0 #E2E8F0'
-                    : `0 6px 0 ${col}60, 0 8px 20px rgba(0,0,0,0.08)`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  cursor: placed ? 'not-allowed' : 'grab',
-                  opacity: placed ? 0.4 : draggedLetter?.id === item.id ? 0.4 : 1,
-                  transition: 'all 0.2s',
-                  userSelect: 'none',
-                }}
-                onMouseEnter={(e) => { if (!placed) { playHoverSound(); e.currentTarget.style.transform = 'translateY(-3px)'; } }}
-                onMouseLeave={(e) => { if (!placed) e.currentTarget.style.transform = 'translateY(0)'; }}
-              >
-                <span style={{
-                  fontSize: '2.8rem', fontWeight: 900,
-                  color: placed ? '#CBD5E1' : col,
-                  fontFamily: 'var(--font-heading)',
-                  textShadow: placed ? 'none' : `0 3px 8px ${col}40`,
-                }}>
-                  {item.letter}
-                </span>
               </div>
             );
           })}
