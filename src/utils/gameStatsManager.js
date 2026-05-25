@@ -1,5 +1,4 @@
-// Global Reward System - Shared across all games
-// One localStorage key: gameData
+import api from '../services/api';
 
 const STORAGE_KEY = 'gameData';
 const STREAK_MILESTONE = 10;
@@ -11,6 +10,18 @@ const DEFAULT_GAME_DATA = {
   stars: 0,
   streak: 0,
 };
+
+// Helper to extract userId from the JWT payload
+function getUserId() {
+  const token = localStorage.getItem('player_token');
+  if (!token) return null;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.sub;
+  } catch (e) {
+    return null;
+  }
+}
 
 /**
  * Get current game data from localStorage
@@ -53,16 +64,20 @@ export function addCorrectAnswer() {
 
   // Add gem for correct answer
   data.gems += 1;
-
-  // Increase streak
   data.streak += 1;
 
-  // Check for star milestone (every 10 correct answers)
   if (data.streak % STREAK_MILESTONE === 0) {
     data.stars += 1;
   }
 
   saveGameData(data);
+
+  // Optimistically update backend
+  const userId = getUserId();
+  if (userId) {
+    api.post('/economy/award-gems', { userId, amount: 1 }).catch(err => console.error('Failed to sync gems:', err));
+  }
+
   return data;
 }
 
@@ -75,15 +90,19 @@ export function addCorrectAnswer() {
 export function deductHeart() {
   const data = getGameData();
 
-  // Deduct heart (don't go below 0)
   if (data.hearts > 0) {
     data.hearts -= 1;
   }
 
-  // Reset streak on wrong answer
   data.streak = 0;
-
   saveGameData(data);
+
+  // Optimistically update backend
+  const userId = getUserId();
+  if (userId) {
+    api.post('/economy/deduct-heart', { userId }).catch(err => console.error('Failed to sync hearts:', err));
+  }
+
   return data;
 }
 

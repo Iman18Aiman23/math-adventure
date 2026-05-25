@@ -1,22 +1,18 @@
 import React, { useState, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, Volume2 } from 'lucide-react';
-import bm_kvk_complete, { KVK_LETTERS, getKVKSeriesByLetter } from '../../data/curriculum/bm_kvk';
+import { ArrowLeft, ChevronLeft, ChevronRight, Volume2 } from 'lucide-react';
+import { CURRICULUM } from '../../data/curriculum/index';
 import SpeechManager from '../../services/SpeechManager';
-import BackButton from '../BackButton';
+
+// Dynamic Helpers
+const getKVKData = () => CURRICULUM['bm_kvk'] || [];
+const KVK_LETTERS = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z'];
+const getKVKSeriesByLetter = (letter) => {
+  return getKVKData().filter(item => item.kvk && item.kvk.toLowerCase().startsWith(letter.toLowerCase()));
+};
 
 // ── Vowel row labels (shown under the KVK badge) ─────────────────────────────
 const SLOT_COLORS = ['#FF9600', '#1CB0F6', '#58CC02', '#CE82FF', '#FF4B4B', '#00C2A8'];
 const SLOT_BG     = ['#FFF4E0', '#E0F4FF', '#E6FFD4', '#F3DDFF', '#FFE0E0', '#D4FFF8'];
-
-// ── Tile palette — mirrors ReadingPage rp-tile color variants ─────────────────
-const TILE_PALETTE = [
-  { base: '#FF9600', light: '#FFD9A0', deep: '#8F5300' },
-  { base: '#1CB0F6', light: '#A0E4FF', deep: '#0B6EA0' },
-  { base: '#58CC02', light: '#B4F576', deep: '#2E7001' },
-  { base: '#CE82FF', light: '#ECD0FF', deep: '#7A3FA0' },
-  { base: '#FF4B4B', light: '#FFB0B0', deep: '#A01010' },
-  { base: '#00C2A8', light: '#A0F0E8', deep: '#007A6A' },
-];
 
 // ── Script button config ──────────────────────────────────────────────────────
 const SCRIPTS = [
@@ -116,99 +112,63 @@ export default function KVKLearningPage({ onBack, language }) {
   // ─────────────────────────────────────────────────────────────────────────
   if (!selectedLetter) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto',
-        background: 'radial-gradient(ellipse 75% 55% at 0% 0%, rgba(134,239,172,.18) 0%, transparent 70%), radial-gradient(ellipse 75% 55% at 100% 0%, rgba(251,146,60,.18) 0%, transparent 70%), radial-gradient(ellipse 75% 55% at 0% 100%, rgba(122,227,255,.16) 0%, transparent 70%), radial-gradient(ellipse 75% 55% at 100% 100%, rgba(196,181,253,.18) 0%, transparent 70%), #FFFDF8',
-      }}>
-        <style>{`
-          .kvk-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-          }
-          @media (min-width: 500px) { .kvk-grid { grid-template-columns: repeat(4, 1fr); gap: 14px; } }
-          @media (min-width: 760px) { .kvk-grid { grid-template-columns: repeat(5, 1fr); gap: 16px; } }
-          .kvk-letter-tile {
-            position: relative; border: 0; padding: 0;
-            aspect-ratio: 1 / 1.05; width: 100%;
-            border-radius: 24px; cursor: pointer; font-family: inherit;
-            overflow: hidden;
-            transition: transform .25s cubic-bezier(.34,1.56,.64,1);
-            -webkit-tap-highlight-color: transparent;
-            opacity: 0; transform: translateY(22px);
-            animation: kvkTileIn .5s cubic-bezier(.34,1.56,.64,1) forwards;
-          }
-          @keyframes kvkTileIn {
-            0%   { opacity: 0; transform: translateY(22px) scale(.94); }
-            70%  { opacity: 1; transform: translateY(-4px) scale(1.02); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-          }
-          .kvk-letter-tile:hover  { transform: translateY(-6px) rotate(-1.2deg); }
-          .kvk-letter-tile:active { transform: translateY(5px) rotate(0deg); transition: transform .1s ease; }
-          .kvk-letter-tile::before {
-            content: ""; position: absolute; inset: 0;
-            background-image: radial-gradient(rgba(255,255,255,.18) 1.4px, transparent 1.6px);
-            background-size: 18px 18px; opacity: .65; pointer-events: none; z-index: 1;
-          }
-          .kvk-letter-tile::after {
-            content: ""; position: absolute; top: 6px; left: 10px; right: 10px; height: 38%;
-            border-radius: 20px 20px 0 0;
-            background: linear-gradient(180deg, rgba(255,255,255,.42) 0%, rgba(255,255,255,.06) 75%, transparent 100%);
-            pointer-events: none; z-index: 1;
-          }
-          .kvk-tile-letter {
-            position: absolute; inset: 0; padding-bottom: 28%;
-            display: flex; align-items: center; justify-content: center; z-index: 2;
-            font-family: 'Fredoka','Baloo 2',sans-serif; font-weight: 700;
-            font-size: clamp(1.8rem, 7vw, 2.8rem); color: #fff;
-            text-shadow: 0 2px 0 rgba(0,0,0,.18);
-          }
-          .kvk-tile-cap {
-            position: absolute; bottom: 8px; left: 8px; right: 8px; z-index: 4;
-            background: #fff; border-radius: 14px; padding: 6px 10px;
-            box-shadow: 0 3px 0 rgba(0,0,0,.10);
-            text-align: center; font-family: 'Fredoka',sans-serif; font-weight: 700;
-            font-size: 0.8rem; line-height: 1;
-          }
-          .kvk-section-label {
-            font-family: 'Fredoka',sans-serif; font-weight: 700; font-size: 1.05rem;
-            color: #374151; text-align: center; letter-spacing: .04em;
-            margin: 12px 0 16px;
-            display: flex; align-items: center; gap: 14px; justify-content: center;
-          }
-          .kvk-section-label::before, .kvk-section-label::after {
-            content: ""; height: 3px; flex: 1; max-width: 80px; border-radius: 999px;
-            background: linear-gradient(90deg, rgba(34,197,94,.6), rgba(249,115,22,.7), rgba(60,203,255,.7), rgba(139,92,246,.6));
-          }
-          @media (max-width: 400px) {
-            .kvk-letter-tile { border-radius: 18px; }
-            .kvk-tile-letter { font-size: 1.6rem; }
-            .kvk-tile-cap { bottom: 5px; left: 5px; right: 5px; padding: 5px 6px; font-size: 0.68rem; border-radius: 10px; }
-          }
-        `}</style>
-
-        <BackButton onClick={onBack} />
-
-        <div style={{ padding: '68px 0.75rem 1.5rem', maxWidth: '600px', margin: '0 auto', width: '100%' }}>
-          <div className="kvk-section-label">
-            {language === 'bm' ? 'Pilih Huruf untuk Belajar' : 'Select a Letter to Learn'}
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#F7F7F7' }}>
+        {/* Header */}
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '0.75rem',
+          background: '#fff', borderBottom: '2px solid #E5E5E5',
+          padding: '0 1rem', height: '56px', flexShrink: 0,
+        }}>
+          <button onClick={onBack} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
+            <ArrowLeft size={24} />
+          </button>
+          <div style={{ flex: 1, textAlign: 'center', fontWeight: 900, fontSize: '1rem', color: '#3C3C3C' }}>
+            🔤 Tahap 2 — Suku Kata KVK
           </div>
+          <div style={{ width: 24 }} />
+        </div>
 
-          <div className="kvk-grid">
+        {/* Subtitle */}
+        <div style={{ padding: '1rem 1rem 0.25rem', textAlign: 'center' }}>
+          <p style={{ fontSize: '0.8rem', fontWeight: 700, color: '#AFAFAF', textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>
+            {language === 'bm' ? 'Pilih Huruf untuk Belajar' : 'Select a Letter to Learn'}
+          </p>
+        </div>
+
+        {/* Letter Grid */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '0.5rem 1rem 1.5rem' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(72px, 1fr))',
+            gap: '0.6rem',
+            maxWidth: '480px',
+            margin: '0 auto',
+          }}>
             {KVK_LETTERS.map((letter, idx) => {
-              const pal = TILE_PALETTE[idx % TILE_PALETTE.length];
+              const ci = idx % SLOT_COLORS.length;
               return (
                 <button
-                  type="button"
                   key={letter}
-                  className="kvk-letter-tile"
                   onClick={() => handleSelectLetter(letter)}
                   style={{
-                    background: `linear-gradient(165deg, ${pal.light} 0%, ${pal.base} 60%, ${pal.deep} 100%)`,
-                    animationDelay: `${0.04 + idx * 0.025}s`,
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                    background: '#fff',
+                    border: `3px solid ${SLOT_BG[ci]}`,
+                    borderBottom: `5px solid ${SLOT_COLORS[ci]}`,
+                    borderRadius: '16px',
+                    padding: '0.8rem 0.25rem',
+                    cursor: 'pointer',
+                    transition: 'transform 0.1s, box-shadow 0.1s',
+                    boxShadow: '0 4px 0 #E5E5E5',
+                    fontFamily: 'inherit',
                   }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 6px 0 ${SLOT_COLORS[ci]}`; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 4px 0 #E5E5E5'; }}
+                  onMouseDown={e => { e.currentTarget.style.transform = 'translateY(2px)'; e.currentTarget.style.boxShadow = '0 1px 0 #E5E5E5'; }}
+                  onMouseUp={e => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
                 >
-                  <span className="kvk-tile-letter">{letter}</span>
-                  <span className="kvk-tile-cap" style={{ color: pal.deep }}>
+                  <span style={{ fontSize: '2rem', fontWeight: 900, color: SLOT_COLORS[ci], lineHeight: 1 }}>{letter}</span>
+                  <span style={{ fontSize: '0.62rem', fontWeight: 700, color: '#AFAFAF', marginTop: '4px' }}>
                     {getKVKSeriesByLetter(letter).length} kad
                   </span>
                 </button>
@@ -226,7 +186,19 @@ export default function KVKLearningPage({ onBack, language }) {
   if (seriesComplete) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#fff' }}>
-        <BackButton onClick={handleBackToLetters} />
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '0.75rem',
+          background: '#fff', borderBottom: '2px solid #E5E5E5',
+          padding: '0 1rem', height: '56px', flexShrink: 0,
+        }}>
+          <button onClick={handleBackToLetters} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
+            <ArrowLeft size={24} />
+          </button>
+          <div style={{ flex: 1, textAlign: 'center', fontWeight: 900, fontSize: '1rem', color: '#3C3C3C' }}>
+            Siri {selectedLetter} ✅
+          </div>
+          <div style={{ width: 24 }} />
+        </div>
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', gap: '1.5rem', textAlign: 'center' }}>
           <div style={{ fontSize: '5rem', animation: 'kvkBounce 1.5s ease-in-out infinite' }}>🎉</div>
@@ -241,37 +213,23 @@ export default function KVKLearningPage({ onBack, language }) {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', maxWidth: '320px' }}>
             {nextLetter && (
-              <button type="button" onClick={handleNextLetter} style={{
+              <button onClick={handleNextLetter} style={{
                 width: '100%', padding: '1.1rem',
                 background: '#58CC02', color: '#fff',
-                border: 'none', borderBottom: '6px solid #46A302',
+                border: 'none', borderBottom: '4px solid #46A302',
                 borderRadius: '16px', fontWeight: 900, fontSize: '1.1rem',
                 cursor: 'pointer',
-                transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                boxShadow: '0 6px 0 rgba(0,0,0,0.1), inset 0 -2px 0 rgba(0,0,0,0.1)',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 0 rgba(0,0,0,0.15), inset 0 -2px 0 rgba(0,0,0,0.1)'; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 0 rgba(0,0,0,0.1), inset 0 -2px 0 rgba(0,0,0,0.1)'; }}
-              onMouseDown={e => { e.currentTarget.style.transform = 'translateY(0px)'; e.currentTarget.style.boxShadow = '0 2px 0 rgba(0,0,0,0.08), inset 0 -1px 0 rgba(0,0,0,0.1)'; }}
-              onMouseUp={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 0 rgba(0,0,0,0.15), inset 0 -2px 0 rgba(0,0,0,0.1)'; }}
-              >
+              }}>
                 Siri {nextLetter} →
               </button>
             )}
-            <button type="button" onClick={handleBackToLetters} style={{
+            <button onClick={handleBackToLetters} style={{
               width: '100%', padding: '1rem',
               background: '#fff', color: '#3C3C3C',
-              border: '2px solid #E5E5E5', borderBottom: '6px solid #D0D0D0',
+              border: '2px solid #E5E5E5', borderBottom: '4px solid #D0D0D0',
               borderRadius: '16px', fontWeight: 800, fontSize: '1rem',
               cursor: 'pointer',
-              transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
-              boxShadow: '0 6px 0 rgba(0,0,0,0.08), inset 0 -2px 0 rgba(0,0,0,0.05)',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 0 rgba(0,0,0,0.12), inset 0 -2px 0 rgba(0,0,0,0.05)'; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 0 rgba(0,0,0,0.08), inset 0 -2px 0 rgba(0,0,0,0.05)'; }}
-            onMouseDown={e => { e.currentTarget.style.transform = 'translateY(0px)'; e.currentTarget.style.boxShadow = '0 2px 0 rgba(0,0,0,0.06), inset 0 -1px 0 rgba(0,0,0,0.05)'; }}
-            onMouseUp={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 0 rgba(0,0,0,0.12), inset 0 -2px 0 rgba(0,0,0,0.05)'; }}
-            >
+            }}>
               {language === 'bm' ? '← Pilih Huruf Lain' : '← Pick Another Letter'}
             </button>
           </div>
@@ -292,48 +250,67 @@ export default function KVKLearningPage({ onBack, language }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#F7F7F7' }}>
 
-      <BackButton onClick={handleBackToLetters} />
+      {/* ── Header with progress dots ── */}
+      <div style={{
+        display: 'flex', alignItems: 'center',
+        background: '#fff', borderBottom: '2px solid #E5E5E5',
+        padding: '0 1rem', height: '56px', flexShrink: 0, gap: '0.5rem',
+      }}>
+        <button onClick={handleBackToLetters} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
+          <ArrowLeft size={22} />
+        </button>
 
-      {/* ── Centered content ── */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0.5rem 1rem', gap: '0.5rem', overflowY: 'auto' }}>
-        {/* ── Script Toggle ── */}
-        <div style={{ display: 'flex', gap: 'clamp(0.3rem, 2vw, 0.75rem)', justifyContent: 'center', width: '100%', maxWidth: '400px', padding: 'clamp(0.5rem, 2vw, 1rem)' }}>
-          {SCRIPTS.map(s => (
-            <button type="button" key={s.key} onClick={() => { setScript(s.key); setActiveSyl(null); }} style={{
-              flex: 1, maxWidth: 100, padding: '0.5rem 0',
-              margin: 'clamp(0.2rem, 1vw, 0.5rem)',
-              background: script === s.key ? s.color : '#fff',
-              color:      script === s.key ? '#fff'   : s.color,
-              border:     `2px solid ${s.color}`,
-              borderBottom: `5px solid ${s.color}`,
-              borderRadius: '12px', fontWeight: 900, fontSize: '0.85rem',
-              cursor: 'pointer', transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
-              boxShadow: script === s.key ? `0 6px 0 rgba(0,0,0,0.12), inset 0 -2px 0 rgba(0,0,0,0.1)` : 'none',
-              transform: script === s.key ? 'translateY(-2px)' : 'translateY(0)',
-              onMouseEnter: null,
-            }}
-            onMouseEnter={script === s.key ? undefined : (e) => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
-            onMouseLeave={script === s.key ? undefined : (e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
-            onMouseDown={script === s.key ? undefined : (e) => { e.currentTarget.style.transform = 'translateY(0px)'; }}
-            onMouseUp={script === s.key ? undefined : (e) => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
-            >
-              {s.label}
-            </button>
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'center', gap: '5px' }}>
+          {seriesItems.map((_, i) => (
+            <div key={i} style={{
+              width: i === cardIndex ? 22 : 9,
+              height: 9, borderRadius: '999px',
+              background: i < cardIndex ? '#58CC02' : i === cardIndex ? slotColor : '#E5E5E5',
+              transition: 'all 0.3s',
+            }} />
           ))}
         </div>
 
-        {/* ── Slot label ── */}
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <div style={{
-            background: slotBg, color: slotColor,
-            borderRadius: '999px', padding: '3px 14px',
-            fontWeight: 800, fontSize: '0.78rem', letterSpacing: '0.5px',
-          }}>
-            {currentItem?.kvk?.toUpperCase()} — {cardIndex + 1} / {seriesItems.length}
-          </div>
+        <div style={{
+          background: slotBg, color: slotColor,
+          borderRadius: '999px', padding: '4px 12px',
+          fontWeight: 900, fontSize: '0.85rem',
+        }}>
+          Siri <strong>{selectedLetter}</strong>
         </div>
+      </div>
 
-        {/* ── Main Card ── */}
+      {/* ── Script Toggle ── */}
+      <div style={{ display: 'flex', gap: '0.5rem', padding: '0.75rem 1rem 0.25rem', justifyContent: 'center', flexShrink: 0 }}>
+        {SCRIPTS.map(s => (
+          <button key={s.key} onClick={() => { setScript(s.key); setActiveSyl(null); }} style={{
+            flex: 1, maxWidth: 100, padding: '0.5rem 0',
+            background: script === s.key ? s.color : '#fff',
+            color:      script === s.key ? '#fff'   : s.color,
+            border:     `2px solid ${s.color}`,
+            borderBottom: `4px solid ${script === s.key ? s.color : '#D0D0D0'}`,
+            borderRadius: '12px', fontWeight: 900, fontSize: '0.85rem',
+            cursor: 'pointer', transition: 'all 0.15s',
+            transform: script === s.key ? 'translateY(2px)' : 'none',
+          }}>
+            {s.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ── Slot label ── */}
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '0.25rem 1rem 0.1rem', flexShrink: 0 }}>
+        <div style={{
+          background: slotBg, color: slotColor,
+          borderRadius: '999px', padding: '3px 14px',
+          fontWeight: 800, fontSize: '0.78rem', letterSpacing: '0.5px',
+        }}>
+          {currentItem?.kvk?.toUpperCase()} — {cardIndex + 1} / {seriesItems.length}
+        </div>
+      </div>
+
+      {/* ── Main Card ── */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0.5rem 1rem', gap: '0.75rem' }}>
         <div style={{
           width: '100%', maxWidth: '400px',
           background: '#fff', borderRadius: '28px',
@@ -344,7 +321,7 @@ export default function KVKLearningPage({ onBack, language }) {
           display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         }}>
           {/* Sound button */}
-          <button type="button" onClick={() => speak(currentItem)} title="Play sound" style={{
+          <button onClick={() => speak(currentItem)} title="Play sound" style={{
             position: 'absolute', top: 12, right: 12,
             background: slotBg, border: 'none', borderRadius: '50%',
             width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -408,28 +385,23 @@ export default function KVKLearningPage({ onBack, language }) {
         </div>
 
         {/* ── Mini syllable strip ── */}
-        <div style={{ display: 'flex', gap: 'clamp(0.2rem, 1.5vw, 0.5rem)', width: '100%', maxWidth: '400px', overflowX: 'auto', padding: 'clamp(0.5rem, 2vw, 1rem)', margin: '0 auto', justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '0.35rem', width: '100%', maxWidth: '400px', overflowX: 'auto', paddingBottom: '4px', margin: '0 auto', justifyContent: 'center', alignItems: 'center' }}>
           {seriesItems.map((it, i) => {
             const isA = i === cardIndex;
             const isDone = i < cardIndex;
             const c = SLOT_COLORS[i % SLOT_COLORS.length];
             const b = SLOT_BG[i % SLOT_BG.length];
             return (
-              <button type="button" key={it.id} onClick={() => { setCardIndex(i); setActiveSyl(null); }} style={{
+              <button key={it.id} onClick={() => { setCardIndex(i); setActiveSyl(null); }} style={{
                 flex: '1 0 auto', minWidth: 44, maxWidth: 64,
                 padding: '0.35rem 0.1rem',
-                margin: 'clamp(0.15rem, 1vw, 0.35rem)',
                 background: isA ? c : isDone ? b : '#fff',
                 color: isA ? '#fff' : isDone ? c : '#AFAFAF',
                 border: `2px solid ${isA ? c : isDone ? c : '#E5E5E5'}`,
                 borderBottom: `4px solid ${isA ? c : isDone ? c : '#D0D0D0'}`,
                 borderRadius: '10px', fontWeight: 900, fontSize: '0.72rem',
-                cursor: 'pointer', transition: 'all 0.12s cubic-bezier(0.34, 1.56, 0.64, 1)', textAlign: 'center',
-                boxShadow: isA ? `0 4px 0 rgba(0,0,0,0.12)` : '0 2px 0 rgba(0,0,0,0.06)',
-              }}
-              onMouseEnter={isA ? undefined : (e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 0 rgba(0,0,0,0.1)'; }}
-              onMouseLeave={isA ? undefined : (e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 0 rgba(0,0,0,0.06)'; }}
-              >
+                cursor: 'pointer', transition: 'all 0.15s', textAlign: 'center',
+              }}>
                 {it.kvk.toUpperCase()}
                 {isDone && <div style={{ fontSize: '0.58rem' }}>✓</div>}
               </button>
@@ -440,62 +412,41 @@ export default function KVKLearningPage({ onBack, language }) {
 
       {/* ── Bottom Nav ── */}
       <div style={{
-        display: 'flex', gap: 'clamp(0.5rem, 2vw, 1rem)', padding: 'clamp(0.6rem, 2vw, 1rem)',
-        paddingBottom: 'calc(clamp(0.6rem, 2vw, 1rem) + env(safe-area-inset-bottom, 0px))',
+        display: 'flex', gap: '0.75rem', padding: '0.75rem 1rem',
+        paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))',
         background: '#fff', borderTop: '2px solid #E5E5E5', flexShrink: 0,
       }}>
-        <button type="button" onClick={handlePrev} disabled={cardIndex === 0} style={{
+        <button onClick={handlePrev} disabled={cardIndex === 0} style={{
           flex: '0 0 50px', height: '50px', borderRadius: '14px',
-          margin: 'clamp(0.3rem, 1.5vw, 0.5rem)',
           background: cardIndex === 0 ? '#f0f0f0' : '#fff',
           border: `2px solid ${cardIndex === 0 ? '#E5E5E5' : '#D0D0D0'}`,
-          borderBottom: `5px solid ${cardIndex === 0 ? '#E5E5E5' : '#C0C0C0'}`,
+          borderBottom: `4px solid ${cardIndex === 0 ? '#E5E5E5' : '#C0C0C0'}`,
           color: cardIndex === 0 ? '#C0C0C0' : '#3C3C3C',
           cursor: cardIndex === 0 ? 'not-allowed' : 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          transition: cardIndex === 0 ? 'none' : 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
-          boxShadow: cardIndex === 0 ? 'none' : '0 5px 0 rgba(0,0,0,0.08)',
-        }}
-        onMouseEnter={cardIndex === 0 ? undefined : (e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 0 rgba(0,0,0,0.12)'; }}
-        onMouseLeave={cardIndex === 0 ? undefined : (e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 5px 0 rgba(0,0,0,0.08)'; }}
-        onMouseDown={cardIndex === 0 ? undefined : (e) => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 2px 0 rgba(0,0,0,0.06)'; }}
-        >
+        }}>
           <ChevronLeft size={22} />
         </button>
 
-        <button type="button" onClick={() => speak(currentItem)} style={{
+        <button onClick={() => speak(currentItem)} style={{
           flex: 1, height: '50px', borderRadius: '14px',
-          margin: 'clamp(0.3rem, 1.5vw, 0.5rem)',
           background: slotBg, color: slotColor,
-          border: `2px solid ${slotColor}44`, borderBottom: `5px solid ${slotColor}`,
+          border: `2px solid ${slotColor}44`, borderBottom: `4px solid ${slotColor}`,
           fontWeight: 900, fontSize: '1rem', cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem',
-          transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
-          boxShadow: `0 5px 0 rgba(0,0,0,0.08), inset 0 -2px 0 rgba(0,0,0,0.08)`,
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = `0 8px 0 rgba(0,0,0,0.12), inset 0 -2px 0 rgba(0,0,0,0.08)`; }}
-        onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 5px 0 rgba(0,0,0,0.08), inset 0 -2px 0 rgba(0,0,0,0.08)`; }}
-        onMouseDown={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = `0 2px 0 rgba(0,0,0,0.06), inset 0 -1px 0 rgba(0,0,0,0.08)`; }}
-        >
+        }}>
           <Volume2 size={18} />
           {language === 'bm' ? 'Dengar' : 'Listen'}
         </button>
 
-        <button type="button" onClick={handleNext} style={{
+        <button onClick={handleNext} style={{
           flex: '0 0 auto', padding: '0 1.1rem', height: '50px', borderRadius: '14px',
-          margin: 'clamp(0.3rem, 1.5vw, 0.5rem)',
           background: cardIndex === seriesItems.length - 1 ? '#58CC02' : slotColor,
           color: '#fff', border: 'none',
-          borderBottom: `5px solid ${cardIndex === seriesItems.length - 1 ? '#46A302' : slotColor}CC`,
+          borderBottom: `4px solid ${cardIndex === seriesItems.length - 1 ? '#46A302' : slotColor}CC`,
           fontWeight: 900, fontSize: '1rem', cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem',
-          transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
-          boxShadow: '0 5px 0 rgba(0,0,0,0.12), inset 0 -2px 0 rgba(0,0,0,0.1)',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 0 rgba(0,0,0,0.15), inset 0 -2px 0 rgba(0,0,0,0.1)'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 5px 0 rgba(0,0,0,0.12), inset 0 -2px 0 rgba(0,0,0,0.1)'; }}
-        onMouseDown={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 2px 0 rgba(0,0,0,0.1), inset 0 -1px 0 rgba(0,0,0,0.1)'; }}
-        >
+        }}>
           {cardIndex === seriesItems.length - 1
             ? (language === 'bm' ? 'Siap ✓' : 'Done ✓')
             : (language === 'bm' ? 'Seterusnya' : 'Next')}
