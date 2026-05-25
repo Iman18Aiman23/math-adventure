@@ -283,7 +283,7 @@ export const ObjectsIcon = ({ size = 200, className }) => (
   </svg>
 );
 
-export const SpellingIcon = ({ size = 200, className }) => (
+export const SpellingwordsIcon = ({ size = 200, className }) => (
   <svg width={size} height={size} viewBox="0 0 200 200" className={className}>
     <defs>
       <radialGradient id="spHead" cx="25%" cy="25%" r="75%">
@@ -346,6 +346,76 @@ export const SpellingIcon = ({ size = 200, className }) => (
   </svg>
 );
 
+export const SpellingIcon = ({ size = 200, className }) => (
+  <svg width={size} height={size} viewBox="0 0 200 200" className={className}>
+    <defs>
+      <radialGradient id="spHead" cx="25%" cy="25%" r="75%">
+        <stop offset="0%" stopColor="#B39DDB" />
+        <stop offset="50%" stopColor="#5E35B1" />
+        <stop offset="100%" stopColor="#1A237E" />
+      </radialGradient>
+      <radialGradient id="spFace" cx="30%" cy="30%" r="70%">
+        <stop offset="0%" stopColor="#1A1140" />
+        <stop offset="100%" stopColor="#0A061F" />
+      </radialGradient>
+      <linearGradient id="spTile" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#FFF6E2" />
+        <stop offset="100%" stopColor="#E0BD7A" />
+      </linearGradient>
+      <linearGradient id="spTileGold" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#FFE082" />
+        <stop offset="100%" stopColor="#F57F17" />
+      </linearGradient>
+      <filter id="spGlow" x="-30%" y="-30%" width="160%" height="160%">
+        <feDropShadow dx="0" dy="4" stdDeviation="8" floodColor="#5E35B1" floodOpacity="0.4" />
+      </filter>
+    </defs>
+    <rect x="10" y="10" width="180" height="180" rx="30" ry="30" fill="#FFFFFF" stroke="#5E35B1" strokeWidth="4" />
+    <line x1="100" y1="12" x2="100" y2="32" stroke="#D1C4E9" strokeWidth="4" strokeLinecap="round" />
+    <circle cx="100" cy="8" r="8" fill="#FFEB3B" filter="url(#spGlow)" />
+    <circle cx="100" cy="8" r="3" fill="#FFF" />
+    <rect x="22" y="32" width="156" height="136" rx="42" ry="42" fill="url(#spHead)" filter="url(#spGlow)" />
+    <rect x="22" y="32" width="156" height="136" rx="42" ry="42" fill="none" stroke="#D1C4E9" strokeWidth="3" />
+    <ellipse cx="15" cy="100" rx="12" ry="22" fill="url(#spHead)" filter="url(#spGlow)" />
+    <ellipse cx="15" cy="100" rx="12" ry="22" fill="none" stroke="#D1C4E9" strokeWidth="2" />
+    <ellipse cx="185" cy="100" rx="12" ry="22" fill="url(#spHead)" filter="url(#spGlow)" />
+    <ellipse cx="185" cy="100" rx="12" ry="22" fill="none" stroke="#D1C4E9" strokeWidth="2" />
+    <rect x="38" y="52" width="124" height="96" rx="32" ry="32" fill="url(#spFace)" />
+    <rect x="38" y="52" width="124" height="96" rx="32" ry="32" fill="none" stroke="#9575CD" strokeWidth="2" opacity="0.5" />
+    <g transform="translate(0 6)">
+      <rect x="56" y="80" width="24" height="28" rx="3" fill="none" stroke="#D1C4E9" strokeWidth="1.5" strokeDasharray="3 3" />
+      <rect x="84" y="80" width="24" height="28" rx="3" fill="none" stroke="#D1C4E9" strokeWidth="1.5" strokeDasharray="3 3" />
+      <rect x="112" y="80" width="24" height="28" rx="3" fill="none" stroke="#D1C4E9" strokeWidth="1.5" strokeDasharray="3 3" />
+
+      {/* Tile 1: Alif */}
+      <rect x="56" y="80" width="24" height="28" rx="3" fill="url(#spTile)" stroke="#5B3A0A" strokeWidth="1.6" />
+      <rect x="56" y="80" width="24" height="6" rx="3" fill="rgba(255,255,255,.55)" />
+      <text x="68" y="100" textAnchor="middle" fontFamily="'Baloo 2','Noto Sans Arabic',sans-serif" fontWeight="800" fontSize="18" fill="#5B3A0A">ت</text>
+      <text x="76" y="106" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="700" fontSize="7" fill="#5B3A0A" opacity=".7">1</text>
+
+      {/* Tile 2: Ba */}
+      <rect x="84" y="80" width="24" height="28" rx="3" fill="url(#spTile)" stroke="#5B3A0A" strokeWidth="1.6" />
+      <rect x="84" y="80" width="24" height="6" rx="3" fill="rgba(255,255,255,.55)" />
+      <text x="96" y="100" textAnchor="middle" fontFamily="'Baloo 2','Noto Sans Arabic',sans-serif" fontWeight="800" fontSize="18" fill="#5B3A0A">ب</text>
+      <text x="104" y="106" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="700" fontSize="7" fill="#5B3A0A" opacity=".7">2</text>
+
+      {/* Tile 3: Ta (Gold) */}
+      <g transform="translate(124 68) rotate(-8)">
+        <rect width="24" height="28" rx="3" fill="url(#spTileGold)" stroke="#7A4D02" strokeWidth="1.6" />
+        <rect width="24" height="6" rx="3" fill="rgba(255,255,255,.55)" />
+        <text x="12" y="20" textAnchor="middle" fontFamily="'Baloo 2','Noto Sans Arabic',sans-serif" fontWeight="800" fontSize="18" fill="#7A4D02">ا</text>
+        <text x="20" y="26" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="700" fontSize="7" fill="#7A4D02" opacity=".7">3</text>
+      </g>
+
+      <path d="M124 92 v8" stroke="#FFEB3B" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="2 2" />
+      <polygon points="120,100 124,106 128,100" fill="#FFEB3B" />
+      <polygon points="48,62 50,66 54,68 50,70 48,74 46,70 42,68 46,66" fill="#FFEB3B" opacity="0.8" />
+      <polygon points="152,62 154,66 158,68 154,70 152,74 150,70 146,68 150,66" fill="#FFEB3B" opacity="0.6" />
+    </g>
+    <text x="100" y="178" fontSize="12" fontFamily="'Fredoka','Baloo 2',sans-serif" fontWeight="700" fill="#5E35B1" textAnchor="middle" dominantBaseline="central">Alif Ba Ta</text>
+  </svg>
+);
+
 export const JawiAlphabetIcon = ({ size = 200, className }) => (
   <svg width={size} height={size} viewBox="0 0 200 200" className={className}>
     <defs>
@@ -381,7 +451,7 @@ export const JawiAlphabetIcon = ({ size = 200, className }) => (
     <g transform="translate(0 8)">
       <rect x="48" y="72" width="28" height="38" rx="5" fill="url(#jaCard)" stroke="#5B3A0A" strokeWidth="2" />
       <rect x="48" y="72" width="28" height="8" rx="5" fill="rgba(255,255,255,.55)" />
-      <text x="62" y="100" textAnchor="middle" fontFamily="'Amiri Quran','Scheherazade New',serif" fontWeight="700" fontSize="24" fill="#5B3A0A">ا</text>
+      <text x="62" y="100" textAnchor="middle" fontFamily="'Amiri Quran','Scheherazade New',serif" fontWeight="700" fontSize="24" fill="#5B3A0A">ت </text>
       <g transform="rotate(-6 100 90)">
         <rect x="86" y="68" width="28" height="38" rx="5" fill="#fff" stroke="#5B3A0A" strokeWidth="2" />
         <rect x="86" y="68" width="28" height="8" rx="5" fill="rgba(123,31,162,.18)" />
@@ -389,7 +459,7 @@ export const JawiAlphabetIcon = ({ size = 200, className }) => (
       </g>
       <rect x="124" y="72" width="28" height="38" rx="5" fill="url(#jaCard)" stroke="#5B3A0A" strokeWidth="2" />
       <rect x="124" y="72" width="28" height="8" rx="5" fill="rgba(255,255,255,.55)" />
-      <text x="138" y="100" textAnchor="middle" fontFamily="'Amiri Quran','Scheherazade New',serif" fontWeight="700" fontSize="24" fill="#5B3A0A">ت</text>
+      <text x="138" y="100" textAnchor="middle" fontFamily="'Amiri Quran','Scheherazade New',serif" fontWeight="700" fontSize="24" fill="#5B3A0A">ا</text>
       <polygon points="48,62 50,66 54,68 50,70 48,74 46,70 42,68 46,66" fill="#FFEB3B" opacity="0.8" />
       <polygon points="152,62 154,66 158,68 154,70 152,74 150,70 146,68 150,66" fill="#FFEB3B" opacity="0.6" />
     </g>
@@ -482,11 +552,11 @@ export const Jawi100WordsIcon = ({ size = 200, className }) => (
     <g transform="translate(0 5)">
       <g transform="rotate(-8 70 92)">
         <rect x="44" y="76" width="52" height="32" rx="5" fill="url(#j100Card)" stroke="#5B3A0A" strokeWidth="1.8" />
-        <text x="70" y="100" textAnchor="middle" fontFamily="'Amiri Quran',serif" fontWeight="700" fontSize="18" fill="#5B3A0A">بومي</text>
+        <text x="70" y="100" textAnchor="middle" fontFamily="'Amiri Quran',serif" fontWeight="700" fontSize="18" fill="#5B3A0A"></text>
       </g>
       <g transform="rotate(2 76 96)">
         <rect x="50" y="80" width="52" height="32" rx="5" fill="#fff" stroke="#5B3A0A" strokeWidth="1.8" />
-        <text x="76" y="104" textAnchor="middle" fontFamily="'Amiri Quran',serif" fontWeight="700" fontSize="18" fill="#5B3A0A">كتاب</text>
+        <text x="76" y="104" textAnchor="middle" fontFamily="'Amiri Quran',serif" fontWeight="700" fontSize="18" fill="#5B3A0A">ايات</text>
       </g>
       <circle cx="138" cy="92" r="22" fill="url(#j100Badge)" stroke="#8F5300" strokeWidth="2" />
       <ellipse cx="132" cy="84" rx="6" ry="9" fill="#fff" opacity=".45" transform="rotate(-20 132 84)" />
@@ -595,7 +665,7 @@ export const JawiGameIcon = ({ size = 200, className }) => (
       <g transform="rotate(-10 62 96)">
         <rect x="48" y="80" width="28" height="32" rx="5" fill="url(#jgDie)" stroke="#33691E" strokeWidth="2" />
         <rect x="48" y="80" width="28" height="8" rx="5" fill="rgba(255,255,255,.65)" />
-        <text x="62" y="104" textAnchor="middle" fontFamily="'Amiri Quran',serif" fontWeight="700" fontSize="22" fill="#33691E">ا</text>
+        <text x="62" y="104" textAnchor="middle" fontFamily="'Amiri Quran',serif" fontWeight="700" fontSize="22" fill="#33691E">ت</text>
       </g>
       <g transform="rotate(5 100 92)">
         <rect x="86" y="76" width="28" height="32" rx="5" fill="url(#jgDie2)" stroke="#7A4D02" strokeWidth="2" />
@@ -605,7 +675,7 @@ export const JawiGameIcon = ({ size = 200, className }) => (
       <g transform="rotate(-6 138 96)">
         <rect x="124" y="80" width="28" height="32" rx="5" fill="url(#jgDie3)" stroke="#0B4A8E" strokeWidth="2" />
         <rect x="124" y="80" width="28" height="8" rx="5" fill="rgba(255,255,255,.5)" />
-        <text x="138" y="104" textAnchor="middle" fontFamily="'Amiri Quran',serif" fontWeight="700" fontSize="22" fill="#fff" stroke="#0B4A8E" strokeWidth=".5">ت</text>
+        <text x="138" y="104" textAnchor="middle" fontFamily="'Amiri Quran',serif" fontWeight="700" fontSize="22" fill="#fff" stroke="#0B4A8E" strokeWidth=".5">ا</text>
       </g>
       <path d="M60 124 q40 -8 80 0" stroke="#FFEB3B" strokeWidth="2.4" fill="none" strokeLinecap="round" strokeDasharray="3 3" />
       <circle cx="100" cy="130" r="6" fill="#FFEB3B" stroke="#33691E" strokeWidth="1.5" />
