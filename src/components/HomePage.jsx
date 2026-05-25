@@ -98,55 +98,71 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
 
         /* ─── Subject Cards (Subject.html design) ─── */
         .subject-card {
-            background: linear-gradient(180deg, #ffffff 0%, #F4FAFF 100%);
-            border-radius: 32px;
-            padding: 22px 20px 28px;
+            border-radius: 24px;
+            padding: 16px 12px 20px;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 14px;
-            border: 2px solid rgba(70,216,255,.18);
-            box-shadow:
-              0 2px 0 rgba(255,255,255,1) inset,
-              0 -2px 0 rgba(70,216,255,.08) inset,
-              0 14px 36px -12px rgba(11,124,168,.25),
-              0 2px 6px rgba(11,124,168,.08);
-            transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .35s;
+            gap: 12px;
+            transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .35s, border-color .35s;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
-        }
-        .subject-card:hover {
-            transform: translateY(-6px) scale(1.015);
+            width: 100%;
+            min-height: 220px;
+            justify-content: flex-start;
+            border: 2.5px solid rgba(255,255,255,0.4);
             box-shadow:
-              0 2px 0 rgba(255,255,255,1) inset,
-              0 -2px 0 rgba(70,216,255,.08) inset,
-              0 20px 56px -12px rgba(11,124,168,.35),
-              0 4px 14px rgba(11,124,168,.14);
+              0 2.5px 0 rgba(255,255,255,0.4) inset,
+              0 10px 24px -8px rgba(0,0,0,0.12),
+              0 2px 4px rgba(0,0,0,0.04);
+        }
+        .subject-card.card-reading {
+            background: radial-gradient(ellipse at 50% 38%, #FFF4DF 0%, #FFDFB4 60%, #FFB86E 100%);
+            border-color: rgba(255, 176, 96, 0.4);
+        }
+        .subject-card.card-speak {
+            background: radial-gradient(ellipse at 50% 38%, #FFE9F3 0%, #FFBFDD 60%, #FF8CBF 100%);
+            border-color: rgba(255, 128, 187, 0.4);
+        }
+        .subject-card.card-arabic {
+            background: radial-gradient(ellipse at 50% 38%, #D6F5DD 0%, #8AD9A8 55%, #2A9A6C 100%);
+            border-color: rgba(42, 154, 108, 0.4);
+        }
+        .subject-card.card-math {
+            background: radial-gradient(ellipse at 50% 38%, #E7D9FF 0%, #B79CFF 55%, #7A55E0 100%);
+            border-color: rgba(122, 85, 224, 0.4);
+        }
+
+        .subject-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            filter: brightness(1.03);
+            box-shadow:
+              0 2.5px 0 rgba(255,255,255,0.5) inset,
+              0 16px 36px -8px rgba(0,0,0,0.2),
+              0 4px 10px rgba(0,0,0,0.06);
         }
         .subject-card:active {
-            transform: translateY(2px) scale(0.99);
-            box-shadow: 0 4px 12px rgba(11,124,168,.12);
+            transform: translateY(2px) scale(0.98);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
         }
 
         /* Coloured robot stage */
         .rb-stage {
             width: 100%;
+            max-width: 110px;
             aspect-ratio: 1 / 1;
-            border-radius: 26px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             overflow: hidden;
-            box-shadow: inset 0 -8px 28px rgba(11,124,168,.12), inset 0 2px 0 rgba(255,255,255,.5);
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.35);
+            box-shadow: inset 0 -4px 12px rgba(0,0,0,0.06), inset 0 1.5px 0 rgba(255,255,255,0.4);
         }
         .rb-stage > svg { width: 96%; height: 96%; display: block; overflow: visible; }
-
-        .rb-stage.bg-reading { background: radial-gradient(ellipse at 50% 38%, #FFF1D8 0%, #FFD9A2 55%, #FFB060 100%); }
-        .rb-stage.bg-speak   { background: radial-gradient(ellipse at 50% 38%, #FFE0F0 0%, #FFB3D6 55%, #FF80BB 100%); }
-        .rb-stage.bg-math    { background: radial-gradient(ellipse at 50% 38%, #E7D9FF 0%, #B79CFF 55%, #7A55E0 100%); }
-        .rb-stage.bg-arabic  { background: radial-gradient(ellipse at 50% 38%, #D6F5DD 0%, #8AD9A8 55%, #2A9A6C 100%); }
 
         /* Floating deco dots inside each stage */
         .rb-deco-dot { position: absolute; border-radius: 50%; pointer-events: none; }
@@ -161,27 +177,29 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
         .rb-pill {
             font-family: 'Baloo 2', sans-serif;
             font-weight: 700;
-            font-size: 11px;
-            letter-spacing: 0.12em;
+            font-size: 10.5px;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
             color: #fff;
-            padding: 6px 16px;
+            padding: 4px 14px;
             border-radius: 999px;
             background: linear-gradient(180deg, #7BE7FF 0%, #46D8FF 60%, #0F9CC8 100%);
-            box-shadow: 0 2px 0 #0B7CA8, 0 6px 14px -4px rgba(11,124,168,.4);
+            box-shadow: 0 1.5px 0 #0B7CA8, 0 4px 8px -2px rgba(11,124,168,.4);
             text-shadow: 0 1px 0 rgba(11,124,168,.4);
+            white-space: nowrap;
+            text-align: center;
         }
 
         /* Card description */
         .rb-desc {
             font-family: 'Fredoka', system-ui, sans-serif;
-            font-weight: 500;
-            font-size: 13.5px;
-            color: #5B6F86;
+            font-weight: 700;
+            font-size: 12px;
+            color: #2D3748;
             margin: 0;
             text-align: center;
-            line-height: 1.5;
-            padding: 0 8px;
+            line-height: 1.45;
+            padding: 0 4px;
         }
 
         @keyframes heroStarTwinkle { from { opacity: var(--base-op, 0.25); transform: scale(1); } to { opacity: 1; transform: scale(1.7); } }
@@ -223,9 +241,9 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
 
         .course-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 1.25rem;
-            padding-bottom: 3rem;
+            padding-bottom: 2.5rem;
         }
         
         .age-group-grid {
@@ -239,6 +257,13 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             height: 28px;
             font-size: 0.85rem;
             flex-shrink: 0;
+        }
+
+        @media (max-width: 1023px) {
+            .course-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.25rem;
+            }
         }
 
         @media (max-width: 768px) {
@@ -285,15 +310,32 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
                 margin: 0 auto;
             }
             .course-grid {
-                grid-template-columns: 1fr !important;
-                gap: 1rem !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 0.85rem !important;
+                padding-bottom: 2rem !important;
             }
             .age-group-grid {
                 grid-template-columns: 1fr !important;
                 gap: 1rem !important;
             }
             .subject-card {
-                padding: 1.25rem 1rem !important;
+                padding: 12px 8px 14px !important;
+                gap: 10px !important;
+                border-radius: 20px !important;
+                min-height: 190px !important;
+            }
+            .rb-stage {
+                max-width: 85px !important;
+                border-radius: 16px !important;
+            }
+            .rb-pill {
+                font-size: 9px !important;
+                padding: 3px 10px !important;
+            }
+            .rb-desc {
+                font-size: 10.5px !important;
+                line-height: 1.35 !important;
+                padding: 0 !important;
             }
             .hero-title {
                 font-size: 1.8rem !important;
@@ -464,8 +506,8 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
         <div className="course-grid">
 
           {/* 1. Belajar Membaca */}
-          <div className="subject-card" onClick={() => onSelectSubject('reading')} role="button" tabIndex="0" aria-label="Belajar Membaca">
-            <div className="rb-stage bg-reading">
+          <div className="subject-card card-reading" onClick={() => onSelectSubject('reading')} role="button" tabIndex="0" aria-label="Belajar Membaca">
+            <div className="rb-stage">
               <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
               <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
               <RobotReading />
@@ -475,8 +517,8 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
           </div>
 
           {/* 2. Belajar Sebutan */}
-          <div className="subject-card" onClick={() => onSelectSubject('bm')} role="button" tabIndex="0" aria-label="Belajar Sebutan">
-            <div className="rb-stage bg-speak">
+          <div className="subject-card card-speak" onClick={() => onSelectSubject('bm')} role="button" tabIndex="0" aria-label="Belajar Sebutan">
+            <div className="rb-stage">
               <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
               <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
               <RobotSpeaking />
@@ -486,8 +528,8 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
           </div>
 
           {/* 3. Jawi */}
-          <div className="subject-card" onClick={() => onSelectSubject('jawi')} role="button" tabIndex="0" aria-label="Jawi">
-            <div className="rb-stage bg-arabic">
+          <div className="subject-card card-arabic" onClick={() => onSelectSubject('jawi')} role="button" tabIndex="0" aria-label="Jawi">
+            <div className="rb-stage">
               <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
               <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
               <RobotArabic />
@@ -497,8 +539,8 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
           </div>
 
           {/* 4. Matematik */}
-          <div className="subject-card" onClick={() => onSelectSubject('math')} role="button" tabIndex="0" aria-label="Matematik">
-            <div className="rb-stage bg-math">
+          <div className="subject-card card-math" onClick={() => onSelectSubject('math')} role="button" tabIndex="0" aria-label="Matematik">
+            <div className="rb-stage">
               <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
               <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
               <RobotMath />
