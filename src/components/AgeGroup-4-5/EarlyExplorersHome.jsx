@@ -1,7 +1,8 @@
-import React, { useState, useRef, useCallback } from 'react';
-import { CURRICULUM, getAgeGroup } from '../../data/ageCurriculum';
+import React, { useRef, useCallback } from 'react';
+import { CURRICULUM } from '../../data/ageCurriculum';
 import { playHoverSound } from '../../utils/soundManager';
-import BackButton from '../BackButton';
+import PageLayout from '../PageLayout';
+import '../SpeakingPage/BMPage.css';
 
 // Import SVG icons
 import AlphabetSafariSvg from '../icons/EarlyExplorersHome/AlphabetSafari.svg';
@@ -10,6 +11,24 @@ import PhonicsPopSvg from '../icons/EarlyExplorersHome/PhoneticsPop.svg';
 import SoundMatchingSvg from '../icons/EarlyExplorersHome/SoundMatching.svg';
 import LetterSoundPuzzleSvg from '../icons/EarlyExplorersHome/LetterSoundPuzzle.svg';
 import PhonicsSprintSvg from '../icons/EarlyExplorersHome/PhoneticsSprint.svg';
+
+const SVG_MAP = {
+  'alphabet-safari':    AlphabetSafariSvg,
+  'letter-trace':       LetterTraceSvg,
+  'phonics-pop':        PhonicsPopSvg,
+  'sound-matching':     SoundMatchingSvg,
+  'letter-sound-puzzle':LetterSoundPuzzleSvg,
+  'phonics-sprint':     PhonicsSprintSvg,
+};
+
+const CAT_MAP = {
+  'alphabet-safari':    'cat-objects',
+  'letter-trace':       'cat-kvk',
+  'phonics-pop':        'cat-phonics',
+  'sound-matching':     'cat-kv',
+  'letter-sound-puzzle':'cat-numbers',
+  'phonics-sprint':     'cat-kv',
+};
 
 export default function EarlyExplorersHome(props) {
   const { onBack, onPlayGame, language = 'bm' } = props;
@@ -23,152 +42,85 @@ export default function EarlyExplorersHome(props) {
     }
   });
 
-  return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      flex: 1,
-      background: 'linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%)',
-      minHeight: '100vh',
-    }}>
-      <style>{`
-        /* Games Grid Responsive Columns */
-        .games-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 1.25rem;
-          max-width: 100%;
-        }
+  const heroSubtitle = (
+    <>
+      {language === 'bm'
+        ? 'Kuasai abjad, sebutan, dan bunyi menerusi permainan teroka awal!'
+        : 'Master letters, sounds, and spelling through play!'}
+      <span aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#58CC02">
+          <path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/>
+        </svg>
+      </span>
+    </>
+  );
 
-        /* Tablet: 3 columns (min-width: 640px) */
-        @media (min-width: 640px) {
-          .games-grid {
-            grid-template-columns: repeat(3, 1fr);
-          }
-        }
+  const hintContent = (
+    <>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="#58CC02"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+      {language === 'bm' ? 'Pilih permainan untuk mula belajar!' : 'Pick a game to start learning!'}
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF3D8B"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+    </>
+  );
 
-        /* Desktop: 4 columns max (min-width: 1024px) */
-        @media (min-width: 1024px) {
-          .games-grid {
-            grid-template-columns: repeat(4, 1fr);
-          }
-        }
-
-        /* Game Card Styling */
-        .game-card {
-          cursor: pointer;
-          display: block;
-          width: 100%;
-          transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
-                      filter 0.25s ease-out;
-          transform: scale(1);
-          filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
-          will-change: transform, filter;
-        }
-
-        .game-card--hovered {
-          transform: scale(1.08);
-          filter: brightness(1.1) drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
-        }
-
-        .game-card--pressed {
-          transform: scale(0.95);
-        }
-      `}</style>
-      {/* Back button */}
-      <BackButton onClick={onBack} />
-
-      <div style={{
-        flex: 1,
-        overflowY: 'auto',
-        padding: '1rem',
-        paddingBottom: 'calc(1.25rem + var(--safe-bottom, 0))',
-      }}>
-        {/* Hero section with improved visual hierarchy */}
-        <div style={{
-          marginBottom: '2.5rem',
-        }}>
-          <div style={{
-            background: 'linear-gradient(135deg, #58CC0220, #46A30210)',
-            borderRadius: '20px',
-            padding: '2.25rem 1.75rem',
-            color: '#1F2937',
-            boxShadow: '0 2px 12px rgba(88, 204, 2, 0.1), inset 0 1px 0 rgba(255,255,255,0.6)',
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: '1.5rem',
-            border: '1px solid rgba(88, 204, 2, 0.15)',
-          }}>
-            <span style={{ fontSize: '3.5rem', lineHeight: 1, flexShrink: 0 }}>🌱</span>
-            <div style={{ flex: 1 }}>
-              <div style={{
-                fontSize: '0.65rem',
-                fontWeight: 800,
-                opacity: 0.55,
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-                marginBottom: '0.6rem',
-                color: '#64748B',
-              }}>
-                Age Group 4–5
-              </div>
-              <div style={{
-                fontSize: '1.85rem',
-                fontWeight: 900,
-                fontFamily: 'var(--font-heading)',
-                lineHeight: 1.2,
-                margin: '0 0 0.8rem 0',
-                color: '#58CC02',
-                letterSpacing: '-0.3px',
-              }}>
-                Early Explorers
-              </div>
-              <div style={{
-                fontSize: '0.9rem',
-                fontWeight: 500,
-                opacity: 0.7,
-                lineHeight: 1.6,
-                color: '#475569',
-              }}>
-                Master letters, sounds, and the building blocks of reading through playful games
-              </div>
-            </div>
-          </div>
+  const additionalSection = (
+    <div className="bm-howto">
+      <div className="bm-howto-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFB300" aria-hidden="true">
+          <path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/>
+        </svg>
+        {language === 'bm' ? 'Cara Meneroka' : 'How to Explore'}
+      </div>
+      <div className="bm-howto-steps">
+        <div className="bm-howto-step">
+          <span className="bm-step-num" style={{ background: 'linear-gradient(180deg, #A8F080, #58CC02)', boxShadow: '0 3px 0 #388E3C' }}>1</span>
+          <span>{language === 'bm' ? 'Pilih permainan abjad pilihan anda.' : 'Select a game to start learning.'}</span>
         </div>
-
-        {/* Games Grid - Responsive: Mobile 2col, Tablet 3col, Desktop 4col */}
-        <div className="games-grid">
-          {allGames.map((game, idx) => (
-            <GameCard
-              key={game.id}
-              game={game}
-              onPlay={() => onPlayGame(game.id)}
-              language={language}
-              index={idx}
-            />
-          ))}
+        <div className="bm-howto-step">
+          <span className="bm-step-num" style={{ background: 'linear-gradient(180deg, #A8F080, #58CC02)', boxShadow: '0 3px 0 #388E3C' }}>2</span>
+          <span>{language === 'bm' ? 'Main, dengar bunyi fonik, dan ikut arahan.' : 'Play, listen to phonics, and interact.'}</span>
+        </div>
+        <div className="bm-howto-step">
+          <span className="bm-step-num" style={{ background: 'linear-gradient(180deg, #A8F080, #58CC02)', boxShadow: '0 3px 0 #388E3C' }}>3</span>
+          <span>{language === 'bm' ? 'Kumpul markah bintang dan teruskan belajar!' : 'Collect star points and level up!'}</span>
         </div>
       </div>
     </div>
   );
+
+  return (
+    <>
+      <style>{`
+        /* Add specific styling for the 6th tile animation delay */
+        .bp-icon-card:nth-child(6) { animation-delay: .4s; }
+      `}</style>
+      <PageLayout
+        classPrefix="bp"
+        heroIcon={<span style={{ fontSize: '4.5rem', lineHeight: 1 }}>🌱</span>}
+        heroTitle={language === 'bm' ? 'Teroka Awal' : 'Early Explorers'}
+        heroSubtitle={heroSubtitle}
+        sectionLabel={language === 'bm' ? 'Pilih Permainan' : 'Choose Game'}
+        hintText={hintContent}
+        onBack={onBack}
+        additionalSection={additionalSection}
+      >
+        {allGames.map((game) => (
+          <GameCard
+            key={game.id}
+            game={game}
+            className={CAT_MAP[game.id]}
+            onPlay={() => onPlayGame(game.id)}
+          />
+        ))}
+      </PageLayout>
+    </>
+  );
 }
 
-const SVG_MAP = {
-  'alphabet-safari':    AlphabetSafariSvg,
-  'letter-trace':       LetterTraceSvg,
-  'phonics-pop':        PhonicsPopSvg,
-  'sound-matching':     SoundMatchingSvg,
-  'letter-sound-puzzle':LetterSoundPuzzleSvg,
-  'phonics-sprint':     PhonicsSprintSvg,
-};
-
-const GameCard = React.memo(function GameCard({ game, onPlay, language, index }) {
-  const [isHovered, setIsHovered] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
+const GameCard = React.memo(function GameCard({ game, className, onPlay }) {
   const soundPlayedRef = useRef(false);
 
   const handleMouseEnter = useCallback(() => {
-    setIsHovered(true);
     if (!soundPlayedRef.current) {
       soundPlayedRef.current = true;
       playHoverSound();
@@ -176,24 +128,12 @@ const GameCard = React.memo(function GameCard({ game, onPlay, language, index })
     }
   }, []);
 
-  const handleMouseLeave = useCallback(() => {
-    setIsHovered(false);
-    setIsPressed(false);
-  }, []);
-
-  const handleMouseDown = useCallback(() => setIsPressed(true), []);
-  const handleMouseUp = useCallback(() => setIsPressed(false), []);
-
   return (
-    <div
+    <button
       onClick={onPlay}
       onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onTouchStart={handleMouseDown}
-      onTouchEnd={handleMouseUp}
-      className={`game-card ${isHovered ? 'game-card--hovered' : ''} ${isPressed ? 'game-card--pressed' : ''}`}
+      className={`bp-icon-card ${className}`}
+      type="button"
     >
       <img
         src={SVG_MAP[game.id]}
@@ -201,6 +141,6 @@ const GameCard = React.memo(function GameCard({ game, onPlay, language, index })
         draggable={false}
         style={{ width: '100%', height: 'auto', display: 'block', pointerEvents: 'none' }}
       />
-    </div>
+    </button>
   );
 });

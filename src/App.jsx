@@ -347,7 +347,7 @@ export default function App() {
         </div>
 
         {/* CosmicMobileNav — rendered outside view-container so position:fixed works correctly */}
-        {!inActiveQuiz && !isPlayingJawiGame && !selectedAssessment && !currentAgeGame && !currentAgeGroup && currentSubject !== 'reading' && (
+        {!inActiveQuiz && !isPlayingJawiGame && !selectedAssessment && !currentAgeGame && !currentAgeGroup && !currentSubject && (
           <CosmicMobileNav
             activeTab={activeTab}
             language={language}

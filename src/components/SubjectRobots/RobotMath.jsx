@@ -7,15 +7,15 @@ export default function RobotMath({ className = '', style = {}, ...props }) {
 
       {/* Swirling math symbols — spin around the head */}
       <g style={{ transformOrigin: '180px 160px' }} className="rb-spin">
-        <g className="rb-pulseGlow">
-          <text x="46" y="110" fontFamily="Baloo 2,sans-serif" fontSize="32" fontWeight="800" fill="#FFE066" filter="url(#fGlow)">+</text>
-          <text x="294" y="92" fontFamily="Baloo 2,sans-serif" fontSize="30" fontWeight="800" fill="#FF4759" filter="url(#fGlow)">÷</text>
-          <text x="32" y="220" fontFamily="Baloo 2,sans-serif" fontSize="28" fontWeight="800" fill="#86E067" filter="url(#fGlow)">=</text>
-          <text x="306" y="230" fontFamily="Baloo 2,sans-serif" fontSize="30" fontWeight="800" fill="#FFE066" filter="url(#fGlow)">−</text>
-          <text x="82" y="56" fontFamily="Baloo 2,sans-serif" fontSize="22" fontWeight="800" fill="#7BE7FF" filter="url(#fGlow)">π</text>
-          <text x="262" y="48" fontFamily="Baloo 2,sans-serif" fontSize="22" fontWeight="800" fill="#FFE066" filter="url(#fGlow)">∞</text>
-          <text x="58" y="300" fontFamily="Baloo 2,sans-serif" fontSize="24" fontWeight="800" fill="#FF8B95" filter="url(#fGlow)">×</text>
-          <text x="290" y="296" fontFamily="Baloo 2,sans-serif" fontSize="24" fontWeight="800" fill="#fff" filter="url(#fGlow)">√</text>
+        <g className="rb-pulseGlow" filter="url(#fGlow)">
+          <text x="46" y="110" fontFamily="Baloo 2,sans-serif" fontSize="32" fontWeight="800" fill="#FFE066">+</text>
+          <text x="294" y="92" fontFamily="Baloo 2,sans-serif" fontSize="30" fontWeight="800" fill="#FF4759">÷</text>
+          <text x="32" y="220" fontFamily="Baloo 2,sans-serif" fontSize="28" fontWeight="800" fill="#86E067">=</text>
+          <text x="306" y="230" fontFamily="Baloo 2,sans-serif" fontSize="30" fontWeight="800" fill="#FFE066">−</text>
+          <text x="82" y="56" fontFamily="Baloo 2,sans-serif" fontSize="22" fontWeight="800" fill="#7BE7FF">π</text>
+          <text x="262" y="48" fontFamily="Baloo 2,sans-serif" fontSize="22" fontWeight="800" fill="#FFE066">∞</text>
+          <text x="58" y="300" fontFamily="Baloo 2,sans-serif" fontSize="24" fontWeight="800" fill="#FF8B95">×</text>
+          <text x="290" y="296" fontFamily="Baloo 2,sans-serif" fontSize="24" fontWeight="800" fill="#fff">√</text>
         </g>
       </g>
 

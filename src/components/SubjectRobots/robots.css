@@ -1,3 +1,13 @@
+/* GPU promote the HTML stage and root SVGs to prevent scrolling paint lag */
+.rb-stage,
+.rb-stage > svg {
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+}
+
 .rb-floatA { animation: rb-floatA 3.8s ease-in-out infinite; }
 .rb-floatA.rb-delay-1 { animation-delay: .4s; }
 .rb-floatA.rb-delay-2 { animation-delay: .8s; }
@@ -12,6 +22,19 @@
 .rb-wiggle { animation: rb-wiggle 1.2s ease-in-out infinite; transform-origin: center; }
 .rb-pointArm { animation: rb-pointArm 2s ease-in-out infinite; transform-origin: center; }
 .rb-capeWave { animation: rb-capeWave 2s ease-in-out infinite; transform-origin: center; }
+
+/* GPU promote internal animating elements safely */
+.rb-floatA,
+.rb-blink,
+.rb-pulseGlow,
+.rb-spin,
+.rb-spinR,
+.rb-wiggle,
+.rb-pointArm,
+.rb-capeWave {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
 
 @keyframes rb-floatA {
   0%, 100% { transform: translateY(0); }
