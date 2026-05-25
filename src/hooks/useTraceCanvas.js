@@ -11,8 +11,10 @@ import { VIEW_BOX } from '../data/letterPaths';
 // - Forgiving tolerance with lookahead window prevents skip-ahead.
 // - Minimal GC via Float32Array and object pooling.
 
-const TOLERANCE_PX            = 12;
-const LOOKAHEAD_WINDOW        = 10;
+const TOLERANCE_PX            = 10;
+// Tight window: pointer can only advance by a few samples per move, so users
+// must actually drag along the path instead of tapping further down it.
+const LOOKAHEAD_WINDOW        = 3;
 const MIN_SAMPLE_INTERVAL_MS  = 12;
 const MIN_SAMPLE_DIST_LOGICAL = 1.2;
 const INPUT_BUFFER_CAPACITY   = 2048;

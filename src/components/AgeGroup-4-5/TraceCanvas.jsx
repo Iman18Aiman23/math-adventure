@@ -25,7 +25,10 @@ const TraceCanvas = forwardRef(function TraceCanvas({
     resetSignal,
   });
 
-  useImperativeHandle(ref, () => ({ reset: resetStroke }), [resetStroke]);
+  useImperativeHandle(ref, () => ({
+    reset: resetStroke,
+    getImageData: () => canvasRef.current?.toDataURL('image/png') ?? null,
+  }), [resetStroke]);
 
   return (
     <canvas

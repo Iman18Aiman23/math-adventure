@@ -1,80 +1,88 @@
 import React from 'react';
+import './MathHome.css';
 import { LOCALIZATION } from '../../utils/localization';
 import { useGameStateContext } from '../../App';
-import AppHeader from '../AppHeader';
+import PageLayout from '../PageLayout';
+import { CalculatorIcon } from '../icons/GameIcons';
+import {
+  MathOperationIcon,
+  MathLongMethodIcon,
+  ClockAndTimeIcon,
+} from '../icons/LearningIcons';
+
+const ILLOS = {
+  operations: <MathOperationIcon size={200} />,
+  faq:        <MathLongMethodIcon size={200} />,
+  datetime:   <ClockAndTimeIcon size={200} />,
+};
+
+// ── Game config ───────────────────────────────────────────────────────────
 
 const SUB_GAMES = [
   {
     id: 'operations',
-    emoji: '🔢',
-    iconBg: '#FFF0CC',
-    iconColor: '#FFC800',
+    num: 1,
+    tClass: 't-green',
     titleKey: 'opsTitle',
-    descKey:  'opsDesc',
   },
   {
     id: 'faq',
-    emoji: '❓',
-    iconBg: '#FFE0E0',
-    iconColor: '#FF6B6B',
+    num: 2,
+    tClass: 't-orange',
     title: { bm: 'Soalan Lazim', eng: 'FAQ' },
-    desc: { bm: 'Soalan & jawapan lazim', eng: 'Frequently asked questions' },
   },
   {
     id: 'datetime',
-    emoji: '🕐',
-    iconBg: '#D0F0FF',
-    iconColor: '#1CB0F6',
+    num: 3,
+    tClass: 't-sky',
     titleKey: 'timeTitle',
-    descKey:  'timeDesc',
   },
 ];
+
+// ── Main component ────────────────────────────────────────────────────────
 
 export default function MathHome({ onSelectSubGame, onBack, onHome, language }) {
   const t = LOCALIZATION[language].math;
   const gameState = useGameStateContext();
 
+  const heroSubtitle = (
+    <>
+      {language === 'bm' ? 'Dari operasi asas hingga penyelesaian masalah. Belajar dengan percaya diri!' : 'From basic operations to problem solving. Learn with confidence!'}
+      <span aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+      </span>
+    </>
+  );
+
+  const hintContent = (
+    <>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+      {language === 'bm' ? 'Pilih topik untuk mula belajar!' : 'Pick a topic to start learning!'}
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF1F7A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+    </>
+  );
+
+  const gridTiles = SUB_GAMES.map((game) => (
+    <button
+      key={game.id}
+      className={`mh-icon-card ${game.tClass}`}
+      onClick={() => onSelectSubGame(game.id)}
+      type="button"
+    >
+      {ILLOS[game.id]}
+    </button>
+  ));
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
-      <AppHeader onBack={onBack} gameState={gameState} language={language} />
-
-      {/* Scrollable content */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 1rem' }}>
-        <div className="bm-hero">
-          <div className="bm-hero-emoji">🔢</div>
-          <h2 className="bm-hero-title">{language === 'bm' ? 'Kuasai Matematik' : 'Master Mathematics'}</h2>
-          <p className="bm-hero-subtitle">{language === 'bm' ? 'Dari operasi asas hingga penyelesaian masalah. Belajar dengan percaya diri!' : 'From basic operations to problem solving. Learn with confidence!'}</p>
-        </div>
-
-        <p style={{ fontSize: '0.8rem', fontWeight: 800, color: '#AFAFAF', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1.5rem' }}>
-          {language === 'bm' ? 'PILIH TOPIK' : 'CHOOSE TOPIC'}
-        </p>
-
-        <div className="math-topic-grid">
-          {SUB_GAMES.map((game, i) => (
-            <button
-              key={game.id}
-              className="math-topic-card fade-in"
-              onClick={() => onSelectSubGame(game.id)}
-              style={{ '--topic-color': game.iconColor, animationDelay: `${i * 0.07}s` }}
-              onMouseEnter={() => {}}
-            >
-              <div className="math-topic-icon" style={{ background: game.iconColor }}>
-                {game.emoji}
-              </div>
-              <div className="math-topic-info">
-                <div className="math-topic-title">
-                  {game.titleKey ? t[game.titleKey] : (game.title[language] || game.title.bm)}
-                </div>
-                <div className="math-topic-desc">
-                  {game.descKey ? t[game.descKey] : (game.desc[language] || game.desc.bm)}
-                </div>
-              </div>
-              <div className="math-topic-arrow">›</div>
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
+    <PageLayout
+      classPrefix="mh"
+      heroIcon={<CalculatorIcon size={96} />}
+      heroSubtitle={heroSubtitle}
+      sectionLabel={language === 'bm' ? 'Pilih Topik' : 'Choose Topic'}
+      hintText={hintContent}
+      onBack={onBack}
+    >
+      {gridTiles}
+    </PageLayout>
   );
 }

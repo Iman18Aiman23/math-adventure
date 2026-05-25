@@ -2,6 +2,8 @@
 // Mirrors the Project Curriculum Status block in Game_Development_Protocol.md.
 // When a new game is built, add its entry here AND update the protocol MD.
 
+import { OpenBookIcon, MicrophoneIcon, PencilIcon, CalculatorIcon } from '../components/icons/GameIcons';
+
 export const AGE_GROUPS = [
   {
     id: 'age-4-5',
@@ -72,10 +74,10 @@ export const AGE_GROUPS = [
 
 // Pillars displayed inside each Age Group page.
 export const PILLARS = [
-  { id: 'reading',  emoji: '📖', label: { bm: 'Membaca',    eng: 'Reading'      } },
-  { id: 'speaking', emoji: '🗣', label: { bm: 'Bertutur',   eng: 'Speaking'     } },
-  { id: 'jawi',     emoji: '✒',  label: { bm: 'Tulisan Jawi', eng: 'Jawi Script' } },
-  { id: 'math',     emoji: '🔢', label: { bm: 'Matematik',  eng: 'Mathematics'  } },
+  { id: 'reading',  icon: OpenBookIcon, label: { bm: 'Membaca',    eng: 'Reading'      } },
+  { id: 'speaking', icon: MicrophoneIcon, label: { bm: 'Bertutur',   eng: 'Speaking'     } },
+  { id: 'jawi',     icon: PencilIcon, label: { bm: 'Tulisan Jawi', eng: 'Jawi Script' } },
+  { id: 'math',     icon: CalculatorIcon, label: { bm: 'Matematik',  eng: 'Mathematics'  } },
 ];
 
 // CURRICULUM[ageId][pillarId] = array of games, or null/[] if no games planned yet.
@@ -83,12 +85,12 @@ export const PILLARS = [
 export const CURRICULUM = {
   'age-4-5': {
     reading: [
-      { id: 'alphabet-safari',      name: 'Alphabet Safari',      status: 'complete' },
-      { id: 'letter-trace',         name: 'Letter Trace',         status: 'complete' },
-      { id: 'phonics-pop',          name: 'Phonics Pop',          status: 'complete'  },
-      { id: 'sound-matching',       name: 'Sound Matching',       status: 'complete'  },
-      { id: 'letter-sound-puzzle',  name: 'Letter-Sound Puzzle',  status: 'complete'  },
-      { id: 'phonics-sprint',       name: 'Phonics Sprint',       status: 'complete'  },
+      { id: 'alphabet-safari',     name: 'Alphabet Safari',     emoji: '🦁', cardColor: '#FF6B35', cardDark: '#E55A25', status: 'complete' },
+      { id: 'letter-trace',        name: 'Letter Trace',        emoji: '✏️', cardColor: '#7C4DFF', cardDark: '#6B3EE6', status: 'complete' },
+      { id: 'phonics-pop',         name: 'Phonics Pop',         emoji: '🎈', cardColor: '#FF3D8B', cardDark: '#E52E7A', status: 'complete' },
+      { id: 'sound-matching',      name: 'Sound Matching',      emoji: '🎵', cardColor: '#00BCD4', cardDark: '#0097A7', status: 'complete' },
+      { id: 'letter-sound-puzzle', name: 'Letter-Sound Puzzle', emoji: '🧩', cardColor: '#FF9800', cardDark: '#E68900', status: 'complete' },
+      { id: 'phonics-sprint',      name: 'Phonics Sprint',      emoji: '🚀', cardColor: '#4CAF50', cardDark: '#388E3C', status: 'complete' },
     ],
     speaking: null,
     jawi: null,

@@ -6,7 +6,7 @@ import { LOCALIZATION } from '../../utils/localization';
 import { Volume2, RotateCcw, ArrowLeft } from 'lucide-react';
 import { useGameStateContext } from '../../App';
 import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
-import AppHeader from '../AppHeader';
+import BackButton from '../BackButton';
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
@@ -341,7 +341,7 @@ export default function SoundMatching({ onBack, onHome, isMuted, language }) {
         ))}
       </div>
 
-      <AppHeader onBack={onBack} gameState={gameState} language={language} hearts={hearts} gems={gems} stars={stars} />
+      <BackButton onClick={onBack} />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', width: '100%', position: 'relative', zIndex: 1 }}>
         {/* HEADER */}
         <div style={{

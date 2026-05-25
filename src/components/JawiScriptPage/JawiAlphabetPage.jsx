@@ -5,7 +5,7 @@ import { LOCALIZATION } from '../../utils/localization';
 import { useGameStateContext } from '../../App';
 import { JAWI_ALPHABET } from '../../utils/jawiData';
 import { SUKU_KATA_DATA } from '../../utils/jawiSukuKataData';
-import AppHeader from '../AppHeader';
+import BackButton from '../BackButton';
 
 export default function JawiAlphabetPage({ onBack, language }) {
     const t = LOCALIZATION[language].jawi;
@@ -46,7 +46,7 @@ export default function JawiAlphabetPage({ onBack, language }) {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
-            <AppHeader onBack={onBack} gameState={gameState} language={language} />
+            <BackButton onClick={onBack} />
 
             <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem 1rem' }}>
                 <div style={{ padding: '0 0 0.25rem', textAlign: 'center' }}>

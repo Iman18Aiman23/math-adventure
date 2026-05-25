@@ -4,7 +4,7 @@ import { JAWI_TOPICS } from '../../utils/jawiWordsData';
 import { LOCALIZATION } from '../../utils/localization';
 import { BilingualText } from '../../utils/bilingual';
 import { useGameStateContext } from '../../App';
-import AppHeader from '../AppHeader';
+import BackButton from '../BackButton';
 
 const TopicCard = ({ topic, onClick, language }) => {
     return (
@@ -117,7 +117,7 @@ export default function JawiWordsPage({ onBack, language }) {
     if (!selectedTopic) {
         return (
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
-                <AppHeader onBack={onBack} gameState={gameState} language={language} />
+                <BackButton onClick={onBack} />
 
                 <div style={{
                     display: 'grid',
@@ -144,11 +144,7 @@ export default function JawiWordsPage({ onBack, language }) {
     // Word List View
     return (
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
-            <AppHeader
-                onBack={() => setSelectedTopic(null)}
-                gameState={gameState}
-                language={language}
-            />
+            <BackButton onClick={() => setSelectedTopic(null)} />
 
             <div style={{
                 display: 'grid',

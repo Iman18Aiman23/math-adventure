@@ -4,7 +4,7 @@ import confetti from 'canvas-confetti';
 import { playSound, playHoverSound } from '../../utils/soundManager';
 import SpeechManager from '../../services/SpeechManager';
 import { useGameStateContext } from '../../App';
-import AppHeader from '../AppHeader';
+import BackButton from '../BackButton';
 
 const QUESTIONS = [
   { letter: 'A', options: [
@@ -357,7 +357,7 @@ export default function AlphabetSafari({ onBack, language = 'bm' }) {
   if (localGameState === 'menu') {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', flex: 1, background: 'var(--bg-body)' }}>
-        <AppHeader onBack={onBack} gameState={gameState} language={language} />
+        <BackButton onClick={onBack} />
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '1.5rem', gap: '1.25rem' }}>
           <div style={{ fontSize: '4.5rem', lineHeight: 1 }}>🦁🐘🐰</div>
           <h1 style={{ fontWeight: 900, fontSize: '2rem', color: 'var(--duo-blue)', margin: 0, textAlign: 'center' }}>
@@ -388,7 +388,7 @@ export default function AlphabetSafari({ onBack, language = 'bm' }) {
   if (localGameState === 'finished') {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', flex: 1, background: 'var(--bg-body)' }}>
-        <AppHeader onBack={onBack} gameState={gameState} language={language} />
+        <BackButton onClick={onBack} />
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '1.5rem', gap: '1.25rem' }}>
           <Trophy size={96} color="#FFC800" />
           <h1 style={{ fontWeight: 900, fontSize: '2rem', color: 'var(--duo-green)', margin: 0 }}>
@@ -452,7 +452,7 @@ export default function AlphabetSafari({ onBack, language = 'bm' }) {
         ))}
       </div>
 
-      <AppHeader onBack={onBack} gameState={gameState} language={language} />
+      <BackButton onClick={onBack} />
 
       <div style={{
         padding: '0.4rem 1rem 0.5rem',

@@ -1,0 +1,65 @@
+/* GPU promote the HTML stage and root SVGs to prevent scrolling paint lag */
+.rb-stage,
+.rb-stage > svg {
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+}
+
+.rb-floatA { animation: rb-floatA 3.8s ease-in-out infinite; }
+.rb-floatA.rb-delay-1 { animation-delay: .4s; }
+.rb-floatA.rb-delay-2 { animation-delay: .8s; }
+.rb-floatA.rb-delay-3 { animation-delay: 1.2s; }
+.rb-floatA.rb-delay-4 { animation-delay: 1.6s; }
+.rb-floatA.rb-delay-5 { animation-delay: 2s; }
+
+.rb-blink { animation: rb-blink 5.5s infinite; transform-origin: center; }
+.rb-pulseGlow { animation: rb-pulseGlow 2.2s ease-in-out infinite; }
+.rb-spin { animation: rb-spin 16s linear infinite; }
+.rb-spinR { animation: rb-spin 18s linear infinite reverse; transform-origin: center; }
+.rb-wiggle { animation: rb-wiggle 1.2s ease-in-out infinite; transform-origin: center; }
+.rb-pointArm { animation: rb-pointArm 2s ease-in-out infinite; transform-origin: center; }
+.rb-capeWave { animation: rb-capeWave 2s ease-in-out infinite; transform-origin: center; }
+
+/* GPU promote internal animating elements safely */
+.rb-floatA,
+.rb-blink,
+.rb-pulseGlow,
+.rb-spin,
+.rb-spinR,
+.rb-wiggle,
+.rb-pointArm,
+.rb-capeWave {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+@keyframes rb-floatA {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes rb-blink {
+  0%, 93%, 100% { transform: scaleY(1); }
+  96% { transform: scaleY(.06); }
+}
+@keyframes rb-pulseGlow {
+  0%, 100% { opacity: .65; }
+  50% { opacity: 1; }
+}
+@keyframes rb-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes rb-wiggle {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(6deg); }
+}
+@keyframes rb-pointArm {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(4deg); }
+}
+@keyframes rb-capeWave {
+  0%, 100% { transform: skewX(-2deg); }
+  50% { transform: skewX(3deg); }
+}

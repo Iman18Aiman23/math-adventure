@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { getGameData } from '../utils/gameStatsManager';
-import { baseAssessments } from '../data/curriculum/assessment';
-import AppHeader from './AppHeader';
-import MascotIcon from './icons/MascotIcon';
+import { getGameData } from '../../utils/gameStatsManager';
+import { baseAssessments } from '../../data/curriculum/assessment';
+import MascotIcon from '../icons/MascotIcon';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import confetti from 'canvas-confetti';
@@ -1031,9 +1030,9 @@ const CertificateModal = ({ achievement, playerName, gameState, language, onClos
   );
 };
 
-export default function AchievementPage({ onBack, onHome, language, gameState, onTakeAssessment }) {
+export default function AchievementHome({ onBack, onHome, language, gameState, onTakeAssessment }) {
   const [currentTab, setCurrentTab] = useState('assessments');
-  const gameData = getGameData();
+  const gameData = useMemo(() => getGameData(), []);
   const [downloadingBadge, setDownloadingBadge] = useState(null);
   const [selectedAchievement, setSelectedAchievement] = useState(null);
 
@@ -1221,8 +1220,6 @@ export default function AchievementPage({ onBack, onHome, language, gameState, o
         </div>
       )}
 
-      <AppHeader onBack={onBack} gameState={gameState} language={language} />
-
       {/* Tabs */}
       <div style={{
         display: 'flex',
@@ -1304,8 +1301,8 @@ export default function AchievementPage({ onBack, onHome, language, gameState, o
       </div>
 
       {/* Content */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 1.25rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
+      <div className="page-shell" style={{ paddingTop: '1.5rem', paddingLeft: '1.25rem', paddingRight: '1.25rem', paddingBottom: 0 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem', paddingBottom: 'calc(140px + var(--safe-bottom))' }}>
           {currentTab === 'assessments' ? (
           // Pending Assessments
           baseAssessments.filter(a => a.status === 'Pending').map(achievement => {
@@ -1368,37 +1365,31 @@ export default function AchievementPage({ onBack, onHome, language, gameState, o
         </div>
       </div>
 
-      {/* Hidden ID Cards for Download */}
-      <div style={{ position: 'absolute', left: '-9999px', top: '-9999px', pointerEvents: 'none' }}>
-        {BADGE_CONFIG.map(badge => {
-          const idCardRef = React.createRef();
-          return (
+      {/* Hidden ID Cards for Download — rendered only when a download is in progress */}
+      {downloadingBadge && (
+        <div style={{ position: 'absolute', left: '-9999px', top: '-9999px', pointerEvents: 'none' }}>
+          {BADGE_CONFIG.filter(badge => badge.id === downloadingBadge).map(badge => (
             <div key={badge.id} id={`badge-id-${badge.id}`} style={{ width: '794px', padding: '38px', boxSizing: 'border-box', background: '#fff' }}>
               <BadgeIDCard
-                ref={idCardRef}
                 badge={badge}
                 playerName={localStorage.getItem('playerName') || 'Player'}
                 gameState={gameState}
                 language={language}
               />
             </div>
-          );
-        })}
-        {baseAssessments.map(achievement => {
-          const certRef = React.createRef();
-          return (
+          ))}
+          {baseAssessments.filter(a => a.id === downloadingBadge).map(achievement => (
             <div key={achievement.id} id={`achievement-cert-${achievement.id}`} style={{ width: '794px', padding: '38px', boxSizing: 'border-box', background: '#FAFAF8' }}>
               <AchievementCertificate
-                ref={certRef}
                 achievement={achievement}
                 playerName={localStorage.getItem('playerName') || 'Player'}
                 gameState={gameState}
                 language={language}
               />
             </div>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Certificate Modal */}
       {selectedAchievement && (

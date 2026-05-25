@@ -1,10 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import './BMPage.css';
 import { LOCALIZATION } from '../../utils/localization';
 import { useGameStateContext } from '../../App';
 import SpeechManager from '../../services/SpeechManager';
 import BMSpeakGame from './BMSpeakGame';
-import { BmSukuKataKvIcon, BmSukuKataKvkIcon, BmPhonicsIcon, BmNombor1100Icon, BmObjekBiasaIcon } from '../icons/BmPageIcons';
-import AppHeader from '../AppHeader';
+import PageLayout from '../PageLayout';
+import { MusicNoteIcon } from '../icons/GameIcons';
+import {
+  LearnKVWordsIcon,
+  LearnKVKWordsIcon,
+  EnglishPhonicsIcon,
+  Number1to100Icon,
+  ObjectsIcon,
+} from '../icons/LearningIcons';
+const ILLOS = {
+  bm_kv: <LearnKVWordsIcon size={200} />,
+  bm_kvk: <LearnKVKWordsIcon size={200} />,
+  en_long_vowels: <EnglishPhonicsIcon size={200} />,
+  numbers: <Number1to100Icon size={200} />,
+  common_objects: <ObjectsIcon size={200} />,
+};
 
 /**
  * BMPage — Bahasa Melayu Speak & Play
@@ -17,33 +32,33 @@ import AppHeader from '../AppHeader';
 const CATEGORIES = [
   {
     key: 'bm_kv',
-    icon: <BmSukuKataKvIcon size={48} />,
-    color: '#0EA5E9',
-    gradient: 'linear-gradient(135deg, #0EA5E9, #38bdf8)',
+    num: 1,
+    tClass: 'cat-kv',
+    titleKey: 'bm_kv',
   },
   {
     key: 'bm_kvk',
-    icon: <BmSukuKataKvkIcon size={48} />,
-    color: '#7C3AED',
-    gradient: 'linear-gradient(135deg, #7C3AED, #a78bfa)',
+    num: 2,
+    tClass: 'cat-kvk',
+    titleKey: 'bm_kvk',
   },
   {
     key: 'en_long_vowels',
-    icon: <BmPhonicsIcon size={48} />,
-    color: '#F43F5E',
-    gradient: 'linear-gradient(135deg, #F43F5E, #fb7185)',
+    num: 3,
+    tClass: 'cat-phonics',
+    titleKey: 'en_long_vowels',
   },
   {
     key: 'numbers',
-    icon: <BmNombor1100Icon size={48} />,
-    color: '#F59E0B',
-    gradient: 'linear-gradient(135deg, #F59E0B, #fbbf24)',
+    num: 4,
+    tClass: 'cat-numbers',
+    titleKey: 'numbers',
   },
   {
     key: 'common_objects',
-    icon: <BmObjekBiasaIcon size={48} />,
-    color: '#10B981',
-    gradient: 'linear-gradient(135deg, #10B981, #34d399)',
+    num: 5,
+    tClass: 'cat-objects',
+    titleKey: 'common_objects',
   },
 ];
 
@@ -67,65 +82,73 @@ export default function BMPage({ onBack, onHome, language }) {
   }
 
   // ── Category Selection ─────────────────────────────────────────────────────
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
-      <AppHeader onBack={onBack} gameState={gameState} language={language} />
+  const heroSubtitle = (
+    <>
+      {t.heroSubtitle}
+      <span aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+      </span>
+    </>
+  );
 
-      <div style={{ flex: 1, overflowY: 'auto' }}>
-        {/* Hero */}
-        <div className="bm-hero">
-          <div className="bm-hero-emoji">🎤</div>
-          <h2 className="bm-hero-title">{t.heroTitle}</h2>
-          <p className="bm-hero-subtitle">{t.heroSubtitle}</p>
+  const hintContent = (
+    <>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+      {language === 'bm' ? 'Pilih kategori untuk mula bercakap!' : 'Pick a category to start speaking!'}
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF1F7A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+    </>
+  );
+
+  const gridContent = (
+    <>
+      {!isSupported && (
+        <div className="bm-warning-card">
+          <span style={{ fontSize: '1.5rem' }}>⚠️</span>
+          <p>{unsupportedReason || t.notSupported}</p>
         </div>
+      )}
+      {CATEGORIES.map((cat) => (
+        <button
+          key={cat.key}
+          className={`bp-icon-card ${cat.tClass}`}
+          onClick={() => isSupported && setSelectedCategory(cat.key)}
+          disabled={!isSupported}
+          type="button"
+          style={{ opacity: !isSupported ? 0.5 : 1 }}
+        >
+          {ILLOS[cat.key]}
+        </button>
+      ))}
+    </>
+  );
 
-        {/* Browser / mic warnings */}
-        {!isSupported && (
-          <div className="bm-warning-card">
-            <span style={{ fontSize: '1.5rem' }}>⚠️</span>
-            <p>{unsupportedReason || t.notSupported}</p>
-          </div>
-        )}
-
-        {/* Section label */}
-        <p style={{ fontSize: '0.8rem', fontWeight: 800, color: '#AFAFAF', textTransform: 'uppercase', letterSpacing: '1px', margin: '0 1rem 0.5rem' }}>
-          {language === 'bm' ? 'PILIH KATEGORI' : 'CHOOSE CATEGORY'}
-        </p>
-
-        <div className="bm-category-grid">
-          {CATEGORIES.map((cat, i) => (
-            <button
-              key={cat.key}
-              className="bm-category-card fade-in"
-              style={{
-                '--card-gradient': cat.gradient,
-                '--card-color': cat.color,
-                animationDelay: `${i * 0.06}s`,
-                opacity: !isSupported ? 0.5 : 1,
-              }}
-              onClick={() => isSupported && setSelectedCategory(cat.key)}
-              disabled={!isSupported}
-            >
-              <div className="bm-cat-emoji" style={{ background: cat.gradient, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{cat.icon}</div>
-              <div className="bm-cat-info">
-                <span className="bm-cat-title">{t.categories[cat.key]?.title}</span>
-                <span className="bm-cat-desc">{t.categories[cat.key]?.desc}</span>
-              </div>
-              <span className="bm-cat-arrow">›</span>
-            </button>
-          ))}
-        </div>
-
-        {/* How to play */}
-        <div className="bm-howto">
-          <div className="bm-howto-title">{t.howToPlayTitle}</div>
-          <div className="bm-howto-steps">
-            <div className="bm-howto-step"><span className="bm-step-num">1</span><span>{t.howToStep1}</span></div>
-            <div className="bm-howto-step"><span className="bm-step-num">2</span><span>{t.howToStep2}</span></div>
-            <div className="bm-howto-step"><span className="bm-step-num">3</span><span>{t.howToStep3}</span></div>
-          </div>
-        </div>
+  const additionalSection = (
+    <div className="bm-howto">
+      <div className="bm-howto-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFB300" aria-hidden="true">
+          <path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/>
+        </svg>
+        {t.howToPlayTitle}
+      </div>
+      <div className="bm-howto-steps">
+        <div className="bm-howto-step"><span className="bm-step-num">1</span><span>{t.howToStep1}</span></div>
+        <div className="bm-howto-step"><span className="bm-step-num">2</span><span>{t.howToStep2}</span></div>
+        <div className="bm-howto-step"><span className="bm-step-num">3</span><span>{t.howToStep3}</span></div>
       </div>
     </div>
+  );
+
+  return (
+    <PageLayout
+      classPrefix="bp"
+      heroIcon={<MusicNoteIcon size={96} />}
+      heroSubtitle={heroSubtitle}
+      sectionLabel={language === 'bm' ? 'Pilih Kategori' : 'Choose Category'}
+      hintText={hintContent}
+      onBack={onBack}
+      additionalSection={additionalSection}
+    >
+      {gridContent}
+    </PageLayout>
   );
 }

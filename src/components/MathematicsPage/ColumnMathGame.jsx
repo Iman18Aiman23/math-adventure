@@ -662,9 +662,9 @@ export default function ColumnMathGame({ onBack, language }) {
       setActivePartial2CarryIdx(0);
       setActivePartial2Idx(0);
     } else {
-      // For all other operations (including division), start with answer/quotient
+      // For division, start from left; for addition/subtraction, start from right
       setActiveSection('answer');
-      setActiveIdx(0);
+      setActiveIdx(p.op === '÷' ? 0 : ml - 1);
       setActivePartial1Idx(0);
       setActivePartial2Idx(0);
       setActivePartial1CarryIdx(0);

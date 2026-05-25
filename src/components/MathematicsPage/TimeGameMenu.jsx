@@ -1,8 +1,7 @@
 import React from 'react';
-import { ArrowLeft } from 'lucide-react';
 import { LOCALIZATION } from '../../utils/localization';
 import { useGameStateContext } from '../../App';
-import AppHeader from '../AppHeader';
+import BackButton from '../BackButton';
 
 const TIME_GAMES = [
   { id: 'month-learning', emoji: '📅', iconBg: '#EDD9FF', iconColor: '#CE82FF', titleKey: 'monthLearning', descKey: 'monthLearningDesc' },
@@ -15,8 +14,8 @@ export default function TimeGameMenu({ onStart, onBack, onHome, language }) {
   const gameState = useGameStateContext();
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
-      <AppHeader onBack={onBack} gameState={gameState} language={language} />
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: 'var(--bg-body)', padding: '0 14px', maxWidth: '980px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+      <BackButton onClick={onBack} />
 
       {/* Content */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 1rem' }}>
