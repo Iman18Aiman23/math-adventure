@@ -1,7 +1,14 @@
 import React, { useState, useCallback } from 'react';
 import { ArrowLeft, ChevronLeft, ChevronRight, Volume2 } from 'lucide-react';
-import bm_kvk_complete, { KVK_LETTERS, getKVKSeriesByLetter } from '../../data/curriculum/bm_kvk';
+import { CURRICULUM } from '../../data/curriculum/index';
 import SpeechManager from '../../services/SpeechManager';
+
+// Dynamic Helpers
+const getKVKData = () => CURRICULUM['bm_kvk'] || [];
+const KVK_LETTERS = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z'];
+const getKVKSeriesByLetter = (letter) => {
+  return getKVKData().filter(item => item.kvk && item.kvk.toLowerCase().startsWith(letter.toLowerCase()));
+};
 
 // ── Vowel row labels (shown under the KVK badge) ─────────────────────────────
 const SLOT_COLORS = ['#FF9600', '#1CB0F6', '#58CC02', '#CE82FF', '#FF4B4B', '#00C2A8'];

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import MascotIcon from './icons/MascotIcon';
+import SocialLogin from './Auth/SocialLogin';
 
 const welcomeStyles = `
   .welcome-logo-text {
@@ -79,6 +80,16 @@ export default function WelcomeModal({ onSave }) {
             Mula Belajar! ✨
           </button>
         </form>
+
+        <div style={{ margin: '1rem 0', width: '100%', maxWidth: '360px', display: 'flex', alignItems: 'center' }}>
+          <div style={{ flex: 1, height: '1px', background: '#E5E5E5' }}></div>
+          <span style={{ padding: '0 10px', color: '#AFAFAF', fontSize: '0.9rem', fontWeight: 'bold' }}>ATAU</span>
+          <div style={{ flex: 1, height: '1px', background: '#E5E5E5' }}></div>
+        </div>
+
+        <div style={{ width: '100%', maxWidth: '360px' }}>
+          <SocialLogin />
+        </div>
 
         {/* Decorative dots */}
         <div style={{ display: 'flex', gap: '6px', marginTop: '1rem' }}>

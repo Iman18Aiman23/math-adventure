@@ -1,7 +1,14 @@
 import React, { useState, useCallback } from 'react';
 import { ArrowLeft, ChevronLeft, ChevronRight, Volume2 } from 'lucide-react';
-import bm_kv_complete, { KV_LETTERS, getKVSeriesByLetter } from '../../data/curriculum/bm_kv';
+import { CURRICULUM } from '../../data/curriculum/index';
 import SpeechManager from '../../services/SpeechManager';
+
+// Dynamic Helpers
+const getKVData = () => CURRICULUM['bm_kv'] || [];
+const KV_LETTERS = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z'];
+const getKVSeriesByLetter = (letter) => {
+  return getKVData().filter(item => item.kv && item.kv.toLowerCase().startsWith(letter.toLowerCase()));
+};
 
 // ── Vowel row labels (shown under the KV badge) ──────────────────────────────
 const VOWEL_LABELS = ['ا', 'اي', 'او', 'اي (taling)', 'او', 'ا (pepet)'];

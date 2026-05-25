@@ -33,6 +33,9 @@ import { useGameState } from './hooks/useGameState';
 import { loadPlayerName, savePlayerName, recordLogin, calcStreak } from './services/storageService';
 import { getGameData } from './utils/gameStatsManager';
 import { baseAssessments } from './data/curriculum/assessment';
+import api from './services/api';
+import { fetchCurriculumFromAPI } from './data/curriculum/index';
+import SocialLogin from './components/Auth/SocialLogin';
 
 // ── Context ──────────────────────────────────────────────────────────────────
 export const GameStateContext = createContext(null);
@@ -105,6 +108,7 @@ export default function App() {
   const [selectedAssessment, setSelectedAssessment] = useState(null);
   const [currentAgeGroup, setCurrentAgeGroup] = useState(null);
   const [currentAgeGame, setCurrentAgeGame] = useState(null);
+  const [isAppLoading, setIsAppLoading] = useState(true);
 
   const activeGameId = getActiveGameId(currentSubject, mathSubGame);
   const { gameState, levelUpInfo, clearLevelUp } = useGameState(activeGameId);
@@ -116,6 +120,43 @@ export default function App() {
     // Record today's login and compute streak
     const dates = recordLogin();
     setStreak(calcStreak(dates));
+    
+    // Initialize API data and Guest Login
+    const initApp = async () => {
+      try {
+        // Handle OAuth callback token
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlToken = urlParams.get('token');
+        if (urlToken) {
+          localStorage.setItem('player_token', urlToken);
+          // Clean up the URL
+          window.history.replaceState({}, document.title, window.location.pathname);
+          // Try to decode JWT to get name, basic base64 decode
+          try {
+            const payload = JSON.parse(atob(urlToken.split('.')[1]));
+            if (payload.displayName) {
+              handleSaveName(payload.displayName);
+            }
+          } catch(e) {}
+        }
+
+        // 1. Guest Login if no token exists
+        let token = localStorage.getItem('player_token');
+        if (!token) {
+          const res = await api.post('/auth/guest');
+          token = res.data.access_token;
+          localStorage.setItem('player_token', token);
+        }
+        // 2. Fetch Curriculum
+        await fetchCurriculumFromAPI();
+      } catch (err) {
+        console.error('Failed to initialize app data:', err);
+      } finally {
+        setIsAppLoading(false);
+      }
+    };
+    initApp();
+
     const handleFirstClick = () => { unlockAudio(); document.removeEventListener('click', handleFirstClick); };
     document.addEventListener('click', handleFirstClick);
     return () => {
@@ -248,6 +289,12 @@ export default function App() {
       )}
 
       <div className="app-container">
+        {isAppLoading && (
+          <div style={{ position: 'fixed', inset: 0, background: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 9999, color: 'white' }}>
+            <div style={{ fontSize: '4rem', animation: 'bounce 1s infinite' }}>🚀</div>
+            <h2 style={{ marginTop: '20px', fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>Loading Spaceship...</h2>
+          </div>
+        )}
         {!playerName && <WelcomeModal onSave={handleSaveName} />}
         <LevelUpToast level={levelUpInfo?.newLevel} onDismiss={clearLevelUp} />
 
@@ -326,6 +373,10 @@ function ProfilePlaceholder({ playerName, gameState, language, streak = 0 }) {
         </div>
         <h2 style={{ fontWeight: 900, fontSize: '1.4rem', color: '#3C3C3C', marginBottom: '4px' }}>{playerName || 'Player'}</h2>
         <p style={{ color: '#AFAFAF', fontWeight: 600, fontSize: '0.85rem' }}>Level {gameState?.level ?? 1} Explorer</p>
+        
+        <div style={{ marginTop: '1.5rem', maxWidth: '300px', margin: '1.5rem auto 0 auto' }}>
+          <SocialLogin />
+        </div>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', padding: '1.25rem 1rem', maxWidth: '700px', margin: '0 auto' }}>
         {[

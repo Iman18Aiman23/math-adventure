@@ -4,22 +4,51 @@
  * Re-exports all curriculum modules + provides bilingual matching utilities.
  */
 
-import bm_kv_complete from './bm_kv.js'; // new systematic BA-ZA dataset
-const bm_kv = bm_kv_complete; // keep 'bm_kv' key working for BMSpeakGame
-import bm_kvk from './bm_kvk.js';
-import en_long_vowels from './en_long_vowels.js';
-import numbers from './numbers.js';
-import common_objects from './common_objects.js';
+import api from '../../services/api.js';
 import { getIcon, getIconKeys } from './IconFactory.js';
 
 // ── Unified curriculum object ────────────────────────────────────────────────
-export const CURRICULUM = {
-  bm_kv,
-  bm_kvk,
-  en_long_vowels,
-  numbers,
-  common_objects,
-};
+// Dynamically populated from the backend API. No hardcoded data here anymore!
+export let CURRICULUM = {};
+
+export async function fetchCurriculumFromAPI() {
+  try {
+    const { data: categories } = await api.get('/curriculum/categories');
+    
+    // Clear out previous values if any
+    CURRICULUM = {};
+
+    for (const cat of categories) {
+      if (!cat.isActive) continue;
+
+      const { data: items } = await api.get(`/curriculum/items/${cat.key}`);
+      
+      // Map the flat API structure back to the legacy nested structure the game expects
+      CURRICULUM[cat.key] = items.map(item => ({
+        id: item.refId,
+        icon: item.icon,
+        // The frontend expects the word in 'kv' or 'kvk' properties
+        kv: item.validMatches[1] || item.text,
+        kvk: item.validMatches[1] || item.text,
+        subtheme: item.jawi ? "Subtheme" : undefined, // Optional fallback
+        ms: cat.language === 'ms-MY' ? {
+          word: item.text,
+          prompt: item.audioPrompt,
+          matches: item.validMatches
+        } : undefined,
+        en: cat.language === 'en-US' ? {
+          word: item.text,
+          prompt: item.audioPrompt,
+          matches: item.validMatches
+        } : undefined,
+        jawi: item.jawi ? { word: item.jawi, prompt: item.audioPrompt } : undefined
+      }));
+    }
+    console.log('Successfully loaded fully dynamic curriculum from API:', CURRICULUM);
+  } catch (error) {
+    console.error('Failed to fetch dynamic curriculum from API. The game may be empty until the API is online:', error);
+  }
+}
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
