@@ -1,0 +1,175 @@
+/* Age 4–6 shared button / card design system.
+   Polished "chunky" 3D buttons (Duolingo-style depth) with a glossy sheen,
+   springy hover, and tactile press. Dynamic colors are passed via CSS vars:
+     style={{ '--btn-bg': '#58CC02', '--btn-shadow': '#46A302' }}
+*/
+
+/* ─────────────────────────────────────────────────────────────
+   Home-page game cards (the emoji fallback tiles)
+   Color passed via --card-bg / --card-bg-dark
+   ───────────────────────────────────────────────────────────── */
+.ee-game-card {
+  position: relative;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  min-height: 118px;
+  border-radius: 20px;
+  padding: 1rem 0.6rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  color: #fff;
+  text-align: center;
+  box-sizing: border-box;
+  isolation: isolate;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  background: var(--card-bg, #58CC02);   /* fallback if color-mix unsupported */
+  background:
+    linear-gradient(165deg,
+      color-mix(in srgb, var(--card-bg, #58CC02) 78%, #fff) 0%,
+      var(--card-bg, #58CC02) 55%,
+      var(--card-bg-dark, #46A302) 100%);
+  box-shadow:
+    0 6px 0 var(--card-bg-dark, #46A302),
+    0 12px 20px -6px rgba(0, 0, 0, 0.28),
+    inset 0 2px 0 rgba(255, 255, 255, 0.35);
+  transition:
+    transform .2s cubic-bezier(.34, 1.56, .64, 1),
+    box-shadow .2s ease,
+    filter .2s ease;
+}
+.ee-game-card::before {            /* glossy top sheen */
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 46%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.40), rgba(255, 255, 255, 0));
+  pointer-events: none;
+  z-index: 0;
+}
+.ee-game-card:hover {
+  transform: translateY(-4px);
+  filter: brightness(1.04) saturate(1.05);
+  box-shadow:
+    0 10px 0 var(--card-bg-dark, #46A302),
+    0 18px 28px -6px rgba(0, 0, 0, 0.34),
+    inset 0 2px 0 rgba(255, 255, 255, 0.4);
+}
+.ee-game-card:active {
+  transform: translateY(3px);
+  box-shadow:
+    0 2px 0 var(--card-bg-dark, #46A302),
+    0 5px 10px -4px rgba(0, 0, 0, 0.3),
+    inset 0 2px 0 rgba(255, 255, 255, 0.3);
+}
+.ee-game-card:focus-visible { outline: 3px solid rgba(255, 255, 255, 0.85); outline-offset: 2px; }
+
+.ee-game-emoji {
+  position: relative;
+  z-index: 1;
+  font-size: 2.35rem;
+  line-height: 1;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.22));
+  transition: transform .3s cubic-bezier(.34, 1.56, .64, 1);
+}
+.ee-game-card:hover .ee-game-emoji { transform: translateY(-3px) scale(1.14) rotate(-5deg); }
+
+.ee-game-label {
+  position: relative;
+  z-index: 1;
+  font-weight: 800;
+  font-size: clamp(0.72rem, 2.5vw, 0.92rem);
+  line-height: 1.22;
+  letter-spacing: .01em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  overflow-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   In-game buttons
+   ───────────────────────────────────────────────────────────── */
+.ee-btn {
+  position: relative;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 1rem;
+  border-radius: 14px;
+  padding: 0.8rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  color: #fff;
+  isolation: isolate;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  background: var(--btn-bg, #58CC02);
+  box-shadow:
+    0 4px 0 var(--btn-shadow, #46A302),
+    0 6px 12px -4px rgba(0, 0, 0, 0.2);
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease, background .2s ease;
+}
+.ee-btn::before {                  /* glossy top sheen */
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 46%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.30), rgba(255, 255, 255, 0));
+  pointer-events: none;
+  z-index: 0;
+}
+.ee-btn > * { position: relative; z-index: 1; }
+.ee-btn:hover:not(:disabled) { filter: brightness(1.06); transform: translateY(-1px); }
+.ee-btn:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--btn-shadow, #46A302), 0 2px 6px -3px rgba(0, 0, 0, 0.25);
+}
+.ee-btn:focus-visible { outline: 3px solid rgba(0, 0, 0, 0.18); outline-offset: 2px; }
+.ee-btn:disabled {
+  cursor: not-allowed;
+  background: #E3E3E3;
+  color: #B5B5B5;
+  box-shadow: 0 4px 0 #CFCFCF;
+}
+.ee-btn:disabled::before { display: none; }
+
+/* Ghost / secondary — white face, colored text (uses --btn-bg as the text color) */
+.ee-btn--ghost {
+  color: var(--btn-bg, #58CC02);
+  background: #fff;
+  box-shadow: 0 4px 0 #E0E0E0, 0 6px 12px -4px rgba(0, 0, 0, 0.12);
+}
+.ee-btn--ghost::before { display: none; }
+.ee-btn--ghost:disabled { color: #B5B5B5; background: #F1F1F1; }
+
+/* Neutral grey (e.g. Reset) */
+.ee-btn--muted {
+  color: #555;
+  background: #ECECEC;
+  box-shadow: 0 4px 0 #D2D2D2, 0 6px 12px -4px rgba(0, 0, 0, 0.1);
+}
+.ee-btn--muted::before { display: none; }
+
+/* Round icon button */
+.ee-btn--icon {
+  width: 54px;
+  height: 54px;
+  padding: 0;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Full-width helper */
+.ee-btn--block { width: 100%; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ee-game-card, .ee-game-emoji, .ee-btn { transition: none !important; }
+}

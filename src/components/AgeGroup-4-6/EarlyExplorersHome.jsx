@@ -30,17 +30,23 @@ const CAT_MAP = {
   'phonics-sprint':     'cat-kv',
 };
 
+// Pillar categories — order + display metadata for the grouped game grid.
+const PILLAR_ORDER = ['reading', 'speaking', 'jawi', 'math'];
+const PILLAR_META = {
+  reading:  { bm: 'Membaca',      eng: 'Reading',     emoji: '📖', color: '#FF3D8B' },
+  speaking: { bm: 'Bertutur',     eng: 'Speaking',    emoji: '🗣️', color: '#9C27B0' },
+  jawi:     { bm: 'Tulisan Jawi', eng: 'Jawi Script', emoji: '✍️', color: '#7C4DFF' },
+  math:     { bm: 'Matematik',    eng: 'Mathematics', emoji: '🔢', color: '#1CB0F6' },
+};
+
 export default function EarlyExplorersHome(props) {
   const { onBack, onPlayGame, language = 'bm' } = props;
   const curriculum = CURRICULUM['age-4-6'];
 
-  // Get all games from all pillars
-  const allGames = [];
-  ['reading', 'speaking', 'jawi', 'math'].forEach(pillarId => {
-    if (curriculum[pillarId] && Array.isArray(curriculum[pillarId])) {
-      allGames.push(...curriculum[pillarId]);
-    }
-  });
+  // Group games by pillar (only pillars that actually have games)
+  const pillarSections = PILLAR_ORDER
+    .map(id => ({ id, meta: PILLAR_META[id], games: curriculum[id] }))
+    .filter(s => Array.isArray(s.games) && s.games.length > 0);
 
   const heroSubtitle = (
     <>
@@ -104,13 +110,35 @@ export default function EarlyExplorersHome(props) {
         onBack={onBack}
         additionalSection={additionalSection}
       >
-        {allGames.map((game) => (
-          <GameCard
-            key={game.id}
-            game={game}
-            className={CAT_MAP[game.id]}
-            onPlay={() => onPlayGame(game.id)}
-          />
+        {pillarSections.map(({ id, meta, games }) => (
+          <React.Fragment key={id}>
+            <div
+              style={{
+                gridColumn: '1 / -1',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                marginTop: '0.25rem',
+              }}
+            >
+              <span style={{ fontSize: '1.3rem', lineHeight: 1 }}>{meta.emoji}</span>
+              <span style={{ fontWeight: 800, fontSize: '1.05rem', color: meta.color, whiteSpace: 'nowrap' }}>
+                {meta[language] || meta.bm}
+              </span>
+              <span style={{ flex: 1, height: '3px', background: `${meta.color}33`, borderRadius: '999px' }} />
+              <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#fff', background: meta.color, borderRadius: '999px', padding: '2px 9px', lineHeight: 1.4 }}>
+                {games.length}
+              </span>
+            </div>
+            {games.map((game) => (
+              <GameCard
+                key={game.id}
+                game={game}
+                className={CAT_MAP[game.id]}
+                onPlay={() => onPlayGame(game.id)}
+              />
+            ))}
+          </React.Fragment>
         ))}
       </PageLayout>
     </>
@@ -119,6 +147,7 @@ export default function EarlyExplorersHome(props) {
 
 const GameCard = React.memo(function GameCard({ game, className, onPlay }) {
   const soundPlayedRef = useRef(false);
+  const hasSvg = !!SVG_MAP[game.id];
 
   const handleMouseEnter = useCallback(() => {
     if (!soundPlayedRef.current) {
@@ -127,6 +156,21 @@ const GameCard = React.memo(function GameCard({ game, className, onPlay }) {
       setTimeout(() => { soundPlayedRef.current = false; }, 500);
     }
   }, []);
+
+  if (!hasSvg) {
+    return (
+      <button
+        onClick={onPlay}
+        onMouseEnter={handleMouseEnter}
+        type="button"
+        className="ee-game-card"
+        style={{ '--card-bg': game.cardColor, '--card-bg-dark': game.cardDark }}
+      >
+        <span className="ee-game-emoji">{game.emoji}</span>
+        <span className="ee-game-label">{game.name}</span>
+      </button>
+    );
+  }
 
   return (
     <button

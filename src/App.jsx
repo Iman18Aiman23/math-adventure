@@ -19,7 +19,18 @@ import EarlyExplorersHome from './components/AgeGroup-4-6/EarlyExplorersHome';
 import Grade1AdventurersHome from './components/AgeGroup-7/Grade1AdventurersHome';
 import Grade2DiscoverersHome from './components/AgeGroup-8/Grade2DiscoverersHome';
 import Grade3AchieversHome from './components/AgeGroup-9/Grade3AchieversHome';
+import AlphabetCards from './components/AgeGroup-4-6/AlphabetCards';
+import NumberCards from './components/AgeGroup-4-6/NumberCards';
 import AlphabetSafari from './components/AgeGroup-4-6/AlphabetSafari';
+import CountingStars from './components/AgeGroup-4-6/CountingStars';
+import ShapeSorter from './components/AgeGroup-4-6/ShapeSorter';
+import NumberMatch from './components/AgeGroup-4-6/NumberMatch';
+import AppleAddition from './components/AgeGroup-4-6/AppleAddition';
+import MissingNumber from './components/AgeGroup-4-6/MissingNumber';
+import SpeakingGame4to6 from './components/AgeGroup-4-6/SpeakingGame4to6';
+import JawiLetterCards from './components/AgeGroup-4-6/JawiLetterCards';
+import JawiLetterMatch from './components/AgeGroup-4-6/JawiLetterMatch';
+import './components/AgeGroup-4-6/age46-ui.css';
 import LetterTrace from './components/AgeGroup-4-6/LetterTrace';
 import PhoneticsPop from './components/AgeGroup-4-6/PhoneticsPop';
 import SoundMatching from './components/AgeGroup-4-6/SoundMatching';
@@ -31,6 +42,14 @@ import JenisKata from './components/AgeGroup-7/JenisKata';
 import KataTanya from './components/AgeGroup-7/KataTanya';
 import KataHubungSendi from './components/AgeGroup-7/KataHubungSendi';
 import KataImbuhan from './components/AgeGroup-7/KataImbuhan';
+import EjaanTandaBaca from './components/AgeGroup-7/EjaanTandaBaca';
+import KataGanda from './components/AgeGroup-7/KataGanda';
+import KefahamanBacaan from './components/AgeGroup-7/KefahamanBacaan';
+import BacaSukuKataJawi from './components/AgeGroup-7/BacaSukuKataJawi';
+import BinaPerkataanJawi from './components/AgeGroup-7/BinaPerkataanJawi';
+import PadanPerkataanJawi from './components/AgeGroup-7/PadanPerkataanJawi';
+import BacaAyatJawi from './components/AgeGroup-7/BacaAyatJawi';
+import TulisJawi from './components/AgeGroup-7/TulisJawi';
 import TimeTeller from './components/AgeGroup-7/TimeTeller';
 import CountingMoney from './components/AgeGroup-7/CountingMoney';
 import SubtractionStory from './components/AgeGroup-7/SubtractionStory';
@@ -278,8 +297,44 @@ export default function App() {
         if (currentAgeGame === 'letter-sound-puzzle') {
           return <LetterSoundPuzzle onBack={() => setCurrentAgeGame(null)} language={language} theme={THEMES[currentTheme]} />;
         }
+        if (currentAgeGame === 'alphabet-cards') {
+          return <AlphabetCards onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'number-cards') {
+          return <NumberCards onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
         if (currentAgeGame === 'phonics-sprint') {
           return <PhoneticsSprint onBack={() => setCurrentAgeGame(null)} language={language} theme={THEMES[currentTheme]} />;
+        }
+        if (currentAgeGame === 'counting-stars') {
+          return <CountingStars onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'shape-sorter') {
+          return <ShapeSorter onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'number-match') {
+          return <NumberMatch onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'apple-addition') {
+          return <AppleAddition onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'missing-number') {
+          return <MissingNumber onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'sebut-huruf') {
+          return <SpeakingGame4to6 category="huruf" onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'sebut-perkataan') {
+          return <SpeakingGame4to6 category="perkataan" onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'sebut-nombor') {
+          return <SpeakingGame4to6 category="nombor" onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'jawi-letter-cards') {
+          return <JawiLetterCards onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'jawi-letter-match') {
+          return <JawiLetterMatch onBack={() => setCurrentAgeGame(null)} language={language} />;
         }
         if (currentAgeGame === 'sentence-builder') {
           return <SentenceBuilder onBack={() => setCurrentAgeGame(null)} language={language} />;
@@ -298,6 +353,30 @@ export default function App() {
         }
         if (currentAgeGame === 'kata-imbuhan') {
           return <KataImbuhan onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'ejaan-tanda-baca') {
+          return <EjaanTandaBaca onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'kata-ganda') {
+          return <KataGanda onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'kefahaman-bacaan') {
+          return <KefahamanBacaan onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'baca-suku-kata-jawi') {
+          return <BacaSukuKataJawi onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'bina-perkataan-jawi') {
+          return <BinaPerkataanJawi onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'padan-perkataan-jawi') {
+          return <PadanPerkataanJawi onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'baca-ayat-jawi') {
+          return <BacaAyatJawi onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'tulis-jawi') {
+          return <TulisJawi onBack={() => setCurrentAgeGame(null)} language={language} />;
         }
         if (currentAgeGame === 'time-teller') {
           return <TimeTeller onBack={() => setCurrentAgeGame(null)} language={language} />;

@@ -24,16 +24,18 @@ export const preloadSounds = () => {
     });
 };
 
-// Unlock audio context on mobile (should be called on first user interaction)
+// Unlock audio context on first user interaction.
+// Uses a silent 1-frame buffer — never plays audible audio.
 export const unlockAudio = () => {
-    Object.values(audioPool).forEach(audio => {
-        audio.play().then(() => {
-            audio.pause();
-            audio.currentTime = 0;
-        }).catch(() => {
-            // Silently fail if interaction hasn't happened yet
-        });
-    });
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const buf = ctx.createBuffer(1, 1, 22050);
+        const src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.connect(ctx.destination);
+        src.start(0);
+        src.onended = () => ctx.close();
+    } catch (_) {}
 };
 
 // Get mute state

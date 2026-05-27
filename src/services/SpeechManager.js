@@ -26,10 +26,13 @@ class SpeechManagerClass {
     this._micPermission = 'prompt';
 
     // Platform detection
-    this._isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-    this._isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-    this._isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-    // On iOS, ALL browsers use WebKit under the hood
+    const ua = navigator.userAgent || '';
+    // iPadOS 13+ Safari reports UA as "Macintosh" — detect via touch points.
+    const isIPadOS = navigator.platform === 'MacIntel' && (navigator.maxTouchPoints || 0) > 1;
+    this._isIOS = /iPhone|iPad|iPod/i.test(ua) || isIPadOS;
+    this._isSafari = /^((?!chrome|android).)*safari/i.test(ua);
+    this._isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(ua) || this._isIOS;
+    // On iOS/iPadOS, ALL browsers use WebKit under the hood
     this._isIOSSafari = this._isIOS;
 
     // Speech Recognition class
@@ -135,10 +138,59 @@ class SpeechManagerClass {
 
   // ── TTS ────────────────────────────────────────────────────────────────────
 
+  /** Normalize caller shorthand ('ms', 'bm', 'en') to BCP-47 tags */
+  _normalizeLang(lang) {
+    if (!lang) return 'en-US';
+    const l = lang.toLowerCase();
+    if (l === 'ms' || l === 'bm' || l === 'ms-my') return 'ms-MY';
+    if (l === 'en' || l === 'en-us') return 'en-US';
+    return lang;
+  }
+
+  /**
+   * Pick the best available TTS voice for a language.
+   * Scoring: exact lang match > prefix match; online > local; preferred names first.
+   */
+  _getBestVoice(normalLang) {
+    const voices = this._synth?.getVoices() ?? [];
+    if (!voices.length) return null;
+
+    const prefix = normalLang.split('-')[0]; // 'ms' | 'en'
+
+    // Preferred voice name fragments, highest-priority first
+    const PREF_MS = [
+      'Google Bahasa Melayu', 'Bahasa Melayu', 'Malay', 'ms-MY',
+      'Google Bahasa Indonesia', 'Indonesian',
+    ];
+    const PREF_EN = [
+      'Zira', 'Samantha', 'Google US English', 'Karen', 'Tessa',
+      'Heather', 'Google UK English Female', 'Google', 'Female',
+    ];
+    const preferred = prefix === 'ms' ? PREF_MS : PREF_EN;
+
+    const scored = voices.map(v => {
+      let score = 0;
+      if (v.lang === normalLang)           score += 100;
+      else if (v.lang.startsWith(prefix))  score += 50;
+      else return { voice: v, score: -1 };
+
+      if (!v.localService) score += 10; // network/online voices sound better
+
+      const name = v.name.toLowerCase();
+      const idx  = preferred.findIndex(p => name.includes(p.toLowerCase()));
+      if (idx !== -1) score += (preferred.length - idx) * 4;
+
+      return { voice: v, score };
+    });
+
+    const best = scored.filter(s => s.score > 0).sort((a, b) => b.score - a.score);
+    return best[0]?.voice ?? null;
+  }
+
   /**
    * Speak text aloud.
    * @param {string} text
-   * @param {string} lang  'ms-MY' | 'en-US'
+   * @param {string} lang  'ms' | 'bm' | 'ms-MY' | 'en' | 'en-US'
    * @param {object} options  { rate: 0-2, pitch: 0-2, volume: 0-1 }
    * @returns {Promise<void>}
    */
@@ -148,22 +200,21 @@ class SpeechManagerClass {
 
       this._synth.cancel();
 
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = lang;
-      utterance.rate = options.rate ?? 0.85;
-      utterance.pitch = options.pitch ?? 1.1;
+      const normalLang = this._normalizeLang(lang);
+      const utterance  = new SpeechSynthesisUtterance(text);
+      utterance.lang   = normalLang;
+      utterance.rate   = options.rate   ?? 0.88;  // clear but lively
+      utterance.pitch  = options.pitch  ?? 1.35;  // cheerful, kid-friendly
       utterance.volume = options.volume ?? 1;
+
+      const voice = this._getBestVoice(normalLang);
+      if (voice) utterance.voice = voice;
 
       let settled = false;
       const timeout = setTimeout(() => { if (!settled) { settled = true; resolve(); } }, 8000);
 
       utterance.onend   = () => { if (!settled) { settled = true; clearTimeout(timeout); resolve(); } };
       utterance.onerror = () => { if (!settled) { settled = true; clearTimeout(timeout); resolve(); } };
-
-      const voices = this._synth.getVoices();
-      const matched = voices.find(v => v.lang === lang) ||
-                      voices.find(v => v.lang.startsWith(lang.split('-')[0]));
-      if (matched) utterance.voice = matched;
 
       this._synth.speak(utterance);
 

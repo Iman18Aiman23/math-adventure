@@ -4,22 +4,28 @@ import { playHoverSound } from '../../utils/soundManager';
 import PageLayout from '../PageLayout';
 import '../SpeakingPage/BMPage.css';
 
+// Pillar categories — order + display metadata for the grouped game grid.
+const PILLAR_ORDER = ['reading', 'speaking', 'jawi', 'math'];
+const PILLAR_META = {
+  reading:  { bm: 'Membaca',      eng: 'Reading',     emoji: '📖', color: '#FF3D8B' },
+  speaking: { bm: 'Bertutur',     eng: 'Speaking',    emoji: '🗣️', color: '#9C27B0' },
+  jawi:     { bm: 'Tulisan Jawi', eng: 'Jawi Script', emoji: '✍️', color: '#7C4DFF' },
+  math:     { bm: 'Matematik',    eng: 'Mathematics', emoji: '🔢', color: '#1CB0F6' },
+};
+
 export default function Grade1AdventurersHome(props) {
   const { onBack, onPlayGame, language = 'bm' } = props;
   const curriculum = CURRICULUM['age-7'];
 
-  // Get all games from all pillars
-  const allGames = [];
-  ['reading', 'speaking', 'jawi', 'math'].forEach(pillarId => {
-    if (curriculum[pillarId] && Array.isArray(curriculum[pillarId])) {
-      allGames.push(...curriculum[pillarId]);
-    }
-  });
+  // Group games by pillar (only pillars that actually have games)
+  const pillarSections = PILLAR_ORDER
+    .map(id => ({ id, meta: PILLAR_META[id], games: curriculum[id] }))
+    .filter(s => Array.isArray(s.games) && s.games.length > 0);
 
   const heroSubtitle = (
     <>
       <span style={{ display: 'inline-block', background: 'rgba(255,150,0,0.15)', color: '#FF9600', fontSize: '0.7rem', padding: '0.18rem 0.6rem', borderRadius: '999px', fontWeight: 800, border: '1.5px solid rgba(255,150,0,0.45)', marginRight: '0.4rem', verticalAlign: 'middle', letterSpacing: '0.03em' }}>
-        KSSR 10/21
+        KSSR 15/21
       </span>
       {language === 'bm'
         ? 'Menguasai ayat, suku kata, dan jenis kata menerusi petualangan!'
@@ -59,12 +65,12 @@ export default function Grade1AdventurersHome(props) {
             </div>
             <div style={{ fontSize: '0.75rem', opacity: 0.88, marginTop: '0.15rem', lineHeight: 1.4 }}>
               {language === 'bm'
-                ? 'Merangkumi 10 daripada 21 objektif BM Tahun 1 KSSR'
-                : 'Covers 10 of 21 Year 1 BM objectives in KSSR'}
+                ? 'Merangkumi 15 daripada 21 objektif BM Tahun 1 KSSR'
+                : 'Covers 15 of 21 Year 1 BM objectives in KSSR'}
             </div>
           </div>
           <span style={{ flexShrink: 0, background: 'rgba(255,255,255,0.25)', borderRadius: '8px', padding: '0.2rem 0.55rem', fontSize: '0.72rem', fontWeight: 800, whiteSpace: 'nowrap', letterSpacing: '0.03em' }}>
-            10/21 Obj.
+            15/21 Obj.
           </span>
         </div>
 
@@ -80,6 +86,9 @@ export default function Grade1AdventurersHome(props) {
             { emoji: '❓', name: language === 'bm' ? 'Kata Tanya'          : 'Question Words',          obj: language === 'bm' ? 'Obj. 2 — Siapa, Apa, Di mana, Bila, Mengapa'    : 'Obj. 2 — Who, What, Where, When, Why'       },
             { emoji: '🔗', name: language === 'bm' ? 'Kata Hubung & Sendi' : 'Connectors & Prepositions', obj: language === 'bm' ? 'Obj. 18 — dan, tetapi, atau, di, ke, dari'   : 'Obj. 18 — and, but, or, at, to, from'       },
             { emoji: '🔠', name: language === 'bm' ? 'Kata Imbuhan'        : 'Word Prefixes',           obj: language === 'bm' ? 'Obj. 19 — Awalan ber-, me-'                     : 'Obj. 19 — Prefixes ber-, me-'               },
+            { emoji: '✏️', name: language === 'bm' ? 'Ejaan & Tanda Baca'  : 'Spelling & Punctuation',  obj: language === 'bm' ? 'Obj. 5, 6 — Ejaan betul & tanda baca'          : 'Obj. 5, 6 — Correct spelling & punctuation' },
+            { emoji: '🔄', name: language === 'bm' ? 'Kata Ganda'          : 'Repeated Words',          obj: language === 'bm' ? 'Obj. 9, 10 — Kata ganda penuh & berentak'      : 'Obj. 9, 10 — Full & rhyming repeated words' },
+            { emoji: '📜', name: language === 'bm' ? 'Kefahaman Bacaan'    : 'Reading Comprehension',   obj: language === 'bm' ? 'Obj. 12 — Memahami dan mentafsir petikan'       : 'Obj. 12 — Understand and interpret passages' },
           ].map((item, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.15)', borderRadius: '10px', padding: '0.45rem 0.75rem' }}>
               <span style={{ fontSize: '1rem', flexShrink: 0 }}>{item.emoji}</span>
@@ -170,13 +179,35 @@ export default function Grade1AdventurersHome(props) {
         onBack={onBack}
         additionalSection={additionalSection}
       >
-        {allGames.length > 0 ? (
-          allGames.map((game) => (
-            <GameCard
-              key={game.id}
-              game={game}
-              onPlay={() => onPlayGame(game.id)}
-            />
+        {pillarSections.length > 0 ? (
+          pillarSections.map(({ id, meta, games }) => (
+            <React.Fragment key={id}>
+              <div
+                style={{
+                  gridColumn: '1 / -1',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  marginTop: '0.25rem',
+                }}
+              >
+                <span style={{ fontSize: '1.3rem', lineHeight: 1 }}>{meta.emoji}</span>
+                <span style={{ fontWeight: 800, fontSize: '1.05rem', color: meta.color, whiteSpace: 'nowrap' }}>
+                  {meta[language] || meta.bm}
+                </span>
+                <span style={{ flex: 1, height: '3px', background: `${meta.color}33`, borderRadius: '999px' }} />
+                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#fff', background: meta.color, borderRadius: '999px', padding: '2px 9px', lineHeight: 1.4 }}>
+                  {games.length}
+                </span>
+              </div>
+              {games.map((game) => (
+                <GameCard
+                  key={game.id}
+                  game={game}
+                  onPlay={() => onPlayGame(game.id)}
+                />
+              ))}
+            </React.Fragment>
           ))
         ) : (
           <div className="coming-soon-container">
@@ -212,38 +243,11 @@ const GameCard = React.memo(function GameCard({ game, onPlay }) {
       onClick={onPlay}
       onMouseEnter={handleMouseEnter}
       type="button"
-      style={{
-        background: game.cardColor,
-        boxShadow: `0 4px 0 ${game.cardDark}`,
-        padding: '1rem 0.75rem',
-        borderRadius: '14px',
-        border: 'none',
-        cursor: 'pointer',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '0.5rem',
-        width: '100%',
-        minHeight: '100px',
-        color: 'white',
-        textAlign: 'center',
-        boxSizing: 'border-box',
-        transition: 'transform 0.15s, box-shadow 0.15s',
-        WebkitTapHighlightColor: 'transparent',
-      }}
+      className="ee-game-card"
+      style={{ '--card-bg': game.cardColor, '--card-bg-dark': game.cardDark }}
     >
-      <span style={{ fontSize: '2rem', lineHeight: 1 }}>{game.emoji}</span>
-      <span style={{
-        fontWeight: 700,
-        fontSize: 'clamp(0.7rem, 2.5vw, 0.9rem)',
-        lineHeight: 1.25,
-        overflowWrap: 'break-word',
-        wordBreak: 'break-word',
-        maxWidth: '100%',
-      }}>
-        {game.name}
-      </span>
+      <span className="ee-game-emoji">{game.emoji}</span>
+      <span className="ee-game-label">{game.name}</span>
     </button>
   );
 });

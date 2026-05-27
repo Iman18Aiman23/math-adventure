@@ -43,6 +43,7 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
   const [showHint,    setShowHint]    = useState(false);
   const [lastHeard,   setLastHeard]   = useState('');
   const [phaseTimers, setPhaseTimers] = useState([]);
+  const [micError,    setMicError]    = useState(null); // 'perm' | 'net' | 'nospeech' | null
 
   // stable refs to avoid stale closures in callbacks
   const indexRef   = useRef(index);
@@ -69,6 +70,7 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
     setShowHint(false);
     setPhase(PHASE_SPEAKING);
     setLastHeard('');
+    setMicError(null);
   }, [category]);
 
   // Cleanup on unmount
@@ -101,6 +103,7 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
     setAttempts(0);
     setLastHeard('');
     setShowHint(false);
+    setMicError(null);
     setPhase(PHASE_SPEAKING);
   }, []);
 
@@ -131,6 +134,7 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
   // This MUST be called directly from onClick on iOS (no async chain before it)
   const startListening = () => {
     if (!SpeechManager.isSupported()) return;
+    setMicError(null);
     setPhase(PHASE_LISTENING);
 
     const currentItem = itemsRef.current[indexRef.current];
@@ -166,11 +170,26 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
       },
       (error) => {
         console.warn('[BMSpeakGame] STT error:', error);
+        // Permission / device / insecure-context / network errors won't fix by
+        // skipping — show a clear message and let the user grant access & retry.
+        if (error === 'not-allowed' || error === 'service-not-allowed' || error === 'audio-capture') {
+          setMicError('perm');
+          setPhase(PHASE_READY);
+          return;
+        }
+        if (error === 'network') {
+          setMicError('net');
+          setPhase(PHASE_READY);
+          return;
+        }
+        // no-speech / aborted / other — treat as a missed attempt
         const curAttempts = attRef.current;
         if (curAttempts < MAX_ATTEMPTS) {
+          setMicError('nospeech');
           setAttempts(a => a + 1);
           setPhase(PHASE_READY); // let user tap again
         } else {
+          setMicError(null);
           setPhase(PHASE_WRONG);
           setLastHeard('');
           setTimeout(() => advanceItem(), 2000);
@@ -227,6 +246,7 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
   const handleRepeat = () => {
     if (!langData) return;
     SpeechManager.stop();
+    setMicError(null);
     speak(langData.prompt, lang).then(() => {
       if (isMobile) setPhase(PHASE_READY);
       else { setPhase(PHASE_LISTENING); }
@@ -244,6 +264,7 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
     SpeechManager.stopSpeaking();
     setLang(l => l === 'ms' ? 'en' : 'ms');
     setAttempts(0);
+    setMicError(null);
     setPhase(PHASE_SPEAKING);
   };
 
@@ -467,8 +488,31 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
             </div>
           )}
 
-          {/* Ready to tap */}
-          {phase === PHASE_READY && (
+          {/* Ready to tap — error states first */}
+          {phase === PHASE_READY && micError === 'perm' && (
+            <p style={{ fontWeight: 700, color: '#CC3B3B', fontSize: '0.85rem', textAlign: 'center', maxWidth: '340px', lineHeight: 1.4 }}>
+              🎤 {language === 'bm'
+                ? (isIOS
+                    ? 'Benarkan mikrofon untuk Safari di Tetapan, kemudian tekan 🎤 sekali lagi.'
+                    : 'Benarkan akses mikrofon dalam pelayar, kemudian tekan 🎤 sekali lagi.')
+                : (isIOS
+                    ? 'Allow microphone for Safari in Settings, then tap 🎤 again.'
+                    : 'Please allow microphone access in your browser, then tap 🎤 again.')}
+            </p>
+          )}
+          {phase === PHASE_READY && micError === 'net' && (
+            <p style={{ fontWeight: 700, color: '#CC3B3B', fontSize: '0.85rem', textAlign: 'center', maxWidth: '340px', lineHeight: 1.4 }}>
+              📡 {language === 'bm'
+                ? 'Sambungan internet diperlukan untuk suara. Cuba lagi.'
+                : 'Voice needs an internet connection. Try again.'}
+            </p>
+          )}
+          {phase === PHASE_READY && micError === 'nospeech' && (
+            <p style={{ fontWeight: 700, color: '#D9610B', fontSize: '0.85rem', textAlign: 'center' }}>
+              {language === 'bm' ? 'Tak dengar suara. Cuba lagi! 🎤' : "Didn't hear you. Try again! 🎤"}
+            </p>
+          )}
+          {phase === PHASE_READY && !micError && (
             <p style={{ fontWeight: 700, color: '#AFAFAF', fontSize: '0.88rem' }}>
               {language === 'bm' ? 'Tekan 🎤 untuk bercakap' : 'Tap 🎤 to speak'}
               {attempts > 0 && ` (${language === 'bm' ? 'Cuba' : 'Try'} ${attempts + 1}/${MAX_ATTEMPTS})`}
