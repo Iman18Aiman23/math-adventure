@@ -144,23 +144,39 @@ const GameCard = React.memo(function GameCard({ game, onPlay }) {
     <button
       onClick={onPlay}
       onMouseEnter={handleMouseEnter}
-      className="bp-icon-card"
       type="button"
       style={{
         background: game.cardColor,
-        padding: '1.5rem',
-        borderRadius: '16px',
+        boxShadow: `0 4px 0 ${game.cardDark}`,
+        padding: '1rem 0.75rem',
+        borderRadius: '14px',
         border: 'none',
         cursor: 'pointer',
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
+        gap: '0.5rem',
+        width: '100%',
         minHeight: '100px',
-        fontSize: '2rem',
+        color: 'white',
+        textAlign: 'center',
+        boxSizing: 'border-box',
+        transition: 'transform 0.15s, box-shadow 0.15s',
+        WebkitTapHighlightColor: 'transparent',
       }}
     >
-      <span>{game.emoji}</span>
-      <span style={{ marginLeft: '1rem', fontWeight: 600 }}>{game.name}</span>
+      <span style={{ fontSize: '2rem', lineHeight: 1 }}>{game.emoji}</span>
+      <span style={{
+        fontWeight: 700,
+        fontSize: 'clamp(0.7rem, 2.5vw, 0.9rem)',
+        lineHeight: 1.25,
+        overflowWrap: 'break-word',
+        wordBreak: 'break-word',
+        maxWidth: '100%',
+      }}>
+        {game.name}
+      </span>
     </button>
   );
 });

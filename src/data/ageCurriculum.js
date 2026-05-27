@@ -85,9 +85,12 @@ export const CURRICULUM = {
   },
   'age-7': {
     reading: [
-      { id: 'sentence-builder',    name: 'Sentence Builder',    emoji: '📝', cardColor: '#FF6B35', cardDark: '#E55A25', status: 'complete' },
-      { id: 'word-family-match',   name: 'Word Family Match',   emoji: '🔤', cardColor: '#7C4DFF', cardDark: '#6B3EE6', status: 'complete' },
-      { id: 'grammar-detective',   name: 'Grammar Detective',   emoji: '🔍', cardColor: '#00BCD4', cardDark: '#0097A7', status: 'complete' },
+      { id: 'sentence-builder',         name: 'Bina Ayat',              emoji: '📝', cardColor: '#FF6B35', cardDark: '#E55A25', status: 'complete' },
+      { id: 'suku-kata-bina-perkataan', name: 'Suku Kata',              emoji: '🔤', cardColor: '#7C4DFF', cardDark: '#6B3EE6', status: 'complete' },
+      { id: 'jenis-kata',               name: 'Jenis Kata',             emoji: '🔍', cardColor: '#00BCD4', cardDark: '#0097A7', status: 'complete' },
+      { id: 'kata-tanya',               name: 'Kata Tanya',             emoji: '❓', cardColor: '#E91E8C', cardDark: '#C2177A', status: 'complete' },
+      { id: 'kata-hubung-sendi',        name: 'Kata Hubung & Sendi',    emoji: '🔗', cardColor: '#009688', cardDark: '#00796B', status: 'complete' },
+      { id: 'kata-imbuhan',             name: 'Kata Imbuhan',           emoji: '🔠', cardColor: '#FF5722', cardDark: '#E64A19', status: 'complete' },
     ],
     speaking: null,
     jawi: null,

@@ -193,35 +193,41 @@ After generating ideas OR coding a game, you MUST output the following MD block.
 ---
 
 🟡 **Age 7: Grade 1 Adventurers (FORMERLY Age 6-7)**
-📖 Reading: ✅ COMPLETE (3/3) - Sentence Building & Grammar Games!
-  - Sentence Builder ✅ COMPLETE (Arrange words in order)
+
+> KSSR BM Tahun 1 coverage: **10/21 objectives** (Obj 1, 2, 4, 7, 8, 16, 17, 18, 19, 21)
+> Practical ceiling is ~16/21 — 5 oral/speaking objectives are not feasible digitally.
+> Badge in Grade1AdventurersHome.jsx shows "KSSR 10/21". Update numerator when new games are added.
+
+📖 Reading: ✅ COMPLETE (6/6) - KSSR BM Tahun 1 Games!
+  - Bina Ayat (Sentence Builder) ✅ COMPLETE — KSSR Obj 8, 21: Membina ayat penyata mudah
     - `src/components/AgeGroup-7/SentenceBuilder.jsx`
-    - `src/utils/soundManager.js` (audio feedback)
-    - `src/utils/gameStatsManager.js` (game progress tracking)
-  - Word Family Match ✅ COMPLETE (Rhyming word families)
-    - `src/components/AgeGroup-7/WordFamilyMatch.jsx`
-    - `src/utils/soundManager.js`
-    - `src/utils/gameStatsManager.js`
-  - Grammar Detective ✅ COMPLETE (Correct grammar detection)
-    - `src/components/AgeGroup-7/GrammarDetective.jsx`
-    - `src/utils/soundManager.js`
-    - `src/utils/gameStatsManager.js`
+  - Suku Kata (Syllable Builder) ✅ COMPLETE — KSSR Obj 1, 4, 7: Suku kata KVKV & membaca
+    - `src/components/AgeGroup-7/SukuKataBinaPerkataan.jsx`
+  - Jenis Kata (Word Types) ✅ COMPLETE — KSSR Obj 16, 17: Kata Nama Am/Khas, Kata Kerja, Kata Adjektif
+    - `src/components/AgeGroup-7/JenisKata.jsx`
+  - Kata Tanya (Question Words) ✅ COMPLETE — KSSR Obj 2: Siapa, Apa, Di mana, Bila, Mengapa
+    - `src/components/AgeGroup-7/KataTanya.jsx`
+  - Kata Hubung & Sendi ✅ COMPLETE — KSSR Obj 18: dan/tetapi/atau, di/ke/dari
+    - `src/components/AgeGroup-7/KataHubungSendi.jsx`
+  - Kata Imbuhan (Word Prefixes) ✅ COMPLETE — KSSR Obj 19: Awalan ber-, me-
+    - `src/components/AgeGroup-7/KataImbuhan.jsx`
+
+> ⚠️ NOTE: WordFamilyMatch.jsx and GrammarDetective.jsx were REMOVED — they used English phonics/grammar which is wrong for BM Tahun 1 KSSR. Replaced by SukuKataBinaPerkataan and JenisKata respectively.
+
+📖 Reading Batch 2 — PLANNED (not yet built):
+  - Ejaan & Tanda Baca — KSSR Obj 5, 6: Correct spelling and punctuation in sentences
+  - Kata Ganda — KSSR Obj 9, 10: Identify and use reduplicated words (buku-buku, kanak-kanak)
+  - Kefahaman Bacaan — KSSR Obj 12: Short passage + 3 comprehension questions
 
 🗣 Speaking: ⏳ PENDING
 ✒ Jawi Script: ⏳ PENDING
-🔢 Mathematics: ✅ COMPLETE (3/3) - Time & Money Games!
-  - Time Teller ✅ COMPLETE (Read analog clock)
+🔢 Mathematics: ✅ COMPLETE (3/3) - KSSR Matematik Tahun 1 Games!
+  - Time Teller ✅ COMPLETE (Read analog clock — masa)
     - `src/components/AgeGroup-7/TimeTeller.jsx`
-    - `src/utils/soundManager.js`
-    - `src/utils/gameStatsManager.js`
-  - Counting Money ✅ COMPLETE (Count coins and calculate)
+  - Counting Money ✅ COMPLETE (Count coins and calculate — wang)
     - `src/components/AgeGroup-7/CountingMoney.jsx`
-    - `src/utils/soundManager.js`
-    - `src/utils/gameStatsManager.js`
-  - Subtraction Story ✅ COMPLETE (Word problems with subtraction)
+  - Subtraction Story ✅ COMPLETE (Word problems — cerita penolakan)
     - `src/components/AgeGroup-7/SubtractionStory.jsx`
-    - `src/utils/soundManager.js`
-    - `src/utils/gameStatsManager.js`
 
 ---
 
@@ -250,10 +256,12 @@ After generating ideas OR coding a game, you MUST output the following MD block.
 | Folder Names | AgeGroup-4-5, 5-6, 6-7, 7-8, 8-9 | AgeGroup-4-6, 7, 8, 9 | ✅ Renamed |
 | Home Pages | Generic | Dedicated per age | ✅ Standardized |
 | Games (Age 4-6) | 6 games | 6 games | ✅ Preserved |
-| Games (Age 7-9) | None | None | ⏳ Pending |
+| Games (Age 7) BM | WordFamilyMatch, GrammarDetective (English, wrong) | 6 KSSR-aligned BM games | ✅ Rebuilt |
+| Games (Age 7) Math | 3 games | 3 games | ✅ Preserved |
+| Games (Age 8-9) | None | None | ⏳ Pending |
 
 ---
 
 **Last Updated:** 2026-05-27  
-**Version:** 2.0 (Post-Restructuring)  
-**Status:** Ready for Game Development Continuation
+**Version:** 2.1 (Age 7 KSSR Rebuild + Batch 1 Complete)  
+**Status:** Age 7 Reading 6/6 complete (10/21 KSSR). Batch 2 planned (Ejaan, Kata Ganda, Kefahaman).

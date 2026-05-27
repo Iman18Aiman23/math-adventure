@@ -5,12 +5,15 @@ import { playSound, playHoverSound } from '../../utils/soundManager';
 import SpeechManager from '../../services/SpeechManager';
 import BackButton from '../BackButton';
 
+// KSSR BM Tahun 1 — Obj 8, 21: Ayat penyata mudah dengan kata nama, kata kerja,
+// kata adjektif, dan kata sendi nama (di, ke)
 const QUESTIONS = [
-  { id: 1, words: ['Saya', 'suka', 'kucing'],      sentence: 'Saya suka kucing',        translation: 'I like cats',           image: '🐱' },
-  { id: 2, words: ['Dia', 'bermain', 'bola'],       sentence: 'Dia bermain bola',         translation: 'He plays ball',         image: '⚽' },
-  { id: 3, words: ['Kami', 'pergi', 'ke', 'taman'],sentence: 'Kami pergi ke taman',      translation: 'We go to the park',     image: '🌳' },
-  { id: 4, words: ['Adik', 'makan', 'nasi'],        sentence: 'Adik makan nasi',          translation: 'Sister eats rice',      image: '🍚' },
-  { id: 5, words: ['Kucing', 'tidur', 'di', 'rumah'],sentence:'Kucing tidur di rumah',    translation: 'The cat sleeps at home',image: '🏠' },
+  { id: 1, words: ['Saya', 'suka', 'membaca', 'buku'],    sentence: 'Saya suka membaca buku',    translation: 'I like to read books',         image: '📚' },
+  { id: 2, words: ['Ibu', 'memasak', 'di', 'dapur'],      sentence: 'Ibu memasak di dapur',      translation: 'Mother cooks in the kitchen',   image: '🍳' },
+  { id: 3, words: ['Ahmad', 'berlari', 'ke', 'sekolah'],  sentence: 'Ahmad berlari ke sekolah',  translation: 'Ahmad runs to school',          image: '🏫' },
+  { id: 4, words: ['Kucing', 'itu', 'sangat', 'comel'],   sentence: 'Kucing itu sangat comel',   translation: 'That cat is very cute',         image: '🐱' },
+  { id: 5, words: ['Kami', 'bermain', 'bola', 'di', 'padang'], sentence: 'Kami bermain bola di padang', translation: 'We play ball at the field', image: '⚽' },
+  { id: 6, words: ['Adik', 'minum', 'susu', 'setiap', 'pagi'], sentence: 'Adik minum susu setiap pagi', translation: 'Younger sibling drinks milk every morning', image: '🥛' },
 ];
 
 export default function SentenceBuilder({ onBack, language = 'bm' }) {
@@ -85,7 +88,7 @@ export default function SentenceBuilder({ onBack, language = 'bm' }) {
           {language === 'bm' ? 'Tahniah!' : 'Well Done!'}
         </h2>
         <p style={{ fontSize: '1.4rem', color: '#555', marginBottom: '2rem' }}>
-          {language === 'bm' ? 'Markah: ' : 'Score: '}<strong>{score}</strong>/50
+          {language === 'bm' ? 'Markah: ' : 'Score: '}<strong>{score}</strong>/60
         </p>
         <div style={{ display: 'flex', gap: '1rem' }}>
           <button onClick={handleReset} style={{ padding: '0.75rem 1.5rem', background: '#E0E0E0', color: '#333', border: 'none', borderRadius: '10px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold' }}>

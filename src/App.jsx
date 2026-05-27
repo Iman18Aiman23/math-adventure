@@ -26,8 +26,11 @@ import SoundMatching from './components/AgeGroup-4-6/SoundMatching';
 import LetterSoundPuzzle from './components/AgeGroup-4-6/LetterSoundPuzzle';
 import PhoneticsSprint from './components/AgeGroup-4-6/PhoneticsSprint';
 import SentenceBuilder from './components/AgeGroup-7/SentenceBuilder';
-import WordFamilyMatch from './components/AgeGroup-7/WordFamilyMatch';
-import GrammarDetective from './components/AgeGroup-7/GrammarDetective';
+import SukuKataBinaPerkataan from './components/AgeGroup-7/SukuKataBinaPerkataan';
+import JenisKata from './components/AgeGroup-7/JenisKata';
+import KataTanya from './components/AgeGroup-7/KataTanya';
+import KataHubungSendi from './components/AgeGroup-7/KataHubungSendi';
+import KataImbuhan from './components/AgeGroup-7/KataImbuhan';
 import TimeTeller from './components/AgeGroup-7/TimeTeller';
 import CountingMoney from './components/AgeGroup-7/CountingMoney';
 import SubtractionStory from './components/AgeGroup-7/SubtractionStory';
@@ -281,11 +284,20 @@ export default function App() {
         if (currentAgeGame === 'sentence-builder') {
           return <SentenceBuilder onBack={() => setCurrentAgeGame(null)} language={language} />;
         }
-        if (currentAgeGame === 'word-family-match') {
-          return <WordFamilyMatch onBack={() => setCurrentAgeGame(null)} language={language} />;
+        if (currentAgeGame === 'suku-kata-bina-perkataan') {
+          return <SukuKataBinaPerkataan onBack={() => setCurrentAgeGame(null)} language={language} />;
         }
-        if (currentAgeGame === 'grammar-detective') {
-          return <GrammarDetective onBack={() => setCurrentAgeGame(null)} language={language} />;
+        if (currentAgeGame === 'jenis-kata') {
+          return <JenisKata onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'kata-tanya') {
+          return <KataTanya onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'kata-hubung-sendi') {
+          return <KataHubungSendi onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'kata-imbuhan') {
+          return <KataImbuhan onBack={() => setCurrentAgeGame(null)} language={language} />;
         }
         if (currentAgeGame === 'time-teller') {
           return <TimeTeller onBack={() => setCurrentAgeGame(null)} language={language} />;
