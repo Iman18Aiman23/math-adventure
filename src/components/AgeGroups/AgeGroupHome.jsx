@@ -10,31 +10,25 @@ const RAINBOW_PILLAR_COLORS = {
 };
 
 const THEME_CONFIG = {
-  'age-4-5': {
+  'age-4-6': {
     primary: '#FF4757',
     dark: '#FF3838',
     light: '#FFE5E5',
     pillar: RAINBOW_PILLAR_COLORS,
   },
-  'age-5-6': {
-    primary: '#FFA502',
-    dark: '#FF8C00',
-    light: '#FFE4CC',
-    pillar: RAINBOW_PILLAR_COLORS,
-  },
-  'age-6-7': {
+  'age-7': {
     primary: '#FFD60A',
     dark: '#FFC300',
     light: '#FFF8E5',
     pillar: RAINBOW_PILLAR_COLORS,
   },
-  'age-7-8': {
+  'age-8': {
     primary: '#00BCD4',
     dark: '#0097A7',
     light: '#B2EBF2',
     pillar: RAINBOW_PILLAR_COLORS,
   },
-  'age-8-9': {
+  'age-9': {
     primary: '#7C4DFF',
     dark: '#512DA8',
     light: '#EDE7F6',

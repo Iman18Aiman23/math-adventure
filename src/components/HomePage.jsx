@@ -30,9 +30,9 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
   const currentDay = new Date().getDay();
   const activeDayIndex = currentDay === 0 ? 6 : currentDay - 1;
 
-  // Render 3 distinct SVG icons for the age groups, making them super colorful
+  // Render distinct SVG icons for the age groups
   const renderAgeIcon = (id) => {
-    if (id === '4-5') {
+    if (id === 'age-4-6') {
       return (
         <svg viewBox="0 0 100 100" width="60" height="60" className="age-icon-bounce">
           <circle cx="50" cy="50" r="50" fill="rgba(255,255,255,0.2)" />
@@ -40,7 +40,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
           <path d="M50 25 L56 42 L74 42 L60 52 L66 68 L50 58 L34 68 L40 52 L26 42 L44 42 Z" fill="#FFD93D" />
         </svg>
       );
-    } else if (id === '6') {
+    } else if (id === 'age-7') {
       return (
         <svg viewBox="0 0 100 100" width="60" height="60" className="age-icon-bounce">
           <circle cx="50" cy="50" r="50" fill="rgba(255,255,255,0.2)" />
@@ -49,7 +49,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
           <circle cx="50" cy="50" r="8" fill="#FFFFFF" />
         </svg>
       );
-    } else {
+    } else if (id === 'age-8') {
       return (
         <svg viewBox="0 0 100 100" width="60" height="60" className="age-icon-bounce">
           <circle cx="50" cy="50" r="50" fill="rgba(255,255,255,0.2)" />
@@ -57,6 +57,15 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
           <path d="M30 35 L70 35 L66 65 Q50 78 34 65 Z" fill="#FFB347" />
           <rect x="40" y="15" width="20" height="15" fill="#FFFFFF" />
           <circle cx="50" cy="45" r="8" fill="#FFFFFF" />
+        </svg>
+      );
+    } else {
+      // age-9 and any fallback
+      return (
+        <svg viewBox="0 0 100 100" width="60" height="60" className="age-icon-bounce">
+          <circle cx="50" cy="50" r="50" fill="rgba(255,255,255,0.2)" />
+          <path d="M50 20 L65 45 L90 45 L70 60 L80 85 L50 70 L20 85 L30 60 L10 45 L35 45 Z" fill="#FFFFFF" />
+          <path d="M50 30 L60 50 L80 50 L65 63 L73 83 L50 68 L27 83 L35 63 L20 50 L40 50 Z" fill="#E5A4FF" />
         </svg>
       );
     }
@@ -571,11 +580,10 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingBottom: 'calc(140px + var(--safe-bottom))' }}>
           {AGE_GROUPS.map((group, i) => {
             const nebulaColors = [
-              { main: '#FF4757', dark: '#991B1B', glow: 'rgba(255,71,87,0.55)'   },  // Red nebula
-              { main: '#FB923C', dark: '#9A3412', glow: 'rgba(251,146,60,0.55)'  },  // Orange nebula
-              { main: '#FCD34D', dark: '#92400E', glow: 'rgba(252,211,77,0.55)'  },  // Gold nebula
-              { main: '#22D3EE', dark: '#0E4D6E', glow: 'rgba(34,211,238,0.55)'  },  // Cyan nebula
-              { main: '#A78BFA', dark: '#4C1D95', glow: 'rgba(167,139,250,0.55)' },  // Violet nebula
+              { main: '#FF4757', dark: '#991B1B', glow: 'rgba(255,71,87,0.55)'   },  // Red nebula (age-4-6)
+              { main: '#FCD34D', dark: '#92400E', glow: 'rgba(252,211,77,0.55)'  },  // Gold nebula (age-7)
+              { main: '#22D3EE', dark: '#0E4D6E', glow: 'rgba(34,211,238,0.55)'  },  // Cyan nebula (age-8)
+              { main: '#A78BFA', dark: '#4C1D95', glow: 'rgba(167,139,250,0.55)' },  // Violet nebula (age-9)
             ];
             const colors = nebulaColors[i];
             return (

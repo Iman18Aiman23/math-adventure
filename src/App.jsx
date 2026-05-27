@@ -15,17 +15,22 @@ import WelcomeModal from './components/WelcomeModal';
 import DesktopSidebar from './components/DesktopSidebar';
 import CosmicMobileNav from './components/CosmicMobileNav';
 import ReadingPage from './components/ReadingPage/ReadingPage';
-import EarlyExplorersHome from './components/AgeGroup-4-5/EarlyExplorersHome';
-import KindergartenScholarsHome from './components/AgeGroup-5-6/KindergartenScholarsHome';
-import Grade1AdventurersHome from './components/AgeGroup-6-7/Grade1AdventurersHome';
-import Grade2DiscoverersHome from './components/AgeGroup-7-8/Grade2DiscoverersHome';
-import Grade3AchieversHome from './components/AgeGroup-8-9/Grade3AchieversHome';
-import AlphabetSafari from './components/AgeGroup-4-5/AlphabetSafari';
-import LetterTrace from './components/AgeGroup-4-5/LetterTrace';
-import PhoneticsPop from './components/AgeGroup-4-5/PhoneticsPop';
-import SoundMatching from './components/AgeGroup-4-5/SoundMatching';
-import LetterSoundPuzzle from './components/AgeGroup-4-5/LetterSoundPuzzle';
-import PhoneticsSprint from './components/AgeGroup-4-5/PhoneticsSprint';
+import EarlyExplorersHome from './components/AgeGroup-4-6/EarlyExplorersHome';
+import Grade1AdventurersHome from './components/AgeGroup-7/Grade1AdventurersHome';
+import Grade2DiscoverersHome from './components/AgeGroup-8/Grade2DiscoverersHome';
+import Grade3AchieversHome from './components/AgeGroup-9/Grade3AchieversHome';
+import AlphabetSafari from './components/AgeGroup-4-6/AlphabetSafari';
+import LetterTrace from './components/AgeGroup-4-6/LetterTrace';
+import PhoneticsPop from './components/AgeGroup-4-6/PhoneticsPop';
+import SoundMatching from './components/AgeGroup-4-6/SoundMatching';
+import LetterSoundPuzzle from './components/AgeGroup-4-6/LetterSoundPuzzle';
+import PhoneticsSprint from './components/AgeGroup-4-6/PhoneticsSprint';
+import SentenceBuilder from './components/AgeGroup-7/SentenceBuilder';
+import WordFamilyMatch from './components/AgeGroup-7/WordFamilyMatch';
+import GrammarDetective from './components/AgeGroup-7/GrammarDetective';
+import TimeTeller from './components/AgeGroup-7/TimeTeller';
+import CountingMoney from './components/AgeGroup-7/CountingMoney';
+import SubtractionStory from './components/AgeGroup-7/SubtractionStory';
 import ProfileHome from './components/Profile/ProfileHome';
 const AchievementHome  = React.lazy(() => import('./components/Achievement/AchievementHome'));
 const LeaderboardHome  = React.lazy(() => import('./components/Leaderboard/LeaderboardHome'));
@@ -273,13 +278,30 @@ export default function App() {
         if (currentAgeGame === 'phonics-sprint') {
           return <PhoneticsSprint onBack={() => setCurrentAgeGame(null)} language={language} theme={THEMES[currentTheme]} />;
         }
+        if (currentAgeGame === 'sentence-builder') {
+          return <SentenceBuilder onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'word-family-match') {
+          return <WordFamilyMatch onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'grammar-detective') {
+          return <GrammarDetective onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'time-teller') {
+          return <TimeTeller onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'counting-money') {
+          return <CountingMoney onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'subtraction-story') {
+          return <SubtractionStory onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
         if (currentAgeGroup) {
           const ageGroupComponents = {
-            'age-4-5': EarlyExplorersHome,
-            'age-5-6': KindergartenScholarsHome,
-            'age-6-7': Grade1AdventurersHome,
-            'age-7-8': Grade2DiscoverersHome,
-            'age-8-9': Grade3AchieversHome,
+            'age-4-6': EarlyExplorersHome,
+            'age-7': Grade1AdventurersHome,
+            'age-8': Grade2DiscoverersHome,
+            'age-9': Grade3AchieversHome,
           };
           const AgeGroupComponent = ageGroupComponents[currentAgeGroup];
           if (AgeGroupComponent) {

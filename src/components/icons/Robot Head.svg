@@ -1,0 +1,409 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 812 1935" width="812" height="1935">
+  <defs>
+    <!-- Card Background Gradients -->
+    <linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0f4ff"/>
+      <stop offset="100%" stop-color="#e8eeff"/>
+    </linearGradient>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff8f0"/>
+      <stop offset="100%" stop-color="#fff0e0"/>
+    </linearGradient>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0faff"/>
+      <stop offset="100%" stop-color="#e0f4ff"/>
+    </linearGradient>
+    <linearGradient id="bg4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0fffa"/>
+      <stop offset="100%" stop-color="#e0fff5"/>
+    </linearGradient>
+    <linearGradient id="bg5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fffaf0"/>
+      <stop offset="100%" stop-color="#fff5e0"/>
+    </linearGradient>
+
+    <!-- Glow Effects -->
+    <radialGradient id="glow1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00CCFF" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#00CCFF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF9500" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#FF9500" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow3" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00CCFF" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#00CCFF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow4" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00CCFF" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#00CCFF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow5" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF9500" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#FF9500" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Eye Glow Gradients -->
+    <radialGradient id="eyeGlowCyan" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00CCFF" stop-opacity="0.9"/>
+      <stop offset="50%" stop-color="#00AAFF" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#0088FF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="eyeGlowOrange" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFAA00" stop-opacity="0.9"/>
+      <stop offset="50%" stop-color="#FF8800" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#FF6600" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Screen Gradient -->
+    <linearGradient id="screenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="100%" stop-color="#0f0f1a"/>
+    </linearGradient>
+
+    <!-- Head Shadow -->
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000000" flood-opacity="0.08"/>
+    </filter>
+
+    <!-- Neon Glow Filter -->
+    <filter id="neonGlowCyan" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur1"/>
+      <feGaussianBlur stdDeviation="8" result="blur2"/>
+      <feMerge>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="neonGlowOrange" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur1"/>
+      <feGaussianBlur stdDeviation="8" result="blur2"/>
+      <feMerge>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- ==================== ROBOT 1: MUSIC ROBOT ==================== -->
+  <g id="robot1">
+    <!-- Card Background -->
+    <rect x="20" y="20" width="772" height="367" rx="24" fill="url(#bg1)" filter="url(#shadow)"/>
+
+    <!-- Ambient Glow -->
+    <circle cx="220" cy="200" r="150" fill="url(#glow1)"/>
+
+    <!-- Music Notes -->
+    <g transform="translate(75, 65)">
+      <!-- Left Note (Blue) -->
+      <g fill="#00aaff">
+        <ellipse cx="18" cy="58" rx="9" ry="7" transform="rotate(-15 18 58)"/>
+        <rect x="24" y="18" width="4" height="42" rx="2"/>
+        <path d="M24,18 Q30,12 36,18 L36,22 Q30,16 24,22 Z"/>
+        <ellipse cx="38" cy="24" rx="7" ry="5" transform="rotate(-15 38 24)"/>
+      </g>
+      <!-- Right Note (Darker Blue) -->
+      <g transform="translate(250, -10)" fill="#0088ff">
+        <ellipse cx="15" cy="50" rx="7" ry="5.5" transform="rotate(-15 15 50)"/>
+        <rect x="20" y="15" width="3.5" height="37" rx="1.5"/>
+        <path d="M20,15 Q25,10 30,15 L30,19 Q25,14 20,19 Z"/>
+        <ellipse cx="32" cy="20" rx="5.5" ry="4" transform="rotate(-15 32 20)"/>
+      </g>
+    </g>
+
+    <!-- Headphones -->
+    <g>
+      <!-- Headband -->
+      <path d="M125,125 Q220,50 315,125" fill="none" stroke="#2a2a3a" stroke-width="20" stroke-linecap="round"/>
+      <path d="M125,125 Q220,50 315,125" fill="none" stroke="#00aaff" stroke-width="6" stroke-linecap="round"/>
+      <!-- Left Earpad -->
+      <rect x="105" y="115" width="42" height="65" rx="14" fill="#2a2a3a"/>
+      <rect x="109" y="119" width="34" height="57" rx="10" fill="#1a1a2e"/>
+      <rect x="112" y="128" width="7" height="38" rx="3.5" fill="#00aaff"/>
+      <!-- Right Earpad -->
+      <rect x="293" y="115" width="42" height="65" rx="14" fill="#2a2a3a"/>
+      <rect x="297" y="119" width="34" height="57" rx="10" fill="#1a1a2e"/>
+      <rect x="321" y="128" width="7" height="38" rx="3.5" fill="#00aaff"/>
+    </g>
+
+    <!-- Robot Head -->
+    <g filter="url(#shadow)">
+      <!-- Main Head Shape -->
+      <rect x="148" y="88" width="144" height="134" rx="32" fill="#f0f0f0"/>
+      <rect x="152" y="92" width="136" height="126" rx="28" fill="#ffffff"/>
+      <!-- Top Bumps -->
+      <circle cx="175" cy="83" r="11" fill="#ffffff"/>
+      <circle cx="198" cy="77" r="13" fill="#ffffff"/>
+      <circle cx="220" cy="74" r="14" fill="#ffffff"/>
+      <circle cx="242" cy="77" r="13" fill="#ffffff"/>
+      <circle cx="265" cy="83" r="11" fill="#ffffff"/>
+      <!-- Side Ears -->
+      <rect x="134" y="138" width="18" height="48" rx="9" fill="#e0e0e0"/>
+      <rect x="288" y="138" width="18" height="48" rx="9" fill="#e0e0e0"/>
+    </g>
+
+    <!-- Face Screen -->
+    <rect x="162" y="113" width="116" height="80" rx="22" fill="url(#screenGrad)"/>
+
+    <!-- Eyes with Cyan Glow -->
+    <g filter="url(#neonGlowCyan)">
+      <circle cx="195" cy="153" r="17" fill="url(#eyeGlowCyan)"/>
+      <circle cx="245" cy="153" r="17" fill="url(#eyeGlowCyan)"/>
+    </g>
+    <circle cx="195" cy="153" r="11" fill="#00CCFF"/>
+    <circle cx="245" cy="153" r="11" fill="#00CCFF"/>
+    <circle cx="198" cy="150" r="4.5" fill="#ffffff" opacity="0.85"/>
+    <circle cx="248" cy="150" r="4.5" fill="#ffffff" opacity="0.85"/>
+
+    <!-- Smile -->
+    <path d="M195,183 Q220,200 245,183" fill="none" stroke="#4A5568" stroke-width="3.5" stroke-linecap="round"/>
+
+    <!-- Text Labels -->
+    <text x="520" y="138" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="bold" fill="#1a1a2e">Music Robot</text>
+    <text x="520" y="172" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#666666">Creative • Audio • Rhythm</text>
+  </g>
+
+  <!-- ==================== ROBOT 2: READING ROBOT ==================== -->
+  <g id="robot2" transform="translate(0, 387)">
+    <!-- Card Background -->
+    <rect x="20" y="20" width="772" height="367" rx="24" fill="url(#bg2)" filter="url(#shadow)"/>
+
+    <!-- Ambient Glow -->
+    <circle cx="220" cy="200" r="150" fill="url(#glow2)"/>
+
+    <!-- Open Book on Head -->
+    <g transform="translate(172, 58)">
+      <!-- Book Back Cover -->
+      <path d="M-2,32 L48,17 L98,32 L98,52 L48,37 L-2,52 Z" fill="#8B4513"/>
+      <!-- Left Pages -->
+      <path d="M3,34 L48,20 L48,40 L3,54 Z" fill="#fff8e7"/>
+      <!-- Right Pages -->
+      <path d="M48,20 L93,34 L93,54 L48,40 Z" fill="#fff8e7"/>
+      <!-- Text Lines Left -->
+      <g stroke="#d4c4a8" stroke-width="1.5" stroke-linecap="round">
+        <line x1="12" y1="38" x2="38" y2="31"/>
+        <line x1="12" y1="43" x2="38" y2="36"/>
+        <line x1="12" y1="48" x2="38" y2="41"/>
+      </g>
+      <!-- Text Lines Right -->
+      <g stroke="#d4c4a8" stroke-width="1.5" stroke-linecap="round">
+        <line x1="58" y1="31" x2="84" y2="38"/>
+        <line x1="58" y1="36" x2="84" y2="43"/>
+        <line x1="58" y1="41" x2="84" y2="48"/>
+      </g>
+    </g>
+
+    <!-- Robot Head -->
+    <g filter="url(#shadow)">
+      <rect x="148" y="88" width="144" height="134" rx="32" fill="#f0f0f0"/>
+      <rect x="152" y="92" width="136" height="126" rx="28" fill="#ffffff"/>
+      <circle cx="175" cy="83" r="11" fill="#ffffff"/>
+      <circle cx="198" cy="77" r="13" fill="#ffffff"/>
+      <circle cx="220" cy="74" r="14" fill="#ffffff"/>
+      <circle cx="242" cy="77" r="13" fill="#ffffff"/>
+      <circle cx="265" cy="83" r="11" fill="#ffffff"/>
+      <rect x="134" y="138" width="18" height="48" rx="9" fill="#e0e0e0"/>
+      <rect x="288" y="138" width="18" height="48" rx="9" fill="#e0e0e0"/>
+    </g>
+
+    <!-- Glasses -->
+    <g>
+      <!-- Left Lens -->
+      <rect x="163" y="133" width="52" height="42" rx="14" fill="none" stroke="#ff9900" stroke-width="3.5"/>
+      <rect x="167" y="137" width="44" height="34" rx="11" fill="#ffaa00" opacity="0.15"/>
+      <!-- Right Lens -->
+      <rect x="225" y="133" width="52" height="42" rx="14" fill="none" stroke="#ff9900" stroke-width="3.5"/>
+      <rect x="229" y="137" width="44" height="34" rx="11" fill="#ffaa00" opacity="0.15"/>
+      <!-- Bridge -->
+      <line x1="215" y1="154" x2="225" y2="154" stroke="#ff9900" stroke-width="3.5"/>
+      <!-- Temple Arms -->
+      <line x1="163" y1="143" x2="148" y2="148" stroke="#ff9900" stroke-width="2.5"/>
+      <line x1="277" y1="143" x2="292" y2="148" stroke="#ff9900" stroke-width="2.5"/>
+    </g>
+
+    <!-- Face Screen -->
+    <rect x="162" y="113" width="116" height="80" rx="22" fill="url(#screenGrad)"/>
+
+    <!-- Eyes with Orange Glow -->
+    <g filter="url(#neonGlowOrange)">
+      <circle cx="189" cy="154" r="13" fill="url(#eyeGlowOrange)"/>
+      <circle cx="251" cy="154" r="13" fill="url(#eyeGlowOrange)"/>
+    </g>
+    <circle cx="189" cy="154" r="8.5" fill="#FF9500"/>
+    <circle cx="251" cy="154" r="8.5" fill="#FF9500"/>
+    <circle cx="191" cy="152" r="3.5" fill="#ffffff" opacity="0.85"/>
+    <circle cx="253" cy="152" r="3.5" fill="#ffffff" opacity="0.85"/>
+
+    <!-- Smile -->
+    <path d="M195,186 Q220,199 245,186" fill="none" stroke="#E2E8F0" stroke-width="3.5" stroke-linecap="round"/>
+
+    <!-- Text Labels -->
+    <text x="520" y="138" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="bold" fill="#1a1a2e">Reading Robot</text>
+    <text x="520" y="172" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#666666">Knowledge • Focus • Learning</text>
+  </g>
+
+  <!-- ==================== ROBOT 3: SPEAKING ROBOT ==================== -->
+  <g id="robot3" transform="translate(0, 774)">
+    <!-- Card Background -->
+    <rect x="20" y="20" width="772" height="367" rx="24" fill="url(#bg3)" filter="url(#shadow)"/>
+
+    <!-- Ambient Glow -->
+    <circle cx="220" cy="200" r="150" fill="url(#glow3)"/>
+
+    <!-- Sound Waves -->
+    <g transform="translate(318, 148)" stroke="#00CCFF" stroke-width="3" fill="none" stroke-linecap="round">
+      <path d="M0,0 Q8,-12 16,0 Q8,12 0,0" opacity="0.9"/>
+      <path d="M12,-4 Q22,-20 32,-4 Q22,12 12,-4" opacity="0.7"/>
+      <path d="M26,-8 Q40,-28 54,-8 Q40,12 26,-8" opacity="0.5"/>
+    </g>
+
+    <!-- Robot Head -->
+    <g filter="url(#shadow)">
+      <rect x="148" y="88" width="144" height="134" rx="32" fill="#f0f0f0"/>
+      <rect x="152" y="92" width="136" height="126" rx="28" fill="#ffffff"/>
+      <circle cx="175" cy="83" r="11" fill="#ffffff"/>
+      <circle cx="198" cy="77" r="13" fill="#ffffff"/>
+      <circle cx="220" cy="74" r="14" fill="#ffffff"/>
+      <circle cx="242" cy="77" r="13" fill="#ffffff"/>
+      <circle cx="265" cy="83" r="11" fill="#ffffff"/>
+      <rect x="134" y="138" width="18" height="48" rx="9" fill="#e0e0e0"/>
+      <rect x="288" y="138" width="18" height="48" rx="9" fill="#e0e0e0"/>
+    </g>
+
+    <!-- Face Screen -->
+    <rect x="162" y="113" width="116" height="80" rx="22" fill="url(#screenGrad)"/>
+
+    <!-- Eyes with Cyan Glow -->
+    <g filter="url(#neonGlowCyan)">
+      <circle cx="195" cy="153" r="15" fill="url(#eyeGlowCyan)"/>
+      <circle cx="245" cy="153" r="15" fill="url(#eyeGlowCyan)"/>
+    </g>
+    <circle cx="195" cy="153" r="10" fill="#00CCFF"/>
+    <circle cx="245" cy="153" r="10" fill="#00CCFF"/>
+    <circle cx="198" cy="150" r="4" fill="#ffffff" opacity="0.85"/>
+    <circle cx="248" cy="150" r="4" fill="#ffffff" opacity="0.85"/>
+
+    <!-- Smile -->
+    <path d="M195,183 Q220,198 245,183" fill="none" stroke="#4A5568" stroke-width="3.5" stroke-linecap="round"/>
+
+    <!-- Text Labels -->
+    <text x="520" y="138" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="bold" fill="#1a1a2e">Speaking Robot</text>
+    <text x="520" y="172" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#666666">Voice • Confidence •</text>
+    <text x="520" y="196" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#666666">Communication</text>
+  </g>
+
+  <!-- ==================== ROBOT 4: MATHEMATICS ROBOT ==================== -->
+  <g id="robot4" transform="translate(0, 1161)">
+    <!-- Card Background -->
+    <rect x="20" y="20" width="772" height="367" rx="24" fill="url(#bg4)" filter="url(#shadow)"/>
+
+    <!-- Ambient Glow -->
+    <circle cx="220" cy="200" r="150" fill="url(#glow4)"/>
+
+    <!-- Math Symbols -->
+    <text x="72" y="132" font-family="Georgia, Times New Roman, serif" font-size="48" font-weight="bold" fill="#ff4444">Σ</text>
+    <text x="282" y="102" font-family="Georgia, Times New Roman, serif" font-size="38" fill="#ffcc00">√</text>
+    <text x="312" y="172" font-family="Georgia, Times New Roman, serif" font-size="42" fill="#44dd66">∫</text>
+    <text x="62" y="262" font-family="Georgia, Times New Roman, serif" font-size="42" fill="#4488ff">π</text>
+    <text x="302" y="272" font-family="Georgia, Times New Roman, serif" font-size="38" fill="#aa66ff">∞</text>
+
+    <!-- Robot Head -->
+    <g filter="url(#shadow)">
+      <rect x="148" y="88" width="144" height="134" rx="32" fill="#f0f0f0"/>
+      <rect x="152" y="92" width="136" height="126" rx="28" fill="#ffffff"/>
+      <circle cx="175" cy="83" r="11" fill="#ffffff"/>
+      <circle cx="198" cy="77" r="13" fill="#ffffff"/>
+      <circle cx="220" cy="74" r="14" fill="#ffffff"/>
+      <circle cx="242" cy="77" r="13" fill="#ffffff"/>
+      <circle cx="265" cy="83" r="11" fill="#ffffff"/>
+      <rect x="134" y="138" width="18" height="48" rx="9" fill="#e0e0e0"/>
+      <rect x="288" y="138" width="18" height="48" rx="9" fill="#e0e0e0"/>
+    </g>
+
+    <!-- Face Screen -->
+    <rect x="162" y="113" width="116" height="80" rx="22" fill="url(#screenGrad)"/>
+
+    <!-- Eyes with Cyan Glow -->
+    <g filter="url(#neonGlowCyan)">
+      <circle cx="195" cy="153" r="15" fill="url(#eyeGlowCyan)"/>
+      <circle cx="245" cy="153" r="15" fill="url(#eyeGlowCyan)"/>
+    </g>
+    <circle cx="195" cy="153" r="10" fill="#00CCFF"/>
+    <circle cx="245" cy="153" r="10" fill="#00CCFF"/>
+    <circle cx="198" cy="150" r="4" fill="#ffffff" opacity="0.85"/>
+    <circle cx="248" cy="150" r="4" fill="#ffffff" opacity="0.85"/>
+
+    <!-- Smile (Wavy/V-shape) -->
+    <path d="M195,183 L208,192 L220,183 L232,192 L245,183" fill="none" stroke="#4A5568" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- Text Labels -->
+    <text x="520" y="138" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="bold" fill="#1a1a2e">Mathematics Robot</text>
+    <text x="520" y="172" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#666666">Logic • Numbers •</text>
+    <text x="520" y="196" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#666666">Problem Solving</text>
+  </g>
+
+  <!-- ==================== ROBOT 5: ARABIC ROBOT ==================== -->
+  <g id="robot5" transform="translate(0, 1548)">
+    <!-- Card Background -->
+    <rect x="20" y="20" width="772" height="367" rx="24" fill="url(#bg5)" filter="url(#shadow)"/>
+
+    <!-- Ambient Glow -->
+    <circle cx="220" cy="200" r="150" fill="url(#glow5)"/>
+
+    <!-- Arabic Letters (Using Unicode) -->
+    <text x="78" y="122" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#ff4444" text-anchor="middle">ا</text>
+    <text x="312" y="102" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#ffcc00" text-anchor="middle">ح</text>
+    <text x="322" y="182" font-family="Arial, sans-serif" font-size="34" font-weight="bold" fill="#44aa44" text-anchor="middle">ب</text>
+    <text x="68" y="252" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#4488ff" text-anchor="middle">م</text>
+    <text x="308" y="272" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#aa66ff" text-anchor="middle">د</text>
+
+    <!-- Keffiyeh / Head Covering -->
+    <g>
+      <!-- Main cloth -->
+      <path d="M148,102 Q220,75 292,102 L292,128 Q220,108 148,128 Z" fill="#2d8a4e"/>
+      <!-- Decorative pattern lines -->
+      <path d="M155,107 Q220,85 285,107" fill="none" stroke="#e8c547" stroke-width="2"/>
+      <path d="M160,115 Q220,95 280,115" fill="none" stroke="#e8c547" stroke-width="2"/>
+      <path d="M165,123 Q220,105 275,123" fill="none" stroke="#e8c547" stroke-width="2"/>
+      <!-- Zigzag pattern -->
+      <polyline points="170,112 178,117 186,112 194,117 202,112 210,117 218,112 226,117 234,112 242,117 250,112 258,117 266,112 274,117" fill="none" stroke="#e8c547" stroke-width="1.5"/>
+    </g>
+
+    <!-- Robot Head -->
+    <g filter="url(#shadow)">
+      <rect x="148" y="88" width="144" height="134" rx="32" fill="#f0f0f0"/>
+      <rect x="152" y="92" width="136" height="126" rx="28" fill="#ffffff"/>
+      <circle cx="175" cy="83" r="11" fill="#ffffff"/>
+      <circle cx="198" cy="77" r="13" fill="#ffffff"/>
+      <circle cx="220" cy="74" r="14" fill="#ffffff"/>
+      <circle cx="242" cy="77" r="13" fill="#ffffff"/>
+      <circle cx="265" cy="83" r="11" fill="#ffffff"/>
+      <rect x="134" y="138" width="18" height="48" rx="9" fill="#e0e0e0"/>
+      <rect x="288" y="138" width="18" height="48" rx="9" fill="#e0e0e0"/>
+    </g>
+
+    <!-- Face Screen -->
+    <rect x="162" y="113" width="116" height="80" rx="22" fill="url(#screenGrad)"/>
+
+    <!-- Eyes with Orange Glow -->
+    <g filter="url(#neonGlowOrange)">
+      <circle cx="195" cy="153" r="15" fill="url(#eyeGlowOrange)"/>
+      <circle cx="245" cy="153" r="15" fill="url(#eyeGlowOrange)"/>
+    </g>
+    <circle cx="195" cy="153" r="10" fill="#FF9500"/>
+    <circle cx="245" cy="153" r="10" fill="#FF9500"/>
+    <circle cx="198" cy="150" r="4" fill="#ffffff" opacity="0.85"/>
+    <circle cx="248" cy="150" r="4" fill="#ffffff" opacity="0.85"/>
+
+    <!-- Smile -->
+    <path d="M195,183 Q220,198 245,183" fill="none" stroke="#4A5568" stroke-width="3.5" stroke-linecap="round"/>
+
+    <!-- Text Labels -->
+    <text x="520" y="138" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="bold" fill="#1a1a2e">Arabic Robot</text>
+    <text x="520" y="172" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#666666">Language • Culture •</text>
+    <text x="520" y="196" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#666666">Expression</text>
+  </g>
+</svg>

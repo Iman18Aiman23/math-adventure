@@ -32,7 +32,7 @@ const CAT_MAP = {
 
 export default function EarlyExplorersHome(props) {
   const { onBack, onPlayGame, language = 'bm' } = props;
-  const curriculum = CURRICULUM['age-4-5'];
+  const curriculum = CURRICULUM['age-4-6'];
 
   // Get all games from all pillars
   const allGames = [];
