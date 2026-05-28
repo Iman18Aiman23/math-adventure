@@ -1,0 +1,312 @@
+<svg width="320" height="340" viewBox="0 0 320 340" xmlns="http://www.w3.org/2000/svg">
+
+<style>
+
+.robotFloat{
+  animation: float 3.5s ease-in-out infinite;
+  transform-origin:center;
+}
+
+.eyeBlink{
+  animation: blink 5s infinite;
+  transform-origin:center;
+}
+
+.handMoveLeft{
+  animation: handLeft 2.6s ease-in-out infinite;
+  transform-origin:92px 195px;
+}
+
+.handMoveRight{
+  animation: handRight 2.6s ease-in-out infinite;
+  transform-origin:228px 195px;
+}
+
+.glowPulse{
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes float{
+  0%,100%{transform:translateY(0px);}
+  50%{transform:translateY(-10px);}
+}
+
+@keyframes blink{
+  0%,92%,100%{transform:scaleY(1);}
+  95%{transform:scaleY(0.08);}
+}
+
+@keyframes handLeft{
+  0%,100%{transform:rotate(0deg);}
+  50%{transform:rotate(10deg);}
+}
+
+@keyframes handRight{
+  0%,100%{transform:rotate(0deg);}
+  50%{transform:rotate(-10deg);}
+}
+
+@keyframes glow{
+  0%,100%{opacity:.7;}
+  50%{opacity:1;}
+}
+
+</style>
+
+<defs>
+
+<!-- HEAD -->
+<linearGradient id="headGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+  <stop offset="0%" stop-color="#FFFFFF"/>
+  <stop offset="100%" stop-color="#EAEAEA"/>
+</linearGradient>
+
+<!-- FACE SCREEN -->
+<linearGradient id="screenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+  <stop offset="0%" stop-color="#2E333D"/>
+  <stop offset="100%" stop-color="#090B10"/>
+</linearGradient>
+
+<!-- BODY -->
+<linearGradient id="bodyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+  <stop offset="0%" stop-color="#FFFFFF"/>
+  <stop offset="100%" stop-color="#EFEFEF"/>
+</linearGradient>
+
+<!-- EYES -->
+<linearGradient id="eyeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+  <stop offset="0%" stop-color="#B8F7FF"/>
+  <stop offset="100%" stop-color="#46D8FF"/>
+</linearGradient>
+
+<!-- SHADOW -->
+<filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+  <feDropShadow dx="0" dy="8" stdDeviation="10" flood-opacity="0.18"/>
+</filter>
+
+<!-- GLOW -->
+<filter id="glow">
+  <feGaussianBlur stdDeviation="4" result="blur"/>
+  <feMerge>
+    <feMergeNode in="blur"/>
+    <feMergeNode in="SourceGraphic"/>
+  </feMerge>
+</filter>
+
+</defs>
+
+<!-- ================================= -->
+<!-- ROBOT -->
+<!-- ================================= -->
+
+<g class="robotFloat">
+
+<!-- BACKGROUND GLOW -->
+<circle cx="160" cy="118"
+r="95"
+fill="#7BE7FF"
+opacity="0.12"
+class="glowPulse"/>
+
+<!-- FLOATING STARS -->
+<g class="glowPulse">
+
+<circle cx="72" cy="84" r="5" fill="#FFD93D"/>
+<circle cx="248" cy="92" r="5" fill="#FFD93D"/>
+
+</g>
+
+<!-- ================================= -->
+<!-- HANDS -->
+<!-- ================================= -->
+
+<g class="handMoveLeft">
+
+<ellipse cx="76" cy="194"
+rx="20"
+ry="36"
+fill="url(#bodyGradient)"
+filter="url(#shadow)"
+transform="rotate(-18 76 194)"/>
+
+</g>
+
+<g class="handMoveRight">
+
+<ellipse cx="244" cy="194"
+rx="20"
+ry="36"
+fill="url(#bodyGradient)"
+filter="url(#shadow)"
+transform="rotate(18 244 194)"/>
+
+</g>
+
+<!-- ================================= -->
+<!-- BODY -->
+<!-- ================================= -->
+
+<path d="
+M120 205
+Q160 185 200 205
+L208 270
+Q208 300 160 306
+Q112 300 112 270
+Z"
+fill="url(#bodyGradient)"
+filter="url(#shadow)"/>
+
+<!-- BODY SHINE -->
+<ellipse cx="148" cy="228"
+rx="26"
+ry="40"
+fill="#FFFFFF"
+opacity="0.5"/>
+
+<!-- SPEAK ICON -->
+<g class="glowPulse">
+
+<circle cx="160" cy="244"
+r="16"
+fill="#7BE7FF"/>
+
+<path d="
+M154 244
+Q160 236 166 244
+"
+stroke="#FFFFFF"
+stroke-width="3"
+fill="none"/>
+
+<path d="
+M149 252
+Q160 238 171 252
+"
+stroke="#FFFFFF"
+stroke-width="2"
+fill="none"
+opacity="0.8"/>
+
+</g>
+
+<!-- ================================= -->
+<!-- HEAD -->
+<!-- ================================= -->
+
+<g filter="url(#shadow)">
+
+<!-- HEAD SHAPE -->
+<path d="
+M95 76
+Q95 44 126 42
+Q138 18 152 38
+Q160 42 168 38
+Q182 18 194 42
+Q225 44 225 76
+L225 154
+Q225 182 198 184
+L122 184
+Q95 182 95 154
+Z"
+fill="url(#headGradient)"/>
+
+<!-- FACE SCREEN -->
+<rect x="108"
+y="58"
+width="104"
+height="104"
+rx="30"
+fill="url(#screenGradient)"/>
+
+<!-- SCREEN SHINE -->
+<path d="
+M120 70
+Q154 56 196 74
+L196 86
+Q154 70 120 82
+Z"
+fill="#FFFFFF"
+opacity="0.12"/>
+
+</g>
+
+<!-- ================================= -->
+<!-- FULLY VISIBLE EYES -->
+<!-- ================================= -->
+
+<g class="eyeBlink">
+
+<!-- LEFT EYE -->
+<ellipse cx="138"
+cy="108"
+rx="14"
+ry="14"
+fill="url(#eyeGradient)"
+filter="url(#glow)"/>
+
+<ellipse cx="138"
+cy="108"
+rx="8"
+ry="8"
+fill="#FFFFFF"
+opacity="0.9"/>
+
+<!-- RIGHT EYE -->
+<ellipse cx="182"
+cy="108"
+rx="14"
+ry="14"
+fill="url(#eyeGradient)"
+filter="url(#glow)"/>
+
+<ellipse cx="182"
+cy="108"
+rx="8"
+ry="8"
+fill="#FFFFFF"
+opacity="0.9"/>
+
+</g>
+
+<!-- ================================= -->
+<!-- FULLY VISIBLE MOUTH -->
+<!-- ================================= -->
+
+<path d="
+M140 138
+Q160 156 180 138
+"
+stroke="url(#eyeGradient)"
+stroke-width="8"
+stroke-linecap="round"
+fill="none"
+filter="url(#glow)"/>
+
+<!-- CHEEKS -->
+<circle cx="124" cy="138"
+r="5"
+fill="#FFB3C7"
+opacity="0.35"/>
+
+<circle cx="196" cy="138"
+r="5"
+fill="#FFB3C7"
+opacity="0.35"/>
+
+<!-- ================================= -->
+<!-- TEXT -->
+<!-- ================================= -->
+
+<text x="160"
+y="334"
+font-size="20"
+font-family="Fredoka, sans-serif"
+font-weight="700"
+fill="#46D8FF"
+text-anchor="middle">
+SPEAKING BOT
+</text>
+
+</g>
+
+</svg>

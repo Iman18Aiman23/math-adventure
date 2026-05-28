@@ -244,7 +244,17 @@ After generating ideas OR coding a game, you MUST output the following MD block.
 📖 Reading Batch 3 — ⏳ PENDING (no games planned yet):
   > KSSR practical ceiling reached at 15/21. All remaining objectives require oral/creative skills. No further BM reading games needed unless new objectives are identified.
 
-🗣 Speaking: ⏳ PENDING
+🗣 Speaking: ⏳ IN PROGRESS (4/5) — STT voice games covering KSSR oral objectives (Obj 3, 11, 14) previously deemed "not feasible". Uses SpeechManager (same engine as Age 4–6). All voice games use the `listenActiveRef` double-start guard (see note below).
+  - **Baca Ayat Kuat** ✅ COMPLETE — KSSR Obj 11 (membaca kuat): TTS models a simple ayat penyata → child reads it aloud → STT matches ≥60% of content words; 8 sentences/round; Age-7 orange theme; full mic-error handling
+    - `src/components/AgeGroup-7/BacaAyatKuat.jsx`
+  - **Bertutur Bertatasusila** ✅ COMPLETE — KSSR Obj 3 (bertutur bertatasusila): TTS reads a social situation → child says the polite phrase → STT matches an accepted courtesy phrase; model phrase hidden until wrong; 💡 hint + repeat; 8 scenarios/round
+    - `src/components/AgeGroup-7/BertuturBertatasusila.jsx`
+  - **Jawab Soalan** ✅ COMPLETE — KSSR Obj 14 (menyoal & menjawab): TTS asks a simple question → child answers aloud → STT matches an accepted answer (incl. number/English variants); answer hidden until wrong; 💡 hint + repeat; 8 questions/round; pairs with Kata Tanya reading game
+    - `src/components/AgeGroup-7/JawabSoalan.jsx`
+  - **Sebut Lawan Kata** ✅ COMPLETE — vocabulary/antonyms (lawan kata): word shown + "Apa lawan bagi …?" asked via TTS → child says the opposite → STT matches accepted antonym; 12 antonym pairs (besar/kecil, panas/sejuk, …); opposite hidden until wrong; 💡 hint + repeat; 8/round
+    - `src/components/AgeGroup-7/SebutLawanKata.jsx`
+  - Sebut Frasa Bergambar ⏳ PENDING — describe a picture in a short phrase (reinforces Jenis Kata orally)
+  > Note: KSSR badge still shows 15/21 — bump deliberately once the pillar is complete (these oral objectives were excluded from the click-game count).
 ✒ Jawi Script: ✅ COMPLETE (5/5) — KSSR Pendidikan Islam Obj 10 (built 2026-05-27)
   > Maps to KSSR Pendidikan Islam Tahun 1 **Objektif 10**: "Membaca, membina dan menulis ayat atau teks dalam tulisan jawi dan khat." Step up from Age 4–6 (letter recognition) → syllables, words, sentences, writing. Reuses existing data: `jawiSukuKataData.js`, `jawiWordsData.js`, `jawiStoriesData.js`, `jawiData.js`.
   - **Baca Suku Kata Jawi** ✅ COMPLETE — Obj 10 (Membaca): show Jawi syllable glyph → pick correct rumi reading; 10 rounds; distractors from different base letters so glyph is unambiguous; tap-to-listen TTS

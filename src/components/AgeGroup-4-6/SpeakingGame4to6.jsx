@@ -174,6 +174,7 @@ export default function SpeakingGame4to6({ category = 'huruf', onBack, language 
   const indexRef   = useRef(0);
   const itemsRef   = useRef(items);
   const attRef     = useRef(0);
+  const listenActiveRef = useRef(false); // true while a mic session is open (guards double-start)
 
   useEffect(() => { indexRef.current = index;    }, [index]);
   useEffect(() => { itemsRef.current = items;    }, [items]);
@@ -224,6 +225,10 @@ export default function SpeakingGame4to6({ category = 'huruf', onBack, language 
   // MUST be called directly from onClick on iOS (no async chain before it)
   const startListening = () => {
     if (!SpeechManager.isSupported()) return;
+    if (listenActiveRef.current) return; // session already open — the desktop auto-listen effect
+                                         // and the manual tap must not both start one (abort race
+                                         // that bounces the button back to "Tap to Speak")
+    listenActiveRef.current = true;
     setMicError(null);
     setLastHeard('');
     setPhase(PHASE_LISTENING);
@@ -232,6 +237,7 @@ export default function SpeakingGame4to6({ category = 'huruf', onBack, language 
     SpeechManager.listen(
       'ms-MY',
       (transcript, _conf, alts) => {
+        listenActiveRef.current = false;
         let matched = checkMatch(transcript, cur, category);
         if (!matched && alts?.length > 1) {
           matched = alts.some(a => checkMatch(a.transcript, cur, category));
@@ -240,6 +246,7 @@ export default function SpeakingGame4to6({ category = 'huruf', onBack, language 
         matched ? handleCorrect() : handleWrong();
       },
       (err) => {
+        listenActiveRef.current = false;
         // Permission / device / network errors won't fix by skipping —
         // show a clear message and let the child (or parent) retry.
         if (err === 'not-allowed' || err === 'service-not-allowed' || err === 'audio-capture') {
@@ -298,6 +305,7 @@ export default function SpeakingGame4to6({ category = 'huruf', onBack, language 
     if (!item) return;
     SpeechManager.stop();
     SpeechManager.stopSpeaking();
+    listenActiveRef.current = false;
     speak(buildTTS(item, category)).then(() => {
       if (isMobile) setPhase(PHASE_READY);
       else setPhase(PHASE_LISTENING);
@@ -307,12 +315,14 @@ export default function SpeakingGame4to6({ category = 'huruf', onBack, language 
   const handleSkip = () => {
     SpeechManager.stop();
     SpeechManager.stopSpeaking();
+    listenActiveRef.current = false;
     advanceItem();
   };
 
   const handleReset = () => {
     SpeechManager.stop();
     SpeechManager.stopSpeaking();
+    listenActiveRef.current = false;
     setItems(buildItems(category));
     setIndex(0);
     setScore(0);
@@ -555,7 +565,7 @@ export default function SpeakingGame4to6({ category = 'huruf', onBack, language 
 
         {phase === PHASE_LISTENING && (
           <button
-            onClick={() => { SpeechManager.stop(); setPhase(PHASE_READY); }}
+            onClick={() => { SpeechManager.stop(); listenActiveRef.current = false; setPhase(PHASE_READY); }}
             className="ee-btn ee-btn--ghost ee-btn--block" style={{ '--btn-bg': '#58CC02' }}>
             ⏸ {language === 'bm' ? 'Berhenti' : 'Stop'}
           </button>

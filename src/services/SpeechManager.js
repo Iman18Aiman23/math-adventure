@@ -157,8 +157,20 @@ class SpeechManagerClass {
 
     const prefix = normalLang.split('-')[0]; // 'ms' | 'en'
 
-    // Preferred voice name fragments, highest-priority first
+    // ── HARD OVERRIDE: always use Microsoft Yasmin for Malay when present ──────
+    // Yasmin is the ms-MY female voice; paired with the high pitch (1.5) it reads
+    // back like a child / cartoon. Matches "Yasmin", "Microsoft Yasmin",
+    // "Microsoft Yasmin Online (Natural) - Malay (Malaysia)", etc.
+    if (prefix === 'ms') {
+      const yasmin = voices.find(v => v.name.toLowerCase().includes('yasmin'));
+      if (yasmin) return yasmin;
+    }
+
+    // Preferred voice name fragments, highest-priority first.
+    // We bias toward FEMALE voices: paired with the high pitch (1.5) they read
+    // back closer to a child / cartoon voice, which suits young learners.
     const PREF_MS = [
+      'Yasmin',                                     // Microsoft Malay (female)
       'Google Bahasa Melayu', 'Bahasa Melayu', 'Malay', 'ms-MY',
       'Google Bahasa Indonesia', 'Indonesian',
     ];
@@ -168,7 +180,20 @@ class SpeechManagerClass {
     ];
     const preferred = prefix === 'ms' ? PREF_MS : PREF_EN;
 
+    // Generic gender hints (applied on top of the named preferences above).
+    const FEMALE_NAMES = ['yasmin', 'zira', 'samantha', 'karen', 'tessa', 'heather',
+      'fiona', 'moira', 'serena', 'susan', 'hazel', 'catherine', 'aria', 'jenny'];
+    const MALE_NAMES = ['osman', 'david', 'mark', 'daniel', 'rishi', 'aaron',
+      'fred', 'arthur', 'oliver', 'guy', 'james'];
+
     const scored = voices.map(v => {
+      const name = v.name.toLowerCase();
+
+      // Disqualify male voices entirely — never explicitly pick Osman & co.
+      if (/\bmale\b/.test(name) || MALE_NAMES.some(m => name.includes(m))) {
+        return { voice: v, score: -1 };
+      }
+
       let score = 0;
       if (v.lang === normalLang)           score += 100;
       else if (v.lang.startsWith(prefix))  score += 50;
@@ -176,9 +201,11 @@ class SpeechManagerClass {
 
       if (!v.localService) score += 10; // network/online voices sound better
 
-      const name = v.name.toLowerCase();
       const idx  = preferred.findIndex(p => name.includes(p.toLowerCase()));
       if (idx !== -1) score += (preferred.length - idx) * 4;
+
+      // Strong nudge toward female — keeps the child-like timbre.
+      if (/\bfemale\b/.test(name) || FEMALE_NAMES.some(f => name.includes(f))) score += 15;
 
       return { voice: v, score };
     });
@@ -204,7 +231,7 @@ class SpeechManagerClass {
       const utterance  = new SpeechSynthesisUtterance(text);
       utterance.lang   = normalLang;
       utterance.rate   = options.rate   ?? 0.88;  // clear but lively
-      utterance.pitch  = options.pitch  ?? 1.35;  // cheerful, kid-friendly
+      utterance.pitch  = options.pitch  ?? 1.5;   // high pitch on a female voice ≈ child / cartoon voice
       utterance.volume = options.volume ?? 1;
 
       const voice = this._getBestVoice(normalLang);

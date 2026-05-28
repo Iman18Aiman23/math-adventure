@@ -51,6 +51,7 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
   const phaseRef   = useRef(phase);
   const attRef     = useRef(attempts);
   const langRef    = useRef(lang);
+  const listenActiveRef = useRef(false); // true while a mic session is open (guards double-start)
 
   useEffect(() => { indexRef.current  = index;    }, [index]);
   useEffect(() => { itemsRef.current  = items;    }, [items]);
@@ -134,6 +135,10 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
   // This MUST be called directly from onClick on iOS (no async chain before it)
   const startListening = () => {
     if (!SpeechManager.isSupported()) return;
+    if (listenActiveRef.current) return; // session already open — the desktop auto-listen effect
+                                         // and the manual tap must not both start one (abort race
+                                         // that bounces the button back to "Tekan untuk Bercakap")
+    listenActiveRef.current = true;
     setMicError(null);
     setPhase(PHASE_LISTENING);
 
@@ -148,6 +153,7 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
     SpeechManager.listen(
       recLang,
       (transcript, confidence, alts) => {
+        listenActiveRef.current = false;
         // Check match
         let matchResult = checkBilingualMatch(currentItem, currentLang, transcript, confidence, isMobile);
         // Check alternatives
@@ -169,6 +175,7 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
         }
       },
       (error) => {
+        listenActiveRef.current = false;
         console.warn('[BMSpeakGame] STT error:', error);
         // Permission / device / insecure-context / network errors won't fix by
         // skipping — show a clear message and let the user grant access & retry.
@@ -246,6 +253,7 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
   const handleRepeat = () => {
     if (!langData) return;
     SpeechManager.stop();
+    listenActiveRef.current = false;
     setMicError(null);
     speak(langData.prompt, lang).then(() => {
       if (isMobile) setPhase(PHASE_READY);
@@ -256,12 +264,14 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
   const handleSkip = () => {
     SpeechManager.stop();
     SpeechManager.stopSpeaking();
+    listenActiveRef.current = false;
     advanceItem();
   };
 
   const handleToggleLang = () => {
     SpeechManager.stop();
     SpeechManager.stopSpeaking();
+    listenActiveRef.current = false;
     setLang(l => l === 'ms' ? 'en' : 'ms');
     setAttempts(0);
     setMicError(null);
@@ -605,7 +615,7 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
 
           {phase === PHASE_LISTENING && (
             <button
-              onClick={() => { SpeechManager.stop(); setPhase(PHASE_READY); }}
+              onClick={() => { SpeechManager.stop(); listenActiveRef.current = false; setPhase(PHASE_READY); }}
               className="btn-secondary w-full"
               style={{ padding: '1.1rem', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
             >

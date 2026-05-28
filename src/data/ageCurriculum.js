@@ -110,7 +110,12 @@ export const CURRICULUM = {
       { id: 'kata-ganda',               name: 'Kata Ganda',             emoji: '🔄', cardColor: '#9C27B0', cardDark: '#6A1B9A', status: 'complete' },
       { id: 'kefahaman-bacaan',         name: 'Kefahaman Bacaan',       emoji: '📜', cardColor: '#2196F3', cardDark: '#1565C0', status: 'complete' },
     ],
-    speaking: null,
+    speaking: [
+      { id: 'baca-ayat-kuat',          name: 'Baca Ayat Kuat',          emoji: '🗣️', cardColor: '#9C27B0', cardDark: '#6A1B9A', status: 'complete' },
+      { id: 'bertutur-bertatasusila',  name: 'Bertutur Bertatasusila',  emoji: '🙇', cardColor: '#009688', cardDark: '#00796B', status: 'complete' },
+      { id: 'jawab-soalan',            name: 'Jawab Soalan',            emoji: '💬', cardColor: '#2196F3', cardDark: '#1565C0', status: 'complete' },
+      { id: 'sebut-lawan-kata',        name: 'Sebut Lawan Kata',        emoji: '↔️', cardColor: '#00ACC1', cardDark: '#00838F', status: 'complete' },
+    ],
     jawi: [
       { id: 'baca-suku-kata-jawi',  name: 'Baca Suku Kata Jawi',  emoji: '🔤', cardColor: '#7C4DFF', cardDark: '#6200EA', status: 'complete' },
       { id: 'bina-perkataan-jawi',  name: 'Bina Perkataan Jawi',  emoji: '🧱', cardColor: '#3F51B5', cardDark: '#303F9F', status: 'complete' },

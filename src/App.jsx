@@ -53,6 +53,10 @@ import TulisJawi from './components/AgeGroup-7/TulisJawi';
 import TimeTeller from './components/AgeGroup-7/TimeTeller';
 import CountingMoney from './components/AgeGroup-7/CountingMoney';
 import SubtractionStory from './components/AgeGroup-7/SubtractionStory';
+import BacaAyatKuat from './components/AgeGroup-7/BacaAyatKuat';
+import BertuturBertatasusila from './components/AgeGroup-7/BertuturBertatasusila';
+import JawabSoalan from './components/AgeGroup-7/JawabSoalan';
+import SebutLawanKata from './components/AgeGroup-7/SebutLawanKata';
 import ProfileHome from './components/Profile/ProfileHome';
 const AchievementHome  = React.lazy(() => import('./components/Achievement/AchievementHome'));
 const LeaderboardHome  = React.lazy(() => import('./components/Leaderboard/LeaderboardHome'));
@@ -386,6 +390,18 @@ export default function App() {
         }
         if (currentAgeGame === 'subtraction-story') {
           return <SubtractionStory onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'baca-ayat-kuat') {
+          return <BacaAyatKuat onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'bertutur-bertatasusila') {
+          return <BertuturBertatasusila onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'jawab-soalan') {
+          return <JawabSoalan onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'sebut-lawan-kata') {
+          return <SebutLawanKata onBack={() => setCurrentAgeGame(null)} language={language} />;
         }
         if (currentAgeGroup) {
           const ageGroupComponents = {
