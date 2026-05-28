@@ -57,6 +57,10 @@ import BacaAyatKuat from './components/AgeGroup-7/BacaAyatKuat';
 import BertuturBertatasusila from './components/AgeGroup-7/BertuturBertatasusila';
 import JawabSoalan from './components/AgeGroup-7/JawabSoalan';
 import SebutLawanKata from './components/AgeGroup-7/SebutLawanKata';
+import SebutFrasaBergambar from './components/AgeGroup-7/SebutFrasaBergambar';
+import Nombor100 from './components/AgeGroup-7/Nombor100';
+import Tambah100 from './components/AgeGroup-7/Tambah100';
+import Bentuk3D from './components/AgeGroup-7/Bentuk3D';
 import ProfileHome from './components/Profile/ProfileHome';
 const AchievementHome  = React.lazy(() => import('./components/Achievement/AchievementHome'));
 const LeaderboardHome  = React.lazy(() => import('./components/Leaderboard/LeaderboardHome'));
@@ -402,6 +406,18 @@ export default function App() {
         }
         if (currentAgeGame === 'sebut-lawan-kata') {
           return <SebutLawanKata onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'sebut-frasa-bergambar') {
+          return <SebutFrasaBergambar onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'nombor-100') {
+          return <Nombor100 onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'tambah-100') {
+          return <Tambah100 onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'bentuk-3d') {
+          return <Bentuk3D onBack={() => setCurrentAgeGame(null)} language={language} />;
         }
         if (currentAgeGroup) {
           const ageGroupComponents = {

@@ -115,6 +115,7 @@ export const CURRICULUM = {
       { id: 'bertutur-bertatasusila',  name: 'Bertutur Bertatasusila',  emoji: '🙇', cardColor: '#009688', cardDark: '#00796B', status: 'complete' },
       { id: 'jawab-soalan',            name: 'Jawab Soalan',            emoji: '💬', cardColor: '#2196F3', cardDark: '#1565C0', status: 'complete' },
       { id: 'sebut-lawan-kata',        name: 'Sebut Lawan Kata',        emoji: '↔️', cardColor: '#00ACC1', cardDark: '#00838F', status: 'complete' },
+      { id: 'sebut-frasa-bergambar',   name: 'Baca Frasa Bergambar',    emoji: '🖼️', cardColor: '#EC407A', cardDark: '#C2185B', status: 'complete' },
     ],
     jawi: [
       { id: 'baca-suku-kata-jawi',  name: 'Baca Suku Kata Jawi',  emoji: '🔤', cardColor: '#7C4DFF', cardDark: '#6200EA', status: 'complete' },
@@ -124,6 +125,9 @@ export const CURRICULUM = {
       { id: 'tulis-jawi',           name: 'Tulis Jawi (Khat)',    emoji: '✍️', cardColor: '#E91E63', cardDark: '#C2185B', status: 'complete' },
     ],
     math: [
+      { id: 'nombor-100',          name: 'Nombor 1–100',        emoji: '💯', cardColor: '#3F51B5', cardDark: '#303F9F', status: 'complete' },
+      { id: 'tambah-100',          name: 'Tambah dalam 100',    emoji: '➕', cardColor: '#E53935', cardDark: '#C62828', status: 'complete' },
+      { id: 'bentuk-3d',           name: 'Bentuk 3D',           emoji: '📦', cardColor: '#7E57C2', cardDark: '#5E35B2', status: 'complete' },
       { id: 'time-teller',         name: 'Time Teller',         emoji: '⏰', cardColor: '#FF9800', cardDark: '#E68900', status: 'complete' },
       { id: 'counting-money',      name: 'Counting Money',      emoji: '💰', cardColor: '#4CAF50', cardDark: '#388E3C', status: 'complete' },
       { id: 'subtraction-story',   name: 'Subtraction Story',   emoji: '📖', cardColor: '#FF3D8B', cardDark: '#E52E7A', status: 'complete' },

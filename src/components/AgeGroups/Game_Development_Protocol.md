@@ -209,11 +209,11 @@ After generating ideas OR coding a game, you MUST output the following MD block.
 
 🟡 **Age 7: Grade 1 Adventurers (FORMERLY Age 6-7)**
 
-> KSSR BM Tahun 1 coverage: **15/21 objectives** (Obj 1, 2, 4, 5, 6, 7, 8, 9, 10, 12, 16, 17, 18, 19, 21)
-> Practical ceiling is **15/21** — 6 remaining objectives require oral production or creative writing (not feasible digitally).
-> Badge in Grade1AdventurersHome.jsx shows "KSSR 15/21".
+> KSSR BM Tahun 1 coverage: **18/21 objectives** (Reading 9 games → Obj 1, 2, 4, 5, 6, 7, 8, 9, 10, 12, 16, 17, 18, 19, 21 = 15; Speaking 5 games → Obj 3, 11, 14 = +3 oral objs).
+> Practical ceiling is **18/21** — 3 remaining objectives require capabilities a click/voice game can't grade.
+> Badge in Grade1AdventurersHome.jsx shows "KSSR 18/21".
 
-> **Not feasible digitally (6 objectives):** Obj 3 (bertutur bertatasusila), Obj 11 (membaca kuat dengan sebutan), Obj 13, Obj 14 (menyoal), Obj 15 (menyanyi/deklamasi), Obj 20 (menulis kreatif).
+> **Genuinely not feasible (3 remaining):** Obj 13 (ayat tanya structure — partially in Kata Tanya/Jawab Soalan but no dedicated mechanic), Obj 15 (menyanyi/deklamasi — needs music/rhythm capture), Obj 20 (menulis kreatif — free-form creative writing, no grader).
 
 📖 Reading: ✅ COMPLETE (9/9) — KSSR BM Tahun 1 Batch 1 + Batch 2 done!
 
@@ -244,7 +244,7 @@ After generating ideas OR coding a game, you MUST output the following MD block.
 📖 Reading Batch 3 — ⏳ PENDING (no games planned yet):
   > KSSR practical ceiling reached at 15/21. All remaining objectives require oral/creative skills. No further BM reading games needed unless new objectives are identified.
 
-🗣 Speaking: ⏳ IN PROGRESS (4/5) — STT voice games covering KSSR oral objectives (Obj 3, 11, 14) previously deemed "not feasible". Uses SpeechManager (same engine as Age 4–6). All voice games use the `listenActiveRef` double-start guard (see note below).
+🗣 Speaking: ✅ COMPLETE (5/5) — STT voice games covering KSSR oral objectives (Obj 3, 11, 14) previously deemed "not feasible". Uses SpeechManager (same engine as Age 4–6). All voice games use the `listenActiveRef` double-start guard (see note below).
   - **Baca Ayat Kuat** ✅ COMPLETE — KSSR Obj 11 (membaca kuat): TTS models a simple ayat penyata → child reads it aloud → STT matches ≥60% of content words; 8 sentences/round; Age-7 orange theme; full mic-error handling
     - `src/components/AgeGroup-7/BacaAyatKuat.jsx`
   - **Bertutur Bertatasusila** ✅ COMPLETE — KSSR Obj 3 (bertutur bertatasusila): TTS reads a social situation → child says the polite phrase → STT matches an accepted courtesy phrase; model phrase hidden until wrong; 💡 hint + repeat; 8 scenarios/round
@@ -253,7 +253,8 @@ After generating ideas OR coding a game, you MUST output the following MD block.
     - `src/components/AgeGroup-7/JawabSoalan.jsx`
   - **Sebut Lawan Kata** ✅ COMPLETE — vocabulary/antonyms (lawan kata): word shown + "Apa lawan bagi …?" asked via TTS → child says the opposite → STT matches accepted antonym; 12 antonym pairs (besar/kecil, panas/sejuk, …); opposite hidden until wrong; 💡 hint + repeat; 8/round
     - `src/components/AgeGroup-7/SebutLawanKata.jsx`
-  - Sebut Frasa Bergambar ⏳ PENDING — describe a picture in a short phrase (reinforces Jenis Kata orally)
+  - **Baca Frasa Bergambar** ✅ COMPLETE — picture-anchored short-phrase reading: emoji scene + phrase text always shown → TTS models the phrase → child reads it aloud → STT matches ≥60% of keyword "slots" (each slot accepts equivalent forms like ibu/mak/emak, kakak/kak); 10 picture phrases; 8/round. Revised from "describe the picture" — that required kids to guess the right family/relative word from an ambiguous emoji, which tested emoji-reading not Malay.
+    - `src/components/AgeGroup-7/SebutFrasaBergambar.jsx`
   > Note: KSSR badge still shows 15/21 — bump deliberately once the pillar is complete (these oral objectives were excluded from the click-game count).
 ✒ Jawi Script: ✅ COMPLETE (5/5) — KSSR Pendidikan Islam Obj 10 (built 2026-05-27)
   > Maps to KSSR Pendidikan Islam Tahun 1 **Objektif 10**: "Membaca, membina dan menulis ayat atau teks dalam tulisan jawi dan khat." Step up from Age 4–6 (letter recognition) → syllables, words, sentences, writing. Reuses existing data: `jawiSukuKataData.js`, `jawiWordsData.js`, `jawiStoriesData.js`, `jawiData.js`.
@@ -267,13 +268,21 @@ After generating ideas OR coding a game, you MUST output the following MD block.
     - `src/components/AgeGroup-7/BacaAyatJawi.jsx`
   - **Tulis Jawi (Khat)** ✅ COMPLETE — Obj 10 (Menulis/khat): free-draw canvas over a faint model glyph; Clear, Show/Hide guide, Prev/Next across all 36 letters; tap-to-listen. (Free-draw, not segment-validated — Jawi has no vector path data like the Latin tracer.)
     - `src/components/AgeGroup-7/TulisJawi.jsx`
-🔢 Mathematics: ✅ COMPLETE (3/3) - KSSR Matematik Tahun 1 Games!
-  - Time Teller ✅ COMPLETE (Read analog clock — masa)
+🔢 Mathematics: ⚠️ IN PROGRESS (6/10 KSSR Tahun 1 bidang) — audit 2026-05-28 revealed only 3 of 10 bidang were covered (and 2 below level). Batch 1 in progress.
+  - **Nombor 1–100** ✅ COMPLETE — Bidang 1: 3 mechanics (Sebut Nombor / Banding / Nilai Tempat)
+    - `src/components/AgeGroup-7/Nombor100.jsx`
+  - **Tambah dalam 100** ✅ COMPLETE — Bidang 2: 3 mechanics (Tambah Gambar / Operasi Tambah / Cerita Tambah)
+    - `src/components/AgeGroup-7/Tambah100.jsx`
+  - **Bentuk 3D** ✅ COMPLETE — Bidang 9 (Ruang): 3 mechanics (Kenal Bentuk SVG→name / Cari di Sekeliling emoji→name / Mana Yang Sama visual SVG match); 6 solids kubus/kuboid/silinder/sfera/kon/piramid rendered inline as orange isometric SVGs (no PNG deps)
+    - `src/components/AgeGroup-7/Bentuk3D.jsx`
+  - Time Teller ✅ at-level — Bidang 5
     - `src/components/AgeGroup-7/TimeTeller.jsx`
-  - Counting Money ✅ COMPLETE (Count coins and calculate — wang)
+  - Counting Money ⚠️ below KSSR (sen-only) — Bidang 4
     - `src/components/AgeGroup-7/CountingMoney.jsx`
-  - Subtraction Story ✅ COMPLETE (Word problems — cerita penolakan)
+  - Subtraction Story ⚠️ below KSSR (within 10 only) — Bidang 3
     - `src/components/AgeGroup-7/SubtractionStory.jsx`
+  - **Pending Batch 1 (2 more new games):** Ukur Panjang (Bidang 6), Baca Pictograph (Bidang 10)
+  - **Pending Batch 2:** Jisim (Bidang 7), Isi Padu (Bidang 8), upgrade Tolak→100, upgrade Wang→RM10
 
 ---
 
@@ -313,6 +322,6 @@ After generating ideas OR coding a game, you MUST output the following MD block.
 
 ---
 
-**Last Updated:** 2026-05-27  
-**Version:** 2.6 (Age 7 Jawi COMPLETE — KSSR Pendidikan Islam Obj 10)  
-**Status:** Age 4–6 fully complete: Reading 7/7, Speaking 3/3, Jawi 2/2, Math 6/6. Age 7 Reading 9/9 (15/21 KSSR BM), Jawi 5/5 (PI Obj 10), Math 3/3 complete — only Age 7 Speaking pending. Age 8 & 9 pending.
+**Last Updated:** 2026-05-28  
+**Version:** 2.7 (Age 7 Speaking COMPLETE — KSSR coverage reached practical ceiling 18/21)  
+**Status:** Age 4–6 fully complete: Reading 7/7, Speaking 3/3, Jawi 2/2, Math 6/6. Age 7 fully complete: Reading 9/9, Speaking 5/5, Jawi 5/5, Math 3/3 (KSSR BM 18/21 — practical ceiling). Age 8 & 9 pending.

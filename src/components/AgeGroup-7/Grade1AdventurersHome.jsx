@@ -25,7 +25,7 @@ export default function Grade1AdventurersHome(props) {
   const heroSubtitle = (
     <>
       <span style={{ display: 'inline-block', background: 'rgba(255,150,0,0.15)', color: '#FF9600', fontSize: '0.7rem', padding: '0.18rem 0.6rem', borderRadius: '999px', fontWeight: 800, border: '1.5px solid rgba(255,150,0,0.45)', marginRight: '0.4rem', verticalAlign: 'middle', letterSpacing: '0.03em' }}>
-        KSSR 15/21
+        KSSR 18/21
       </span>
       {language === 'bm'
         ? 'Menguasai ayat, suku kata, dan jenis kata menerusi petualangan!'
@@ -65,12 +65,12 @@ export default function Grade1AdventurersHome(props) {
             </div>
             <div style={{ fontSize: '0.75rem', opacity: 0.88, marginTop: '0.15rem', lineHeight: 1.4 }}>
               {language === 'bm'
-                ? 'Merangkumi 15 daripada 21 objektif BM Tahun 1 KSSR'
-                : 'Covers 15 of 21 Year 1 BM objectives in KSSR'}
+                ? 'Merangkumi 18 daripada 21 objektif BM Tahun 1 KSSR'
+                : 'Covers 18 of 21 Year 1 BM objectives in KSSR'}
             </div>
           </div>
           <span style={{ flexShrink: 0, background: 'rgba(255,255,255,0.25)', borderRadius: '8px', padding: '0.2rem 0.55rem', fontSize: '0.72rem', fontWeight: 800, whiteSpace: 'nowrap', letterSpacing: '0.03em' }}>
-            15/21 Obj.
+            18/21 Obj.
           </span>
         </div>
 
@@ -89,6 +89,9 @@ export default function Grade1AdventurersHome(props) {
             { emoji: '✏️', name: language === 'bm' ? 'Ejaan & Tanda Baca'  : 'Spelling & Punctuation',  obj: language === 'bm' ? 'Obj. 5, 6 — Ejaan betul & tanda baca'          : 'Obj. 5, 6 — Correct spelling & punctuation' },
             { emoji: '🔄', name: language === 'bm' ? 'Kata Ganda'          : 'Repeated Words',          obj: language === 'bm' ? 'Obj. 9, 10 — Kata ganda penuh & berentak'      : 'Obj. 9, 10 — Full & rhyming repeated words' },
             { emoji: '📜', name: language === 'bm' ? 'Kefahaman Bacaan'    : 'Reading Comprehension',   obj: language === 'bm' ? 'Obj. 12 — Memahami dan mentafsir petikan'       : 'Obj. 12 — Understand and interpret passages' },
+            { emoji: '🗣️', name: language === 'bm' ? 'Baca Ayat Kuat'        : 'Read Sentence Aloud',     obj: language === 'bm' ? 'Obj. 11 — Membaca kuat dengan sebutan'         : 'Obj. 11 — Read aloud with clear pronunciation' },
+            { emoji: '🙇', name: language === 'bm' ? 'Bertutur Bertatasusila' : 'Polite Speaking',         obj: language === 'bm' ? 'Obj. 3 — Bertutur menggunakan bahasa bertatasusila' : 'Obj. 3 — Speak using polite language' },
+            { emoji: '💬', name: language === 'bm' ? 'Jawab Soalan'         : 'Answer the Question',      obj: language === 'bm' ? 'Obj. 14 — Menyoal dan menjawab secara lisan'    : 'Obj. 14 — Ask and answer questions orally' },
           ].map((item, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.15)', borderRadius: '10px', padding: '0.45rem 0.75rem' }}>
               <span style={{ fontSize: '1rem', flexShrink: 0 }}>{item.emoji}</span>
