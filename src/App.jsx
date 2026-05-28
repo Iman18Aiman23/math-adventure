@@ -61,6 +61,10 @@ import SebutFrasaBergambar from './components/AgeGroup-7/SebutFrasaBergambar';
 import Nombor100 from './components/AgeGroup-7/Nombor100';
 import Tambah100 from './components/AgeGroup-7/Tambah100';
 import Bentuk3D from './components/AgeGroup-7/Bentuk3D';
+import UkurPanjang from './components/AgeGroup-7/UkurPanjang';
+import BacaPictograph from './components/AgeGroup-7/BacaPictograph';
+import Jisim from './components/AgeGroup-7/Jisim';
+import IsiPaduCecair from './components/AgeGroup-7/IsiPaduCecair';
 import ProfileHome from './components/Profile/ProfileHome';
 const AchievementHome  = React.lazy(() => import('./components/Achievement/AchievementHome'));
 const LeaderboardHome  = React.lazy(() => import('./components/Leaderboard/LeaderboardHome'));
@@ -418,6 +422,18 @@ export default function App() {
         }
         if (currentAgeGame === 'bentuk-3d') {
           return <Bentuk3D onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'ukur-panjang') {
+          return <UkurPanjang onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'baca-pictograph') {
+          return <BacaPictograph onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'jisim') {
+          return <Jisim onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'isi-padu-cecair') {
+          return <IsiPaduCecair onBack={() => setCurrentAgeGame(null)} language={language} />;
         }
         if (currentAgeGroup) {
           const ageGroupComponents = {

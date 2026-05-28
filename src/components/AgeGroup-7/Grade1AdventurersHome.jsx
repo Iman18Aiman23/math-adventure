@@ -13,9 +13,81 @@ const PILLAR_META = {
   math:     { bm: 'Matematik',    eng: 'Mathematics', emoji: '🔢', color: '#1CB0F6' },
 };
 
+// ── KSSR QnA data ─────────────────────────────────────────────────────────────
+const QNA = [
+  {
+    q:    { bm: 'Apa yang dipelajari dalam pillar Membaca?',    eng: 'What topics are covered in the Reading pillar?'    },
+    intro:{ bm: '9 permainan merangkumi kemahiran tatabahasa Bahasa Melayu Tahun 1 KSSR (18 daripada 21 objektif BM):',
+            eng: '9 games covering Year 1 Bahasa Melayu grammar skills (18 of 21 BM objectives):' },
+    items:[
+      { bm: 'Bina Ayat — Membina ayat penyata dan ayat tanya yang mudah (Obj. 8, 21)',             eng: 'Sentence Builder — Build simple statements and question sentences (Obj. 8, 21)'        },
+      { bm: 'Suku Kata — Membaca dan membina perkataan menggunakan suku kata (Obj. 1, 4, 7)',       eng: 'Syllable Builder — Read and form words from syllables (Obj. 1, 4, 7)'                  },
+      { bm: 'Jenis Kata — Mengenal kata nama, kata kerja dan kata adjektif (Obj. 16, 17)',          eng: 'Word Types — Identify nouns, verbs and adjectives (Obj. 16, 17)'                       },
+      { bm: 'Kata Tanya — Menggunakan kata tanya: siapa, apa, di mana, bila, mengapa (Obj. 2)',     eng: 'Question Words — Use who, what, where, when and why (Obj. 2)'                          },
+      { bm: 'Kata Hubung & Sendi — Menggunakan kata hubung dan kata sendi nama (Obj. 18)',          eng: 'Connectors & Prepositions — Use conjunctions and prepositions correctly (Obj. 18)'     },
+      { bm: 'Kata Imbuhan — Membentuk perkataan baharu dengan awalan ber- dan me- (Obj. 19)',       eng: 'Word Prefixes — Form new words using prefixes ber- and me- (Obj. 19)'                   },
+      { bm: 'Ejaan & Tanda Baca — Mengeja perkataan dengan betul dan menggunakan tanda baca (Obj. 5, 6)', eng: 'Spelling & Punctuation — Spell words correctly and use punctuation marks (Obj. 5, 6)' },
+      { bm: 'Kata Ganda — Memahami dan menggunakan kata ganda penuh dan kata ganda berentak (Obj. 9, 10)', eng: 'Repeated Words — Understand and use full and rhyming reduplications (Obj. 9, 10)' },
+      { bm: 'Kefahaman Bacaan — Memahami dan mentafsir petikan bacaan pendek (Obj. 12)',            eng: 'Reading Comprehension — Understand and interpret short reading passages (Obj. 12)'      },
+    ],
+  },
+  {
+    q:    { bm: 'Apa yang dipelajari dalam pillar Bertutur?',   eng: 'What topics are covered in the Speaking pillar?'  },
+    intro:{ bm: '5 permainan lisan menggunakan teknologi pengecaman suara. Murid bercakap dan aplikasi menilai sebutan secara langsung:',
+            eng: '5 oral games using speech recognition technology. Pupils speak and the app assesses pronunciation in real time:' },
+    items:[
+      { bm: 'Baca Ayat Kuat — Membaca ayat dengan sebutan yang jelas dan lantang (Obj. 11)',        eng: 'Read Aloud — Read sentences clearly and loudly (Obj. 11)'                               },
+      { bm: 'Bertutur Bertatasusila — Menggunakan bahasa yang sopan dan bertatasusila dalam pelbagai situasi harian (Obj. 3)', eng: 'Polite Speaking — Use polite and courteous language in various daily situations (Obj. 3)' },
+      { bm: 'Jawab Soalan — Menjawab soalan mudah secara lisan dengan lengkap dan betul (Obj. 14)', eng: 'Answer Questions — Answer simple questions orally in full and correct sentences (Obj. 14)' },
+      { bm: 'Sebut Lawan Kata — Menyebut dan memahami pasangan antonim bahasa Melayu',              eng: 'Antonyms — Pronounce and understand Bahasa Melayu antonym word pairs'                   },
+      { bm: 'Baca Frasa Bergambar — Membaca frasa pendek dengan panduan teks dan gambar',           eng: 'Picture Phrases — Read short phrases guided by on-screen text and picture prompts'      },
+    ],
+  },
+  {
+    q:    { bm: 'Apa yang dipelajari dalam pillar Tulisan Jawi?', eng: 'What topics are covered in the Jawi Script pillar?' },
+    intro:{ bm: '5 permainan berteraskan sukatan Pendidikan Islam Tahun 1 (Objektif 10 — membaca, membina dan menulis tulisan jawi):',
+            eng: '5 games based on the Year 1 Islamic Education syllabus (Obj. 10 — reading, forming and writing Jawi script):' },
+    items:[
+      { bm: 'Baca Suku Kata Jawi — Membaca suku kata dalam tulisan jawi dan mengenal gabungan huruf',  eng: 'Read Jawi Syllables — Read Jawi syllables and recognise letter combinations'          },
+      { bm: 'Bina Perkataan Jawi — Membina perkataan dengan menyusun huruf jawi mengikut urutan betul', eng: 'Build Jawi Words — Form words by arranging Jawi letters in the correct sequence'    },
+      { bm: 'Padan Perkataan Jawi — Memadankan perkataan jawi dengan makna dalam tulisan rumi',         eng: 'Match Jawi Words — Match Jawi words with their meanings in Roman script'             },
+      { bm: 'Baca Ayat Jawi — Melengkapkan ayat jawi dengan perkataan yang sesuai dalam konteks',      eng: 'Read Jawi Sentences — Complete Jawi sentences with a contextually appropriate word'  },
+      { bm: 'Tulis Jawi — Menulis huruf dan perkataan jawi secara bebas di atas kanvas lakaran digital', eng: 'Write Jawi — Freely write Jawi letters and words on a digital drawing canvas'     },
+    ],
+  },
+  {
+    q:    { bm: 'Apa yang dipelajari dalam pillar Matematik?',  eng: 'What topics are covered in the Mathematics pillar?' },
+    intro:{ bm: '10 permainan merangkumi kesemua 10 Bidang Pembelajaran Matematik KSSR Tahun 1. Setiap bidang menggunakan 3 mekanik soalan yang berbeza:',
+            eng: '10 games covering all 10 Learning Areas in KSSR Year 1 Mathematics. Each area uses 3 different question mechanics:' },
+    items:[
+      { bm: 'Nombor 1-100 — Mengenal, menyebut, membandingkan dan memahami nilai tempat nombor (Bidang 1)',           eng: 'Numbers 1-100 — Recognise, say, compare and understand place value of numbers (Area 1)'       },
+      { bm: 'Tambah dalam 100 — Operasi tambah secara visual, simbolik dan masalah cerita (Bidang 2)',                eng: 'Add within 100 — Addition through visual, symbolic and story-problem approaches (Area 2)'     },
+      { bm: 'Cerita Penolakan — Tolak dalam lingkungan 100 secara bergambar, simbolik dan cerita (Bidang 3)',         eng: 'Subtraction Story — Subtract within 100 through pictures, symbols and stories (Area 3)'       },
+      { bm: 'Pengira Wang — Mengenal wang ringgit hingga RM10, nilai syiling dan masalah baki (Bidang 4)',            eng: 'Counting Money — Recognise Ringgit notes up to RM10, coins and change problems (Area 4)'      },
+      { bm: 'Time Teller — Membaca dan menyatakan masa tepat menggunakan muka jam (Bidang 5)',                        eng: 'Time Teller — Read and state the correct time using a clock face (Area 5)'                   },
+      { bm: 'Ukur Panjang — Membanding dan mengukur panjang benda dalam sentimeter (Bidang 6)',                       eng: 'Measuring Length — Compare and measure the length of objects in centimetres (Area 6)'         },
+      { bm: 'Jisim — Membanding berat benda dan membaca sukatan jisim dalam kilogram (Bidang 7)',                     eng: 'Mass — Compare the mass of objects and read scale measurements in kilograms (Area 7)'         },
+      { bm: 'Isi Padu Cecair — Mengenal tahap cecair dan membaca sukatan isi padu dalam liter (Bidang 8)',            eng: 'Liquid Volume — Identify liquid levels and read volume measurements in litres (Area 8)'       },
+      { bm: 'Bentuk 3D — Mengenal, menamakan dan membezakan bentuk tiga dimensi (Bidang 9)',                          eng: '3D Shapes — Recognise, name and distinguish three-dimensional shapes (Area 9)'                },
+      { bm: 'Baca Pictograph — Membaca dan mentafsir data dalam piktograf mudah (Bidang 10)',                         eng: 'Read Pictograph — Read and interpret data presented in simple pictographs (Area 10)'          },
+    ],
+  },
+];
+
 export default function Grade1AdventurersHome(props) {
   const { onBack, onPlayGame, language = 'bm' } = props;
   const curriculum = CURRICULUM['age-7'];
+  const [expandedQnA, setExpandedQnA] = React.useState(new Set());
+
+  const toggleQnA = (index) => {
+    const newSet = new Set(expandedQnA);
+    if (newSet.has(index)) {
+      newSet.delete(index);
+    } else {
+      newSet.add(index);
+    }
+    setExpandedQnA(newSet);
+  };
 
   // Group games by pillar (only pillars that actually have games)
   const pillarSections = PILLAR_ORDER
@@ -48,71 +120,152 @@ export default function Grade1AdventurersHome(props) {
 
   const additionalSection = (
     <>
-      {/* ── KSSR Curriculum card ─────────────────────────────────────────── */}
+      {/* ── KSSR Curriculum QnA card ──────────────────────────────────────── */}
       <div style={{
         background: 'linear-gradient(135deg, #FF9600 0%, #FF6B35 100%)',
         borderRadius: '16px',
-        padding: '1.1rem 1.25rem',
+        padding: '1.15rem 1.25rem',
         marginBottom: '1rem',
         color: 'white',
       }}>
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', marginBottom: '0.65rem' }}>
-          <span style={{ fontSize: '1.25rem', lineHeight: 1, flexShrink: 0 }}>📋</span>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 800, fontSize: '0.92rem', lineHeight: 1.25 }}>
-              {language === 'bm' ? 'Berdasarkan Kurikulum KSSR' : 'Based on KSSR Curriculum'}
-            </div>
-            <div style={{ fontSize: '0.75rem', opacity: 0.88, marginTop: '0.15rem', lineHeight: 1.4 }}>
-              {language === 'bm'
-                ? 'Merangkumi 18 daripada 21 objektif BM Tahun 1 KSSR'
-                : 'Covers 18 of 21 Year 1 BM objectives in KSSR'}
-            </div>
+        <div style={{ marginBottom: '0.9rem' }}>
+          <div style={{ fontWeight: 900, fontSize: '1.05rem', letterSpacing: '0.01em', marginBottom: '0.4rem' }}>
+            {language === 'bm' ? 'Berdasarkan Kurikulum KSSR' : 'Based on KSSR Curriculum'}
           </div>
-          <span style={{ flexShrink: 0, background: 'rgba(255,255,255,0.25)', borderRadius: '8px', padding: '0.2rem 0.55rem', fontSize: '0.72rem', fontWeight: 800, whiteSpace: 'nowrap', letterSpacing: '0.03em' }}>
-            18/21 Obj.
-          </span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+            <span style={{ background: 'rgba(255,255,255,0.22)', borderRadius: '6px', padding: '0.18rem 0.65rem', fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.04em', border: '1px solid rgba(255,255,255,0.35)' }}>
+              {language === 'bm' ? 'BM 18/21 Objektif' : 'BM 18/21 Objectives'}
+            </span>
+            <span style={{ background: 'rgba(255,255,255,0.22)', borderRadius: '6px', padding: '0.18rem 0.65rem', fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.04em', border: '1px solid rgba(255,255,255,0.35)' }}>
+              {language === 'bm' ? 'Math 10/10 Bidang' : 'Math 10/10 Areas'}
+            </span>
+            <span style={{ background: 'rgba(255,255,255,0.22)', borderRadius: '6px', padding: '0.18rem 0.65rem', fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.04em', border: '1px solid rgba(255,255,255,0.35)' }}>
+              {language === 'bm' ? 'Jawi PI Obj. 10' : 'Jawi PI Obj. 10'}
+            </span>
+          </div>
         </div>
 
-        {/* Divider */}
-        <div style={{ borderTop: '1px solid rgba(255,255,255,0.3)', margin: '0 0 0.65rem' }} />
+        {/* QnA blocks as dropdowns */}
+        {QNA.map((block, bi) => {
+          const isExpanded = expandedQnA.has(bi);
+          return (
+            <div key={bi}>
+              <div style={{ borderTop: '1px solid rgba(255,255,255,0.28)', margin: '0 0 0.6rem' }} />
 
-        {/* BM Reading games with objectives */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', marginBottom: '0.65rem' }}>
-          {[
-            { emoji: '📝', name: language === 'bm' ? 'Bina Ayat'           : 'Sentence Builder',        obj: language === 'bm' ? 'Obj. 8, 21 — Membina ayat penyata'              : 'Obj. 8, 21 — Build simple sentences'        },
-            { emoji: '🔤', name: language === 'bm' ? 'Suku Kata'           : 'Syllable Builder',        obj: language === 'bm' ? 'Obj. 1, 4, 7 — Suku kata & membaca'             : 'Obj. 1, 4, 7 — Syllables & reading'         },
-            { emoji: '🔍', name: language === 'bm' ? 'Jenis Kata'          : 'Word Types',              obj: language === 'bm' ? 'Obj. 16, 17 — Kata nama, kerja & adjektif'      : 'Obj. 16, 17 — Nouns, verbs & adjectives'    },
-            { emoji: '❓', name: language === 'bm' ? 'Kata Tanya'          : 'Question Words',          obj: language === 'bm' ? 'Obj. 2 — Siapa, Apa, Di mana, Bila, Mengapa'    : 'Obj. 2 — Who, What, Where, When, Why'       },
-            { emoji: '🔗', name: language === 'bm' ? 'Kata Hubung & Sendi' : 'Connectors & Prepositions', obj: language === 'bm' ? 'Obj. 18 — dan, tetapi, atau, di, ke, dari'   : 'Obj. 18 — and, but, or, at, to, from'       },
-            { emoji: '🔠', name: language === 'bm' ? 'Kata Imbuhan'        : 'Word Prefixes',           obj: language === 'bm' ? 'Obj. 19 — Awalan ber-, me-'                     : 'Obj. 19 — Prefixes ber-, me-'               },
-            { emoji: '✏️', name: language === 'bm' ? 'Ejaan & Tanda Baca'  : 'Spelling & Punctuation',  obj: language === 'bm' ? 'Obj. 5, 6 — Ejaan betul & tanda baca'          : 'Obj. 5, 6 — Correct spelling & punctuation' },
-            { emoji: '🔄', name: language === 'bm' ? 'Kata Ganda'          : 'Repeated Words',          obj: language === 'bm' ? 'Obj. 9, 10 — Kata ganda penuh & berentak'      : 'Obj. 9, 10 — Full & rhyming repeated words' },
-            { emoji: '📜', name: language === 'bm' ? 'Kefahaman Bacaan'    : 'Reading Comprehension',   obj: language === 'bm' ? 'Obj. 12 — Memahami dan mentafsir petikan'       : 'Obj. 12 — Understand and interpret passages' },
-            { emoji: '🗣️', name: language === 'bm' ? 'Baca Ayat Kuat'        : 'Read Sentence Aloud',     obj: language === 'bm' ? 'Obj. 11 — Membaca kuat dengan sebutan'         : 'Obj. 11 — Read aloud with clear pronunciation' },
-            { emoji: '🙇', name: language === 'bm' ? 'Bertutur Bertatasusila' : 'Polite Speaking',         obj: language === 'bm' ? 'Obj. 3 — Bertutur menggunakan bahasa bertatasusila' : 'Obj. 3 — Speak using polite language' },
-            { emoji: '💬', name: language === 'bm' ? 'Jawab Soalan'         : 'Answer the Question',      obj: language === 'bm' ? 'Obj. 14 — Menyoal dan menjawab secara lisan'    : 'Obj. 14 — Ask and answer questions orally' },
-          ].map((item, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.15)', borderRadius: '10px', padding: '0.45rem 0.75rem' }}>
-              <span style={{ fontSize: '1rem', flexShrink: 0 }}>{item.emoji}</span>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <span style={{ fontWeight: 700, fontSize: '0.82rem' }}>{item.name}</span>
-                <span style={{ fontSize: '0.72rem', opacity: 0.88, display: 'block', marginTop: '0.05rem' }}>{item.obj}</span>
-              </div>
+              {/* Clickable question header */}
+              <button
+                onClick={() => toggleQnA(bi)}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '0.5rem',
+                  marginBottom: '0',
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: '0.4rem 0.4rem 0.4rem 0',
+                  textAlign: 'left',
+                  transition: 'all 0.2s ease',
+                  borderRadius: '6px',
+                  hover: { background: 'rgba(255,255,255,0.08)' },
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+              >
+                {/* Dropdown arrow */}
+                <span
+                  style={{
+                    flexShrink: 0,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '18px',
+                    height: '18px',
+                    marginTop: '0.08rem',
+                    transition: 'transform 0.3s ease',
+                    transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                  }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </span>
+
+                {/* SOALAN pill */}
+                <span
+                  style={{
+                    flexShrink: 0,
+                    background: 'rgba(255,255,255,0.9)',
+                    color: '#E65100',
+                    borderRadius: '4px',
+                    padding: '0.12rem 0.5rem',
+                    fontSize: '0.8rem',
+                    fontWeight: 900,
+                    letterSpacing: '0.06em',
+                    lineHeight: '1.6',
+                    marginTop: '0.05rem',
+                  }}
+                >
+                  {language === 'bm' ? 'SOALAN' : 'Q'}
+                </span>
+
+                {/* Question text */}
+                <span style={{ fontWeight: 800, fontSize: '1.1rem', lineHeight: 1.35, flex: 1 }}>
+                  {language === 'bm' ? block.q.bm : block.q.eng}
+                </span>
+              </button>
+
+              {/* Collapsible answer section */}
+              {isExpanded && (
+                <div style={{ animation: 'slideDown 0.25s ease', marginTop: '0.4rem', paddingBottom: '0.5rem' }}>
+                  {/* Answer intro */}
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.55rem', marginLeft: '1.35rem' }}>
+                    <span
+                      style={{
+                        flexShrink: 0,
+                        background: 'rgba(255,255,255,0.22)',
+                        color: 'white',
+                        borderRadius: '4px',
+                        padding: '0.12rem 0.5rem',
+                        fontSize: '0.8rem',
+                        fontWeight: 900,
+                        letterSpacing: '0.06em',
+                        lineHeight: '1.6',
+                        marginTop: '0.05rem',
+                        border: '1px solid rgba(255,255,255,0.4)',
+                      }}
+                    >
+                      {language === 'bm' ? 'JAWAPAN' : 'A'}
+                    </span>
+                    <span style={{ fontSize: '0.95rem', lineHeight: 1.5, opacity: 0.92 }}>
+                      {language === 'bm' ? block.intro.bm : block.intro.eng}
+                    </span>
+                  </div>
+
+                  {/* Item list */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', paddingLeft: '1.35rem' }}>
+                    {block.items.map((item, ii) => (
+                      <div
+                        key={ii}
+                        style={{
+                          fontSize: '0.92rem',
+                          lineHeight: 1.6,
+                          paddingLeft: '0.7rem',
+                          borderLeft: '2px solid rgba(255,255,255,0.4)',
+                          opacity: 0.9,
+                        }}
+                      >
+                        {language === 'bm' ? item.bm : item.eng}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-          ))}
-        </div>
-
-        {/* Divider */}
-        <div style={{ borderTop: '1px solid rgba(255,255,255,0.3)', margin: '0 0 0.65rem' }} />
-
-        {/* Math note */}
-        <div style={{ fontSize: '0.75rem', opacity: 0.88, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <span>🔢</span>
-          {language === 'bm'
-            ? 'Matematik: Masa, Wang & Cerita Penolakan — Matematik Tahun 1 KSSR'
-            : 'Maths: Time, Money & Subtraction — Year 1 KSSR Mathematics'}
-        </div>
+          );
+        })}
       </div>
 
       {/* ── How to Play ──────────────────────────────────────────────────── */}
@@ -144,6 +297,18 @@ export default function Grade1AdventurersHome(props) {
   return (
     <>
       <style>{`
+        @keyframes slideDown {
+          from {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+          }
+          to {
+            opacity: 1;
+            max-height: 2000px;
+          }
+        }
+
         .coming-soon-container {
           display: flex;
           flex-direction: column;

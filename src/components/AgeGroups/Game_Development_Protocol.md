@@ -268,20 +268,24 @@ After generating ideas OR coding a game, you MUST output the following MD block.
     - `src/components/AgeGroup-7/BacaAyatJawi.jsx`
   - **Tulis Jawi (Khat)** ✅ COMPLETE — Obj 10 (Menulis/khat): free-draw canvas over a faint model glyph; Clear, Show/Hide guide, Prev/Next across all 36 letters; tap-to-listen. (Free-draw, not segment-validated — Jawi has no vector path data like the Latin tracer.)
     - `src/components/AgeGroup-7/TulisJawi.jsx`
-🔢 Mathematics: ⚠️ IN PROGRESS (6/10 KSSR Tahun 1 bidang) — audit 2026-05-28 revealed only 3 of 10 bidang were covered (and 2 below level). Batch 1 in progress.
+🔢 Mathematics: ⚠️ IN PROGRESS (8/10 KSSR Tahun 1 bidang) — audit 2026-05-28 revealed only 3 of 10 bidang were covered (and 2 below level). Batch 1 ✅ COMPLETE.
   - **Nombor 1–100** ✅ COMPLETE — Bidang 1: 3 mechanics (Sebut Nombor / Banding / Nilai Tempat)
     - `src/components/AgeGroup-7/Nombor100.jsx`
   - **Tambah dalam 100** ✅ COMPLETE — Bidang 2: 3 mechanics (Tambah Gambar / Operasi Tambah / Cerita Tambah)
     - `src/components/AgeGroup-7/Tambah100.jsx`
-  - **Bentuk 3D** ✅ COMPLETE — Bidang 9 (Ruang): 3 mechanics (Kenal Bentuk SVG→name / Cari di Sekeliling emoji→name / Mana Yang Sama visual SVG match); 6 solids kubus/kuboid/silinder/sfera/kon/piramid rendered inline as orange isometric SVGs (no PNG deps)
+  - **Bentuk 3D** ✅ COMPLETE — Bidang 9 (Ruang): 3 mechanics (Kenal Bentuk SVG→name / Cari di Sekeliling emoji→name / Mana Yang Sama visual SVG match); 6 solids kubus/kuboid/silinder/sfera/kon/piramid rendered inline as orange isometric SVGs (no PNG deps); match card shows name beneath shape with prompt-in-purple header
     - `src/components/AgeGroup-7/Bentuk3D.jsx`
+  - **Ukur Panjang** ✅ COMPLETE — Bidang 6 (Ukuran Panjang): 3 mechanics (Banding 2-bars / Ukur cm using bar+ruler / Paling Panjang); pixel-precise rect bars; iterated on the measure card (was paper clips → ruler-with-numbers → emoji row → final: just bar + ruler with 0..11 cm numbers, no emoji)
+    - `src/components/AgeGroup-7/UkurPanjang.jsx`
+  - **Baca Pictograph** ✅ COMPLETE — Bidang 10 (Pengurusan Data): 3 mechanics (Kira count / Paling Banyak·Sedikit / Beza difference); 4 themes (buah, haiwan peliharaan, sukan, bunga) with regenerated counts per question; pictograph rows show label + emoji-per-unit, 1 emoji = 1 unit per KSSR Tahun 1 convention
+    - `src/components/AgeGroup-7/BacaPictograph.jsx`
   - Time Teller ✅ at-level — Bidang 5
     - `src/components/AgeGroup-7/TimeTeller.jsx`
   - Counting Money ⚠️ below KSSR (sen-only) — Bidang 4
     - `src/components/AgeGroup-7/CountingMoney.jsx`
   - Subtraction Story ⚠️ below KSSR (within 10 only) — Bidang 3
     - `src/components/AgeGroup-7/SubtractionStory.jsx`
-  - **Pending Batch 1 (2 more new games):** Ukur Panjang (Bidang 6), Baca Pictograph (Bidang 10)
+  - **Batch 1 ✅ COMPLETE — 5 new at-level games added (Nombor, Tambah, Bentuk 3D, Ukur Panjang, Baca Pictograph)**
   - **Pending Batch 2:** Jisim (Bidang 7), Isi Padu (Bidang 8), upgrade Tolak→100, upgrade Wang→RM10
 
 ---

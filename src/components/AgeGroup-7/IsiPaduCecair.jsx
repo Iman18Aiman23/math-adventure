@@ -4,119 +4,168 @@ import confetti from 'canvas-confetti';
 import { playSound } from '../../utils/soundManager';
 import BackButton from '../BackButton';
 
-// KSSR Matematik Tahun 1 — Bidang 3: Tolak dalam lingkungan 100.
+// KSSR Matematik Tahun 1 — Bidang 8: Isi Padu Cecair.
 // Three mechanics (12 qs / round, 4 each, shuffled):
-//   1. bergambar — emoji-dot visual, A ∈ [5,20], B ∈ [1,A-1]
-//   2. simbolik  — pure equation, A ∈ [20,99], B ∈ [1,A-1]
-//   3. cerita    — story problem, A ∈ [20,99], B ∈ [1,A-1]
+//   1. Kenali Tahap  — container at kosong/separuh/penuh; pick the label
+//   2. Banding       — two containers, pick mana lebih banyak/sedikit air
+//   3. Baca Liter    — container with scale markings; pick the correct litre count
 
 const randInt = (lo, hi) => Math.floor(Math.random() * (hi - lo + 1)) + lo;
 const shuffle  = arr => [...arr].sort(() => Math.random() - 0.5);
 const pick     = arr => arr[Math.floor(Math.random() * arr.length)];
 
-const ITEMS = [
-  { bm: 'epal',    eng: 'apples',   emoji: '🍎' },
-  { bm: 'pensel',  eng: 'pencils',  emoji: '✏️' },
-  { bm: 'guli',    eng: 'marbles',  emoji: '🔵' },
-  { bm: 'buku',    eng: 'books',    emoji: '📚' },
-  { bm: 'bunga',   eng: 'flowers',  emoji: '🌸' },
-  { bm: 'permen',  eng: 'candies',  emoji: '🍬' },
-  { bm: 'bola',    eng: 'balls',    emoji: '⚽' },
-  { bm: 'biskut',  eng: 'biscuits', emoji: '🍪' },
+// ── Container SVG components ────────────────────────────────────────────────
+
+// Simple beaker without scale markings — used for Kenali and Banding
+const Beaker = ({ fraction, label, size = 'md' }) => {
+  const isSmall = size === 'sm';
+  const w = isSmall ? 60 : 80;
+  const vH = isSmall ? 90 : 110;
+  const cX = isSmall ? 10 : 12;
+  const cW = isSmall ? 40 : 56;
+  const cY = 10;
+  const cH = isSmall ? 65 : 80;
+  const waterH  = Math.round(cH * Math.max(0, Math.min(1, fraction)));
+  const waterY  = cY + cH - waterH;
+
+  return (
+    <svg width={w} height={vH} viewBox={`0 0 ${w} ${vH}`}>
+      {/* Water fill */}
+      {waterH > 0 && (
+        <rect x={cX} y={waterY} width={cW} height={waterH} fill="#42A5F5" opacity="0.75" />
+      )}
+      {/* Container walls (U-shape, open top) */}
+      <path
+        d={`M${cX},${cY} L${cX},${cY + cH} L${cX + cW},${cY + cH} L${cX + cW},${cY}`}
+        fill="none" stroke="#1565C0" strokeWidth="2.5" strokeLinejoin="round"
+      />
+      {/* Base */}
+      <rect x={cX - 4} y={cY + cH} width={cW + 8} height="5" rx="2.5" fill="#1565C0" />
+      {/* Optional label (A/B) */}
+      {label && (
+        <text x={cX + cW / 2} y={vH - 2} textAnchor="middle" fontSize="11" fontWeight="900" fill="#1565C0">
+          {label}
+        </text>
+      )}
+    </svg>
+  );
+};
+
+// Beaker with litre scale on the right — used for Baca Liter
+const BeakerScale = ({ fraction, maxL = 5 }) => {
+  const cX = 12; const cW = 54; const cY = 10; const cH = 80;
+  const waterH = Math.round(cH * Math.max(0, Math.min(1, fraction)));
+  const waterY = cY + cH - waterH;
+
+  return (
+    <svg width="110" height="110" viewBox="0 0 110 110">
+      {waterH > 0 && (
+        <rect x={cX} y={waterY} width={cW} height={waterH} fill="#42A5F5" opacity="0.75" />
+      )}
+      <path
+        d={`M${cX},${cY} L${cX},${cY + cH} L${cX + cW},${cY + cH} L${cX + cW},${cY}`}
+        fill="none" stroke="#1565C0" strokeWidth="2.5" strokeLinejoin="round"
+      />
+      {/* Scale ticks */}
+      {Array.from({ length: maxL }, (_, i) => {
+        const l = i + 1;
+        const y = cY + cH - Math.round((cH * l) / maxL);
+        return (
+          <g key={l}>
+            <line x1={cX + cW} y1={y} x2={cX + cW + 8} y2={y} stroke="#0D47A1" strokeWidth="1.5" />
+            <text x={cX + cW + 11} y={y + 4} fontSize="9" fontWeight="800" fill="#0D47A1">{l} L</text>
+          </g>
+        );
+      })}
+      <rect x={cX - 4} y={cY + cH} width={cW + 8} height="5" rx="2.5" fill="#1565C0" />
+    </svg>
+  );
+};
+
+// ── Data ────────────────────────────────────────────────────────────────────
+
+const LEVELS = [
+  { id: 'kosong',  fraction: 0.0, bm: 'Kosong',        eng: 'Empty'     },
+  { id: 'separuh', fraction: 0.5, bm: 'Separuh Penuh', eng: 'Half Full' },
+  { id: 'penuh',   fraction: 1.0, bm: 'Penuh',         eng: 'Full'      },
 ];
 
-const STORY_TEMPLATES = [
-  {
-    bm:  (a, b, it) => `Ada ${a} ${it.bm}. ${b} ${it.bm} diambil. Berapa tinggal?`,
-    eng: (a, b, it) => `There are ${a} ${it.eng}. ${b} were taken. How many left?`,
-  },
-  {
-    bm:  (a, b, it) => `Saya ada ${a} ${it.bm}. Saya beri ${b} kepada kawan. Berapa tinggal?`,
-    eng: (a, b, it) => `I have ${a} ${it.eng}. I gave ${b} to a friend. How many left?`,
-  },
-  {
-    bm:  (a, b, it) => `Kelas ada ${a} ${it.bm}. ${b} hilang. Berapa ada sekarang?`,
-    eng: (a, b, it) => `The class has ${a} ${it.eng}. ${b} are missing. How many remain?`,
-  },
-  {
-    bm:  (a, b, it) => `Dalam bakul ada ${a} ${it.bm}. ${b} jatuh. Berapa masih dalam bakul?`,
-    eng: (a, b, it) => `A basket has ${a} ${it.eng}. ${b} fell out. How many are still inside?`,
-  },
-];
+const BAND_FRACS = [0.15, 0.3, 0.55, 0.75, 1.0];
+const LITER_MAX  = 5;
 
-function makeDistractors(answer, count = 3) {
-  const pool = [-3, -2, -1, 1, 2, 3, -5, 5].map(o => answer + o).filter(x => x > 0 && x !== answer);
-  const unique = [...new Set(pool)];
-  return shuffle(unique).slice(0, count);
-}
+// ── Question generators ─────────────────────────────────────────────────────
 
-function genBergambarQ() {
-  const a = randInt(5, 20);
-  const b = randInt(1, a - 1);
-  const ans = a - b;
-  const item = pick(ITEMS);
+function genKenaliQ() {
+  const level = pick(LEVELS);
   return {
-    type: 'bergambar',
-    a, b, ans, item,
-    question_bm:  `${a} − ${b} = ?`,
-    question_eng: `${a} − ${b} = ?`,
-    options: shuffle([ans, ...makeDistractors(ans)]).map(v => ({ key: String(v), label_bm: String(v), label_eng: String(v) })),
-    answer: String(ans),
+    type: 'kenali',
+    fraction: level.fraction,
+    question_bm:  'Air dalam bekas ini ___?',
+    question_eng: 'The water in this container is ___?',
+    options: shuffle(LEVELS.map(l => ({ key: l.id, label_bm: l.bm, label_eng: l.eng }))),
+    answer: level.id,
   };
 }
 
-function genSimbolikQ() {
-  const a = randInt(20, 99);
-  const b = randInt(1, Math.min(a - 1, 50));
-  const ans = a - b;
+function genBandingQ() {
+  const [fracA, fracB] = shuffle(BAND_FRACS);
+  const askMore = Math.random() < 0.5;
+  const answer = askMore ? (fracA > fracB ? 'A' : 'B') : (fracA < fracB ? 'A' : 'B');
   return {
-    type: 'simbolik',
-    a, b, ans,
-    question_bm:  `${a} − ${b} = ?`,
-    question_eng: `${a} − ${b} = ?`,
-    options: shuffle([ans, ...makeDistractors(ans)]).map(v => ({ key: String(v), label_bm: String(v), label_eng: String(v) })),
-    answer: String(ans),
+    type: 'banding',
+    fracA, fracB,
+    question_bm:  askMore ? 'Mana lebih banyak air?' : 'Mana lebih sedikit air?',
+    question_eng: askMore ? 'Which has more water?'  : 'Which has less water?',
+    options: [
+      { key: 'A', label_bm: 'Bekas A', label_eng: 'Container A' },
+      { key: 'B', label_bm: 'Bekas B', label_eng: 'Container B' },
+    ],
+    answer,
   };
 }
 
-function genCeritaQ() {
-  const a = randInt(20, 99);
-  const b = randInt(5, Math.min(a - 1, 50));
-  const ans = a - b;
-  const item = pick(ITEMS);
-  const tmpl = pick(STORY_TEMPLATES);
+function genBacaLiterQ() {
+  const liters = randInt(1, LITER_MAX);
+  const fraction = liters / LITER_MAX;
+  const dist = new Set();
+  while (dist.size < 3) {
+    const d = randInt(1, LITER_MAX);
+    if (d !== liters) dist.add(d);
+  }
   return {
-    type: 'cerita',
-    a, b, ans, item,
-    story_bm:  tmpl.bm(a, b, item),
-    story_eng: tmpl.eng(a, b, item),
-    question_bm:  `${a} − ${b} = ?`,
-    question_eng: `${a} − ${b} = ?`,
-    options: shuffle([ans, ...makeDistractors(ans)]).map(v => ({ key: String(v), label_bm: String(v), label_eng: String(v) })),
-    answer: String(ans),
+    type: 'baca-liter',
+    liters, fraction,
+    question_bm:  'Berapa liter air dalam bekas ini?',
+    question_eng: 'How many litres of water are in this container?',
+    options: shuffle([liters, ...[...dist]]).map(v => ({
+      key: String(v), label_bm: `${v} liter`, label_eng: `${v} litre${v !== 1 ? 's' : ''}`,
+    })),
+    answer: String(liters),
   };
 }
 
 function buildQuestions() {
   const qs = [];
-  for (let i = 0; i < 4; i++) qs.push(genBergambarQ());
-  for (let i = 0; i < 4; i++) qs.push(genSimbolikQ());
-  for (let i = 0; i < 4; i++) qs.push(genCeritaQ());
+  for (let i = 0; i < 4; i++) qs.push(genKenaliQ());
+  for (let i = 0; i < 4; i++) qs.push(genBandingQ());
+  for (let i = 0; i < 4; i++) qs.push(genBacaLiterQ());
   return shuffle(qs);
 }
 
 const TYPE_META = {
-  bergambar: { bm: 'Tolak Bergambar', eng: 'Visual Subtraction', emoji: '🔵' },
-  simbolik:  { bm: 'Tolak Nombor',    eng: 'Number Subtraction', emoji: '🔢' },
-  cerita:    { bm: 'Masalah Cerita',  eng: 'Story Problem',      emoji: '📖' },
+  kenali:      { bm: 'Kenali Tahap',  eng: 'Identify Level', emoji: '💧' },
+  banding:     { bm: 'Banding',       eng: 'Compare',        emoji: '🔀' },
+  'baca-liter':{ bm: 'Baca Liter',    eng: 'Read Litres',    emoji: '📏' },
 };
 const emptyStats = () => ({
-  bergambar: { c: 0, t: 0 },
-  simbolik:  { c: 0, t: 0 },
-  cerita:    { c: 0, t: 0 },
+  kenali:      { c: 0, t: 0 },
+  banding:     { c: 0, t: 0 },
+  'baca-liter':{ c: 0, t: 0 },
 });
 
-export default function SubtractionStory({ onBack, language = 'bm' }) {
+// ── Component ───────────────────────────────────────────────────────────────
+
+export default function IsiPaduCecair({ onBack, language = 'bm' }) {
   const [questions,  setQuestions]  = useState(() => buildQuestions());
   const [index,      setIndex]      = useState(0);
   const [selected,   setSelected]   = useState(null);
@@ -187,7 +236,7 @@ export default function SubtractionStory({ onBack, language = 'bm' }) {
       <div style={{ minHeight: '100%', background: '#FFE9CC', display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
         <BackButton onClick={onBack} />
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '3.5rem 1rem 1rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '0.5rem' }}>📖</div>
+          <div style={{ fontSize: '4rem', marginBottom: '0.5rem' }}>💧</div>
           <h2 style={{ color: verdict.color, fontSize: '1.8rem', fontWeight: 900, marginBottom: '0.25rem' }}>
             {language === 'bm' ? verdict.bm : verdict.eng}
           </h2>
@@ -247,6 +296,15 @@ export default function SubtractionStory({ onBack, language = 'bm' }) {
   if (!current) return null;
   const typeLabel = TYPE_META[current.type];
 
+  const answerLabel = (() => {
+    const opt = current.options.find(o => o.key === current.answer);
+    return opt ? (language === 'bm' ? opt.label_bm : opt.label_eng) : current.answer;
+  })();
+
+  const gridCols = current.type === 'kenali' ? '1fr 1fr 1fr'
+                 : current.type === 'banding' ? '1fr 1fr'
+                 : '1fr 1fr';
+
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: '#FFE9CC', overflow: 'hidden' }}>
       <BackButton onClick={onBack} />
@@ -255,10 +313,10 @@ export default function SubtractionStory({ onBack, language = 'bm' }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
           <div>
             <h1 style={{ color: '#FF9600', fontSize: '1.4rem', fontWeight: 900, marginBottom: '0.1rem' }}>
-              📖 {language === 'bm' ? 'Cerita Penolakan' : 'Subtraction Story'}
+              💧 {language === 'bm' ? 'Isi Padu Cecair' : 'Liquid Volume'}
             </h1>
             <p style={{ color: '#888', fontSize: '0.82rem' }}>
-              {language === 'bm' ? 'Tolak dalam lingkungan 100' : 'Subtraction within 100'}
+              {language === 'bm' ? 'Penuh, separuh & liter' : 'Full, half & litres'}
             </p>
           </div>
           <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
@@ -278,45 +336,38 @@ export default function SubtractionStory({ onBack, language = 'bm' }) {
             {typeLabel.emoji} {language === 'bm' ? typeLabel.bm.toUpperCase() : typeLabel.eng.toUpperCase()}
           </p>
 
-          {/* Bergambar: emoji-dot visual */}
-          {current.type === 'bergambar' && (
-            <>
-              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '4px', marginBottom: '0.75rem', padding: '0.5rem' }}>
-                {Array.from({ length: current.a }).map((_, i) => (
-                  <span key={i} style={{ fontSize: '1.4rem', opacity: i < current.ans ? 1 : 0.22, transition: 'opacity 0.3s' }}>
-                    {current.item.emoji}
-                  </span>
-                ))}
-              </div>
-              <p style={{ fontSize: '0.8rem', color: '#888', marginBottom: '0.5rem' }}>
-                {language === 'bm' ? '(Kabur = hilang/diambil)' : '(Faded = taken away)'}
-              </p>
-            </>
-          )}
-
-          {/* Simbolik: equation only */}
-          {current.type === 'simbolik' && (
-            <div style={{ fontSize: '3rem', fontWeight: 900, color: '#FF3D8B', letterSpacing: '4px', marginBottom: '0.75rem' }}>
-              {current.a} − {current.b}
+          {/* Kenali: single beaker */}
+          {current.type === 'kenali' && (
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.75rem' }}>
+              <Beaker fraction={current.fraction} size="md" />
             </div>
           )}
 
-          {/* Cerita: story text */}
-          {current.type === 'cerita' && (
-            <>
-              <div style={{ textAlign: 'left', background: '#FFF8F0', border: '2px solid #FFCF80', borderRadius: '14px', padding: '0.85rem 1rem', marginBottom: '0.75rem', fontSize: '0.95rem', lineHeight: 1.6, color: '#333', fontWeight: 700 }}>
-                <span style={{ fontSize: '1.4rem', marginRight: '0.4rem' }}>{current.item.emoji}</span>
-                {language === 'bm' ? current.story_bm : current.story_eng}
+          {/* Banding: two beakers side by side */}
+          {current.type === 'banding' && (
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginBottom: '0.75rem', alignItems: 'flex-end' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                <Beaker fraction={current.fracA} label="A" size="sm" />
               </div>
-            </>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                <Beaker fraction={current.fracB} label="B" size="sm" />
+              </div>
+            </div>
           )}
 
-          <p style={{ fontSize: '1.1rem', fontWeight: 900, color: '#333' }}>
+          {/* Baca Liter: beaker with scale */}
+          {current.type === 'baca-liter' && (
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.75rem' }}>
+              <BeakerScale fraction={current.fraction} maxL={LITER_MAX} />
+            </div>
+          )}
+
+          <p style={{ fontSize: '1rem', fontWeight: 800, color: '#333', marginTop: '0.25rem' }}>
             {language === 'bm' ? current.question_bm : current.question_eng}
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: gridCols, gap: '0.6rem' }}>
           {current.options.map((opt, idx) => {
             const chosen      = selected === opt.key;
             const isAnswerOpt = opt.key === current.answer;
@@ -333,8 +384,9 @@ export default function SubtractionStory({ onBack, language = 'bm' }) {
                 disabled={isAnswered}
                 style={{
                   background: bg, border: `3px solid ${border}`, borderRadius: '14px',
-                  padding: '1rem 0.5rem', fontWeight: 900, fontSize: '1.5rem', color,
-                  cursor: isAnswered ? 'default' : 'pointer',
+                  padding: '0.85rem 0.5rem', fontWeight: 900,
+                  fontSize: current.type === 'baca-liter' ? '1.2rem' : '0.95rem',
+                  color, cursor: isAnswered ? 'default' : 'pointer',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
                 }}>
                 <span>{language === 'bm' ? opt.label_bm : opt.label_eng}</span>
@@ -349,7 +401,7 @@ export default function SubtractionStory({ onBack, language = 'bm' }) {
           <div style={{ marginTop: '0.75rem', textAlign: 'center', fontSize: '0.9rem', fontWeight: 700, color: isCorrect ? '#2E7D32' : '#C62828' }}>
             {isCorrect
               ? (language === 'bm' ? '✓ Betul!' : '✓ Correct!')
-              : (language === 'bm' ? `Jawapan: ${current.answer}` : `Answer: ${current.answer}`)}
+              : (language === 'bm' ? `Jawapan: ${answerLabel}` : `Answer: ${answerLabel}`)}
           </div>
         )}
       </div>
