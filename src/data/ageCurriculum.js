@@ -137,7 +137,20 @@ export const CURRICULUM = {
       { id: 'isi-padu-cecair',     name: 'Isi Padu Cecair',     emoji: '💧', cardColor: '#1976D2', cardDark: '#0D47A1', status: 'complete' },
     ],
   },
-  'age-8': { reading: null, speaking: null, jawi: null, math: null },
+  'age-8': {
+    reading: [
+      { id: 'kosa-kata-kontekstual', name: 'Kosa Kata Kontekstual', emoji: '📖', cardColor: '#1CB0F6', cardDark: '#0B8DC0', status: 'complete' },
+      { id: 'bacaan-pemahaman', name: 'Bacaan Pemahaman', emoji: '📚', cardColor: '#00ACC1', cardDark: '#00838F', status: 'complete' },
+      { id: 'cerita-bacaan', name: 'Cerita Bacaan', emoji: '📕', cardColor: '#E91E63', cardDark: '#C2185B', status: 'complete' },
+      { id: 'pengenalan-nilai', name: 'Pengenalan Nilai', emoji: '✨', cardColor: '#FF6B9D', cardDark: '#E91E63', status: 'complete' },
+      { id: 'pantun-bacaan', name: 'Pantun Bacaan', emoji: '📜', cardColor: '#FFB74D', cardDark: '#F57C00', status: 'complete' },
+    ],
+    speaking: null,
+    jawi: null,
+    math: [
+      { id: 'darab-mudah', name: 'Darab Mudah', emoji: '✖️', cardColor: '#CE82FF', cardDark: '#9B59B6', status: 'complete' },
+    ],
+  },
   'age-9': { reading: null, speaking: null, jawi: null, math: null },
 };
 

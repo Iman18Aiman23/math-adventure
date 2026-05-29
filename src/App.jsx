@@ -65,6 +65,12 @@ import UkurPanjang from './components/AgeGroup-7/UkurPanjang';
 import BacaPictograph from './components/AgeGroup-7/BacaPictograph';
 import Jisim from './components/AgeGroup-7/Jisim';
 import IsiPaduCecair from './components/AgeGroup-7/IsiPaduCecair';
+import KosaKataKontekstual from './components/AgeGroup-8/KosaKataKontekstual';
+import BacaanPemahaman from './components/AgeGroup-8/BacaanPemahaman';
+import CeritaBacaan from './components/AgeGroup-8/CeritaBacaan';
+import PengenalanNilai from './components/AgeGroup-8/PengenalanNilai';
+import PantunBacaan from './components/AgeGroup-8/PantunBacaan';
+import DarabMudah from './components/AgeGroup-8/DarabMudah';
 import ProfileHome from './components/Profile/ProfileHome';
 const AchievementHome  = React.lazy(() => import('./components/Achievement/AchievementHome'));
 const LeaderboardHome  = React.lazy(() => import('./components/Leaderboard/LeaderboardHome'));
@@ -434,6 +440,24 @@ export default function App() {
         }
         if (currentAgeGame === 'isi-padu-cecair') {
           return <IsiPaduCecair onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'kosa-kata-kontekstual') {
+          return <KosaKataKontekstual onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'bacaan-pemahaman') {
+          return <BacaanPemahaman onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'cerita-bacaan') {
+          return <CeritaBacaan onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'pengenalan-nilai') {
+          return <PengenalanNilai onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'pantun-bacaan') {
+          return <PantunBacaan onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'darab-mudah') {
+          return <DarabMudah onBack={() => setCurrentAgeGame(null)} language={language} />;
         }
         if (currentAgeGroup) {
           const ageGroupComponents = {
