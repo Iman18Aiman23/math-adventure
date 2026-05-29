@@ -4,116 +4,165 @@ import confetti from 'canvas-confetti';
 import { playSound, playHoverSound } from '../../utils/soundManager';
 import BackButton from '../BackButton';
 
-// Fruit icons for visual representation
-const getFruitIcon = (num) => {
-  const fruits = ['🍎', '🍇', '🍌', '🍉', '🍓', '🍒', '🥭', '🍍'];
-  return fruits[num % fruits.length];
-};
+// Malaysian money denominations (Grade 2 level)
+const NOTES = [
+  { value: 1, color: '#1976D2', dark: '#0D47A1', label: 'RM1' },
+  { value: 5, color: '#388E3C', dark: '#1B5E20', label: 'RM5' },
+  { value: 10, color: '#D32F2F', dark: '#B71C1C', label: 'RM10' },
+  { value: 20, color: '#F57C00', dark: '#E65100', label: 'RM20' },
+  { value: 50, color: '#7B1FA2', dark: '#4A148C', label: 'RM50' },
+];
 
-// Standardized fruit group display - 6 per row, centered, wraps
-function FruitGroup({ count, fruit }) {
-  return (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: `repeat(${Math.min(count, 6)}, 1fr)`,
-      gap: '0.4rem',
-      justifyContent: 'center',
-      justifyItems: 'center',
-      alignItems: 'center',
-      maxWidth: '320px',
-      margin: '0 auto',
-    }}>
-      {Array(count).fill(0).map((_, idx) => (
-        <span key={idx} style={{ fontSize: '2.2rem', lineHeight: 1 }}>{fruit}</span>
-      ))}
-    </div>
-  );
+// Items for shopping scenarios
+const SHOP_ITEMS = [
+  { name: { bm: 'Roti', eng: 'Bread' }, emoji: '🍞', price: 3 },
+  { name: { bm: 'Susu', eng: 'Milk' }, emoji: '🥛', price: 5 },
+  { name: { bm: 'Pisang', eng: 'Banana' }, emoji: '🍌', price: 2 },
+  { name: { bm: 'Buku', eng: 'Book' }, emoji: '📕', price: 8 },
+  { name: { bm: 'Pensel', eng: 'Pencil' }, emoji: '✏️', price: 1 },
+  { name: { bm: 'Bola', eng: 'Ball' }, emoji: '⚽', price: 10 },
+  { name: { bm: 'Mainan', eng: 'Toy' }, emoji: '🧸', price: 15 },
+  { name: { bm: 'Aiskrim', eng: 'Ice Cream' }, emoji: '🍦', price: 4 },
+];
+
+// Get note breakdown for a value (max 5 notes for display)
+function getNotesBreakdown(value) {
+  const breakdown = [];
+  let remaining = value;
+  const sortedNotes = [...NOTES].sort((a, b) => b.value - a.value);
+
+  for (const note of sortedNotes) {
+    while (remaining >= note.value && breakdown.length < 6) {
+      breakdown.push(note);
+      remaining -= note.value;
+    }
+    if (breakdown.length >= 6) break;
+  }
+  return breakdown;
 }
 
-// Generate multiplication questions for Grade 2 level (2×1 to 6×6)
+// Generate question for each mechanic
 function generateQuestion(mechanic) {
-  const num1 = Math.floor(Math.random() * 5) + 2; // 2-6
-  const num2 = Math.floor(Math.random() * 6) + 1; // 1-6
-  const answer = num1 * num2;
+  if (mechanic === 'kenali') {
+    // Identify total value from notes shown
+    const noteCount = Math.floor(Math.random() * 3) + 2; // 2-4 notes
+    const selectedNotes = [];
+    for (let i = 0; i < noteCount; i++) {
+      const randomNote = NOTES[Math.floor(Math.random() * 4)]; // exclude RM50 for kenali
+      selectedNotes.push(randomNote);
+    }
+    const total = selectedNotes.reduce((sum, n) => sum + n.value, 0);
 
-  if (mechanic === 'gambar') {
-    // Visual: groups of fruits
-    const fruit = getFruitIcon(num1);
     return {
-      type: 'gambar',
-      question_bm: `Berapa banyak buah kesemuanya?`,
-      question_eng: `How many fruits in total?`,
-      visual: { groups: num1, itemsPerGroup: num2, fruit },
-      options: generateOptions(answer),
-      answer: String(answer),
-      explanation_bm: `${num1} kumpulan × ${num2} buah setiap kumpulan = ${answer} buah`,
+      type: 'kenali',
+      question_bm: 'Berapa jumlah wang ini?',
+      question_eng: 'How much money is this?',
+      notes: selectedNotes,
+      answer: `RM${total}`,
+      options: generateMoneyOptions(total),
+      explanation_bm: `Jumlah: ${selectedNotes.map(n => n.label).join(' + ')} = RM${total}`,
     };
-  } else if (mechanic === 'simbolik') {
-    // Symbolic: numbers only
+  } else if (mechanic === 'beli') {
+    // Shopping: calculate total of 2-3 items
+    const itemCount = Math.floor(Math.random() * 2) + 2; // 2-3 items
+    const items = [];
+    for (let i = 0; i < itemCount; i++) {
+      items.push(SHOP_ITEMS[Math.floor(Math.random() * SHOP_ITEMS.length)]);
+    }
+    const total = items.reduce((sum, item) => sum + item.price, 0);
+
     return {
-      type: 'simbolik',
-      question_bm: `${num1} × ${num2} = ?`,
-      question_eng: `${num1} × ${num2} = ?`,
-      options: generateOptions(answer),
-      answer: String(answer),
-      explanation_bm: `${num1} × ${num2} = ${answer}`,
+      type: 'beli',
+      question_bm: `Berapa harga semua barang ini?`,
+      question_eng: `What is the total price?`,
+      items: items,
+      answer: `RM${total}`,
+      options: generateMoneyOptions(total),
+      explanation_bm: `${items.map(i => `${i.name.bm} (RM${i.price})`).join(' + ')} = RM${total}`,
     };
   } else {
-    // Story: real-world context
-    const stories = [
-      { bm: `Rini mempunyai ${num1} kotak. Setiap kotak ada ${num2} pensel. Berapa pensel kesemuanya?`, eng: `Rini has ${num1} boxes. Each box has ${num2} pencils. How many pencils in total?` },
-      { bm: `Ibu beli ${num1} beg. Setiap beg ada ${num2} aiskrim. Berapa aiskrim semuanya?`, eng: `Mom bought ${num1} bags. Each bag has ${num2} ice creams. How many ice creams in total?` },
-      { bm: `Ali dapat ${num1} keranjang buah. Setiap keranjang ada ${num2} buah epal. Berapa buah epal semuanya?`, eng: `Ali got ${num1} baskets of fruit. Each basket has ${num2} apples. How many apples in total?` },
-      { bm: `Sekolah beli ${num1} pak buku. Setiap pak ada ${num2} buah buku. Berapa buah buku semuanya?`, eng: `School bought ${num1} packs of books. Each pack has ${num2} books. How many books in total?` },
-    ];
-    const story = stories[Math.floor(Math.random() * stories.length)];
+    // Change calculation: bought item, paid X, what's the change?
+    const item = SHOP_ITEMS[Math.floor(Math.random() * SHOP_ITEMS.length)];
+    const possiblePayments = [10, 20, 50].filter(p => p > item.price);
+    const paid = possiblePayments[Math.floor(Math.random() * possiblePayments.length)];
+    const change = paid - item.price;
+
     return {
-      type: 'cerita',
-      question_bm: story.bm,
-      question_eng: story.eng,
-      options: generateOptions(answer),
-      answer: String(answer),
-      explanation_bm: `${num1} × ${num2} = ${answer}`,
+      type: 'baki',
+      question_bm: `Ali beli ${item.name.bm} berharga RM${item.price}. Ali bayar RM${paid}. Berapa baki?`,
+      question_eng: `Ali bought ${item.name.eng} for RM${item.price}. Ali paid RM${paid}. How much is the change?`,
+      item: item,
+      paid: paid,
+      answer: `RM${change}`,
+      options: generateMoneyOptions(change),
+      explanation_bm: `Baki = RM${paid} - RM${item.price} = RM${change}`,
     };
   }
 }
 
-function generateOptions(answer) {
-  const options = [answer];
+function generateMoneyOptions(correctAnswer) {
+  const options = [correctAnswer];
   while (options.length < 3) {
-    const wrong = Math.floor(Math.random() * 30) + 2;
-    if (wrong !== answer && !options.includes(wrong)) {
+    let wrong;
+    const variance = Math.floor(Math.random() * 8) + 1;
+    if (Math.random() > 0.5) {
+      wrong = correctAnswer + variance;
+    } else {
+      wrong = correctAnswer - variance;
+    }
+    if (wrong > 0 && wrong !== correctAnswer && !options.includes(wrong)) {
       options.push(wrong);
     }
   }
-  return options.sort(() => Math.random() - 0.5).map(String);
+  return options.sort(() => Math.random() - 0.5).map(v => `RM${v}`);
 }
 
 const TOTAL_QUESTIONS = 12;
 const QUESTIONS_PER_MECHANIC = 4;
 
-export default function DarabMudah({ onBack, language = 'bm' }) {
+// Money note component (visual)
+function MoneyNote({ note }) {
+  return (
+    <div style={{
+      background: note.color,
+      color: 'white',
+      padding: '0.6rem 0.9rem',
+      borderRadius: '8px',
+      fontWeight: 800,
+      fontSize: '1rem',
+      boxShadow: `0 3px 0 ${note.dark}`,
+      minWidth: '70px',
+      textAlign: 'center',
+      border: '2px solid white',
+      outline: `2px solid ${note.dark}`,
+    }}>
+      {note.label}
+    </div>
+  );
+}
+
+export default function Wang({ onBack, language = 'bm' }) {
   const [qIdx, setQIdx] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [score, setScore] = useState(0);
   const [isDone, setIsDone] = useState(false);
   const [mechanicStats, setMechanicStats] = useState({
-    gambar: { correct: 0, total: 0 },
-    simbolik: { correct: 0, total: 0 },
-    cerita: { correct: 0, total: 0 },
+    kenali: { correct: 0, total: 0 },
+    beli: { correct: 0, total: 0 },
+    baki: { correct: 0, total: 0 },
   });
 
   // Generate questions for this session
   const questions = useMemo(() => {
     const qs = [];
-    const mechanics = ['gambar', 'simbolik', 'cerita'];
+    const mechanics = ['kenali', 'beli', 'baki'];
     mechanics.forEach(mechanic => {
       for (let i = 0; i < QUESTIONS_PER_MECHANIC; i++) {
         qs.push(generateQuestion(mechanic));
       }
     });
-    return qs.sort(() => Math.random() - 0.5); // Shuffle
+    return qs.sort(() => Math.random() - 0.5);
   }, []);
 
   const question = questions[qIdx];
@@ -172,9 +221,9 @@ export default function DarabMudah({ onBack, language = 'bm' }) {
     setScore(0);
     setIsDone(false);
     setMechanicStats({
-      gambar: { correct: 0, total: 0 },
-      simbolik: { correct: 0, total: 0 },
-      cerita: { correct: 0, total: 0 },
+      kenali: { correct: 0, total: 0 },
+      beli: { correct: 0, total: 0 },
+      baki: { correct: 0, total: 0 },
     });
   }, []);
 
@@ -189,7 +238,7 @@ export default function DarabMudah({ onBack, language = 'bm' }) {
     return (
       <div style={{ minHeight: '100%', background: '#D0F0FF', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
         <BackButton onClick={onBack} />
-        <div style={{ fontSize: '5rem', marginBottom: '1rem' }}>✖️</div>
+        <div style={{ fontSize: '5rem', marginBottom: '1rem' }}>💰</div>
         <h2 style={{ color: '#1CB0F6', fontSize: '2rem', marginBottom: '0.5rem' }}>
           {language === 'bm' ? 'Tahniah!' : 'Well Done!'}
         </h2>
@@ -202,8 +251,8 @@ export default function DarabMudah({ onBack, language = 'bm' }) {
           <h3 style={{ color: '#1CB0F6', fontSize: '1rem', marginBottom: '0.8rem', textAlign: 'center' }}>
             {language === 'bm' ? 'Keputusan Setiap Jenis' : 'Results by Type'}
           </h3>
-          {['gambar', 'simbolik', 'cerita'].map(type => {
-            const label = { gambar: '📷 Gambar', simbolik: '🔢 Simbolik', cerita: '📖 Cerita' }[type];
+          {['kenali', 'beli', 'baki'].map(type => {
+            const label = { kenali: '💵 Kenali Wang', beli: '🛒 Beli-belah', baki: '💰 Baki' }[type];
             const stats = mechanicStats[type];
             const pct = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
             return (
@@ -242,10 +291,10 @@ export default function DarabMudah({ onBack, language = 'bm' }) {
       <div style={{ flexShrink: 0, padding: '3.5rem 1rem 0.75rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
         <div style={{ textAlign: 'center', marginBottom: '0.85rem' }}>
           <h1 style={{ color: '#1CB0F6', marginBottom: '0.25rem', fontSize: '1.6rem' }}>
-            {language === 'bm' ? 'Darab Mudah' : 'Easy Multiplication'}
+            {language === 'bm' ? 'Wang' : 'Money'}
           </h1>
           <p style={{ color: '#888', fontSize: '0.9rem' }}>
-            {language === 'bm' ? 'Pelajari darab 2×1 hingga 6×6' : 'Learn multiplication 2×1 to 6×6'}
+            {language === 'bm' ? 'Belajar wang Ringgit Malaysia' : 'Learn Malaysian Ringgit'}
           </p>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.65rem 1rem', background: 'rgba(28,176,246,0.12)', borderRadius: '10px' }}>
@@ -264,47 +313,68 @@ export default function DarabMudah({ onBack, language = 'bm' }) {
 
           {/* Type indicator badge */}
           <div style={{ display: 'inline-block', background: '#E3F2FD', color: '#1CB0F6', padding: '0.3rem 0.7rem', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 700, marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            {question.type === 'gambar' && '📷 Gambar'}
-            {question.type === 'simbolik' && '🔢 Simbolik'}
-            {question.type === 'cerita' && '📖 Cerita'}
+            {question.type === 'kenali' && '💵 Kenali Wang'}
+            {question.type === 'beli' && '🛒 Beli-belah'}
+            {question.type === 'baki' && '💰 Baki'}
           </div>
 
-          {/* Visual representation for gambar */}
-          {question.type === 'gambar' && (
-            <div style={{ background: '#E3F2FD', borderRadius: '8px', padding: '1.5rem 1rem', marginBottom: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-              {/* Top group - number of groups */}
-              <FruitGroup count={question.visual.groups} fruit={question.visual.fruit} />
+          {/* Visual: Money notes for kenali */}
+          {question.type === 'kenali' && (
+            <div style={{ background: '#E3F2FD', borderRadius: '8px', padding: '1.5rem 1rem', marginBottom: '1rem', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.6rem' }}>
+              {question.notes.map((note, idx) => (
+                <MoneyNote key={idx} note={note} />
+              ))}
+            </div>
+          )}
 
-              {/* × symbol - always centered */}
-              <span style={{ fontSize: '2.2rem', fontWeight: 'bold', color: '#1CB0F6', lineHeight: 1 }}>×</span>
-
-              {/* Bottom group - items per group */}
-              <FruitGroup count={question.visual.itemsPerGroup} fruit={question.visual.fruit} />
-
-              {/* Equation */}
-              <div style={{ fontSize: '1.3rem', fontWeight: 700, color: '#1CB0F6', marginTop: '0.5rem', textAlign: 'center' }}>
-                {question.visual.groups} × {question.visual.itemsPerGroup} = ?
+          {/* Visual: Items for beli (shopping) */}
+          {question.type === 'beli' && (
+            <div style={{ background: '#E3F2FD', borderRadius: '8px', padding: '1rem', marginBottom: '1rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                {question.items.map((item, idx) => (
+                  <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'white', padding: '0.6rem 0.9rem', borderRadius: '8px', border: '2px solid #BBDEFB' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                      <span style={{ fontSize: '1.8rem' }}>{item.emoji}</span>
+                      <span style={{ fontWeight: 600, color: '#333' }}>
+                        {language === 'bm' ? item.name.bm : item.name.eng}
+                      </span>
+                    </div>
+                    <span style={{ fontWeight: 700, color: '#1CB0F6', fontSize: '1.1rem' }}>RM{item.price}</span>
+                  </div>
+                ))}
               </div>
             </div>
           )}
 
-          {/* Question text - only for simbolik & cerita (gambar shows equation inside visual) */}
-          {question.type !== 'gambar' && (
-            <div style={{ background: '#FFF9C4', borderLeft: '4px solid #FBC02D', padding: '0.9rem 1rem', marginBottom: '1rem', borderRadius: '6px' }}>
-              <p style={{ fontSize: question.type === 'simbolik' ? '1.5rem' : '1rem', color: '#333', margin: '0', fontWeight: 700, lineHeight: 1.5, textAlign: question.type === 'simbolik' ? 'center' : 'left' }}>
-                {language === 'bm' ? question.question_bm : question.question_eng}
-              </p>
+          {/* Visual: Item + paid amount for baki */}
+          {question.type === 'baki' && (
+            <div style={{ background: '#E3F2FD', borderRadius: '8px', padding: '1.5rem 1rem', marginBottom: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', background: 'white', padding: '0.8rem 1.2rem', borderRadius: '8px', border: '2px solid #BBDEFB' }}>
+                <span style={{ fontSize: '2.5rem' }}>{question.item.emoji}</span>
+                <div>
+                  <div style={{ fontWeight: 600, color: '#333', fontSize: '1rem' }}>
+                    {language === 'bm' ? question.item.name.bm : question.item.name.eng}
+                  </div>
+                  <div style={{ fontWeight: 700, color: '#1CB0F6', fontSize: '1.1rem' }}>RM{question.item.price}</div>
+                </div>
+              </div>
+              <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#666' }}>
+                {language === 'bm' ? 'Bayar dengan' : 'Paid with'}
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.5rem' }}>
+                {getNotesBreakdown(question.paid).map((note, idx) => (
+                  <MoneyNote key={idx} note={note} />
+                ))}
+              </div>
             </div>
           )}
 
-          {/* Question prompt for gambar */}
-          {question.type === 'gambar' && (
-            <div style={{ background: '#FFF9C4', borderLeft: '4px solid #FBC02D', padding: '0.9rem 1rem', marginBottom: '1rem', borderRadius: '6px' }}>
-              <p style={{ fontSize: '1rem', color: '#333', margin: '0', fontWeight: 600, lineHeight: 1.5 }}>
-                {language === 'bm' ? question.question_bm : question.question_eng}
-              </p>
-            </div>
-          )}
+          {/* Question text */}
+          <div style={{ background: '#FFF9C4', borderLeft: '4px solid #FBC02D', padding: '0.9rem 1rem', marginBottom: '1rem', borderRadius: '6px' }}>
+            <p style={{ fontSize: '1rem', color: '#333', margin: '0', fontWeight: 600, lineHeight: 1.5 }}>
+              {language === 'bm' ? question.question_bm : question.question_eng}
+            </p>
+          </div>
 
           {/* Options */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>

@@ -71,6 +71,16 @@ import CeritaBacaan from './components/AgeGroup-8/CeritaBacaan';
 import PengenalanNilai from './components/AgeGroup-8/PengenalanNilai';
 import PantunBacaan from './components/AgeGroup-8/PantunBacaan';
 import DarabMudah from './components/AgeGroup-8/DarabMudah';
+import Wang from './components/AgeGroup-8/Wang';
+import Masa from './components/AgeGroup-8/Masa';
+import Pecahan from './components/AgeGroup-8/Pecahan';
+import Nombor1000 from './components/AgeGroup-8/Nombor1000';
+import TambahTahun2 from './components/AgeGroup-8/TambahTahun2';
+import TolakTahun2 from './components/AgeGroup-8/TolakTahun2';
+import UkuranPanjangTahun2 from './components/AgeGroup-8/UkuranPanjangTahun2';
+import BacaPetikanJawi from './components/AgeGroup-8/BacaPetikanJawi';
+import PadanKataKerjaJawi from './components/AgeGroup-8/PadanKataKerjaJawi';
+import SusunAyatJawi from './components/AgeGroup-8/SusunAyatJawi';
 import ProfileHome from './components/Profile/ProfileHome';
 const AchievementHome  = React.lazy(() => import('./components/Achievement/AchievementHome'));
 const LeaderboardHome  = React.lazy(() => import('./components/Leaderboard/LeaderboardHome'));
@@ -458,6 +468,36 @@ export default function App() {
         }
         if (currentAgeGame === 'darab-mudah') {
           return <DarabMudah onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'wang-tahun2') {
+          return <Wang onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'masa-tahun2') {
+          return <Masa onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'pecahan-tahun2') {
+          return <Pecahan onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'nombor-1000') {
+          return <Nombor1000 onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'tambah-tahun2') {
+          return <TambahTahun2 onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'tolak-tahun2') {
+          return <TolakTahun2 onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'ukuran-panjang-tahun2') {
+          return <UkuranPanjangTahun2 onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'baca-petikan-jawi') {
+          return <BacaPetikanJawi onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'padan-kata-kerja-jawi') {
+          return <PadanKataKerjaJawi onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'susun-ayat-jawi') {
+          return <SusunAyatJawi onBack={() => setCurrentAgeGame(null)} language={language} />;
         }
         if (currentAgeGroup) {
           const ageGroupComponents = {
