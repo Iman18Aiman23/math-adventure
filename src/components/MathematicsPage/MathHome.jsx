@@ -4,6 +4,7 @@ import { LOCALIZATION } from '../../utils/localization';
 import { useGameStateContext } from '../../App';
 import PageLayout from '../PageLayout';
 import { CalculatorIcon } from '../icons/GameIcons';
+import { RobotDefs, RobotHeadMath } from '../SubjectRobots';
 import {
   MathOperationIcon,
   MathLongMethodIcon,
@@ -74,15 +75,18 @@ export default function MathHome({ onSelectSubGame, onBack, onHome, language }) 
   ));
 
   return (
-    <PageLayout
-      classPrefix="mh"
-      heroIcon={<CalculatorIcon size={96} />}
-      heroSubtitle={heroSubtitle}
-      sectionLabel={language === 'bm' ? 'Pilih Topik' : 'Choose Topic'}
-      hintText={hintContent}
-      onBack={onBack}
-    >
-      {gridTiles}
-    </PageLayout>
+    <>
+      <RobotDefs />
+      <PageLayout
+        classPrefix="mh"
+        heroIcon={<RobotHeadMath style={{ width: 140, height: 100 }} />}
+        heroSubtitle={heroSubtitle}
+        sectionLabel={language === 'bm' ? 'Pilih Topik' : 'Choose Topic'}
+        hintText={hintContent}
+        onBack={onBack}
+      >
+        {gridTiles}
+      </PageLayout>
+    </>
   );
 }

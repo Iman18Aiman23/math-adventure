@@ -95,6 +95,38 @@ export default function RobotDefs() {
           <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
 
+        {/* ── Reusable robot HEAD only (head shape + antenna + ears, NO body) ── */}
+        <symbol id="robotHead" viewBox="0 0 360 240">
+          {/* Antenna */}
+          <g>
+            <line x1="180" y1="58" x2="180" y2="34" stroke="#A8B5C5" strokeWidth="5" strokeLinecap="round"/>
+            <circle cx="180" cy="28" r="9" fill="url(#gCyan)" opacity=".55"/>
+            <circle cx="180" cy="28" r="6" fill="#7BE7FF"/>
+            <circle cx="178" cy="26" r="2.5" fill="#fff"/>
+          </g>
+          {/* Left ear */}
+          <g filter="url(#fShadowSoft)">
+            <rect x="84" y="135" width="14" height="32" rx="6" fill="url(#gChrome)" stroke="#7C8A9E" strokeWidth="1.5"/>
+            <circle cx="91" cy="151" r="4" fill="#46D8FF"/>
+            <circle cx="91" cy="151" r="1.5" fill="#fff"/>
+          </g>
+          {/* Right ear */}
+          <g filter="url(#fShadowSoft)">
+            <rect x="262" y="135" width="14" height="32" rx="6" fill="url(#gChrome)" stroke="#7C8A9E" strokeWidth="1.5"/>
+            <circle cx="269" cy="151" r="4" fill="#46D8FF"/>
+            <circle cx="269" cy="151" r="1.5" fill="#fff"/>
+          </g>
+          {/* Head shape with screen */}
+          <g filter="url(#fShadow)">
+            <path d="M98 110 Q98 64 138 60 Q150 38 164 56 Q180 60 196 56 Q210 38 222 60 Q262 64 262 110 L262 200 Q262 232 222 234 L138 234 Q98 232 98 200 Z" fill="url(#gHead)"/>
+            <path d="M108 110q0-38 32-42 q12-18 22-2 q18 6 36 0 q10-16 22 2 q32 4 32 42 q-50 -22 -144 0z" fill="#FFFFFF" opacity=".55"/>
+            <path d="M108 210q14 22 72 22 t72 -22 q-72 18 -144 0z" fill="rgba(16,36,58,.18)"/>
+            <rect x="118" y="92" width="124" height="124" rx="34" fill="url(#gScreen)"/>
+            <path d="M130 102 Q180 86 230 104 L230 116 Q180 100 130 116 Z" fill="#FFFFFF" opacity="0.12"/>
+            <ellipse cx="226" cy="200" rx="12" ry="6" fill="#fff" opacity=".08"/>
+          </g>
+        </symbol>
+
         {/* ── Reusable robot base (head + neck + body + antenna + ears) ── */}
         <symbol id="robotBase" viewBox="0 0 360 400">
           <ellipse cx="180" cy="378" rx="90" ry="10" fill="rgba(16,36,58,.35)"/>

@@ -6,6 +6,7 @@ import SpeechManager from '../../services/SpeechManager';
 import BMSpeakGame from './BMSpeakGame';
 import PageLayout from '../PageLayout';
 import { MusicNoteIcon } from '../icons/GameIcons';
+import { RobotDefs, RobotHeadSpeaking } from '../SubjectRobots';
 import {
   LearnKVWordsIcon,
   LearnKVKWordsIcon,
@@ -139,16 +140,19 @@ export default function BMPage({ onBack, onHome, language }) {
   );
 
   return (
-    <PageLayout
-      classPrefix="bp"
-      heroIcon={<MusicNoteIcon size={96} />}
-      heroSubtitle={heroSubtitle}
-      sectionLabel={language === 'bm' ? 'Pilih Kategori' : 'Choose Category'}
-      hintText={hintContent}
-      onBack={onBack}
-      additionalSection={additionalSection}
-    >
-      {gridContent}
-    </PageLayout>
+    <>
+      <RobotDefs />
+      <PageLayout
+        classPrefix="bp"
+        heroIcon={<RobotHeadSpeaking style={{ width: 140, height: 100 }} />}
+        heroSubtitle={heroSubtitle}
+        sectionLabel={language === 'bm' ? 'Pilih Kategori' : 'Choose Category'}
+        hintText={hintContent}
+        onBack={onBack}
+        additionalSection={additionalSection}
+      >
+        {gridContent}
+      </PageLayout>
+    </>
   );
 }

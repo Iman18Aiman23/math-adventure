@@ -285,6 +285,70 @@
 @keyframes rbt4blink { 0%,92%,100%{transform:scaleY(1);} 95%{transform:scaleY(0.08);} }
 @keyframes rbt4glow  { 0%,100%{opacity:0.75;} 50%{opacity:1;} }
 
+/* ── Icon Card (mirrored from JawiPage.css jw-icon-card pattern) ── */
+.rp-icon-card {
+  position: relative;
+  border: 0;
+  padding: 0;
+  aspect-ratio: 1/1;
+  width: 100%;
+  cursor: pointer;
+  font-family: inherit;
+  background: transparent;
+  overflow: visible;
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1), filter .35s;
+  opacity: 0;
+  transform: translateY(28px);
+  animation: rp-tileIn .6s cubic-bezier(.34,1.56,.64,1) forwards;
+  -webkit-tap-highlight-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+}
+.rp-icon-card:nth-child(1) { animation-delay: .05s; }
+.rp-icon-card:nth-child(2) { animation-delay: .12s; }
+.rp-icon-card:nth-child(3) { animation-delay: .19s; }
+.rp-icon-card:nth-child(4) { animation-delay: .26s; }
+
+/* Level-specific 3D hover effects */
+.rp-icon-card.level-1:hover {
+  transform: translateY(-12px) rotateX(8deg) rotateY(-12deg) scale(1.1);
+  filter: brightness(1.15) drop-shadow(0 20px 30px rgba(34,197,94,.25));
+}
+.rp-icon-card.level-2:hover {
+  transform: translateY(-12px) rotateX(-8deg) rotateY(12deg) scale(1.1);
+  filter: brightness(1.2) drop-shadow(0 20px 35px rgba(249,115,22,.35));
+}
+.rp-icon-card.level-3:hover {
+  transform: translateY(-14px) rotateX(10deg) rotateY(-10deg) scale(1.12);
+  filter: brightness(1.18) drop-shadow(0 22px 35px rgba(60,203,255,.25));
+}
+.rp-icon-card.level-4:hover {
+  transform: translateY(-12px) rotateX(-10deg) rotateY(14deg) scale(1.1);
+  filter: brightness(1.15) drop-shadow(0 20px 35px rgba(139,92,246,.28));
+}
+
+.rp-icon-card:active {
+  transform: translateY(0px) rotateX(0deg) rotateY(0deg) scale(0.96);
+}
+
+.rp-icon-card:focus-visible {
+  outline: none;
+}
+
+.rp-icon-card svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,.15));
+  transition: filter .35s;
+  transform-style: preserve-3d;
+}
+
+.rp-icon-card:hover svg {
+  filter: drop-shadow(0 12px 24px rgba(0,0,0,.2));
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }

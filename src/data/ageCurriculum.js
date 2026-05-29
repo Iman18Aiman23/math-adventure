@@ -145,7 +145,9 @@ export const CURRICULUM = {
       { id: 'pengenalan-nilai', name: 'Pengenalan Nilai', emoji: '✨', cardColor: '#FF6B9D', cardDark: '#E91E63', status: 'complete' },
       { id: 'pantun-bacaan', name: 'Pantun Bacaan', emoji: '📜', cardColor: '#FFB74D', cardDark: '#F57C00', status: 'complete' },
     ],
-    speaking: null,
+    speaking: [
+      { id: 'lafaz-pantun', name: 'Lafaz Pantun', emoji: '🎤', cardColor: '#9C27B0', cardDark: '#6A1B9A', status: 'complete' },
+    ],
     jawi: [
       { id: 'baca-petikan-jawi', name: 'Baca Petikan Jawi', emoji: '📖', cardColor: '#7C4DFF', cardDark: '#6200EA', status: 'complete' },
       { id: 'padan-kata-kerja-jawi', name: 'Padan Kata Kerja Jawi', emoji: '🔤', cardColor: '#FF9800', cardDark: '#E68900', status: 'complete' },
@@ -162,7 +164,18 @@ export const CURRICULUM = {
       { id: 'ukuran-panjang-tahun2', name: 'Ukuran Panjang', emoji: '📏', cardColor: '#00897B', cardDark: '#00695C', status: 'complete' },
     ],
   },
-  'age-9': { reading: null, speaking: null, jawi: null, math: null },
+  'age-9': {
+    reading: [
+      { id: 'jenis-ayat', name: 'Jenis Ayat', emoji: '📝', cardColor: '#9C27B0', cardDark: '#6A1B9A', status: 'complete' },
+      { id: 'penjodoh-bilangan', name: 'Penjodoh Bilangan', emoji: '🔢', cardColor: '#7E57C2', cardDark: '#5E35B2', status: 'complete' },
+      { id: 'imbuhan-lanjutan', name: 'Imbuhan Lanjutan', emoji: '🔠', cardColor: '#AB47BC', cardDark: '#8E24AA', status: 'complete' },
+      { id: 'simpulan-bahasa', name: 'Simpulan Bahasa & Perumpamaan', emoji: '📚', cardColor: '#BA68C8', cardDark: '#9C27B0', status: 'complete' },
+      { id: 'bacaan-pemahaman-lanjutan', name: 'Bacaan Pemahaman Lanjutan', emoji: '📖', cardColor: '#8E24AA', cardDark: '#6A1B9A', status: 'complete' },
+    ],
+    speaking: null,
+    jawi: null,
+    math: null,
+  },
 };
 
 export const getAgeGroup = (id) => AGE_GROUPS.find(g => g.id === id);

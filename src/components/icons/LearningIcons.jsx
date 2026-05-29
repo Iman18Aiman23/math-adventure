@@ -4,13 +4,13 @@ export const LearnKVWordsIcon = ({ size = 200, className }) => (
   <svg width={size} height={size} viewBox="0 0 200 200" className={className}>
     <defs>
       <radialGradient id="kvHead" cx="25%" cy="25%" r="75%">
-        <stop offset="0%" stopColor="#90CAF9" />
-        <stop offset="50%" stopColor="#1E88E5" />
-        <stop offset="100%" stopColor="#0D47A1" />
+        <stop offset="0%" stopColor="#BBDEFB" />
+        <stop offset="50%" stopColor="#64B5F6" />
+        <stop offset="100%" stopColor="#1976D2" />
       </radialGradient>
       <radialGradient id="kvFace" cx="30%" cy="30%" r="70%">
-        <stop offset="0%" stopColor="#0D1F33" />
-        <stop offset="100%" stopColor="#040C18" />
+        <stop offset="0%" stopColor="#1E88E5" />
+        <stop offset="100%" stopColor="#1565C0" />
       </radialGradient>
       <linearGradient id="kvBlockA" x1="0%" y1="0%" x2="0%" y2="100%">
         <stop offset="0%" stopColor="#FFE082" />
@@ -56,13 +56,13 @@ export const LearnKVKWordsIcon = ({ size = 200, className }) => (
   <svg width={size} height={size} viewBox="0 0 200 200" className={className}>
     <defs>
       <radialGradient id="kvkHead" cx="25%" cy="25%" r="75%">
-        <stop offset="0%" stopColor="#A5D6A7" />
-        <stop offset="50%" stopColor="#43A047" />
-        <stop offset="100%" stopColor="#1B5E20" />
+        <stop offset="0%" stopColor="#C8E6C9" />
+        <stop offset="50%" stopColor="#81C784" />
+        <stop offset="100%" stopColor="#388E3C" />
       </radialGradient>
       <radialGradient id="kvkFace" cx="30%" cy="30%" r="70%">
-        <stop offset="0%" stopColor="#0F2D17" />
-        <stop offset="100%" stopColor="#06170A" />
+        <stop offset="0%" stopColor="#43A047" />
+        <stop offset="100%" stopColor="#2E7D32" />
       </radialGradient>
       <linearGradient id="kvkBlock1" x1="0%" y1="0%" x2="0%" y2="100%">
         <stop offset="0%" stopColor="#FF8B95" />
@@ -114,13 +114,13 @@ export const EnglishPhonicsIcon = ({ size = 200, className }) => (
   <svg width={size} height={size} viewBox="0 0 200 200" className={className}>
     <defs>
       <radialGradient id="phHead" cx="25%" cy="25%" r="75%">
-        <stop offset="0%" stopColor="#F8BBD0" />
-        <stop offset="50%" stopColor="#E91E63" />
-        <stop offset="100%" stopColor="#880E4F" />
+        <stop offset="0%" stopColor="#FCE4EC" />
+        <stop offset="50%" stopColor="#F06292" />
+        <stop offset="100%" stopColor="#C2185B" />
       </radialGradient>
       <radialGradient id="phFace" cx="30%" cy="30%" r="70%">
-        <stop offset="0%" stopColor="#3A0E25" />
-        <stop offset="100%" stopColor="#1A0612" />
+        <stop offset="0%" stopColor="#E91E63" />
+        <stop offset="100%" stopColor="#C2185B" />
       </radialGradient>
       <linearGradient id="phLetterA" x1="0%" y1="0%" x2="0%" y2="100%">
         <stop offset="0%" stopColor="#FFE082" />
@@ -172,13 +172,13 @@ export const Number1to100Icon = ({ size = 200, className }) => (
   <svg width={size} height={size} viewBox="0 0 200 200" className={className}>
     <defs>
       <radialGradient id="numHead" cx="25%" cy="25%" r="75%">
-        <stop offset="0%" stopColor="#FFE082" />
-        <stop offset="50%" stopColor="#FFB300" />
-        <stop offset="100%" stopColor="#E65100" />
+        <stop offset="0%" stopColor="#FFF8E1" />
+        <stop offset="50%" stopColor="#FFCA28" />
+        <stop offset="100%" stopColor="#FB8C00" />
       </radialGradient>
       <radialGradient id="numFace" cx="30%" cy="30%" r="70%">
-        <stop offset="0%" stopColor="#3E2723" />
-        <stop offset="100%" stopColor="#1A1008" />
+        <stop offset="0%" stopColor="#FB8C00" />
+        <stop offset="100%" stopColor="#EF6C00" />
       </radialGradient>
       <linearGradient id="numBubble" x1="0%" y1="0%" x2="0%" y2="100%">
         <stop offset="0%" stopColor="#FFF59D" />
@@ -227,13 +227,13 @@ export const ObjectsIcon = ({ size = 200, className }) => (
   <svg width={size} height={size} viewBox="0 0 200 200" className={className}>
     <defs>
       <radialGradient id="objHead" cx="25%" cy="25%" r="75%">
-        <stop offset="0%" stopColor="#80CBC4" />
-        <stop offset="50%" stopColor="#00897B" />
-        <stop offset="100%" stopColor="#004D40" />
+        <stop offset="0%" stopColor="#B2DFDB" />
+        <stop offset="50%" stopColor="#4DB6AC" />
+        <stop offset="100%" stopColor="#00796B" />
       </radialGradient>
       <radialGradient id="objFace" cx="30%" cy="30%" r="70%">
-        <stop offset="0%" stopColor="#0E2624" />
-        <stop offset="100%" stopColor="#04110F" />
+        <stop offset="0%" stopColor="#26A69A" />
+        <stop offset="100%" stopColor="#00897B" />
       </radialGradient>
       <linearGradient id="objApple" x1="0%" y1="0%" x2="0%" y2="100%">
         <stop offset="0%" stopColor="#FF8B95" />
@@ -287,13 +287,13 @@ export const SpellingwordsIcon = ({ size = 200, className }) => (
   <svg width={size} height={size} viewBox="0 0 200 200" className={className}>
     <defs>
       <radialGradient id="spHead" cx="25%" cy="25%" r="75%">
-        <stop offset="0%" stopColor="#B39DDB" />
-        <stop offset="50%" stopColor="#5E35B1" />
-        <stop offset="100%" stopColor="#1A237E" />
+        <stop offset="0%" stopColor="#D1C4E9" />
+        <stop offset="50%" stopColor="#9575CD" />
+        <stop offset="100%" stopColor="#5E35B1" />
       </radialGradient>
       <radialGradient id="spFace" cx="30%" cy="30%" r="70%">
-        <stop offset="0%" stopColor="#1A1140" />
-        <stop offset="100%" stopColor="#0A061F" />
+        <stop offset="0%" stopColor="#5E35B1" />
+        <stop offset="100%" stopColor="#4527A0" />
       </radialGradient>
       <linearGradient id="spTile" x1="0%" y1="0%" x2="0%" y2="100%">
         <stop offset="0%" stopColor="#FFF6E2" />
@@ -350,13 +350,13 @@ export const SpellingIcon = ({ size = 200, className }) => (
   <svg width={size} height={size} viewBox="0 0 200 200" className={className}>
     <defs>
       <radialGradient id="spHead" cx="25%" cy="25%" r="75%">
-        <stop offset="0%" stopColor="#B39DDB" />
-        <stop offset="50%" stopColor="#5E35B1" />
-        <stop offset="100%" stopColor="#1A237E" />
+        <stop offset="0%" stopColor="#D1C4E9" />
+        <stop offset="50%" stopColor="#9575CD" />
+        <stop offset="100%" stopColor="#5E35B1" />
       </radialGradient>
       <radialGradient id="spFace" cx="30%" cy="30%" r="70%">
-        <stop offset="0%" stopColor="#1A1140" />
-        <stop offset="100%" stopColor="#0A061F" />
+        <stop offset="0%" stopColor="#5E35B1" />
+        <stop offset="100%" stopColor="#4527A0" />
       </radialGradient>
       <linearGradient id="spTile" x1="0%" y1="0%" x2="0%" y2="100%">
         <stop offset="0%" stopColor="#FFF6E2" />
@@ -420,13 +420,13 @@ export const JawiAlphabetIcon = ({ size = 200, className }) => (
   <svg width={size} height={size} viewBox="0 0 200 200" className={className}>
     <defs>
       <radialGradient id="jaHead" cx="25%" cy="25%" r="75%">
-        <stop offset="0%" stopColor="#CE93D8" />
-        <stop offset="50%" stopColor="#7B1FA2" />
-        <stop offset="100%" stopColor="#311B92" />
+        <stop offset="0%" stopColor="#E1BEE7" />
+        <stop offset="50%" stopColor="#BA68C8" />
+        <stop offset="100%" stopColor="#7B1FA2" />
       </radialGradient>
       <radialGradient id="jaFace" cx="30%" cy="30%" r="70%">
-        <stop offset="0%" stopColor="#1A0F2E" />
-        <stop offset="100%" stopColor="#0A0517" />
+        <stop offset="0%" stopColor="#8E24AA" />
+        <stop offset="100%" stopColor="#6A1B9A" />
       </radialGradient>
       <linearGradient id="jaCard" x1="0%" y1="0%" x2="0%" y2="100%">
         <stop offset="0%" stopColor="#FFF6E2" />
@@ -471,13 +471,13 @@ export const JawiWordsIcon = ({ size = 200, className }) => (
   <svg width={size} height={size} viewBox="0 0 200 200" className={className}>
     <defs>
       <radialGradient id="jwHead" cx="25%" cy="25%" r="75%">
-        <stop offset="0%" stopColor="#F48FB1" />
-        <stop offset="50%" stopColor="#D81B60" />
-        <stop offset="100%" stopColor="#880E4F" />
+        <stop offset="0%" stopColor="#F8BBD0" />
+        <stop offset="50%" stopColor="#EC407A" />
+        <stop offset="100%" stopColor="#C2185B" />
       </radialGradient>
       <radialGradient id="jwFace" cx="30%" cy="30%" r="70%">
-        <stop offset="0%" stopColor="#3A0E25" />
-        <stop offset="100%" stopColor="#1A0612" />
+        <stop offset="0%" stopColor="#D81B60" />
+        <stop offset="100%" stopColor="#AD1457" />
       </radialGradient>
       <linearGradient id="jwCard" x1="0%" y1="0%" x2="0%" y2="100%">
         <stop offset="0%" stopColor="#FFF6E2" />
@@ -516,13 +516,13 @@ export const Jawi100WordsIcon = ({ size = 200, className }) => (
   <svg width={size} height={size} viewBox="0 0 200 200" className={className}>
     <defs>
       <radialGradient id="j100Head" cx="25%" cy="25%" r="75%">
-        <stop offset="0%" stopColor="#FFCC80" />
-        <stop offset="50%" stopColor="#EF6C00" />
-        <stop offset="100%" stopColor="#BF360C" />
+        <stop offset="0%" stopColor="#FFE0B2" />
+        <stop offset="50%" stopColor="#FFA726" />
+        <stop offset="100%" stopColor="#EF6C00" />
       </radialGradient>
       <radialGradient id="j100Face" cx="30%" cy="30%" r="70%">
-        <stop offset="0%" stopColor="#3E2723" />
-        <stop offset="100%" stopColor="#1A0F08" />
+        <stop offset="0%" stopColor="#EF6C00" />
+        <stop offset="100%" stopColor="#D84315" />
       </radialGradient>
       <radialGradient id="j100Badge" cx="35%" cy="35%" r="75%">
         <stop offset="0%" stopColor="#FFF59D" />
@@ -572,13 +572,13 @@ export const JawiStoriesIcon = ({ size = 200, className }) => (
   <svg width={size} height={size} viewBox="0 0 200 200" className={className}>
     <defs>
       <radialGradient id="jsHead" cx="25%" cy="25%" r="75%">
-        <stop offset="0%" stopColor="#BCAAA4" />
-        <stop offset="50%" stopColor="#6D4C41" />
-        <stop offset="100%" stopColor="#3E2723" />
+        <stop offset="0%" stopColor="#D7CCC8" />
+        <stop offset="50%" stopColor="#8D6E63" />
+        <stop offset="100%" stopColor="#5D4037" />
       </radialGradient>
       <radialGradient id="jsFace" cx="30%" cy="30%" r="70%">
-        <stop offset="0%" stopColor="#1F140F" />
-        <stop offset="100%" stopColor="#0A0604" />
+        <stop offset="0%" stopColor="#6D4C41" />
+        <stop offset="100%" stopColor="#5D4037" />
       </radialGradient>
       <linearGradient id="jsBookL" x1="0%" y1="0%" x2="0%" y2="100%">
         <stop offset="0%" stopColor="#FFF1D2" />
@@ -625,13 +625,13 @@ export const JawiGameIcon = ({ size = 200, className }) => (
   <svg width={size} height={size} viewBox="0 0 200 200" className={className}>
     <defs>
       <radialGradient id="jgHead" cx="25%" cy="25%" r="75%">
-        <stop offset="0%" stopColor="#DCE775" />
-        <stop offset="50%" stopColor="#9CCC65" />
-        <stop offset="100%" stopColor="#33691E" />
+        <stop offset="0%" stopColor="#F0F4C3" />
+        <stop offset="50%" stopColor="#AED581" />
+        <stop offset="100%" stopColor="#689F38" />
       </radialGradient>
       <radialGradient id="jgFace" cx="30%" cy="30%" r="70%">
-        <stop offset="0%" stopColor="#1A2410" />
-        <stop offset="100%" stopColor="#0A1106" />
+        <stop offset="0%" stopColor="#7CB342" />
+        <stop offset="100%" stopColor="#558B2F" />
       </radialGradient>
       <linearGradient id="jgDie" x1="0%" y1="0%" x2="0%" y2="100%">
         <stop offset="0%" stopColor="#FFFFFF" />
@@ -691,13 +691,13 @@ export const MathOperationIcon = ({ size = 200, className }) => (
   <svg width={size} height={size} viewBox="0 0 200 200" className={className}>
     <defs>
       <radialGradient id="moHead" cx="25%" cy="25%" r="75%">
-        <stop offset="0%" stopColor="#90CAF9" />
-        <stop offset="50%" stopColor="#1565C0" />
-        <stop offset="100%" stopColor="#0D47A1" />
+        <stop offset="0%" stopColor="#BBDEFB" />
+        <stop offset="50%" stopColor="#42A5F5" />
+        <stop offset="100%" stopColor="#1976D2" />
       </radialGradient>
       <radialGradient id="moFace" cx="30%" cy="30%" r="70%">
-        <stop offset="0%" stopColor="#0A1B33" />
-        <stop offset="100%" stopColor="#040A1A" />
+        <stop offset="0%" stopColor="#1976D2" />
+        <stop offset="100%" stopColor="#1565C0" />
       </radialGradient>
       <linearGradient id="moPlus" x1="0%" y1="0%" x2="0%" y2="100%">
         <stop offset="0%" stopColor="#A5D6A7" />
@@ -755,9 +755,9 @@ export const MathLongMethodIcon = ({ size = 200, className }) => (
   <svg width={size} height={size} viewBox="0 0 200 200" className={className}>
     <defs>
       <radialGradient id="mlHead" cx="25%" cy="25%" r="75%">
-        <stop offset="0%" stopColor="#EF9A9A" />
-        <stop offset="50%" stopColor="#D32F2F" />
-        <stop offset="100%" stopColor="#7F0000" />
+        <stop offset="0%" stopColor="#FFCDD2" />
+        <stop offset="50%" stopColor="#E57373" />
+        <stop offset="100%" stopColor="#C62828" />
       </radialGradient>
       <radialGradient id="mlFace" cx="30%" cy="30%" r="70%">
         <stop offset="0%" stopColor="#FFF6E2" />
@@ -810,13 +810,13 @@ export const ClockAndTimeIcon = ({ size = 200, className }) => (
   <svg width={size} height={size} viewBox="0 0 200 200" className={className}>
     <defs>
       <radialGradient id="ctHead" cx="25%" cy="25%" r="75%">
-        <stop offset="0%" stopColor="#80DEEA" />
-        <stop offset="50%" stopColor="#00ACC1" />
-        <stop offset="100%" stopColor="#006064" />
+        <stop offset="0%" stopColor="#B2EBF2" />
+        <stop offset="50%" stopColor="#4DD0E1" />
+        <stop offset="100%" stopColor="#00838F" />
       </radialGradient>
       <radialGradient id="ctFace" cx="30%" cy="30%" r="70%">
-        <stop offset="0%" stopColor="#062932" />
-        <stop offset="100%" stopColor="#021419" />
+        <stop offset="0%" stopColor="#00ACC1" />
+        <stop offset="100%" stopColor="#00838F" />
       </radialGradient>
       <radialGradient id="ctClock" cx="35%" cy="35%" r="75%">
         <stop offset="0%" stopColor="#FFFFFF" />

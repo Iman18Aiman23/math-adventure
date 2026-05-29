@@ -81,6 +81,12 @@ import UkuranPanjangTahun2 from './components/AgeGroup-8/UkuranPanjangTahun2';
 import BacaPetikanJawi from './components/AgeGroup-8/BacaPetikanJawi';
 import PadanKataKerjaJawi from './components/AgeGroup-8/PadanKataKerjaJawi';
 import SusunAyatJawi from './components/AgeGroup-8/SusunAyatJawi';
+import LafazPantun from './components/AgeGroup-8/LafazPantun';
+import JenisAyat from './components/AgeGroup-9/JenisAyat';
+import PenjodohBilangan from './components/AgeGroup-9/PenjodohBilangan';
+import ImbuhanLanjutan from './components/AgeGroup-9/ImbuhanLanjutan';
+import SimpulanBahasa from './components/AgeGroup-9/SimpulanBahasa';
+import BacaanPemahamanLanjutan from './components/AgeGroup-9/BacaanPemahamanLanjutan';
 import ProfileHome from './components/Profile/ProfileHome';
 const AchievementHome  = React.lazy(() => import('./components/Achievement/AchievementHome'));
 const LeaderboardHome  = React.lazy(() => import('./components/Leaderboard/LeaderboardHome'));
@@ -498,6 +504,24 @@ export default function App() {
         }
         if (currentAgeGame === 'susun-ayat-jawi') {
           return <SusunAyatJawi onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'lafaz-pantun') {
+          return <LafazPantun onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'jenis-ayat') {
+          return <JenisAyat onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'penjodoh-bilangan') {
+          return <PenjodohBilangan onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'imbuhan-lanjutan') {
+          return <ImbuhanLanjutan onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'simpulan-bahasa') {
+          return <SimpulanBahasa onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'bacaan-pemahaman-lanjutan') {
+          return <BacaanPemahamanLanjutan onBack={() => setCurrentAgeGame(null)} language={language} />;
         }
         if (currentAgeGroup) {
           const ageGroupComponents = {

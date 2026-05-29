@@ -133,6 +133,7 @@ export default function KVLearningPage({ onBack, language }) {
           .kv-letter-tile {
             position: relative; border: 0; padding: 0;
             aspect-ratio: 1 / 1.05; width: 100%;
+            container-type: inline-size;
             border-radius: 24px; cursor: pointer; font-family: inherit;
             overflow: hidden;
             transition: transform .25s cubic-bezier(.34,1.56,.64,1);
@@ -162,7 +163,7 @@ export default function KVLearningPage({ onBack, language }) {
             position: absolute; inset: 0; padding-bottom: 28%;
             display: flex; align-items: center; justify-content: center; z-index: 2;
             font-family: 'Fredoka','Baloo 2',sans-serif; font-weight: 700;
-            font-size: clamp(1.8rem, 7vw, 2.8rem); color: #fff;
+            font-size: 60cqi; line-height: 1; color: #fff;
             text-shadow: 0 2px 0 rgba(0,0,0,.18);
           }
           .kv-tile-cap {
@@ -184,7 +185,6 @@ export default function KVLearningPage({ onBack, language }) {
           }
           @media (max-width: 400px) {
             .kv-letter-tile { border-radius: 18px; }
-            .kv-tile-letter { font-size: 1.6rem; }
             .kv-tile-cap { bottom: 5px; left: 5px; right: 5px; padding: 5px 6px; font-size: 0.68rem; border-radius: 10px; }
           }
         `}</style>

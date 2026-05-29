@@ -10,6 +10,7 @@ import Jawi100WordsGame from './Jawi100WordsGame';
 import JawiShortStoriesPage from './JawiShortStoriesPage';
 import PageLayout from '../PageLayout';
 import { QuranIcon } from '../icons/GameIcons';
+import { RobotDefs, RobotHeadArabic } from '../SubjectRobots';
 import {
   JawiAlphabetIcon,
   JawiWordsIcon,
@@ -98,15 +99,18 @@ export default function JawiPage({ onBack, onHome, language, onGameStart, onGame
     ));
 
     return (
-        <PageLayout
-            classPrefix="jw"
-            heroIcon={<QuranIcon size={96} />}
-            heroSubtitle={heroSubtitle}
-            sectionLabel={language === 'bm' ? 'Pilih Aktiviti' : 'Choose Activity'}
-            hintText={hintContent}
-            onBack={onBack}
-        >
-            {gridTiles}
-        </PageLayout>
+        <>
+            <RobotDefs />
+            <PageLayout
+                classPrefix="jw"
+                heroIcon={<RobotHeadArabic style={{ width: 140, height: 100 }} />}
+                heroSubtitle={heroSubtitle}
+                sectionLabel={language === 'bm' ? 'Pilih Aktiviti' : 'Choose Activity'}
+                hintText={hintContent}
+                onBack={onBack}
+            >
+                {gridTiles}
+            </PageLayout>
+        </>
     );
 }
