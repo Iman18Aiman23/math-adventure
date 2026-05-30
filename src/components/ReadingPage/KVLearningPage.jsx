@@ -138,7 +138,8 @@ export default function KVLearningPage({ onBack, language }) {
             overflow: hidden;
             transition: transform .25s cubic-bezier(.34,1.56,.64,1);
             -webkit-tap-highlight-color: transparent;
-            opacity: 0; transform: translateY(22px);
+            /* Resting state visible — entrance animation only fades IN; if iOS
+               disables/drops the animation the tile stays visible (not opacity:0). */
             animation: kvTileIn .5s cubic-bezier(.34,1.56,.64,1) forwards;
           }
           @keyframes kvTileIn {

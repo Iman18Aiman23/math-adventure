@@ -14,6 +14,7 @@ import {
 // Shared robot-head template + per-game screen art (Membaca / Reading slice).
 import { EEGameRobotDefs, EEGameRobot } from './EarlyExplorersRobots';
 import { GAME_INNER } from './EarlyExplorersScreens';
+import KssrQnA from '../KssrQnA';
 
 // Pillar categories — order + display metadata for the grouped game grid.
 // `color` drives the section header text + line and the game-card labels (soft
@@ -35,6 +36,52 @@ const PILLAR_ROBOT = {
   jawi:     RobotHeadTadikaJawi,
   math:     RobotHeadTadikaMath,
 };
+
+// ── Prasekolah (Tadika) QnA data ─────────────────────────────────────────────
+const QNA = [
+  {
+    q:    { bm: 'Apa yang dipelajari dalam pillar Membaca?', eng: 'What does the Reading pillar cover?' },
+    intro:{ bm: '7 permainan mengenal huruf, bunyi fonik dan suku kata:', eng: '7 games for letters, phonics sounds and syllables:' },
+    items:[
+      { bm: 'Belajar A–Z — Mengenal dan menyebut huruf A hingga Z',        eng: 'Learn A–Z — Recognise and say letters A to Z' },
+      { bm: 'Alphabet Safari — Mengecam huruf melalui permainan mencari',   eng: 'Alphabet Safari — Spot letters through a finding game' },
+      { bm: 'Letter Trace — Menyurih bentuk huruf dengan betul',            eng: 'Letter Trace — Trace letter shapes correctly' },
+      { bm: 'Phonics Pop — Mengenal bunyi fonik setiap huruf',              eng: 'Phonics Pop — Learn the phonics sound of each letter' },
+      { bm: 'Sound Matching — Memadankan bunyi dengan huruf',               eng: 'Sound Matching — Match sounds to letters' },
+      { bm: 'Letter-Sound Puzzle — Menyambung huruf dengan bunyinya',       eng: 'Letter-Sound Puzzle — Connect letters with their sounds' },
+      { bm: 'Phonics Sprint — Latihan pantas mengecam bunyi huruf',         eng: 'Phonics Sprint — Quick-fire letter-sound practice' },
+    ],
+  },
+  {
+    q:    { bm: 'Apa yang dipelajari dalam pillar Bertutur?', eng: 'What does the Speaking pillar cover?' },
+    intro:{ bm: '3 permainan lisan untuk menyebut huruf, perkataan dan nombor:', eng: '3 oral games for saying letters, words and numbers:' },
+    items:[
+      { bm: 'Sebut Huruf — Menyebut huruf dengan sebutan yang jelas',  eng: 'Say Letters — Say letters with clear pronunciation' },
+      { bm: 'Sebut Perkataan — Menyebut perkataan mudah',              eng: 'Say Words — Pronounce simple words' },
+      { bm: 'Sebut Nombor — Menyebut nombor 1 hingga 10',              eng: 'Say Numbers — Say numbers 1 to 10' },
+    ],
+  },
+  {
+    q:    { bm: 'Apa yang dipelajari dalam pillar Tulisan Jawi?', eng: 'What does the Jawi Script pillar cover?' },
+    intro:{ bm: '2 permainan mengenal huruf jawi asas:', eng: '2 games introducing basic Jawi letters:' },
+    items:[
+      { bm: 'Belajar Huruf Jawi — Mengenal huruf jawi asas',     eng: 'Learn Jawi Letters — Recognise basic Jawi letters' },
+      { bm: 'Padan Huruf Jawi — Memadankan huruf jawi yang sama', eng: 'Match Jawi Letters — Match identical Jawi letters' },
+    ],
+  },
+  {
+    q:    { bm: 'Apa yang dipelajari dalam pillar Matematik?', eng: 'What does the Mathematics pillar cover?' },
+    intro:{ bm: '6 permainan mengenal nombor, membilang dan bentuk:', eng: '6 games for numbers, counting and shapes:' },
+    items:[
+      { bm: 'Belajar 1–20 — Mengenal dan menyebut nombor 1 hingga 20',     eng: 'Learn 1–20 — Recognise and say numbers 1 to 20' },
+      { bm: 'Kira Bintang — Membilang objek',                              eng: 'Count Stars — Count objects' },
+      { bm: 'Isih Bentuk — Mengenal dan mengisih bentuk asas',             eng: 'Sort Shapes — Recognise and sort basic shapes' },
+      { bm: 'Padankan Nombor — Memadankan nombor dengan kuantiti',         eng: 'Match Numbers — Match numbers to quantities' },
+      { bm: 'Tambah Buah — Pengenalan konsep tambah secara visual',        eng: 'Add Fruit — Visual introduction to addition' },
+      { bm: 'Nombor Hilang — Mengenal pasti nombor tertinggal dalam urutan', eng: 'Missing Number — Find the missing number in a sequence' },
+    ],
+  },
+];
 
 export default function EarlyExplorersHome(props) {
   const { onBack, onPlayGame, language = 'bm' } = props;
@@ -58,37 +105,17 @@ export default function EarlyExplorersHome(props) {
     </>
   );
 
-  const hintContent = (
-    <>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="#58CC02"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-      {language === 'bm' ? 'Pilih permainan untuk mula belajar!' : 'Pick a game to start learning!'}
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF3D8B"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-    </>
-  );
-
   const additionalSection = (
-    <div className="bm-howto">
-      <div className="bm-howto-title">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFB300" aria-hidden="true">
-          <path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/>
-        </svg>
-        {language === 'bm' ? 'Cara Meneroka' : 'How to Explore'}
-      </div>
-      <div className="bm-howto-steps">
-        <div className="bm-howto-step">
-          <span className="bm-step-num" style={{ background: 'linear-gradient(180deg, #A8F080, #58CC02)', boxShadow: '0 3px 0 #388E3C' }}>1</span>
-          <span>{language === 'bm' ? 'Pilih permainan abjad pilihan anda.' : 'Select a game to start learning.'}</span>
-        </div>
-        <div className="bm-howto-step">
-          <span className="bm-step-num" style={{ background: 'linear-gradient(180deg, #A8F080, #58CC02)', boxShadow: '0 3px 0 #388E3C' }}>2</span>
-          <span>{language === 'bm' ? 'Main, dengar bunyi fonik, dan ikut arahan.' : 'Play, listen to phonics, and interact.'}</span>
-        </div>
-        <div className="bm-howto-step">
-          <span className="bm-step-num" style={{ background: 'linear-gradient(180deg, #A8F080, #58CC02)', boxShadow: '0 3px 0 #388E3C' }}>3</span>
-          <span>{language === 'bm' ? 'Kumpul markah bintang dan teruskan belajar!' : 'Collect star points and level up!'}</span>
-        </div>
-      </div>
-    </div>
+    <>
+      <div className="bp-section-label" style={{ marginTop: '2.5rem', marginBottom: '1.25rem' }}>FAQ</div>
+      <KssrQnA
+        qna={QNA}
+        language={language}
+        title={language === 'bm' ? 'Berdasarkan Kurikulum Prasekolah' : 'Based on Preschool Curriculum'}
+        gradient="linear-gradient(135deg, #58CC02 0%, #46A302 100%)"
+        badges={language === 'bm' ? ['Prasekolah', 'Umur 4–6'] : ['Preschool', 'Age 4–6']}
+      />
+    </>
   );
 
   return (
@@ -103,7 +130,7 @@ export default function EarlyExplorersHome(props) {
         heroTitle={language === 'bm' ? 'Teroka Awal' : 'Early Explorers'}
         heroSubtitle={heroSubtitle}
         sectionLabel={language === 'bm' ? 'Pilih Permainan' : 'Choose Game'}
-        hintText={hintContent}
+        hintText={null}
         onBack={onBack}
         additionalSection={additionalSection}
       >

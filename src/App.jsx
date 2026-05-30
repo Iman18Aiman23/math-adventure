@@ -104,15 +104,16 @@ import { baseAssessments } from './data/curriculum/assessment';
 
 // ── Themes ───────────────────────────────────────────────────────────────────
 export const THEMES = {
+  // Soft & warm — rose. (key kept as 'cosmic' for saved-selection compatibility)
   cosmic: {
-    key: 'cosmic', label: 'Cosmic', swatch: '#A855F7',
-    sidebarBg: 'linear-gradient(180deg, #7C3AED 0%, #A855F7 40%, #C026D3 75%, #9333EA 100%)',
-    appBg: '#2E1065',
-    contentBg: 'linear-gradient(175deg, #3B0764 0%, #6D28D9 40%, #9333EA 70%, #6D28D9 100%)',
-    heroBg: 'linear-gradient(135deg, #5B21B6 0%, #9333EA 50%, #EC4899 100%)',
-    heroBorder: '#F0ABFC',
-    planetBody: 'radial-gradient(circle at 30% 30%, #F472B6, #9333EA)',
-    planetRing: '#DDD6FE',
+    key: 'cosmic', label: 'Blush', swatch: '#E58AA8',
+    sidebarBg: 'linear-gradient(180deg, #C76A8C 0%, #E18AA8 45%, #F4B6C8 80%, #C76A8C 100%)',
+    appBg: '#3A1E2A',
+    contentBg: 'linear-gradient(175deg, #4E2937 0%, #7A4459 40%, #B06E84 70%, #4E2937 100%)',
+    heroBg: 'linear-gradient(135deg, #9C546F 0%, #E18AA8 50%, #F8C9D6 100%)',
+    heroBorder: '#FAD6E0',
+    planetBody: 'radial-gradient(circle at 30% 30%, #F4B6C8, #E18AA8)',
+    planetRing: '#FAD6E0',
   },
   ocean: {
     key: 'ocean', label: 'Ocean', swatch: '#1565c0',
@@ -124,25 +125,27 @@ export const THEMES = {
     planetBody: 'radial-gradient(circle at 30% 30%, #42a5f5, #1565c0)',
     planetRing: '#80cbc4',
   },
+  // Soft & warm — peach/coral. (key kept as 'sunny')
   sunny: {
-    key: 'sunny', label: 'Sunny', swatch: '#F59E0B',
-    sidebarBg: 'linear-gradient(180deg, #D97706 0%, #F59E0B 45%, #FBBF24 80%, #D97706 100%)',
-    appBg: '#451A03',
-    contentBg: 'linear-gradient(175deg, #78350F 0%, #B45309 40%, #D97706 70%, #B45309 100%)',
-    heroBg: 'linear-gradient(135deg, #B45309 0%, #F59E0B 50%, #FCD34D 100%)',
-    heroBorder: '#FDE68A',
-    planetBody: 'radial-gradient(circle at 30% 30%, #FCD34D, #F59E0B)',
-    planetRing: '#FDE68A',
+    key: 'sunny', label: 'Peach', swatch: '#FB9A77',
+    sidebarBg: 'linear-gradient(180deg, #E27A57 0%, #FB9A77 45%, #FFC2A6 80%, #E27A57 100%)',
+    appBg: '#3A2218',
+    contentBg: 'linear-gradient(175deg, #51301F 0%, #834B33 40%, #BE7150 70%, #51301F 100%)',
+    heroBg: 'linear-gradient(135deg, #B25C3C 0%, #FB9A77 50%, #FFCDB6 100%)',
+    heroBorder: '#FFDCCB',
+    planetBody: 'radial-gradient(circle at 30% 30%, #FFC2A6, #FB9A77)',
+    planetRing: '#FFDCCB',
   },
+  // Soft & warm — sand/caramel. (key kept as 'forest')
   forest: {
-    key: 'forest', label: 'Forest', swatch: '#22C55E',
-    sidebarBg: 'linear-gradient(180deg, #15803D 0%, #16A34A 40%, #22C55E 75%, #15803D 100%)',
-    appBg: '#052E16',
-    contentBg: 'linear-gradient(175deg, #064E3B 0%, #065F46 40%, #059669 70%, #064E3B 100%)',
-    heroBg: 'linear-gradient(135deg, #15803D 0%, #16A34A 50%, #4ADE80 100%)',
-    heroBorder: '#86EFAC',
-    planetBody: 'radial-gradient(circle at 30% 30%, #4ADE80, #16A34A)',
-    planetRing: '#86EFAC',
+    key: 'forest', label: 'Sand', swatch: '#E0AC72',
+    sidebarBg: 'linear-gradient(180deg, #C0904F 0%, #E0AC72 45%, #F1D2A4 80%, #C0904F 100%)',
+    appBg: '#332515',
+    contentBg: 'linear-gradient(175deg, #46341C 0%, #6E5230 40%, #A07C4A 70%, #46341C 100%)',
+    heroBg: 'linear-gradient(135deg, #8A6438 0%, #E0AC72 50%, #F3DAB3 100%)',
+    heroBorder: '#F6E3C6',
+    planetBody: 'radial-gradient(circle at 30% 30%, #F1D2A4, #E0AC72)',
+    planetRing: '#F6E3C6',
   },
 };
 

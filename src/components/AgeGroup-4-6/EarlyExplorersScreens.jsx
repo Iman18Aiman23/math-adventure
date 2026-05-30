@@ -29,7 +29,7 @@ function blk({ x, y, w = 38, h = 40, top, deep, t, fs = 24, font = "'Baloo 2','C
     <g key={`blk-${x}-${y}-${t}`}>
       <rect x={x} y={y} width={w} height={h} rx="6" fill={top} stroke={deep} strokeWidth="2" />
       <rect x={x} y={y} width={w} height={h / 4} rx="6" fill="rgba(255,255,255,.45)" />
-      <text x={x + w / 2} y={(vCenter ? y + h / 2 : y + h * 0.72) + dy} textAnchor="middle" dominantBaseline={vCenter ? 'central' : 'auto'} fontFamily={font} fontWeight="800" fontSize={fs} fill={textFill} stroke={deep} strokeWidth=".5">{t}</text>
+      <text x={x + w / 2} y={(vCenter ? y + h / 2 : y + h * 0.72) + dy} textAnchor="middle" dominantBaseline={vCenter ? 'central' : 'auto'} fontFamily={font} fontWeight="800" fontSize={fs} fill={textFill}>{t}</text>
     </g>
   );
 }
@@ -72,10 +72,10 @@ const ScreenAlphabetCards = (
     </defs>
     <rect x="54" y="68" width="40" height="40" rx="6" fill="url(#eeBlkTeal)" stroke="#00352B" strokeWidth="2" />
     <rect x="54" y="68" width="40" height="10" rx="6" fill="rgba(255,255,255,.45)" />
-    <text x="74" y="100" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="26" fill="#fff" stroke="#00352B" strokeWidth=".5">A</text>
+    <text x="74" y="100" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="26" fill="#fff">A</text>
     <rect x="106" y="68" width="40" height="40" rx="6" fill="url(#eeBlkBlue)" stroke="#013A6B" strokeWidth="2" />
     <rect x="106" y="68" width="40" height="10" rx="6" fill="rgba(255,255,255,.55)" />
-    <text x="126" y="100" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="26" fill="#fff" stroke="#013A6B" strokeWidth=".5">B</text>
+    <text x="126" y="100" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="26" fill="#fff">B</text>
     <circle cx="100" cy="88" r="3" fill="#FFFFFF" />
     {spark}
     <text x="100" y="130" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="16" fill="#FFFFFF">A–Z</text>
@@ -110,7 +110,7 @@ const ScreenLetterTrace = (
         <stop offset="0%" stopColor="#FFE3B0" /><stop offset="100%" stopColor="#FFB74D" />
       </linearGradient>
     </defs>
-    <text x="100" y="116" fontFamily="'Comic Sans MS','Arial Rounded MT Bold',Arial,sans-serif" fontSize="72" fontWeight="bold" fill="#FFFFFF" stroke="#C8651A" strokeWidth="2" textAnchor="middle">A</text>
+    <text x="100" y="116" fontFamily="'Comic Sans MS','Arial Rounded MT Bold',Arial,sans-serif" fontSize="72" fontWeight="bold" fill="#FFFFFF" textAnchor="middle">A</text>
     <g transform="translate(118 68) rotate(-35) scale(0.5)">
       <rect x="0" y="0" width="12" height="40" rx="2" fill="url(#eePencil)" stroke="#9C6212" strokeWidth="1" />
       <polygon points="0,40 6,50 12,40" fill="#FFE0B2" />
@@ -323,7 +323,7 @@ const ScreenNumberMatch = (
 const ScreenAppleAddition = (
   <g transform="translate(0 6)">
     {apple(64, 92)}
-    <text x="100" y="100" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="28" fill="#FFEB3B" stroke="#7A4D02" strokeWidth=".5">+</text>
+    <text x="100" y="100" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="28" fill="#FFEB3B">+</text>
     {apple(136, 92)}
     {spark}
   </g>

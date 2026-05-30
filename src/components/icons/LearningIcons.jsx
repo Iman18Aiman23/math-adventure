@@ -39,10 +39,10 @@ export const LearnKVWordsIcon = ({ size = 200, className }) => (
     <g transform="translate(0 10)">
       <rect x="54" y="68" width="40" height="40" rx="6" fill="url(#kvBlockB)" stroke="#7A1010" strokeWidth="2" />
       <rect x="54" y="68" width="40" height="10" rx="6" fill="rgba(255,255,255,.45)" />
-      <text x="74" y="100" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="26" fill="#fff" stroke="#7A1010" strokeWidth=".5">B</text>
+      <text x="74" y="100" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="26" fill="#fff">B</text>
       <rect x="106" y="68" width="40" height="40" rx="6" fill="url(#kvBlockA)" stroke="#7A4D02" strokeWidth="2" />
       <rect x="106" y="68" width="40" height="10" rx="6" fill="rgba(255,255,255,.55)" />
-      <text x="126" y="100" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="26" fill="#fff" stroke="#7A4D02" strokeWidth=".5">A</text>
+      <text x="126" y="100" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="26" fill="#fff">A</text>
       <circle cx="100" cy="88" r="3" fill="#FFEB3B" />
       <polygon points="50,60 52,64 56,66 52,68 50,72 48,68 44,66 48,64" fill="#FFEB3B" opacity="0.8" />
       <polygon points="150,60 152,64 156,66 152,68 150,72 148,68 144,66 148,64" fill="#FFEB3B" opacity="0.6" />
@@ -95,13 +95,13 @@ export const LearnKVKWordsIcon = ({ size = 200, className }) => (
     <g transform="translate(0 8)">
       <rect x="44" y="72" width="32" height="36" rx="5" fill="url(#kvkBlock1)" stroke="#7A1010" strokeWidth="2" />
       <rect x="44" y="72" width="32" height="9" rx="5" fill="rgba(255,255,255,.45)" />
-      <text x="60" y="100" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="22" fill="#fff" stroke="#7A1010" strokeWidth=".5">K</text>
+      <text x="60" y="100" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="22" fill="#fff">K</text>
       <rect x="84" y="72" width="32" height="36" rx="5" fill="url(#kvkBlock2)" stroke="#7A4D02" strokeWidth="2" />
       <rect x="84" y="72" width="32" height="9" rx="5" fill="rgba(255,255,255,.55)" />
-      <text x="100" y="100" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="22" fill="#fff" stroke="#7A4D02" strokeWidth=".5">A</text>
+      <text x="100" y="100" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="22" fill="#fff">A</text>
       <rect x="124" y="72" width="32" height="36" rx="5" fill="url(#kvkBlock3)" stroke="#0B4A8E" strokeWidth="2" />
       <rect x="124" y="72" width="32" height="9" rx="5" fill="rgba(255,255,255,.45)" />
-      <text x="140" y="100" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="22" fill="#fff" stroke="#0B4A8E" strokeWidth=".5">N</text>
+      <text x="140" y="100" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="22" fill="#fff">N</text>
       <text x="100" y="128" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="16" fill="#FFEB3B">KAN</text>
       <polygon points="48,62 50,66 54,68 50,70 48,74 46,70 42,68 46,66" fill="#FFEB3B" opacity="0.8" />
       <polygon points="152,62 154,66 158,68 154,70 152,74 150,70 146,68 150,66" fill="#FFEB3B" opacity="0.6" />
@@ -153,13 +153,13 @@ export const EnglishPhonicsIcon = ({ size = 200, className }) => (
     <g transform="translate(0 6)">
       <circle cx="65" cy="95" r="18" fill="url(#phLetterA)" stroke="#7A4D02" strokeWidth="2" />
       <ellipse cx="60" cy="88" rx="5" ry="7" fill="#fff" opacity=".4" transform="rotate(-20 60 88)" />
-      <text x="65" y="103" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="22" fill="#fff" stroke="#7A4D02" strokeWidth=".5">A</text>
+      <text x="65" y="103" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="22" fill="#fff">A</text>
       <circle cx="100" cy="80" r="18" fill="url(#phLetterB)" stroke="#0B4A6F" strokeWidth="2" />
       <ellipse cx="95" cy="73" rx="5" ry="7" fill="#fff" opacity=".4" transform="rotate(-20 95 73)" />
-      <text x="100" y="88" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="22" fill="#fff" stroke="#0B4A6F" strokeWidth=".5">B</text>
+      <text x="100" y="88" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="22" fill="#fff">B</text>
       <circle cx="135" cy="95" r="18" fill="url(#phLetterC)" stroke="#1F4A00" strokeWidth="2" />
       <ellipse cx="130" cy="88" rx="5" ry="7" fill="#fff" opacity=".4" transform="rotate(-20 130 88)" />
-      <text x="135" y="103" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="22" fill="#fff" stroke="#1F4A00" strokeWidth=".5">C</text>
+      <text x="135" y="103" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="22" fill="#fff">C</text>
       <path d="M50 128 Q60 122 70 128 T90 128 T110 128 T130 128 T150 128" stroke="#F48FB1" strokeWidth="2.5" fill="none" strokeLinecap="round" opacity=".85" />
       <polygon points="48,62 50,66 54,68 50,70 48,74 46,70 42,68 46,66" fill="#FFEB3B" opacity="0.8" />
       <polygon points="152,62 154,66 158,68 154,70 152,74 150,70 146,68 150,66" fill="#FFEB3B" opacity="0.6" />
@@ -212,7 +212,7 @@ export const Number1to100Icon = ({ size = 200, className }) => (
       <polygon points="112,88 118,92 112,96" fill="#FFEB3B" />
       <circle cx="138" cy="92" r="22" fill="url(#numBubble2)" stroke="#0B4A6F" strokeWidth="2" />
       <ellipse cx="132" cy="84" rx="6" ry="9" fill="#fff" opacity=".4" transform="rotate(-20 132 84)" />
-      <text x="138" y="100" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="18" fill="#fff" stroke="#0B4A6F" strokeWidth=".5">100</text>
+      <text x="138" y="100" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="18" fill="#fff">100</text>
       <text x="56" y="68" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="700" fontSize="12" fill="#FFE066" opacity=".85">7</text>
       <text x="148" y="68" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="700" fontSize="12" fill="#FFE066" opacity=".85">42</text>
       <text x="100" y="60" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="700" fontSize="11" fill="#FFE066" opacity=".75">25</text>
@@ -670,12 +670,12 @@ export const JawiGameIcon = ({ size = 200, className }) => (
       <g transform="rotate(5 100 92)">
         <rect x="86" y="76" width="28" height="32" rx="5" fill="url(#jgDie2)" stroke="#7A4D02" strokeWidth="2" />
         <rect x="86" y="76" width="28" height="8" rx="5" fill="rgba(255,255,255,.55)" />
-        <text x="100" y="100" textAnchor="middle" fontFamily="'Amiri Quran',serif" fontWeight="700" fontSize="22" fill="#fff" stroke="#7A4D02" strokeWidth=".5">ب</text>
+        <text x="100" y="100" textAnchor="middle" fontFamily="'Amiri Quran',serif" fontWeight="700" fontSize="22" fill="#fff">ب</text>
       </g>
       <g transform="rotate(-6 138 96)">
         <rect x="124" y="80" width="28" height="32" rx="5" fill="url(#jgDie3)" stroke="#0B4A8E" strokeWidth="2" />
         <rect x="124" y="80" width="28" height="8" rx="5" fill="rgba(255,255,255,.5)" />
-        <text x="138" y="104" textAnchor="middle" fontFamily="'Amiri Quran',serif" fontWeight="700" fontSize="22" fill="#fff" stroke="#0B4A8E" strokeWidth=".5">ا</text>
+        <text x="138" y="104" textAnchor="middle" fontFamily="'Amiri Quran',serif" fontWeight="700" fontSize="22" fill="#fff">ا</text>
       </g>
       <path d="M60 124 q40 -8 80 0" stroke="#FFEB3B" strokeWidth="2.4" fill="none" strokeLinecap="round" strokeDasharray="3 3" />
       <circle cx="100" cy="130" r="6" fill="#FFEB3B" stroke="#33691E" strokeWidth="1.5" />
@@ -734,16 +734,16 @@ export const MathOperationIcon = ({ size = 200, className }) => (
     <g transform="translate(0 6)">
       <rect x="56" y="68" width="34" height="30" rx="6" fill="url(#moPlus)" stroke="#1F4A00" strokeWidth="2" />
       <rect x="56" y="68" width="34" height="8" rx="6" fill="rgba(255,255,255,.45)" />
-      <text x="73" y="92" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="22" fill="#fff" stroke="#1F4A00" strokeWidth=".5">+</text>
+      <text x="73" y="92" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="22" fill="#fff">+</text>
       <rect x="110" y="68" width="34" height="30" rx="6" fill="url(#moMinus)" stroke="#7A1010" strokeWidth="2" />
       <rect x="110" y="68" width="34" height="8" rx="6" fill="rgba(255,255,255,.45)" />
-      <text x="127" y="92" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="22" fill="#fff" stroke="#7A1010" strokeWidth=".5">−</text>
+      <text x="127" y="92" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="22" fill="#fff">−</text>
       <rect x="56" y="104" width="34" height="30" rx="6" fill="url(#moMul)" stroke="#7A4D02" strokeWidth="2" />
       <rect x="56" y="104" width="34" height="8" rx="6" fill="rgba(255,255,255,.55)" />
-      <text x="73" y="128" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="22" fill="#fff" stroke="#7A4D02" strokeWidth=".5">×</text>
+      <text x="73" y="128" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="22" fill="#fff">×</text>
       <rect x="110" y="104" width="34" height="30" rx="6" fill="url(#moDiv)" stroke="#3F0866" strokeWidth="2" />
       <rect x="110" y="104" width="34" height="8" rx="6" fill="rgba(255,255,255,.45)" />
-      <text x="127" y="128" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="22" fill="#fff" stroke="#3F0866" strokeWidth=".5">÷</text>
+      <text x="127" y="128" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="22" fill="#fff">÷</text>
       <polygon points="48,62 50,66 54,68 50,70 48,74 46,70 42,68 46,66" fill="#FFEB3B" opacity="0.8" />
       <polygon points="152,62 154,66 158,68 154,70 152,74 150,70 146,68 150,66" fill="#FFEB3B" opacity="0.6" />
     </g>

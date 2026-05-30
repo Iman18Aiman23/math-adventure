@@ -3,18 +3,45 @@ import { CURRICULUM } from '../../data/ageCurriculum';
 import { playHoverSound } from '../../utils/soundManager';
 import PageLayout from '../PageLayout';
 import '../SpeakingPage/BMPage.css';
+import KssrQnA from '../KssrQnA';
+// Shared robot-head card template (pillar-based frames, reused across ages).
+import { EEGameRobotDefs, EEGameRobot } from '../AgeGroup-4-6/EarlyExplorersRobots';
+import { GRADE3_GAME_INNER } from './Grade3Screens';
+
+// Pillar categories — order + display metadata for the grouped game grid.
+// `color` = soft near-black header text + labels; `badge` = per-pillar accent.
+const PILLAR_ORDER = ['reading', 'speaking', 'jawi', 'math'];
+const PILLAR_META = {
+  reading:  { bm: 'Membaca',      eng: 'Reading',     emoji: '📖', color: '#1F2937', badge: '#EE7E1E' },
+  speaking: { bm: 'Bertutur',     eng: 'Speaking',    emoji: '🗣️', color: '#1F2937', badge: '#E5538C' },
+  jawi:     { bm: 'Tulisan Jawi', eng: 'Jawi Script', emoji: '✍️', color: '#1F2937', badge: '#2A9A6C' },
+  math:     { bm: 'Matematik',    eng: 'Mathematics', emoji: '🔢', color: '#1F2937', badge: '#7A55E0' },
+};
+
+// ── KSSR Year 3 QnA data ──────────────────────────────────────────────────────
+const QNA = [
+  {
+    q:    { bm: 'Apa yang dipelajari dalam pillar Membaca?', eng: 'What topics are covered in the Reading pillar?' },
+    intro:{ bm: '5 permainan tatabahasa dan kefahaman Bahasa Melayu Tahun 3:',
+            eng: '5 Year 3 Bahasa Melayu grammar and comprehension games:' },
+    items:[
+      { bm: 'Jenis Ayat — Mengenal ayat penyata, tanya, perintah dan seru',              eng: 'Sentence Types — Identify statement, question, command and exclamation sentences' },
+      { bm: 'Penjodoh Bilangan — Menggunakan penjodoh bilangan yang betul',               eng: 'Measure Words — Use the correct numeral classifiers' },
+      { bm: 'Imbuhan Lanjutan — Membentuk perkataan dengan imbuhan apitan dan akhiran',    eng: 'Advanced Affixes — Form words using circumfixes and suffixes' },
+      { bm: 'Simpulan Bahasa & Perumpamaan — Memahami simpulan bahasa dan perumpamaan',    eng: 'Idioms & Similes — Understand Malay idioms and similes' },
+      { bm: 'Bacaan Pemahaman Lanjutan — Memahami petikan yang lebih kompleks',            eng: 'Advanced Comprehension — Understand more complex passages' },
+    ],
+  },
+];
 
 export default function Grade3AchieversHome(props) {
   const { onBack, onPlayGame, language = 'bm' } = props;
   const curriculum = CURRICULUM['age-9'];
 
-  // Get all games from all pillars
-  const allGames = [];
-  ['reading', 'speaking', 'jawi', 'math'].forEach(pillarId => {
-    if (curriculum[pillarId] && Array.isArray(curriculum[pillarId])) {
-      allGames.push(...curriculum[pillarId]);
-    }
-  });
+  // Group games by pillar (only pillars that actually have games)
+  const pillarSections = PILLAR_ORDER
+    .map(id => ({ id, meta: PILLAR_META[id], games: curriculum[id] }))
+    .filter(s => Array.isArray(s.games) && s.games.length > 0);
 
   const heroSubtitle = (
     <>
@@ -29,37 +56,16 @@ export default function Grade3AchieversHome(props) {
     </>
   );
 
-  const hintContent = (
-    <>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="#CE82FF"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-      {language === 'bm' ? 'Waktu untuk mencapai pencapaian tertinggi!' : 'Time to reach the highest achievements!'}
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF3D8B"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-    </>
-  );
-
   const additionalSection = (
-    <div className="bm-howto">
-      <div className="bm-howto-title">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFB300" aria-hidden="true">
-          <path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/>
-        </svg>
-        {language === 'bm' ? 'Panduan Pencapaian' : 'Achievement Guide'}
-      </div>
-      <div className="bm-howto-steps">
-        <div className="bm-howto-step">
-          <span className="bm-step-num" style={{ background: 'linear-gradient(180deg, #EDE7F6, #7C4DFF)', boxShadow: '0 3px 0 #512DA8' }}>1</span>
-          <span>{language === 'bm' ? 'Pilih tugas yang mencabar diri anda.' : 'Choose tasks that challenge you.'}</span>
-        </div>
-        <div className="bm-howto-step">
-          <span className="bm-step-num" style={{ background: 'linear-gradient(180deg, #EDE7F6, #7C4DFF)', boxShadow: '0 3px 0 #512DA8' }}>2</span>
-          <span>{language === 'bm' ? 'Selesaikan dengan sempurna untuk mendapat bonus.' : 'Complete perfectly to earn bonuses.'}</span>
-        </div>
-        <div className="bm-howto-step">
-          <span className="bm-step-num" style={{ background: 'linear-gradient(180deg, #EDE7F6, #7C4DFF)', boxShadow: '0 3px 0 #512DA8' }}>3</span>
-          <span>{language === 'bm' ? 'Koleksi semua trofei dan raih kejayaan tertinggi!' : 'Collect all trophies and achieve greatness!'}</span>
-        </div>
-      </div>
-    </div>
+    <>
+      <div className="bp-section-label" style={{ marginTop: '2.5rem', marginBottom: '1.25rem' }}>FAQ</div>
+      <KssrQnA
+        qna={QNA}
+        language={language}
+        gradient="linear-gradient(135deg, #AB47BC 0%, #6A1B9A 100%)"
+        badges={language === 'bm' ? ['BM Tahun 3'] : ['BM Year 3']}
+      />
+    </>
   );
 
   return (
@@ -73,43 +79,54 @@ export default function Grade3AchieversHome(props) {
           padding: 3rem 1.5rem;
           text-align: center;
         }
-
-        .coming-soon-icon {
-          font-size: 4rem;
-          margin-bottom: 1.5rem;
-        }
-
-        .coming-soon-title {
-          font-size: 1.5rem;
-          font-weight: 700;
-          margin-bottom: 0.5rem;
-          color: #F1F5F9;
-        }
-
-        .coming-soon-text {
-          font-size: 1rem;
-          color: rgba(241, 245, 249, 0.8);
-          margin-bottom: 2rem;
-          max-width: 400px;
-        }
+        .coming-soon-icon { font-size: 4rem; margin-bottom: 1.5rem; }
+        .coming-soon-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: #F1F5F9; }
+        .coming-soon-text { font-size: 1rem; color: rgba(241, 245, 249, 0.8); margin-bottom: 2rem; max-width: 400px; }
       `}</style>
+      {/* Shared robot-head frame + screen clip for the game-card icons — rendered once. */}
+      <EEGameRobotDefs />
       <PageLayout
         classPrefix="bp"
         heroIcon={<span style={{ fontSize: '4.5rem', lineHeight: 1 }}>🏆</span>}
         heroTitle={language === 'bm' ? 'Pencapaian Gred 3' : 'Grade 3 Achievers'}
         heroSubtitle={heroSubtitle}
         sectionLabel={language === 'bm' ? 'Pilih Permainan' : 'Choose Game'}
-        hintText={hintContent}
+        hintText={null}
         onBack={onBack}
         additionalSection={additionalSection}
       >
-        {allGames.length > 0 ? (
-          allGames.map((game) => (
-            <GameCard
-              key={game.id}
-              game={game}
-              onPlay={() => onPlayGame(game.id)}
-            />
+        {pillarSections.length > 0 ? (
+          pillarSections.map(({ id, meta, games }) => (
+            <React.Fragment key={id}>
+              <div
+                style={{
+                  gridColumn: '1 / -1',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  marginTop: '0.25rem',
+                }}
+              >
+                <span style={{ fontSize: '1.3rem', lineHeight: 1 }}>{meta.emoji}</span>
+                <span style={{ fontWeight: 800, fontSize: '1.05rem', color: meta.color, whiteSpace: 'nowrap' }}>
+                  {meta[language] || meta.bm}
+                </span>
+                <span style={{ flex: 1, height: '3px', background: `${meta.color}33`, borderRadius: '999px' }} />
+                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#fff', background: meta.badge || meta.color, borderRadius: '999px', padding: '2px 9px', lineHeight: 1.4 }}>
+                  {games.length}
+                </span>
+              </div>
+              {games.map((game) => (
+                <GameCard
+                  key={game.id}
+                  game={game}
+                  accent={meta.color}
+                  frame={id}
+                  inner={GRADE3_GAME_INNER[game.id]}
+                  onPlay={() => onPlayGame(game.id)}
+                />
+              ))}
+            </React.Fragment>
           ))
         ) : (
           <div className="coming-soon-container">
@@ -129,7 +146,7 @@ export default function Grade3AchieversHome(props) {
   );
 }
 
-const GameCard = React.memo(function GameCard({ game, onPlay }) {
+const GameCard = React.memo(function GameCard({ game, accent, frame, inner, onPlay }) {
   const soundPlayedRef = useRef(false);
 
   const handleMouseEnter = useCallback(() => {
@@ -140,43 +157,36 @@ const GameCard = React.memo(function GameCard({ game, onPlay }) {
     }
   }, []);
 
+  // Shared robot-head template + per-game screen art (+ near-black label below).
+  if (inner) {
+    return (
+      <button
+        onClick={onPlay}
+        onMouseEnter={handleMouseEnter}
+        className="ee-robot-card"
+        type="button"
+      >
+        <span className="ee-robot-media">
+          <EEGameRobot frame={frame}>{inner}</EEGameRobot>
+        </span>
+        <span className="ee-robot-label" style={{ color: accent }}>
+          {game.name}
+        </span>
+      </button>
+    );
+  }
+
+  // Fallback for any game without screen art yet: chunky emoji + label card.
   return (
     <button
       onClick={onPlay}
       onMouseEnter={handleMouseEnter}
       type="button"
-      style={{
-        background: game.cardColor,
-        boxShadow: `0 4px 0 ${game.cardDark}`,
-        padding: '1rem 0.75rem',
-        borderRadius: '14px',
-        border: 'none',
-        cursor: 'pointer',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '0.5rem',
-        width: '100%',
-        minHeight: '100px',
-        color: 'white',
-        textAlign: 'center',
-        boxSizing: 'border-box',
-        transition: 'transform 0.15s, box-shadow 0.15s',
-        WebkitTapHighlightColor: 'transparent',
-      }}
+      className="ee-game-card"
+      style={{ '--card-bg': game.cardColor, '--card-bg-dark': game.cardDark }}
     >
-      <span style={{ fontSize: '2rem', lineHeight: 1 }}>{game.emoji}</span>
-      <span style={{
-        fontWeight: 700,
-        fontSize: 'clamp(0.7rem, 2.5vw, 0.9rem)',
-        lineHeight: 1.25,
-        overflowWrap: 'break-word',
-        wordBreak: 'break-word',
-        maxWidth: '100%',
-      }}>
-        {game.name}
-      </span>
+      <span className="ee-game-emoji">{game.emoji}</span>
+      <span className="ee-game-label">{game.name}</span>
     </button>
   );
 });

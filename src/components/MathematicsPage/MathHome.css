@@ -84,7 +84,7 @@
   box-shadow: none;
   overflow: hidden;
   transition: transform .25s cubic-bezier(.34,1.56,.64,1);
-  opacity: 0; transform: translateY(28px);
+  /* Resting state visible — entrance only fades IN (iOS-safe). */
   animation: mh-tileIn .6s cubic-bezier(.34,1.56,.64,1) forwards;
   -webkit-tap-highlight-color: transparent;
 }
@@ -231,8 +231,7 @@
   background: transparent;
   overflow: visible;
   transition: transform .35s cubic-bezier(.34,1.56,.64,1), filter .35s;
-  opacity: 0;
-  transform: translateY(28px);
+  /* Resting state visible — entrance only fades IN (iOS-safe). */
   animation: mh-tileIn .6s cubic-bezier(.34,1.56,.64,1) forwards;
   -webkit-tap-highlight-color: transparent;
   display: flex;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { GradCapIcon, TrophyIcon, MedalIcon, ProfileIcon, GearsIcon } from './icons/GameIcons';
+import { GraduationCap, Trophy, Medal, User, Settings, Star, Heart, Gem } from 'lucide-react';
 import MascotIcon from './icons/MascotIcon';
 import { getGameData } from '../utils/gameStatsManager';
 
@@ -77,11 +77,14 @@ const getSidebarStyles = (sidebarBg) => `
   }
 `;
 
+// Single accent colour for the active icon across all tabs.
+const ACTIVE_ICON_COLOR = '#F59E0B';
+
 const SIDEBAR_TABS = [
-  { id: 'learn', icon: GradCapIcon, label: { bm: 'Kursus', eng: 'Course' } },
-  { id: 'leaderboard', icon: TrophyIcon, label: { bm: 'Papan Juara', eng: 'Leaderboard' } },
-  { id: 'profile', icon: ProfileIcon, label: { bm: 'Profil', eng: 'Profile' } },
-  { id: 'achievement', icon: MedalIcon, label: { bm: 'Pencapaian', eng: 'Achievement' } },
+  { id: 'learn', icon: GraduationCap, label: { bm: 'Kursus', eng: 'Course' } },
+  { id: 'leaderboard', icon: Trophy, label: { bm: 'Papan Juara', eng: 'Leaderboard' } },
+  { id: 'profile', icon: User, label: { bm: 'Profil', eng: 'Profile' } },
+  { id: 'achievement', icon: Medal, label: { bm: 'Pencapaian', eng: 'Achievement' } },
 ];
 
 export default function DesktopSidebar({
@@ -160,7 +163,11 @@ export default function DesktopSidebar({
               style={{ gap: '2rem' }}
             >
               <span className="sidebar-item-icon">
-                {React.createElement(tab.icon)}
+                {React.createElement(tab.icon, {
+                  size: 24,
+                  strokeWidth: 2.2,
+                  color: activeTab === tab.id ? ACTIVE_ICON_COLOR : undefined,
+                })}
               </span>
               <span>{tab.label[language] || tab.label.bm}</span>
             </button>
@@ -178,7 +185,7 @@ export default function DesktopSidebar({
                 style={{ gap: '2rem' }}
               >
                 <span className="sidebar-item-icon">
-                  <GearsIcon size={64} />
+                  <Settings size={24} strokeWidth={2.2} color={settingsOpen ? ACTIVE_ICON_COLOR : undefined} />
                 </span>
                 <span>{language === 'bm' ? 'Tetapan' : 'Settings'}</span>
               </button>
@@ -286,15 +293,15 @@ export default function DesktopSidebar({
           background: 'transparent'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '1rem', filter: 'drop-shadow(0 2px 6px rgba(253,230,138,0.7))' }}>⭐</span>
+            <Star size={18} color="#FDE68A" fill="#FDE68A" style={{ filter: 'drop-shadow(0 2px 6px rgba(253,230,138,0.7))' }} />
             <span style={{ color: '#FDE68A', fontWeight: 700, fontSize: '0.85rem' }}>{stars} {language === 'bm' ? 'bintang' : 'stars'}</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '1rem', filter: 'drop-shadow(0 2px 6px rgba(252,165,165,0.7))' }}>❤️</span>
+            <Heart size={18} color="#FCA5A5" fill="#FCA5A5" style={{ filter: 'drop-shadow(0 2px 6px rgba(252,165,165,0.7))' }} />
             <span style={{ color: '#FCA5A5', fontWeight: 700, fontSize: '0.85rem' }}>{hearts} {language === 'bm' ? 'nyawa' : 'hearts'}</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '1rem', filter: 'drop-shadow(0 2px 6px rgba(167,139,250,0.7))' }}>💎</span>
+            <Gem size={18} color="#C4B5FD" style={{ filter: 'drop-shadow(0 2px 6px rgba(167,139,250,0.7))' }} />
             <span style={{ color: '#C4B5FD', fontWeight: 700, fontSize: '0.85rem' }}>{gems} {language === 'bm' ? 'permata' : 'gems'}</span>
           </div>
         </div>

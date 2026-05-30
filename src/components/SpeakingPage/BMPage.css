@@ -88,7 +88,6 @@
   box-shadow: none;
   overflow: hidden;
   transition: transform .25s cubic-bezier(.34,1.56,.64,1);
-  opacity: 0; transform: translateY(28px);
   animation: bp-tileIn .6s cubic-bezier(.34,1.56,.64,1) forwards;
   -webkit-tap-highlight-color: transparent;
 }
@@ -334,8 +333,9 @@
   background: transparent;
   overflow: visible;
   transition: transform .35s cubic-bezier(.34,1.56,.64,1), filter .35s;
-  opacity: 0;
-  transform: translateY(28px);
+  /* Resting state visible — entrance animation only fades IN. If the animation
+     is disabled (iOS Reduce Motion) or dropped by Safari, the card stays visible
+     instead of being stuck at opacity:0 (present but invisible). */
   animation: bp-tileIn .6s cubic-bezier(.34,1.56,.64,1) forwards;
   -webkit-tap-highlight-color: transparent;
   display: flex;
@@ -349,30 +349,37 @@
 .bp-icon-card:nth-child(4) { animation-delay: .26s; }
 .bp-icon-card:nth-child(5) { animation-delay: .33s; }
 
-/* Category-specific 3D hover effects */
-.bp-icon-card.cat-kv:hover {
-  transform: translateY(-12px) rotateX(8deg) rotateY(-12deg) scale(1.1);
-  filter: brightness(1.15) drop-shadow(0 20px 30px rgba(13,148,136,.25));
-}
+/* Category-specific 3D hover effects — only on real-hover (mouse) devices, so a
+   tap on touch screens doesn't leave a card stuck in its hovered transform. */
+@media (hover: hover) {
+  .bp-icon-card.cat-kv:hover {
+    transform: translateY(-12px) rotateX(8deg) rotateY(-12deg) scale(1.1);
+    filter: brightness(1.15) drop-shadow(0 20px 30px rgba(13,148,136,.25));
+  }
 
-.bp-icon-card.cat-kvk:hover {
-  transform: translateY(-12px) rotateX(-8deg) rotateY(12deg) scale(1.1);
-  filter: brightness(1.12) drop-shadow(0 20px 30px rgba(124,58,237,.25));
-}
+  .bp-icon-card.cat-kvk:hover {
+    transform: translateY(-12px) rotateX(-8deg) rotateY(12deg) scale(1.1);
+    filter: brightness(1.12) drop-shadow(0 20px 30px rgba(124,58,237,.25));
+  }
 
-.bp-icon-card.cat-phonics:hover {
-  transform: translateY(-14px) rotateX(10deg) rotateY(-10deg) scale(1.12);
-  filter: brightness(1.18) drop-shadow(0 22px 35px rgba(244,63,94,.25));
-}
+  .bp-icon-card.cat-phonics:hover {
+    transform: translateY(-14px) rotateX(10deg) rotateY(-10deg) scale(1.12);
+    filter: brightness(1.18) drop-shadow(0 22px 35px rgba(244,63,94,.25));
+  }
 
-.bp-icon-card.cat-numbers:hover {
-  transform: translateY(-12px) rotateX(-10deg) rotateY(14deg) scale(1.1);
-  filter: brightness(1.2) drop-shadow(0 20px 35px rgba(255,193,7,.35));
-}
+  .bp-icon-card.cat-numbers:hover {
+    transform: translateY(-12px) rotateX(-10deg) rotateY(14deg) scale(1.1);
+    filter: brightness(1.2) drop-shadow(0 20px 35px rgba(255,193,7,.35));
+  }
 
-.bp-icon-card.cat-objects:hover {
-  transform: translateY(-14px) rotateX(12deg) rotateY(-14deg) scale(1.12);
-  filter: brightness(1.15) drop-shadow(0 22px 35px rgba(16,185,129,.28));
+  .bp-icon-card.cat-objects:hover {
+    transform: translateY(-14px) rotateX(12deg) rotateY(-14deg) scale(1.12);
+    filter: brightness(1.15) drop-shadow(0 22px 35px rgba(16,185,129,.28));
+  }
+
+  .bp-icon-card:hover svg {
+    filter: drop-shadow(0 12px 24px rgba(0,0,0,.2));
+  }
 }
 
 .bp-icon-card:active {
@@ -383,16 +390,14 @@
   outline: none;
 }
 
+/* Size by the SVG's own 1:1 viewBox (height:auto) — iOS Safari doesn't reliably
+   give height via the card's aspect-ratio, which made these icons invisible. */
 .bp-icon-card svg {
   width: 100%;
-  height: 100%;
+  height: auto;
   filter: drop-shadow(0 8px 16px rgba(0,0,0,.15));
   transition: filter .35s;
   transform-style: preserve-3d;
-}
-
-.bp-icon-card:hover svg {
-  filter: drop-shadow(0 12px 24px rgba(0,0,0,.2));
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -413,8 +418,9 @@
   align-items: center;
   gap: 0.4rem;
   perspective: 800px;
-  opacity: 0;
-  transform: translateY(28px);
+  /* Resting state visible — entrance animation only fades IN. If the animation
+     is disabled (iOS Reduce Motion) or dropped by Safari, the card stays visible
+     instead of being stuck at opacity:0 (present but invisible). */
   animation: bp-tileIn .6s cubic-bezier(.34,1.56,.64,1) forwards;
   -webkit-tap-highlight-color: transparent;
 }
@@ -427,15 +433,16 @@
 
 .ee-robot-media {
   width: 100%;
-  aspect-ratio: 1/1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   transition: transform .3s cubic-bezier(.34,1.56,.64,1);
 }
-.ee-robot-media svg { width: 100%; height: 100%; display: block; }
+/* Size by the SVG's own 1:1 viewBox (height:auto) instead of the container's
+   aspect-ratio — iOS Safari < 15 collapses aspect-ratio boxes to 0 height. */
+.ee-robot-media svg { width: 100%; height: auto; display: block; }
 
-.ee-robot-card:hover .ee-robot-media { transform: translateY(-8px) scale(1.06); }
+@media (hover: hover) {
+  .ee-robot-card:hover .ee-robot-media { transform: translateY(-8px) scale(1.06); }
+}
 .ee-robot-card:active .ee-robot-media { transform: translateY(0) scale(0.97); }
 
 .ee-robot-label {

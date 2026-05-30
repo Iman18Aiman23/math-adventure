@@ -3,6 +3,7 @@ import { CURRICULUM } from '../../data/ageCurriculum';
 import { playHoverSound } from '../../utils/soundManager';
 import PageLayout from '../PageLayout';
 import '../SpeakingPage/BMPage.css';
+import KssrQnA from '../KssrQnA';
 // Shared robot-head card template (pillar-based frames, reused across ages).
 import { EEGameRobotDefs, EEGameRobot } from '../AgeGroup-4-6/EarlyExplorersRobots';
 import { GRADE1_GAME_INNER } from './Grade1Screens';
@@ -82,17 +83,6 @@ const QNA = [
 export default function Grade1AdventurersHome(props) {
   const { onBack, onPlayGame, language = 'bm' } = props;
   const curriculum = CURRICULUM['age-7'];
-  const [expandedQnA, setExpandedQnA] = React.useState(new Set());
-
-  const toggleQnA = (index) => {
-    const newSet = new Set(expandedQnA);
-    if (newSet.has(index)) {
-      newSet.delete(index);
-    } else {
-      newSet.add(index);
-    }
-    setExpandedQnA(newSet);
-  };
 
   // Group games by pillar (only pillars that actually have games)
   const pillarSections = PILLAR_ORDER
@@ -115,205 +105,23 @@ export default function Grade1AdventurersHome(props) {
     </>
   );
 
-  const hintContent = (
-    <>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF9600"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-      {language === 'bm' ? 'Pemain baru? Mari mula petualangan anda!' : 'New player? Let\'s start your adventure!'}
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF3D8B"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-    </>
-  );
-
   const additionalSection = (
     <>
-      {/* ── KSSR Curriculum QnA card ──────────────────────────────────────── */}
-      <div style={{
-        background: 'linear-gradient(135deg, #FF9600 0%, #FF6B35 100%)',
-        borderRadius: '16px',
-        padding: '1.15rem 1.25rem',
-        marginBottom: '1rem',
-        color: 'white',
-      }}>
-        {/* Header */}
-        <div style={{ marginBottom: '0.9rem' }}>
-          <div style={{ fontWeight: 900, fontSize: '1.05rem', letterSpacing: '0.01em', marginBottom: '0.4rem' }}>
-            {language === 'bm' ? 'Berdasarkan Kurikulum KSSR' : 'Based on KSSR Curriculum'}
-          </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-            <span style={{ background: 'rgba(255,255,255,0.22)', borderRadius: '6px', padding: '0.18rem 0.65rem', fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.04em', border: '1px solid rgba(255,255,255,0.35)' }}>
-              {language === 'bm' ? 'BM 18/21 Objektif' : 'BM 18/21 Objectives'}
-            </span>
-            <span style={{ background: 'rgba(255,255,255,0.22)', borderRadius: '6px', padding: '0.18rem 0.65rem', fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.04em', border: '1px solid rgba(255,255,255,0.35)' }}>
-              {language === 'bm' ? 'Math 10/10 Bidang' : 'Math 10/10 Areas'}
-            </span>
-            <span style={{ background: 'rgba(255,255,255,0.22)', borderRadius: '6px', padding: '0.18rem 0.65rem', fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.04em', border: '1px solid rgba(255,255,255,0.35)' }}>
-              {language === 'bm' ? 'Jawi PI Obj. 10' : 'Jawi PI Obj. 10'}
-            </span>
-          </div>
-        </div>
-
-        {/* QnA blocks as dropdowns */}
-        {QNA.map((block, bi) => {
-          const isExpanded = expandedQnA.has(bi);
-          return (
-            <div key={bi}>
-              <div style={{ borderTop: '1px solid rgba(255,255,255,0.28)', margin: '0 0 0.6rem' }} />
-
-              {/* Clickable question header */}
-              <button
-                onClick={() => toggleQnA(bi)}
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '0.5rem',
-                  marginBottom: '0',
-                  background: 'transparent',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: '0.4rem 0.4rem 0.4rem 0',
-                  textAlign: 'left',
-                  transition: 'all 0.2s ease',
-                  borderRadius: '6px',
-                  hover: { background: 'rgba(255,255,255,0.08)' },
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
-                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-              >
-                {/* Dropdown arrow */}
-                <span
-                  style={{
-                    flexShrink: 0,
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: '18px',
-                    height: '18px',
-                    marginTop: '0.08rem',
-                    transition: 'transform 0.3s ease',
-                    transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                  }}
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                    <polyline points="6 9 12 15 18 9"></polyline>
-                  </svg>
-                </span>
-
-                {/* SOALAN pill */}
-                <span
-                  style={{
-                    flexShrink: 0,
-                    background: 'rgba(255,255,255,0.9)',
-                    color: '#E65100',
-                    borderRadius: '4px',
-                    padding: '0.12rem 0.5rem',
-                    fontSize: '0.8rem',
-                    fontWeight: 900,
-                    letterSpacing: '0.06em',
-                    lineHeight: '1.6',
-                    marginTop: '0.05rem',
-                  }}
-                >
-                  {language === 'bm' ? 'SOALAN' : 'Q'}
-                </span>
-
-                {/* Question text */}
-                <span style={{ fontWeight: 800, fontSize: '1.1rem', lineHeight: 1.35, flex: 1 }}>
-                  {language === 'bm' ? block.q.bm : block.q.eng}
-                </span>
-              </button>
-
-              {/* Collapsible answer section */}
-              {isExpanded && (
-                <div style={{ animation: 'slideDown 0.25s ease', marginTop: '0.4rem', paddingBottom: '0.5rem' }}>
-                  {/* Answer intro */}
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.55rem', marginLeft: '1.35rem' }}>
-                    <span
-                      style={{
-                        flexShrink: 0,
-                        background: 'rgba(255,255,255,0.22)',
-                        color: 'white',
-                        borderRadius: '4px',
-                        padding: '0.12rem 0.5rem',
-                        fontSize: '0.8rem',
-                        fontWeight: 900,
-                        letterSpacing: '0.06em',
-                        lineHeight: '1.6',
-                        marginTop: '0.05rem',
-                        border: '1px solid rgba(255,255,255,0.4)',
-                      }}
-                    >
-                      {language === 'bm' ? 'JAWAPAN' : 'A'}
-                    </span>
-                    <span style={{ fontSize: '0.95rem', lineHeight: 1.5, opacity: 0.92 }}>
-                      {language === 'bm' ? block.intro.bm : block.intro.eng}
-                    </span>
-                  </div>
-
-                  {/* Item list */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', paddingLeft: '1.35rem' }}>
-                    {block.items.map((item, ii) => (
-                      <div
-                        key={ii}
-                        style={{
-                          fontSize: '0.92rem',
-                          lineHeight: 1.6,
-                          paddingLeft: '0.7rem',
-                          borderLeft: '2px solid rgba(255,255,255,0.4)',
-                          opacity: 0.9,
-                        }}
-                      >
-                        {language === 'bm' ? item.bm : item.eng}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* ── How to Play ──────────────────────────────────────────────────── */}
-      <div className="bm-howto">
-        <div className="bm-howto-title">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFB300" aria-hidden="true">
-            <path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/>
-          </svg>
-          {language === 'bm' ? 'Cara Bermain' : 'How to Play'}
-        </div>
-        <div className="bm-howto-steps">
-          <div className="bm-howto-step">
-            <span className="bm-step-num" style={{ background: 'linear-gradient(180deg, #FFD699, #FFA502)', boxShadow: '0 3px 0 #E67E22' }}>1</span>
-            <span>{language === 'bm' ? 'Pilih permainan dan tekan untuk memulakan.' : 'Pick a game and tap to start.'}</span>
-          </div>
-          <div className="bm-howto-step">
-            <span className="bm-step-num" style={{ background: 'linear-gradient(180deg, #FFD699, #FFA502)', boxShadow: '0 3px 0 #E67E22' }}>2</span>
-            <span>{language === 'bm' ? 'Jawab soalan dan dengar sebutan yang betul.' : 'Answer questions and hear the correct pronunciation.'}</span>
-          </div>
-          <div className="bm-howto-step">
-            <span className="bm-step-num" style={{ background: 'linear-gradient(180deg, #FFD699, #FFA502)', boxShadow: '0 3px 0 #E67E22' }}>3</span>
-            <span>{language === 'bm' ? 'Kumpul markah dan tamatkan semua permainan!' : 'Collect your score and complete all games!'}</span>
-          </div>
-        </div>
-      </div>
+      <div className="bp-section-label" style={{ marginTop: '2.5rem', marginBottom: '1.25rem' }}>FAQ</div>
+      <KssrQnA
+        qna={QNA}
+        language={language}
+        gradient="linear-gradient(135deg, #FF9600 0%, #FF6B35 100%)"
+        badges={language === 'bm'
+          ? ['BM 18/21 Objektif', 'Math 10/10 Bidang', 'Jawi PI Obj. 10']
+          : ['BM 18/21 Objectives', 'Math 10/10 Areas', 'Jawi PI Obj. 10']}
+      />
     </>
   );
 
   return (
     <>
       <style>{`
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            max-height: 0;
-            overflow: hidden;
-          }
-          to {
-            opacity: 1;
-            max-height: 2000px;
-          }
-        }
-
         .coming-soon-container {
           display: flex;
           flex-direction: column;
@@ -342,13 +150,15 @@ export default function Grade1AdventurersHome(props) {
           max-width: 400px;
         }
       `}</style>
+      {/* Shared robot-head frame + screen clip for the game-card icons — rendered once. */}
+      <EEGameRobotDefs />
       <PageLayout
         classPrefix="bp"
         heroIcon={<span style={{ fontSize: '4.5rem', lineHeight: 1 }}>🧭</span>}
         heroTitle={language === 'bm' ? 'Pelawat Gred 1' : 'Grade 1 Adventurers'}
         heroSubtitle={heroSubtitle}
         sectionLabel={language === 'bm' ? 'Pilih Permainan' : 'Choose Game'}
-        hintText={hintContent}
+        hintText={null}
         onBack={onBack}
         additionalSection={additionalSection}
       >
@@ -369,7 +179,7 @@ export default function Grade1AdventurersHome(props) {
                   {meta[language] || meta.bm}
                 </span>
                 <span style={{ flex: 1, height: '3px', background: `${meta.color}33`, borderRadius: '999px' }} />
-                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#fff', background: meta.color, borderRadius: '999px', padding: '2px 9px', lineHeight: 1.4 }}>
+                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#fff', background: meta.badge || meta.color, borderRadius: '999px', padding: '2px 9px', lineHeight: 1.4 }}>
                   {games.length}
                 </span>
               </div>
@@ -377,6 +187,9 @@ export default function Grade1AdventurersHome(props) {
                 <GameCard
                   key={game.id}
                   game={game}
+                  accent={meta.color}
+                  frame={id}
+                  inner={GRADE1_GAME_INNER[game.id]}
                   onPlay={() => onPlayGame(game.id)}
                 />
               ))}
@@ -400,7 +213,7 @@ export default function Grade1AdventurersHome(props) {
   );
 }
 
-const GameCard = React.memo(function GameCard({ game, onPlay }) {
+const GameCard = React.memo(function GameCard({ game, accent, frame, inner, onPlay }) {
   const soundPlayedRef = useRef(false);
 
   const handleMouseEnter = useCallback(() => {
@@ -411,6 +224,26 @@ const GameCard = React.memo(function GameCard({ game, onPlay }) {
     }
   }, []);
 
+  // Shared robot-head template + per-game screen art (+ near-black label below).
+  if (inner) {
+    return (
+      <button
+        onClick={onPlay}
+        onMouseEnter={handleMouseEnter}
+        className="ee-robot-card"
+        type="button"
+      >
+        <span className="ee-robot-media">
+          <EEGameRobot frame={frame}>{inner}</EEGameRobot>
+        </span>
+        <span className="ee-robot-label" style={{ color: accent }}>
+          {game.name}
+        </span>
+      </button>
+    );
+  }
+
+  // Fallback for any game without screen art yet: chunky emoji + label card.
   return (
     <button
       onClick={onPlay}

@@ -72,9 +72,11 @@ export default function PageLayout({
             </div>
 
             {/* Hint Footer */}
-            <div className={hintClass}>
-              {hintText}
-            </div>
+            {hintText && (
+              <div className={hintClass}>
+                {hintText}
+              </div>
+            )}
 
             {/* Optional Additional Section (e.g., BMPage's "How to Play") */}
             {additionalSection && additionalSection}

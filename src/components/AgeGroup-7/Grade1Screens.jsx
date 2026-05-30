@@ -29,7 +29,7 @@ function blk({ x, y, w = 38, h = 40, top, deep, t, fs = 24, font = "'Baloo 2','C
     <g key={`blk-${x}-${y}-${t}`}>
       <rect x={x} y={y} width={w} height={h} rx="6" fill={top} stroke={deep} strokeWidth="2" />
       <rect x={x} y={y} width={w} height={h / 4} rx="6" fill="rgba(255,255,255,.45)" />
-      <text x={x + w / 2} y={(vCenter ? y + h / 2 : y + h * 0.72) + dy} textAnchor="middle" dominantBaseline={vCenter ? 'central' : 'auto'} fontFamily={font} fontWeight="800" fontSize={fs} fill={textFill} stroke={deep} strokeWidth=".5">{t}</text>
+      <text x={x + w / 2} y={(vCenter ? y + h / 2 : y + h * 0.72) + dy} textAnchor="middle" dominantBaseline={vCenter ? 'central' : 'auto'} fontFamily={font} fontWeight="800" fontSize={fs} fill={textFill}>{t}</text>
     </g>
   );
 }
@@ -48,14 +48,12 @@ function apple(cx, cy) {
 
 /* ════════════════ READING (Membaca) — orange face, cool art ════════════════ */
 
-/* Bina Ayat — words on a line forming a sentence. */
+/* Bina Ayat — the sentence "Saya Suka Makan" stacked as word chips (a column). */
 const SBinaAyat = (
-  <g transform="translate(0 14)">
-    <rect x="44" y="80" width="28" height="20" rx="5" fill="#4DD0C4" stroke="#00695C" strokeWidth="2" />
-    <rect x="78" y="80" width="36" height="20" rx="5" fill="#4FC3F7" stroke="#01579B" strokeWidth="2" />
-    <rect x="120" y="80" width="28" height="20" rx="5" fill="#9575CD" stroke="#4527A0" strokeWidth="2" />
-    <circle cx="154" cy="98" r="3" fill="#FFFFFF" />
-    <line x1="44" y1="110" x2="156" y2="110" stroke="#FFFFFF" strokeWidth="2.5" opacity="0.8" strokeLinecap="round" />
+  <g transform="translate(0 4)">
+    {blk({ x: 64, y: 60, w: 72, h: 20, top: '#4DD0C4', deep: '#00695C', t: 'Saya', fs: 13, vCenter: true })}
+    {blk({ x: 64, y: 84, w: 72, h: 20, top: '#4FC3F7', deep: '#01579B', t: 'Suka', fs: 13, vCenter: true })}
+    {blk({ x: 64, y: 108, w: 72, h: 20, top: '#9575CD', deep: '#4527A0', t: 'Makan', fs: 13, vCenter: true })}
     {spark}
   </g>
 );
@@ -70,12 +68,12 @@ const SSukuKata = (
   </g>
 );
 
-/* Jenis Kata — magnifier over a word. */
+/* Jenis Kata — magnifier above the "kata" word (text centred in its box). */
 const SJenisKata = (
-  <g transform="translate(0 10)">
-    {blk({ x: 50, y: 74, w: 56, h: 34, top: '#4FC3F7', deep: '#01579B', t: 'kata', fs: 18 })}
-    <circle cx="124" cy="92" r="16" fill="rgba(255,255,255,0.25)" stroke="#FFFFFF" strokeWidth="3" />
-    <line x1="135" y1="103" x2="146" y2="114" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" />
+  <g>
+    <circle cx="100" cy="70" r="15" fill="rgba(255,255,255,0.25)" stroke="#FFFFFF" strokeWidth="3" />
+    <line x1="110" y1="80" x2="119" y2="89" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" />
+    {blk({ x: 60, y: 98, w: 80, h: 32, top: '#4FC3F7', deep: '#01579B', t: 'kata', fs: 18, vCenter: true })}
     {spark}
   </g>
 );
@@ -83,7 +81,7 @@ const SJenisKata = (
 /* Kata Tanya — big question mark. */
 const SKataTanya = (
   <g>
-    <text x="100" y="96" textAnchor="middle" dominantBaseline="central" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="64" fill="#FFFFFF" stroke="#C8651A" strokeWidth="2">?</text>
+    <text x="100" y="96" textAnchor="middle" dominantBaseline="central" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="64" fill="#FFFFFF">?</text>
     {spark}
   </g>
 );
@@ -102,19 +100,18 @@ const SKataHubung = (
 /* Kata Imbuhan — prefix + root: ber + lari. */
 const SKataImbuhan = (
   <g transform="translate(0 8)">
-    {blk({ x: 40, y: 74, w: 38, h: 36, top: '#4DD0C4', deep: '#00695C', t: 'ber', fs: 15 })}
-    <text x="100" y="92" textAnchor="middle" dominantBaseline="central" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="22" fill="#FFFFFF">+</text>
-    {blk({ x: 120, y: 74, w: 42, h: 36, top: '#4FC3F7', deep: '#01579B', t: 'lari', fs: 15 })}
+    {blk({ x: 48, y: 74, w: 36, h: 36, top: '#4DD0C4', deep: '#00695C', t: 'ber', fs: 15 })}
+    <text x="94" y="92" textAnchor="middle" dominantBaseline="central" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="20" fill="#FFFFFF">+</text>
+    {blk({ x: 104, y: 74, w: 42, h: 36, top: '#4FC3F7', deep: '#01579B', t: 'lari', fs: 15 })}
     {spark}
   </g>
 );
 
-/* Ejaan & Tanda Baca — letters + punctuation. */
+/* Ejaan & Tanda Baca — simple: Aa block + ?! mark (centred, tight gap). */
 const SEjaanTandaBaca = (
   <g transform="translate(0 8)">
-    {blk({ x: 56, y: 74, w: 44, h: 36, top: '#4FC3F7', deep: '#01579B', t: 'Aa', fs: 20 })}
-    <text x="130" y="84" textAnchor="middle" dominantBaseline="central" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="22" fill="#FFFFFF">. ,</text>
-    <text x="130" y="104" textAnchor="middle" dominantBaseline="central" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="22" fill="#FFFFFF">? !</text>
+    {blk({ x: 58, y: 74, w: 46, h: 36, top: '#4FC3F7', deep: '#01579B', t: 'Aa', fs: 20, vCenter: true })}
+    <text x="126" y="92" textAnchor="middle" dominantBaseline="central" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="28" fill="#FFFFFF">?!</text>
     {spark}
   </g>
 );
@@ -247,7 +244,7 @@ const SBacaAyatJawi = (
 /* Tulis Jawi — big Jawi letter + qalam pen. */
 const STulisJawi = (
   <g transform="translate(0 8)">
-    <text x="90" y="90" textAnchor="middle" dominantBaseline="central" fontFamily={jawiFont} fontWeight="700" fontSize="48" fill="#FFFFFF" stroke="#1B6E4B" strokeWidth="1.5">ج</text>
+    <text x="90" y="90" textAnchor="middle" dominantBaseline="central" fontFamily={jawiFont} fontWeight="700" fontSize="48" fill="#FFFFFF">ج</text>
     <g transform="translate(120 58) rotate(35)">
       <rect x="0" y="0" width="8" height="34" rx="2" fill="#FFE082" stroke="#7A4D02" strokeWidth="1" />
       <polygon points="0,34 4,44 8,34" fill="#5D4037" />
@@ -261,7 +258,7 @@ const STulisJawi = (
 /* Nombor 1–100 — big 100. */
 const SNombor100 = (
   <g>
-    <text x="100" y="96" textAnchor="middle" dominantBaseline="central" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="44" fill="#FFFFFF" stroke="#5F3FC0" strokeWidth="2">100</text>
+    <text x="100" y="96" textAnchor="middle" dominantBaseline="central" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="44" fill="#FFFFFF">100</text>
     {spark}
   </g>
 );

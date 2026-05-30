@@ -135,7 +135,7 @@ export default function KVKLearningPage({ onBack, language }) {
             overflow: hidden;
             transition: transform .25s cubic-bezier(.34,1.56,.64,1);
             -webkit-tap-highlight-color: transparent;
-            opacity: 0; transform: translateY(22px);
+            /* Resting state visible — entrance only fades IN (iOS-safe). */
             animation: kvkTileIn .5s cubic-bezier(.34,1.56,.64,1) forwards;
           }
           @keyframes kvkTileIn {
