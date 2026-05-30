@@ -3,6 +3,13 @@ import { CURRICULUM } from '../../data/ageCurriculum';
 import { playHoverSound } from '../../utils/soundManager';
 import PageLayout from '../PageLayout';
 import '../SpeakingPage/BMPage.css';
+import {
+  RobotDefs,
+  RobotHeadTadikaReading,
+  RobotHeadTadikaSpeaking,
+  RobotHeadTadikaJawi,
+  RobotHeadTadikaMath,
+} from '../SubjectRobots';
 
 // Import SVG icons
 import AlphabetSafariSvg from '../icons/EarlyExplorersHome/AlphabetSafari.svg';
@@ -37,6 +44,15 @@ const PILLAR_META = {
   speaking: { bm: 'Bertutur',     eng: 'Speaking',    emoji: '🗣️', color: '#9C27B0' },
   jawi:     { bm: 'Tulisan Jawi', eng: 'Jawi Script', emoji: '✍️', color: '#7C4DFF' },
   math:     { bm: 'Matematik',    eng: 'Mathematics', emoji: '🔢', color: '#1CB0F6' },
+};
+
+// Tadika (age 4–6) pillar robot heads — shown next to each section heading.
+// Flat + static (no filters / infinite animations), so 4 on one page = no lag.
+const PILLAR_ROBOT = {
+  reading:  RobotHeadTadikaReading,
+  speaking: RobotHeadTadikaSpeaking,
+  jawi:     RobotHeadTadikaJawi,
+  math:     RobotHeadTadikaMath,
 };
 
 export default function EarlyExplorersHome(props) {
@@ -100,6 +116,8 @@ export default function EarlyExplorersHome(props) {
         /* Add specific styling for the 6th tile animation delay */
         .bp-icon-card:nth-child(6) { animation-delay: .4s; }
       `}</style>
+      {/* Shared SVG gradients/symbols for the pillar robot heads — rendered once. */}
+      <RobotDefs />
       <PageLayout
         classPrefix="bp"
         heroIcon={<span style={{ fontSize: '4.5rem', lineHeight: 1 }}>🌱</span>}
@@ -110,36 +128,41 @@ export default function EarlyExplorersHome(props) {
         onBack={onBack}
         additionalSection={additionalSection}
       >
-        {pillarSections.map(({ id, meta, games }) => (
-          <React.Fragment key={id}>
-            <div
-              style={{
-                gridColumn: '1 / -1',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                marginTop: '0.25rem',
-              }}
-            >
-              <span style={{ fontSize: '1.3rem', lineHeight: 1 }}>{meta.emoji}</span>
-              <span style={{ fontWeight: 800, fontSize: '1.05rem', color: meta.color, whiteSpace: 'nowrap' }}>
-                {meta[language] || meta.bm}
-              </span>
-              <span style={{ flex: 1, height: '3px', background: `${meta.color}33`, borderRadius: '999px' }} />
-              <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#fff', background: meta.color, borderRadius: '999px', padding: '2px 9px', lineHeight: 1.4 }}>
-                {games.length}
-              </span>
-            </div>
-            {games.map((game) => (
-              <GameCard
-                key={game.id}
-                game={game}
-                className={CAT_MAP[game.id]}
-                onPlay={() => onPlayGame(game.id)}
-              />
-            ))}
-          </React.Fragment>
-        ))}
+        {pillarSections.map(({ id, meta, games }) => {
+          const Robot = PILLAR_ROBOT[id];
+          return (
+            <React.Fragment key={id}>
+              <div
+                style={{
+                  gridColumn: '1 / -1',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  marginTop: '0.25rem',
+                }}
+              >
+                {Robot
+                  ? <Robot className="rbk-trigger" style={{ width: 92, height: 62, flexShrink: 0 }} aria-hidden="true" />
+                  : <span style={{ fontSize: '1.3rem', lineHeight: 1 }}>{meta.emoji}</span>}
+                <span style={{ fontWeight: 800, fontSize: '1.05rem', color: meta.color, whiteSpace: 'nowrap' }}>
+                  {meta[language] || meta.bm}
+                </span>
+                <span style={{ flex: 1, height: '3px', background: `${meta.color}33`, borderRadius: '999px' }} />
+                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#fff', background: meta.color, borderRadius: '999px', padding: '2px 9px', lineHeight: 1.4 }}>
+                  {games.length}
+                </span>
+              </div>
+              {games.map((game) => (
+                <GameCard
+                  key={game.id}
+                  game={game}
+                  className={CAT_MAP[game.id]}
+                  onPlay={() => onPlayGame(game.id)}
+                />
+              ))}
+            </React.Fragment>
+          );
+        })}
       </PageLayout>
     </>
   );

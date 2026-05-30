@@ -1,0 +1,17 @@
+/* Tadika (age 4–6) robot heads — FLAT + STATIC.
+   No SVG filters, no infinite animations, no always-on will-change.
+   Tiny lift on hover only (GPU-cheap, auto-promoted by the browser). */
+.rbk-head {
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center bottom;
+}
+.rbk-head:hover,
+.rbk-trigger:hover .rbk-head {
+  transform: translateY(-3px) rotate(-3deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rbk-head { transition: none; }
+  .rbk-head:hover,
+  .rbk-trigger:hover .rbk-head { transform: none; }
+}

@@ -67,12 +67,12 @@
 /* ── Tile grid ── */
 .bp-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  column-gap: 14px;
-  row-gap: 22px;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 12px;
+  row-gap: 18px;
   perspective: 1200px;
 }
-@media (min-width: 760px) { .bp-grid { grid-template-columns: repeat(3, 1fr); column-gap: 22px; row-gap: 28px; } }
+@media (min-width: 760px) { .bp-grid { grid-template-columns: repeat(3, 1fr); column-gap: 20px; row-gap: 26px; } }
 
 /* ── Tile base ── */
 .bp-tile {

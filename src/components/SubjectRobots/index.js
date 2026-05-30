@@ -15,3 +15,11 @@ export { default as RobotHeadMath } from './RobotHeadMath';
 export { default as RobotHeadArabic } from './RobotHeadArabic';
 export { default as RobotHeadPlayful } from './RobotHeadPlayful';
 export { default as RobotHeadBrand } from './RobotHeadBrand';
+
+// Tadika (age 4–6) age-themed pillar heads — flat + static
+export {
+  RobotHeadTadikaReading,
+  RobotHeadTadikaSpeaking,
+  RobotHeadTadikaJawi,
+  RobotHeadTadikaMath,
+} from './RobotHeadsTadika';
