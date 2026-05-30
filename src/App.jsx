@@ -1,15 +1,16 @@
-import React, { useState, useEffect, createContext, useContext, Suspense } from 'react';
+import React, { useState, useEffect, createContext, useContext, Suspense, useTransition } from 'react';
 import HomePage from './components/HomePage';
+import LoadingSkeleton from './components/LoadingSkeleton';
 import BMPage from './components/SpeakingPage/BMPage';
 import JawiPage from './components/JawiScriptPage/JawiPage';
 import MathHome from './components/MathematicsPage/MathHome';
 import OpsLandingPage from './components/MathematicsPage/OpsLandingPage';
 import TimeGameMenu from './components/MathematicsPage/TimeGameMenu';
-import MonthsGame from './components/MathematicsPage/MonthsGame';
-import ClockGame from './components/MathematicsPage/ClockGame';
-import MonthLearning from './components/MathematicsPage/MonthLearning';
-import MathOperationsGame from './components/MathematicsPage/MathOperationsGame';
-import ColumnMathGame from './components/MathematicsPage/ColumnMathGame';
+const MonthsGame = React.lazy(() => import('./components/MathematicsPage/MonthsGame'));
+const ClockGame = React.lazy(() => import('./components/MathematicsPage/ClockGame'));
+const MonthLearning = React.lazy(() => import('./components/MathematicsPage/MonthLearning'));
+const MathOperationsGame = React.lazy(() => import('./components/MathematicsPage/MathOperationsGame'));
+const ColumnMathGame = React.lazy(() => import('./components/MathematicsPage/ColumnMathGame'));
 import LevelUpToast from './components/LevelUpToast';
 import WelcomeModal from './components/WelcomeModal';
 import DesktopSidebar from './components/DesktopSidebar';
@@ -19,74 +20,77 @@ import EarlyExplorersHome from './components/AgeGroup-4-6/EarlyExplorersHome';
 import Grade1AdventurersHome from './components/AgeGroup-7/Grade1AdventurersHome';
 import Grade2DiscoverersHome from './components/AgeGroup-8/Grade2DiscoverersHome';
 import Grade3AchieversHome from './components/AgeGroup-9/Grade3AchieversHome';
-import AlphabetCards from './components/AgeGroup-4-6/AlphabetCards';
-import NumberCards from './components/AgeGroup-4-6/NumberCards';
-import AlphabetSafari from './components/AgeGroup-4-6/AlphabetSafari';
-import CountingStars from './components/AgeGroup-4-6/CountingStars';
-import ShapeSorter from './components/AgeGroup-4-6/ShapeSorter';
-import NumberMatch from './components/AgeGroup-4-6/NumberMatch';
-import AppleAddition from './components/AgeGroup-4-6/AppleAddition';
-import MissingNumber from './components/AgeGroup-4-6/MissingNumber';
-import SpeakingGame4to6 from './components/AgeGroup-4-6/SpeakingGame4to6';
-import JawiLetterCards from './components/AgeGroup-4-6/JawiLetterCards';
-import JawiLetterMatch from './components/AgeGroup-4-6/JawiLetterMatch';
 import './components/AgeGroup-4-6/age46-ui.css';
-import LetterTrace from './components/AgeGroup-4-6/LetterTrace';
-import PhoneticsPop from './components/AgeGroup-4-6/PhoneticsPop';
-import SoundMatching from './components/AgeGroup-4-6/SoundMatching';
-import LetterSoundPuzzle from './components/AgeGroup-4-6/LetterSoundPuzzle';
-import PhoneticsSprint from './components/AgeGroup-4-6/PhoneticsSprint';
-import SentenceBuilder from './components/AgeGroup-7/SentenceBuilder';
-import SukuKataBinaPerkataan from './components/AgeGroup-7/SukuKataBinaPerkataan';
-import JenisKata from './components/AgeGroup-7/JenisKata';
-import KataTanya from './components/AgeGroup-7/KataTanya';
-import KataHubungSendi from './components/AgeGroup-7/KataHubungSendi';
-import KataImbuhan from './components/AgeGroup-7/KataImbuhan';
-import EjaanTandaBaca from './components/AgeGroup-7/EjaanTandaBaca';
-import KataGanda from './components/AgeGroup-7/KataGanda';
-import KefahamanBacaan from './components/AgeGroup-7/KefahamanBacaan';
-import BacaSukuKataJawi from './components/AgeGroup-7/BacaSukuKataJawi';
-import BinaPerkataanJawi from './components/AgeGroup-7/BinaPerkataanJawi';
-import PadanPerkataanJawi from './components/AgeGroup-7/PadanPerkataanJawi';
-import BacaAyatJawi from './components/AgeGroup-7/BacaAyatJawi';
-import TulisJawi from './components/AgeGroup-7/TulisJawi';
-import TimeTeller from './components/AgeGroup-7/TimeTeller';
-import CountingMoney from './components/AgeGroup-7/CountingMoney';
-import SubtractionStory from './components/AgeGroup-7/SubtractionStory';
-import BacaAyatKuat from './components/AgeGroup-7/BacaAyatKuat';
-import BertuturBertatasusila from './components/AgeGroup-7/BertuturBertatasusila';
-import JawabSoalan from './components/AgeGroup-7/JawabSoalan';
-import SebutLawanKata from './components/AgeGroup-7/SebutLawanKata';
-import SebutFrasaBergambar from './components/AgeGroup-7/SebutFrasaBergambar';
-import Nombor100 from './components/AgeGroup-7/Nombor100';
-import Tambah100 from './components/AgeGroup-7/Tambah100';
-import Bentuk3D from './components/AgeGroup-7/Bentuk3D';
-import UkurPanjang from './components/AgeGroup-7/UkurPanjang';
-import BacaPictograph from './components/AgeGroup-7/BacaPictograph';
-import Jisim from './components/AgeGroup-7/Jisim';
-import IsiPaduCecair from './components/AgeGroup-7/IsiPaduCecair';
-import KosaKataKontekstual from './components/AgeGroup-8/KosaKataKontekstual';
-import BacaanPemahaman from './components/AgeGroup-8/BacaanPemahaman';
-import CeritaBacaan from './components/AgeGroup-8/CeritaBacaan';
-import PengenalanNilai from './components/AgeGroup-8/PengenalanNilai';
-import PantunBacaan from './components/AgeGroup-8/PantunBacaan';
-import DarabMudah from './components/AgeGroup-8/DarabMudah';
-import Wang from './components/AgeGroup-8/Wang';
-import Masa from './components/AgeGroup-8/Masa';
-import Pecahan from './components/AgeGroup-8/Pecahan';
-import Nombor1000 from './components/AgeGroup-8/Nombor1000';
-import TambahTahun2 from './components/AgeGroup-8/TambahTahun2';
-import TolakTahun2 from './components/AgeGroup-8/TolakTahun2';
-import UkuranPanjangTahun2 from './components/AgeGroup-8/UkuranPanjangTahun2';
-import BacaPetikanJawi from './components/AgeGroup-8/BacaPetikanJawi';
-import PadanKataKerjaJawi from './components/AgeGroup-8/PadanKataKerjaJawi';
-import SusunAyatJawi from './components/AgeGroup-8/SusunAyatJawi';
-import LafazPantun from './components/AgeGroup-8/LafazPantun';
-import JenisAyat from './components/AgeGroup-9/JenisAyat';
-import PenjodohBilangan from './components/AgeGroup-9/PenjodohBilangan';
-import ImbuhanLanjutan from './components/AgeGroup-9/ImbuhanLanjutan';
-import SimpulanBahasa from './components/AgeGroup-9/SimpulanBahasa';
-import BacaanPemahamanLanjutan from './components/AgeGroup-9/BacaanPemahamanLanjutan';
+// Game leaf components are code-split (React.lazy) so they stay out of the main
+// bundle. This keeps the initial chunk small — the homepage and age-group menus
+// load/parse fast, so the first click isn't blocked by a giant bundle compile.
+const AlphabetCards = React.lazy(() => import('./components/AgeGroup-4-6/AlphabetCards'));
+const NumberCards = React.lazy(() => import('./components/AgeGroup-4-6/NumberCards'));
+const AlphabetSafari = React.lazy(() => import('./components/AgeGroup-4-6/AlphabetSafari'));
+const CountingStars = React.lazy(() => import('./components/AgeGroup-4-6/CountingStars'));
+const ShapeSorter = React.lazy(() => import('./components/AgeGroup-4-6/ShapeSorter'));
+const NumberMatch = React.lazy(() => import('./components/AgeGroup-4-6/NumberMatch'));
+const AppleAddition = React.lazy(() => import('./components/AgeGroup-4-6/AppleAddition'));
+const MissingNumber = React.lazy(() => import('./components/AgeGroup-4-6/MissingNumber'));
+const SpeakingGame4to6 = React.lazy(() => import('./components/AgeGroup-4-6/SpeakingGame4to6'));
+const JawiLetterCards = React.lazy(() => import('./components/AgeGroup-4-6/JawiLetterCards'));
+const JawiLetterMatch = React.lazy(() => import('./components/AgeGroup-4-6/JawiLetterMatch'));
+const LetterTrace = React.lazy(() => import('./components/AgeGroup-4-6/LetterTrace'));
+const PhoneticsPop = React.lazy(() => import('./components/AgeGroup-4-6/PhoneticsPop'));
+const SoundMatching = React.lazy(() => import('./components/AgeGroup-4-6/SoundMatching'));
+const LetterSoundPuzzle = React.lazy(() => import('./components/AgeGroup-4-6/LetterSoundPuzzle'));
+const PhoneticsSprint = React.lazy(() => import('./components/AgeGroup-4-6/PhoneticsSprint'));
+const SentenceBuilder = React.lazy(() => import('./components/AgeGroup-7/SentenceBuilder'));
+const SukuKataBinaPerkataan = React.lazy(() => import('./components/AgeGroup-7/SukuKataBinaPerkataan'));
+const JenisKata = React.lazy(() => import('./components/AgeGroup-7/JenisKata'));
+const KataTanya = React.lazy(() => import('./components/AgeGroup-7/KataTanya'));
+const KataHubungSendi = React.lazy(() => import('./components/AgeGroup-7/KataHubungSendi'));
+const KataImbuhan = React.lazy(() => import('./components/AgeGroup-7/KataImbuhan'));
+const EjaanTandaBaca = React.lazy(() => import('./components/AgeGroup-7/EjaanTandaBaca'));
+const KataGanda = React.lazy(() => import('./components/AgeGroup-7/KataGanda'));
+const KefahamanBacaan = React.lazy(() => import('./components/AgeGroup-7/KefahamanBacaan'));
+const BacaSukuKataJawi = React.lazy(() => import('./components/AgeGroup-7/BacaSukuKataJawi'));
+const BinaPerkataanJawi = React.lazy(() => import('./components/AgeGroup-7/BinaPerkataanJawi'));
+const PadanPerkataanJawi = React.lazy(() => import('./components/AgeGroup-7/PadanPerkataanJawi'));
+const BacaAyatJawi = React.lazy(() => import('./components/AgeGroup-7/BacaAyatJawi'));
+const TulisJawi = React.lazy(() => import('./components/AgeGroup-7/TulisJawi'));
+const TimeTeller = React.lazy(() => import('./components/AgeGroup-7/TimeTeller'));
+const CountingMoney = React.lazy(() => import('./components/AgeGroup-7/CountingMoney'));
+const SubtractionStory = React.lazy(() => import('./components/AgeGroup-7/SubtractionStory'));
+const BacaAyatKuat = React.lazy(() => import('./components/AgeGroup-7/BacaAyatKuat'));
+const BertuturBertatasusila = React.lazy(() => import('./components/AgeGroup-7/BertuturBertatasusila'));
+const JawabSoalan = React.lazy(() => import('./components/AgeGroup-7/JawabSoalan'));
+const SebutLawanKata = React.lazy(() => import('./components/AgeGroup-7/SebutLawanKata'));
+const SebutFrasaBergambar = React.lazy(() => import('./components/AgeGroup-7/SebutFrasaBergambar'));
+const Nombor100 = React.lazy(() => import('./components/AgeGroup-7/Nombor100'));
+const Tambah100 = React.lazy(() => import('./components/AgeGroup-7/Tambah100'));
+const Bentuk3D = React.lazy(() => import('./components/AgeGroup-7/Bentuk3D'));
+const UkurPanjang = React.lazy(() => import('./components/AgeGroup-7/UkurPanjang'));
+const BacaPictograph = React.lazy(() => import('./components/AgeGroup-7/BacaPictograph'));
+const Jisim = React.lazy(() => import('./components/AgeGroup-7/Jisim'));
+const IsiPaduCecair = React.lazy(() => import('./components/AgeGroup-7/IsiPaduCecair'));
+const KosaKataKontekstual = React.lazy(() => import('./components/AgeGroup-8/KosaKataKontekstual'));
+const BacaanPemahaman = React.lazy(() => import('./components/AgeGroup-8/BacaanPemahaman'));
+const CeritaBacaan = React.lazy(() => import('./components/AgeGroup-8/CeritaBacaan'));
+const PengenalanNilai = React.lazy(() => import('./components/AgeGroup-8/PengenalanNilai'));
+const PantunBacaan = React.lazy(() => import('./components/AgeGroup-8/PantunBacaan'));
+const DarabMudah = React.lazy(() => import('./components/AgeGroup-8/DarabMudah'));
+const Wang = React.lazy(() => import('./components/AgeGroup-8/Wang'));
+const Masa = React.lazy(() => import('./components/AgeGroup-8/Masa'));
+const Pecahan = React.lazy(() => import('./components/AgeGroup-8/Pecahan'));
+const Nombor1000 = React.lazy(() => import('./components/AgeGroup-8/Nombor1000'));
+const TambahTahun2 = React.lazy(() => import('./components/AgeGroup-8/TambahTahun2'));
+const TolakTahun2 = React.lazy(() => import('./components/AgeGroup-8/TolakTahun2'));
+const UkuranPanjangTahun2 = React.lazy(() => import('./components/AgeGroup-8/UkuranPanjangTahun2'));
+const BacaPetikanJawi = React.lazy(() => import('./components/AgeGroup-8/BacaPetikanJawi'));
+const PadanKataKerjaJawi = React.lazy(() => import('./components/AgeGroup-8/PadanKataKerjaJawi'));
+const SusunAyatJawi = React.lazy(() => import('./components/AgeGroup-8/SusunAyatJawi'));
+const LafazPantun = React.lazy(() => import('./components/AgeGroup-8/LafazPantun'));
+const JenisAyat = React.lazy(() => import('./components/AgeGroup-9/JenisAyat'));
+const PenjodohBilangan = React.lazy(() => import('./components/AgeGroup-9/PenjodohBilangan'));
+const ImbuhanLanjutan = React.lazy(() => import('./components/AgeGroup-9/ImbuhanLanjutan'));
+const SimpulanBahasa = React.lazy(() => import('./components/AgeGroup-9/SimpulanBahasa'));
+const BacaanPemahamanLanjutan = React.lazy(() => import('./components/AgeGroup-9/BacaanPemahamanLanjutan'));
 import ProfileHome from './components/Profile/ProfileHome';
 const AchievementHome  = React.lazy(() => import('./components/Achievement/AchievementHome'));
 const LeaderboardHome  = React.lazy(() => import('./components/Leaderboard/LeaderboardHome'));
@@ -208,6 +212,12 @@ export default function App() {
   const [currentAgeGame, setCurrentAgeGame] = useState(null);
   const [currentTheme, setCurrentTheme] = useState('cosmic');
 
+  // useTransition keeps the current screen visible while a lazy game chunk
+  // loads, so navigation never blanks to a fallback for fast loads. isPending
+  // drives a slim top progress bar for feedback.
+  const [isPending, startTransition] = useTransition();
+  const navigate = (fn) => startTransition(fn);
+
   const activeGameId = getActiveGameId(currentSubject, mathSubGame);
   const { gameState, levelUpInfo, clearLevelUp } = useGameState(activeGameId);
 
@@ -247,7 +257,7 @@ export default function App() {
   // ── Content renderer ──────────────────────────────────────────────────────
   const renderContent = () => {
     if (activeTab === 'leaderboard') return (
-      <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>}>
+      <Suspense fallback={<LoadingSkeleton />}>
         <LeaderboardHome language={language} gameState={gameState} theme={THEMES[currentTheme]} />
       </Suspense>
     );
@@ -260,7 +270,7 @@ export default function App() {
         return <AssessmentPage assessment={selectedAssessment} onBack={() => setSelectedAssessment(null)} language={language} gameState={gameState} />;
       }
       // Otherwise show achievement home
-      return <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading achievements...</div>}>
+      return <Suspense fallback={<LoadingSkeleton />}>
         <AchievementHome
           onBack={handleBackToHome}
           onHome={handleBackToHome}
@@ -535,7 +545,7 @@ export default function App() {
             return (
               <AgeGroupComponent
                 onBack={() => setCurrentAgeGroup(null)}
-                onPlayGame={(gameId) => setCurrentAgeGame(gameId)}
+                onPlayGame={(gameId) => navigate(() => setCurrentAgeGame(gameId))}
                 language={language}
               />
             );
@@ -587,11 +597,27 @@ export default function App() {
         {!playerName && <WelcomeModal onSave={handleSaveName} />}
         <LevelUpToast level={levelUpInfo?.newLevel} onDismiss={clearLevelUp} />
 
+        {/* Slim top progress bar — shown while a lazy page chunk is loading */}
+        {isPending && (
+          <>
+            <style>{`
+              @keyframes routeBarSlide {
+                0%   { transform: translateX(-100%); }
+                100% { transform: translateX(100%); }
+              }
+            `}</style>
+            <div aria-hidden="true" style={{ position: 'fixed', top: 0, left: 0, right: 0, height: 3, zIndex: 9999, overflow: 'hidden', background: 'rgba(124,58,237,0.18)' }}>
+              <div style={{ width: '40%', height: '100%', background: 'linear-gradient(90deg, transparent, #A78BFA, #7C3AED, transparent)', animation: 'routeBarSlide 0.9s ease-in-out infinite' }} />
+            </div>
+          </>
+        )}
 
         {/* Page Content */}
         <div className="app-content">
           <div key={viewKey} className="view-container">
-            {renderContent()}
+            <Suspense fallback={<LoadingSkeleton />}>
+              {renderContent()}
+            </Suspense>
           </div>
         </div>
 

@@ -1,7 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-export default defineConfig(({ command }) => ({
+// Single base for BOTH dev and production, so the app behaves identically in
+// each environment (no per-environment settings to remember/adjust).
+// Production must live under /math-adventure/ for GitHub Pages (project site),
+// so dev uses the same path. Vite redirects http://localhost:5173/ to it.
+export default defineConfig({
   plugins: [react()],
-  base: command === 'build' ? '/math-adventure/' : '/',
-}))
+  base: '/math-adventure/',
+})
