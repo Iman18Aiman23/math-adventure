@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <radialGradient id="popHead3" cx="25%" cy="25%" r="75%">
+      <stop offset="0%" stop-color="#F48FB1"/>
+      <stop offset="50%" stop-color="#E91E63"/>
+      <stop offset="100%" stop-color="#C2185B"/>
+    </radialGradient>
+    <radialGradient id="popFace3" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#4A148C"/>
+      <stop offset="100%" stop-color="#240B3E"/>
+    </radialGradient>
+    <radialGradient id="balloonY" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#FFF59D"/>
+      <stop offset="100%" stop-color="#FBC02D"/>
+    </radialGradient>
+    <radialGradient id="balloonB" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#81D4FA"/>
+      <stop offset="100%" stop-color="#0288D1"/>
+    </radialGradient>
+    <radialGradient id="balloonG" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#A5D6A7"/>
+      <stop offset="100%" stop-color="#388E3C"/>
+    </radialGradient>
+    <filter id="popGlow3" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#E91E63" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Button Background -->
+  <rect x="10" y="10" width="180" height="180" rx="30" ry="30" fill="#FFFFFF" stroke="#E91E63" stroke-width="4"/>
+
+  <!-- Antenna -->
+  <line x1="100" y1="12" x2="100" y2="32" stroke="#F8BBD0" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="100" cy="8" r="8" fill="#FFEB3B" filter="url(#popGlow3)"/>
+  <circle cx="100" cy="8" r="3" fill="#FFF"/>
+
+  <!-- Head -->
+  <rect x="22" y="32" width="156" height="136" rx="42" ry="42" fill="url(#popHead3)" filter="url(#popGlow3)"/>
+  <rect x="22" y="32" width="156" height="136" rx="42" ry="42" fill="none" stroke="#F8BBD0" stroke-width="3"/>
+
+  <!-- Ears -->
+  <ellipse cx="15" cy="100" rx="12" ry="22" fill="url(#popHead3)" filter="url(#popGlow3)"/>
+  <ellipse cx="15" cy="100" rx="12" ry="22" fill="none" stroke="#F8BBD0" stroke-width="2"/>
+  <ellipse cx="185" cy="100" rx="12" ry="22" fill="url(#popHead3)" filter="url(#popGlow3)"/>
+  <ellipse cx="185" cy="100" rx="12" ry="22" fill="none" stroke="#F8BBD0" stroke-width="2"/>
+
+  <!-- Face Screen -->
+  <rect x="38" y="52" width="124" height="96" rx="32" ry="32" fill="url(#popFace3)"/>
+  <rect x="38" y="52" width="124" height="96" rx="32" ry="32" fill="none" stroke="#F48FB1" stroke-width="2" opacity="0.5"/>
+
+  <g transform="translate(0, 20)">
+  <!-- === BALLOONS with CURVED STRINGS === -->
+  <!-- Balloon 1 (Yellow - Left) -->
+  <ellipse cx="68" cy="78" rx="15" ry="18" fill="url(#balloonY)" opacity="0.95"/>
+  <polygon points="68,96 65,102 71,102" fill="#F9A825" opacity="0.9"/>
+  <!-- Curved string -->
+  <path d="M 68 102 Q 65 115 70 125" fill="none" stroke="#F9A825" stroke-width="1.5" opacity="0.7"/>
+  <ellipse cx="62" cy="71" rx="5" ry="7" fill="#FFF" opacity="0.3" transform="rotate(-20 62 71)"/>
+  <!-- Letter A on balloon -->
+  <text x="68" y="84" font-family="'Comic Sans MS', 'Arial Rounded MT Bold', Arial, sans-serif"
+        font-size="26" font-weight="bold" fill="#E65100" text-anchor="middle" opacity="0.95">a</text>
+
+  
+  <!-- Balloon 2 (Blue - Center) -->
+  <ellipse cx="100" cy="68" rx="15" ry="18" fill="url(#balloonB)" opacity="0.95"/>
+  <polygon points="100,86 97,92 103,92" fill="#0277BD" opacity="0.9"/>
+  <!-- Curved string -->
+  <path d="M 100 92 Q 103 105 98 115" fill="none" stroke="#0277BD" stroke-width="1.5" opacity="0.7"/>
+  <ellipse cx="94" cy="61" rx="5" ry="7" fill="#FFF" opacity="0.3" transform="rotate(-20 94 61)"/>
+  <!-- Letter B on balloon -->
+  <text x="100" y="78" font-family="'Comic Sans MS', 'Arial Rounded MT Bold', Arial, sans-serif"
+        font-size="26" font-weight="bold" fill="#01579B" text-anchor="middle" opacity="0.95">b</text>
+
+  <!-- Balloon 3 (Green - Right) -->
+  <ellipse cx="132" cy="78" rx="15" ry="18" fill="url(#balloonG)" opacity="0.95"/>
+  <polygon points="132,96 129,102 135,102" fill="#2E7D32" opacity="0.9"/>
+  <!-- Curved string -->
+  <path d="M 132 102 Q 135 115 130 125" fill="none" stroke="#2E7D32" stroke-width="1.5" opacity="0.7"/>
+  <ellipse cx="126" cy="71" rx="5" ry="7" fill="#FFF" opacity="0.3" transform="rotate(-20 126 71)"/>
+  <!-- Letter C on balloon -->
+  <text x="132" y="84" font-family="'Comic Sans MS', 'Arial Rounded MT Bold', Arial, sans-serif"
+        font-size="26" font-weight="bold" fill="#1B5E20" text-anchor="middle" opacity="0.95">c</text>
+
+  <!-- Popped particles -->
+  <circle cx="50" cy="92" r="2.5" fill="#FFF59D" opacity="0.8"/>
+  <circle cx="54" cy="100" r="1.5" fill="#FFF59D" opacity="0.5"/>
+  <circle cx="150" cy="88" r="2.5" fill="#81D4FA" opacity="0.8"/>
+  <circle cx="146" cy="96" r="1.5" fill="#81D4FA" opacity="0.5"/>
+  <circle cx="100" cy="125" r="2" fill="#A5D6A7" opacity="0.6"/>
+  </g>
+
+  <!-- Title Text -->
+  <text x="100" y="178" font-size="16" font-family="'Fredoka One', 'Quicksand', sans-serif" font-weight="700" fill="#E91E63" text-anchor="middle" dominant-baseline="central">Pop Fonetik</text>
+</svg>
