@@ -69,7 +69,4 @@
   <circle cx="145" cy="75" r="2" fill="#FFCC80" opacity="0.5"/>
   <circle cx="150" cy="100" r="2" fill="#FFCC80" opacity="0.5"/>
   </g>
-
-  <!-- Title Text -->
-  <text x="100" y="178" font-size="16" font-family="'Fredoka One', 'Quicksand', sans-serif" font-weight="700" fill="#FF9800" text-anchor="middle" dominant-baseline="central">Tulis Huruf</text>
 </svg>

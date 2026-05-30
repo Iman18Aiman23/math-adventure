@@ -3,14 +3,19 @@ import { CURRICULUM } from '../../data/ageCurriculum';
 import { playHoverSound } from '../../utils/soundManager';
 import PageLayout from '../PageLayout';
 import '../SpeakingPage/BMPage.css';
+// Shared robot-head card template (pillar-based frames, reused across ages).
+import { EEGameRobotDefs, EEGameRobot } from '../AgeGroup-4-6/EarlyExplorersRobots';
+import { GRADE1_GAME_INNER } from './Grade1Screens';
 
 // Pillar categories — order + display metadata for the grouped game grid.
+// `color` = soft near-black header text + labels; `badge` = the one accent per
+// pillar (count chip), matching that pillar's robot-head colour (homepage palette).
 const PILLAR_ORDER = ['reading', 'speaking', 'jawi', 'math'];
 const PILLAR_META = {
-  reading:  { bm: 'Membaca',      eng: 'Reading',     emoji: '📖', color: '#FF3D8B' },
-  speaking: { bm: 'Bertutur',     eng: 'Speaking',    emoji: '🗣️', color: '#9C27B0' },
-  jawi:     { bm: 'Tulisan Jawi', eng: 'Jawi Script', emoji: '✍️', color: '#7C4DFF' },
-  math:     { bm: 'Matematik',    eng: 'Mathematics', emoji: '🔢', color: '#1CB0F6' },
+  reading:  { bm: 'Membaca',      eng: 'Reading',     emoji: '📖', color: '#1F2937', badge: '#EE7E1E' },
+  speaking: { bm: 'Bertutur',     eng: 'Speaking',    emoji: '🗣️', color: '#1F2937', badge: '#E5538C' },
+  jawi:     { bm: 'Tulisan Jawi', eng: 'Jawi Script', emoji: '✍️', color: '#1F2937', badge: '#2A9A6C' },
+  math:     { bm: 'Matematik',    eng: 'Mathematics', emoji: '🔢', color: '#1F2937', badge: '#7A55E0' },
 };
 
 // ── KSSR QnA data ─────────────────────────────────────────────────────────────

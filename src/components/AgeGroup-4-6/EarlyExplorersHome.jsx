@@ -11,39 +11,20 @@ import {
   RobotHeadTadikaMath,
 } from '../SubjectRobots';
 
-// Import SVG icons
-import AlphabetSafariSvg from '../icons/EarlyExplorersHome/AlphabetSafari.svg';
-import LetterTraceSvg from '../icons/EarlyExplorersHome/LetterTrace.svg';
-import PhonicsPopSvg from '../icons/EarlyExplorersHome/PhoneticsPop.svg';
-import SoundMatchingSvg from '../icons/EarlyExplorersHome/SoundMatching.svg';
-import LetterSoundPuzzleSvg from '../icons/EarlyExplorersHome/LetterSoundPuzzle.svg';
-import PhonicsSprintSvg from '../icons/EarlyExplorersHome/PhoneticsSprint.svg';
-
-const SVG_MAP = {
-  'alphabet-safari':    AlphabetSafariSvg,
-  'letter-trace':       LetterTraceSvg,
-  'phonics-pop':        PhonicsPopSvg,
-  'sound-matching':     SoundMatchingSvg,
-  'letter-sound-puzzle':LetterSoundPuzzleSvg,
-  'phonics-sprint':     PhonicsSprintSvg,
-};
-
-const CAT_MAP = {
-  'alphabet-safari':    'cat-objects',
-  'letter-trace':       'cat-kvk',
-  'phonics-pop':        'cat-phonics',
-  'sound-matching':     'cat-kv',
-  'letter-sound-puzzle':'cat-numbers',
-  'phonics-sprint':     'cat-kv',
-};
+// Shared robot-head template + per-game screen art (Membaca / Reading slice).
+import { EEGameRobotDefs, EEGameRobot } from './EarlyExplorersRobots';
+import { GAME_INNER } from './EarlyExplorersScreens';
 
 // Pillar categories — order + display metadata for the grouped game grid.
+// `color` drives the section header text + line and the game-card labels (soft
+// near-black, so colour stays in the robot icons). `badge` is the one accent
+// per pillar (the count chip), matching that pillar's robot-head colour.
 const PILLAR_ORDER = ['reading', 'speaking', 'jawi', 'math'];
 const PILLAR_META = {
-  reading:  { bm: 'Membaca',      eng: 'Reading',     emoji: '📖', color: '#FF3D8B' },
-  speaking: { bm: 'Bertutur',     eng: 'Speaking',    emoji: '🗣️', color: '#9C27B0' },
-  jawi:     { bm: 'Tulisan Jawi', eng: 'Jawi Script', emoji: '✍️', color: '#7C4DFF' },
-  math:     { bm: 'Matematik',    eng: 'Mathematics', emoji: '🔢', color: '#1CB0F6' },
+  reading:  { bm: 'Membaca',      eng: 'Reading',     emoji: '📖', color: '#1F2937', badge: '#EE7E1E' },
+  speaking: { bm: 'Bertutur',     eng: 'Speaking',    emoji: '🗣️', color: '#1F2937', badge: '#E5538C' },
+  jawi:     { bm: 'Tulisan Jawi', eng: 'Jawi Script', emoji: '✍️', color: '#1F2937', badge: '#2A9A6C' },
+  math:     { bm: 'Matematik',    eng: 'Mathematics', emoji: '🔢', color: '#1F2937', badge: '#7A55E0' },
 };
 
 // Tadika (age 4–6) pillar robot heads — shown next to each section heading.
@@ -112,12 +93,10 @@ export default function EarlyExplorersHome(props) {
 
   return (
     <>
-      <style>{`
-        /* Add specific styling for the 6th tile animation delay */
-        .bp-icon-card:nth-child(6) { animation-delay: .4s; }
-      `}</style>
       {/* Shared SVG gradients/symbols for the pillar robot heads — rendered once. */}
       <RobotDefs />
+      {/* Shared robot-head frame + screen clip for the game-card icons — rendered once. */}
+      <EEGameRobotDefs />
       <PageLayout
         classPrefix="bp"
         heroIcon={<span style={{ fontSize: '4.5rem', lineHeight: 1 }}>🌱</span>}
@@ -148,7 +127,7 @@ export default function EarlyExplorersHome(props) {
                   {meta[language] || meta.bm}
                 </span>
                 <span style={{ flex: 1, height: '3px', background: `${meta.color}33`, borderRadius: '999px' }} />
-                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#fff', background: meta.color, borderRadius: '999px', padding: '2px 9px', lineHeight: 1.4 }}>
+                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#fff', background: meta.badge || meta.color, borderRadius: '999px', padding: '2px 9px', lineHeight: 1.4 }}>
                   {games.length}
                 </span>
               </div>
@@ -156,7 +135,9 @@ export default function EarlyExplorersHome(props) {
                 <GameCard
                   key={game.id}
                   game={game}
-                  className={CAT_MAP[game.id]}
+                  accent={meta.color}
+                  frame={id}
+                  inner={GAME_INNER[game.id]}
                   onPlay={() => onPlayGame(game.id)}
                 />
               ))}
@@ -168,9 +149,8 @@ export default function EarlyExplorersHome(props) {
   );
 }
 
-const GameCard = React.memo(function GameCard({ game, className, onPlay }) {
+const GameCard = React.memo(function GameCard({ game, accent, frame, inner, onPlay }) {
   const soundPlayedRef = useRef(false);
-  const hasSvg = !!SVG_MAP[game.id];
 
   const handleMouseEnter = useCallback(() => {
     if (!soundPlayedRef.current) {
@@ -180,34 +160,38 @@ const GameCard = React.memo(function GameCard({ game, className, onPlay }) {
     }
   }, []);
 
-  if (!hasSvg) {
+  // Shared robot-head template + per-game screen art (+ real HTML label below).
+  // Label colour is the pillar accent (standardized — every card in a pillar matches).
+  if (inner) {
     return (
       <button
         onClick={onPlay}
         onMouseEnter={handleMouseEnter}
+        className="ee-robot-card"
         type="button"
-        className="ee-game-card"
-        style={{ '--card-bg': game.cardColor, '--card-bg-dark': game.cardDark }}
       >
-        <span className="ee-game-emoji">{game.emoji}</span>
-        <span className="ee-game-label">{game.name}</span>
+        <span className="ee-robot-media">
+          <EEGameRobot frame={frame}>{inner}</EEGameRobot>
+        </span>
+        {/* Real HTML label — translatable, screen-reader-readable, loaded font. */}
+        <span className="ee-robot-label" style={{ color: accent }}>
+          {game.name}
+        </span>
       </button>
     );
   }
 
+  // Fallback for pillars not yet templated: chunky emoji + label card.
   return (
     <button
       onClick={onPlay}
       onMouseEnter={handleMouseEnter}
-      className={`bp-icon-card ${className}`}
       type="button"
+      className="ee-game-card"
+      style={{ '--card-bg': game.cardColor, '--card-bg-dark': game.cardDark }}
     >
-      <img
-        src={SVG_MAP[game.id]}
-        alt={game.name}
-        draggable={false}
-        style={{ width: '100%', height: 'auto', display: 'block', pointerEvents: 'none' }}
-      />
+      <span className="ee-game-emoji">{game.emoji}</span>
+      <span className="ee-game-label">{game.name}</span>
     </button>
   );
 });

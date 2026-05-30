@@ -88,7 +88,4 @@
   <circle cx="146" cy="96" r="1.5" fill="#81D4FA" opacity="0.5"/>
   <circle cx="100" cy="125" r="2" fill="#A5D6A7" opacity="0.6"/>
   </g>
-
-  <!-- Title Text -->
-  <text x="100" y="178" font-size="16" font-family="'Fredoka One', 'Quicksand', sans-serif" font-weight="700" fill="#E91E63" text-anchor="middle" dominant-baseline="central">Pop Fonetik</text>
 </svg>

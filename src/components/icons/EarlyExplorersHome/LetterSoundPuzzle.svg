@@ -106,7 +106,4 @@
   <polygon points="48,62 50,66 54,68 50,70 48,74 46,70 42,68 46,66" fill="#FFEB3B" opacity="0.8"/>
   <polygon points="152,58 154,62 158,64 154,66 152,70 150,66 146,64 150,62" fill="#FFEB3B" opacity="0.6"/>
   </g>
-
-  <!-- Title Text -->
-  <text x="100" y="178" font-size="13" font-family="'Fredoka One', 'Quicksand', sans-serif" font-weight="700" fill="#AB47BC" text-anchor="middle" dominant-baseline="central">Padan Huruf</text>
 </svg>
