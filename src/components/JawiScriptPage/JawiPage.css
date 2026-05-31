@@ -198,6 +198,15 @@
     --base-soft:   #FFDFB3;
 }
 
+.t-iqra {
+    --base:        #F57C00;
+    --deep:        #7A3A00;
+    --base-light:  #FFB74D;
+    --base-glow60: rgba(245, 124, 0, 0.6);
+    --base-glow70: rgba(245, 124, 0, 0.7);
+    --base-soft:   #FFE0B2;
+}
+
 /* ── Number badge ── */
 .jw-tile-num {
     position: absolute; top: 14px; left: 14px; z-index: 5;
@@ -336,6 +345,11 @@
 .jw-icon-card.t-match:hover {
   transform: translateY(-12px) rotateX(-12deg) rotateY(12deg) scale(1.1);
   filter: brightness(1.2) drop-shadow(0 20px 35px rgba(255,149,0,.3));
+}
+
+.jw-icon-card.t-iqra:hover {
+  transform: translateY(-12px) rotateX(-12deg) rotateY(12deg) scale(1.1);
+  filter: brightness(1.2) drop-shadow(0 20px 35px rgba(245,124,0,.3));
 }
 
 .jw-icon-card:active {

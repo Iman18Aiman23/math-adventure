@@ -868,3 +868,58 @@ export const ClockAndTimeIcon = ({ size = 200, className }) => (
     <text x="100" y="178" fontSize="14" fontFamily="'Fredoka','Baloo 2',sans-serif" fontWeight="700" fill="#00ACC1" textAnchor="middle" dominantBaseline="central">Clock &amp; Time</text>
   </svg>
 );
+
+export const IqraIcon = ({ size = 200, className }) => (
+  <svg width={size} height={size} viewBox="0 0 200 200" className={className}>
+    <defs>
+      <radialGradient id="iqHead" cx="25%" cy="25%" r="75%">
+        <stop offset="0%" stopColor="#FFF8E1" />
+        <stop offset="50%" stopColor="#FFD54F" />
+        <stop offset="100%" stopColor="#F57F17" />
+      </radialGradient>
+      <radialGradient id="iqFace" cx="30%" cy="30%" r="70%">
+        <stop offset="0%" stopColor="#FFB300" />
+        <stop offset="100%" stopColor="#E65100" />
+      </radialGradient>
+      <linearGradient id="iqBook" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#FFFFFF" />
+        <stop offset="100%" stopColor="#FFF3E0" />
+      </linearGradient>
+      <linearGradient id="iqCover" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#1B5E20" />
+        <stop offset="100%" stopColor="#2E7D32" />
+      </linearGradient>
+      <filter id="iqGlow" x="-30%" y="-30%" width="160%" height="160%">
+        <feDropShadow dx="0" dy="4" stdDeviation="8" floodColor="#FFB300" floodOpacity="0.4" />
+      </filter>
+    </defs>
+    <rect x="10" y="10" width="180" height="180" rx="30" ry="30" fill="#FFFFFF" stroke="#FFB300" strokeWidth="4" />
+    <line x1="100" y1="12" x2="100" y2="32" stroke="#FFD54F" strokeWidth="4" strokeLinecap="round" />
+    <circle cx="100" cy="8" r="8" fill="#FFEB3B" filter="url(#iqGlow)" />
+    <circle cx="100" cy="8" r="3" fill="#FFF" />
+    <rect x="22" y="32" width="156" height="136" rx="42" ry="42" fill="url(#iqHead)" filter="url(#iqGlow)" />
+    <rect x="22" y="32" width="156" height="136" rx="42" ry="42" fill="none" stroke="#FFD54F" strokeWidth="3" />
+    <ellipse cx="15" cy="100" rx="12" ry="22" fill="url(#iqHead)" filter="url(#iqGlow)" />
+    <ellipse cx="15" cy="100" rx="12" ry="22" fill="none" stroke="#FFD54F" strokeWidth="2" />
+    <ellipse cx="185" cy="100" rx="12" ry="22" fill="url(#iqHead)" filter="url(#iqGlow)" />
+    <ellipse cx="185" cy="100" rx="12" ry="22" fill="none" stroke="#FFD54F" strokeWidth="2" />
+    <rect x="38" y="52" width="124" height="96" rx="32" ry="32" fill="url(#iqFace)" />
+    <g transform="translate(0 4)">
+      <rect x="46" y="72" width="46" height="52" rx="5" fill="url(#iqCover)" />
+      <rect x="108" y="72" width="46" height="52" rx="5" fill="url(#iqCover)" />
+      <rect x="46" y="72" width="4" height="52" fill="#1B5E20" />
+      <rect x="150" y="72" width="4" height="52" fill="#1B5E20" />
+      <line x1="92" y1="72" x2="92" y2="124" stroke="#388E3C" strokeWidth="1.5" />
+      <line x1="108" y1="72" x2="108" y2="124" stroke="#388E3C" strokeWidth="1.5" />
+      <rect x="92" y="72" width="16" height="52" fill="url(#iqBook)" />
+      <line x1="100" y1="72" x2="100" y2="124" stroke="#FFD54F" strokeWidth="1.5" strokeDasharray="3 3" />
+      <text x="65" y="91" textAnchor="middle" fontFamily="'Amiri Quran',serif" fontWeight="700" fontSize="18" fill="#FFEB3B">إ</text>
+      <text x="65" y="111" textAnchor="middle" fontFamily="'Amiri Quran',serif" fontWeight="700" fontSize="18" fill="#A5D6A7">قْ</text>
+      <text x="135" y="91" textAnchor="middle" fontFamily="'Amiri Quran',serif" fontWeight="700" fontSize="18" fill="#FFEB3B">رَ</text>
+      <text x="135" y="111" textAnchor="middle" fontFamily="'Amiri Quran',serif" fontWeight="700" fontSize="18" fill="#A5D6A7">أ</text>
+      <polygon points="48,62 50,66 54,68 50,70 48,74 46,70 42,68 46,66" fill="#FFEB3B" opacity="0.8" />
+      <polygon points="152,62 154,66 158,68 154,70 152,74 150,70 146,68 150,66" fill="#FFEB3B" opacity="0.6" />
+    </g>
+    <text x="100" y="178" fontSize="14" fontFamily="'Fredoka','Baloo 2',sans-serif" fontWeight="700" fill="#E65100" textAnchor="middle" dominantBaseline="central">Iqra 1-6</text>
+  </svg>
+);

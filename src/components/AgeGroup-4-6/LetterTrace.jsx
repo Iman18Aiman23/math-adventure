@@ -69,6 +69,7 @@ export default function LetterTrace({ onBack, language = 'bm', theme = {} }) {
 
   const upperCanvasRef = useRef(null);
   const lowerCanvasRef = useRef(null);
+  const letterStripRef = useRef(null);
 
   const upperLetter = LETTERS_UPPER[currentLetterIndex];
   const lowerLetter = LETTERS_LOWER[currentLetterIndex];
@@ -84,6 +85,12 @@ export default function LetterTrace({ onBack, language = 'bm', theme = {} }) {
     }, 250);
     return () => clearTimeout(t);
   }, [currentLetterIndex, localGameState, upperLetter, lowerLetter, language]);
+
+  useEffect(() => {
+    if (localGameState !== 'playing' || !letterStripRef.current) return;
+    const btn = letterStripRef.current.children[currentLetterIndex];
+    btn?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }, [currentLetterIndex, localGameState]);
 
   useEffect(() => {
     if (bothComplete && localGameState === 'playing') {
@@ -156,6 +163,39 @@ export default function LetterTrace({ onBack, language = 'bm', theme = {} }) {
       : `Trace the letter ${upperLetter.char} and ${lowerLetter.char}`;
     SpeechManager.speak(phrase, language === 'bm' ? 'ms-MY' : 'en-US');
   }, [upperLetter, lowerLetter, language]);
+
+  // Start fresh from a chosen letter — resets score, used from menu grid.
+  const startFromLetter = useCallback((index) => {
+    playHoverSound();
+    setCurrentLetterIndex(index);
+    setScore(0);
+    setUpperProgress(0);
+    setLowerProgress(0);
+    setUpperDone(false);
+    setLowerDone(false);
+    setResetSignal(s => s + 1);
+    setSlideToLower(false);
+    setShowSideBySide(false);
+    setUpperImageData(null);
+    setLowerImageData(null);
+    setLocalGameState('playing');
+  }, []);
+
+  // Jump to letter while already playing — preserves score.
+  const gotoLetter = useCallback((index) => {
+    if (index === currentLetterIndex) return;
+    playHoverSound();
+    setCurrentLetterIndex(index);
+    setUpperProgress(0);
+    setLowerProgress(0);
+    setUpperDone(false);
+    setLowerDone(false);
+    setResetSignal(s => s + 1);
+    setSlideToLower(false);
+    setShowSideBySide(false);
+    setUpperImageData(null);
+    setLowerImageData(null);
+  }, [currentLetterIndex]);
 
   const handleUpperProgress = useCallback((p) => setUpperProgress(p), []);
   const handleLowerProgress = useCallback((p) => setLowerProgress(p), []);
@@ -256,6 +296,47 @@ export default function LetterTrace({ onBack, language = 'bm', theme = {} }) {
           >
             {language === 'bm' ? '🚀 MULA!' : '🚀 START!'}
           </button>
+
+          {/* Letter picker grid */}
+          <div style={{ width: '100%', maxWidth: '360px' }}>
+            <div style={{
+              textAlign: 'center',
+              fontWeight: 800,
+              fontSize: '0.72rem',
+              color: '#94A3B8',
+              letterSpacing: '0.1em',
+              marginBottom: '0.55rem',
+            }}>
+              {language === 'bm' ? '— ATAU PILIH HURUF —' : '— OR PICK A LETTER —'}
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.4rem' }}>
+              {LETTERS_UPPER.map((letter, i) => (
+                <button
+                  key={letter.char}
+                  onClick={() => startFromLetter(i)}
+                  onMouseEnter={playHoverSound}
+                  onMouseDown={e => { e.currentTarget.style.transform = 'scale(0.88)'; }}
+                  onMouseUp={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+                  style={{
+                    background: 'white',
+                    border: `2px solid ${heroBorder}`,
+                    borderRadius: '10px',
+                    padding: '0.45rem 0',
+                    fontWeight: 900,
+                    fontSize: '1.05rem',
+                    color: swatch,
+                    cursor: 'pointer',
+                    fontFamily: 'var(--font-heading)',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+                    transition: 'transform 0.12s',
+                  }}
+                >
+                  {letter.char}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -352,6 +433,45 @@ export default function LetterTrace({ onBack, language = 'bm', theme = {} }) {
         }}>
           ⭐ {score}
         </div>
+      </div>
+
+      {/* Letter strip — tap any letter to jump to it */}
+      <div
+        ref={letterStripRef}
+        style={{
+          display: 'flex',
+          gap: '0.3rem',
+          overflowX: 'auto',
+          padding: '0.2rem 0.75rem 0.3rem',
+          flexShrink: 0,
+          scrollbarWidth: 'none',
+          WebkitOverflowScrolling: 'touch',
+        }}
+      >
+        {LETTERS_UPPER.map((letter, i) => (
+          <button
+            key={letter.char}
+            onClick={() => gotoLetter(i)}
+            style={{
+              flex: 'none',
+              width: '28px',
+              height: '28px',
+              borderRadius: '7px',
+              background: i === currentLetterIndex ? swatch : 'white',
+              color: i === currentLetterIndex ? 'white' : '#BDBDBD',
+              border: `2px solid ${i === currentLetterIndex ? swatch : '#E2E8F0'}`,
+              fontWeight: 900,
+              fontSize: '0.8rem',
+              cursor: 'pointer',
+              fontFamily: 'var(--font-heading)',
+              padding: 0,
+              transition: 'all 0.15s',
+              boxShadow: i === currentLetterIndex ? `0 3px 8px ${swatch}55` : 'none',
+            }}
+          >
+            {letter.char}
+          </button>
+        ))}
       </div>
 
       {/* Heading */}

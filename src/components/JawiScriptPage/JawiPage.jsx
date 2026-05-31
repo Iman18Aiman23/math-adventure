@@ -8,6 +8,7 @@ import JawiWordsPage from './JawiWordsPage';
 import JawiSyllablesLearningPage from './JawiSyllablesLearningPage';
 import Jawi100WordsGame from './Jawi100WordsGame';
 import JawiShortStoriesPage from './JawiShortStoriesPage';
+import IqraPage from './IqraPage';
 import PageLayout from '../PageLayout';
 import { QuranIcon } from '../icons/GameIcons';
 import { RobotDefs, RobotHeadArabic } from '../SubjectRobots';
@@ -18,6 +19,7 @@ import {
   SpellingIcon,
   JawiStoriesIcon,
   JawiGameIcon,
+  IqraIcon,
 } from '../icons/LearningIcons';
 const ILLOS = {
     alphabet:      <JawiAlphabetIcon size={200} />,
@@ -26,6 +28,7 @@ const ILLOS = {
     spelling_game: <SpellingIcon size={200} />,
     short_stories: <JawiStoriesIcon size={200} />,
     match:         <JawiGameIcon size={200} />,
+    iqra:          <IqraIcon size={200} />,
 };
 
 // ── Main component ───────────────────────────────────────────────────────────
@@ -43,6 +46,7 @@ export default function JawiPage({ onBack, onHome, language, onGameStart, onGame
         { mode: 'spelling_game', num: 4, tClass: 't-spelling',  capTitle: language === 'bm' ? 'Ejaan'     : 'Spelling'  },
         { mode: 'short_stories', num: 5, tClass: 't-stories',   capTitle: language === 'bm' ? 'Cerita'    : 'Stories'   },
         { mode: 'match',         num: 6, tClass: 't-match',     capTitle: language === 'bm' ? 'Padanan'   : 'Match'     },
+        { mode: 'iqra',          num: 7, tClass: 't-iqra',      capTitle: language === 'bm' ? 'Iqra 1-6'  : 'Iqra 1-6'  },
     ], [language]);
 
     // ── Handlers ────────────────────────────────────────────────────────────
@@ -55,7 +59,7 @@ export default function JawiPage({ onBack, onHome, language, onGameStart, onGame
     const handleBackFromGame = () => {
         const gameModesWithSidebar = ['match', 'spelling_game', 'syllables'];
         if (gameModesWithSidebar.includes(mode)) onGameEnd?.();
-        if (['alphabet','match','words','syllables','spelling_game','short_stories'].includes(mode)) {
+        if (['alphabet','match','words','syllables','spelling_game','short_stories','iqra'].includes(mode)) {
             setMode(null);
         } else {
             onBack();
@@ -69,6 +73,7 @@ export default function JawiPage({ onBack, onHome, language, onGameStart, onGame
     if (mode === 'syllables')     return <JawiSyllablesLearningPage onBack={handleBackFromGame} onHome={onHome} language={language} />;
     if (mode === 'spelling_game') return <Jawi100WordsGame onBack={handleBackFromGame} onHome={onHome} language={language} />;
     if (mode === 'short_stories') return <JawiShortStoriesPage onBack={handleBackFromGame} onHome={onHome} language={language} />;
+    if (mode === 'iqra')          return <IqraPage onBack={handleBackFromGame} language={language} />;
 
     const heroSubtitle = (
         <>

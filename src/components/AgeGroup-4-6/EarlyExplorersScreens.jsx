@@ -59,6 +59,28 @@ function apple(cx, cy) {
 
 /* ════════════════════════ READING (Membaca) ════════════════════════ */
 
+/* Belajar A–Z — KV letter blocks. */
+const ScreenAlphabetCards = (
+  <g transform="translate(0 10)">
+    <defs>
+      <linearGradient id="eeBlkTeal" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#4DD0C4" /><stop offset="100%" stopColor="#00695C" />
+      </linearGradient>
+      <linearGradient id="eeBlkBlue" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#4FC3F7" /><stop offset="100%" stopColor="#01579B" />
+      </linearGradient>
+    </defs>
+    <rect x="54" y="68" width="40" height="40" rx="6" fill="url(#eeBlkTeal)" stroke="#00352B" strokeWidth="2" />
+    <rect x="54" y="68" width="40" height="10" rx="6" fill="rgba(255,255,255,.45)" />
+    <text x="74" y="100" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="26" fill="#fff">A</text>
+    <rect x="106" y="68" width="40" height="40" rx="6" fill="url(#eeBlkBlue)" stroke="#013A6B" strokeWidth="2" />
+    <rect x="106" y="68" width="40" height="10" rx="6" fill="rgba(255,255,255,.55)" />
+    <text x="126" y="100" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="26" fill="#fff">B</text>
+    <circle cx="100" cy="88" r="3" fill="#FFFFFF" />
+    {spark}
+    <text x="100" y="130" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="16" fill="#FFFFFF">A–Z</text>
+  </g>
+);
 
 /* Alphabet Safari — cute panda. */
 const ScreenAlphabetSafari = (
@@ -298,6 +320,7 @@ const ScreenMissingNumber = (
 /* ── Map: game id → screen artwork (all age 4–6 pillars). ── */
 export const GAME_INNER = {
   // Membaca
+  'alphabet-cards':      ScreenAlphabetCards,
   'alphabet-safari':     ScreenAlphabetSafari,
   'letter-trace':        ScreenLetterTrace,
   'phonics-pop':         ScreenPhonicsPop,

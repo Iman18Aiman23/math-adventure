@@ -71,52 +71,30 @@ const RAW = {
   B: {
     char: 'B',
     segments: [
-      // Main vertical spine
-      {
-        type: 'L',
-        points: [
-          { x: 30, y: 15 },
-          { x: 30, y: 85 },
-        ],
-      },
-
+      // Main vertical stem
+      { type: 'L', points: [{ x: 32, y: 18 }, { x: 32, y: 82 }] },
       // Top horizontal lead
-      {
-        type: 'L',
-        points: [
-          { x: 30, y: 15 },
-          { x: 62, y: 15 },
-        ],
-      },
-
+      { type: 'L', points: [{ x: 32, y: 18 }, { x: 60, y: 18 }] },
       // Top bowl
       {
         type: 'C',
         points: [
-          { x: 62, y: 15 }, // start
-          { x: 82, y: 18 }, // control 1
-          { x: 82, y: 42 }, // control 2
-          { x: 30, y: 45 }, // end
+          { x: 60, y: 18 }, // start
+          { x: 80, y: 18 }, // control 1
+          { x: 80, y: 48 }, // control 2
+          { x: 32, y: 48 }, // end
         ],
       },
-
       // Middle connector
-      {
-        type: 'L',
-        points: [
-          { x: 30, y: 45 },
-          { x: 64, y: 45 },
-        ],
-      },
-
+      { type: 'L', points: [{ x: 32, y: 48 }, { x: 60, y: 48 }] },
       // Bottom bowl
       {
         type: 'C',
         points: [
-          { x: 64, y: 45 }, // start
-          { x: 86, y: 50 }, // control 1
-          { x: 86, y: 82 }, // control 2
-          { x: 30, y: 85 }, // end
+          { x: 60, y: 48 }, // start
+          { x: 82, y: 48 }, // control 1
+          { x: 82, y: 82 }, // control 2
+          { x: 32, y: 82 }, // end
         ],
       },
     ],
@@ -124,12 +102,22 @@ const RAW = {
   C: {
     char: 'C',
     segments: [
+      // Top arc
       {
         type: 'C', points: [
-          { x: 80, y: 30 },
-          { x: 30, y: 5 },
-          { x: 30, y: 95 },
-          { x: 80, y: 70 },
+          { x: 78, y: 28 },
+          { x: 78, y: 10 },
+          { x: 20, y: 10 },
+          { x: 20, y: 50 },
+        ]
+      },
+      // Bottom arc
+      {
+        type: 'C', points: [
+          { x: 20, y: 50 },
+          { x: 20, y: 90 },
+          { x: 78, y: 90 },
+          { x: 78, y: 72 },
         ]
       },
     ],
@@ -140,27 +128,18 @@ const RAW = {
       // Left vertical stem
       { type: 'L', points: [{ x: 32, y: 18 }, { x: 32, y: 82 }] },
       // Top connector to bowl
-      { type: 'L', points: [{ x: 32, y: 18 }, { x: 50, y: 18 }] },
-      // Upper bowl curve (top-right → mid-right)
+      { type: 'L', points: [{ x: 32, y: 18 }, { x: 48, y: 18 }] },
+      // Bowl curve
       {
         type: 'C', points: [
-          { x: 50, y: 18 },
+          { x: 48, y: 18 },
           { x: 82, y: 18 },
-          { x: 82, y: 42 },
-          { x: 82, y: 50 },
-        ]
-      },
-      // Lower bowl curve (mid-right → bottom-right)
-      {
-        type: 'C', points: [
-          { x: 82, y: 50 },
-          { x: 82, y: 58 },
           { x: 82, y: 82 },
-          { x: 50, y: 82 },
+          { x: 48, y: 82 },
         ]
       },
       // Bottom connector back to stem
-      { type: 'L', points: [{ x: 50, y: 82 }, { x: 32, y: 82 }] },
+      { type: 'L', points: [{ x: 48, y: 82 }, { x: 32, y: 82 }] },
     ],
   },
   E: {
@@ -180,48 +159,38 @@ const RAW = {
       { type: 'L', points: [{ x: 32, y: 50 }, { x: 65, y: 50 }] },
     ],
   },
-  G: {
-    char: 'G',
-    segments: [
-      // Main outer curve
-      {
-        type: 'C',
-        points: [
-          { x: 78, y: 25 }, // start top-right
-          { x: 18, y: 5 },  // control 1
-          { x: 18, y: 95 }, // control 2
-          { x: 78, y: 75 }, // end bottom-right
-        ],
-      },
-
-      // Inner horizontal bar
-      {
-        type: 'L',
-        points: [
-          { x: 78, y: 75 },
-          { x: 55, y: 75 },
-        ],
-      },
-
-      // Vertical connector upward
-      {
-        type: 'L',
-        points: [
-          { x: 55, y: 75 },
-          { x: 55, y: 52 },
-        ],
-      },
-
-      // Inner middle stroke
-      {
-        type: 'L',
-        points: [
-          { x: 55, y: 52 },
-          { x: 78, y: 52 },
-        ],
-      },
-    ],
-  },
+G: {
+  char: 'G',
+  segments: [
+    // O-shaped curve (circular, not oval) that stops before closing
+    {
+      type: 'C',
+      points: [
+        { x: 78, y: 40 }, // start at middle-right
+        { x: 78, y: 18 }, // cp1 - top-right corner
+        { x: 22, y: 18 }, // cp2 - top-left corner
+        { x: 22, y: 50 }, // end at middle-left
+      ],
+    },
+    {
+      type: 'C',
+      points: [
+        { x: 22, y: 50 }, // start at middle-left
+        { x: 22, y: 82 }, // cp1 - bottom-left corner
+        { x: 78, y: 82 }, // cp2 - bottom-right corner
+        { x: 78, y: 60 }, // end at middle-right (stops short, doesn't close)
+      ],
+    },
+    // Horizontal line merging at the end point
+    {
+      type: 'L',
+      points: [
+        { x: 78, y: 60 },
+        { x: 55, y: 60 },
+      ],
+    },
+  ],
+},
   H: {
     char: 'H',
     segments: [
@@ -239,13 +208,13 @@ const RAW = {
   J: {
     char: 'J',
     segments: [
-      { type: 'L', points: [{ x: 65, y: 18 }, { x: 65, y: 65 }] },
+      { type: 'L', points: [{ x: 62, y: 18 }, { x: 62, y: 65 }] },
       {
         type: 'C', points: [
-          { x: 65, y: 65 },
-          { x: 65, y: 82 },
-          { x: 30, y: 82 },
-          { x: 30, y: 75 },
+          { x: 62, y: 65 },
+          { x: 62, y: 85 },
+          { x: 30, y: 85 },
+          { x: 30, y: 70 },
         ]
       },
     ],
@@ -254,23 +223,23 @@ const RAW = {
     char: 'K',
     segments: [
       { type: 'L', points: [{ x: 32, y: 18 }, { x: 32, y: 82 }] },
-      { type: 'L', points: [{ x: 32, y: 50 }, { x: 75, y: 18 }] },
-      { type: 'L', points: [{ x: 32, y: 50 }, { x: 75, y: 82 }] },
+      { type: 'L', points: [{ x: 32, y: 50 }, { x: 72, y: 18 }] },
+      { type: 'L', points: [{ x: 32, y: 50 }, { x: 72, y: 82 }] },
     ],
   },
   L: {
     char: 'L',
     segments: [
-      { type: 'L', points: [{ x: 32, y: 18 }, { x: 32, y: 80 }] },
-      { type: 'L', points: [{ x: 32, y: 80 }, { x: 76, y: 80 }] },
+      { type: 'L', points: [{ x: 32, y: 18 }, { x: 32, y: 82 }] },
+      { type: 'L', points: [{ x: 32, y: 82 }, { x: 76, y: 82 }] },
     ],
   },
   M: {
     char: 'M',
     segments: [
       { type: 'L', points: [{ x: 28, y: 82 }, { x: 28, y: 18 }] },
-      { type: 'L', points: [{ x: 28, y: 18 }, { x: 50, y: 50 }] },
-      { type: 'L', points: [{ x: 50, y: 50 }, { x: 72, y: 18 }] },
+      { type: 'L', points: [{ x: 28, y: 18 }, { x: 50, y: 68 }] },
+      { type: 'L', points: [{ x: 50, y: 68 }, { x: 72, y: 18 }] },
       { type: 'L', points: [{ x: 72, y: 18 }, { x: 72, y: 82 }] },
     ],
   },
@@ -278,8 +247,8 @@ const RAW = {
     char: 'N',
     segments: [
       { type: 'L', points: [{ x: 32, y: 82 }, { x: 32, y: 18 }] },
-      { type: 'L', points: [{ x: 32, y: 18 }, { x: 70, y: 82 }] },
-      { type: 'L', points: [{ x: 70, y: 82 }, { x: 70, y: 18 }] },
+      { type: 'L', points: [{ x: 32, y: 18 }, { x: 68, y: 82 }] },
+      { type: 'L', points: [{ x: 68, y: 82 }, { x: 68, y: 18 }] },
     ],
   },
   O: {
@@ -288,16 +257,32 @@ const RAW = {
       {
         type: 'C', points: [
           { x: 50, y: 18 },
-          { x: 14, y: 18 },
-          { x: 14, y: 82 },
+          { x: 32, y: 18 },
+          { x: 18, y: 32 },
+          { x: 18, y: 50 },
+        ]
+      },
+      {
+        type: 'C', points: [
+          { x: 18, y: 50 },
+          { x: 18, y: 68 },
+          { x: 32, y: 82 },
           { x: 50, y: 82 },
         ]
       },
       {
         type: 'C', points: [
           { x: 50, y: 82 },
-          { x: 86, y: 82 },
-          { x: 86, y: 18 },
+          { x: 68, y: 82 },
+          { x: 82, y: 68 },
+          { x: 82, y: 50 },
+        ]
+      },
+      {
+        type: 'C', points: [
+          { x: 82, y: 50 },
+          { x: 82, y: 32 },
+          { x: 68, y: 18 },
           { x: 50, y: 18 },
         ]
       },
@@ -307,13 +292,13 @@ const RAW = {
     char: 'P',
     segments: [
       { type: 'L', points: [{ x: 32, y: 82 }, { x: 32, y: 18 }] },
-      { type: 'L', points: [{ x: 32, y: 18 }, { x: 68, y: 18 }] },
+      { type: 'L', points: [{ x: 32, y: 18 }, { x: 60, y: 18 }] },
       {
         type: 'C', points: [
-          { x: 68, y: 18 },
-          { x: 78, y: 18 },
-          { x: 78, y: 48 },
-          { x: 32, y: 48 },
+          { x: 60, y: 18 },
+          { x: 80, y: 18 },
+          { x: 80, y: 50 },
+          { x: 32, y: 50 },
         ]
       },
     ],
@@ -324,59 +309,79 @@ const RAW = {
       {
         type: 'C', points: [
           { x: 50, y: 18 },
-          { x: 14, y: 18 },
-          { x: 14, y: 78 },
-          { x: 50, y: 78 },
+          { x: 32, y: 18 },
+          { x: 18, y: 32 },
+          { x: 18, y: 50 },
         ]
       },
       {
         type: 'C', points: [
-          { x: 50, y: 78 },
-          { x: 86, y: 78 },
-          { x: 86, y: 18 },
+          { x: 18, y: 50 },
+          { x: 18, y: 68 },
+          { x: 32, y: 82 },
+          { x: 50, y: 82 },
+        ]
+      },
+      {
+        type: 'C', points: [
+          { x: 50, y: 82 },
+          { x: 68, y: 82 },
+          { x: 82, y: 68 },
+          { x: 82, y: 50 },
+        ]
+      },
+      {
+        type: 'C', points: [
+          { x: 82, y: 50 },
+          { x: 82, y: 32 },
+          { x: 68, y: 18 },
           { x: 50, y: 18 },
         ]
       },
-      { type: 'L', points: [{ x: 60, y: 70 }, { x: 80, y: 88 }] },
+      { type: 'L', points: [{ x: 62, y: 72 }, { x: 82, y: 92 }] },
     ],
   },
   R: {
     char: 'R',
     segments: [
       { type: 'L', points: [{ x: 32, y: 82 }, { x: 32, y: 18 }] },
-      { type: 'L', points: [{ x: 32, y: 18 }, { x: 68, y: 18 }] },
+      { type: 'L', points: [{ x: 32, y: 18 }, { x: 60, y: 18 }] },
       {
         type: 'C', points: [
-          { x: 68, y: 18 },
-          { x: 78, y: 18 },
-          { x: 78, y: 48 },
-          { x: 32, y: 48 },
+          { x: 60, y: 18 },
+          { x: 80, y: 18 },
+          { x: 80, y: 50 },
+          { x: 32, y: 50 },
         ]
       },
-      { type: 'L', points: [{ x: 32, y: 48 }, { x: 75, y: 82 }] },
+      { type: 'L', points: [{ x: 32, y: 50 }, { x: 75, y: 82 }] },
     ],
   },
   S: {
-    char: 'S',
-    segments: [
-      {
-        type: 'C', points: [
-          { x: 72, y: 25 },
-          { x: 28, y: 25 },
-          { x: 28, y: 35 },
-          { x: 72, y: 45 },
-        ]
-      },
-      {
-        type: 'C', points: [
-          { x: 72, y: 45 },
-          { x: 28, y: 55 },
-          { x: 28, y: 65 },
-          { x: 72, y: 75 },
-        ]
-      },
-    ],
-  },
+  char: 'S',
+  segments: [
+    // Top bowl
+    {
+      type: 'C',
+      points: [
+        { x: 60, y: 24 }, // start top-right
+        { x: 10, y: 8 }, // cp1
+        { x: 10, y: 50 }, // cp2
+        { x: 40, y: 50 }, // end center
+      ],
+    },
+    // Bottom bowl
+    {
+      type: 'C',
+      points: [
+        { x: 40, y: 50 }, // start center
+        { x: 68, y: 50 }, // cp1
+        { x: 88, y: 90 }, // cp2
+        { x: 24, y: 84 }, // end bottom-left
+      ],
+    },
+  ],
+},
   T: {
     char: 'T',
     segments: [
@@ -387,16 +392,16 @@ const RAW = {
   U: {
     char: 'U',
     segments: [
-      { type: 'L', points: [{ x: 28, y: 20 }, { x: 28, y: 58 }] },
+      { type: 'L', points: [{ x: 28, y: 20 }, { x: 28, y: 70 }] },
       {
         type: 'C', points: [
-          { x: 28, y: 58 },
-          { x: 28, y: 88 },
-          { x: 72, y: 88 },
-          { x: 72, y: 58 },
+          { x: 28, y: 70 },
+          { x: 28, y: 92 },
+          { x: 72, y: 92 },
+          { x: 72, y: 70 },
         ]
       },
-      { type: 'L', points: [{ x: 72, y: 58 }, { x: 72, y: 20 }] },
+      { type: 'L', points: [{ x: 72, y: 70 }, { x: 72, y: 20 }] },
     ],
   },
   V: {
@@ -409,10 +414,10 @@ const RAW = {
   W: {
     char: 'W',
     segments: [
-      { type: 'L', points: [{ x: 20, y: 18 }, { x: 32, y: 82 }] },
-      { type: 'L', points: [{ x: 32, y: 82 }, { x: 50, y: 40 }] },
-      { type: 'L', points: [{ x: 50, y: 40 }, { x: 68, y: 82 }] },
-      { type: 'L', points: [{ x: 68, y: 82 }, { x: 80, y: 18 }] },
+      { type: 'L', points: [{ x: 22, y: 18 }, { x: 35, y: 82 }] },
+      { type: 'L', points: [{ x: 35, y: 82 }, { x: 50, y: 68 }] },
+      { type: 'L', points: [{ x: 50, y: 68 }, { x: 65, y: 82 }] },
+      { type: 'L', points: [{ x: 65, y: 82 }, { x: 78, y: 18 }] },
     ],
   },
   X: {
@@ -433,9 +438,12 @@ const RAW = {
   Z: {
     char: 'Z',
     segments: [
-      { type: 'L', points: [{ x: 72, y: 18 }, { x: 28, y: 18 }] },
-      { type: 'L', points: [{ x: 28, y: 18 }, { x: 72, y: 82 }] },
-      { type: 'L', points: [{ x: 72, y: 82 }, { x: 28, y: 82 }] },
+      // Top horizontal (natural drawing direction: left to right)
+      { type: 'L', points: [{ x: 28, y: 18 }, { x: 72, y: 18 }] },
+      // Diagonal stroke
+      { type: 'L', points: [{ x: 72, y: 18 }, { x: 28, y: 82 }] },
+      // Bottom horizontal
+      { type: 'L', points: [{ x: 28, y: 82 }, { x: 72, y: 82 }] },
     ],
   },
 };
@@ -448,10 +456,10 @@ const RAW_LOWER = {
     segments: [
       {
         type: 'C', points: [
-          { x: 68, y: 50 }, { x: 30, y: 40 }, { x: 30, y: 82 }, { x: 68, y: 78 },
+          { x: 68, y: 55 }, { x: 30, y: 45 }, { x: 30, y: 82 }, { x: 68, y: 78 },
         ]
       },
-      { type: 'L', points: [{ x: 68, y: 50 }, { x: 68, y: 82 }] },
+      { type: 'L', points: [{ x: 68, y: 55 }, { x: 68, y: 82 }] },
     ],
   },
   b: {
@@ -460,7 +468,7 @@ const RAW_LOWER = {
       { type: 'L', points: [{ x: 30, y: 18 }, { x: 30, y: 82 }] },
       {
         type: 'C', points: [
-          { x: 30, y: 55 }, { x: 70, y: 45 }, { x: 70, y: 85 }, { x: 30, y: 80 },
+          { x: 30, y: 55 }, { x: 72, y: 45 }, { x: 72, y: 85 }, { x: 30, y: 80 },
         ]
       },
     ],
@@ -468,9 +476,21 @@ const RAW_LOWER = {
   c: {
     char: 'c',
     segments: [
+      // O-shaped curve that doesn't close (gap at right side)
       {
         type: 'C', points: [
-          { x: 72, y: 52 }, { x: 28, y: 40 }, { x: 28, y: 85 }, { x: 72, y: 76 },
+          { x: 72, y: 50 }, // start mid-right
+          { x: 72, y: 40 }, // cp1 top-right
+          { x: 28, y: 40 }, // cp2 top-left
+          { x: 28, y: 65 }, // end mid-left
+        ]
+      },
+      {
+        type: 'C', points: [
+          { x: 28, y: 65 }, // start mid-left
+          { x: 28, y: 85 }, // cp1 bottom-left
+          { x: 72, y: 85 }, // cp2 bottom-right
+          { x: 72, y: 72 }, // end mid-right (gap, doesn't close)
         ]
       },
     ],
@@ -481,7 +501,7 @@ const RAW_LOWER = {
       { type: 'L', points: [{ x: 70, y: 18 }, { x: 70, y: 82 }] },
       {
         type: 'C', points: [
-          { x: 70, y: 55 }, { x: 30, y: 45 }, { x: 30, y: 85 }, { x: 70, y: 80 },
+          { x: 70, y: 55 }, { x: 28, y: 45 }, { x: 28, y: 85 }, { x: 70, y: 80 },
         ]
       },
     ],
@@ -489,15 +509,15 @@ const RAW_LOWER = {
   e: {
     char: 'e',
     segments: [
-      { type: 'L', points: [{ x: 30, y: 62 }, { x: 72, y: 62 }] },
+      { type: 'L', points: [{ x: 28, y: 62 }, { x: 72, y: 62 }] },
       {
         type: 'C', points: [
-          { x: 72, y: 62 }, { x: 70, y: 40 }, { x: 28, y: 48 }, { x: 30, y: 75 },
+          { x: 72, y: 62 }, { x: 72, y: 42 }, { x: 28, y: 48 }, { x: 28, y: 75 },
         ]
       },
       {
         type: 'C', points: [
-          { x: 30, y: 75 }, { x: 40, y: 86 }, { x: 60, y: 85 }, { x: 72, y: 78 },
+          { x: 28, y: 75 }, { x: 40, y: 86 }, { x: 60, y: 85 }, { x: 72, y: 78 },
         ]
       },
     ],
@@ -519,7 +539,7 @@ const RAW_LOWER = {
     segments: [
       {
         type: 'C', points: [
-          { x: 68, y: 52 }, { x: 30, y: 42 }, { x: 30, y: 80 }, { x: 68, y: 75 },
+          { x: 68, y: 52 }, { x: 28, y: 42 }, { x: 28, y: 80 }, { x: 68, y: 75 },
         ]
       },
       { type: 'L', points: [{ x: 68, y: 52 }, { x: 68, y: 88 }] },
@@ -602,6 +622,7 @@ const RAW_LOWER = {
   o: {
     char: 'o',
     segments: [
+      // Full O shape (closed circle)
       {
         type: 'C', points: [
           { x: 50, y: 42 }, { x: 22, y: 42 }, { x: 22, y: 82 }, { x: 50, y: 82 },
@@ -620,7 +641,7 @@ const RAW_LOWER = {
       { type: 'L', points: [{ x: 30, y: 45 }, { x: 30, y: 95 }] },
       {
         type: 'C', points: [
-          { x: 30, y: 55 }, { x: 70, y: 42 }, { x: 70, y: 82 }, { x: 30, y: 80 },
+          { x: 30, y: 55 }, { x: 72, y: 42 }, { x: 72, y: 82 }, { x: 30, y: 80 },
         ]
       },
     ],
@@ -630,7 +651,7 @@ const RAW_LOWER = {
     segments: [
       {
         type: 'C', points: [
-          { x: 70, y: 52 }, { x: 30, y: 42 }, { x: 30, y: 82 }, { x: 70, y: 80 },
+          { x: 70, y: 52 }, { x: 28, y: 42 }, { x: 28, y: 82 }, { x: 70, y: 80 },
         ]
       },
       { type: 'L', points: [{ x: 70, y: 52 }, { x: 70, y: 95 }] },
@@ -648,20 +669,30 @@ const RAW_LOWER = {
     ],
   },
   s: {
-    char: 's',
-    segments: [
-      {
-        type: 'C', points: [
-          { x: 70, y: 52 }, { x: 28, y: 45 }, { x: 28, y: 60 }, { x: 65, y: 65 },
-        ]
-      },
-      {
-        type: 'C', points: [
-          { x: 65, y: 65 }, { x: 28, y: 70 }, { x: 28, y: 85 }, { x: 70, y: 78 },
-        ]
-      },
-    ],
-  },
+  char: 's',
+  segments: [
+    // Top bowl
+    {
+      type: 'C',
+      points: [
+        { x: 68, y: 48 }, // start top-right
+        { x: 28, y: 42 }, // cp1
+        { x: 28, y: 58 }, // cp2
+        { x: 50, y: 62 }, // end center
+      ],
+    },
+    // Bottom bowl
+    {
+      type: 'C',
+      points: [
+        { x: 50, y: 62 }, // start center
+        { x: 72, y: 65 }, // cp1
+        { x: 72, y: 85 }, // cp2
+        { x: 32, y: 82 }, // end bottom-left
+      ],
+    },
+  ],
+},
   t: {
     char: 't',
     segments: [
@@ -680,10 +711,10 @@ const RAW_LOWER = {
       { type: 'L', points: [{ x: 28, y: 45 }, { x: 28, y: 70 }] },
       {
         type: 'C', points: [
-          { x: 28, y: 70 }, { x: 28, y: 85 }, { x: 68, y: 85 }, { x: 68, y: 70 },
+          { x: 28, y: 70 }, { x: 28, y: 85 }, { x: 72, y: 85 }, { x: 72, y: 70 },
         ]
       },
-      { type: 'L', points: [{ x: 68, y: 45 }, { x: 68, y: 82 }] },
+      { type: 'L', points: [{ x: 72, y: 45 }, { x: 72, y: 82 }] },
     ],
   },
   v: {

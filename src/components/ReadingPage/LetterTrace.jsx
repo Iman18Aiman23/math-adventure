@@ -22,6 +22,7 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
 
   const upperCanvasRef = useRef(null);
   const lowerCanvasRef = useRef(null);
+  const letterStripRef = useRef(null);
 
   const upperLetter = LETTERS_UPPER[currentLetterIndex];
   const lowerLetter = LETTERS_LOWER[currentLetterIndex];
@@ -38,6 +39,13 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
     }, 250);
     return () => clearTimeout(t);
   }, [currentLetterIndex, localGameState, upperLetter, lowerLetter, language]);
+
+  // Auto-scroll letter strip to keep current letter visible.
+  useEffect(() => {
+    if (localGameState !== 'playing' || !letterStripRef.current) return;
+    const btn = letterStripRef.current.children[currentLetterIndex];
+    btn?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }, [currentLetterIndex, localGameState]);
 
   // Score increment + celebration when both halves are completed.
   useEffect(() => {
@@ -92,6 +100,31 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
     SpeechManager.speak(text, language === 'bm' ? 'ms-MY' : 'en-US');
   }, [upperLetter, lowerLetter, language]);
 
+  // Start fresh from a chosen letter (resets score — used from menu picker).
+  const startFromLetter = useCallback((index) => {
+    playHoverSound();
+    setCurrentLetterIndex(index);
+    setScore(0);
+    setUpperProgress(0);
+    setLowerProgress(0);
+    setUpperDone(false);
+    setLowerDone(false);
+    setResetSignal(s => s + 1);
+    setLocalGameState('playing');
+  }, []);
+
+  // Jump to letter while already playing (preserves score).
+  const gotoLetter = useCallback((index) => {
+    if (index === currentLetterIndex) return;
+    playHoverSound();
+    setCurrentLetterIndex(index);
+    setUpperProgress(0);
+    setLowerProgress(0);
+    setUpperDone(false);
+    setLowerDone(false);
+    setResetSignal(s => s + 1);
+  }, [currentLetterIndex]);
+
   const handleUpperProgress = useCallback((p) => setUpperProgress(p), []);
   const handleLowerProgress = useCallback((p) => setLowerProgress(p), []);
   const handleUpperComplete = useCallback(() => setUpperDone(true), []);
@@ -138,6 +171,46 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
           >
             {language === 'bm' ? 'MULA' : 'START'}
           </button>
+
+          {/* Letter picker grid */}
+          <div style={{ width: '100%', maxWidth: '360px' }}>
+            <div style={{
+              textAlign: 'center',
+              fontWeight: 800,
+              fontSize: '0.72rem',
+              color: 'var(--text-secondary)',
+              letterSpacing: '0.1em',
+              marginBottom: '0.55rem',
+            }}>
+              {language === 'bm' ? '— ATAU PILIH HURUF —' : '— OR PICK A LETTER —'}
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.4rem' }}>
+              {LETTERS_UPPER.map((letter, i) => (
+                <button
+                  key={letter.char}
+                  onClick={() => startFromLetter(i)}
+                  onMouseEnter={playHoverSound}
+                  style={{
+                    background: 'white',
+                    border: '2.5px solid #E0E0E0',
+                    borderRadius: '10px',
+                    padding: '0.45rem 0',
+                    fontWeight: 900,
+                    fontSize: '1.05rem',
+                    color: 'var(--duo-blue)',
+                    cursor: 'pointer',
+                    fontFamily: 'var(--font-heading)',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+                    transition: 'transform 0.12s, box-shadow 0.12s',
+                  }}
+                  onMouseDown={e => { e.currentTarget.style.transform = 'scale(0.92)'; }}
+                  onMouseUp={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+                >
+                  {letter.char}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -214,7 +287,59 @@ export default function LetterTrace({ onBack, language = 'bm' }) {
         ))}
       </div>
 
-      <AppHeader onBack={onBack} gameState={gameState} language={language} />
+      {/* Header row */}
+      <div style={{ display: 'flex', alignItems: 'center', padding: '0.4rem 0.75rem 0', position: 'relative', zIndex: 1 }}>
+        <BackButton onClick={onBack} />
+        <div style={{
+          marginLeft: 'auto',
+          fontWeight: 900,
+          fontSize: '1rem',
+          color: '#7B1FA2',
+          fontFamily: 'var(--font-heading)',
+        }}>
+          ⭐ {score}
+        </div>
+      </div>
+
+      {/* Letter strip */}
+      <div
+        ref={letterStripRef}
+        style={{
+          display: 'flex',
+          gap: '0.3rem',
+          overflowX: 'auto',
+          padding: '0.3rem 0.75rem',
+          position: 'relative',
+          zIndex: 1,
+          scrollbarWidth: 'none',
+          WebkitOverflowScrolling: 'touch',
+        }}
+      >
+        {LETTERS_UPPER.map((letter, i) => (
+          <button
+            key={letter.char}
+            onClick={() => gotoLetter(i)}
+            style={{
+              flex: 'none',
+              width: '28px',
+              height: '28px',
+              borderRadius: '7px',
+              background: i === currentLetterIndex ? '#9C27B0' : 'white',
+              color: i === currentLetterIndex ? 'white' : '#BDBDBD',
+              border: `2px solid ${i === currentLetterIndex ? '#9C27B0' : '#E0E0E0'}`,
+              fontWeight: 900,
+              fontSize: '0.8rem',
+              cursor: 'pointer',
+              fontFamily: 'var(--font-heading)',
+              padding: 0,
+              transition: 'all 0.15s',
+              boxShadow: i === currentLetterIndex ? '0 3px 8px rgba(156,39,176,0.4)' : 'none',
+            }}
+          >
+            {letter.char}
+          </button>
+        ))}
+      </div>
 
       <div style={{ padding: '0.3rem 1rem 0.4rem 1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem', flex: 1, overflow: 'auto', minHeight: 0, position: 'relative', zIndex: 1 }}>
 

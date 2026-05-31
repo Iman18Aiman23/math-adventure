@@ -85,7 +85,7 @@ export const CURRICULUM = {
       { id: 'sebut-nombor',    name: 'Sebut Nombor',    emoji: '🔢', cardColor: '#2196F3', cardDark: '#1565C0', status: 'complete' },
     ],
     jawi: [
-      { id: 'jawi-letter-cards', name: 'Belajar Huruf Jawi', emoji: '✍️', cardColor: '#7C4DFF', cardDark: '#6200EA', status: 'complete' },
+      { id: 'jawi-letter-cards', name: 'Huruf Jawi',         emoji: '✍️', cardColor: '#7C4DFF', cardDark: '#6200EA', status: 'complete' },
       { id: 'jawi-letter-match', name: 'Padan Huruf Jawi',   emoji: '🧩', cardColor: '#FF9800', cardDark: '#E68900', status: 'complete' },
     ],
     math: [
