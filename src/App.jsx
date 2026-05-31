@@ -24,10 +24,10 @@ import './components/AgeGroup-4-6/age46-ui.css';
 // Game leaf components are code-split (React.lazy) so they stay out of the main
 // bundle. This keeps the initial chunk small — the homepage and age-group menus
 // load/parse fast, so the first click isn't blocked by a giant bundle compile.
-const AlphabetCards = React.lazy(() => import('./components/AgeGroup-4-6/AlphabetCards'));
+const KVLearningPage46 = React.lazy(() => import('./components/ReadingPage/KVLearningPage'));
 const NumberCards = React.lazy(() => import('./components/AgeGroup-4-6/NumberCards'));
 const AlphabetSafari = React.lazy(() => import('./components/AgeGroup-4-6/AlphabetSafari'));
-const CountingStars = React.lazy(() => import('./components/AgeGroup-4-6/CountingStars'));
+const BelajarMengira = React.lazy(() => import('./components/AgeGroup-4-6/BelajarMengira'));
 const ShapeSorter = React.lazy(() => import('./components/AgeGroup-4-6/ShapeSorter'));
 const NumberMatch = React.lazy(() => import('./components/AgeGroup-4-6/NumberMatch'));
 const AppleAddition = React.lazy(() => import('./components/AgeGroup-4-6/AppleAddition'));
@@ -39,7 +39,6 @@ const LetterTrace = React.lazy(() => import('./components/AgeGroup-4-6/LetterTra
 const PhoneticsPop = React.lazy(() => import('./components/AgeGroup-4-6/PhoneticsPop'));
 const SoundMatching = React.lazy(() => import('./components/AgeGroup-4-6/SoundMatching'));
 const LetterSoundPuzzle = React.lazy(() => import('./components/AgeGroup-4-6/LetterSoundPuzzle'));
-const PhoneticsSprint = React.lazy(() => import('./components/AgeGroup-4-6/PhoneticsSprint'));
 const SentenceBuilder = React.lazy(() => import('./components/AgeGroup-7/SentenceBuilder'));
 const SukuKataBinaPerkataan = React.lazy(() => import('./components/AgeGroup-7/SukuKataBinaPerkataan'));
 const JenisKata = React.lazy(() => import('./components/AgeGroup-7/JenisKata'));
@@ -345,16 +344,13 @@ export default function App() {
           return <LetterSoundPuzzle onBack={() => setCurrentAgeGame(null)} language={language} theme={THEMES[currentTheme]} />;
         }
         if (currentAgeGame === 'alphabet-cards') {
-          return <AlphabetCards onBack={() => setCurrentAgeGame(null)} language={language} />;
+          return <KVLearningPage46 onBack={() => setCurrentAgeGame(null)} language={language} />;
         }
         if (currentAgeGame === 'number-cards') {
           return <NumberCards onBack={() => setCurrentAgeGame(null)} language={language} />;
         }
-        if (currentAgeGame === 'phonics-sprint') {
-          return <PhoneticsSprint onBack={() => setCurrentAgeGame(null)} language={language} theme={THEMES[currentTheme]} />;
-        }
         if (currentAgeGame === 'counting-stars') {
-          return <CountingStars onBack={() => setCurrentAgeGame(null)} language={language} />;
+          return <BelajarMengira onBack={() => setCurrentAgeGame(null)} language={language} />;
         }
         if (currentAgeGame === 'shape-sorter') {
           return <ShapeSorter onBack={() => setCurrentAgeGame(null)} language={language} />;

@@ -43,14 +43,6 @@ export default function KVLearningPage({ onBack, language }) {
   const currentLetterIdx = KV_LETTERS.indexOf(selectedLetter);
 
   // ── Display helpers ───────────────────────────────────────────────────────
-  const getDisplayText = (item) => {
-    if (!item) return '';
-    if (script === 'RUMI') return item.ms?.word ?? '';
-    if (script === 'ENG')  return item.en?.word ?? '';
-    if (script === 'JAWI') return item.jawi?.word ?? '';
-    return '';
-  };
-
   // Vowel color/bg for current card slot (cycles safely beyond 6)
   const vowelIdx   = cardIndex % VOWEL_COLORS.length;
   const vowelColor = VOWEL_COLORS[vowelIdx];
@@ -225,76 +217,20 @@ export default function KVLearningPage({ onBack, language }) {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // ── VIEW 2: Series Complete ──────────────────────────────────────────────
+  // ── VIEW 2 / 3: Flashcard (+ completion popup overlay) ──────────────────
   // ─────────────────────────────────────────────────────────────────────────
-  if (seriesComplete) {
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#fff' }}>
-        <BackButton onClick={handleBackToLetters} />
-
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', gap: '1.5rem', textAlign: 'center' }}>
-          <div style={{ fontSize: '5rem', animation: 'kvBounce 1.5s ease-in-out infinite' }}>🎉</div>
-          <h2 style={{ fontSize: '1.8rem', fontWeight: 900, color: '#3C3C3C', margin: 0 }}>
-            Siri <span style={{ color: '#58CC02' }}>{selectedLetter}</span> Selesai!
-          </h2>
-          <p style={{ color: '#AFAFAF', fontWeight: 700, fontSize: '0.95rem', margin: 0 }}>
-            {nextLetter
-              ? (language === 'bm' ? `Teruskan dengan Siri ${nextLetter}` : `Continue with Letter ${nextLetter} Series`)
-              : (language === 'bm' ? 'Tahniah! Semua huruf selesai!' : 'All letters complete!')}
-          </p>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', maxWidth: '320px' }}>
-            {nextLetter && (
-              <button type="button" onClick={handleNextLetter} style={{
-                width: '100%', padding: '1.1rem',
-                background: '#58CC02', color: '#fff',
-                border: 'none', borderBottom: '6px solid #46A302',
-                borderRadius: '16px', fontWeight: 900, fontSize: '1.1rem',
-                cursor: 'pointer',
-                transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                boxShadow: '0 6px 0 rgba(0,0,0,0.1), inset 0 -2px 0 rgba(0,0,0,0.1)',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 0 rgba(0,0,0,0.15), inset 0 -2px 0 rgba(0,0,0,0.1)'; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 0 rgba(0,0,0,0.1), inset 0 -2px 0 rgba(0,0,0,0.1)'; }}
-              onMouseDown={e => { e.currentTarget.style.transform = 'translateY(0px)'; e.currentTarget.style.boxShadow = '0 2px 0 rgba(0,0,0,0.08), inset 0 -1px 0 rgba(0,0,0,0.1)'; }}
-              onMouseUp={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 0 rgba(0,0,0,0.15), inset 0 -2px 0 rgba(0,0,0,0.1)'; }}
-              >
-                Siri {nextLetter} →
-              </button>
-            )}
-            <button type="button" onClick={handleBackToLetters} style={{
-              width: '100%', padding: '1rem',
-              background: '#fff', color: '#3C3C3C',
-              border: '2px solid #E5E5E5', borderBottom: '6px solid #D0D0D0',
-              borderRadius: '16px', fontWeight: 800, fontSize: '1rem',
-              cursor: 'pointer',
-              transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
-              boxShadow: '0 6px 0 rgba(0,0,0,0.08), inset 0 -2px 0 rgba(0,0,0,0.05)',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 0 rgba(0,0,0,0.12), inset 0 -2px 0 rgba(0,0,0,0.05)'; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 0 rgba(0,0,0,0.08), inset 0 -2px 0 rgba(0,0,0,0.05)'; }}
-            onMouseDown={e => { e.currentTarget.style.transform = 'translateY(0px)'; e.currentTarget.style.boxShadow = '0 2px 0 rgba(0,0,0,0.06), inset 0 -1px 0 rgba(0,0,0,0.05)'; }}
-            onMouseUp={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 0 rgba(0,0,0,0.12), inset 0 -2px 0 rgba(0,0,0,0.05)'; }}
-            >
-              {language === 'bm' ? '← Pilih Huruf Lain' : '← Pick Another Letter'}
-            </button>
-          </div>
-        </div>
-
-        <style>{`@keyframes kvBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }`}</style>
-      </div>
-    );
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // ── VIEW 3: Flashcard ────────────────────────────────────────────────────
-  // ─────────────────────────────────────────────────────────────────────────
-  const displayText = getDisplayText(currentItem);
-  const isJawi      = script === 'JAWI';
-  const isActive    = activeSyl === cardIndex;
+  const isJawi   = script === 'JAWI';
+  const cap      = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : '');
+  const capKV    = currentItem?.kv ? cap(currentItem.kv) : '';
+  const msWord   = cap(currentItem?.ms?.word);
+  const enWord   = cap(currentItem?.en?.word);
+  const jawiWord = currentItem?.jawi?.word ?? '';
+  // Selected script drives the emphasised (main) word; the other line is the translation.
+  const mainWord = script === 'ENG' ? enWord : script === 'JAWI' ? jawiWord : msWord;
+  const subWord  = script === 'ENG' ? msWord : script === 'JAWI' ? msWord : enWord;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#F7F7F7' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#F7F7F7', position: 'relative' }}>
 
       <BackButton onClick={handleBackToLetters} />
 
@@ -337,109 +273,55 @@ export default function KVLearningPage({ onBack, language }) {
           </div>
         </div>
 
-        {/* ── Main Card ── */}
-        <div style={{
+        {/* ── Main Card (Belajar A-Z style — tap to listen) ── */}
+        <button type="button" onClick={() => speak(currentItem)} style={{
           width: '100%', maxWidth: '400px',
-          background: '#fff', borderRadius: '28px',
-          border: `3px solid ${vowelBg}`,
-          boxShadow: `0 8px 0 ${vowelColor}33`,
-          padding: '1.5rem 1.5rem 1.75rem', textAlign: 'center',
-          position: 'relative', minHeight: '220px',
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        }}>
-          {/* Sound button */}
-          <button type="button" onClick={() => speak(currentItem)} title="Play sound" style={{
-            position: 'absolute', top: 12, right: 12,
-            background: vowelBg, border: 'none', borderRadius: '50%',
-            width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer', color: vowelColor, transition: 'transform 0.1s',
-          }}
-            onMouseDown={e => e.currentTarget.style.transform = 'scale(0.88)'}
-            onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
-            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-          >
-            <Volume2 size={19} />
-          </button>
-
-          {/* KV syllable badge */}
-          <div style={{
-            background: vowelColor, color: '#fff',
-            borderRadius: '10px', padding: '3px 16px',
-            fontWeight: 900, fontSize: '1rem', marginBottom: '0.75rem',
-            letterSpacing: '2px',
-          }}>
-            {currentItem?.kv?.toUpperCase()}
+          background: vowelColor, borderRadius: '24px', border: 'none',
+          cursor: 'pointer', padding: '1.5rem 1rem 1.75rem',
+          boxShadow: `0 6px 0 ${vowelColor}CC`,
+          textAlign: 'center', transition: 'transform 0.1s',
+          WebkitTapHighlightColor: 'transparent',
+        }}
+          onPointerDown={e => e.currentTarget.style.transform = 'translateY(3px)'}
+          onPointerUp={e => e.currentTarget.style.transform = ''}
+          onPointerLeave={e => e.currentTarget.style.transform = ''}
+        >
+          {/* Big syllable (uppercase) */}
+          <div style={{ fontSize: 'clamp(3.5rem, 18vw, 4.5rem)', fontWeight: 900, color: '#fff', lineHeight: 1, textShadow: '0 3px 8px rgba(0,0,0,0.25)', marginBottom: '0.2rem' }}>
+            {capKV}
+          </div>
+          {/* Lowercase syllable */}
+          <div style={{ fontSize: 'clamp(1.8rem, 9vw, 2.2rem)', color: 'rgba(255,255,255,0.7)', fontWeight: 700, lineHeight: 1, marginBottom: '0.75rem' }}>
+            {currentItem?.kv}
           </div>
 
-          {/* Emoji icon */}
-          <div style={{ fontSize: '3rem', lineHeight: 1.2, marginBottom: '0.5rem', animation: 'kvBounce 2.5s ease-in-out infinite' }}>
+          {/* Emoji */}
+          <div style={{ fontSize: '3.5rem', lineHeight: 1, marginBottom: '0.6rem', animation: 'kvBounce 2.5s ease-in-out infinite' }}>
             {currentItem?.icon}
           </div>
 
-          {/* Main word text */}
-          <div onClick={() => speak(currentItem)} style={{
-            fontSize: isJawi
-              ? 'clamp(2rem, 10vw, 3rem)'
-              : 'clamp(2rem, 10vw, 3.2rem)',
-            fontWeight: 900, lineHeight: 1.2,
-            color: isActive ? vowelColor : '#3C3C3C',
+          {/* Main word — emphasised in the selected script */}
+          <div style={{
+            fontSize: isJawi ? 'clamp(1.6rem, 8vw, 2rem)' : '1.4rem',
+            fontWeight: 800, color: '#fff', marginBottom: '0.2rem', lineHeight: 1.2,
             direction: isJawi ? 'rtl' : 'ltr',
             fontFamily: isJawi ? '"Lateef", "Noto Naskh Arabic", serif' : 'inherit',
-            cursor: 'pointer',
-            transition: 'color 0.2s, transform 0.15s',
-            transform: isActive ? 'scale(1.06)' : 'scale(1)',
             wordBreak: 'break-word', maxWidth: '100%',
           }}>
-            {displayText}
+            {mainWord}
+          </div>
+          {/* Translation line */}
+          <div style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.85)', minHeight: '1.2rem', fontWeight: 600 }}>
+            {subWord}
           </div>
 
-          {/* Helper hints */}
-          {script === 'JAWI' && (
-            <p style={{ fontSize: '0.88rem', color: '#AFAFAF', fontWeight: 700, marginTop: '0.5rem', margin: '0.5rem 0 0' }}>
-              {currentItem?.ms?.word}
-            </p>
-          )}
-          {script === 'ENG' && (
-            <p style={{ fontSize: '0.82rem', color: '#AFAFAF', fontWeight: 700, marginTop: '0.4rem' }}>
-              BM: {currentItem?.ms?.word}
-            </p>
-          )}
-          {script === 'RUMI' && (
-            <p style={{ fontSize: '0.78rem', color: '#AFAFAF', fontWeight: 700, marginTop: '0.4rem' }}>
-              {selectedLetter}{vowelLabel.split(' ')[0]} — {vowelLabel}
-            </p>
-          )}
-        </div>
+          {/* Listen cue */}
+          <div style={{ marginTop: '1rem', display: 'inline-flex', alignItems: 'center', gap: '0.35rem', background: 'rgba(255,255,255,0.25)', borderRadius: '999px', padding: '0.35rem 1rem', fontSize: '0.85rem', color: '#fff', fontWeight: 700 }}>
+            <Volume2 size={15} />
+            {language === 'bm' ? 'Tekan untuk dengar' : 'Tap to listen'}
+          </div>
+        </button>
 
-        {/* ── Mini vowel strip ── */}
-        <div style={{ display: 'flex', gap: 'clamp(0.2rem, 1.5vw, 0.5rem)', width: '100%', maxWidth: '400px', overflowX: 'auto', padding: 'clamp(0.5rem, 2vw, 1rem)', margin: '0 auto', justifyContent: 'center', alignItems: 'center' }}>
-          {seriesItems.map((it, i) => {
-            const isA = i === cardIndex;
-            const isDone = i < cardIndex;
-            const c = VOWEL_COLORS[i % VOWEL_COLORS.length];
-            const b = VOWEL_BG[i % VOWEL_BG.length];
-            return (
-              <button type="button" key={it.id} onClick={() => { setCardIndex(i); setActiveSyl(null); }} style={{
-                flex: '1 0 auto', minWidth: 44, maxWidth: 64,
-                padding: '0.35rem 0.1rem',
-                margin: 'clamp(0.15rem, 1vw, 0.35rem)',
-                background: isA ? c : isDone ? b : '#fff',
-                color: isA ? '#fff' : isDone ? c : '#AFAFAF',
-                border: `2px solid ${isA ? c : isDone ? c : '#E5E5E5'}`,
-                borderBottom: `4px solid ${isA ? c : isDone ? c : '#D0D0D0'}`,
-                borderRadius: '10px', fontWeight: 900, fontSize: '0.72rem',
-                cursor: 'pointer', transition: 'all 0.12s cubic-bezier(0.34, 1.56, 0.64, 1)', textAlign: 'center',
-                boxShadow: isA ? `0 4px 0 rgba(0,0,0,0.12)` : '0 2px 0 rgba(0,0,0,0.06)',
-              }}
-              onMouseEnter={isA ? undefined : (e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 0 rgba(0,0,0,0.1)'; }}
-              onMouseLeave={isA ? undefined : (e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 0 rgba(0,0,0,0.06)'; }}
-              >
-                {it.kv.toUpperCase()}
-                {isDone && <div style={{ fontSize: '0.58rem' }}>✓</div>}
-              </button>
-            );
-          })}
-        </div>
       </div>
 
       {/* ── Bottom Nav ── */}
@@ -507,7 +389,86 @@ export default function KVLearningPage({ onBack, language }) {
         </button>
       </div>
 
-      <style>{`@keyframes kvBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }`}</style>
+      {/* ── Series Complete Popup ── */}
+      {seriesComplete && (
+        <div style={{
+          position: 'absolute', inset: 0, zIndex: 100,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: 'rgba(0,0,0,0.45)',
+          backdropFilter: 'blur(3px)',
+          animation: 'kvFadeIn 0.25s ease',
+        }}>
+          <div style={{
+            background: '#fff', borderRadius: '28px',
+            padding: '2rem 1.75rem 1.75rem',
+            maxWidth: '320px', width: '90%',
+            textAlign: 'center',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
+            animation: 'kvPopIn 0.35s cubic-bezier(0.34,1.56,0.64,1)',
+          }}>
+            {/* Celebrate emoji */}
+            <div style={{ fontSize: '3.5rem', lineHeight: 1, marginBottom: '0.75rem', animation: 'kvBounce 1.2s ease-in-out infinite' }}>
+              🎉
+            </div>
+
+            {/* Title */}
+            <h2 style={{ fontSize: '1.55rem', fontWeight: 900, color: '#3C3C3C', margin: '0 0 0.4rem' }}>
+              Siri <span style={{ color: '#58CC02' }}>{selectedLetter?.toUpperCase()}</span> Selesai!
+            </h2>
+
+            {/* Subtitle */}
+            <p style={{ color: '#AFAFAF', fontWeight: 700, fontSize: '0.92rem', margin: '0 0 1.5rem' }}>
+              {nextLetter
+                ? `Teruskan dengan Siri ${nextLetter.toUpperCase()}`
+                : 'Tahniah! Semua huruf selesai!'}
+            </p>
+
+            {/* Buttons */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+              {nextLetter && (
+                <button type="button" onClick={handleNextLetter} style={{
+                  width: '100%', padding: '1rem',
+                  background: '#58CC02', color: '#fff',
+                  border: 'none', borderBottom: '5px solid #46A302',
+                  borderRadius: '16px', fontWeight: 900, fontSize: '1.05rem',
+                  cursor: 'pointer',
+                  boxShadow: '0 5px 0 rgba(0,0,0,0.10)',
+                  transition: 'all 0.15s cubic-bezier(0.34,1.56,0.64,1)',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
+                onMouseDown={e => { e.currentTarget.style.transform = 'translateY(2px)'; }}
+                onMouseUp={e => { e.currentTarget.style.transform = 'translateY(-3px)'; }}
+                >
+                  Siri {nextLetter.toUpperCase()} →
+                </button>
+              )}
+              <button type="button" onClick={handleBackToLetters} style={{
+                width: '100%', padding: '0.9rem',
+                background: '#fff', color: '#3C3C3C',
+                border: '2px solid #E5E5E5', borderBottom: '5px solid #D0D0D0',
+                borderRadius: '16px', fontWeight: 800, fontSize: '0.95rem',
+                cursor: 'pointer',
+                boxShadow: '0 4px 0 rgba(0,0,0,0.06)',
+                transition: 'all 0.15s cubic-bezier(0.34,1.56,0.64,1)',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
+              onMouseDown={e => { e.currentTarget.style.transform = 'translateY(2px)'; }}
+              onMouseUp={e => { e.currentTarget.style.transform = 'translateY(-3px)'; }}
+              >
+                Pilih Huruf Lain
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes kvBounce  { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+        @keyframes kvFadeIn  { from{opacity:0} to{opacity:1} }
+        @keyframes kvPopIn   { from{opacity:0;transform:scale(0.82) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
+      `}</style>
     </div>
   );
 }

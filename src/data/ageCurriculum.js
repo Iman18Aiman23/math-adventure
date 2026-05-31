@@ -78,7 +78,6 @@ export const CURRICULUM = {
       { id: 'phonics-pop',         name: 'Phonics Pop',         emoji: '🎈', cardColor: '#FF3D8B', cardDark: '#E52E7A', status: 'complete' },
       { id: 'sound-matching',      name: 'Sound Matching',      emoji: '🎵', cardColor: '#00BCD4', cardDark: '#0097A7', status: 'complete' },
       { id: 'letter-sound-puzzle', name: 'Letter-Sound Puzzle', emoji: '🧩', cardColor: '#FF9800', cardDark: '#E68900', status: 'complete' },
-      { id: 'phonics-sprint',      name: 'Phonics Sprint',      emoji: '🚀', cardColor: '#4CAF50', cardDark: '#388E3C', status: 'complete' },
     ],
     speaking: [
       { id: 'sebut-huruf',     name: 'Sebut Huruf',     emoji: '🔤', cardColor: '#FF6B35', cardDark: '#E55A25', status: 'complete' },
@@ -91,8 +90,8 @@ export const CURRICULUM = {
     ],
     math: [
       { id: 'number-cards',    name: 'Belajar 1–20',       emoji: '1️⃣', cardColor: '#7C4DFF', cardDark: '#6200EA', status: 'complete' },
-      { id: 'counting-stars',  name: 'Kira Bintang',      emoji: '⭐', cardColor: '#FF9800', cardDark: '#E68900', status: 'complete' },
-      { id: 'shape-sorter',    name: 'Isih Bentuk',        emoji: '🔵', cardColor: '#2196F3', cardDark: '#1565C0', status: 'complete' },
+      { id: 'counting-stars',  name: 'Belajar Mengira',   emoji: '⭐', cardColor: '#FF9800', cardDark: '#E68900', status: 'complete' },
+      { id: 'shape-sorter',    name: 'Bentuk',             emoji: '🔵', cardColor: '#2196F3', cardDark: '#1565C0', status: 'complete' },
       { id: 'number-match',    name: 'Padankan Nombor',    emoji: '🔢', cardColor: '#9C27B0', cardDark: '#6A1B9A', status: 'complete' },
       { id: 'apple-addition',  name: 'Tambah Buah',        emoji: '🍎', cardColor: '#F44336', cardDark: '#C62828', status: 'complete' },
       { id: 'missing-number',  name: 'Nombor Hilang',      emoji: '🔍', cardColor: '#009688', cardDark: '#00796B', status: 'complete' },

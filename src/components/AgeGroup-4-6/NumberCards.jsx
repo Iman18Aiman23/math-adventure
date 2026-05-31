@@ -40,6 +40,7 @@ const OBJ_EMOJIS = ['⭐','🍎','🐱','🌸','🦋','🐶','🎈','🐸','🌟
 
 export default function NumberCards({ onBack, language = 'bm' }) {
   const [index, setIndex] = useState(0);
+  const [showComplete, setShowComplete] = useState(false);
   const num   = NUMBERS[index];
   const color = CARD_COLORS[index];
   const emoji = OBJ_EMOJIS[index];
@@ -52,10 +53,16 @@ export default function NumberCards({ onBack, language = 'bm' }) {
   }, [num, language]);
 
   const handlePrev = useCallback(() => setIndex(i => Math.max(0, i - 1)), []);
-  const handleNext = useCallback(() => setIndex(i => Math.min(NUMBERS.length - 1, i + 1)), []);
+  const handleNext = useCallback(() => {
+    if (index === NUMBERS.length - 1) {
+      setShowComplete(true);
+    } else {
+      setIndex(i => i + 1);
+    }
+  }, [index]);
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: '#E6FFD4', overflow: 'hidden' }}>
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: '#E6FFD4', overflow: 'hidden', position: 'relative' }}>
       <BackButton onClick={onBack} />
 
       {/* Header */}
@@ -118,15 +125,6 @@ export default function NumberCards({ onBack, language = 'bm' }) {
           </div>
         </button>
 
-        {/* Number grid — quick jump */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', justifyContent: 'center', marginTop: '1rem' }}>
-          {NUMBERS.map((n, i) => (
-            <button key={i} onClick={() => setIndex(i)}
-              style={{ width: '36px', height: '36px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: i === index ? CARD_COLORS[i] : i < index ? '#A8D5A2' : '#E0E0E0', color: i === index ? 'white' : i < index ? '#555' : '#999', fontWeight: i === index ? 900 : 600, fontSize: '0.85rem', transition: 'all 0.15s' }}>
-              {n.value}
-            </button>
-          ))}
-        </div>
       </div>
 
       {/* Footer nav */}
@@ -136,12 +134,67 @@ export default function NumberCards({ onBack, language = 'bm' }) {
           <ChevronLeft size={18} />
           {language === 'bm' ? 'Sebelum' : 'Prev'}
         </button>
-        <button onClick={handleNext} disabled={index === NUMBERS.length - 1}
+        <button onClick={handleNext}
           className="ee-btn" style={{ flex: 1, '--btn-bg': '#58CC02', '--btn-shadow': '#46A302' }}>
-          {language === 'bm' ? 'Seterusnya' : 'Next'}
-          <ChevronRight size={18} />
+          {index === NUMBERS.length - 1
+            ? (language === 'bm' ? 'Selesai ✓' : 'Done ✓')
+            : (language === 'bm' ? 'Seterusnya' : 'Next')}
+          {index < NUMBERS.length - 1 && <ChevronRight size={18} />}
         </button>
       </div>
+
+      {/* ── Celebration popup ── */}
+      {showComplete && (
+        <div style={{
+          position: 'absolute', inset: 0, zIndex: 100,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: 'rgba(0,0,0,0.45)',
+          backdropFilter: 'blur(3px)',
+          animation: 'ncFadeIn 0.25s ease',
+        }}>
+          <div style={{
+            background: '#fff', borderRadius: '28px',
+            padding: '2.25rem 1.75rem 1.75rem',
+            maxWidth: '300px', width: '88%',
+            textAlign: 'center',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
+            animation: 'ncPopIn 0.35s cubic-bezier(0.34,1.56,0.64,1)',
+          }}>
+            <div style={{ fontSize: '3.5rem', lineHeight: 1, marginBottom: '0.75rem', animation: 'ncBounce 1.2s ease-in-out infinite' }}>
+              🎉
+            </div>
+            <h2 style={{ fontSize: '1.7rem', fontWeight: 900, color: '#58CC02', margin: '0 0 0.35rem' }}>
+              Tahniah!
+            </h2>
+            <p style={{ color: '#AFAFAF', fontWeight: 700, fontSize: '0.9rem', margin: '0 0 1.5rem' }}>
+              {language === 'bm' ? 'Anda sudah belajar no 1 hingga 20!' : "You've learned numbers 1 to 20!"}
+            </p>
+            <button type="button" onClick={onBack} style={{
+              width: '100%', padding: '1rem',
+              background: '#58CC02', color: '#fff',
+              border: 'none', borderBottom: '5px solid #46A302',
+              borderRadius: '16px', fontWeight: 900, fontSize: '1rem',
+              cursor: 'pointer',
+              boxShadow: '0 5px 0 rgba(0,0,0,0.10)',
+              transition: 'all 0.15s cubic-bezier(0.34,1.56,0.64,1)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
+            onMouseDown={e => { e.currentTarget.style.transform = 'translateY(2px)'; }}
+            onMouseUp={e => { e.currentTarget.style.transform = 'translateY(-3px)'; }}
+            >
+              {language === 'bm' ? 'Kembali' : 'Back'} →
+            </button>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes ncBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
+        @keyframes ncFadeIn { from{opacity:0} to{opacity:1} }
+        @keyframes ncPopIn  { from{opacity:0;transform:scale(0.82) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
+      `}</style>
     </div>
   );
 }

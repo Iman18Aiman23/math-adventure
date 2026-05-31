@@ -59,28 +59,6 @@ function apple(cx, cy) {
 
 /* ════════════════════════ READING (Membaca) ════════════════════════ */
 
-/* Belajar A–Z — letter blocks (cool colours for contrast on the orange face). */
-const ScreenAlphabetCards = (
-  <g transform="translate(0 10)">
-    <defs>
-      <linearGradient id="eeBlkTeal" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="#4DD0C4" /><stop offset="100%" stopColor="#00695C" />
-      </linearGradient>
-      <linearGradient id="eeBlkBlue" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="#4FC3F7" /><stop offset="100%" stopColor="#01579B" />
-      </linearGradient>
-    </defs>
-    <rect x="54" y="68" width="40" height="40" rx="6" fill="url(#eeBlkTeal)" stroke="#00352B" strokeWidth="2" />
-    <rect x="54" y="68" width="40" height="10" rx="6" fill="rgba(255,255,255,.45)" />
-    <text x="74" y="100" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="26" fill="#fff">A</text>
-    <rect x="106" y="68" width="40" height="40" rx="6" fill="url(#eeBlkBlue)" stroke="#013A6B" strokeWidth="2" />
-    <rect x="106" y="68" width="40" height="10" rx="6" fill="rgba(255,255,255,.55)" />
-    <text x="126" y="100" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="26" fill="#fff">B</text>
-    <circle cx="100" cy="88" r="3" fill="#FFFFFF" />
-    {spark}
-    <text x="100" y="130" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="16" fill="#FFFFFF">A–Z</text>
-  </g>
-);
 
 /* Alphabet Safari — cute panda. */
 const ScreenAlphabetSafari = (
@@ -193,28 +171,6 @@ const ScreenLetterSoundPuzzle = (
   </g>
 );
 
-/* Phonics Sprint — stopwatch + speed lines (white watch for contrast on orange). */
-const ScreenPhonicsSprint = (
-  <g transform="translate(0 5)">
-    <circle cx="100" cy="95" r="30" fill="none" stroke="#FFFFFF" strokeWidth="4" opacity="0.95" />
-    <circle cx="100" cy="95" r="26" fill="none" stroke="#FFFFFF" strokeWidth="1.5" opacity="0.4" />
-    <line x1="100" y1="67" x2="100" y2="71" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
-    <line x1="100" y1="119" x2="100" y2="123" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
-    <line x1="74" y1="95" x2="78" y2="95" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
-    <line x1="122" y1="95" x2="126" y2="95" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
-    <rect x="96" y="61" width="8" height="6" rx="2" fill="#FFFFFF" opacity="0.9" />
-    <rect x="128" y="92" width="5" height="6" rx="2" fill="#FFFFFF" opacity="0.9" />
-    <line x1="100" y1="95" x2="100" y2="74" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" opacity="0.95" />
-    <line x1="100" y1="95" x2="116" y2="103" stroke="#D32F2F" strokeWidth="2.5" strokeLinecap="round" opacity="0.95" />
-    <circle cx="100" cy="95" r="4.5" fill="#FFFFFF" opacity="0.95" />
-    <circle cx="100" cy="95" r="2" fill="#D32F2F" />
-    <line x1="50" y1="75" x2="62" y2="75" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" opacity="0.75" />
-    <line x1="46" y1="83" x2="58" y2="83" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
-    <line x1="138" y1="72" x2="152" y2="72" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" opacity="0.75" />
-    <line x1="142" y1="80" x2="155" y2="80" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
-    {spark}
-  </g>
-);
 
 /* ════════════════════════ SPEAKING (Bertutur) ════════════════════════ */
 
@@ -342,13 +298,11 @@ const ScreenMissingNumber = (
 /* ── Map: game id → screen artwork (all age 4–6 pillars). ── */
 export const GAME_INNER = {
   // Membaca
-  'alphabet-cards':      ScreenAlphabetCards,
   'alphabet-safari':     ScreenAlphabetSafari,
   'letter-trace':        ScreenLetterTrace,
   'phonics-pop':         ScreenPhonicsPop,
   'sound-matching':      ScreenSoundMatching,
   'letter-sound-puzzle': ScreenLetterSoundPuzzle,
-  'phonics-sprint':      ScreenPhonicsSprint,
   // Bertutur
   'sebut-huruf':         ScreenSebutHuruf,
   'sebut-perkataan':     ScreenSebutPerkataan,

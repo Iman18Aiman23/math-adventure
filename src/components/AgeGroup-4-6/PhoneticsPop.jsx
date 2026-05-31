@@ -23,7 +23,7 @@ const PHONETIC_SOUNDS = {
   M: { word: 'Moon',      wordBm: 'Bulan',           icon: '🌙' },
   N: { word: 'Nest',      wordBm: 'Sarang',          icon: '🪺' },
   O: { word: 'Orange',    wordBm: 'Oren',            icon: '🍊' },
-  P: { word: 'Pig',       wordBm: 'Babi',            icon: '🐷' },
+  P: { word: 'Penguin',   wordBm: 'Penguin',         icon: '🐧' },
   Q: { word: 'Queen',     wordBm: 'Permaisuri',      icon: '👑' },
   R: { word: 'Rabbit',    wordBm: 'Arnab',           icon: '🐰' },
   S: { word: 'Sun',       wordBm: 'Matahari',        icon: '☀️' },
