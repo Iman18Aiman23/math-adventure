@@ -142,6 +142,10 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             background: radial-gradient(ellipse at 50% 38%, #E7D9FF 0%, #B79CFF 55%, #7A55E0 100%);
             border-color: rgba(122, 85, 224, 0.4);
         }
+        .subject-card.card-islamic-v1 {
+            background: radial-gradient(ellipse at 50% 38%, #D0F7FA 0%, #67D6E8 55%, #0891B2 100%);
+            border-color: rgba(8, 145, 178, 0.4);
+        }
 
         .subject-card:hover {
             transform: translateY(-6px) scale(1.02);
@@ -556,6 +560,17 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             </div>
             <span className="rb-pill">{language === 'bm' ? 'MATEMATIK' : 'MATHEMATICS'}</span>
             <p className="rb-desc">{language === 'bm' ? 'Teroka dunia nombor dan logik!' : 'Explore the world of numbers and shapes!'}</p>
+          </div>
+
+          {/* 5. Pendidikan Islam V1 */}
+          <div className="subject-card card-islamic-v1" onClick={() => onSelectSubject('pendidikan-islam-v1')} role="button" tabIndex="0" aria-label="Pendidikan Islam V1">
+            <div className="rb-stage">
+              <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
+              <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
+              <RobotArabic />
+            </div>
+            <span className="rb-pill">PENDIDIKAN ISLAM</span>
+            <p className="rb-desc">{language === 'bm' ? 'Belajar Pendidikan Islam dengan mudah!' : 'Learn Islamic Education easily!'}</p>
           </div>
         </div>
 

@@ -90,7 +90,19 @@ const PenjodohBilangan = React.lazy(() => import('./components/AgeGroup-9/Penjod
 const ImbuhanLanjutan = React.lazy(() => import('./components/AgeGroup-9/ImbuhanLanjutan'));
 const SimpulanBahasa = React.lazy(() => import('./components/AgeGroup-9/SimpulanBahasa'));
 const BacaanPemahamanLanjutan = React.lazy(() => import('./components/AgeGroup-9/BacaanPemahamanLanjutan'));
+const Nombor10000    = React.lazy(() => import('./components/AgeGroup-9/Nombor10000'));
+const DarabLanjutan  = React.lazy(() => import('./components/AgeGroup-9/DarabLanjutan'));
+const BahagiTahun3    = React.lazy(() => import('./components/AgeGroup-9/BahagiTahun3'));
+const PecahanLanjutan = React.lazy(() => import('./components/AgeGroup-9/PecahanLanjutan'));
+const Perpuluhan      = React.lazy(() => import('./components/AgeGroup-9/Perpuluhan'));
+const WangTahun3      = React.lazy(() => import('./components/AgeGroup-9/WangTahun3'));
+const MasaTahun3      = React.lazy(() => import('./components/AgeGroup-9/MasaTahun3'));
+const PerimeterLuas   = React.lazy(() => import('./components/AgeGroup-9/PerimeterLuas'));
 import ProfileHome from './components/Profile/ProfileHome';
+import PendidikanIslamHomePage from './components/PendidikanIslamPage/PendidikanIslamHomePage';
+const AlQuranTajwidModule = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/AlQuranTajwidModule'));
+const HurufHijaiyah       = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/HurufHijaiyah'));
+const TandaBacaan         = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/TandaBacaan'));
 const AchievementHome  = React.lazy(() => import('./components/Achievement/AchievementHome'));
 const LeaderboardHome  = React.lazy(() => import('./components/Leaderboard/LeaderboardHome'));
 import AssessmentSelector from './pages/AssessmentSelector';
@@ -213,6 +225,8 @@ export default function App() {
   const [currentAgeGroup, setCurrentAgeGroup] = useState(null);
   const [currentAgeGame, setCurrentAgeGame] = useState(null);
   const [currentTheme, setCurrentTheme] = useState('cosmic');
+  const [islamModule, setIslamModule] = useState(null);
+  const [islamTopic,  setIslamTopic]  = useState(null);
 
   // useTransition keeps the current screen visible while a lazy game chunk
   // loads, so navigation never blanks to a fallback for fast loads. isPending
@@ -246,7 +260,7 @@ export default function App() {
   const handleStartGame    = (op, diff, _nums = [], qType = 'multiple') => { setGameConfig({ operation: op, difficulty: diff, nums: _nums, quizType: qType }); setIsPlaying(true); };
   const handleBackToMenu   = () => setIsPlaying(false);
   const handleStartTimeGame= (gameId) => { setDateTimeSubGame(gameId); setIsPlaying(true); };
-  const handleBackToHome   = () => { setIsPlaying(false); setMathSubGame(null); setDateTimeSubGame(null); setCurrentSubject(null); setCurrentAgeGroup(null); setCurrentAgeGame(null); setActiveTab('learn'); };
+  const handleBackToHome   = () => { setIsPlaying(false); setMathSubGame(null); setDateTimeSubGame(null); setCurrentSubject(null); setCurrentAgeGroup(null); setCurrentAgeGame(null); setIslamModule(null); setIslamTopic(null); setActiveTab('learn'); };
   const handleToggleMute   = () => { const m = !isMuted; setIsMuted(m); setMuted(m); };
   const handleToggleLang   = () => setLanguage(l => l === 'bm' ? 'eng' : 'bm');
 
@@ -324,6 +338,17 @@ export default function App() {
         return <BMPage onBack={handleBackToHome} onHome={handleBackToHome} language={language} />;
       case 'jawi':
         return <JawiPage onBack={handleBackToHome} onHome={handleBackToHome} language={language} onGameStart={() => setIsPlayingJawiGame(true)} onGameEnd={() => setIsPlayingJawiGame(false)} />;
+      case 'pendidikan-islam-v1':
+        if (islamModule === 'al-quran') {
+          if (islamTopic === 'huruf-hijaiyah') {
+            return <HurufHijaiyah onBack={() => setIslamTopic(null)} language={language} />;
+          }
+          if (islamTopic === 'tanda-bacaan') {
+            return <TandaBacaan onBack={() => setIslamTopic(null)} language={language} />;
+          }
+          return <AlQuranTajwidModule onBack={() => setIslamModule(null)} language={language} onSelectTopic={(id) => navigate(() => setIslamTopic(id))} />;
+        }
+        return <PendidikanIslamHomePage onBack={handleBackToHome} language={language} onSelectModule={(id) => navigate(() => setIslamModule(id))} />;
       case 'reading':
         return <ReadingPage onBack={handleBackToHome} language={language} />;
       default:
@@ -531,6 +556,30 @@ export default function App() {
         }
         if (currentAgeGame === 'bacaan-pemahaman-lanjutan') {
           return <BacaanPemahamanLanjutan onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'nombor-10000') {
+          return <Nombor10000 onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'darab-lanjutan') {
+          return <DarabLanjutan onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'bahagi-tahun3') {
+          return <BahagiTahun3 onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'pecahan-lanjutan') {
+          return <PecahanLanjutan onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'perpuluhan') {
+          return <Perpuluhan onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'wang-tahun3') {
+          return <WangTahun3 onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'masa-tahun3') {
+          return <MasaTahun3 onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'perimeter-luas') {
+          return <PerimeterLuas onBack={() => setCurrentAgeGame(null)} language={language} />;
         }
         if (currentAgeGroup) {
           const ageGroupComponents = {

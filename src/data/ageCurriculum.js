@@ -173,7 +173,16 @@ export const CURRICULUM = {
     ],
     speaking: null,
     jawi: null,
-    math: null,
+    math: [
+      { id: 'nombor-10000',   name: 'Nombor hingga 10 000', emoji: '🔢', cardColor: '#7B1FA2', cardDark: '#4A148C', status: 'complete' },
+      { id: 'darab-lanjutan', name: 'Darab Lanjutan',       emoji: '✖️', cardColor: '#6A1B9A', cardDark: '#4A148C', status: 'complete' },
+      { id: 'bahagi-tahun3',    name: 'Bahagi',              emoji: '➗', cardColor: '#880E4F', cardDark: '#560027', status: 'complete' },
+      { id: 'pecahan-lanjutan', name: 'Pecahan Lanjutan',   emoji: '🍕', cardColor: '#4A148C', cardDark: '#12005E', status: 'complete' },
+      { id: 'perpuluhan',       name: 'Perpuluhan',         emoji: '🔟', cardColor: '#6A1B9A', cardDark: '#38006B', status: 'complete' },
+      { id: 'wang-tahun3',      name: 'Wang',               emoji: '💰', cardColor: '#E65100', cardDark: '#BF360C', status: 'complete' },
+      { id: 'masa-tahun3',      name: 'Masa',               emoji: '⏰', cardColor: '#1A237E', cardDark: '#0D0D54', status: 'complete' },
+      { id: 'perimeter-luas',   name: 'Perimeter & Luas',   emoji: '📐', cardColor: '#4527A0', cardDark: '#1A0068', status: 'complete' },
+    ],
   },
 };
 
