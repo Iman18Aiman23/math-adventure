@@ -1,11 +1,13 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import BackButton from '../../BackButton';
 import SpeechManager from '../../../services/SpeechManager';
 import { playHoverSound } from '../../../utils/soundManager';
 
 const ARABIC_FONT = "'Traditional Arabic','Scheherazade New','Amiri','Noto Naskh Arabic',serif";
 
-// 28 Hijaiyah letters — Arabic glyph, Malay name, Arabic spoken name for TTS
+// 29 Hijaiyah letters — Arabic glyph, Malay name, Arabic spoken name for TTS
+// Pre-recorded audio: place files at /public/audio/hijaiyah/01.mp3 … 28.mp3
+// (zero-padded ID). TTS is used automatically when files are absent.
 const HIJAIYAH = [
   { id:  1, arabic: 'ا', name: 'Alif',  speak: 'أَلِف'  },
   { id:  2, arabic: 'ب', name: "Ba'",   speak: 'بَاء'   },
@@ -33,8 +35,17 @@ const HIJAIYAH = [
   { id: 24, arabic: 'م', name: 'Mim',   speak: 'مِيم'   },
   { id: 25, arabic: 'ن', name: 'Nun',   speak: 'نُون'   },
   { id: 26, arabic: 'و', name: 'Wau',   speak: 'وَاو'   },
-  { id: 27, arabic: 'ه', name: "Ha'",   speak: 'هَاء'   },
-  { id: 28, arabic: 'ي', name: "Ya'",   speak: 'يَاء'   },
+  { id: 27, arabic: 'ه', name: "Ha'",    speak: 'هَاء'    },
+  { id: 28, arabic: 'ء', name: 'Hamzah', speak: 'هَمْزَة' },
+  { id: 29, arabic: 'ي', name: "Ya'",    speak: 'يَاء'    },
+];
+
+// Readable audio file slugs in id order (1-29). ح = "ha", ه = "haa" (both Ha').
+// Keep in sync with SLUGS in scripts/generate-tts.mjs.
+const HIJAIYAH_SLUGS = [
+  'alif', 'ba', 'ta', 'tha', 'jim', 'ha', 'kha', 'dal', 'zal', 'ra',
+  'zay', 'sin', 'syin', 'sad', 'dad', 'tho', 'zho', 'ain', 'ghain', 'fa',
+  'qaf', 'kaf', 'lam', 'mim', 'nun', 'wau', 'haa', 'hamzah', 'ya',
 ];
 
 // Colour palette — cycles every 7 letters (4 full cycles for 28 letters)
@@ -176,8 +187,8 @@ function CompletionScreen({ onRestart, onBack, language }) {
         lineHeight: 1.5,
       }}>
         {language === 'bm'
-          ? 'Kamu telah mendengar semua 28 huruf Hijaiyah!\nTerus semangat belajar Al-Quran.'
-          : 'You have listened to all 28 Hijaiyah letters!\nKeep up the great learning.'}
+          ? 'Kamu telah mendengar semua 29 huruf Hijaiyah!\nTerus semangat belajar Al-Quran.'
+          : 'You have listened to all 29 Hijaiyah letters!\nKeep up the great learning.'}
       </p>
 
       {/* 28-letter display */}
@@ -238,23 +249,63 @@ function CompletionScreen({ onRestart, onBack, language }) {
 
 // ── Main component ────────────────────────────────────────────────────────────
 export default function HurufHijaiyah({ onBack, language = 'bm' }) {
-  const [heard,   setHeard]   = useState(new Set());
-  const [playing, setPlaying] = useState(null);
-  const [done,    setDone]    = useState(false);
+  const [heard,          setHeard]          = useState(new Set());
+  const [playing,        setPlaying]        = useState(null);
+  const [done,           setDone]           = useState(false);
+  const [noArabicVoice,  setNoArabicVoice]  = useState(false);
+  const [audioAvailable, setAudioAvailable] = useState(null); // null=checking, true/false
+  const currentAudioRef = useRef(null);
+
+  // Probe for pre-recorded audio files once on mount
+  useEffect(() => {
+    fetch(`${import.meta.env.BASE_URL}audio/hijaiyah/alif.mp3`, { method: 'HEAD' })
+      .then(r => setAudioAvailable(r.ok))
+      .catch(() => setAudioAvailable(false));
+  }, []);
+
+  // Arabic TTS voice check — only relevant when audio files are absent
+  useEffect(() => {
+    if (!SpeechManager.isTTSSupported()) return;
+    const check = () => setNoArabicVoice(!SpeechManager.hasVoiceFor('ar-SA'));
+    const synth = window.speechSynthesis;
+    if (synth.getVoices().length) check();
+    synth.addEventListener('voiceschanged', check);
+    return () => synth.removeEventListener('voiceschanged', check);
+  }, []);
 
   const handleTap = useCallback((letter) => {
-    SpeechManager.speak(letter.speak, 'ar-SA');
-    setPlaying(letter.id);
-    setTimeout(() => setPlaying(null), 900);
+    // Stop whatever is already playing
+    if (currentAudioRef.current) {
+      currentAudioRef.current.pause();
+      currentAudioRef.current = null;
+    }
+    SpeechManager.stopSpeaking();
 
+    setPlaying(letter.id);
     setHeard(prev => {
       const next = new Set(prev);
       next.add(letter.id);
-      if (next.size === HIJAIYAH.length) {
-        setTimeout(() => setDone(true), 600);
-      }
+      if (next.size === HIJAIYAH.length) setTimeout(() => setDone(true), 600);
       return next;
     });
+
+    // ── Audio-first playback with TTS fallback ────────────────────────────
+    const slug  = HIJAIYAH_SLUGS[letter.id - 1];
+    const audio = new Audio(`${import.meta.env.BASE_URL}audio/hijaiyah/${slug}.mp3`);
+    currentAudioRef.current = audio;
+
+    const fallbackTTS = () => {
+      currentAudioRef.current = null;
+      SpeechManager.speak(letter.speak, 'ar-SA', { rate: 0.75, pitch: 1.0 })
+        .then(() => setPlaying(null));
+    };
+
+    audio.addEventListener('ended', () => {
+      currentAudioRef.current = null;
+      setPlaying(null);
+    }, { once: true });
+    audio.addEventListener('error', fallbackTTS, { once: true });
+    audio.play().catch(fallbackTTS);
   }, []);
 
   const handleRestart = () => {
@@ -302,14 +353,16 @@ export default function HurufHijaiyah({ onBack, language = 'bm' }) {
         <CompletionScreen onRestart={handleRestart} onBack={onBack} language={language} />
       ) : (
         <>
-          {/* ── Header ────────────────────────────────────────────────── */}
-          <div style={{ padding: '4.5rem 1.25rem 1rem', flexShrink: 0 }}>
+          {/* ── Header — breadcrumb on the back-button line; title drops below
+              the button (extra breadcrumb margin) so it never overlaps on small
+              screens regardless of its width. ── */}
+          <div style={{ padding: '1.5rem 1.5rem 0.5rem', flexShrink: 0, textAlign: 'center' }}>
             <p style={{
               fontFamily: "'Fredoka', system-ui, sans-serif",
               fontWeight: 600,
               fontSize: 'clamp(0.65rem, 1.4vw, 0.75rem)',
-              color: 'rgba(255,255,255,0.4)',
-              margin: '0 0 0.6rem',
+              color: 'rgba(255,255,255,0.45)',
+              margin: '0 0 1.25rem',
             }}>
               Al-Quran &amp; Tajwid &rsaquo; Topik 1.1
             </p>
@@ -329,14 +382,16 @@ export default function HurufHijaiyah({ onBack, language = 'bm' }) {
               fontWeight: 500,
               fontSize: 'clamp(0.75rem, 1.8vw, 0.88rem)',
               color: '#94A3B8',
-              margin: '0 0 1rem',
+              margin: 0,
             }}>
               {language === 'bm'
                 ? '🔊 Ketuk mana-mana huruf untuk dengar sebutannya'
                 : '🔊 Tap any letter to hear its pronunciation'}
             </p>
+          </div>
 
-            {/* Progress bar */}
+          {/* Progress bar — full width below the centered header */}
+          <div style={{ padding: '0 1.25rem 0.75rem', flexShrink: 0 }}>
             <div style={{
               background: 'rgba(255,255,255,0.08)',
               borderRadius: 12,
@@ -375,6 +430,27 @@ export default function HurufHijaiyah({ onBack, language = 'bm' }) {
               </span>
             </div>
           </div>
+
+          {/* ── No-audio + no-TTS notice (desktop only) ──────────────── */}
+          {noArabicVoice && !SpeechManager.isMobile() && audioAvailable === false && (
+            <div style={{
+              margin: '0 1.25rem 0.5rem',
+              padding: '8px 12px',
+              background: 'rgba(245,158,11,0.1)',
+              border: '1px solid rgba(245,158,11,0.3)',
+              borderRadius: 10,
+              fontFamily: "'Fredoka', system-ui, sans-serif",
+              fontWeight: 600,
+              fontSize: 'clamp(0.65rem, 1.4vw, 0.72rem)',
+              color: '#F59E0B',
+              lineHeight: 1.45,
+              flexShrink: 0,
+            }}>
+              {language === 'bm'
+                ? '⚠️ Suara Arab tidak tersedia pada peranti ini. Untuk mendengar sebutan, gunakan telefon/tablet atau pasang bahasa Arab melalui Tetapan Windows > Masa & Bahasa > Tambah bahasa.'
+                : '⚠️ Arabic voice not available on this device. Use a mobile/tablet, or install Arabic via Windows Settings > Time & Language > Add a language.'}
+            </div>
+          )}
 
           {/* ── Letter grid ───────────────────────────────────────────── */}
           <div style={{

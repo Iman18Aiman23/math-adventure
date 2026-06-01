@@ -1,7 +1,7 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import BackButton from '../../BackButton';
 import SpeechManager from '../../../services/SpeechManager';
-import { playHoverSound } from '../../../utils/soundManager';
+import { playHoverSound, playSound } from '../../../utils/soundManager';
 
 const ARABIC_FONT = "'Traditional Arabic','Scheherazade New','Amiri','Noto Naskh Arabic',serif";
 
@@ -122,6 +122,25 @@ function buildQuizPool() {
   return pool;
 }
 
+// Maps each Hijaiyah glyph → its readable file slug under /audio/syllables/.
+// ح = "ha", ه = "haa". Keep in sync with SLUGS in scripts/generate-tts.mjs.
+const GLYPH_TO_SLUG = {
+  'ا': 'alif', 'ب': 'ba', 'ت': 'ta', 'ث': 'tha', 'ج': 'jim', 'ح': 'ha', 'خ': 'kha',
+  'د': 'dal', 'ذ': 'zal', 'ر': 'ra', 'ز': 'zay', 'س': 'sin', 'ش': 'syin', 'ص': 'sad',
+  'ض': 'dad', 'ط': 'tho', 'ظ': 'zho', 'ع': 'ain', 'غ': 'ghain', 'ف': 'fa', 'ق': 'qaf',
+  'ك': 'kaf', 'ل': 'lam', 'م': 'mim', 'ن': 'nun', 'و': 'wau', 'ه': 'haa', 'ء': 'hamzah',
+  'ي': 'ya',
+};
+const HARAKAT_VOWEL = { fathah: 'a', kasrah: 'i', dammah: 'u' };
+
+// Build the pre-recorded syllable file URL for a (letter, harakatId) pair.
+function syllableFileUrl(letter, harakatId) {
+  const slug = GLYPH_TO_SLUG[letter];
+  const v    = HARAKAT_VOWEL[harakatId];
+  if (!slug || !v) return null;
+  return `${import.meta.env.BASE_URL}audio/syllables/${slug}-${v}.mp3`;
+}
+
 function shuffle(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -134,37 +153,25 @@ function shuffle(arr) {
 const TOTAL_ROUNDS = 10;
 
 // ── Learn card ────────────────────────────────────────────────────────────────
-function LearnCard({ h, language, active, onTap }) {
+function LearnCard({ h, language, activeEx, onExampleTap }) {
   return (
-    <div
-      role="button"
-      tabIndex={0}
-      onClick={onTap}
-      onKeyDown={e => e.key === 'Enter' && onTap()}
-      onMouseEnter={playHoverSound}
-      style={{
-        background: h.gradient,
-        border: `2.5px solid ${h.border}`,
-        borderRadius: 22,
-        padding: '16px 14px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: 10,
-        cursor: 'pointer',
-        userSelect: 'none',
-        WebkitTapHighlightColor: 'transparent',
-        boxSizing: 'border-box',
-        width: '100%',
-        boxShadow: active
-          ? `0 0 0 3px ${h.accent}, 0 12px 32px ${h.glow}`
-          : `0 2px 0 rgba(255,255,255,0.35) inset, 0 8px 20px rgba(0,0,0,0.1)`,
-        transform: active ? 'translateY(-4px) scale(1.02)' : 'none',
-        transition: 'all 0.25s cubic-bezier(.34,1.56,.64,1)',
-        textAlign: 'center',
-      }}
-    >
-      {/* Glyph box — padding is asymmetric per harakat so mark never overflows */}
+    <div style={{
+      background: h.gradient,
+      border: `2.5px solid ${h.border}`,
+      borderRadius: 22,
+      padding: '16px 14px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: 10,
+      userSelect: 'none',
+      WebkitTapHighlightColor: 'transparent',
+      boxSizing: 'border-box',
+      width: '100%',
+      boxShadow: '0 2px 0 rgba(255,255,255,0.35) inset, 0 8px 20px rgba(0,0,0,0.1)',
+      textAlign: 'center',
+    }}>
+      {/* Glyph box — asymmetric padding so mark never overflows */}
       <div style={{
         background: 'rgba(255,255,255,0.5)',
         borderRadius: 20,
@@ -237,35 +244,48 @@ function LearnCard({ h, language, active, onTap }) {
         </p>
       </div>
 
-      {/* Example syllables — exPadding gives room for mark above/below */}
+      {/* Example syllables — each is a tappable button with its own sound */}
       <div style={{ display: 'flex', gap: 6, justifyContent: 'center', flexWrap: 'wrap', width: '100%' }}>
-        {h.examples.map(ex => (
-          <div key={ex.rumi} style={{
-            background: 'rgba(255,255,255,0.6)',
-            borderRadius: 10,
-            padding: h.exPadding,
-            textAlign: 'center',
-            minWidth: 38,
-            boxSizing: 'border-box',
-          }}>
-            <span style={{
-              fontFamily: ARABIC_FONT,
-              fontSize: '1.15rem',
-              color: h.color,
-              direction: 'rtl',
-              display: 'block',
-              lineHeight: 1,
-            }}>{ex.arabic}</span>
-            <span style={{
-              fontFamily: "'Fredoka', system-ui, sans-serif",
-              fontWeight: 700,
-              fontSize: '0.68rem',
-              color: h.color,
-              display: 'block',
-              marginTop: 2,
-            }}>{ex.rumi}</span>
-          </div>
-        ))}
+        {h.examples.map(ex => {
+          const isPlaying = activeEx === ex.rumi;
+          return (
+            <button
+              key={ex.rumi}
+              onClick={() => onExampleTap(ex)}
+              style={{
+                background: isPlaying ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,0.6)',
+                border: `2px solid ${isPlaying ? h.accent : 'transparent'}`,
+                borderRadius: 10,
+                padding: h.exPadding,
+                textAlign: 'center',
+                minWidth: 44,
+                boxSizing: 'border-box',
+                cursor: 'pointer',
+                WebkitTapHighlightColor: 'transparent',
+                transform: isPlaying ? 'scale(1.12)' : 'scale(1)',
+                transition: 'transform 0.15s ease, background 0.15s, border-color 0.15s',
+                boxShadow: isPlaying ? `0 0 0 3px ${h.glow}` : 'none',
+              }}
+            >
+              <span style={{
+                fontFamily: ARABIC_FONT,
+                fontSize: '1.25rem',
+                color: h.color,
+                direction: 'rtl',
+                display: 'block',
+                lineHeight: 1,
+              }}>{ex.arabic}</span>
+              <span style={{
+                fontFamily: "'Fredoka', system-ui, sans-serif",
+                fontWeight: 700,
+                fontSize: '0.72rem',
+                color: isPlaying ? h.accent : h.color,
+                display: 'block',
+                marginTop: 2,
+              }}>{isPlaying ? '🔊' : ex.rumi}</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Tap hint */}
@@ -277,8 +297,32 @@ function LearnCard({ h, language, active, onTap }) {
         margin: 0,
         opacity: 0.65,
       }}>
-        {active ? '🔊 Memainkan...' : '👆 Ketuk untuk dengar'}
+        👆 {language === 'bm' ? 'Ketuk suku kata untuk dengar' : 'Tap a syllable to hear it'}
       </p>
+    </div>
+  );
+}
+
+// ── Celebration burst (shown on a correct answer) ────────────────────────────
+const CONFETTI = ['🎉', '⭐', '✨', '🌟', '🎊', '💫'];
+function Celebration() {
+  return (
+    <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'visible' }}>
+      {Array.from({ length: 14 }).map((_, i) => (
+        <span
+          key={i}
+          style={{
+            position: 'absolute',
+            left: `${6 + i * 6.6}%`,
+            top: '55%',
+            fontSize: `${0.9 + (i % 3) * 0.4}rem`,
+            animation: `tb-confetti ${0.75 + (i % 4) * 0.12}s ease-out forwards`,
+            animationDelay: `${(i % 5) * 0.04}s`,
+          }}
+        >
+          {CONFETTI[i % CONFETTI.length]}
+        </span>
+      ))}
     </div>
   );
 }
@@ -291,19 +335,48 @@ function QuizScreen({ language, onDone }) {
   const [chosen,    setChosen]    = useState(null);
   const [correct,   setCorrect]   = useState(null);
   const [animating, setAnimating] = useState(false);
+  const audioRef = useRef(null);
 
   const q = pool[round];
 
-  useEffect(() => {
-    if (q) SpeechManager.speak(q.display, 'ar-SA');
-  }, [round]);
+  // Play the question syllable from a pre-recorded file, falling back to
+  // Arabic TTS (mobile) if the file is missing.
+  const playQ = useCallback((item) => {
+    if (!item) return;
+    if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+    SpeechManager.stopSpeaking();
+
+    const url = syllableFileUrl(item.letter, item.harakat.id);
+    const fallbackTTS = () => {
+      audioRef.current = null;
+      SpeechManager.speak(item.display, 'ar-SA');
+    };
+    if (!url) { fallbackTTS(); return; }
+
+    const audio = new Audio(url);
+    audioRef.current = audio;
+    audio.addEventListener('ended', () => { audioRef.current = null; }, { once: true });
+    audio.addEventListener('error', fallbackTTS, { once: true });
+    audio.play().catch(fallbackTTS);
+  }, []);
+
+  useEffect(() => { playQ(q); }, [q, playQ]);
 
   const handleAnswer = useCallback((harakatId) => {
     if (animating || chosen) return;
+    // Stop any syllable still playing so the feedback sound is clear
+    if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+    SpeechManager.stopSpeaking();
+
     const isCorrect = harakatId === q.harakat.id;
     setChosen(harakatId);
     setCorrect(isCorrect);
-    if (isCorrect) setScore(s => s + 1);
+    if (isCorrect) {
+      setScore(s => s + 1);
+      playSound('correct');   // celebration chime (paired with confetti animation)
+    } else {
+      playSound('wrong');     // error sound
+    }
     setAnimating(true);
     setTimeout(() => {
       setChosen(null); setCorrect(null); setAnimating(false);
@@ -318,9 +391,14 @@ function QuizScreen({ language, onDone }) {
   if (!q) return null;
 
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1.25rem', padding: '0 1.25rem 80px' }}>
+    <div style={{
+      flex: 1, minHeight: 0,
+      display: 'flex', flexDirection: 'column', gap: '0.75rem',
+      padding: '0.75rem 1.25rem calc(0.75rem + var(--safe-bottom, 0px))',
+      overflow: 'hidden',
+    }}>
       {/* Progress */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+      <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
         <div style={{ flex: 1, height: 8, borderRadius: 99, background: 'rgba(255,255,255,0.1)', overflow: 'hidden' }}>
           <div style={{ height: '100%', width: `${(round / TOTAL_ROUNDS) * 100}%`, background: 'linear-gradient(90deg, #10B981, #6EE7B7)', borderRadius: 99, transition: 'width 0.4s ease' }} />
         </div>
@@ -332,17 +410,21 @@ function QuizScreen({ language, onDone }) {
         </span>
       </div>
 
-      {/* Question card — generous padding so any mark never clips */}
+      {/* Question card — fills available height, content centered */}
       <div style={{
+        flex: 1, minHeight: 0,
         background: 'rgba(255,255,255,0.06)', border: '2px solid rgba(255,255,255,0.1)',
-        borderRadius: 20, padding: '1.5rem 1rem',
-        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', textAlign: 'center',
+        borderRadius: 20, padding: '0.75rem 1rem',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        gap: '0.6rem', textAlign: 'center',
+        position: 'relative', overflow: 'visible',
       }}>
-        <p style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 600, fontSize: 'clamp(0.8rem, 2vw, 0.95rem)', color: '#94A3B8', margin: 0 }}>
+        {chosen && correct && <Celebration />}
+        <p style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 600, fontSize: 'clamp(0.85rem, 2.2vw, 1rem)', color: '#E2E8F0', margin: 0 }}>
           {language === 'bm' ? 'Apakah nama baris pada huruf ini?' : 'What is the name of this harakat?'}
         </p>
         <div
-          onClick={() => SpeechManager.speak(q.display, 'ar-SA')}
+          onClick={() => playQ(q)}
           style={{
             background: 'rgba(255,255,255,0.08)', borderRadius: 18,
             border: '2px solid rgba(255,255,255,0.12)',
@@ -352,7 +434,7 @@ function QuizScreen({ language, onDone }) {
         >
           <span style={{
             fontFamily: ARABIC_FONT,
-            fontSize: 'clamp(3.5rem, 12vw, 6rem)',
+            fontSize: 'clamp(2.6rem, 13vh, 5.5rem)',
             color: '#FFFFFF',
             lineHeight: 1,
             direction: 'rtl',
@@ -367,7 +449,7 @@ function QuizScreen({ language, onDone }) {
       </div>
 
       {/* Answer buttons */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+      <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
         {HARAKAT.map(h => {
           const isChosen  = chosen === h.id;
           const isCorrect = isChosen && correct;
@@ -378,11 +460,10 @@ function QuizScreen({ language, onDone }) {
               key={h.id}
               onClick={() => handleAnswer(h.id)}
               disabled={!!chosen}
-              onMouseEnter={!chosen ? playHoverSound : undefined}
               style={{
                 fontFamily: "'Fredoka', system-ui, sans-serif",
                 fontWeight: 700, fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)',
-                padding: '14px 20px', borderRadius: 16, border: '2.5px solid',
+                padding: '12px 18px', borderRadius: 16, border: '2.5px solid',
                 cursor: chosen ? 'default' : 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 transition: 'all 0.2s ease',
@@ -454,16 +535,43 @@ function ResultScreen({ score, onRetry, onBack, language }) {
 // ── Main component ────────────────────────────────────────────────────────────
 export default function TandaBacaan({ onBack, language = 'bm' }) {
   const [tab,        setTab]        = useState('belajar');
-  const [active,     setActive]     = useState(null);
+  const [activeEx,   setActiveEx]   = useState(null); // rumi key of currently playing syllable
   const [quizDone,   setQuizDone]   = useState(false);
   const [finalScore, setFinalScore] = useState(0);
   const [quizKey,    setQuizKey]    = useState(0);
+  const currentAudioRef = useRef(null);
 
-  const handleLearnTap = (h) => {
-    setActive(h.id);
-    SpeechManager.speak(h.speakText, 'ar-SA');
-    setTimeout(() => setActive(null), 1200);
-  };
+  // Play an individual syllable example (ba / ta / ka / ma / bi / …).
+  // Reuses the shared syllable library at /audio/syllables/{id}-{a|i|u}.mp3 —
+  // derived from the example's base letter (glyph → id) and vowel (rumi suffix).
+  // Falls back to Arabic TTS (works on mobile) if a file is ever missing.
+  const handleExampleTap = useCallback((ex) => {
+    if (currentAudioRef.current) {
+      currentAudioRef.current.pause();
+      currentAudioRef.current = null;
+    }
+    SpeechManager.stopSpeaking();
+    setActiveEx(ex.rumi);
+
+    const fallbackTTS = () => {
+      currentAudioRef.current = null;
+      SpeechManager.speak(ex.arabic, 'ar-SA').then(() => setActiveEx(null));
+    };
+
+    const slug  = GLYPH_TO_SLUG[[...ex.arabic][0]]; // base letter glyph → "ba" etc.
+    const vowel = ex.rumi.slice(-1);                // a | i | u
+    const url   = slug ? `${import.meta.env.BASE_URL}audio/syllables/${slug}-${vowel}.mp3` : null;
+    if (!url) { fallbackTTS(); return; }
+
+    const audio = new Audio(url);
+    currentAudioRef.current = audio;
+    audio.addEventListener('ended', () => {
+      currentAudioRef.current = null;
+      setActiveEx(null);
+    }, { once: true });
+    audio.addEventListener('error', fallbackTTS, { once: true });
+    audio.play().catch(fallbackTTS);
+  }, []);
 
   const handleQuizDone  = (score) => { setFinalScore(score); setQuizDone(true); };
   const handleRetry     = () => { setQuizDone(false); setQuizKey(k => k + 1); };
@@ -476,17 +584,26 @@ export default function TandaBacaan({ onBack, language = 'bm' }) {
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Baloo+2:wght@600;700;800&display=swap');
         .tb-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
         @media (min-width: 640px) { .tb-grid { grid-template-columns: repeat(3, 1fr); gap: 1.1rem; } }
+
+        @keyframes tb-confetti {
+          0%   { transform: translateY(0) scale(0.4) rotate(0deg);   opacity: 0; }
+          15%  { opacity: 1; }
+          100% { transform: translateY(-90px) scale(1.2) rotate(45deg); opacity: 0; }
+        }
       `}</style>
 
-      {/* Header — fixed height, never shrinks */}
-      <div style={{ padding: '4.5rem 1.25rem 1rem', flexShrink: 0 }}>
-        <p style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 600, fontSize: 'clamp(0.65rem, 1.4vw, 0.75rem)', color: 'rgba(255,255,255,0.4)', margin: '0 0 0.5rem' }}>
+      {/* Header — breadcrumb aligned to the back-button line; all content centered.
+          Horizontal padding (3.5rem) clears the fixed 44px back button on the left
+          while staying symmetric so the text centers on the viewport. */}
+      <div style={{ padding: '1.5rem 3.5rem 0.75rem', flexShrink: 0, textAlign: 'center' }}>
+        <p style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 600, fontSize: 'clamp(0.65rem, 1.4vw, 0.75rem)', color: 'rgba(255,255,255,0.45)', margin: '0 0 0.35rem' }}>
           Al-Quran &amp; Tajwid &rsaquo; Topik 1.2
         </p>
-        <h1 style={{ fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 'clamp(1.1rem, 3.5vw, 1.5rem)', color: '#38BDF8', margin: '0 0 1rem' }}>
+        <h1 style={{ fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 'clamp(1.1rem, 3.5vw, 1.5rem)', color: '#38BDF8', margin: '0 0 0.75rem' }}>
           {language === 'bm' ? 'Tanda Bacaan Asas' : 'Basic Diacritical Marks'}
         </h1>
-        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem' }}>
+
+        <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
           {[
             { id: 'belajar', label: language === 'bm' ? '📖 Belajar' : '📖 Learn' },
             { id: 'kuiz',    label: language === 'bm' ? '🎯 Kuiz'   : '🎯 Quiz'  },
@@ -512,7 +629,7 @@ export default function TandaBacaan({ onBack, language = 'bm' }) {
         <div style={{ flex: 1, overflowY: 'auto', padding: '0 1.25rem calc(80px + var(--safe-bottom, 0px))' }}>
           <div className="tb-grid">
             {HARAKAT.map(h => (
-              <LearnCard key={h.id} h={h} language={language} active={active === h.id} onTap={() => handleLearnTap(h)} />
+              <LearnCard key={h.id} h={h} language={language} activeEx={activeEx} onExampleTap={handleExampleTap} />
             ))}
           </div>
           <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
@@ -529,7 +646,7 @@ export default function TandaBacaan({ onBack, language = 'bm' }) {
           <ResultScreen score={finalScore} onRetry={handleRetry} onBack={() => setTab('belajar')} language={language} />
         </div>
       ) : (
-        <div style={{ flex: 1, overflowY: 'auto' }}>
+        <div style={{ flex: 1, minHeight: 0, display: 'flex', overflow: 'hidden' }}>
           <QuizScreen key={quizKey} language={language} onDone={handleQuizDone} />
         </div>
       )}

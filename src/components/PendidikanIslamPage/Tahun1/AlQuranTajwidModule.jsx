@@ -8,8 +8,8 @@ const TOPICS = [
     num: '1.1',
     emoji: '🔤',
     title: 'Huruf Hijaiyah Tunggal',
-    desc: 'Kenali dan sebut 28 huruf Hijaiyah dari Alif hingga Ya',
-    total: 28,
+    desc: 'Kenali dan sebut 29 huruf Hijaiyah dari Alif hingga Ya',
+    total: 29,
     unit: 'huruf',
     gradient: 'linear-gradient(135deg, #FFF7D6 0%, #FDD97A 55%, #D4960A 100%)',
     border: 'rgba(212,150,10,0.45)',
@@ -214,25 +214,28 @@ export default function AlQuranTajwidModule({ onBack, onSelectTopic, language = 
         }
       `}</style>
 
-      {/* Header */}
-      <div style={{ padding: '4.5rem 1.5rem 0' }}>
+      {/* Header — back button on the breadcrumb line; breadcrumb centered */}
+      <div style={{ padding: '1.5rem 1.5rem 0' }}>
         {/* Breadcrumb */}
         <p style={{
           fontFamily: "'Fredoka', system-ui, sans-serif",
           fontWeight: 600,
           fontSize: 'clamp(0.7rem, 1.5vw, 0.8rem)',
           color: 'rgba(255,255,255,0.45)',
-          margin: '0 0 0.5rem',
+          margin: '0 0 0.75rem',
           letterSpacing: '0.05em',
+          textAlign: 'center',
         }}>
           Pendidikan Islam &rsaquo; Tahun 1
         </p>
 
-        {/* Title block */}
+        {/* Title block — extra top margin so it clears the fixed back button
+            (44px tall at top:12 → ~56px). 2rem keeps it clear on small screens. */}
         <div style={{
           background: 'linear-gradient(135deg, #78350F 0%, #D97706 50%, #FDE68A 100%)',
           borderRadius: 20,
           padding: '1.25rem 1.5rem',
+          marginTop: '2rem',
           marginBottom: '1.75rem',
           border: '2px solid rgba(253,230,138,0.3)',
           boxShadow: '0 12px 32px rgba(217,119,6,0.3)',

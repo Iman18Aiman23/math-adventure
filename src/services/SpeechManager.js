@@ -138,12 +138,13 @@ class SpeechManagerClass {
 
   // ── TTS ────────────────────────────────────────────────────────────────────
 
-  /** Normalize caller shorthand ('ms', 'bm', 'en') to BCP-47 tags */
+  /** Normalize caller shorthand ('ms', 'bm', 'en', 'ar') to BCP-47 tags */
   _normalizeLang(lang) {
     if (!lang) return 'en-US';
     const l = lang.toLowerCase();
     if (l === 'ms' || l === 'bm' || l === 'ms-my') return 'ms-MY';
     if (l === 'en' || l === 'en-us') return 'en-US';
+    if (l === 'ar' || l === 'ar-sa') return 'ar-SA';
     return lang;
   }
 
@@ -167,8 +168,6 @@ class SpeechManagerClass {
     }
 
     // Preferred voice name fragments, highest-priority first.
-    // We bias toward FEMALE voices: paired with the high pitch (1.5) they read
-    // back closer to a child / cartoon voice, which suits young learners.
     const PREF_MS = [
       'Yasmin',                                     // Microsoft Malay (female)
       'Google Bahasa Melayu', 'Bahasa Melayu', 'Malay', 'ms-MY',
@@ -178,20 +177,29 @@ class SpeechManagerClass {
       'Zira', 'Samantha', 'Google US English', 'Karen', 'Tessa',
       'Heather', 'Google UK English Female', 'Google', 'Female',
     ];
-    const preferred = prefix === 'ms' ? PREF_MS : PREF_EN;
+    // Arabic: prefer female voices (Hoda ar-EG, Laila) but Naayf (ar-SA male) is fine too
+    const PREF_AR = [
+      'Hoda', 'Laila', 'Google Arabic', 'Dalia',
+      'Naayf', 'Arabic', 'ar-SA', 'ar-EG',
+    ];
+
+    const preferred = prefix === 'ms' ? PREF_MS : prefix === 'ar' ? PREF_AR : PREF_EN;
 
     // Generic gender hints (applied on top of the named preferences above).
     const FEMALE_NAMES = ['yasmin', 'zira', 'samantha', 'karen', 'tessa', 'heather',
-      'fiona', 'moira', 'serena', 'susan', 'hazel', 'catherine', 'aria', 'jenny'];
+      'fiona', 'moira', 'serena', 'susan', 'hazel', 'catherine', 'aria', 'jenny',
+      'hoda', 'laila', 'dalia'];
     const MALE_NAMES = ['osman', 'david', 'mark', 'daniel', 'rishi', 'aaron',
       'fred', 'arthur', 'oliver', 'guy', 'james'];
 
     const scored = voices.map(v => {
       const name = v.name.toLowerCase();
 
-      // Disqualify male voices entirely — never explicitly pick Osman & co.
-      if (/\bmale\b/.test(name) || MALE_NAMES.some(m => name.includes(m))) {
-        return { voice: v, score: -1 };
+      // Disqualify male voices for English/Malay — not for Arabic (Naayf is acceptable).
+      if (prefix !== 'ar') {
+        if (/\bmale\b/.test(name) || MALE_NAMES.some(m => name.includes(m))) {
+          return { voice: v, score: -1 };
+        }
       }
 
       let score = 0;
@@ -204,7 +212,7 @@ class SpeechManagerClass {
       const idx  = preferred.findIndex(p => name.includes(p.toLowerCase()));
       if (idx !== -1) score += (preferred.length - idx) * 4;
 
-      // Strong nudge toward female — keeps the child-like timbre.
+      // Female nudge for English/Malay (child-like timbre); for Arabic it's a bonus only.
       if (/\bfemale\b/.test(name) || FEMALE_NAMES.some(f => name.includes(f))) score += 15;
 
       return { voice: v, score };
@@ -228,13 +236,19 @@ class SpeechManagerClass {
       this._synth.cancel();
 
       const normalLang = this._normalizeLang(lang);
+      const isArabic   = normalLang.startsWith('ar');
       const utterance  = new SpeechSynthesisUtterance(text);
       utterance.lang   = normalLang;
-      utterance.rate   = options.rate   ?? 0.88;  // clear but lively
-      utterance.pitch  = options.pitch  ?? 1.5;   // high pitch on a female voice ≈ child / cartoon voice
+      // Arabic needs natural pitch (1.0) and slower rate for clear tajwid pronunciation.
+      // English/Malay use high pitch (1.5) on a female voice for a child-like timbre.
+      utterance.rate   = options.rate   ?? (isArabic ? 0.75 : 0.88);
+      utterance.pitch  = options.pitch  ?? (isArabic ? 1.0  : 1.5);
       utterance.volume = options.volume ?? 1;
 
       const voice = this._getBestVoice(normalLang);
+      // For Arabic: if no Arabic voice is installed, bail rather than letting the
+      // browser use the default Malay/English voice which mispronounces Arabic text.
+      if (isArabic && !voice) { resolve(); return; }
       if (voice) utterance.voice = voice;
 
       let settled = false;
@@ -253,6 +267,12 @@ class SpeechManagerClass {
         }, 300);
       }
     });
+  }
+
+  /** True if a matching TTS voice is available for the given language code. */
+  hasVoiceFor(lang) {
+    const normalLang = this._normalizeLang(lang);
+    return this._getBestVoice(normalLang) !== null;
   }
 
   stopSpeaking() {
