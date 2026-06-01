@@ -54,7 +54,7 @@ const MODULES_T1 = [
     border: 'rgba(122, 85, 224, 0.45)',
     shadow: 'rgba(122, 85, 224, 0.35)',
     dark: '#4C1D95',
-    available: false,
+    available: true,
   },
   {
     id: 'adab',
@@ -67,7 +67,7 @@ const MODULES_T1 = [
     border: 'rgba(255, 128, 187, 0.45)',
     shadow: 'rgba(255, 128, 187, 0.35)',
     dark: '#9F1239',
-    available: false,
+    available: true,
   },
   {
     id: 'jawi',
@@ -80,7 +80,7 @@ const MODULES_T1 = [
     border: 'rgba(8, 145, 178, 0.45)',
     shadow: 'rgba(8, 145, 178, 0.35)',
     dark: '#0C4A6E',
-    available: false,
+    available: true,
   },
 ];
 
@@ -140,7 +140,6 @@ function ModuleCard({ mod, onClick }) {
         position: 'relative', overflow: 'hidden',
         borderRadius: 22,
         padding: '18px 14px 16px',
-        cursor: 'pointer',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

@@ -196,7 +196,7 @@ export default function JawiKVKLearningPage({ onBack, language }) {
           background: '#fff', borderBottom: '2px solid #E5E5E5',
           padding: '0 1rem', height: '56px', flexShrink: 0,
         }}>
-          <button onClick={handleBackToLetters} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
+          <button onClick={onBack} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
             <ArrowLeft size={24} />
           </button>
           <div style={{ flex: 1, textAlign: 'center', fontWeight: 900, fontSize: '1rem', color: '#3C3C3C', fontFamily: '"Lateef", "Noto Naskh Arabic", serif', direction: 'rtl' }}>
@@ -265,7 +265,7 @@ export default function JawiKVKLearningPage({ onBack, language }) {
         background: '#fff', borderBottom: '2px solid #E5E5E5',
         padding: '0 1rem', height: '56px', flexShrink: 0, gap: '0.5rem',
       }}>
-        <button onClick={handleBackToLetters} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
+        <button onClick={onBack} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
           <ArrowLeft size={22} />
         </button>
 

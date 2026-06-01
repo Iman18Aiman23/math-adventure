@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useTransition } from 'react';
 import './ReadingPage.css';
 import { Play } from 'lucide-react';
 import { playHoverSound } from '../../utils/soundManager';
 import { useGameStateContext } from '../../App';
 import { getGameData } from '../../utils/gameStatsManager';
-import KVLearningPage from './KVLearningPage';
-import KVKLearningPage from './KVKLearningPage';
+import LoadingSpinner from '../LoadingSpinner';
+const KVLearningPage = React.lazy(() => import('./KVLearningPage'));
+const KVKLearningPage = React.lazy(() => import('./KVKLearningPage'));
 import { OpenBookIcon } from '../icons/GameIcons';
 import {
   LearnKVWordsIcon,
@@ -67,6 +68,8 @@ const getTileIllustration = (level) => {
 export default function ReadingPage({ onBack, language }) {
   // ── State ─────────────────────────────────────────────────────────────
   const [selectedLevel, setSelectedLevel] = useState(null);
+  // Keep the level menu visible while a lazy level chunk (KV/KVK) loads.
+  const [isPending, startTransition] = useTransition();
   const [displayHearts, setDisplayHearts] = useState(3);
   const [displayGems, setDisplayGems] = useState(0);
   const [displayStars, setDisplayStars] = useState(0);
@@ -215,12 +218,20 @@ export default function ReadingPage({ onBack, language }) {
 
   // ── Route Tahap 1 → dedicated KV page ─────────────────────────────────
   if (selectedLevel === 1) {
-    return <KVLearningPage onBack={() => setSelectedLevel(null)} language={language} />;
+    return (
+      <React.Suspense fallback={<LoadingSpinner />}>
+        <KVLearningPage onBack={() => setSelectedLevel(null)} language={language} />
+      </React.Suspense>
+    );
   }
 
   // ── Route Tahap 2 → dedicated KVK page ────────────────────────────────
   if (selectedLevel === 2) {
-    return <KVKLearningPage onBack={() => setSelectedLevel(null)} language={language} />;
+    return (
+      <React.Suspense fallback={<LoadingSpinner />}>
+        <KVKLearningPage onBack={() => setSelectedLevel(null)} language={language} />
+      </React.Suspense>
+    );
   }
 
   // ── Route Tahap 3 → dedicated Kata page ────────────────────────────────
@@ -236,7 +247,7 @@ export default function ReadingPage({ onBack, language }) {
   // ── Handler ───────────────────────────────────────────────────────────
   const handleSelectLevel = (level) => {
     playHoverSound();
-    setSelectedLevel(level);
+    startTransition(() => setSelectedLevel(level));
   };
 
   // View: Level Selection
@@ -274,6 +285,7 @@ export default function ReadingPage({ onBack, language }) {
 
     return (
       <>
+        {isPending && <LoadingSpinner overlay />}
         <RobotDefs />
         <style>{globalStyles}</style>
         <PageLayout

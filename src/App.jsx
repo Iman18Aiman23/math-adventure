@@ -1,25 +1,25 @@
 import React, { useState, useEffect, createContext, useContext, Suspense, useTransition } from 'react';
 import HomePage from './components/HomePage';
-import LoadingSkeleton from './components/LoadingSkeleton';
-import BMPage from './components/SpeakingPage/BMPage';
-import JawiPage from './components/JawiScriptPage/JawiPage';
-import MathHome from './components/MathematicsPage/MathHome';
-import OpsLandingPage from './components/MathematicsPage/OpsLandingPage';
-import TimeGameMenu from './components/MathematicsPage/TimeGameMenu';
+import LoadingSpinner from './components/LoadingSpinner';
+const BMPage = React.lazy(() => import('./components/SpeakingPage/BMPage'));
+const JawiPage = React.lazy(() => import('./components/JawiScriptPage/JawiPage'));
+const MathHome = React.lazy(() => import('./components/MathematicsPage/MathHome'));
+const OpsLandingPage = React.lazy(() => import('./components/MathematicsPage/OpsLandingPage'));
+const TimeGameMenu = React.lazy(() => import('./components/MathematicsPage/TimeGameMenu'));
 const MonthsGame = React.lazy(() => import('./components/MathematicsPage/MonthsGame'));
 const ClockGame = React.lazy(() => import('./components/MathematicsPage/ClockGame'));
 const MonthLearning = React.lazy(() => import('./components/MathematicsPage/MonthLearning'));
 const MathOperationsGame = React.lazy(() => import('./components/MathematicsPage/MathOperationsGame'));
 const ColumnMathGame = React.lazy(() => import('./components/MathematicsPage/ColumnMathGame'));
-import LevelUpToast from './components/LevelUpToast';
-import WelcomeModal from './components/WelcomeModal';
+const LevelUpToast = React.lazy(() => import('./components/LevelUpToast'));
+const WelcomeModal = React.lazy(() => import('./components/WelcomeModal'));
 import DesktopSidebar from './components/DesktopSidebar';
 import CosmicMobileNav from './components/CosmicMobileNav';
-import ReadingPage from './components/ReadingPage/ReadingPage';
-import EarlyExplorersHome from './components/AgeGroup-4-6/EarlyExplorersHome';
-import Grade1AdventurersHome from './components/AgeGroup-7/Grade1AdventurersHome';
-import Grade2DiscoverersHome from './components/AgeGroup-8/Grade2DiscoverersHome';
-import Grade3AchieversHome from './components/AgeGroup-9/Grade3AchieversHome';
+const ReadingPage = React.lazy(() => import('./components/ReadingPage/ReadingPage'));
+const EarlyExplorersHome = React.lazy(() => import('./components/AgeGroup-4-6/EarlyExplorersHome'));
+const Grade1AdventurersHome = React.lazy(() => import('./components/AgeGroup-7/Grade1AdventurersHome'));
+const Grade2DiscoverersHome = React.lazy(() => import('./components/AgeGroup-8/Grade2DiscoverersHome'));
+const Grade3AchieversHome = React.lazy(() => import('./components/AgeGroup-9/Grade3AchieversHome'));
 import './components/AgeGroup-4-6/age46-ui.css';
 // Game leaf components are code-split (React.lazy) so they stay out of the main
 // bundle. This keeps the initial chunk small — the homepage and age-group menus
@@ -98,8 +98,8 @@ const Perpuluhan      = React.lazy(() => import('./components/AgeGroup-9/Perpulu
 const WangTahun3      = React.lazy(() => import('./components/AgeGroup-9/WangTahun3'));
 const MasaTahun3      = React.lazy(() => import('./components/AgeGroup-9/MasaTahun3'));
 const PerimeterLuas   = React.lazy(() => import('./components/AgeGroup-9/PerimeterLuas'));
-import ProfileHome from './components/Profile/ProfileHome';
-import PendidikanIslamHomePage from './components/PendidikanIslamPage/PendidikanIslamHomePage';
+const ProfileHome = React.lazy(() => import('./components/Profile/ProfileHome'));
+const PendidikanIslamHomePage = React.lazy(() => import('./components/PendidikanIslamPage/PendidikanIslamHomePage'));
 const AlQuranTajwidModule = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module1_AlQuran/AlQuranTajwidModule'));
 const HurufHijaiyah       = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module1_AlQuran/HurufHijaiyah'));
 const TandaBacaan         = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module1_AlQuran/TandaBacaan'));
@@ -114,10 +114,23 @@ const IbadahModule        = React.lazy(() => import('./components/PendidikanIsla
 const Istinja             = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module3_Ibadah/Istinja'));
 const AirMutlak           = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module3_Ibadah/AirMutlak'));
 const AmaliWuduk          = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module3_Ibadah/AmaliWuduk'));
+const SirahModule          = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module4_Sirah/SirahModule'));
+const NasabKeturunan       = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module4_Sirah/NasabKeturunan'));
+const KelahiranPenyusuan   = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module4_Sirah/KelahiranPenyusuan'));
+const SifatAlAmin          = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module4_Sirah/SifatAlAmin'));
+const AdabModule           = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module5_Adab/AdabModule'));
+const AdabMakanMinum       = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module5_Adab/AdabMakanMinum'));
+const AdabTidur            = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module5_Adab/AdabTidur'));
+const AdabTandas           = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module5_Adab/AdabTandas'));
+const JawiModule           = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module6_Jawi/JawiModule'));
+const HurufJawiTunggal     = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module6_Jawi/HurufJawiTunggal'));
+const SukuKataTerbuka      = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module6_Jawi/SukuKataTerbuka'));
+const JawiKVLearningPage   = React.lazy(() => import('./components/JawiScriptPage/JawiKVLearningPage'));
+const JawiKVKLearningPage  = React.lazy(() => import('./components/JawiScriptPage/JawiKVKLearningPage'));
 const AchievementHome  = React.lazy(() => import('./components/Achievement/AchievementHome'));
 const LeaderboardHome  = React.lazy(() => import('./components/Leaderboard/LeaderboardHome'));
-import AssessmentSelector from './pages/AssessmentSelector';
-import AssessmentPage from './pages/AssessmentPage';
+const AssessmentSelector = React.lazy(() => import('./pages/AssessmentSelector'));
+const AssessmentPage = React.lazy(() => import('./pages/AssessmentPage'));
 import { getMuted, setMuted, preloadSounds, unlockAudio, playHoverSound } from './utils/soundManager';
 import { useGameState } from './hooks/useGameState';
 import { loadPlayerName, savePlayerName, recordLogin, calcStreak } from './services/storageService';
@@ -244,6 +257,9 @@ export default function App() {
   // drives a slim top progress bar for feedback.
   const [isPending, startTransition] = useTransition();
   const navigate = (fn) => startTransition(fn);
+  // Tab switches load lazy chunks (Profile/Achievement/Leaderboard) — route them
+  // through a transition too, so the current page stays visible while loading.
+  const handleTabChange = (tab) => navigate(() => setActiveTab(tab));
 
   const activeGameId = getActiveGameId(currentSubject, mathSubGame);
   const { gameState, levelUpInfo, clearLevelUp } = useGameState(activeGameId);
@@ -284,7 +300,7 @@ export default function App() {
   // ── Content renderer ──────────────────────────────────────────────────────
   const renderContent = () => {
     if (activeTab === 'leaderboard') return (
-      <Suspense fallback={<LoadingSkeleton />}>
+      <Suspense fallback={<LoadingSpinner />}>
         <LeaderboardHome language={language} gameState={gameState} theme={THEMES[currentTheme]} />
       </Suspense>
     );
@@ -297,7 +313,7 @@ export default function App() {
         return <AssessmentPage assessment={selectedAssessment} onBack={() => setSelectedAssessment(null)} language={language} gameState={gameState} />;
       }
       // Otherwise show achievement home
-      return <Suspense fallback={<LoadingSkeleton />}>
+      return <Suspense fallback={<LoadingSpinner />}>
         <AchievementHome
           onBack={handleBackToHome}
           onHome={handleBackToHome}
@@ -391,6 +407,45 @@ export default function App() {
             return <AmaliWuduk onBack={() => setIslamTopic(null)} language={language} />;
           }
           return <IbadahModule onBack={() => setIslamModule(null)} language={language} onSelectTopic={(id) => navigate(() => setIslamTopic(id))} />;
+        }
+        if (islamModule === 'sirah') {
+          if (islamTopic === 'nasab-keturunan') {
+            return <NasabKeturunan onBack={() => setIslamTopic(null)} language={language} />;
+          }
+          if (islamTopic === 'kelahiran-penyusuan') {
+            return <KelahiranPenyusuan onBack={() => setIslamTopic(null)} language={language} />;
+          }
+          if (islamTopic === 'sifat-al-amin') {
+            return <SifatAlAmin onBack={() => setIslamTopic(null)} language={language} />;
+          }
+          return <SirahModule onBack={() => setIslamModule(null)} language={language} onSelectTopic={(id) => navigate(() => setIslamTopic(id))} />;
+        }
+        if (islamModule === 'adab') {
+          if (islamTopic === 'adab-makan-minum') {
+            return <AdabMakanMinum onBack={() => setIslamTopic(null)} language={language} />;
+          }
+          if (islamTopic === 'adab-tidur') {
+            return <AdabTidur onBack={() => setIslamTopic(null)} language={language} />;
+          }
+          if (islamTopic === 'adab-tandas') {
+            return <AdabTandas onBack={() => setIslamTopic(null)} language={language} />;
+          }
+          return <AdabModule onBack={() => setIslamModule(null)} language={language} onSelectTopic={(id) => navigate(() => setIslamTopic(id))} />;
+        }
+        if (islamModule === 'jawi') {
+          if (islamTopic === 'huruf-jawi-tunggal') {
+            return <HurufJawiTunggal onBack={() => setIslamTopic(null)} language={language} onNavigate={(id) => navigate(() => setIslamTopic(id))} />;
+          }
+          if (islamTopic === 'suku-kata-terbuka-jawi') {
+            return <SukuKataTerbuka onBack={() => setIslamTopic(null)} language={language} onNavigate={(id) => navigate(() => setIslamTopic(id))} />;
+          }
+          if (islamTopic === 'jawi-kv-learning') {
+            return <JawiKVLearningPage onBack={() => navigate(() => setIslamTopic('suku-kata-terbuka-jawi'))} language={language} />;
+          }
+          if (islamTopic === 'jawi-kvk-learning') {
+            return <JawiKVKLearningPage onBack={() => navigate(() => setIslamTopic('huruf-jawi-tunggal'))} language={language} />;
+          }
+          return <JawiModule onBack={() => setIslamModule(null)} language={language} onSelectTopic={(id) => navigate(() => setIslamTopic(id))} />;
         }
         return <PendidikanIslamHomePage onBack={handleBackToHome} language={language} onSelectModule={(id) => navigate(() => setIslamModule(id))} />;
       case 'reading':
@@ -644,14 +699,14 @@ export default function App() {
           }
         }
         return <HomePage
-          onSelectSubject={setCurrentSubject}
-          onSelectAgeGroup={setCurrentAgeGroup}
+          onSelectSubject={(s) => navigate(() => setCurrentSubject(s))}
+          onSelectAgeGroup={(g) => navigate(() => setCurrentAgeGroup(g))}
           language={language}
           playerName={playerName}
           gameState={gameState}
           streak={streak}
           activeTab={activeTab}
-          onTabChange={setActiveTab}
+          onTabChange={handleTabChange}
           onHome={handleBackToHome}
           onToggleLang={handleToggleLang}
           theme={THEMES[currentTheme]}
@@ -665,7 +720,7 @@ export default function App() {
       {isDesktop && !shouldHideSidebar && (
         <DesktopSidebar
           activeTab={activeTab}
-          onTabChange={setActiveTab}
+          onTabChange={handleTabChange}
           language={language}
           onToggleLanguage={handleToggleLang}
           playerName={playerName}
@@ -686,31 +741,25 @@ export default function App() {
           '--theme-planet-ring': THEMES[currentTheme].planetRing,
         }}
       >
-        {!playerName && <WelcomeModal onSave={handleSaveName} />}
-        <LevelUpToast level={levelUpInfo?.newLevel} onDismiss={clearLevelUp} />
+        {!playerName && <Suspense fallback={null}><WelcomeModal onSave={handleSaveName} /></Suspense>}
+        <Suspense fallback={null}><LevelUpToast level={levelUpInfo?.newLevel} onDismiss={clearLevelUp} /></Suspense>
 
-        {/* Slim top progress bar — shown while a lazy page chunk is loading */}
-        {isPending && (
-          <>
-            <style>{`
-              @keyframes routeBarSlide {
-                0%   { transform: translateX(-100%); }
-                100% { transform: translateX(100%); }
-              }
-            `}</style>
-            <div aria-hidden="true" style={{ position: 'fixed', top: 0, left: 0, right: 0, height: 3, zIndex: 9999, overflow: 'hidden', background: 'rgba(124,58,237,0.18)' }}>
-              <div style={{ width: '40%', height: '100%', background: 'linear-gradient(90deg, transparent, #A78BFA, #7C3AED, transparent)', animation: 'routeBarSlide 0.9s ease-in-out infinite' }} />
-            </div>
-          </>
-        )}
+        {/* Loading veil — sits on top of the current page (kept visible by the
+            useTransition above) while the next page's lazy chunk loads. */}
+        {isPending && <LoadingSpinner overlay />}
 
-        {/* Page Content */}
+        {/* Page Content.
+            Suspense sits OUTSIDE the keyed view-container so the boundary keeps a
+            stable identity across navigations. That lets useTransition keep the
+            current page visible (with the overlay spinner on top) while the next
+            page's chunk loads, instead of blanking to the fallback. The fallback
+            now only shows on a true cold mount, when there's nothing to keep. */}
         <div className="app-content">
-          <div key={viewKey} className="view-container">
-            <Suspense fallback={<LoadingSkeleton />}>
+          <Suspense fallback={<LoadingSpinner />}>
+            <div key={viewKey} className="view-container">
               {renderContent()}
-            </Suspense>
-          </div>
+            </div>
+          </Suspense>
         </div>
 
         {/* CosmicMobileNav — rendered outside view-container so position:fixed works correctly */}
@@ -718,7 +767,7 @@ export default function App() {
           <CosmicMobileNav
             activeTab={activeTab}
             language={language}
-            onTabChange={setActiveTab}
+            onTabChange={handleTabChange}
             onHome={handleBackToHome}
             onToggleLang={handleToggleLang}
             theme={THEMES[currentTheme]}

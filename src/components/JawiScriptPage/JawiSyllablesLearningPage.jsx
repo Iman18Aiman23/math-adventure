@@ -4,8 +4,9 @@ import { JAWI_ALPHABET } from '../../utils/jawiData';
 import { useGameStateContext } from '../../App';
 import BackButton from '../BackButton';
 import JawiSyllablesGame from './JawiSyllablesGame';
-import JawiKVLearningPage from './JawiKVLearningPage';
-import JawiKVKLearningPage from './JawiKVKLearningPage';
+import LoadingSpinner from '../LoadingSpinner';
+const JawiKVLearningPage = React.lazy(() => import('./JawiKVLearningPage'));
+const JawiKVKLearningPage = React.lazy(() => import('./JawiKVKLearningPage'));
 import JawiReadingPage3 from './JawiReadingPage3';
 import JawiReadingPage4 from './JawiReadingPage4';
 
@@ -34,23 +35,29 @@ export default function JawiSyllablesLearningPage({ onBack, language }) {
   const gameState = useGameStateContext();
   const [gameStarted, setGameStarted] = React.useState(false);
   const [selectedLevel, setSelectedLevel] = React.useState(null);
+  // Keep the level menu visible while a lazy level chunk (KV/KVK) loads.
+  const [isPending, startTransition] = React.useTransition();
 
   // Route each level to its dedicated learning page
   if (selectedLevel === 1) {
     return (
-      <JawiKVLearningPage
-        onBack={() => setSelectedLevel(null)}
-        language={language}
-      />
+      <React.Suspense fallback={<LoadingSpinner />}>
+        <JawiKVLearningPage
+          onBack={() => setSelectedLevel(null)}
+          language={language}
+        />
+      </React.Suspense>
     );
   }
 
   if (selectedLevel === 2) {
     return (
-      <JawiKVKLearningPage
-        onBack={() => setSelectedLevel(null)}
-        language={language}
-      />
+      <React.Suspense fallback={<LoadingSpinner />}>
+        <JawiKVKLearningPage
+          onBack={() => setSelectedLevel(null)}
+          language={language}
+        />
+      </React.Suspense>
     );
   }
 
@@ -86,6 +93,7 @@ export default function JawiSyllablesLearningPage({ onBack, language }) {
   // Main learning page
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
+      {isPending && <LoadingSpinner overlay />}
       <BackButton onClick={onBack} />
 
       {/* Scrollable content */}
@@ -139,7 +147,7 @@ export default function JawiSyllablesLearningPage({ onBack, language }) {
           ].map((level) => (
             <button
               key={level.num}
-              onClick={() => setSelectedLevel(level.num)}
+              onClick={() => startTransition(() => setSelectedLevel(level.num))}
               style={{
                 display: 'flex',
                 alignItems: 'center',

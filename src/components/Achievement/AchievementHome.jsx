@@ -2,9 +2,9 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { getGameData } from '../../utils/gameStatsManager';
 import { baseAssessments } from '../../data/curriculum/assessment';
 import MascotIcon from '../icons/MascotIcon';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
-import confetti from 'canvas-confetti';
+// html2canvas + jsPDF are heavy (~350 kB combined) and only needed when a
+// certificate/badge is actually downloaded. They're dynamically imported inside
+// the download handlers below, so the Achievement page itself stays lightweight.
 
 const BADGE_CONFIG = [
   // Streak Badges
@@ -1059,9 +1059,11 @@ export default function AchievementHome({ onBack, onHome, language, gameState, o
         return;
       }
 
+      const { default: html2canvas } = await import('html2canvas');
       const canvas = await html2canvas(element, { scale: 2, backgroundColor: '#fff', logging: false });
 
       if (format === 'pdf') {
+        const { jsPDF } = await import('jspdf');
         const imgData = canvas.toDataURL('image/png');
         const pdfWidth = 210;
         const pdfHeight = pdfWidth * (canvas.height / canvas.width);
@@ -1121,6 +1123,7 @@ export default function AchievementHome({ onBack, onHome, language, gameState, o
       }
 
       console.log('Starting download for:', achievement.id, 'format:', downloadFormat);
+      const { default: html2canvas } = await import('html2canvas');
       const canvas = await html2canvas(element, {
         scale: 2,
         backgroundColor: '#FBF7F3',
@@ -1132,6 +1135,7 @@ export default function AchievementHome({ onBack, onHome, language, gameState, o
       const achievementName = typeof achievement.name === 'object' ? (language === 'bm' ? achievement.name.bm : achievement.name.eng) : achievement.name;
 
       if (downloadFormat === 'pdf') {
+        const { jsPDF } = await import('jspdf');
         const imgData = canvas.toDataURL('image/png');
         const pdfWidth = 210;
         const pdfHeight = pdfWidth * (canvas.height / canvas.width);

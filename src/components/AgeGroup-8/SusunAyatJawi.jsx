@@ -203,7 +203,7 @@ export default function SusunAyatJawi({ onBack, language = 'bm' }) {
               <div style={{ marginBottom: '0.4rem' }}>
                 {isCorrect ? (language === 'bm' ? '✅ Betul!' : '✅ Correct!') : (language === 'bm' ? '❌ Tidak betul.' : '❌ Wrong.')}
               </div>
-              <div style={{ fontSize: '0.85rem', fontWeight: 'normal', opacity: 0.9, direction: 'rtl', textAlign: 'right', fontSize: '1.1rem', fontFamily: 'serif' }}>
+              <div style={{ fontWeight: 'normal', opacity: 0.9, direction: 'rtl', textAlign: 'right', fontSize: '1.1rem', fontFamily: 'serif' }}>
                 {sentence.jawi_words.join(' ')}
               </div>
             </div>
