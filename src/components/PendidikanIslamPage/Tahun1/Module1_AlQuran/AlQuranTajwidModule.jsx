@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import BackButton from '../../BackButton';
-import { playHoverSound } from '../../../utils/soundManager';
+import BackButton from '../../../BackButton';
+import { playHoverSound } from '../../../../utils/soundManager';
 
 const TOPICS = [
   {
@@ -43,7 +43,7 @@ const TOPICS = [
     border: 'rgba(37,99,235,0.45)',
     glow:   'rgba(37,99,235,0.3)',
     dark:   '#1E40AF',
-    available: false,
+    available: true,
   },
   {
     id: 'hafazan',
@@ -57,7 +57,7 @@ const TOPICS = [
     border: 'rgba(122,85,224,0.45)',
     glow:   'rgba(122,85,224,0.3)',
     dark:   '#4C1D95',
-    available: false,
+    available: true,
   },
 ];
 

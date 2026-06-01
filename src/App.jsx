@@ -100,9 +100,20 @@ const MasaTahun3      = React.lazy(() => import('./components/AgeGroup-9/MasaTah
 const PerimeterLuas   = React.lazy(() => import('./components/AgeGroup-9/PerimeterLuas'));
 import ProfileHome from './components/Profile/ProfileHome';
 import PendidikanIslamHomePage from './components/PendidikanIslamPage/PendidikanIslamHomePage';
-const AlQuranTajwidModule = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/AlQuranTajwidModule'));
-const HurufHijaiyah       = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/HurufHijaiyah'));
-const TandaBacaan         = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/TandaBacaan'));
+const AlQuranTajwidModule = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module1_AlQuran/AlQuranTajwidModule'));
+const HurufHijaiyah       = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module1_AlQuran/HurufHijaiyah'));
+const TandaBacaan         = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module1_AlQuran/TandaBacaan'));
+const Tanwin              = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module1_AlQuran/Tanwin'));
+const Hafazan             = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module1_AlQuran/Hafazan'));
+const AkidahModule        = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module2_Akidah/AkidahModule'));
+const RukunIman           = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module2_Akidah/RukunIman'));
+const RukunIslam          = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module2_Akidah/RukunIslam'));
+const Syahadah            = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module2_Akidah/Syahadah'));
+const AsmaulHusnaKhaliq   = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module2_Akidah/AsmaulHusnaKhaliq'));
+const IbadahModule        = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module3_Ibadah/IbadahModule'));
+const Istinja             = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module3_Ibadah/Istinja'));
+const AirMutlak           = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module3_Ibadah/AirMutlak'));
+const AmaliWuduk          = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module3_Ibadah/AmaliWuduk'));
 const AchievementHome  = React.lazy(() => import('./components/Achievement/AchievementHome'));
 const LeaderboardHome  = React.lazy(() => import('./components/Leaderboard/LeaderboardHome'));
 import AssessmentSelector from './pages/AssessmentSelector';
@@ -346,7 +357,40 @@ export default function App() {
           if (islamTopic === 'tanda-bacaan') {
             return <TandaBacaan onBack={() => setIslamTopic(null)} language={language} />;
           }
+          if (islamTopic === 'tanwin') {
+            return <Tanwin onBack={() => setIslamTopic(null)} language={language} />;
+          }
+          if (islamTopic === 'hafazan') {
+            return <Hafazan onBack={() => setIslamTopic(null)} language={language} />;
+          }
           return <AlQuranTajwidModule onBack={() => setIslamModule(null)} language={language} onSelectTopic={(id) => navigate(() => setIslamTopic(id))} />;
+        }
+        if (islamModule === 'akidah') {
+          if (islamTopic === 'rukun-iman') {
+            return <RukunIman onBack={() => setIslamTopic(null)} language={language} />;
+          }
+          if (islamTopic === 'rukun-islam') {
+            return <RukunIslam onBack={() => setIslamTopic(null)} language={language} />;
+          }
+          if (islamTopic === 'syahadah') {
+            return <Syahadah onBack={() => setIslamTopic(null)} language={language} />;
+          }
+          if (islamTopic === 'asmaul-husna-khaliq') {
+            return <AsmaulHusnaKhaliq onBack={() => setIslamTopic(null)} language={language} />;
+          }
+          return <AkidahModule onBack={() => setIslamModule(null)} language={language} onSelectTopic={(id) => navigate(() => setIslamTopic(id))} />;
+        }
+        if (islamModule === 'ibadah') {
+          if (islamTopic === 'istinja') {
+            return <Istinja onBack={() => setIslamTopic(null)} language={language} />;
+          }
+          if (islamTopic === 'air-mutlak') {
+            return <AirMutlak onBack={() => setIslamTopic(null)} language={language} />;
+          }
+          if (islamTopic === 'amali-wuduk') {
+            return <AmaliWuduk onBack={() => setIslamTopic(null)} language={language} />;
+          }
+          return <IbadahModule onBack={() => setIslamModule(null)} language={language} onSelectTopic={(id) => navigate(() => setIslamTopic(id))} />;
         }
         return <PendidikanIslamHomePage onBack={handleBackToHome} language={language} onSelectModule={(id) => navigate(() => setIslamModule(id))} />;
       case 'reading':

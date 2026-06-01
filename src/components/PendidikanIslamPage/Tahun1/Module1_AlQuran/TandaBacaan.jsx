@@ -1,17 +1,10 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import BackButton from '../../BackButton';
-import SpeechManager from '../../../services/SpeechManager';
-import { playHoverSound, playSound } from '../../../utils/soundManager';
-
-const ARABIC_FONT = "'Traditional Arabic','Scheherazade New','Amiri','Noto Naskh Arabic',serif";
-
-// ── Arabic keyboard harakat constants ─────────────────────────────────────────
-// Shift+Q = Fathah  (baris atas)   U+064E
-// Shift+A = Kasrah  (baris bawah)  U+0650
-// Shift+E = Dammah  (baris depan)  U+064F
-const FATHAH = 'َ'; // ب + Shift+Q → بَ
-const KASRAH  = 'ِ'; // ب + Shift+A → بِ
-const DAMMAH  = 'ُ'; // ب + Shift+E → بُ
+import BackButton from '../../../BackButton';
+import SpeechManager from '../../../../services/SpeechManager';
+import { playHoverSound, playSound } from '../../../../utils/soundManager';
+import { ARABIC_FONT, FONT_IMPORT, FATHAH, KASRAH, DAMMAH, GLYPH_TO_SLUG } from '../../_shared/arabic';
+import { shuffle } from '../../_shared/utils';
+import Celebration from '../../_shared/Celebration';
 
 // ── Harakat data ──────────────────────────────────────────────────────────────
 // markPadding: asymmetric top/bottom so the white box always contains the mark
@@ -24,8 +17,8 @@ const HARAKAT = [
     arabicName: 'فَتْحَة', // فَتْحَة
     symbol: 'ب' + FATHAH,   // بَ
     mark: FATHAH,
-    markPadding: '22px 20px 4px', // extra top for above-mark
-    exPadding:   '12px 6px 2px',  // example box: extra top
+    markPadding: '12px 20px 6px', // extra top for above-mark
+    exPadding:   '8px 6px 2px',   // example box: extra top
     position: 'Terdapat baris diatas huruf',
     positionEng: 'The mark sits above the letter',
     sound: '"a"',
@@ -48,8 +41,8 @@ const HARAKAT = [
     arabicName: 'كَسْرَة', // كَسْرَة
     symbol: 'ب' + KASRAH,   // بِ
     mark: KASRAH,
-    markPadding: '4px 20px 22px', // extra bottom for below-mark
-    exPadding:   '2px 6px 12px',  // example box: extra bottom
+    markPadding: '6px 20px 12px', // extra bottom for below-mark
+    exPadding:   '2px 6px 8px',   // example box: extra bottom
     position: 'Terdapat baris dibawah huruf',
     positionEng: 'The mark sits below the letter',
     sound: '"i"',
@@ -72,10 +65,10 @@ const HARAKAT = [
     arabicName: 'ضَمَّة', // ضَمَّة
     symbol: 'ب' + DAMMAH,   // بُ
     mark: DAMMAH,
-    markPadding: '22px 20px 4px', // extra top for above-mark
-    exPadding:   '12px 6px 2px',  // example box: extra top
-    position: 'Terdapat baris diatas huruf',
-    positionEng: 'The mark sits above the letter',
+    markPadding: '12px 20px 6px', // extra top for above-mark
+    exPadding:   '8px 6px 2px',   // example box: extra top
+    position: 'Dinamakan baris hadapan (depan)',
+    positionEng: 'Called the "front" mark (dammah)',
     sound: '"u"',
     desc: 'Bunyi pendek "u" seperti dalam kata "ular"',
     descEng: 'Short "u" sound like in "put"',
@@ -122,15 +115,6 @@ function buildQuizPool() {
   return pool;
 }
 
-// Maps each Hijaiyah glyph → its readable file slug under /audio/syllables/.
-// ح = "ha", ه = "haa". Keep in sync with SLUGS in scripts/generate-tts.mjs.
-const GLYPH_TO_SLUG = {
-  'ا': 'alif', 'ب': 'ba', 'ت': 'ta', 'ث': 'tha', 'ج': 'jim', 'ح': 'ha', 'خ': 'kha',
-  'د': 'dal', 'ذ': 'zal', 'ر': 'ra', 'ز': 'zay', 'س': 'sin', 'ش': 'syin', 'ص': 'sad',
-  'ض': 'dad', 'ط': 'tho', 'ظ': 'zho', 'ع': 'ain', 'غ': 'ghain', 'ف': 'fa', 'ق': 'qaf',
-  'ك': 'kaf', 'ل': 'lam', 'م': 'mim', 'ن': 'nun', 'و': 'wau', 'ه': 'haa', 'ء': 'hamzah',
-  'ي': 'ya',
-};
 const HARAKAT_VOWEL = { fathah: 'a', kasrah: 'i', dammah: 'u' };
 
 // Build the pre-recorded syllable file URL for a (letter, harakatId) pair.
@@ -139,15 +123,6 @@ function syllableFileUrl(letter, harakatId) {
   const v    = HARAKAT_VOWEL[harakatId];
   if (!slug || !v) return null;
   return `${import.meta.env.BASE_URL}audio/syllables/${slug}-${v}.mp3`;
-}
-
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
 }
 
 const TOTAL_ROUNDS = 10;
@@ -303,30 +278,6 @@ function LearnCard({ h, language, activeEx, onExampleTap }) {
   );
 }
 
-// ── Celebration burst (shown on a correct answer) ────────────────────────────
-const CONFETTI = ['🎉', '⭐', '✨', '🌟', '🎊', '💫'];
-function Celebration() {
-  return (
-    <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'visible' }}>
-      {Array.from({ length: 14 }).map((_, i) => (
-        <span
-          key={i}
-          style={{
-            position: 'absolute',
-            left: `${6 + i * 6.6}%`,
-            top: '55%',
-            fontSize: `${0.9 + (i % 3) * 0.4}rem`,
-            animation: `tb-confetti ${0.75 + (i % 4) * 0.12}s ease-out forwards`,
-            animationDelay: `${(i % 5) * 0.04}s`,
-          }}
-        >
-          {CONFETTI[i % CONFETTI.length]}
-        </span>
-      ))}
-    </div>
-  );
-}
-
 // ── Quiz screen ───────────────────────────────────────────────────────────────
 function QuizScreen({ language, onDone }) {
   const [pool]      = useState(() => shuffle(buildQuizPool()));
@@ -428,7 +379,7 @@ function QuizScreen({ language, onDone }) {
           style={{
             background: 'rgba(255,255,255,0.08)', borderRadius: 18,
             border: '2px solid rgba(255,255,255,0.12)',
-            padding: q.harakat.id === 'kasrah' ? '12px 32px 28px' : '28px 32px 12px',
+            padding: q.harakat.id === 'kasrah' ? '14px 32px 22px' : '22px 32px 14px',
             cursor: 'pointer', userSelect: 'none',
           }}
         >
@@ -480,7 +431,7 @@ function QuizScreen({ language, onDone }) {
                   fontSize: '1.3rem',
                   background: 'rgba(255,255,255,0.15)',
                   borderRadius: 10,
-                  padding: h.id === 'kasrah' ? '2px 10px 10px' : '10px 10px 2px',
+                  padding: h.id === 'kasrah' ? '3px 10px 8px' : '8px 10px 3px',
                   direction: 'rtl',
                   display: 'inline-block',
                   lineHeight: 1,
@@ -581,15 +532,9 @@ export default function TandaBacaan({ onBack, language = 'bm' }) {
       <BackButton onClick={onBack} />
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Baloo+2:wght@600;700;800&display=swap');
+        ${FONT_IMPORT}
         .tb-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
         @media (min-width: 640px) { .tb-grid { grid-template-columns: repeat(3, 1fr); gap: 1.1rem; } }
-
-        @keyframes tb-confetti {
-          0%   { transform: translateY(0) scale(0.4) rotate(0deg);   opacity: 0; }
-          15%  { opacity: 1; }
-          100% { transform: translateY(-90px) scale(1.2) rotate(45deg); opacity: 0; }
-        }
       `}</style>
 
       {/* Header — breadcrumb aligned to the back-button line; all content centered.

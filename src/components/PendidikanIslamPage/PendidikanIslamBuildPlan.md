@@ -214,27 +214,27 @@
 |---|------|--------|
 | 2.1.1 | Topic 1.1 — Kenali Huruf Hijaiyah Tunggal (Alif → Ya) | ✅ Complete |
 | 2.1.2 | Topic 1.2 — Tanda Bacaan Asas (Fathah, Kasrah, Dammah) | ✅ Complete |
-| 2.1.3 | Topic 1.3 — Tanwin (Baris Dua) | ⏳ Pending |
-| 2.1.4 | Topic 1.4 — Tilawah & Hafazan: Al-Fatihah, Al-Ikhlas, Al-Falaq, An-Nas, Al-Asr | ⏳ Pending |
+| 2.1.3 | Topic 1.3 — Tanwin (Baris Dua) | ✅ Complete |
+| 2.1.4 | Topic 1.4 — Tilawah & Hafazan: Al-Fatihah, Al-Ikhlas, Al-Falaq, An-Nas, Al-Asr | ✅ Complete (audio files pending — see public/audio/quran/README.md) |
 
 ### Module 2: Akidah
 > Core mechanic: flashcard quiz + matching game
 
 | # | Task | Status |
 |---|------|--------|
-| 2.2.1 | Topic 2.1 — Rukun Iman (6 Perkara) | ⏳ Pending |
-| 2.2.2 | Topic 2.2 — Rukun Islam (5 Perkara) | ⏳ Pending |
-| 2.2.3 | Topic 2.3 — Dua Kalimah Syahadah (Lafaz, Makna & Kepentingan) | ⏳ Pending |
-| 2.2.4 | Topic 2.4 — Asmaul Husna: Al-Khaliq | ⏳ Pending |
+| 2.2.1 | Topic 2.1 — Rukun Iman (6 Perkara) | ✅ Complete |
+| 2.2.2 | Topic 2.2 — Rukun Islam (5 Perkara) | ✅ Complete |
+| 2.2.3 | Topic 2.3 — Dua Kalimah Syahadah (Lafaz, Makna & Kepentingan) | ✅ Complete |
+| 2.2.4 | Topic 2.4 — Asmaul Husna: Al-Khaliq | ✅ Complete |
 
 ### Module 3: Ibadah
 > Core mechanic: illustrated step-by-step cards (no video needed)
 
 | # | Task | Status |
 |---|------|--------|
-| 2.3.1 | Topic 3.1 — Konsep Istinja' | ⏳ Pending |
-| 2.3.2 | Topic 3.2 — Air Mutlak dan Kegunaannya | ⏳ Pending |
-| 2.3.3 | Topic 3.3 — Amali Wuduk (Rukun, Sunat & Perkara Membatalkan) | ⏳ Pending |
+| 2.3.1 | Topic 3.1 — Konsep Istinja' | ✅ Complete |
+| 2.3.2 | Topic 3.2 — Air Mutlak dan Kegunaannya | ✅ Complete |
+| 2.3.3 | Topic 3.3 — Amali Wuduk (Rukun, Sunat & Perkara Membatalkan) | ✅ Complete |
 
 ### Module 4: Sirah
 > Core mechanic: story card sequence + fill-in-the-blank quiz

@@ -28,7 +28,7 @@ const MODULES_T1 = [
     border: 'rgba(42, 154, 108, 0.45)',
     shadow: 'rgba(42, 154, 108, 0.35)',
     dark: '#065F46',
-    available: false,
+    available: true,
   },
   {
     id: 'ibadah',
@@ -41,7 +41,7 @@ const MODULES_T1 = [
     border: 'rgba(37, 99, 235, 0.45)',
     shadow: 'rgba(37, 99, 235, 0.35)',
     dark: '#1E40AF',
-    available: false,
+    available: true,
   },
   {
     id: 'sirah',

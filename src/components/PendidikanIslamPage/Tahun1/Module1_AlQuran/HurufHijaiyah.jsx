@@ -1,9 +1,8 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import BackButton from '../../BackButton';
-import SpeechManager from '../../../services/SpeechManager';
-import { playHoverSound } from '../../../utils/soundManager';
-
-const ARABIC_FONT = "'Traditional Arabic','Scheherazade New','Amiri','Noto Naskh Arabic',serif";
+import BackButton from '../../../BackButton';
+import SpeechManager from '../../../../services/SpeechManager';
+import { playHoverSound } from '../../../../utils/soundManager';
+import { ARABIC_FONT, FONT_IMPORT, HIJAIYAH_SLUGS } from '../../_shared/arabic';
 
 // 29 Hijaiyah letters — Arabic glyph, Malay name, Arabic spoken name for TTS
 // Pre-recorded audio: place files at /public/audio/hijaiyah/01.mp3 … 28.mp3
@@ -38,14 +37,6 @@ const HIJAIYAH = [
   { id: 27, arabic: 'ه', name: "Ha'",    speak: 'هَاء'    },
   { id: 28, arabic: 'ء', name: 'Hamzah', speak: 'هَمْزَة' },
   { id: 29, arabic: 'ي', name: "Ya'",    speak: 'يَاء'    },
-];
-
-// Readable audio file slugs in id order (1-29). ح = "ha", ه = "haa" (both Ha').
-// Keep in sync with SLUGS in scripts/generate-tts.mjs.
-const HIJAIYAH_SLUGS = [
-  'alif', 'ba', 'ta', 'tha', 'jim', 'ha', 'kha', 'dal', 'zal', 'ra',
-  'zay', 'sin', 'syin', 'sad', 'dad', 'tho', 'zho', 'ain', 'ghain', 'fa',
-  'qaf', 'kaf', 'lam', 'mim', 'nun', 'wau', 'haa', 'hamzah', 'ya',
 ];
 
 // Colour palette — cycles every 7 letters (4 full cycles for 28 letters)
@@ -326,7 +317,7 @@ export default function HurufHijaiyah({ onBack, language = 'bm' }) {
       <BackButton onClick={onBack} />
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Baloo+2:wght@600;700;800&display=swap');
+        ${FONT_IMPORT}
 
         .hh-grid {
           display: grid;
