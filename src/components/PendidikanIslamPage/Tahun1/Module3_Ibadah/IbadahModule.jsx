@@ -1,3 +1,4 @@
+import React from 'react';
 import Tahun1ModuleHubLayout from '../Tahun1ModuleHubLayout';
 
 const THEME = {
@@ -15,36 +16,31 @@ const topics = [
     desc: 'Cara membersihkan diri selepas buang air besar atau kecil',
     num: '3.1',
     visual: (
-      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M26 8 Q32 24 32 34 Q32 42 26 42 Q20 42 20 34 Q20 24 26 8Z" fill="#0EA5E9" />
-        <path d="M24 16 Q28 26 28 32 Q28 36 26 36 Q24 36 24 32 Q24 26 24 16Z" fill="#7DD3FC" opacity="0.5" />
-        <circle cx="16" cy="38" r="3.5" fill="#38BDF8" opacity="0.7" />
-        <circle cx="36" cy="36" r="2.5" fill="#38BDF8" opacity="0.6" />
-        <circle cx="14" cy="46" r="2" fill="#7DD3FC" opacity="0.5" />
-        <circle cx="36" cy="44" r="1.8" fill="#7DD3FC" opacity="0.4" />
-        <rect x="40" y="56" width="8" height="36" rx="2" fill="#FDE68A" />
-        <rect x="48" y="52" width="10" height="40" rx="2" fill="#FEF3C7" />
-        <rect x="58" y="48" width="12" height="44" rx="2" fill="#FFFBEB" />
-        <rect x="70" y="48" width="10" height="44" rx="3" fill="#FEF3C7" />
-        <rect x="80" y="54" width="8" height="38" rx="2" fill="#FDE68A" />
-        <path d="M58 48 Q61 42 64 48 Q67 42 70 48" fill="#FFFBEB" />
-        <line x1="62" y1="48" x2="62" y2="92" stroke="#FDE68A" strokeWidth="1" opacity="0.7" />
-        <line x1="66" y1="48" x2="66" y2="92" stroke="#FDE68A" strokeWidth="1" opacity="0.7" />
-        <line x1="74" y1="48" x2="74" y2="92" stroke="#FDE68A" strokeWidth="1" opacity="0.6" />
-        <line x1="52" y1="52" x2="52" y2="92" stroke="#FDE68A" strokeWidth="1" opacity="0.6" />
-        <line x1="44" y1="56" x2="44" y2="92" stroke="#FDE68A" strokeWidth="1" opacity="0.5" />
-        <ellipse cx="98" cy="74" rx="11" ry="8" fill="#A8A29E" />
-        <ellipse cx="98" cy="72" rx="8" ry="5" fill="#C4BFB8" opacity="0.6" />
-        <ellipse cx="95" cy="70" rx="3.5" ry="2.5" fill="#E7E5E4" opacity="0.4" />
-        <ellipse cx="86" cy="82" rx="8" ry="6" fill="#A78B5A" />
-        <ellipse cx="86" cy="80" rx="6" ry="3.5" fill="#C4A97D" opacity="0.6" />
-        <ellipse cx="84" cy="78" rx="2.5" ry="2" fill="#D4C5A9" opacity="0.4" />
-        <ellipse cx="108" cy="82" rx="6" ry="5" fill="#9CA3AF" />
-        <ellipse cx="108" cy="81" rx="4" ry="3" fill="#C4CBD1" opacity="0.5" />
-        <ellipse cx="106" cy="80" rx="2" ry="1.5" fill="#E5E7EB" opacity="0.4" />
-        <path d="M8 98 L112 98" stroke="#D4D4D8" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
-        <text x="6" y="26" fontSize="7" fill="#F59E0B" opacity="0.6">✦</text>
-        <text x="100" y="16" fontSize="6" fill="#EC4899" opacity="0.5">✦</text>
+      <svg viewBox="0 0 100 100" fill="none">
+        <defs>
+          <radialGradient id="m3-ja-drop" cx="38%" cy="28%" r="82%"><stop offset="0%" stopColor="#EAFBFF"/><stop offset="45%" stopColor="#6CCDF2"/><stop offset="100%" stopColor="#1683B8"/></radialGradient>
+          <linearGradient id="m3-ja-box" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stopColor="#3CB6E0"/><stop offset="100%" stopColor="#1E7FB0"/></linearGradient>
+          <linearGradient id="m3-ja-rock" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stopColor="#BAC6D2"/><stop offset="100%" stopColor="#7B8997"/></linearGradient>
+        </defs>
+        <ellipse cx="50" cy="90" rx="36" ry="6" fill="rgba(11,92,132,.12)"/>
+        <g className="floatA">
+          <path d="M50 12 C 61 30, 61 40, 50 44 C 39 40, 39 30, 50 12 Z" fill="url(#m3-ja-drop)" stroke="#0B5C84" strokeWidth="1.5"/>
+          <ellipse cx="45.5" cy="32" rx="2.6" ry="4.6" fill="#fff" opacity=".7"/>
+          <circle cx="52" cy="38" r="1.4" fill="#fff" opacity=".5"/>
+        </g>
+        <g className="floatA d1">
+          <path d="M22 64 q6 -16 12 0 z" fill="#FBFEFF" stroke="#B8C4D0" strokeWidth="1.1" strokeLinejoin="round"/>
+          <rect x="12" y="63" width="36" height="22" rx="4" fill="#fff" stroke="#0B5C84" strokeWidth="1.5"/>
+          <path d="M12 71 h36" stroke="#0B5C84" strokeWidth="1" opacity=".5"/>
+          <rect x="12" y="63" width="36" height="8" rx="4" fill="url(#m3-ja-box)"/>
+          <ellipse cx="30" cy="71" rx="9" ry="2.4" fill="#0B5C84" opacity=".28"/>
+        </g>
+        <g className="floatA d2">
+          <ellipse cx="68" cy="80" rx="14" ry="9.5" fill="url(#m3-ja-rock)" stroke="#5E6F80" strokeWidth="1.3"/>
+          <ellipse cx="83" cy="84" rx="9" ry="6.5" fill="url(#m3-ja-rock)" stroke="#5E6F80" strokeWidth="1.3"/>
+          <ellipse cx="63" cy="76" rx="4.5" ry="2.6" fill="#fff" opacity=".4"/>
+          <ellipse cx="80" cy="81" rx="2.6" ry="1.6" fill="#fff" opacity=".35"/>
+        </g>
       </svg>
     ),
   },
@@ -54,20 +50,29 @@ const topics = [
     desc: 'Mengenal air suci yang boleh digunakan untuk bersuci',
     num: '3.2',
     visual: (
-      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M60 18 Q64 28 64 36 Q64 42 60 42 Q56 42 56 36 Q56 28 60 18Z" fill="#0891B2" opacity="0.9" />
-        <path d="M60 18 Q63 26 63 34 Q63 38 60 38 Q57 38 57 34 Q57 26 60 18Z" fill="#67E8F9" opacity="0.5" />
-        <path d="M36 48 Q40 58 40 66 Q40 72 36 72 Q32 72 32 66 Q32 58 36 48Z" fill="#A78BFA" opacity="0.85" />
-        <path d="M36 48 Q39 56 39 64 Q39 68 36 68 Q33 68 33 64 Q33 56 36 48Z" fill="#DDD6FE" opacity="0.5" />
-        <path d="M84 48 Q88 58 88 66 Q88 72 84 72 Q80 72 80 66 Q80 58 84 48Z" fill="#F59E0B" opacity="0.85" />
-        <path d="M84 48 Q87 56 87 64 Q87 68 84 68 Q81 68 81 64 Q81 56 84 48Z" fill="#FDE68A" opacity="0.5" />
-        <circle cx="60" cy="86" r="10" fill="#22D3EE" opacity="0.7" />
-        <circle cx="60" cy="86" r="5" fill="#A5F3FC" opacity="0.5" />
-        <circle cx="60" cy="86" r="2" fill="#ECFEFF" opacity="0.8" />
-        <circle cx="48" cy="80" r="2" fill="#EC4899" opacity="0.6" />
-        <circle cx="72" cy="80" r="2" fill="#A78BFA" opacity="0.5" />
-        <circle cx="54" cy="96" r="2" fill="#F59E0B" opacity="0.5" />
-        <circle cx="66" cy="96" r="2" fill="#22D3EE" opacity="0.5" />
+      <svg viewBox="0 0 100 100" fill="none">
+        <defs>
+          <radialGradient id="m3-am-drop" cx="38%" cy="28%" r="82%"><stop offset="0%" stopColor="#EAFBFF"/><stop offset="45%" stopColor="#6CCDF2"/><stop offset="100%" stopColor="#1683B8"/></radialGradient>
+          <linearGradient id="m3-am-water" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stopColor="#9EE0F7"/><stop offset="100%" stopColor="#27A0CE"/></linearGradient>
+        </defs>
+        <ellipse cx="50" cy="92" rx="28" ry="5" fill="rgba(11,92,132,.12)"/>
+        <g className="pulse" fill="#fff">
+          <path d="M20 30l1.2 3 3 .6-3 1.2-1.2 3-1.2-3-3-1.2 3-.6z"/>
+          <path d="M82 36l1 2.4 2.4 .5-2.4 1-1 2.4-1-2.4-2.4-1 2.4-.5z"/>
+          <circle cx="24" cy="64" r="1.8"/>
+          <circle cx="80" cy="68" r="1.5"/>
+        </g>
+        <g className="floatA">
+          <path d="M50 16 C 57 27, 57 34, 50 37 C 43 34, 43 27, 50 16 Z" fill="url(#m3-am-drop)" stroke="#0B5C84" strokeWidth="1.3"/>
+          <ellipse cx="47" cy="29" rx="1.8" ry="3.2" fill="#fff" opacity=".7"/>
+        </g>
+        <g className="floatA d1">
+          <path d="M33 42 L67 42 L62 86 Q50 91 38 86 Z" fill="rgba(255,255,255,.34)" stroke="#0B5C84" strokeWidth="1.8" strokeLinejoin="round"/>
+          <path d="M35.6 54 L64.4 54 L60.6 84.5 Q50 88.5 39.4 84.5 Z" fill="url(#m3-am-water)"/>
+          <ellipse cx="50" cy="54" rx="14.4" ry="2.6" fill="#EAFBFF" opacity=".85"/>
+          <path d="M40 47 L37.5 82" stroke="#fff" strokeWidth="3" opacity=".55" strokeLinecap="round"/>
+          <ellipse cx="50" cy="42" rx="17" ry="3" fill="none" stroke="#0B5C84" strokeWidth="1.8"/>
+        </g>
       </svg>
     ),
   },
@@ -77,24 +82,35 @@ const topics = [
     desc: 'Rukun, sunat dan perkara yang membatalkan wuduk',
     num: '3.3',
     visual: (
-      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <ellipse cx="45" cy="50" rx="14" ry="18" fill="#FFEDD5" />
-        <ellipse cx="75" cy="50" rx="14" ry="18" fill="#FFEDD5" />
-        <circle cx="45" cy="40" r="8" fill="#0C4A6E" opacity="0.8" />
-        <circle cx="75" cy="40" r="8" fill="#0C4A6E" opacity="0.8" />
-        <path d="M28 44 Q28 30 35 24 Q42 18 45 18" stroke="#06B6D4" strokeWidth="3" strokeLinecap="round" fill="none" />
-        <path d="M62 44 Q62 30 69 24 Q76 18 79 18" stroke="#A78BFA" strokeWidth="3" strokeLinecap="round" fill="none" />
-        <path d="M20 66 Q28 58 40 58 Q52 58 60 66" stroke="#22D3EE" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.6" />
-        <path d="M60 66 Q68 58 80 58 Q92 58 100 66" stroke="#A78BFA" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.6" />
-        <circle cx="28" cy="30" r="3" fill="#22D3EE" opacity="0.7" />
-        <circle cx="24" cy="38" r="2.5" fill="#A78BFA" opacity="0.6" />
-        <circle cx="32" cy="38" r="2" fill="#F59E0B" opacity="0.65" />
-        <circle cx="65" cy="30" r="3" fill="#A78BFA" opacity="0.7" />
-        <circle cx="61" cy="38" r="2.5" fill="#22D3EE" opacity="0.55" />
-        <circle cx="69" cy="38" r="2" fill="#EC4899" opacity="0.6" />
-        <circle cx="34" cy="26" r="2" fill="#F59E0B" opacity="0.5" />
-        <circle cx="70" cy="26" r="2" fill="#22D3EE" opacity="0.5" />
-      </svg>
+      <>
+        <svg viewBox="0 0 100 100" fill="none">
+          <defs>
+            <linearGradient id="m3-wu-tap" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stopColor="#E8EEF4"/><stop offset="50%" stopColor="#B2C0CE"/><stop offset="100%" stopColor="#76889A"/></linearGradient>
+            <linearGradient id="m3-wu-water" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stopColor="#9EE0F7"/><stop offset="100%" stopColor="#27A0CE"/></linearGradient>
+            <linearGradient id="m3-wu-skin" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stopColor="#FFE2C4"/><stop offset="100%" stopColor="#F3C193"/></linearGradient>
+          </defs>
+          <ellipse cx="52" cy="92" rx="30" ry="5" fill="rgba(11,92,132,.12)"/>
+          <g className="floatA d2">
+            <rect x="6" y="18" width="9" height="12" rx="2" fill="url(#m3-wu-tap)" stroke="#5E6F80" strokeWidth="1"/>
+            <path d="M12 24 h30 q8 0 8 8 v6" fill="none" stroke="url(#m3-wu-tap)" strokeWidth="8" strokeLinecap="round"/>
+            <path d="M12 24 h30 q8 0 8 8 v6" fill="none" stroke="#5E6F80" strokeWidth="1"/>
+            <rect x="34" y="9" width="11" height="8" rx="2.5" fill="url(#m3-wu-tap)" stroke="#5E6F80" strokeWidth="1"/>
+            <rect x="38" y="5" width="3" height="6" rx="1.5" fill="#76889A"/>
+            <rect x="45.5" y="36" width="9" height="5" rx="2" fill="url(#m3-wu-tap)" stroke="#5E6F80" strokeWidth="1"/>
+          </g>
+          <path className="pulse" d="M50 42 q-1.5 12 -2 20" stroke="url(#m3-wu-water)" strokeWidth="5" fill="none" strokeLinecap="round"/>
+          <circle className="drip" cx="52" cy="64" r="1.8" fill="#5BC8F5"/>
+          <circle cx="42" cy="80" r="1.6" fill="#5BC8F5" opacity=".75"/>
+          <circle cx="66" cy="82" r="1.5" fill="#5BC8F5" opacity=".7"/>
+          <circle cx="60" cy="90" r="1.3" fill="#5BC8F5" opacity=".6"/>
+        </svg>
+        <span className="bubble" style={{position:'absolute',left:'12px',top:'55px',width:'11px',height:'11px',borderRadius:'50%',pointerEvents:'none',zIndex:999,background:'radial-gradient(circle at 35% 30%,#ffffff 0%,#DAF4FF 45%,#9FD8F2 100%)',boxShadow:'0 0 4px rgba(255,255,255,.6)'}}></span>
+        <span className="bubble b2" style={{position:'absolute',left:'76px',top:'47px',width:'14px',height:'14px',borderRadius:'50%',pointerEvents:'none',zIndex:999,background:'radial-gradient(circle at 35% 30%,#ffffff 0%,#DAF4FF 45%,#9FD8F2 100%)',boxShadow:'0 0 4px rgba(255,255,255,.6)'}}></span>
+        <span className="bubble b3" style={{position:'absolute',left:'24px',top:'77px',width:'8px',height:'8px',borderRadius:'50%',pointerEvents:'none',zIndex:999,background:'radial-gradient(circle at 35% 30%,#ffffff 0%,#DAF4FF 45%,#9FD8F2 100%)',boxShadow:'0 0 4px rgba(255,255,255,.6)'}}></span>
+        <span className="bubble b4" style={{position:'absolute',left:'64px',top:'79px',width:'10px',height:'10px',borderRadius:'50%',pointerEvents:'none',zIndex:999,background:'radial-gradient(circle at 35% 30%,#ffffff 0%,#DAF4FF 45%,#9FD8F2 100%)',boxShadow:'0 0 4px rgba(255,255,255,.6)'}}></span>
+        <span className="bubble b5" style={{position:'absolute',left:'46px',top:'87px',width:'7px',height:'7px',borderRadius:'50%',pointerEvents:'none',zIndex:999,background:'radial-gradient(circle at 35% 30%,#ffffff 0%,#DAF4FF 45%,#9FD8F2 100%)',boxShadow:'0 0 4px rgba(255,255,255,.6)'}}></span>
+        <span style={{position:'absolute',left:'50%',top:'62%',transform:'translate(-50%,-50%)',fontSize:'56px',lineHeight:1,pointerEvents:'none',zIndex:2,filter:'drop-shadow(0 4px 6px rgba(11,92,132,.35))'}}>👏</span>
+      </>
     ),
   },
 ];

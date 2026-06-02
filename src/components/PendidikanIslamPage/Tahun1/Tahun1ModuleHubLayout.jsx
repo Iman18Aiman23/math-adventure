@@ -1,8 +1,6 @@
 import React from 'react';
 import BackButton from '../../BackButton';
-import { FONT_IMPORT, ARABIC_FONT } from '../_shared/arabic';
-
-const CARD_BG = '#FFFDF8';
+import { FONT_IMPORT } from '../_shared/arabic';
 
 export default function Tahun1ModuleHubLayout({
   moduleNum,
@@ -13,6 +11,7 @@ export default function Tahun1ModuleHubLayout({
   onBack,
   onSelectTopic,
   language = 'bm',
+  footer,
 }) {
   return (
     <>
@@ -63,8 +62,9 @@ export default function Tahun1ModuleHubLayout({
           flex-direction: column;
           align-items: center;
           gap: 14px;
-          transition: transform .32s cubic-bezier(.34,1.56,.64,1), box-shadow .32s;
+          transition: transform .32s cubic-bezier(.34,1.56,.64,1);
           cursor: pointer;
+          will-change: transform;
         }
         .pi-mhub-card:hover {
           transform: translateY(-8px) scale(1.02);
@@ -77,6 +77,7 @@ export default function Tahun1ModuleHubLayout({
           display: flex;
           align-items: center;
           justify-content: center;
+          position: relative;
           background: ${theme.stageGradient};
           box-shadow: inset 0 -8px 24px ${theme.dark}33, inset 0 2px 0 rgba(255,255,255,.5);
         }
@@ -121,6 +122,25 @@ export default function Tahun1ModuleHubLayout({
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-5px); }
         }
+        .floatA{animation:floatA 3.6s ease-in-out infinite;transform-origin:center}
+        .floatA.d1{animation-delay:.4s}.floatA.d2{animation-delay:.8s}.floatA.d3{animation-delay:1.2s}
+        @keyframes floatA{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+        .pulse{animation:pulse 2.2s ease-in-out infinite}
+        @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+        .bob{animation:bob 2.6s ease-in-out infinite;transform-origin:center}
+        @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+        .spin{animation:spin 18s linear infinite;transform-origin:50px 32px}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .drip{animation:drip 2.2s ease-in infinite}
+        @keyframes drip{0%{transform:translateY(-2px);opacity:0}30%{opacity:1}100%{transform:translateY(12px);opacity:0}}
+        .bubble{transform-origin:center;animation:bubble 3s ease-in-out infinite}
+        .bubble.b2{animation-delay:.6s}.bubble.b3{animation-delay:1.2s}.bubble.b4{animation-delay:1.8s}.bubble.b5{animation-delay:2.4s}
+        @keyframes bubble{0%{transform:translateY(4px) scale(.6);opacity:0}25%{opacity:.9}70%{opacity:.7}100%{transform:translateY(-16px) scale(1.05);opacity:0}}
+        .zzz{animation:zzz 3s ease-in-out infinite}
+        @keyframes zzz{0%{transform:translateY(2px);opacity:0}30%{opacity:1}100%{transform:translate(4px,-12px);opacity:0}}
+        .wave{animation:wave 1.8s ease-in-out infinite}
+        .wave.w2{animation-delay:.3s}.wave.w3{animation-delay:.6s}
+        @keyframes wave{0%,100%{opacity:.35;transform:scale(.9)}50%{opacity:1;transform:scale(1.05)}}
       `}</style>
 
       <div className="pi-mhub-page">
@@ -160,6 +180,12 @@ export default function Tahun1ModuleHubLayout({
             </div>
           ))}
         </div>
+
+        {footer && (
+          <div style={{ marginTop: '3rem' }}>
+            {footer}
+          </div>
+        )}
       </div>
     </>
   );

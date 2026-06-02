@@ -5,8 +5,6 @@ import { useGameStateContext } from '../../App';
 import BackButton from '../BackButton';
 import JawiSyllablesGame from './JawiSyllablesGame';
 import LoadingSpinner from '../LoadingSpinner';
-const JawiKVLearningPage = React.lazy(() => import('./JawiKVLearningPage'));
-const JawiKVKLearningPage = React.lazy(() => import('./JawiKVKLearningPage'));
 import JawiReadingPage3 from './JawiReadingPage3';
 import JawiReadingPage4 from './JawiReadingPage4';
 
@@ -39,28 +37,6 @@ export default function JawiSyllablesLearningPage({ onBack, language }) {
   const [isPending, startTransition] = React.useTransition();
 
   // Route each level to its dedicated learning page
-  if (selectedLevel === 1) {
-    return (
-      <React.Suspense fallback={<LoadingSpinner />}>
-        <JawiKVLearningPage
-          onBack={() => setSelectedLevel(null)}
-          language={language}
-        />
-      </React.Suspense>
-    );
-  }
-
-  if (selectedLevel === 2) {
-    return (
-      <React.Suspense fallback={<LoadingSpinner />}>
-        <JawiKVKLearningPage
-          onBack={() => setSelectedLevel(null)}
-          language={language}
-        />
-      </React.Suspense>
-    );
-  }
-
   if (selectedLevel === 3) {
     return (
       <JawiReadingPage3
@@ -116,20 +92,6 @@ export default function JawiSyllablesLearningPage({ onBack, language }) {
         {/* Level Cards */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
           {[
-            {
-              num: 1,
-              title: language === 'bm' ? 'Tahap 1 (KV)' : 'Level 1 (KV)',
-              desc: language === 'bm' ? 'Sebutan ringkas (Contoh: Ba-ca)' : 'Simple syllables (Example: Ba-ca)',
-              color: '#FF9600',
-              bg: '#FFF0CC'
-            },
-            {
-              num: 2,
-              title: language === 'bm' ? 'Tahap 2 (KVK)' : 'Level 2 (KVK)',
-              desc: language === 'bm' ? 'Perkataan tertutup (Contoh: Ma-kan)' : 'Closed syllables (Example: Ma-kan)',
-              color: '#1CB0F6',
-              bg: '#D0F0FF'
-            },
             {
               num: 3,
               title: language === 'bm' ? 'Tahap 3 (Ayat Pendek)' : 'Level 3 (Short Phrases)',

@@ -7,7 +7,7 @@
 
 ## Table of Contents
 
-1. [Scope & Sequence (Silibus)](#1-scope--sequence-silibus)
+1. [Silibus Pendidikan Islam KSSR (Tahap 1)](#-silibus-pendidikan-islam-kssr-tahap-1)
 2. [Build Plan & Status](#2-build-plan--status)
 3. [Homepage Visual Wireframe](#3-homepage-visual-wireframe)
 4. [Module Card Anatomy](#4-module-card-anatomy)
@@ -23,78 +23,138 @@
 
 ---
 
-## 1. Scope & Sequence (Silibus)
+# 📚 SILIBUS PENDIDIKAN ISLAM KSSR (TAHAP 1)
 
-### Tahun 1
+---
 
-| Modul | Topik |
-|-------|-------|
-| **1. Al-Quran & Tajwid** | 1.1 Kenali Huruf Hijaiyah Tunggal (Alif hingga Ya) |
-| | 1.2 Mengenal Tanda Bacaan Asas (Baris Fathah, Kasrah, Dammah) |
-| | 1.3 Mengenal Tanwin (Baris Dua) |
-| | 1.4 Tilawah & Hafazan: Al-Fatihah, Al-Ikhlas, Al-Falaq, An-Nas, Al-Asr |
-| **2. Akidah** | 2.1 Rukun Iman (6 Perkara) |
-| | 2.2 Rukun Islam (5 Perkara) |
-| | 2.3 Dua Kalimah Syahadah |
-| | 2.4 Asmaul Husna: Al-Khaliq |
-| **3. Ibadah** | 3.1 Konsep Istinja' |
-| | 3.2 Air Mutlak dan Kegunaannya |
-| | 3.3 Amali Wuduk |
-| **4. Sirah** | 4.1 Nasab dan Keturunan Nabi Muhammad SAW |
-| | 4.2 Peristiwa Kelahiran dan Penyusuan |
-| | 4.3 Sifat Terpuji: Al-Amin |
-| **5. Adab & Akhlak** | 5.1 Adab Makan dan Minum |
-| | 5.2 Adab Tidur dan Bangun Tidur |
-| | 5.3 Adab Masuk dan Keluar Tandas |
-| **6. Celik Jawi** | 6.1 Mengenal Huruf Jawi Tunggal |
-| | 6.2 Suku Kata Terbuka (Vokal: Alif, Wau, Ya) |
+## 💻 MODUL PEMBELAJARAN TAHUN 1
 
-### Tahun 2
+### 📖 Modul 1: Al-Quran & Tajwid
+* **Topik 1.1:** Kenali Huruf Hijaiyah Tunggal (Alif hingga Ya)
+* **Topik 1.2:** Mengenal Tanda Bacaan Asas (Baris Fathah, Kasrah, Dammah)
+* **Topik 1.3:** Mengenal Tanwin (Baris Dua)
+* **Topik 1.4:** Tilawah & Hafazan Surah Pilihan:
+    * Surah Al-Fatihah
+    * Surah Al-Ikhlas
+    * Surah Al-Falaq
+    * Surah An-Nas
+    * Surah Al-Asr
 
-| Modul | Topik |
-|-------|-------|
-| **1. Al-Quran, Tajwid & Hadis** | 1.1 Kalimah Berbaris Sukun & Syaddah |
-| | 1.2 Idgham Maal Ghunnah & Bila Ghunnah |
-| | 1.3 Tilawah & Hafazan: Al-Masad, An-Nasr, Al-Kafirun, Al-Ma'un, Al-Quraish |
-| | 1.4 Hadis: Menghormati Orang Tua |
-| **2. Akidah** | 2.1 Beriman kepada Malaikat (10 Nama) |
-| | 2.2 Asmaul Husna: Al-Ahad & As-Samad |
-| | 2.3 Kesan Menyekutukan Allah |
-| **3. Ibadah** | 3.1 Syarat Wajib & Sah Solat |
-| | 3.2 Rukun-Rukun Solat |
-| | 3.3 Menghayati Azan dan Iqamah |
-| **4. Sirah** | 4.1 Tanda-tanda Kerasulan |
-| | 4.2 Wahyu Pertama di Gua Hira' |
-| | 4.3 Dakwah Peringkat Awal |
-| **5. Adab & Akhlak** | 5.1 Adab Berpakaian |
-| | 5.2 Adab Kasih Sayang |
-| | 5.3 Adab Berkawan |
-| **6. Celik Jawi** | 6.1 Suku Kata Tertutup |
-| | 6.2 Rangkai Kata Jawi |
+### 🤝 Modul 2: Akidah (Pasak Keimanan)
+* **Topik 2.1:** Rukun Iman (6 Perkara)
+* **Topik 2.2:** Rukun Islam (5 Perkara)
+* **Topik 2.3:** Dua Kalimah Syahadah (Lafaz, Makna & Kepentingan)
+* **Topik 2.4:** Asmaul Husna: **Al-Khaliq** (Allah Maha Pencipta)
 
-### Tahun 3
+### 💧 Modul 3: Ibadah (Amalan Suci)
+* **Topik 3.1:** Pengurusan Kebersihan: Konsep Istinja'
+* **Topik 3.2:** Mengenal Air Mutlak dan Kegunaannya
+* **Topik 3.3:** Amali Wuduk (Rukun, Sunat & Perkara Membatalkan)
 
-| Modul | Topik |
-|-------|-------|
-| **1. Al-Quran, Tajwid & Hadis** | 1.1 Hukum Mim Sakinah |
-| | 1.2 Tilawah & Hafazan: Al-Qari'ah, Al-Humazah, At-Takathur, Al-Adiyat |
-| | 1.3 Kefahaman Surah Al-Asr |
-| | 1.4 Hadis: Adab Islamiah |
-| **2. Akidah** | 2.1 Kitab-Kitab Allah |
-| | 2.2 Al-Quran sebagai Panduan |
-| | 2.3 Asmaul Husna: Al-Alim & Al-Hakim |
-| **3. Ibadah** | 3.1 Perkara Membatalkan Solat |
-| | 3.2 Khusyuk dalam Solat |
-| | 3.3 Fardu Ain vs Fardu Kifayah |
-| **4. Sirah** | 4.1 Hijrah ke Madinah |
-| | 4.2 Piagam Madinah |
-| | 4.3 Sifat Kepimpinan Nabi |
-| **5. Adab & Akhlak** | 5.1 Adab Menuntut Ilmu |
-| | 5.2 Menghormati Guru & Ibu Bapa |
-| | 5.3 Adab Kemudahan Awam |
-| **6. Celik Jawi** | 6.1 Imbuhan Awalan & Akhiran |
-| | 6.2 Teks/Petikan Jawi |
-| | 6.3 Tanda Baca Jawi |
+### 🕌 Modul 4: Sirah (Sejarah Rasul)
+* **Topik 4.1:** Kenali Nasab dan Keturunan Nabi Muhammad SAW
+* **Topik 4.2:** Peristiwa Kelahiran dan Penyusuan Baginda
+* **Topik 4.3:** Sifat Terpuji Kehidupan Awal Nabi: **Al-Amin** (Jujur)
+
+### 🌸 Modul 5: Adab & Akhlak
+* **Topik 5.1:** Adab Makan dan Minum (Sebelum, Semasa & Selepas)
+* **Topik 5.2:** Adab Tidur dan Bangun Tidur Mengikut Sunnah
+* **Topik 5.3:** Adab Masuk dan Keluar Tandas
+
+### ✏️ Modul 6: Celik Jawi
+* **Topik 6.1:** Mengenal, Menyebut dan Menulis Huruf Jawi Tunggal
+* **Topik 6.2:** Membaca dan Menulis Suku Kata Terbuka (Vokal: Alif, Wau, Ya)
+
+---
+
+## 💻 MODUL PEMBELAJARAN TAHUN 2
+
+### 📜 Modul 1: Al-Quran, Tajwid & Hadis
+* **Topik 1.1:** Bacaan Kalimah Berbaris Sukun (Mati) & Syaddah (Sabdu)
+* **Topik 1.2:** Hukum Tajwid: *Idgham Maal Ghunnah* & *Idgham Bila Ghunnah*
+* **Topik 1.3:** Tilawah & Hafazan Surah Pilihan:
+    * Surah Al-Masad
+    * Surah An-Nasr
+    * Surah Al-Kafirun
+    * Surah Al-Ma'un
+    * Surah Al-Quraish
+* **Topik 1.4:** **Hadis:** Menghormati Orang Tua & Mengasihi Orang Muda
+
+### 🤝 Modul 2: Akidah
+* **Topik 2.1:** Beriman kepada Malaikat (Nama 10 Malaikat Utama & Tugas)
+* **Topik 2.2:** Asmaul Husna: **Al-Ahad** (Maha Esa) & **As-Samad** (Tempat Meminta)
+* **Topik 2.3:** Kesan Menyekutukan Allah (Syirik Asas)
+
+### 🧎 Modul 3: Ibadah
+* **Topik 3.1:** Syarat Wajib dan Syarat Sah Solat Fardu
+* **Topik 3.2:** Rukun-Rukun Solat (Fi'li, Qouli & Qalbi)
+* **Topik 3.3:** Menghayati Azan dan Iqamah (Lafaz & Jawapan)
+
+### 🕌 Modul 4: Sirah
+* **Topik 4.1:** Tanda-tanda Kerasulan Nabi Muhammad SAW (Mukjizat Awal)
+* **Topik 4.2:** Peristiwa Menerima Wahyu Pertama di Gua Hira'
+* **Topik 4.3:** Dakwah Peringkat Awal & Penentangan Kafir Quraisy
+
+### 🌸 Modul 5: Adab & Akhlak
+* **Topik 5.1:** Adab Mengurus Diri (Berpakaian & Menjaga Kekemasan)
+* **Topik 5.2:** Adab Kasih Sayang: Bersama Ibu Bapa dan Keluarga
+* **Topik 5.3:** Adab Berkawan dan Menziarahi Orang Sakit
+
+### 📝 Modul 6: Celik Jawi
+* **Topik 6.1:** Membaca dan Menulis Suku Kata Tertutup
+* **Topik 6.2:** Membina dan Menulis Rangkai Kata Jawi *(Contoh: Pasu bunga, Kasut sekolah)*
+
+---
+
+## 💻 MODUL PEMBELAJARAN TAHUN 3
+
+### 🕌 Modul 1: Al-Quran, Tajwid & Hadis
+* **Topik 1.1:** Hukum Tajwid: Mim Sakinah *(Ikhfa' Syafawi, Idgham Mithlain, Izhar Syafawi)*
+* **Topik 1.2:** Tilawah & Hafazan Surah Pilihan:
+    * Surah Al-Qari'ah
+    * Surah Al-Humazah
+    * Surah At-Takathur
+    * Surah Al-Adiyat
+* **Topik 1.3:** Kefahaman Surah: Pengajaran Surah Al-Asr
+* **Topik 1.4:** **Hadis:** Tuntutan Mengamalkan Adab Islamiah & Menjauhi Akhlak Buruk
+
+### 📚 Modul 2: Akidah
+* **Topik 2.1:** Beriman kepada Kitab-Kitab Allah *(Nama kitab & Rasul penerima)*
+* **Topik 2.2:** Al-Quran sebagai Panduan Hidup Utama
+* **Topik 2.3:** Asmaul Husna: **Al-Alim** (Maha Mengetahui) & **Al-Hakim** (Maha Bijaksana)
+
+### ✨ Modul 3: Ibadah
+* **Topik 3.1:** Perkara-Perkara yang Membatalkan Solat
+* **Topik 3.2:** Kepentingan dan Cara Mendapatkan Khusyuk dalam Solat
+* **Topik 3.3:** Memahami Konsep **Fardu Ain** vs **Fardu Kifayah**
+
+### 🐎 Modul 4: Sirah
+* **Topik 4.1:** Peristiwa Hijrah ke Madinah (Sebab, Kronologi & Kesan)
+* **Topik 4.2:** Pembentukan Negara Madinah & Piagam Madinah secara Asas
+* **Topik 4.3:** Sifat Kepimpinan Nabi Muhammad SAW sebagai Contoh Ikutan
+
+### 🏫 Modul 5: Adab & Akhlak
+* **Topik 5.1:** Adab Menuntut Ilmu (Adab di Sekolah & Rumah)
+* **Topik 5.2:** Adab Menghormati Guru, Ibu Bapa dan Orang Lebih Tua
+* **Topik 5.3:** Adab Menggunakan Kemudahan Awam (Sifat Prihatin)
+
+### ✒️ Modul 6: Celik Jawi
+* **Topik 6.1:** Pengenalan dan Penggunaan Imbuhan Awalan dan Akhiran dalam Jawi
+* **Topik 6.2:** Membaca, Membina, dan Menulis Teks/Petikan Jawi Pendek
+* **Topik 6.3:** Penggunaan Tanda Baca Jawi yang Betul
+
+---
+
+## 💡 Tips Tambahan Pembelajaran Atas Talian (E-Learning)
+
+> 🎥 **Ibadah & Sirah**
+> Sangat berkesan jika dimuatkan dalam bentuk **Video Animasi atau Simulasi Interaktif** (contohnya animasi cara mengambil wuduk & pergerakan solat).
+
+> 🎵 **Al-Quran & Jawi**
+> Sediakan **audio play/pause** bagi setiap ayat/perkataan untuk memudahkan kanak-kanak mengikut sebutan (*talaqqi digital*).
+
+> 🎮 **Gamifikasi**
+> Tambah elemen **kuiz pendek** (seperti *Wordwall* atau *Kahoot*) di akhir setiap topik untuk mengekalkan fokus murid Tahap 1.
 
 ---
 
@@ -170,8 +230,10 @@
 
 | # | Task | Status |
 |---|------|--------|
-| 2.6.1 | Topic 6.1 — Huruf Jawi Tunggal | ✅ Complete |
-| 2.6.2 | Topic 6.2 — Suku Kata Terbuka | ✅ Complete |
+| 2.6.1 | Topic 6.1 — Tahap 1 (KV) | ✅ Complete |
+| 2.6.2 | Topic 6.2 — Tahap 2 (KVK) | ✅ Complete |
+| 2.6.3 | Topic 6.3 — 35 Huruf Jawi | ✅ Complete |
+| 2.6.4 | Topic 6.4 — 100 Perkataan Jawi | ✅ Complete |
 
 ### Phase 3 — Tahun 2 Content
 
@@ -223,7 +285,7 @@
 │  │ 🟣 Modul 4   │  │ 🌸 Modul 5   │  │ 🩵 Modul 6   │           │
 │  │ Sirah        │  │ Adab &       │  │ Celik Jawi   │           │
 │  │              │  │ Akhlak       │  │              │           │
-│  │ ███░ 3 topik │  │ ███░ 3 topik │  │ ██░ 2 topik  │           │
+│  │ ███░ 3 topik │  │ ███░ 3 topik │  │ ████░ 4 topik │           │
 │  └──────────────┘  └──────────────┘  └──────────────┘           │
 └──────────────────────────────────────────────────────────────────┘
 ```
@@ -282,7 +344,7 @@
 ├───────────────────────────┤
 │ 🩵 Modul 6                │
 │ Celik Jawi                │
-│ ██░ 2 topik            →  │
+│ ████░ 4 topik          →  │
 └───────────────────────────┘
 ```
 
@@ -349,8 +411,10 @@ Tahun1/
 │   └── AdabTandas.jsx
 └── Module6_Jawi/                 ★ Migrated to standard
     ├── JawiModule.jsx
-    ├── HurufJawiTunggal.jsx
-    └── SukuKataTerbuka.jsx
+    ├── JawiAlphabetPage.jsx
+    ├── JawiWordsPage.jsx
+    ├── JawiKVLearningPage.jsx
+    └── JawiKVKLearningPage.jsx
 ```
 
 ### Component Tree
@@ -763,8 +827,10 @@ Each topic card visual follows this frame template:
 | `AdabMakanMinum.jsx` | 5.1 | — | ✅ | ✅ | — |
 | `AdabTidur.jsx` | 5.2 | — | ✅ | ✅ | — |
 | `AdabTandas.jsx` | 5.3 | — | ✅ | ✅ | — |
-| `JawiModule.jsx` | 6 Jawi | ✅ | — | — | ✅ 2 custom |
-| `HurufJawiTunggal.jsx` | 6.1 | — | ✅ | ✅ | — |
-| `SukuKataTerbuka.jsx` | 6.2 | — | ✅ | ✅ | — |
+| `JawiModule.jsx` | 6 Jawi | ✅ | — | — | ✅ 4 custom |
+| `JawiAlphabetPage.jsx` | 6.3 | — | — | ✅ | — |
+| `JawiWordsPage.jsx` | 6.4 | — | — | — | — |
+| `JawiKVLearningPage.jsx` | 6.1 | — | — | ✅ | — |
+| `JawiKVKLearningPage.jsx` | 6.2 | — | — | ✅ | — |
 
 **Legend:** ✅ = conforms to standard | — = not applicable (hub file)

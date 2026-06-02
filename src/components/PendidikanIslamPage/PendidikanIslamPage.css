@@ -192,25 +192,6 @@
 .pi-icon-card:disabled svg {
     filter: grayscale(0.5) opacity(0.7);
 }
-.pi-icon-card:disabled .pi-icon-label { opacity: 0.6; }
-
-.pi-icon-label {
-    position: absolute; bottom: 16px; left: 12px; right: 12px;
-    text-align: center; z-index: 5; pointer-events: none;
-}
-.pi-icon-label span {
-    display: inline-block;
-    background: rgba(255,255,255,.92);
-    color: var(--pi-ink);
-    font-family: 'Fredoka','Baloo 2',sans-serif;
-    font-weight: 700;
-    font-size: clamp(0.78rem, 2vw, 1rem);
-    padding: 5px 14px; border-radius: 999px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.08);
-    white-space: nowrap; max-width: 100%;
-    overflow: hidden; text-overflow: ellipsis;
-}
-
 /* ── Tile (deprecated — use pi-icon-card instead) ── */
 .pi-tile {
     --base:        #D4960A;
@@ -401,6 +382,16 @@
     position: absolute; top: 12px; right: 12px; z-index: 10;
     font-size: 1.4rem; line-height: 1;
     filter: drop-shadow(0 2px 6px rgba(0,0,0,.2));
+}
+.pi-year-badge {
+    position: absolute; top: 8px; right: 8px; z-index: 10;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800; font-size: 15px; letter-spacing: .04em;
+    color: #fff; line-height: 1;
+    background: linear-gradient(135deg, #0D9488, #0F766E);
+    border: 3px solid rgba(255,255,255,0.7);
+    border-radius: 10px; padding: 5px 10px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.25);
 }
 
 .pi-tile.soon .pi-tile-num::after {

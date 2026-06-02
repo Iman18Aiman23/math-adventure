@@ -16,7 +16,7 @@ const MODULES = [
 
 const YEARS = [
   { id: 1, labelBM: 'Tahun 1', labelEN: 'Year 1', locked: false },
-  { id: 2, labelBM: 'Tahun 2', labelEN: 'Year 2', locked: true  },
+  { id: 2, labelBM: 'Tahun 2', labelEN: 'Year 2', locked: false },
   { id: 3, labelBM: 'Tahun 3', labelEN: 'Year 3', locked: true  },
 ];
 
@@ -38,7 +38,7 @@ export default function PendidikanIslamHomePage({ onBack, onSelectModule, langua
 
   const tiles = MODULES.map(mod => {
     const IconComponent = ICONS[mod.id];
-    const locked = activeYear !== 1;
+    const locked = activeYear === 3;
     const title = language === 'bm' ? mod.titleBM : mod.titleEN;
 
     return (
@@ -46,15 +46,15 @@ export default function PendidikanIslamHomePage({ onBack, onSelectModule, langua
         key={mod.id}
         className={`pi-icon-card ${mod.tClass}`}
         disabled={locked}
-        onClick={locked ? undefined : () => onSelectModule?.(mod.id)}
+        onClick={locked ? undefined : () => onSelectModule?.(activeYear === 1 ? mod.id : `${activeYear}-${mod.id}`)}
         onMouseEnter={!locked ? playHoverSound : undefined}
         type="button"
       >
         {IconComponent && <IconComponent size={200} />}
-        <div className="pi-icon-label">
-          <span>{title}</span>
-        </div>
         {locked && <span className="pi-lock-badge">🔒</span>}
+        {!locked && activeYear !== 1 && (
+          <span className="pi-year-badge">T{activeYear}</span>
+        )}
       </button>
     );
   });
