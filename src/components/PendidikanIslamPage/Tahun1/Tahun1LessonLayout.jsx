@@ -122,7 +122,7 @@ export function ConceptCard({ k, children }) {
   );
 }
 
-export function QuizScreen({ language, questions, totalRounds, accentColor, onDone, emoji }) {
+export function QuizScreen({ language, questions, totalRounds, accentColor, onDone, emoji, headerContent }) {
   const [pool] = React.useState(() => shuffle(questions).slice(0, totalRounds));
   const [round, setRound] = React.useState(0);
   const [score, setScore] = React.useState(0);
@@ -167,7 +167,7 @@ export function QuizScreen({ language, questions, totalRounds, accentColor, onDo
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         gap: '0.5rem', textAlign: 'center', position: 'relative', overflow: 'visible',
       }}>
-        <span style={{ fontSize: '3rem' }}>{emoji || '📝'}</span>
+        {headerContent || <span style={{ fontSize: '3rem' }}>{emoji || '📝'}</span>}
         <p style={{
           fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 700,
           fontSize: 'clamp(1rem, 2.5vw, 1.2rem)',
@@ -212,7 +212,7 @@ export function QuizScreen({ language, questions, totalRounds, accentColor, onDo
   );
 }
 
-export function ResultScreen({ score, totalRounds, onRetry, onBack, language }) {
+export function ResultScreen({ score, totalRounds, onRetry, onBack, language, accentColor = '#2A9A6C', accentGradient = 'linear-gradient(135deg, #2A9A6C, #065F46)' }) {
   const pct = Math.round((score / totalRounds) * 100);
   const star = pct >= 80 ? '🌟🌟🌟' : pct >= 50 ? '⭐⭐' : '⭐';
   const msg = pct >= 80
@@ -230,14 +230,14 @@ export function ResultScreen({ score, totalRounds, onRetry, onBack, language }) 
       <h2 style={{
         fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
         fontSize: 'clamp(1.4rem, 4vw, 2rem)',
-        color: 'var(--c-akidah)', margin: 0,
+        color: accentColor, margin: 0,
       }}>{score} / {totalRounds}</h2>
       <p style={{
         fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 600,
         fontSize: '1.05rem', color: 'var(--pi-muted)', margin: 0,
       }}>{msg}</p>
       <div style={{ width: '100%', maxWidth: 300, height: 12, borderRadius: 99, background: 'rgba(0,0,0,0.08)', overflow: 'hidden' }}>
-        <div style={{ height: '100%', width: `${pct}%`, background: 'linear-gradient(90deg, #2A9A6C, #8AD9A8)', borderRadius: 99, transition: 'width 0.8s ease' }} />
+        <div style={{ height: '100%', width: `${pct}%`, background: `linear-gradient(90deg, ${accentColor}, ${accentColor}88)`, borderRadius: 99, transition: 'width 0.8s ease' }} />
       </div>
       <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
         <button
@@ -245,7 +245,7 @@ export function ResultScreen({ score, totalRounds, onRetry, onBack, language }) 
           style={{
             fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 700,
             fontSize: '1rem',
-            background: 'linear-gradient(135deg, #2A9A6C, #2A9A6Cdd)',
+            background: accentGradient,
             color: '#fff', border: 'none', borderRadius: 999,
             padding: '10px 28px', cursor: 'pointer',
             boxShadow: '0 4px 14px rgba(42,154,108,0.4)',
