@@ -1,310 +1,251 @@
-import React, { useState } from 'react';
+import React from 'react';
 import BackButton from '../../../BackButton';
-import { playHoverSound } from '../../../../utils/soundManager';
+import { FONT_IMPORT, ARABIC_FONT } from '../../_shared/arabic';
+
+const CARD_BG = '#FFFDF8';
 
 const TOPICS = [
   {
     id: 'huruf-hijaiyah',
-    num: '1.1',
-    emoji: '🔤',
+    pill: 'TOPIK 1.1',
     title: 'Huruf Hijaiyah Tunggal',
-    desc: 'Kenali dan sebut 29 huruf Hijaiyah dari Alif hingga Ya',
-    total: 29,
-    unit: 'huruf',
-    gradient: 'linear-gradient(135deg, #FFF7D6 0%, #FDD97A 55%, #D4960A 100%)',
-    border: 'rgba(212,150,10,0.45)',
-    glow:   'rgba(212,150,10,0.3)',
-    dark:   '#92400E',
-    available: true,
+    desc: 'Kenali dan sebut 29 huruf hijaiyah dari alif hingga ya.',
+    visual: (
+      <svg viewBox="0 0 100 100">
+        <rect x="12" y="18" width="76" height="64" rx="12" fill={CARD_BG} stroke="rgba(212,150,10,0.35)" strokeWidth="2" />
+        <rect x="12" y="18" width="76" height="18" rx="12" fill="#D4960A" />
+        <rect x="12" y="24" width="76" height="12" fill="#D4960A" />
+        <text x="50" y="31" textAnchor="middle" fontFamily="'Fredoka',sans-serif" fontSize="8" fontWeight="700" fill="#fff">Modul 1.1</text>
+        <text x="80" y="66" textAnchor="middle" fontFamily={ARABIC_FONT} fontSize="24" fontWeight="700" fill="#065F46">ا</text>
+        <text x="60" y="66" textAnchor="middle" fontFamily={ARABIC_FONT} fontSize="24" fontWeight="700" fill="#1E40AF">ب</text>
+        <text x="30" y="66" textAnchor="middle" fontFamily={ARABIC_FONT} fontSize="24" fontWeight="700" fill="#92400E">ت</text>
+        <circle cx="72" cy="74" r="1.3" fill="#D4960A" opacity=".5" />
+        <circle cx="50" cy="74" r="1.3" fill="#D4960A" opacity=".5" />
+        <circle cx="28" cy="74" r="1.3" fill="#D4960A" opacity=".5" />
+      </svg>
+    ),
   },
   {
     id: 'tanda-bacaan',
-    num: '1.2',
-    emoji: '🔡',
+    pill: 'TOPIK 1.2',
     title: 'Tanda Bacaan Asas',
-    desc: 'Mengenal baris Fathah (atas), Kasrah (bawah) dan Dammah (depan)',
-    total: 3,
-    unit: 'baris',
-    gradient: 'linear-gradient(135deg, #D6F5DD 0%, #8AD9A8 55%, #2A9A6C 100%)',
-    border: 'rgba(42,154,108,0.45)',
-    glow:   'rgba(42,154,108,0.3)',
-    dark:   '#065F46',
-    available: true,
+    desc: 'Baris atas, baris bawah dan baris depan untuk belajar al-Quran.',
+    visual: (
+      <svg viewBox="0 0 100 100">
+        <rect x="10" y="14" width="80" height="72" rx="12" fill={CARD_BG} stroke="rgba(212,150,10,0.35)" strokeWidth="2" />
+        <rect x="10" y="14" width="80" height="16" rx="12" fill="#D4960A" />
+        <rect x="10" y="20" width="80" height="10" fill="#D4960A" />
+        <text x="50" y="26" textAnchor="middle" fontFamily="'Fredoka',sans-serif" fontSize="8" fontWeight="700" fill="#fff">Modul 1.2</text>
+        <text x="26" y="64" textAnchor="middle" fontFamily={ARABIC_FONT} fontSize="24" fontWeight="700" fill="#065F46">بُ</text>
+        <text x="50" y="64" textAnchor="middle" fontFamily={ARABIC_FONT} fontSize="24" fontWeight="700" fill="#1E40AF">بِ</text>
+        <text x="74" y="64" textAnchor="middle" fontFamily={ARABIC_FONT} fontSize="24" fontWeight="700" fill="#92400E">بَ</text>
+      </svg>
+    ),
   },
   {
     id: 'tanwin',
-    num: '1.3',
-    emoji: '✌️',
-    title: 'Tanwin (Baris Dua)',
-    desc: 'Mengenal tanwin Fathah, Kasrah dan Dammah serta cara bacaannya',
-    total: 3,
-    unit: 'jenis',
-    gradient: 'linear-gradient(135deg, #D6EEFF 0%, #6BAEE8 55%, #2563EB 100%)',
-    border: 'rgba(37,99,235,0.45)',
-    glow:   'rgba(37,99,235,0.3)',
-    dark:   '#1E40AF',
-    available: true,
+    pill: 'TOPIK 1.3',
+    title: 'Tanwin Baris Dua',
+    desc: 'Belajar baris dua: tanwin fathah, kasrah dan dammah.',
+    visual: (
+      <svg viewBox="0 0 100 100">
+        <rect x="10" y="14" width="80" height="72" rx="12" fill={CARD_BG} stroke="rgba(212,150,10,0.35)" strokeWidth="2" />
+        <rect x="10" y="14" width="80" height="16" rx="12" fill="#D4960A" />
+        <rect x="10" y="20" width="80" height="10" fill="#D4960A" />
+        <text x="50" y="26" textAnchor="middle" fontFamily="'Fredoka',sans-serif" fontSize="8" fontWeight="700" fill="#fff">Modul 1.3</text>
+        <text x="26" y="64" textAnchor="middle" fontFamily={ARABIC_FONT} fontSize="24" fontWeight="700" fill="#065F46">بٌ</text>
+        <text x="50" y="64" textAnchor="middle" fontFamily={ARABIC_FONT} fontSize="24" fontWeight="700" fill="#1E40AF">بٍ</text>
+        <text x="74" y="64" textAnchor="middle" fontFamily={ARABIC_FONT} fontSize="24" fontWeight="700" fill="#92400E">بً</text>
+      </svg>
+    ),
   },
   {
     id: 'hafazan',
-    num: '1.4',
-    emoji: '📿',
-    title: 'Tilawah & Hafazan',
-    desc: 'Al-Fatihah, Al-Ikhlas, Al-Falaq, An-Nas & Al-Asr',
-    total: 5,
-    unit: 'surah',
-    gradient: 'linear-gradient(135deg, #E7D9FF 0%, #B79CFF 55%, #7A55E0 100%)',
-    border: 'rgba(122,85,224,0.45)',
-    glow:   'rgba(122,85,224,0.3)',
-    dark:   '#4C1D95',
-    available: true,
+    pill: 'TOPIK 1.4',
+    title: 'Tilawah dan Hafazan',
+    desc: 'Bacaan tilawah yang betul dan latihan menghafaz ayat.',
+    visual: (
+      <svg viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="qPL" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#FFF8E1" />
+            <stop offset="80%" stopColor="#FDE68A" />
+            <stop offset="100%" stopColor="#EAB308" />
+          </linearGradient>
+        </defs>
+        <rect x="12" y="18" width="76" height="64" rx="12" fill={CARD_BG} stroke="rgba(212,150,10,0.35)" strokeWidth="2" />
+        <rect x="12" y="18" width="76" height="16" rx="12" fill="#D4960A" />
+        <rect x="12" y="24" width="76" height="10" fill="#D4960A" />
+        <text x="50" y="30" textAnchor="middle" fontFamily="'Fredoka',sans-serif" fontSize="8" fontWeight="700" fill="#fff">Modul 1.4</text>
+        <path d="M28 68 L34 52 L38 52 L32 68 Z" fill="#8B5E3C" opacity=".8" />
+        <path d="M28 68 L34 52 Q31 50 30 50 L25 68 Z" fill="#6B3F1A" opacity=".6" />
+        <path d="M72 68 L66 52 L62 52 L68 68 Z" fill="#8B5E3C" opacity=".8" />
+        <path d="M72 68 L66 52 Q69 50 70 50 L75 68 Z" fill="#6B3F1A" opacity=".6" />
+        <path d="M30 44 Q50 38 70 44 L70 60 Q50 54 30 60 Z" fill="#166534" />
+        <path d="M31 46 Q50 40 69 46 L69 58 Q50 52 31 58 Z" fill="#D4A017" />
+        <path d="M32 48 Q48 42 68 48 L68 56 Q48 50 32 56 Z" fill="url(#qPL)" stroke="#B8860B" strokeWidth=".5" />
+        <rect x="48" y="48" width="4" height="8" fill="#5B3A0A" opacity=".3" rx=".5" />
+        <rect x="36" y="49" width="10" height="4" rx="1" fill="none" stroke="#B8860B" strokeWidth=".7" opacity=".7" />
+        <rect x="54" y="49" width="10" height="4" rx="1" fill="none" stroke="#B8860B" strokeWidth=".7" opacity=".7" />
+        <line x1="38" y1="56" x2="46" y2="56" stroke="#5B3A0A" strokeWidth=".8" opacity=".7" />
+        <line x1="54" y1="56" x2="62" y2="56" stroke="#5B3A0A" strokeWidth=".8" opacity=".7" />
+        <path d="M48 60 L48 68 L50.5 66 L53 68 L53 60 Z" fill="#166534" />
+        <circle cx="36" cy="47" r="1.5" fill="#FFD700" opacity=".7" />
+        <circle cx="50" cy="47" r="1.5" fill="#FFD700" opacity=".7" />
+        <circle cx="64" cy="47" r="1.5" fill="#FFD700" opacity=".7" />
+      </svg>
+    ),
   },
 ];
 
-function TopicCard({ topic, onClick }) {
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <div
-      role={topic.available ? 'button' : undefined}
-      tabIndex={topic.available ? 0 : undefined}
-      aria-label={topic.title}
-      onClick={topic.available ? onClick : undefined}
-      onKeyDown={e => topic.available && e.key === 'Enter' && onClick?.()}
-      onMouseEnter={() => { if (topic.available) { setHovered(true); playHoverSound(); } }}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        background: topic.available ? topic.gradient : 'rgba(255,255,255,0.05)',
-        border: `2.5px solid ${topic.available ? topic.border : 'rgba(255,255,255,0.1)'}`,
-        borderRadius: 20,
-        padding: '20px 16px 18px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 10,
-        cursor: topic.available ? 'pointer' : 'not-allowed',
-        opacity: topic.available ? 1 : 0.45,
-        userSelect: 'none',
-        WebkitTapHighlightColor: 'transparent',
-        boxShadow: hovered && topic.available
-          ? `0 2px 0 rgba(255,255,255,0.35) inset, 0 14px 32px -6px ${topic.glow}`
-          : '0 2px 0 rgba(255,255,255,0.25) inset, 0 8px 20px rgba(0,0,0,0.1)',
-        transform: hovered && topic.available ? 'translateY(-5px) scale(1.02)' : 'none',
-        transition: 'transform 0.28s cubic-bezier(.34,1.56,.64,1), box-shadow 0.28s',
-        position: 'relative',
-        overflow: 'hidden',
-      }}
-    >
-      {/* Coming soon ribbon */}
-      {!topic.available && (
-        <div style={{
-          position: 'absolute', top: 12, right: -22,
-          background: 'rgba(255,255,255,0.2)',
-          color: '#94A3B8',
-          fontSize: 9, fontWeight: 700,
-          letterSpacing: '0.08em',
-          padding: '3px 28px',
-          transform: 'rotate(35deg)',
-          fontFamily: "'Fredoka', system-ui, sans-serif",
-        }}>SOON</div>
-      )}
-
-      {/* Top row: emoji + topic number */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{
-          width: 52, height: 52, borderRadius: 14,
-          background: 'rgba(255,255,255,0.38)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: '1.7rem',
-          boxShadow: 'inset 0 -2px 8px rgba(0,0,0,0.06)',
-          flexShrink: 0,
-        }}>
-          {topic.available ? topic.emoji : '🔒'}
-        </div>
-        <span style={{
-          fontFamily: "'Baloo 2', sans-serif",
-          fontWeight: 800,
-          fontSize: 'clamp(0.7rem, 1.6vw, 0.85rem)',
-          color: topic.available ? topic.dark : '#64748B',
-          background: 'rgba(255,255,255,0.45)',
-          padding: '3px 10px',
-          borderRadius: 999,
-        }}>
-          Topik {topic.num}
-        </span>
-      </div>
-
-      {/* Title */}
-      <p style={{
-        fontFamily: "'Fredoka', system-ui, sans-serif",
-        fontWeight: 700,
-        fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)',
-        color: topic.available ? '#1A202C' : '#94A3B8',
-        margin: 0,
-        lineHeight: 1.25,
-      }}>
-        {topic.title}
-      </p>
-
-      {/* Description */}
-      <p style={{
-        fontFamily: "'Fredoka', system-ui, sans-serif",
-        fontWeight: 500,
-        fontSize: 'clamp(0.72rem, 1.8vw, 0.85rem)',
-        color: topic.available ? '#374151' : '#64748B',
-        margin: 0,
-        lineHeight: 1.5,
-        flexGrow: 1,
-      }}>
-        {topic.desc}
-      </p>
-
-      {/* Footer: count + arrow */}
-      <div style={{
-        display: 'flex', alignItems: 'center',
-        justifyContent: 'space-between', marginTop: 4,
-      }}>
-        <span style={{
-          fontFamily: "'Fredoka', system-ui, sans-serif",
-          fontWeight: 600,
-          fontSize: 'clamp(0.68rem, 1.5vw, 0.8rem)',
-          color: topic.available ? topic.dark : '#64748B',
-          background: 'rgba(255,255,255,0.45)',
-          padding: '2px 10px',
-          borderRadius: 999,
-        }}>
-          {topic.total} {topic.unit}
-        </span>
-        {topic.available && (
-          <span style={{
-            background: topic.dark,
-            color: '#fff',
-            width: 30, height: 30,
-            borderRadius: '50%',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '1rem', fontWeight: 900,
-            boxShadow: `0 3px 8px ${topic.glow}`,
-          }}>→</span>
-        )}
-      </div>
-    </div>
-  );
-}
-
 export default function AlQuranTajwidModule({ onBack, onSelectTopic, language = 'bm' }) {
   return (
-    <div style={{
-      display: 'flex', flexDirection: 'column', height: '100%',
-      background: '#0B1A2E', color: '#F1F5F9',
-      fontFamily: 'Inter, sans-serif',
-    }}>
-      <BackButton onClick={onBack} />
-
+    <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Baloo+2:wght@600;700;800&display=swap');
-        .aqt-grid {
+        ${FONT_IMPORT}
+        .aq-page {
+          padding: 56px 24px 80px;
+          width: 100%;
+          max-width: 100%;
+          background: radial-gradient(ellipse at top, #FFF7D6 0%, #FDD97A 55%, #F5CD6D 100%);
+          min-height: 100vh;
+          font-family: 'Fredoka', system-ui, sans-serif;
+          color: #10243A;
+          position: relative;
+        }
+        .aq-page h1 {
+          font-family: 'Baloo 2', sans-serif;
+          font-weight: 800;
+          font-size: clamp(22px, 5vw, 38px);
+          color: #92400E;
+          text-align: center;
+          margin: 0 0 6px;
+        }
+        .aq-subtitle {
+          text-align: center;
+          color: #A05210;
+          font-weight: 600;
+          font-size: clamp(11px, 2.5vw, 13px);
+          letter-spacing: .14em;
+          text-transform: uppercase;
+          margin: 0 0 48px;
+        }
+        .aq-grid {
+          max-width: 1080px;
+          margin: 0 auto;
           display: grid;
-          grid-template-columns: 1fr;
-          gap: 0.9rem;
+          grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+          gap: 28px;
         }
-        @media (min-width: 640px) {
-          .aqt-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .aq-card {
+          background: linear-gradient(180deg, #fff, #FFF8EC);
+          border-radius: 28px;
+          padding: 24px 20px 26px;
+          border: 1px solid rgba(212,150,10,.18);
+          box-shadow: 0 12px 32px -12px rgba(146,64,14,.22), 0 2px 6px rgba(212,150,10,.1);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 14px;
+          transition: transform .32s cubic-bezier(.34,1.56,.64,1), box-shadow .32s;
+          cursor: pointer;
         }
-        @media (min-width: 1024px) {
-          .aqt-grid { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+        .aq-card:hover {
+          transform: translateY(-8px) scale(1.02);
+          box-shadow: 0 22px 48px -14px rgba(146,64,14,.32);
+        }
+        .aq-stage {
+          width: 170px;
+          height: 170px;
+          border-radius: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: radial-gradient(ellipse at 50% 34%, #FFF7D6 0%, #FDD97A 55%, #D4960A 100%);
+          box-shadow: inset 0 -8px 24px rgba(146,64,14,.2), inset 0 2px 0 rgba(255,255,255,.5);
+        }
+        .aq-stage svg {
+          width: 90%;
+          height: 90%;
+          overflow: visible;
+        }
+        .aq-pill {
+          font-family: 'Baloo 2', sans-serif;
+          font-weight: 700;
+          font-size: 10px;
+          letter-spacing: .1em;
+          text-transform: uppercase;
+          color: #fff;
+          padding: 5px 14px;
+          border-radius: 999px;
+          background: linear-gradient(180deg, #F59E0B, #D4960A);
+          box-shadow: 0 2px 0 #92400E;
+        }
+        .aq-card-title {
+          font-family: 'Baloo 2', sans-serif;
+          font-weight: 800;
+          font-size: 18px;
+          color: #92400E;
+          margin: 0;
+          text-align: center;
+        }
+        .aq-card-desc {
+          font-family: 'Fredoka', sans-serif;
+          font-weight: 500;
+          font-size: 12.5px;
+          color: #A05210;
+          margin: 0;
+          text-align: center;
+          line-height: 1.5;
+          padding: 0 4px;
+        }
+        .aq-stage svg {
+          animation: stage-float 3.4s ease-in-out infinite;
+        }
+        @keyframes stage-float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-5px); }
         }
       `}</style>
 
-      {/* Header — back button on the breadcrumb line; breadcrumb centered */}
-      <div style={{ padding: '1.5rem 1.5rem 0' }}>
-        {/* Breadcrumb */}
-        <p style={{
-          fontFamily: "'Fredoka', system-ui, sans-serif",
-          fontWeight: 600,
-          fontSize: 'clamp(0.7rem, 1.5vw, 0.8rem)',
-          color: 'rgba(255,255,255,0.45)',
-          margin: '0 0 0.75rem',
-          letterSpacing: '0.05em',
-          textAlign: 'center',
-        }}>
-          Pendidikan Islam &rsaquo; Tahun 1
+      <div className="aq-page">
+        <BackButton
+          onClick={onBack}
+          style={{
+            position: 'absolute',
+            top: 12,
+            left: 12,
+            zIndex: 10,
+          }}
+        />
+
+        <h1>
+          {language === 'bm'
+            ? 'MODUL 1 : Al-Quran & Tajwid'
+            : 'MODULE 1 : Al-Quran & Tajwid'}
+        </h1>
+        <p className="aq-subtitle">
+          {language === 'bm'
+            ? 'PILIH TOPIK UNTUK MEMULAKAN PEMBELAJARAN'
+            : 'SELECT A TOPIC TO START LEARNING'}
         </p>
 
-        {/* Title block — extra top margin so it clears the fixed back button
-            (44px tall at top:12 → ~56px). 2rem keeps it clear on small screens. */}
-        <div style={{
-          background: 'linear-gradient(135deg, #78350F 0%, #D97706 50%, #FDE68A 100%)',
-          borderRadius: 20,
-          padding: '1.25rem 1.5rem',
-          marginTop: '2rem',
-          marginBottom: '1.75rem',
-          border: '2px solid rgba(253,230,138,0.3)',
-          boxShadow: '0 12px 32px rgba(217,119,6,0.3)',
-          display: 'flex', alignItems: 'center', gap: '1rem',
-        }}>
-          <span style={{ fontSize: '2.4rem', flexShrink: 0 }}>📖</span>
-          <div>
-            <p style={{
-              fontFamily: "'Baloo 2', sans-serif",
-              fontWeight: 700,
-              fontSize: 'clamp(0.65rem, 1.4vw, 0.75rem)',
-              color: 'rgba(255,255,255,0.75)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              margin: '0 0 0.2rem',
-            }}>Modul 1</p>
-            <h1 style={{
-              fontFamily: "'Baloo 2', sans-serif",
-              fontWeight: 800,
-              fontSize: 'clamp(1.2rem, 3.5vw, 1.6rem)',
-              color: '#fff',
-              margin: 0,
-              lineHeight: 1.2,
-              letterSpacing: '-0.01em',
-            }}>
-              Al-Quran &amp; Tajwid
-            </h1>
-            <p style={{
-              fontFamily: "'Fredoka', system-ui, sans-serif",
-              fontWeight: 500,
-              fontSize: 'clamp(0.72rem, 1.8vw, 0.85rem)',
-              color: 'rgba(255,255,255,0.8)',
-              margin: '0.3rem 0 0',
-            }}>
-              {language === 'bm'
-                ? '4 topik · Tap topik untuk mula belajar'
-                : '4 topics · Tap a topic to start learning'}
-            </p>
-          </div>
-        </div>
-
-        {/* Section label */}
-        <h2 style={{
-          fontSize: 'clamp(0.75rem, 1.8vw, 0.9rem)',
-          fontWeight: 900,
-          color: '#CBD5E0',
-          letterSpacing: '0.15em',
-          marginBottom: '1rem',
-          textTransform: 'uppercase',
-          paddingLeft: 12,
-          borderLeft: '4px solid #F59E0B',
-          lineHeight: 1,
-        }}>
-          {language === 'bm' ? 'PILIH TOPIK' : 'SELECT TOPIC'}
-        </h2>
-      </div>
-
-      {/* Topic grid — scrollable content area */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '0 1.5rem calc(80px + var(--safe-bottom, 0px))' }}>
-        <div className="aqt-grid">
-          {TOPICS.map(topic => (
-            <TopicCard
-              key={topic.id}
-              topic={topic}
-              onClick={() => onSelectTopic?.(topic.id)}
-            />
+        <div className="aq-grid">
+          {TOPICS.map((t) => (
+            <div
+              key={t.id}
+              className="aq-card"
+              onClick={() => onSelectTopic?.(t.id)}
+            >
+              <div className="aq-stage">
+                {t.visual}
+              </div>
+              <h3 className="aq-card-title">{t.title}</h3>
+              <p className="aq-card-desc">{t.desc}</p>
+            </div>
           ))}
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import BackButton from '../../../BackButton';
+import Tahun1LessonLayout from '../Tahun1LessonLayout';
 import { playHoverSound, playSound } from '../../../../utils/soundManager';
-import { ARABIC_FONT, FONT_IMPORT } from '../../_shared/arabic';
+import { ARABIC_FONT } from '../../_shared/arabic';
 import { shuffle } from '../../_shared/utils';
 import Celebration from '../../_shared/Celebration';
 
@@ -150,53 +150,6 @@ function useRecitation() {
   return { playing, missing, stop, playOne, playSequence };
 }
 
-// ── Surah picker card ───────────────────────────────────────────────────────────
-function SurahCard({ surah, onClick }) {
-  const [hovered, setHovered] = useState(false);
-  return (
-    <div
-      role="button" tabIndex={0}
-      onClick={onClick}
-      onKeyDown={e => e.key === 'Enter' && onClick()}
-      onMouseEnter={() => { setHovered(true); playHoverSound(); }}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        background: surah.gradient, border: `2.5px solid ${surah.border}`,
-        borderRadius: 20, padding: '16px 16px 14px',
-        display: 'flex', alignItems: 'center', gap: 14,
-        cursor: 'pointer', userSelect: 'none', WebkitTapHighlightColor: 'transparent',
-        boxShadow: hovered ? `0 2px 0 rgba(255,255,255,0.35) inset, 0 14px 32px -6px ${surah.glow}` : '0 2px 0 rgba(255,255,255,0.25) inset, 0 8px 20px rgba(0,0,0,0.1)',
-        transform: hovered ? 'translateY(-4px) scale(1.015)' : 'none',
-        transition: 'transform 0.28s cubic-bezier(.34,1.56,.64,1), box-shadow 0.28s',
-      }}
-    >
-      <div style={{
-        width: 58, height: 58, borderRadius: 16, flexShrink: 0,
-        background: 'rgba(255,255,255,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-        boxShadow: 'inset 0 -2px 8px rgba(0,0,0,0.06)',
-      }}>
-        <span style={{ fontFamily: ARABIC_FONT, fontSize: '1.9rem', color: surah.color, direction: 'rtl', lineHeight: 1 }}>
-          {surah.arabicName}
-        </span>
-      </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{ fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 'clamp(1rem, 2.6vw, 1.2rem)', color: '#1A202C', margin: 0, lineHeight: 1.15 }}>
-          {surah.name}
-        </p>
-        <p style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 500, fontSize: 'clamp(0.72rem, 1.8vw, 0.85rem)', color: '#374151', margin: '2px 0 0' }}>
-          {surah.meaning}
-        </p>
-      </div>
-      <span style={{
-        fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 700, fontSize: 'clamp(0.66rem, 1.5vw, 0.78rem)',
-        color: surah.color, background: 'rgba(255,255,255,0.5)', padding: '4px 10px', borderRadius: 999, flexShrink: 0,
-      }}>
-        {surah.ayahs.length} ayat
-      </span>
-    </div>
-  );
-}
-
 // ── A play / pause pill used on the Basmalah header and each ayah ─────────────────
 function PlayPill({ active, missing, accent, onClick, size = 38 }) {
   return (
@@ -224,8 +177,8 @@ function AyahRow({ surah, ayah, language, showTr, rec }) {
   const active = rec.playing === key;
   return (
     <div style={{
-      background: active ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.05)',
-      border: `2px solid ${active ? surah.accent : 'rgba(255,255,255,0.1)'}`,
+      background: active ? '#FFFFFF' : '#FFFDF8',
+      border: `2px solid ${active ? surah.accent : 'rgba(0,0,0,0.06)'}`,
       borderRadius: 16, padding: '14px 14px 12px', transition: 'background 0.2s, border-color 0.2s',
     }}>
       {/* Top line: ayah number + play */}
@@ -241,7 +194,7 @@ function AyahRow({ surah, ayah, language, showTr, rec }) {
 
       {/* Arabic */}
       <p style={{
-        fontFamily: ARABIC_FONT, fontSize: 'clamp(1.6rem, 6vw, 2.3rem)', color: '#FFFFFF',
+        fontFamily: ARABIC_FONT, fontSize: 'clamp(1.6rem, 6vw, 2.3rem)', color: 'var(--pi-ink)',
         direction: 'rtl', textAlign: 'right', lineHeight: 1.9, margin: '0 0 8px',
       }}>
         {ayah.ar}
@@ -259,7 +212,7 @@ function AyahRow({ surah, ayah, language, showTr, rec }) {
       {showTr && (
         <p style={{
           fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 500,
-          fontSize: 'clamp(0.74rem, 1.8vw, 0.88rem)', color: '#CBD5E0', margin: 0, lineHeight: 1.5,
+          fontSize: 'clamp(0.74rem, 1.8vw, 0.88rem)', color: 'var(--pi-muted)', margin: 0, lineHeight: 1.5,
         }}>
           {language === 'bm' ? ayah.ms : ayah.en}
         </p>
@@ -269,7 +222,7 @@ function AyahRow({ surah, ayah, language, showTr, rec }) {
 }
 
 // ── Baca (read & listen) tab ─────────────────────────────────────────────────
-function BacaView({ surah, language, rec }) {
+function BacaView({ surah, surahs, language, rec, dropdownRef, dropdownOpen, setDropdownOpen, onSelectSurah }) {
   const [showTr, setShowTr] = useState(true);
 
   const playAll = () => {
@@ -292,30 +245,57 @@ function BacaView({ surah, language, rec }) {
             borderRadius: 999, padding: '9px 22px', cursor: 'pointer', boxShadow: `0 4px 14px ${surah.glow}`,
           }}
         >
-          {anyPlaying ? '⏸ ' + (language === 'bm' ? 'Berhenti' : 'Stop') : '▶ ' + (language === 'bm' ? 'Dengar Semua' : 'Play All')}
+          {anyPlaying ? (language === 'bm' ? '⏸ Berhenti' : '⏸ Stop') : (language === 'bm' ? 'Dengar Semua' : 'Play All')}
         </button>
         <button
           onClick={() => setShowTr(s => !s)}
           style={{
             fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 700, fontSize: 'clamp(0.8rem, 2vw, 0.95rem)',
-            background: showTr ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.06)', color: '#E2E8F0',
-            border: '2px solid rgba(255,255,255,0.15)', borderRadius: 999, padding: '9px 22px', cursor: 'pointer',
+            background: showTr ? 'rgba(0,0,0,0.08)' : 'rgba(0,0,0,0.04)', color: 'var(--pi-ink)',
+            border: '2px solid rgba(0,0,0,0.1)', borderRadius: 999, padding: '9px 22px', cursor: 'pointer',
           }}
         >
-          {showTr ? '🙈 ' + (language === 'bm' ? 'Sembunyi Maksud' : 'Hide Meaning') : '👁 ' + (language === 'bm' ? 'Tunjuk Maksud' : 'Show Meaning')}
+          {showTr ? (language === 'bm' ? 'Sembunyi Maksud' : 'Hide Meaning') : (language === 'bm' ? 'Tunjuk Maksud' : 'Show Meaning')}
         </button>
+      </div>
+
+      {/* Surah dropdown (between controls and ayahs) */}
+      <div ref={dropdownRef} style={{ position: 'relative', display: 'flex', justifyContent: 'center', marginBottom: '0.8rem' }}>
+        <button
+          onClick={() => setDropdownOpen(o => !o)}
+          style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 600, fontSize: '0.8rem', background: 'rgba(0,0,0,0.04)', color: 'var(--pi-muted)', border: '2px solid rgba(0,0,0,0.1)', borderRadius: 999, padding: '5px 16px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6 }}
+        >
+          {(language === 'bm' ? 'Pilih ayat' : 'Select ayah')} : {surah.name}
+          <span style={{ fontSize: '0.6rem', transform: dropdownOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>▼</span>
+        </button>
+        {dropdownOpen && (
+          <div style={{ position: 'absolute', top: 'calc(100% + 4px)', left: '50%', transform: 'translateX(-50%)', background: '#fff', border: '1px solid rgba(0,0,0,0.12)', borderRadius: 12, boxShadow: '0 8px 24px rgba(0,0,0,0.15)', zIndex: 100, minWidth: 180, overflow: 'hidden' }}>
+            {surahs.map(s => (
+              <button
+                key={s.id}
+                onClick={() => { setDropdownOpen(false); if (s.id !== surah.id) { rec.stop(); onSelectSurah(s.id); } }}
+                style={{ display: 'block', width: '100%', textAlign: 'left', fontFamily: "'Fredoka', sans-serif", fontWeight: s.id === surah.id ? 700 : 500, fontSize: '0.82rem', padding: '8px 14px', border: 'none', background: s.id === surah.id ? 'rgba(212,150,10,0.1)' : '#fff', color: s.id === surah.id ? '#92400E' : 'var(--pi-ink)', cursor: 'pointer' }}
+                onMouseEnter={e => e.target.style.background = s.id === surah.id ? 'rgba(212,150,10,0.1)' : 'rgba(0,0,0,0.04)'}
+                onMouseLeave={e => e.target.style.background = s.id === surah.id ? 'rgba(212,150,10,0.1)' : '#fff'}
+              >
+                <span style={{ fontFamily: ARABIC_FONT, fontSize: '0.85rem', marginRight: 8 }}>{s.arabicName}</span>
+                {s.name}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Basmalah header (for surahs where it is not a counted ayah) */}
       {surah.basmalahHeader && (
         <div style={{
-          background: 'rgba(255,255,255,0.07)', border: '2px solid rgba(255,255,255,0.12)',
+          background: 'rgba(0,0,0,0.03)', border: '2px solid rgba(0,0,0,0.08)',
           borderRadius: 16, padding: '12px 14px', marginBottom: '0.9rem',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
         }}>
           <PlayPill active={rec.playing === BASMALAH_FILE} missing={rec.missing === BASMALAH_FILE} accent={surah.accent}
             onClick={() => rec.playing === BASMALAH_FILE ? rec.stop() : rec.playOne(BASMALAH_FILE)} size={34} />
-          <p style={{ fontFamily: ARABIC_FONT, fontSize: 'clamp(1.4rem, 5vw, 2rem)', color: '#FDE68A', direction: 'rtl', textAlign: 'right', margin: 0, flex: 1, lineHeight: 1.8 }}>
+          <p style={{ fontFamily: ARABIC_FONT, fontSize: 'clamp(1.4rem, 5vw, 2rem)', color: 'var(--pi-ink)', direction: 'rtl', textAlign: 'right', margin: 0, flex: 1, lineHeight: 1.8 }}>
             {BASMALAH}
           </p>
         </div>
@@ -327,7 +307,7 @@ function BacaView({ surah, language, rec }) {
         ))}
       </div>
 
-      <p style={{ textAlign: 'center', fontFamily: "'Fredoka', sans-serif", fontSize: '0.72rem', color: 'rgba(255,255,255,0.35)', marginTop: '1rem' }}>
+      <p style={{ textAlign: 'center', fontFamily: "'Fredoka', sans-serif", fontSize: '0.72rem', color: '#9CA3AF', marginTop: '1rem' }}>
         🔊 {language === 'bm' ? 'Ketuk ▶ untuk dengar bacaan setiap ayat' : 'Tap ▶ to hear each ayah'}
       </p>
     </div>
@@ -372,7 +352,7 @@ function HafazanView({ surah, language }) {
         <h2 style={{ fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 'clamp(1.3rem, 4vw, 1.8rem)', color: surah.accent, margin: 0 }}>
           {surah.name}
         </h2>
-        <p style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 600, fontSize: 'clamp(0.88rem, 2.2vw, 1.05rem)', color: '#CBD5E0', margin: 0, lineHeight: 1.5, maxWidth: 320 }}>
+        <p style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 600, fontSize: 'clamp(0.88rem, 2.2vw, 1.05rem)', color: 'var(--pi-muted)', margin: 0, lineHeight: 1.5, maxWidth: 320 }}>
           {msg}
         </p>
         <button onClick={reset} style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 700, fontSize: 'clamp(0.85rem, 2vw, 1rem)', background: `linear-gradient(135deg, ${surah.accent}, ${surah.color})`, color: '#fff', border: 'none', borderRadius: 999, padding: '11px 30px', cursor: 'pointer', boxShadow: `0 4px 14px ${surah.glow}` }}>
@@ -384,8 +364,8 @@ function HafazanView({ surah, language }) {
 
   return (
     <div style={{ flex: 1, overflowY: 'auto', padding: '0 1.25rem calc(80px + var(--safe-bottom, 0px))' }}>
-      <p style={{ textAlign: 'center', fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 600, fontSize: 'clamp(0.82rem, 2vw, 0.95rem)', color: '#E2E8F0', margin: '0 0 0.4rem' }}>
-        {language === 'bm' ? 'Ketuk ayat mengikut susunan yang betul' : 'Tap the ayahs in the correct order'}
+      <p style={{ textAlign: 'center', fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 600, fontSize: 'clamp(0.82rem, 2vw, 0.95rem)', color: 'var(--pi-ink)', margin: '0 0 0.4rem' }}>
+        {language === 'bm' ? 'Pilih ayat mengikut susunan yang betul' : 'Tap the ayahs in the correct order'}
       </p>
       <p style={{ textAlign: 'center', fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: '0.85rem', color: surah.accent, margin: '0 0 1rem' }}>
         {placed.length} / {total}
@@ -401,12 +381,12 @@ function HafazanView({ surah, language }) {
               padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 12,
             }}>
               <span style={{ width: 24, height: 24, borderRadius: '50%', background: '#10B981', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: '0.78rem', flexShrink: 0 }}>{n}</span>
-              <span style={{ fontFamily: ARABIC_FONT, fontSize: 'clamp(1.3rem, 5vw, 1.8rem)', color: '#fff', direction: 'rtl', textAlign: 'right', flex: 1, lineHeight: 1.7 }}>{ayah.ar}</span>
+              <span style={{ fontFamily: ARABIC_FONT, fontSize: 'clamp(1.3rem, 5vw, 1.8rem)', color: '#065F46', direction: 'rtl', textAlign: 'right', flex: 1, lineHeight: 1.7 }}>{ayah.ar}</span>
             </div>
           );
         })}
         {/* Next empty slot hint */}
-        <div style={{ border: '2px dashed rgba(255,255,255,0.2)', borderRadius: 14, padding: '8px 14px', textAlign: 'center', fontFamily: "'Fredoka', sans-serif", fontWeight: 600, fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)' }}>
+        <div style={{ border: '2px dashed rgba(0,0,0,0.15)', borderRadius: 14, padding: '8px 14px', textAlign: 'center', fontFamily: "'Fredoka', sans-serif", fontWeight: 600, fontSize: '0.8rem', color: 'var(--pi-muted)' }}>
           {language === 'bm' ? `Ayat ke-${placed.length + 1}?` : `Ayah #${placed.length + 1}?`}
         </div>
       </div>
@@ -418,20 +398,20 @@ function HafazanView({ surah, language }) {
             key={ayah.n}
             onClick={() => handleTap(ayah)}
             style={{
-              background: shakeN === ayah.n ? 'rgba(239,68,68,0.25)' : 'rgba(255,255,255,0.07)',
-              border: `2px solid ${shakeN === ayah.n ? '#EF4444' : 'rgba(255,255,255,0.15)'}`,
+              background: shakeN === ayah.n ? 'rgba(239,68,68,0.1)' : 'rgba(0,0,0,0.04)',
+              border: `2px solid ${shakeN === ayah.n ? '#EF4444' : 'rgba(0,0,0,0.1)'}`,
               borderRadius: 14, padding: '12px 16px', cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
               transition: 'background 0.2s, border-color 0.2s, transform 0.15s',
               transform: shakeN === ayah.n ? 'translateX(4px)' : 'none',
             }}
           >
-            <span style={{ fontFamily: ARABIC_FONT, fontSize: 'clamp(1.4rem, 5.5vw, 2rem)', color: '#fff', direction: 'rtl', textAlign: 'right', display: 'block', lineHeight: 1.8 }}>{ayah.ar}</span>
+            <span style={{ fontFamily: ARABIC_FONT, fontSize: 'clamp(1.4rem, 5.5vw, 2rem)', color: 'var(--pi-ink)', direction: 'rtl', textAlign: 'right', display: 'block', lineHeight: 1.8 }}>{ayah.ar}</span>
           </button>
         ))}
       </div>
 
       <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-        <button onClick={reset} style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 700, fontSize: '0.85rem', background: 'rgba(255,255,255,0.08)', color: '#CBD5E0', border: '2px solid rgba(255,255,255,0.15)', borderRadius: 999, padding: '8px 22px', cursor: 'pointer' }}>
+        <button onClick={reset} style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 700, fontSize: '0.85rem', background: 'rgba(0,0,0,0.04)', color: 'var(--pi-muted)', border: '2px solid rgba(0,0,0,0.1)', borderRadius: 999, padding: '8px 22px', cursor: 'pointer' }}>
           🔀 {language === 'bm' ? 'Susun Semula' : 'Reshuffle'}
         </button>
       </div>
@@ -440,9 +420,18 @@ function HafazanView({ surah, language }) {
 }
 
 // ── Surah detail (tabs) ──────────────────────────────────────────────────────
-function SurahDetail({ surah, language, onBack }) {
+function SurahDetail({ surah, surahs, language, onSelectSurah }) {
   const [tab, setTab] = useState('baca');
+  const [open, setOpen] = useState(false);
   const rec = useRecitation();
+  const ref = useRef(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   // Stop any audio when leaving the Baca tab or switching surah.
   useEffect(() => { if (tab !== 'baca') rec.stop(); }, [tab, rec]);
@@ -450,30 +439,24 @@ function SurahDetail({ surah, language, onBack }) {
   return (
     <>
       <div style={{ padding: '0.25rem 1.25rem 0.5rem', flexShrink: 0, textAlign: 'center' }}>
-        <button
-          onClick={onBack}
-          style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 600, fontSize: '0.8rem', background: 'rgba(255,255,255,0.07)', color: '#94A3B8', border: '2px solid rgba(255,255,255,0.12)', borderRadius: 999, padding: '5px 16px', cursor: 'pointer', marginBottom: '0.6rem' }}
-        >
-          ← {language === 'bm' ? 'Senarai Surah' : 'Surah List'}
-        </button>
         <h2 style={{ fontFamily: ARABIC_FONT, fontSize: 'clamp(1.6rem, 6vw, 2.2rem)', color: surah.accent, margin: '0 0 0.1rem', direction: 'rtl', lineHeight: 1.4 }}>{surah.arabicName}</h2>
-        <p style={{ fontFamily: "'Baloo 2', sans-serif", fontWeight: 700, fontSize: 'clamp(0.85rem, 2.2vw, 1rem)', color: '#E2E8F0', margin: 0 }}>
+        <p style={{ fontFamily: "'Baloo 2', sans-serif", fontWeight: 700, fontSize: 'clamp(0.85rem, 2.2vw, 1rem)', color: 'var(--pi-ink)', margin: 0 }}>
           {surah.name} · <span style={{ fontWeight: 500, color: '#94A3B8' }}>{language === 'bm' ? surah.meaning : surah.meaningEng}</span>
         </p>
 
         <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', marginTop: '0.7rem' }}>
           {[
-            { id: 'baca',    label: language === 'bm' ? '📖 Baca' : '📖 Read' },
-            { id: 'hafazan', label: language === 'bm' ? '🧠 Hafazan' : '🧠 Memorize' },
+            { id: 'baca',    label: language === 'bm' ? 'Baca' : 'Read' },
+            { id: 'hafazan', label: language === 'bm' ? 'Hafazan' : 'Memorize' },
           ].map(t => (
             <button key={t.id}
               onClick={() => { setTab(t.id); playHoverSound(); }}
               style={{
                 fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 700, fontSize: 'clamp(0.8rem, 2vw, 0.95rem)',
                 padding: '7px 20px', borderRadius: 999, border: '2px solid', cursor: 'pointer', transition: 'all 0.2s ease',
-                background: tab === t.id ? `linear-gradient(135deg, ${surah.accent}, ${surah.color})` : 'rgba(255,255,255,0.07)',
-                borderColor: tab === t.id ? surah.accent : 'rgba(255,255,255,0.15)',
-                color: tab === t.id ? '#fff' : '#94A3B8',
+                background: tab === t.id ? `linear-gradient(135deg, ${surah.accent}, ${surah.color})` : 'rgba(0,0,0,0.04)',
+                borderColor: tab === t.id ? surah.accent : 'rgba(0,0,0,0.12)',
+                color: tab === t.id ? '#fff' : 'var(--pi-muted)',
                 boxShadow: tab === t.id ? `0 4px 14px ${surah.glow}` : 'none',
               }}
             >{t.label}</button>
@@ -482,7 +465,9 @@ function SurahDetail({ surah, language, onBack }) {
       </div>
 
       {tab === 'baca'
-        ? <BacaView surah={surah} language={language} rec={rec} />
+        ? <BacaView surah={surah} surahs={surahs} language={language} rec={rec}
+            dropdownRef={ref} dropdownOpen={open} setDropdownOpen={setOpen}
+            onSelectSurah={onSelectSurah} />
         : <HafazanView surah={surah} language={language} />}
 
       {/* Transient "audio coming soon" toast */}
@@ -502,48 +487,20 @@ function SurahDetail({ surah, language, onBack }) {
 
 // ── Main component ────────────────────────────────────────────────────────────
 export default function Hafazan({ onBack, language = 'bm' }) {
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState(SURAHS[0].id);
   const surah = SURAHS.find(s => s.id === selected);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#0B1A2E', color: '#F1F5F9', fontFamily: 'Inter, sans-serif' }}>
-      <BackButton onClick={onBack} />
+    <Tahun1LessonLayout
+      onBack={onBack}
+      language={language}
+      breadcrumb="Al-Quran & Tajwid › Topik 1.4"
+      title={language === 'bm' ? 'Tilawah & Hafazan' : 'Recitation & Memorization'}
+      accentColor="#D4960A"
+    >
 
-      <style>{`
-        ${FONT_IMPORT}
-        .hf-grid { display: grid; grid-template-columns: 1fr; gap: 0.85rem; }
-        @media (min-width: 720px) { .hf-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; } }
-      `}</style>
 
-      {!surah ? (
-        <>
-          <div style={{ padding: '1.5rem 3.5rem 0.75rem', flexShrink: 0, textAlign: 'center' }}>
-            <p style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 600, fontSize: 'clamp(0.65rem, 1.4vw, 0.75rem)', color: 'rgba(255,255,255,0.45)', margin: '0 0 0.35rem' }}>
-              Al-Quran &amp; Tajwid &rsaquo; Topik 1.4
-            </p>
-            <h1 style={{ fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 'clamp(1.1rem, 3.5vw, 1.5rem)', color: '#FDE68A', margin: '0 0 0.3rem' }}>
-              {language === 'bm' ? 'Tilawah & Hafazan' : 'Recitation & Memorization'}
-            </h1>
-            <p style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 500, fontSize: 'clamp(0.74rem, 1.8vw, 0.88rem)', color: 'rgba(255,255,255,0.6)', margin: 0 }}>
-              {language === 'bm' ? 'Pilih surah untuk baca, dengar & hafal' : 'Pick a surah to read, listen & memorize'}
-            </p>
-          </div>
-          <div style={{ flex: 1, overflowY: 'auto', padding: '0.5rem 1.5rem calc(80px + var(--safe-bottom, 0px))' }}>
-            <div className="hf-grid">
-              {SURAHS.map(s => (
-                <SurahCard key={s.id} surah={s} onClick={() => setSelected(s.id)} />
-              ))}
-            </div>
-            <p style={{ textAlign: 'center', fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 500, fontSize: 'clamp(0.62rem, 1.4vw, 0.72rem)', color: 'rgba(255,255,255,0.3)', margin: '1.25rem auto 0', maxWidth: 420, lineHeight: 1.5 }}>
-              {language === 'bm'
-                ? 'Teks al-Quran (rasm Uthmani) adalah milik umum (public domain). Maksud ringkas ditulis sendiri untuk tujuan pembelajaran.'
-                : 'The Quran text (Uthmani script) is in the public domain. Simplified meanings are originally written for learning.'}
-            </p>
-          </div>
-        </>
-      ) : (
-        <SurahDetail surah={surah} language={language} onBack={() => setSelected(null)} />
-      )}
-    </div>
+      <SurahDetail surah={surah} surahs={SURAHS} language={language} onSelectSurah={setSelected} />
+    </Tahun1LessonLayout>
   );
 }

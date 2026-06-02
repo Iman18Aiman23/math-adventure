@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import BackButton from '../../../BackButton';
+import Tahun1LessonLayout from '../Tahun1LessonLayout';
 import SpeechManager from '../../../../services/SpeechManager';
 import { playHoverSound } from '../../../../utils/soundManager';
-import { ARABIC_FONT, FONT_IMPORT, HIJAIYAH_SLUGS } from '../../_shared/arabic';
+import { ARABIC_FONT, HIJAIYAH_SLUGS } from '../../_shared/arabic';
 
 // 29 Hijaiyah letters — Arabic glyph, Malay name, Arabic spoken name for TTS
 // Pre-recorded audio: place files at /public/audio/hijaiyah/01.mp3 … 28.mp3
@@ -68,8 +68,8 @@ function LetterCard({ letter, heard, onTap, playing }) {
       onTouchStart={() => setPressed(true)}
       onTouchEnd={() => setPressed(false)}
       style={{
-        background: heard ? palette.bg : '#1E293B',
-        border: `2.5px solid ${heard ? palette.border : 'rgba(255,255,255,0.1)'}`,
+        background: heard ? palette.bg : '#FFFDF8',
+        border: `2.5px solid ${heard ? palette.border : 'rgba(0,0,0,0.06)'}`,
         borderRadius: 16,
         padding: '12px 8px 10px',
         display: 'flex',
@@ -83,8 +83,8 @@ function LetterCard({ letter, heard, onTap, playing }) {
         boxShadow: isActive
           ? `0 0 0 3px ${palette.border}, 0 8px 20px ${palette.border}55`
           : heard
-            ? `0 4px 12px ${palette.border}33`
-            : '0 2px 8px rgba(0,0,0,0.25)',
+              ? `0 4px 12px ${palette.border}33`
+              : '0 2px 8px rgba(0,0,0,0.06)',
         transition: 'transform 0.15s ease, box-shadow 0.2s ease, background 0.25s, border-color 0.25s',
         position: 'relative',
         minHeight: 90,
@@ -97,7 +97,7 @@ function LetterCard({ letter, heard, onTap, playing }) {
         top: 5, left: 7,
         fontSize: 9,
         fontWeight: 700,
-        color: heard ? palette.glyph : 'rgba(255,255,255,0.3)',
+        color: heard ? palette.glyph : 'rgba(0,0,0,0.2)',
         fontFamily: 'Inter, sans-serif',
         lineHeight: 1,
       }}>
@@ -118,7 +118,7 @@ function LetterCard({ letter, heard, onTap, playing }) {
       <span style={{
         fontFamily: ARABIC_FONT,
         fontSize: 'clamp(1.8rem, 5vw, 2.4rem)',
-        color: heard ? palette.glyph : '#E2E8F0',
+        color: heard ? palette.glyph : 'rgba(0,0,0,0.25)',
         lineHeight: 1,
         direction: 'rtl',
         display: 'block',
@@ -131,7 +131,7 @@ function LetterCard({ letter, heard, onTap, playing }) {
         fontFamily: "'Fredoka', system-ui, sans-serif",
         fontWeight: 600,
         fontSize: 'clamp(0.62rem, 1.5vw, 0.78rem)',
-        color: heard ? palette.glyph : '#94A3B8',
+        color: heard ? palette.glyph : '#A05210',
         letterSpacing: '0.02em',
         textAlign: 'center',
       }}>
@@ -173,7 +173,7 @@ function CompletionScreen({ onRestart, onBack, language }) {
         fontFamily: "'Fredoka', system-ui, sans-serif",
         fontWeight: 600,
         fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)',
-        color: '#CBD5E0',
+        color: 'var(--pi-muted)',
         margin: 0,
         lineHeight: 1.5,
       }}>
@@ -223,9 +223,9 @@ function CompletionScreen({ onRestart, onBack, language }) {
             fontFamily: "'Fredoka', system-ui, sans-serif",
             fontWeight: 700,
             fontSize: 'clamp(0.85rem, 2vw, 1rem)',
-            background: 'rgba(255,255,255,0.1)',
-            color: '#CBD5E0',
-            border: '2px solid rgba(255,255,255,0.15)',
+            background: 'rgba(0,0,0,0.04)',
+            color: 'var(--pi-muted)',
+            border: '2px solid rgba(0,0,0,0.1)',
             borderRadius: 999,
             padding: '10px 28px',
             cursor: 'pointer',
@@ -309,16 +309,14 @@ export default function HurufHijaiyah({ onBack, language = 'bm' }) {
   const progress   = Math.round((heardCount / HIJAIYAH.length) * 100);
 
   return (
-    <div style={{
-      display: 'flex', flexDirection: 'column', height: '100%',
-      background: '#0B1A2E', color: '#F1F5F9',
-      fontFamily: 'Inter, sans-serif',
-    }}>
-      <BackButton onClick={onBack} />
-
+    <Tahun1LessonLayout
+      onBack={onBack}
+      language={language}
+      breadcrumb="Al-Quran & Tajwid › Topik 1.1"
+      title={language === 'bm' ? 'Huruf Hijaiyah Tunggal' : 'Hijaiyah Letters'}
+      accentColor="#D4960A"
+    >
       <style>{`
-        ${FONT_IMPORT}
-
         .hh-grid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
@@ -344,56 +342,19 @@ export default function HurufHijaiyah({ onBack, language = 'bm' }) {
         <CompletionScreen onRestart={handleRestart} onBack={onBack} language={language} />
       ) : (
         <>
-          {/* ── Header — breadcrumb on the back-button line; title drops below
-              the button (extra breadcrumb margin) so it never overlaps on small
-              screens regardless of its width. ── */}
-          <div style={{ padding: '1.5rem 1.5rem 0.5rem', flexShrink: 0, textAlign: 'center' }}>
-            <p style={{
-              fontFamily: "'Fredoka', system-ui, sans-serif",
-              fontWeight: 600,
-              fontSize: 'clamp(0.65rem, 1.4vw, 0.75rem)',
-              color: 'rgba(255,255,255,0.45)',
-              margin: '0 0 1.25rem',
-            }}>
-              Al-Quran &amp; Tajwid &rsaquo; Topik 1.1
-            </p>
-
-            <h1 style={{
-              fontFamily: "'Baloo 2', sans-serif",
-              fontWeight: 800,
-              fontSize: 'clamp(1.15rem, 3.5vw, 1.5rem)',
-              color: '#F59E0B',
-              margin: '0 0 0.25rem',
-              letterSpacing: '-0.01em',
-            }}>
-              {language === 'bm' ? 'Huruf Hijaiyah Tunggal' : 'Hijaiyah Letters'}
-            </h1>
-            <p style={{
-              fontFamily: "'Fredoka', system-ui, sans-serif",
-              fontWeight: 500,
-              fontSize: 'clamp(0.75rem, 1.8vw, 0.88rem)',
-              color: '#94A3B8',
-              margin: 0,
-            }}>
-              {language === 'bm'
-                ? '🔊 Ketuk mana-mana huruf untuk dengar sebutannya'
-                : '🔊 Tap any letter to hear its pronunciation'}
-            </p>
-          </div>
-
           {/* Progress bar — full width below the centered header */}
-          <div style={{ padding: '0 1.25rem 0.75rem', flexShrink: 0 }}>
+          <div style={{ padding: '0 1.25rem 0.75rem' }}>
             <div style={{
-              background: 'rgba(255,255,255,0.08)',
-              borderRadius: 12,
-              padding: '10px 14px',
-              display: 'flex', alignItems: 'center', gap: '0.75rem',
-              border: '1px solid rgba(255,255,255,0.1)',
+background: '#FFFDF8',
+            borderRadius: 12,
+            padding: '10px 14px',
+            display: 'flex', alignItems: 'center', gap: '0.75rem',
+            border: '1px solid rgba(0,0,0,0.06)',
             }}>
               <div style={{ flex: 1 }}>
                 <div style={{
                   height: 8, borderRadius: 99,
-                  background: 'rgba(255,255,255,0.1)',
+                  background: 'rgba(0,0,0,0.08)',
                   overflow: 'hidden',
                 }}>
                   <div style={{
@@ -435,7 +396,6 @@ export default function HurufHijaiyah({ onBack, language = 'bm' }) {
               fontSize: 'clamp(0.65rem, 1.4vw, 0.72rem)',
               color: '#F59E0B',
               lineHeight: 1.45,
-              flexShrink: 0,
             }}>
               {language === 'bm'
                 ? '⚠️ Suara Arab tidak tersedia pada peranti ini. Untuk mendengar sebutan, gunakan telefon/tablet atau pasang bahasa Arab melalui Tetapan Windows > Masa & Bahasa > Tambah bahasa.'
@@ -444,10 +404,7 @@ export default function HurufHijaiyah({ onBack, language = 'bm' }) {
           )}
 
           {/* ── Letter grid ───────────────────────────────────────────── */}
-          <div style={{
-            flex: 1, overflowY: 'auto',
-            padding: '0 1.25rem calc(100px + var(--safe-bottom, 0px))',
-          }}>
+          <div style={{ padding: '0 1.25rem calc(100px + var(--safe-bottom, 0px))' }}>
             <div className="hh-grid">
               {HIJAIYAH.map(letter => (
                 <LetterCard
@@ -464,7 +421,7 @@ export default function HurufHijaiyah({ onBack, language = 'bm' }) {
               fontFamily: "'Fredoka', system-ui, sans-serif",
               fontWeight: 500,
               fontSize: 'clamp(0.65rem, 1.5vw, 0.75rem)',
-              color: 'rgba(255,255,255,0.28)',
+              color: 'var(--pi-muted)',
               textAlign: 'center',
               marginTop: '1.25rem',
             }}>
@@ -475,6 +432,6 @@ export default function HurufHijaiyah({ onBack, language = 'bm' }) {
           </div>
         </>
       )}
-    </div>
+    </Tahun1LessonLayout>
   );
 }

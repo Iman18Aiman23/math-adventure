@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
-import BackButton from '../../../BackButton';
+import Tahun1LessonLayout from '../Tahun1LessonLayout';
 import { playHoverSound, playSound } from '../../../../utils/soundManager';
-import { ARABIC_FONT, FONT_IMPORT } from '../../_shared/arabic';
+import { ARABIC_FONT } from '../../_shared/arabic';
 import { shuffle } from '../../_shared/utils';
 import Celebration from '../../_shared/Celebration';
 
@@ -123,7 +123,7 @@ function QuizScreen({ language, onDone }) {
   return (
     <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem', padding: '0.75rem 1.25rem calc(0.75rem + var(--safe-bottom, 0px))', overflow: 'hidden' }}>
       <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-        <div style={{ flex: 1, height: 8, borderRadius: 99, background: 'rgba(255,255,255,0.1)', overflow: 'hidden' }}>
+        <div style={{ flex: 1, height: 8, borderRadius: 99, background: 'rgba(0,0,0,0.08)', overflow: 'hidden' }}>
           <div style={{ height: '100%', width: `${(round / TOTAL_ROUNDS) * 100}%`, background: 'linear-gradient(90deg, #F59E0B, #FDE68A)', borderRadius: 99, transition: 'width 0.4s ease' }} />
         </div>
         <span style={{ fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: '0.85rem', color: '#F59E0B', whiteSpace: 'nowrap' }}>{round + 1} / {TOTAL_ROUNDS}</span>
@@ -131,7 +131,7 @@ function QuizScreen({ language, onDone }) {
       </div>
       <div style={{
         flex: 1, minHeight: 0,
-        background: 'rgba(255,255,255,0.06)', border: '2px solid rgba(255,255,255,0.1)',
+        background: '#FFFFFF', border: '2px solid rgba(0,0,0,0.06)',
         borderRadius: 20, padding: '1rem',
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         gap: '0.5rem', textAlign: 'center', position: 'relative', overflow: 'visible',
@@ -140,7 +140,7 @@ function QuizScreen({ language, onDone }) {
         <p style={{ fontFamily: ARABIC_FONT, fontSize: 'clamp(2rem, 8vw, 3rem)', color: '#FDE68A', margin: 0, lineHeight: 1.6, direction: 'rtl' }}>
           {KHALIQ.ar}
         </p>
-        <p style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 600, fontSize: 'clamp(0.88rem, 2.2vw, 1.05rem)', color: '#E2E8F0', margin: 0, lineHeight: 1.4, maxWidth: 340 }}>
+        <p style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 600, fontSize: 'clamp(0.88rem, 2.2vw, 1.05rem)', color: 'var(--pi-ink)', margin: 0, lineHeight: 1.4, maxWidth: 340 }}>
           {q.question}
         </p>
       </div>
@@ -155,9 +155,9 @@ function QuizScreen({ language, onDone }) {
                 borderRadius: 14, border: '2.5px solid', cursor: chosen ? 'default' : 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 transition: 'all 0.2s ease', textAlign: 'left',
-                background: isCorrect ? '#10B981' : isWrong ? '#EF4444' : isAnswer ? 'rgba(16,185,129,0.2)' : 'rgba(255,255,255,0.07)',
-                borderColor: isCorrect ? '#10B981' : isWrong ? '#EF4444' : isAnswer ? '#10B981' : 'rgba(255,255,255,0.15)',
-                color: isCorrect || isWrong ? '#fff' : '#E2E8F0',
+                background: isCorrect ? '#10B981' : isWrong ? '#EF4444' : isAnswer ? 'rgba(16,185,129,0.2)' : '#FFFFFF',
+                borderColor: isCorrect ? '#10B981' : isWrong ? '#EF4444' : isAnswer ? '#10B981' : 'rgba(0,0,0,0.1)',
+                color: isCorrect || isWrong ? '#fff' : 'var(--pi-ink)',
                 transform: isChosen ? 'scale(1.02)' : 'scale(1)',
               }}>
               <span>{opt}</span>
@@ -183,15 +183,15 @@ function ResultScreen({ score, onRetry, onBack, language }) {
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', textAlign: 'center', gap: '1.25rem' }}>
       <div style={{ fontSize: '3rem' }}>{star}</div>
       <h2 style={{ fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 'clamp(1.4rem, 4vw, 2rem)', color: '#F59E0B', margin: 0 }}>{score} / {TOTAL_ROUNDS}</h2>
-      <p style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 600, fontSize: 'clamp(0.88rem, 2.2vw, 1.05rem)', color: '#CBD5E0', margin: 0, lineHeight: 1.5, maxWidth: 320 }}>{msg}</p>
-      <div style={{ width: '100%', maxWidth: 300, height: 12, borderRadius: 99, background: 'rgba(255,255,255,0.1)', overflow: 'hidden' }}>
+      <p style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 600, fontSize: 'clamp(0.88rem, 2.2vw, 1.05rem)', color: 'var(--pi-muted)', margin: 0, lineHeight: 1.5, maxWidth: 320 }}>{msg}</p>
+      <div style={{ width: '100%', maxWidth: 300, height: 12, borderRadius: 99, background: 'rgba(0,0,0,0.08)', overflow: 'hidden' }}>
         <div style={{ height: '100%', width: `${pct}%`, background: 'linear-gradient(90deg, #F59E0B, #FDE68A)', borderRadius: 99, transition: 'width 0.8s ease' }} />
       </div>
       <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
         <button onClick={onRetry} style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 700, fontSize: 'clamp(0.85rem, 2vw, 1rem)', background: 'linear-gradient(135deg, #D97706, #F59E0B)', color: '#fff', border: 'none', borderRadius: 999, padding: '10px 28px', cursor: 'pointer', boxShadow: '0 4px 14px rgba(217,119,6,0.4)' }}>
           🔁 {language === 'bm' ? 'Cuba Lagi' : 'Try Again'}
         </button>
-        <button onClick={onBack} style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 700, fontSize: 'clamp(0.85rem, 2vw, 1rem)', background: 'rgba(255,255,255,0.1)', color: '#CBD5E0', border: '2px solid rgba(255,255,255,0.15)', borderRadius: 999, padding: '10px 28px', cursor: 'pointer' }}>
+        <button onClick={onBack} style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 700, fontSize: 'clamp(0.85rem, 2vw, 1rem)', background: 'rgba(0,0,0,0.04)', color: 'var(--pi-muted)', border: '2px solid rgba(0,0,0,0.1)', borderRadius: 999, padding: '10px 28px', cursor: 'pointer' }}>
           ← {language === 'bm' ? 'Kembali' : 'Back'}
         </button>
       </div>
@@ -206,38 +206,25 @@ export default function AsmaulHusnaKhaliq({ onBack, language = 'bm' }) {
   const [finalScore, setFinalScore] = useState(0);
   const [quizKey,    setQuizKey]    = useState(0);
 
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#0B1A2E', color: '#F1F5F9', fontFamily: 'Inter, sans-serif' }}>
-      <BackButton onClick={onBack} />
-      <style>{`${FONT_IMPORT}`}</style>
+  const handleTabChange = useCallback((t) => {
+    setTab(t);
+    playHoverSound();
+    if (t === 'kuiz') {
+      setQuizDone(false);
+      setQuizKey(k => k + 1);
+    }
+  }, []);
 
-      <div style={{ padding: '1.5rem 3.5rem 0.75rem', flexShrink: 0, textAlign: 'center' }}>
-        <p style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 600, fontSize: 'clamp(0.65rem, 1.4vw, 0.75rem)', color: 'rgba(255,255,255,0.45)', margin: '0 0 0.35rem' }}>
-          Akidah &rsaquo; Topik 2.4
-        </p>
-        <h1 style={{ fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 'clamp(1.1rem, 3.5vw, 1.5rem)', color: '#FDE68A', margin: '0 0 0.75rem' }}>
-          {language === 'bm' ? 'Asmaul Husna: Al-Khaliq' : 'Beautiful Names: Al-Khaliq'}
-        </h1>
-        <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
-          {[
-            { id: 'belajar', label: language === 'bm' ? '📖 Belajar' : '📖 Learn' },
-            { id: 'kuiz',    label: language === 'bm' ? '🎯 Kuiz'   : '🎯 Quiz'  },
-          ].map(t => (
-            <button key={t.id}
-              onClick={() => { setTab(t.id); playHoverSound(); if (t.id === 'kuiz') { setQuizDone(false); setQuizKey(k => k + 1); } }}
-              style={{
-                fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 700,
-                fontSize: 'clamp(0.82rem, 2vw, 0.95rem)', padding: '8px 22px',
-                borderRadius: 999, border: '2px solid', cursor: 'pointer', transition: 'all 0.2s ease',
-                background: tab === t.id ? 'linear-gradient(135deg, #D97706, #F59E0B)' : 'rgba(255,255,255,0.07)',
-                borderColor: tab === t.id ? '#F59E0B' : 'rgba(255,255,255,0.15)',
-                color: tab === t.id ? '#fff' : '#94A3B8',
-                boxShadow: tab === t.id ? '0 4px 14px rgba(217,119,6,0.35)' : 'none',
-              }}
-            >{t.label}</button>
-          ))}
-        </div>
-      </div>
+  return (
+    <Tahun1LessonLayout
+      onBack={onBack}
+      language={language}
+      breadcrumb="Akidah &rsaquo; Topik 2.4"
+      title={language === 'bm' ? 'Asmaul Husna: Al-Khaliq' : 'Beautiful Names: Al-Khaliq'}
+      accentColor="#2A9A6C"
+      tab={tab}
+      onTabChange={handleTabChange}
+    >
 
       {tab === 'belajar' ? (
         <div style={{ flex: 1, overflowY: 'auto', padding: '0 1.25rem calc(80px + var(--safe-bottom, 0px))' }}>
@@ -278,7 +265,7 @@ export default function AsmaulHusnaKhaliq({ onBack, language = 'bm' }) {
             <p style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 600, fontSize: 'clamp(0.7rem, 1.6vw, 0.82rem)', color: '#F59E0B', margin: '0 0 4px' }}>
               {KHALIQ.quranSource}
             </p>
-            <p style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 500, fontSize: 'clamp(0.72rem, 1.8vw, 0.85rem)', color: '#E2E8F0', margin: 0, lineHeight: 1.5 }}>
+            <p style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 500, fontSize: 'clamp(0.72rem, 1.8vw, 0.85rem)', color: 'var(--pi-ink)', margin: 0, lineHeight: 1.5 }}>
               {KHALIQ.quranMeaning}
             </p>
           </div>
@@ -296,7 +283,7 @@ export default function AsmaulHusnaKhaliq({ onBack, language = 'bm' }) {
               }}>
                 <span style={{ fontSize: '1.8rem' }}>{c.icon}</span>
                 <p style={{ fontFamily: "'Baloo 2', sans-serif", fontWeight: 700, fontSize: 'clamp(0.8rem, 2vw, 0.9rem)', color: '#FDE68A', margin: 0 }}>{c.name}</p>
-                <p style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 500, fontSize: 'clamp(0.66rem, 1.5vw, 0.76rem)', color: '#CBD5E0', margin: 0, lineHeight: 1.4 }}>{c.desc}</p>
+                <p style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 500, fontSize: 'clamp(0.66rem, 1.5vw, 0.76rem)', color: 'var(--pi-muted)', margin: 0, lineHeight: 1.4 }}>{c.desc}</p>
               </div>
             ))}
           </div>
@@ -317,6 +304,6 @@ export default function AsmaulHusnaKhaliq({ onBack, language = 'bm' }) {
           <QuizScreen key={quizKey} language={language} onDone={(s) => { setFinalScore(s); setQuizDone(true); }} />
         </div>
       )}
-    </div>
+    </Tahun1LessonLayout>
   );
 }
