@@ -134,6 +134,27 @@ const SukunSyaddah             = React.lazy(() => import('./components/Pendidika
 const Idgham                   = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module1_AlQuranTajwidHadis/Idgham'));
 const TilawahTahun2            = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module1_AlQuranTajwidHadis/TilawahTahun2'));
 const Hadis                    = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module1_AlQuranTajwidHadis/Hadis'));
+// Tahun 2 Modules 2-6
+const AkidahModuleT2      = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module2_Akidah/AkidahModule'));
+const Malaikat            = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module2_Akidah/Malaikat'));
+const AsmaulHusnaTahun2   = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module2_Akidah/AsmaulHusnaTahun2'));
+const Syirik              = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module2_Akidah/Syirik'));
+const IbadahModuleT2      = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module3_Ibadah/IbadahModule'));
+const SyaratSolat         = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module3_Ibadah/SyaratSolat'));
+const RukunSolat          = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module3_Ibadah/RukunSolat'));
+const AzanIqamah          = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module3_Ibadah/AzanIqamah'));
+const SirahModuleT2       = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module4_Sirah/SirahModule'));
+const TandaKerasulan      = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module4_Sirah/TandaKerasulan'));
+const WahyuPertama        = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module4_Sirah/WahyuPertama'));
+const DakwahAwal          = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module4_Sirah/DakwahAwal'));
+const AdabModuleT2        = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module5_Adab/AdabModule'));
+const AdabBerpakaian      = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module5_Adab/AdabBerpakaian'));
+const AdabKasihSayang     = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module5_Adab/AdabKasihSayang'));
+const AdabBerkawan        = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module5_Adab/AdabBerkawan'));
+const JawiModuleT2        = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module6_Jawi/JawiModule'));
+const SukuKataTertutup    = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module6_Jawi/SukuKataTertutup'));
+const RangkaiKataJawi     = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module6_Jawi/RangkaiKataJawi'));
+import TahunModulePage from './components/PendidikanIslamPage/TahunModulePage';
 const AchievementHome  = React.lazy(() => import('./components/Achievement/AchievementHome'));
 const LeaderboardHome  = React.lazy(() => import('./components/Leaderboard/LeaderboardHome'));
 const AssessmentSelector = React.lazy(() => import('./pages/AssessmentSelector'));
@@ -258,6 +279,7 @@ export default function App() {
   const [currentTheme, setCurrentTheme] = useState('cosmic');
   const [islamModule, setIslamModule] = useState(null);
   const [islamTopic,  setIslamTopic]  = useState(null);
+  const [islamYear,   setIslamYear]   = useState(1);
 
   // useTransition keeps the current screen visible while a lazy game chunk
   // loads, so navigation never blanks to a fallback for fast loads. isPending
@@ -373,97 +395,82 @@ export default function App() {
       case 'jawi':
         return <JawiPage onBack={handleBackToHome} onHome={handleBackToHome} language={language} onGameStart={() => setIsPlayingJawiGame(true)} onGameEnd={() => setIsPlayingJawiGame(false)} />;
       case 'pendidikan-islam-v1':
-        // Tahun 2 routing (prefix '2-')
-        if (islamModule === '2-al-quran') {
-          if (islamTopic === 'sukun-syaddah')     { return <SukunSyaddah     onBack={() => setIslamTopic(null)} language={language} />; }
-          if (islamTopic === 'idgham')            { return <Idgham           onBack={() => setIslamTopic(null)} language={language} />; }
-          if (islamTopic === 'tilawah-tahun2')    { return <TilawahTahun2    onBack={() => setIslamTopic(null)} language={language} />; }
-          if (islamTopic === 'hadis-tahun2')      { return <Hadis            onBack={() => setIslamTopic(null)} language={language} />; }
-          return <AlQuranTajwidHadisModule onBack={() => setIslamModule(null)} language={language} onSelectTopic={(id) => navigate(() => setIslamTopic(id))} />;
+        // ── Lessons (islamTopic set) ──
+        if (islamModule === '2-al-quran' && islamTopic === 'sukun-syaddah')     { return <SukunSyaddah     onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === '2-al-quran' && islamTopic === 'idgham')            { return <Idgham           onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === '2-al-quran' && islamTopic === 'tilawah-tahun2')    { return <TilawahTahun2    onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === '2-al-quran' && islamTopic === 'hadis-tahun2')      { return <Hadis            onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === '2-akidah'   && islamTopic === 'malaikat')          { return <Malaikat          onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === '2-akidah'   && islamTopic === 'asmaul-husna-tahun2'){return <AsmaulHusnaTahun2 onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === '2-akidah'   && islamTopic === 'syirik')            { return <Syirik            onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === '2-ibadah'   && islamTopic === 'syarat-solat')      { return <SyaratSolat       onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === '2-ibadah'   && islamTopic === 'rukun-solat')       { return <RukunSolat        onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === '2-ibadah'   && islamTopic === 'azan-iqamah')       { return <AzanIqamah        onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === '2-sirah'    && islamTopic === 'tanda-kerasulan')   { return <TandaKerasulan    onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === '2-sirah'    && islamTopic === 'wahyu-pertama')     { return <WahyuPertama      onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === '2-sirah'    && islamTopic === 'dakwah-awal')       { return <DakwahAwal        onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === '2-adab'     && islamTopic === 'adab-berpakaian')    { return <AdabBerpakaian   onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === '2-adab'     && islamTopic === 'adab-kasih-sayang')  { return <AdabKasihSayang  onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === '2-adab'     && islamTopic === 'adab-berkawan')     { return <AdabBerkawan     onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === '2-jawi'     && islamTopic === 'suku-kata-tertutup'){ return <SukuKataTertutup  onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === '2-jawi'     && islamTopic === 'rangkai-kata-jawi') { return <RangkaiKataJawi  onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === 'al-quran'   && islamTopic === 'huruf-hijaiyah')    { return <HurufHijaiyah    onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === 'al-quran'   && islamTopic === 'tanda-bacaan')      { return <TandaBacaan      onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === 'al-quran'   && islamTopic === 'tanwin')            { return <Tanwin           onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === 'al-quran'   && islamTopic === 'hafazan')           { return <Hafazan          onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === 'akidah'     && islamTopic === 'rukun-iman')        { return <RukunIman        onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === 'akidah'     && islamTopic === 'rukun-islam')       { return <RukunIslam       onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === 'akidah'     && islamTopic === 'syahadah')          { return <Syahadah         onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === 'akidah'     && islamTopic === 'asmaul-husna-khaliq'){return <AsmaulHusnaKhaliq onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === 'ibadah'     && islamTopic === 'istinja')           { return <Istinja          onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === 'ibadah'     && islamTopic === 'air-mutlak')        { return <AirMutlak        onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === 'ibadah'     && islamTopic === 'amali-wuduk')       { return <AmaliWuduk       onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === 'sirah'      && islamTopic === 'nasab-keturunan')   { return <NasabKeturunan   onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === 'sirah'      && islamTopic === 'kelahiran-penyusuan'){return <KelahiranPenyusuan onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === 'sirah'      && islamTopic === 'sifat-al-amin')     { return <SifatAlAmin      onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === 'adab'       && islamTopic === 'adab-makan-minum')  { return <AdabMakanMinum   onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === 'adab'       && islamTopic === 'adab-tidur')        { return <AdabTidur        onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === 'adab'       && islamTopic === 'adab-tandas')       { return <AdabTandas       onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === 'jawi'       && islamTopic === 'huruf-jawi-tunggal'){ return <JawiKVLearningPage  onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === 'jawi'       && islamTopic === 'suku-kata-terbuka-jawi'){return <JawiKVKLearningPage onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === 'jawi'       && islamTopic === 'jawi-alphabet')     { return <JawiAlphabetPage onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === 'jawi'       && islamTopic === 'jawi-100-words')    { return <JawiWordsPage    onBack={() => setIslamTopic(null)} language={language} />; }
+
+        // ── Hub + Nav page (islamModule set, no topic) ──
+        if (islamModule) {
+          const hubOnBack = () => { setIslamModule(null); setIslamTopic(null); };
+          const onModuleChange = (id) => navigate(() => { setIslamYear(id.startsWith('2-') ? 2 : 1); setIslamModule(id); setIslamTopic(null); });
+          const hubProps = { onBack: hubOnBack, language, onSelectTopic: (id) => navigate(() => setIslamTopic(id)) };
+          let hub;
+          switch (islamModule) {
+            case '2-al-quran': hub = <AlQuranTajwidHadisModule {...hubProps} />; break;
+            case '2-akidah':   hub = <AkidahModuleT2           {...hubProps} />; break;
+            case '2-ibadah':   hub = <IbadahModuleT2           {...hubProps} />; break;
+            case '2-sirah':    hub = <SirahModuleT2            {...hubProps} />; break;
+            case '2-adab':     hub = <AdabModuleT2             {...hubProps} />; break;
+            case '2-jawi':     hub = <JawiModuleT2             {...hubProps} />; break;
+            case 'al-quran':   hub = <AlQuranTajwidModule      {...hubProps} />; break;
+            case 'akidah':     hub = <AkidahModule             {...hubProps} />; break;
+            case 'ibadah':     hub = <IbadahModule             {...hubProps} />; break;
+            case 'sirah':      hub = <SirahModule              {...hubProps} />; break;
+            case 'adab':       hub = <AdabModule               {...hubProps} />; break;
+            case 'jawi':       hub = <JawiModule               {...hubProps} />; break;
+          }
+          return (
+            <TahunModulePage
+              year={islamYear}
+              activeModule={islamModule}
+              language={language}
+              onModuleChange={onModuleChange}
+              onBack={hubOnBack}
+              onSelectTopic={(id) => navigate(() => setIslamTopic(id))}
+            >
+              {hub}
+            </TahunModulePage>
+          );
         }
-        // Tahun 1 routing
-        if (islamModule === 'al-quran') {
-          if (islamTopic === 'huruf-hijaiyah') {
-            return <HurufHijaiyah onBack={() => setIslamTopic(null)} language={language} />;
-          }
-          if (islamTopic === 'tanda-bacaan') {
-            return <TandaBacaan onBack={() => setIslamTopic(null)} language={language} />;
-          }
-          if (islamTopic === 'tanwin') {
-            return <Tanwin onBack={() => setIslamTopic(null)} language={language} />;
-          }
-          if (islamTopic === 'hafazan') {
-            return <Hafazan onBack={() => setIslamTopic(null)} language={language} />;
-          }
-          return <AlQuranTajwidModule onBack={() => setIslamModule(null)} language={language} onSelectTopic={(id) => navigate(() => setIslamTopic(id))} />;
-        }
-        if (islamModule === 'akidah') {
-          if (islamTopic === 'rukun-iman') {
-            return <RukunIman onBack={() => setIslamTopic(null)} language={language} />;
-          }
-          if (islamTopic === 'rukun-islam') {
-            return <RukunIslam onBack={() => setIslamTopic(null)} language={language} />;
-          }
-          if (islamTopic === 'syahadah') {
-            return <Syahadah onBack={() => setIslamTopic(null)} language={language} />;
-          }
-          if (islamTopic === 'asmaul-husna-khaliq') {
-            return <AsmaulHusnaKhaliq onBack={() => setIslamTopic(null)} language={language} />;
-          }
-          return <AkidahModule onBack={() => setIslamModule(null)} language={language} onSelectTopic={(id) => navigate(() => setIslamTopic(id))} />;
-        }
-        if (islamModule === 'ibadah') {
-          if (islamTopic === 'istinja') {
-            return <Istinja onBack={() => setIslamTopic(null)} language={language} />;
-          }
-          if (islamTopic === 'air-mutlak') {
-            return <AirMutlak onBack={() => setIslamTopic(null)} language={language} />;
-          }
-          if (islamTopic === 'amali-wuduk') {
-            return <AmaliWuduk onBack={() => setIslamTopic(null)} language={language} />;
-          }
-          return <IbadahModule onBack={() => setIslamModule(null)} language={language} onSelectTopic={(id) => navigate(() => setIslamTopic(id))} />;
-        }
-        if (islamModule === 'sirah') {
-          if (islamTopic === 'nasab-keturunan') {
-            return <NasabKeturunan onBack={() => setIslamTopic(null)} language={language} />;
-          }
-          if (islamTopic === 'kelahiran-penyusuan') {
-            return <KelahiranPenyusuan onBack={() => setIslamTopic(null)} language={language} />;
-          }
-          if (islamTopic === 'sifat-al-amin') {
-            return <SifatAlAmin onBack={() => setIslamTopic(null)} language={language} />;
-          }
-          return <SirahModule onBack={() => setIslamModule(null)} language={language} onSelectTopic={(id) => navigate(() => setIslamTopic(id))} />;
-        }
-        if (islamModule === 'adab') {
-          if (islamTopic === 'adab-makan-minum') {
-            return <AdabMakanMinum onBack={() => setIslamTopic(null)} language={language} />;
-          }
-          if (islamTopic === 'adab-tidur') {
-            return <AdabTidur onBack={() => setIslamTopic(null)} language={language} />;
-          }
-          if (islamTopic === 'adab-tandas') {
-            return <AdabTandas onBack={() => setIslamTopic(null)} language={language} />;
-          }
-          return <AdabModule onBack={() => setIslamModule(null)} language={language} onSelectTopic={(id) => navigate(() => setIslamTopic(id))} />;
-        }
-        if (islamModule === 'jawi') {
-          if (islamTopic === 'huruf-jawi-tunggal') {
-            return <JawiKVLearningPage onBack={() => setIslamTopic(null)} language={language} />;
-          }
-          if (islamTopic === 'suku-kata-terbuka-jawi') {
-            return <JawiKVKLearningPage onBack={() => setIslamTopic(null)} language={language} />;
-          }
-          if (islamTopic === 'jawi-alphabet') {
-            return <JawiAlphabetPage onBack={() => setIslamTopic(null)} language={language} />;
-          }
-          if (islamTopic === 'jawi-100-words') {
-            return <JawiWordsPage onBack={() => setIslamTopic(null)} language={language} />;
-          }
-          return <JawiModule onBack={() => setIslamModule(null)} language={language} onSelectTopic={(id) => navigate(() => setIslamTopic(id))} />;
-        }
-        return <PendidikanIslamHomePage onBack={handleBackToHome} language={language} onSelectModule={(id) => navigate(() => setIslamModule(id))} />;
+
+        return <PendidikanIslamHomePage initialYear={islamYear} onBack={handleBackToHome} language={language} onSelectModule={(id) => navigate(() => { const y = id.startsWith('2-') ? 2 : id.startsWith('3-') ? 3 : 1; setIslamYear(y); setIslamModule(id); })} />;
       case 'reading':
         return <ReadingPage onBack={handleBackToHome} language={language} />;
       default:

@@ -1,5 +1,4 @@
 import React from 'react';
-import BackButton from '../../BackButton';
 import { FONT_IMPORT } from '../_shared/arabic';
 
 export default function Tahun1ModuleHubLayout({
@@ -8,7 +7,6 @@ export default function Tahun1ModuleHubLayout({
   moduleNameEn,
   theme,
   topics,
-  onBack,
   onSelectTopic,
   language = 'bm',
   footer,
@@ -144,16 +142,6 @@ export default function Tahun1ModuleHubLayout({
       `}</style>
 
       <div className="pi-mhub-page">
-        <BackButton
-          onClick={onBack}
-          style={{
-            position: 'absolute',
-            top: 12,
-            left: 12,
-            zIndex: 10,
-          }}
-        />
-
         <h1>
           {language === 'bm'
             ? `MODUL ${moduleNum} : ${moduleName}`

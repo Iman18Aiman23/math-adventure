@@ -80,17 +80,17 @@ export default function RobotDefs() {
         </linearGradient>
 
         {/* ── Filters ── */}
-        <filter id="fShadow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+        <filter id="fShadow" x="-20%" y="-20%" width="140%" height="140%" colorInterpolationFilters="sRGB">
           <feDropShadow dx="0" dy="5" stdDeviation="5" floodOpacity="0.18" floodColor="#10243A"/>
         </filter>
-        <filter id="fShadowSoft" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
+        <filter id="fShadowSoft" x="-15%" y="-15%" width="130%" height="130%" colorInterpolationFilters="sRGB">
           <feDropShadow dx="0" dy="3" stdDeviation="3" floodOpacity="0.15" floodColor="#10243A"/>
         </filter>
-        <filter id="fGlow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+        <filter id="fGlow" x="-20%" y="-20%" width="140%" height="140%" colorInterpolationFilters="sRGB">
           <feGaussianBlur stdDeviation="1.8" result="b"/>
           <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
-        <filter id="fBigGlow" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+        <filter id="fBigGlow" x="-30%" y="-30%" width="160%" height="160%" colorInterpolationFilters="sRGB">
           <feGaussianBlur stdDeviation="3.5" result="b"/>
           <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>

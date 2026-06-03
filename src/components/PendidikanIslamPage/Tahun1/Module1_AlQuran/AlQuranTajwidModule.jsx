@@ -1,5 +1,4 @@
 import React from 'react';
-import BackButton from '../../../BackButton';
 import { FONT_IMPORT, ARABIC_FONT } from '../../_shared/arabic';
 
 const CARD_BG = '#FFFDF8';
@@ -98,7 +97,7 @@ const TOPICS = [
   },
 ];
 
-export default function AlQuranTajwidModule({ onBack, onSelectTopic, language = 'bm' }) {
+export default function AlQuranTajwidModule({ onSelectTopic, language = 'bm' }) {
   return (
     <>
       <style>{`
@@ -209,16 +208,6 @@ export default function AlQuranTajwidModule({ onBack, onSelectTopic, language = 
       `}</style>
 
       <div className="aq-page">
-        <BackButton
-          onClick={onBack}
-          style={{
-            position: 'absolute',
-            top: 12,
-            left: 12,
-            zIndex: 10,
-          }}
-        />
-
         <h1>
           {language === 'bm'
             ? 'MODUL 1 : Al-Quran & Tajwid'

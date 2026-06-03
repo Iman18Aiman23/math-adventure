@@ -2026,9 +2026,11 @@ button {
     width: 100%;
   }
 
-  /* Full-bleed exceptions (saga map, game pages) */
+  /* Full-bleed exceptions (saga map, game pages, PI) */
   .view-container > .game-container,
   .view-container > .ops-game-shell,
+  .view-container > .pi-home-root,
+  .view-container > .pi-module-page,
   .view-container > div[style] {
     max-width: 100%;
   }

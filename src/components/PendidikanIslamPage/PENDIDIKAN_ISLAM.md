@@ -239,12 +239,12 @@
 
 | Module | Status |
 |--------|--------|
-| 1. Al-Quran, Tajwid & Hadis | ⏳ Pending |
-| 2. Akidah | ⏳ Pending |
-| 3. Ibadah | ⏳ Pending |
-| 4. Sirah | ⏳ Pending |
-| 5. Adab & Akhlak | ⏳ Pending |
-| 6. Celik Jawi | ⏳ Pending |
+| 1. Al-Quran, Tajwid & Hadis | ✅ Complete |
+| 2. Akidah | ✅ Complete |
+| 3. Ibadah | ✅ Complete |
+| 4. Sirah | ✅ Complete |
+| 5. Adab & Akhlak | ✅ Complete |
+| 6. Celik Jawi | ✅ Complete |
 
 ### Phase 4 — Tahun 3 Content
 
@@ -256,6 +256,17 @@
 | 4. Sirah | ⏳ Pending |
 | 5. Adab & Akhlak | ⏳ Pending |
 | 6. Celik Jawi | ⏳ Pending |
+
+### Phase 5 — Redesign & Navigation
+
+| # | Task | Status |
+|---|------|--------|
+| 5.1 | Create `ModuleNavBar.jsx` — sticky nav with 6 module tabs | ✅ Complete |
+| 5.2 | Create `TahunModulePage.jsx` — nav bar + hub wrapper | ✅ Complete |
+| 5.3 | Redesign `PendidikanIslamHomePage.jsx` — 3 large year buttons (replaces tabs + SVG cards) | ✅ Complete |
+| 5.4 | Add new CSS (`.pi-year-btn`, animations, responsive) | ✅ Complete |
+| 5.5 | Refactor App.jsx routing — flat lesson conditions + hub switch in `TahunModulePage` | ✅ Complete |
+| 5.6 | Build verification — `npx vite build` passes (2203 modules) | ✅ Complete |
 
 ---
 
