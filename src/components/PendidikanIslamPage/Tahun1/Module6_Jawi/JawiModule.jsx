@@ -126,6 +126,36 @@ const topics = [
       </svg>
     ),
   },
+  {
+    id: 'jawi-suku-kata-game',
+    title: 'Permainan Suku Kata Jawi',
+    desc: 'Tantang diri anda dengan permainan interaktif suku kata Jawi!',
+    num: '6.5',
+    visual: (
+      <svg viewBox="0 0 100 100" fill="none">
+        <defs>
+          <radialGradient id="m6-game-badge" cx="38%" cy="28%" r="82%"><stop offset="0%" stopColor="#FFF6D6"/><stop offset="50%" stopColor="#FFD050"/><stop offset="100%" stopColor="#E0A012"/></radialGradient>
+        </defs>
+        <ellipse cx="50" cy="92" rx="26" ry="4.5" fill="rgba(11,94,90,.14)"/>
+        <g className="floatA">
+          <rect x="22" y="24" width="56" height="56" rx="12" fill="#FFFFFF" stroke="#0B5E5A" strokeWidth="2"/>
+          <path d="M22 34 V34 Q22 24 32 24 L68 24 Q78 24 78 34 L78 34 Z" fill="#FFC800"/>
+          <text x="50" y="30.5" textAnchor="middle" dominantBaseline="central" fontFamily="Baloo 2,sans-serif" fontSize="4.5" fontWeight="800" letterSpacing=".08em" fill="#fff">PERMAINAN</text>
+          <circle cx="36" cy="52" r="10" fill="#10B981" opacity=".15"/>
+          <text x="36" y="54" textAnchor="middle" dominantBaseline="central" fontFamily="Amiri,serif" fontSize="11" fontWeight="700" fill="#0B5E5A">ب</text>
+          <circle cx="64" cy="52" r="10" fill="#10B981" opacity=".15"/>
+          <text x="64" y="54" textAnchor="middle" dominantBaseline="central" fontFamily="Amiri,serif" fontSize="11" fontWeight="700" fill="#0B5E5A">ا</text>
+          <text x="50" y="74" textAnchor="middle" dominantBaseline="central" fontFamily="Baloo 2,sans-serif" fontSize="8" fontWeight="700" fill="#888">🎮</text>
+        </g>
+        <g className="bob">
+          <ellipse cx="78" cy="26" rx="15" ry="12" fill="url(#m6-game-badge)" stroke="#A9740A" strokeWidth="1.4"/>
+          <ellipse cx="78" cy="26" rx="15" ry="12" fill="none" stroke="#FFF6D6" strokeWidth=".8" opacity=".7"/>
+          <text x="78" y="24" textAnchor="middle" dominantBaseline="central" fontFamily="Baloo 2,sans-serif" fontSize="8" fontWeight="800" fill="#0B5E5A">🎮</text>
+          <text x="78" y="33" textAnchor="middle" dominantBaseline="central" fontFamily="Baloo 2,sans-serif" fontSize="4.5" fontWeight="700" fill="#0B5E5A">GAME</text>
+        </g>
+      </svg>
+    ),
+  },
 ];
 
 const FAQ_ITEMS = [

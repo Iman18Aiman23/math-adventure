@@ -7,7 +7,7 @@ const MODULES = [
   { id: 'ibadah',   num: 3, labelBM: 'Ibadah',            labelEN: 'Worship',         color: '#2563EB' },
   { id: 'sirah',    num: 4, labelBM: 'Sirah',             labelEN: 'Biography',       color: '#7A55E0' },
   { id: 'adab',     num: 5, labelBM: 'Adab & Akhlak',     labelEN: 'Manners',         color: '#FF8CBF' },
-  { id: 'jawi',     num: 6, labelBM: 'Celik Jawi',        labelEN: 'Jawi Literacy',   color: '#0891B2' },
+  { id: 'jawi',     num: 6, labelBM: 'Celik Jawi',        labelEN: 'Jawi Literacy',   color: '#1E9AC9' },
 ];
 
 export default function ModuleNavBar({ year, activeModule, onModuleChange, language = 'bm' }) {

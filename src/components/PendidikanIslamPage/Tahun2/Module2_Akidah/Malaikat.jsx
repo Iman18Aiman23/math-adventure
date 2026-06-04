@@ -159,6 +159,9 @@ export default function Malaikat({ onBack, language = 'bm' }) {
         @media (min-width: 640px) {
           .ml-grid { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
         }
+        @media (max-width: 480px) {
+          .ml-grid { grid-template-columns: 1fr; }
+        }
       `}</style>
 
       {tab === 'belajar' ? (

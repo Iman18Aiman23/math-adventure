@@ -322,6 +322,9 @@ export default function HurufHijaiyah({ onBack, language = 'bm' }) {
           grid-template-columns: repeat(4, 1fr);
           gap: 0.6rem;
         }
+        @media (max-width: 380px) {
+          .hh-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+        }
         @media (min-width: 480px) {
           .hh-grid { grid-template-columns: repeat(5, 1fr); gap: 0.7rem; }
         }

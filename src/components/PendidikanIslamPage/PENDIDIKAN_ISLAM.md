@@ -170,17 +170,18 @@
 | 0.4 | Create `PendidikanIslamHomePage.jsx` (homepage shell) | ✅ Complete |
 | 0.5 | Update App.jsx route to point to `PendidikanIslamHomePage` | ✅ Complete |
 
-### Phase 1 — Homepage Shell
+### Phase 1 — Homepage Shell (Redesigned)
 
 | # | Task | Status |
 |---|------|--------|
-| 1.1 | Hero banner — teal/cyan gradient + crescent moon SVG | ✅ Complete |
-| 1.2 | Year selector tabs — Tahun 1 / 2 / 3 | ✅ Complete |
-| 1.3 | Module grid — responsive 3 columns | ✅ Complete |
-| 1.4 | 6 module cards with color, icon, title, desc, topic count | ✅ Complete |
-| 1.5 | Lock/unlock state — Year 1 active, Years 2 & 3 locked | ✅ Complete |
+| 1.1 | "ImanGenius" brand with logo dot + tagline | ✅ Complete |
+| 1.2 | 3 large year cards with robot SVG discs (replaces tabs + module grid) | ✅ Complete |
+| 1.3 | .pi-year responsive grid — 3 col → 1 col at 840px | ✅ Complete |
+| 1.4 | Theme colours per year (.t1 green, .t2 blue, .t3 grey) | ✅ Complete |
+| 1.5 | Lock state for Tahun 3 — lock chip, grayscale robot, "Akan datang" | ✅ Complete |
 | 1.6 | BackButton wired to return to HomePage | ✅ Complete |
-| 1.7 | Responsive breakpoints (mobile-first) | ✅ Complete |
+| 1.7 | SkyStars animated background effect | ✅ Complete |
+| 1.8 | Hover lift animation + disc scale + robot bounce | ✅ Complete |
 
 ### Phase 2 — Tahun 1 Content
 
@@ -237,25 +238,104 @@
 
 ### Phase 3 — Tahun 2 Content
 
-| Module | Status |
-|--------|--------|
-| 1. Al-Quran, Tajwid & Hadis | ✅ Complete |
-| 2. Akidah | ✅ Complete |
-| 3. Ibadah | ✅ Complete |
-| 4. Sirah | ✅ Complete |
-| 5. Adab & Akhlak | ✅ Complete |
-| 6. Celik Jawi | ✅ Complete |
+#### Module 1: Al-Quran, Tajwid & Hadis
+
+| # | Task | Status |
+|---|------|--------|
+| 3.1.1 | Topic 1.1 — Sukun & Syaddah | ✅ Complete |
+| 3.1.2 | Topic 1.2 — Idgham Maal Ghunnah & Bila Ghunnah | ✅ Complete |
+| 3.1.3 | Topic 1.3 — Tilawah & Hafazan | ✅ Complete |
+| 3.1.4 | Topic 1.4 — Hadis: Menghormati Orang Tua | ✅ Complete |
+
+#### Module 2: Akidah
+
+| # | Task | Status |
+|---|------|--------|
+| 3.2.1 | Topic 2.1 — Beriman kepada Malaikat | ✅ Complete |
+| 3.2.2 | Topic 2.2 — Asmaul Husna: Al-Ahad & As-Samad | ✅ Complete |
+| 3.2.3 | Topic 2.3 — Kesan Menyekutukan Allah (Syirik) | ✅ Complete |
+
+#### Module 3: Ibadah
+
+| # | Task | Status |
+|---|------|--------|
+| 3.3.1 | Topic 3.1 — Syarat Wajib & Sah Solat | ✅ Complete |
+| 3.3.2 | Topic 3.2 — Rukun-Rukun Solat | ✅ Complete |
+| 3.3.3 | Topic 3.3 — Azan dan Iqamah | ✅ Complete |
+
+#### Module 4: Sirah
+
+| # | Task | Status |
+|---|------|--------|
+| 3.4.1 | Topic 4.1 — Tanda-tanda Kerasulan | ✅ Complete |
+| 3.4.2 | Topic 4.2 — Wahyu Pertama di Gua Hira' | ✅ Complete |
+| 3.4.3 | Topic 4.3 — Dakwah Awal & Penentangan Quraisy | ✅ Complete |
+
+#### Module 5: Adab & Akhlak
+
+| # | Task | Status |
+|---|------|--------|
+| 3.5.1 | Topic 5.1 — Adab Berpakaian & Kekemasan | ✅ Complete |
+| 3.5.2 | Topic 5.2 — Adab Kasih Sayang: Ibu Bapa & Keluarga | ✅ Complete |
+| 3.5.3 | Topic 5.3 — Adab Berkawan & Menziarahi Orang Sakit | ✅ Complete |
+
+#### Module 6: Celik Jawi
+
+| # | Task | Status |
+|---|------|--------|
+| 3.6.1 | Topic 6.1 — Suku Kata Tertutup | ✅ Complete |
+| 3.6.2 | Topic 6.2 — Rangkai Kata Jawi | ✅ Complete |
 
 ### Phase 4 — Tahun 3 Content
 
-| Module | Status |
-|--------|--------|
-| 1. Al-Quran, Tajwid & Hadis | ⏳ Pending |
-| 2. Akidah | ⏳ Pending |
-| 3. Ibadah | ⏳ Pending |
-| 4. Sirah | ⏳ Pending |
-| 5. Adab & Akhlak | ⏳ Pending |
-| 6. Celik Jawi | ⏳ Pending |
+#### Module 1: Al-Quran, Tajwid & Hadis
+
+| # | Task | Status |
+|---|------|--------|
+| 4.1.1 | Topic 1.1 — Mim Sakinah (Ikhfa', Idgham, Izhar Syafawi) | ⏳ Pending |
+| 4.1.2 | Topic 1.2 — Tilawah & Hafazan | ⏳ Pending |
+| 4.1.3 | Topic 1.3 — Kefahaman Surah Al-Asr | ⏳ Pending |
+| 4.1.4 | Topic 1.4 — Hadis: Tuntutan Adab Islamiah | ⏳ Pending |
+
+#### Module 2: Akidah
+
+| # | Task | Status |
+|---|------|--------|
+| 4.2.1 | Topic 2.1 — Beriman kepada Kitab-Kitab Allah | ⏳ Pending |
+| 4.2.2 | Topic 2.2 — Al-Quran sebagai Panduan Hidup | ⏳ Pending |
+| 4.2.3 | Topic 2.3 — Asmaul Husna: Al-Alim & Al-Hakim | ⏳ Pending |
+
+#### Module 3: Ibadah
+
+| # | Task | Status |
+|---|------|--------|
+| 4.3.1 | Topic 3.1 — Perkara Membatalkan Solat | ⏳ Pending |
+| 4.3.2 | Topic 3.2 — Khusyuk dalam Solat | ⏳ Pending |
+| 4.3.3 | Topic 3.3 — Fardu Ain vs Fardu Kifayah | ⏳ Pending |
+
+#### Module 4: Sirah
+
+| # | Task | Status |
+|---|------|--------|
+| 4.4.1 | Topic 4.1 — Hijrah ke Madinah | ⏳ Pending |
+| 4.4.2 | Topic 4.2 — Piagam Madinah | ⏳ Pending |
+| 4.4.3 | Topic 4.3 — Sifat Kepimpinan Nabi | ⏳ Pending |
+
+#### Module 5: Adab & Akhlak
+
+| # | Task | Status |
+|---|------|--------|
+| 4.5.1 | Topic 5.1 — Adab Menuntut Ilmu | ⏳ Pending |
+| 4.5.2 | Topic 5.2 — Adab Menghormati Guru & Ibu Bapa | ⏳ Pending |
+| 4.5.3 | Topic 5.3 — Adab Menggunakan Kemudahan Awam | ⏳ Pending |
+
+#### Module 6: Celik Jawi
+
+| # | Task | Status |
+|---|------|--------|
+| 4.6.1 | Topic 6.1 — Imbuhan Awalan & Akhiran Jawi | ⏳ Pending |
+| 4.6.2 | Topic 6.2 — Teks/Petikan Jawi Pendek | ⏳ Pending |
+| 4.6.3 | Topic 6.3 — Tanda Baca Jawi | ⏳ Pending |
 
 ### Phase 5 — Redesign & Navigation
 
@@ -272,117 +352,164 @@
 
 ## 3. Homepage Visual Wireframe
 
-### Desktop (≥ 1024px) — 3 columns × 2 rows
+> **Note:** The current design uses a year-selector homepage (no hero banner, no year tabs, no module grid). Module navigation happens *after* selecting a year via `TahunModulePage` + `ModuleNavBar`.
+
+### Desktop (≥ 1024px)
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│  HERO BANNER  (teal/cyan gradient)                               │
-│  ┌──────────────────────────────────────────────────────────┐    │
-│  │  🕌  Pendidikan Islam          [ crescent moon SVG art ] │    │
-│  │  Belajar dengan seronok & penuh berkat                   │    │
-│  └──────────────────────────────────────────────────────────┘    │
-│                                                                  │
-│  YEAR TABS                                                       │
-│  [ Tahun 1 ● active ]   [ Tahun 2 🔒 ]   [ Tahun 3 🔒 ]         │
-│                                                                  │
-│  MODULE GRID  — 3 columns × 2 rows (6 cards total)              │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐           │
-│  │ 🟡 Modul 1   │  │ 🟢 Modul 2   │  │ 🔵 Modul 3   │           │
-│  │ Al-Quran     │  │ Akidah       │  │ Ibadah       │           │
-│  │ & Tajwid     │  │              │  │              │           │
-│  │ ████░ 4 topik│  │ ████░ 4 topik│  │ ███░ 3 topik │           │
-│  └──────────────┘  └──────────────┘  └──────────────┘           │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐           │
-│  │ 🟣 Modul 4   │  │ 🌸 Modul 5   │  │ 🩵 Modul 6   │           │
-│  │ Sirah        │  │ Adab &       │  │ Celik Jawi   │           │
-│  │              │  │ Akhlak       │  │              │           │
-│  │ ███░ 3 topik │  │ ███░ 3 topik │  │ ████░ 4 topik │           │
-│  └──────────────┘  └──────────────┘  └──────────────┘           │
-└──────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│  [◀]  ImanGenius                                            │  ← Back button + brand
+│                                                             │
+│  ✨ Pembelajaran digital yang interaktif, menyeronokkan...  │  ← tagline
+│                                                             │
+│                     Pilih Tahun                              │  ← heading
+│                                                             │
+│              KLIK PADA ROBOT UNTUK MEMULAKAN...             │  ← hint
+│                                                             │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌────────────┐  │
+│  │    ┌───────┐    │  │    ┌───────┐    │  │  ┌──────┐  │  │
+│  │    │  🤖   │    │  │    │  🤖   │    │  │  │ 🔒  │  │  │
+│  │    └───────┘    │  │    └───────┘    │  │  │ 🤖  │  │  │
+│  │       📗        │  │       📘        │  │  └──────┘  │  │
+│  │   ┌─────────┐   │  │   ┌─────────┐   │  │  Tahun 3   │  │
+│  │   │ TAHUN 1 │   │  │   │ TAHUN 2 │   │  │ 🔒 Akan   │  │
+│  │   └─────────┘   │  │   └─────────┘   │  │   datang   │  │
+│  │  6 Modul · Mula │  │  6 Modul ·      │  └────────────┘  │
+│  │    belajar      │  │   Teruskan      │                   │
+│  │    Mula ▸       │  │    Mula ▸       │                   │
+│  └─────────────────┘  └─────────────────┘  └────────────┘  │
+│                                                             │
+│  — each pi-year card has a large circular gradient disc     │
+│    (224×224px) with a robot SVG + radial gradient background│
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### Tablet (768px – 1023px) — 2 columns × 3 rows
+### Tablet / Mobile (< 840px)
 
 ```
-┌────────────────────────────────────────┐
-│  HERO BANNER                           │
-│  🕌 Pendidikan Islam    [ moon art ]   │
-├────────────────────────────────────────┤
-│  [ Tahun 1 ● ]  [ Tahun 2 🔒 ]  [ T3 ]│
-├───────────────────┬────────────────────┤
-│ 🟡 Modul 1        │ 🟢 Modul 2         │
-│ Al-Quran & Tajwid │ Akidah             │
-│ ████░ 4 topik     │ ████░ 4 topik      │
-├───────────────────┼────────────────────┤
-│ 🔵 Modul 3        │ 🟣 Modul 4         │
-│ Ibadah            │ Sirah              │
-│ ███░ 3 topik      │ ███░ 3 topik       │
-├───────────────────┼────────────────────┤
-│ 🌸 Modul 5        │ 🩵 Modul 6         │
-│ Adab & Akhlak     │ Celik Jawi         │
-│ ███░ 3 topik      │ ██░ 2 topik        │
-└───────────────────┴────────────────────┘
+┌───────────────────────────────────┐
+│  [◀]  ImanGenius                  │
+│                                   │
+│  ✨ Pembelajaran digital...       │
+│                                   │
+│        Pilih Tahun                │
+│                                   │
+│    KLIK PADA ROBOT...             │
+│                                   │
+│  ┌─────────────────────────────┐  │
+│  │      ┌───────────┐          │  │
+│  │      │    🤖     │          │  │
+│  │      └───────────┘          │  │
+│  │         📗                  │  │
+│  │     ┌──────────┐            │  │
+│  │     │  TAHUN 1 │            │  │
+│  │     └──────────┘            │  │
+│  │    6 Modul · Mula belajar   │  │
+│  │         Mula ▸              │  │
+│  └─────────────────────────────┘  │
+│  ┌─────────────────────────────┐  │
+│  │      ┌───────────┐          │  │
+│  │      │    🤖     │          │  │
+│  │      └───────────┘          │  │
+│  │         📘                  │  │
+│  │     ┌──────────┐            │  │
+│  │     │  TAHUN 2 │            │  │
+│  │     └──────────┘            │  │
+│  │    6 Modul · Teruskan       │  │
+│  │         Mula ▸              │  │
+│  └─────────────────────────────┘  │
+│  ┌─────────────────────────────┐  │
+│  │     🔒                     │  │
+│  │      ┌───────────┐          │  │
+│  │      │    🤖     │          │  │
+│  │      └───────────┘          │  │
+│  │         TAHUN 3             │  │
+│  │      🔒 Akan datang         │  │
+│  └─────────────────────────────┘  │
+└───────────────────────────────────┘
 ```
 
-### Mobile (< 640px) — 1 column × 6 rows
+### Navigation Flow (after clicking a year)
 
 ```
-┌───────────────────────────┐
-│  HERO BANNER (compact)    │
-│  🕌 Pendidikan Islam      │
-├───────────────────────────┤
-│ [ T1 ● ] [ T2 🔒 ] [ T3 ] │
-├───────────────────────────┤
-│ 🟡 Modul 1                │
-│ Al-Quran & Tajwid         │
-│ ████░ 4 topik          →  │
-├───────────────────────────┤
-│ 🟢 Modul 2                │
-│ Akidah                    │
-│ ████░ 4 topik          →  │
-├───────────────────────────┤
-│ 🔵 Modul 3                │
-│ Ibadah                    │
-│ ███░ 3 topik           →  │
-├───────────────────────────┤
-│ 🟣 Modul 4                │
-│ Sirah                     │
-│ ███░ 3 topik           →  │
-├───────────────────────────┤
-│ 🌸 Modul 5                │
-│ Adab & Akhlak             │
-│ ███░ 3 topik           →  │
-├───────────────────────────┤
-│ 🩵 Modul 6                │
-│ Celik Jawi                │
-│ ████░ 4 topik          →  │
-└───────────────────────────┘
+┌──────────────────────────────────────────────────┐
+│  PI HOME                                (above)  │
+│  Click "Tahun 1" or "Tahun 2"                    │
+└──────────────────────┬───────────────────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────────────────┐
+│  TAHUNMODULEPAGE                                  │
+│  ┌──────────────────────────────────────────┐     │
+│  │  pi-top-bar (sticky top:0, z-index:110)  │     │
+│  │  [ ← back ]         Tahun  1             │     │
+│  ├──────────────────────────────────────────┤     │
+│  │  ModuleNavBar (sticky top:56, z-index:100)│     │
+│  │  ┌──────┬──────┬──────┬──────┬──────┬───┐ │     │
+│  │  │  1   │  2   │  3   │  4   │  5   │ 6 │ │     │
+│  │  │ Quran│Akidah│Ibadah│Sirah │ Adab │Jawi│ │     │
+│  │  └──────┴──────┴──────┴──────┴──────┴───┘ │     │
+│  ├──────────────────────────────────────────┤     │
+│  │  pi-module-content                        │     │
+│  │  ┌──────────────────────────────────────┐ │     │
+│  │  │  Module hub (e.g. AlQuranTajwid...)   │ │     │
+│  │  │  Title + topic cards with SVG visuals│ │     │
+│  │  │  Click topic → Tahun1LessonLayout    │ │     │
+│  │  └──────────────────────────────────────┘ │     │
+│  └──────────────────────────────────────────┘     │
+└──────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 4. Module Card Anatomy
+## 4. Year Card Anatomy
 
-### Active Card
+The homepage uses large year-selector cards (`.pi-year`) instead of module cards.
+
+### Active Card (Tahun 1 & 2)
 ```
-┌──────────────────────────────┐
-│  [ colored icon / emoji ]    │  ← 48×48px icon
-│  Modul 1                     │  ← small uppercase label
-│  Al-Quran & Tajwid           │  ← bold title (Fredoka/Baloo2)
-│  Kenali huruf, baris &       │  ← short desc (2 lines max)
-│  hafazan surah pilihan       │
-│                              │
-│  ████████░░  4 topik    →    │  ← progress bar + topic count
-└──────────────────────────────┘
+┌───────────────────────────────────┐
+│  ┌───────────────────────────┐    │  ← .pi-disc
+│  │  ┌─────────────┐          │    │     224×224px circle
+│  │  │  🤖 Robot   │          │    │     radial gradient bg
+│  │  │  SVG art    │          │    │     (varies per year)
+│  │  └─────────────┘          │    │
+│  └───────────────────────────┘    │
+│        📗 (year emoji)            │
+│    ┌──────────────────┐           │  ← .pi-ribbon
+│    │     TAHUN 1      │           │
+│    └──────────────────┘           │
+│    📗 6 Modul · Mula belajar      │  ← .pi-meta
+│           Mula ▸                  │  ← .pi-go
+│  (theme colours: --soft, --ring,  │
+│   --d1/--d2/--d3 defined in .t1) │
+└───────────────────────────────────┘
+
+CSS variables per year (.t1, .t2, .t3):
+  --soft:    card fill gradient start
+  --ring:    border colour
+  --sh:      box shadow colour
+  --d1..d3:  disc radial gradient stops
+  --r1..r3:  robot accent colours
 ```
 
-### Lock State (Tahun 2 & 3)
+### Lock State (Tahun 3)
 ```
-┌──────────────────────────────┐
-│  🔒                          │
-│  Akan Datang                 │
-│  (opacity 0.45, no pointer)  │
-└──────────────────────────────┘
+┌───────────────────────────────────┐
+│  ┌──────────────────┐             │  ← .pi-lockchip
+│  │ 🔒 lock icon SVG │             │     top-left overlay
+│  └──────────────────┘             │
+│  ┌───────────────────────────┐    │
+│  │   Robot SVG (grayscale)   │    │  ← filter: grayscale(.6)
+│  └───────────────────────────┘    │
+│     ┌──────────────────┐          │  ← .pi-soonbadge
+│     │     TAHUN 3      │          │
+│     └──────────────────┘          │
+│     🔒 Akan datang               │  ← .pi-soontag
+│  (cursor: not-allowed,            │
+│   no hover transform)             │
+└───────────────────────────────────┘
 ```
 
 ---
@@ -390,58 +517,124 @@
 ## 5. Architecture Overview
 
 ```
-Tahun1/
-├── Tahun1ModuleHubLayout.jsx     ★ Shared hub component (all modules)
-├── Tahun1LessonLayout.jsx        ★ Shared lesson layout + QuizScreen + ResultScreen
-├── Module1_AlQuran/              (reference — may migrate later)
-│   ├── AlQuranTajwidModule.jsx
-│   ├── HurufHijaiyah.jsx
-│   ├── TandaBacaan.jsx
-│   ├── Tanwin.jsx
-│   └── Hafazan.jsx
-├── Module2_Akidah/               ★ Migrated to standard
-│   ├── AkidahModule.jsx
-│   ├── RukunIman.jsx
-│   ├── RukunIslam.jsx
-│   ├── Syahadah.jsx
-│   └── AsmaulHusnaKhaliq.jsx
-├── Module3_Ibadah/               ★ Migrated to standard
-│   ├── IbadahModule.jsx
-│   ├── Istinja.jsx
-│   ├── AirMutlak.jsx
-│   └── AmaliWuduk.jsx
-├── Module4_Sirah/                ★ Migrated to standard
-│   ├── SirahModule.jsx
-│   ├── NasabKeturunan.jsx
-│   ├── KelahiranPenyusuan.jsx
-│   └── SifatAlAmin.jsx
-├── Module5_Adab/                 ★ Migrated to standard
-│   ├── AdabModule.jsx
-│   ├── AdabMakanMinum.jsx
-│   ├── AdabTidur.jsx
-│   └── AdabTandas.jsx
-└── Module6_Jawi/                 ★ Migrated to standard
-    ├── JawiModule.jsx
-    ├── JawiAlphabetPage.jsx
-    ├── JawiWordsPage.jsx
-    ├── JawiKVLearningPage.jsx
-    └── JawiKVKLearningPage.jsx
+PendidikanIslamPage/
+├── PendidikanIslamHomePage.jsx    ★ Homepage — year selector with robot cards
+├── PendidikanIslamRobot.jsx       ★ Robot SVG illustrations (year 1/2/3)
+├── TahunModulePage.jsx            ★ Hub wrapper — top bar + ModuleNavBar
+├── ModuleNavBar.jsx               ★ Sticky 6-tab module navigation
+├── PendidikanIslamPage.css        ★ All PI styles
+├── PENDIDIKAN_ISLAM.md            ★ This reference
+├── _shared/                       ★ Shared utilities
+│   ├── arabic.js
+│   ├── Celebration.jsx
+│   └── utils.js
+│
+├── Tahun1/
+│   ├── Tahun1ModuleHubLayout.jsx     ★ Shared hub component (all modules)
+│   ├── Tahun1LessonLayout.jsx        ★ Shared lesson + QuizScreen + ResultScreen
+│   ├── Module1_AlQuran/
+│   │   ├── AlQuranTajwidModule.jsx
+│   │   ├── HurufHijaiyah.jsx
+│   │   ├── TandaBacaan.jsx
+│   │   ├── Tanwin.jsx
+│   │   └── Hafazan.jsx
+│   ├── Module2_Akidah/               ★ Standard
+│   │   ├── AkidahModule.jsx
+│   │   ├── RukunIman.jsx
+│   │   ├── RukunIslam.jsx
+│   │   ├── Syahadah.jsx
+│   │   └── AsmaulHusnaKhaliq.jsx
+│   ├── Module3_Ibadah/               ★ Standard
+│   │   ├── IbadahModule.jsx
+│   │   ├── Istinja.jsx
+│   │   ├── AirMutlak.jsx
+│   │   └── AmaliWuduk.jsx
+│   ├── Module4_Sirah/                ★ Standard
+│   │   ├── SirahModule.jsx
+│   │   ├── NasabKeturunan.jsx
+│   │   ├── KelahiranPenyusuan.jsx
+│   │   └── SifatAlAmin.jsx
+│   ├── Module5_Adab/                 ★ Standard
+│   │   ├── AdabModule.jsx
+│   │   ├── AdabMakanMinum.jsx
+│   │   ├── AdabTidur.jsx
+│   │   └── AdabTandas.jsx
+│   └── Module6_Jawi/                 ★ Standard
+│       ├── JawiModule.jsx
+│       ├── JawiAlphabetPage.jsx
+│       ├── JawiWordsPage.jsx
+│       ├── JawiKVLearningPage.jsx
+│       └── JawiKVKLearningPage.jsx
+│
+└── Tahun2/
+    ├── Module1_AlQuranTajwidHadis/   ★ Custom hub (not Tahun1ModuleHubLayout)
+    │   ├── AlQuranTajwidHadisModule.jsx
+    │   ├── SukunSyaddah.jsx
+    │   ├── Idgham.jsx
+    │   ├── TilawahTahun2.jsx
+    │   └── Hadis.jsx
+    ├── Module2_Akidah/               ★ Standard
+    │   ├── AkidahModule.jsx
+    │   ├── Malaikat.jsx
+    │   ├── AsmaulHusnaTahun2.jsx
+    │   └── Syirik.jsx
+    ├── Module3_Ibadah/               ★ Standard
+    │   ├── IbadahModule.jsx
+    │   ├── SyaratSolat.jsx
+    │   ├── RukunSolat.jsx
+    │   └── AzanIqamah.jsx
+    ├── Module4_Sirah/                ★ Standard
+    │   ├── SirahModule.jsx
+    │   ├── TandaKerasulan.jsx
+    │   ├── WahyuPertama.jsx
+    │   └── DakwahAwal.jsx
+    ├── Module5_Adab/                 ★ Standard
+    │   ├── AdabModule.jsx
+    │   ├── AdabBerpakaian.jsx
+    │   ├── AdabKasihSayang.jsx
+    │   └── AdabBerkawan.jsx
+    └── Module6_Jawi/                 ★ Standard
+        ├── JawiModule.jsx
+        ├── SukuKataTertutup.jsx
+        └── RangkaiKataJawi.jsx
 ```
 
 ### Component Tree
 
 ```
 PendidikanIslamHomePage
-  └── YearSelector
-  └── ModuleGrid
-        └── ModuleCard * 6
-              └── onClick → ModuleHub (e.g. AkidahModule)
-                    └── Tahun1ModuleHubLayout
-                          └── TopicCard * N
-                                └── onClick → TopicPage (e.g. RukunIman)
-                                      └── Tahun1LessonLayout
-                                            ├── Belajar tab → ConceptCard * N
-                                            └── Kuiz tab → QuizScreen → ResultScreen
+  ├── SkyStars (animated background dots)
+  ├── BackButton
+  ├── .pi-brand → "ImanGenius" logo
+  ├── .pi-tagline
+  ├── .pi-home-h1 → "Pilih Tahun"
+  ├── .pi-home-hint → "KLIK PADA ROBOT..."
+  └── .pi-years → 3× .pi-year cards
+        ├── Tahun 1 (active, green theme)
+        │     └── onClick → TahunModulePage(year=1)
+        ├── Tahun 2 (active, blue theme)
+        │     └── onClick → TahunModulePage(year=2)
+        └── Tahun 3 (locked, grey theme)
+
+TahunModulePage
+  ├── pi-top-bar (sticky)
+  │     ├── BackButton
+  │     └── "Tahun X" label
+  ├── ModuleNavBar (sticky, 6 tabs)
+  │     ├── 1 Al-Quran & Tajwid
+  │     ├── 2 Akidah
+  │     ├── 3 Ibadah
+  │     ├── 4 Sirah
+  │     ├── 5 Adab & Akhlak
+  │     └── 6 Celik Jawi
+  └── pi-module-content
+        └── Module Hub (e.g. AkidahModule)
+              └── Tahun1ModuleHubLayout (shared, see §6.1)
+                    └── TopicCard × N
+                          └── onClick → TopicPage (e.g. RukunIman)
+                                └── Tahun1LessonLayout (shared, see §6.2)
+                                      ├── Belajar tab → ConceptCard × N
+                                      └── Kuiz tab → QuizScreen → ResultScreen
 ```
 
 ---
@@ -759,65 +952,76 @@ Each topic card visual follows this frame template:
 
 ## 11. Responsive Grid Spec
 
-| Breakpoint | Columns | Gap | Card min-height |
-|------------|---------|-----|-----------------|
-| Mobile `< 640px` | 1 | `0.85rem` | `80px` |
-| Tablet `768px` | 2 | `1rem` | `200px` |
-| Desktop `≥ 1024px` | 3 | `1.25rem` | `220px` |
+### Year selector grid (homepage `.pi-years`)
 
-### CSS Grid Pattern (mobile-first)
+| Breakpoint | Columns | Max-width | Gap |
+|------------|---------|-----------|-----|
+| Desktop `≥ 840px` | 3 | 100% | 30px |
+| `< 840px` | 1 | 380px | 30px |
+
 ```css
-.module-grid {
+.pi-years {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.85rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  width: 100%;
 }
-@media (min-width: 768px) {
-  .module-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
+@media (max-width: 840px) {
+  .pi-years { grid-template-columns: 1fr; max-width: 380px; }
 }
-@media (min-width: 1024px) {
-  .module-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.25rem;
-  }
+```
+
+### Module hub topic grid (`.pi-mhub-grid`)
+
+| Breakpoint | Columns | Gap | Card min-width |
+|------------|---------|-----|----------------|
+| All | auto-fit | 1rem | 230px |
+
+```css
+.pi-mhub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1rem;
 }
 ```
 
 ### Typography — fluid scale
 ```css
-.module-title  { font-size: clamp(1rem,   2.5vw, 1.25rem); }
-.module-desc   { font-size: clamp(0.75rem, 1.8vw, 0.9rem);  }
-.hero-title    { font-size: clamp(1.5rem,  4vw,   2.25rem); }
+.pi-home-h1    { font-size: clamp(1.5rem, 4vw, 2.25rem); }
+.pi-tagline    { font-size: clamp(0.85rem, 2vw, 1.05rem); }
+.pi-mhub-card-title { font-size: clamp(1rem, 2.5vw, 1.25rem); }
+.pi-mhub-card-desc  { font-size: clamp(0.75rem, 1.8vw, 0.9rem); }
 ```
 
 ---
 
 ## 12. Architecture Notes
 
+- **Homepage flow**: `PendidikanIslamHomePage` → click year card → `TahunModulePage` (top bar + `ModuleNavBar`) → module hub → topic page
 - **Audio**: Use existing `SpeechManager` + `soundManager` for TTS playback (ms-MY locale, rate 0.8)
 - **Quiz format**: Short 4-choice MCQ at end of each topic (consistent across all subjects)
-- **Routing**: Each module routes via `currentAgeGame`-style game ID pattern in App.jsx
-- **Grid**: Mobile-first CSS grid — 1 col → 2 col (768px) → 3 col (1024px)
+- **Routing**: Flat game IDs in App.jsx (`pendidikan-islam-v1` case) — `X-moduleName` pattern per year
+- **Year prefix**: Year 1 uses bare IDs (`al-quran`), Years 2+ use prefixed IDs (`2-al-quran`) in ModuleNavBar
 - **Typography**: `clamp()` fluid scale for all text, `%`/`rem`/`vw` units only
 - **Images/SVG**: `max-width: 100%`, explicit `width`/`height` attrs, `height: auto` override
 - **TTS cleanup**: Every topic component includes `useEffect(() => () => SpeechManager.stopSpeaking(), [])`
 - **Ibadah visuals**: SVG illustrated step cards — no external video dependency
 - **Celik Jawi**: Reuses existing Jawi game components (BacaSukuKataJawi, etc.)
 
-### When Creating a New Module
+### When Creating a New Module (Tahun 3)
 
-1. Create module folder: `Module{X}_{Name}/`
-2. Create `{Name}Module.jsx` using the **Module Hub Template**
-3. Create one `.jsx` per topic using the **Topic Component Template**
+1. Create module folder: `Tahun3/Module{X}_{Name}/`
+2. Create `{Name}Module.jsx` — use `Tahun1ModuleHubLayout` for consistency (see §7)
+3. Create one `.jsx` per topic using `Tahun1LessonLayout` (see §8)
 4. Add lazy imports in `src/App.jsx`
 5. Add routing in the `case 'pendidikan-islam-v1':` block
+6. Wire module ID into `ModuleNavBar`'s `MODULES` array (prefix with `3-`)
 
 ---
 
 ## 13. File Checklist
+
+### Tahun 1
 
 | File | Module | Hub Standard? | Shared Quiz/Result? | TTS Cleanup? | SVG Visuals? |
 |---|---|---|---|---|---|
@@ -843,5 +1047,34 @@ Each topic card visual follows this frame template:
 | `JawiWordsPage.jsx` | 6.4 | — | — | — | — |
 | `JawiKVLearningPage.jsx` | 6.1 | — | — | ✅ | — |
 | `JawiKVKLearningPage.jsx` | 6.2 | — | — | ✅ | — |
+
+### Tahun 2
+
+| File | Module | Hub Standard? | Shared Quiz/Result? | TTS Cleanup? | SVG Visuals? |
+|---|---|---|---|---|---|
+| `AlQuranTajwidHadisModule.jsx` | 1 Al-Quran | Custom hub | — | — | ✅ 4 custom |
+| `SukunSyaddah.jsx` | 1.1 | — | ✅ | ✅ | — |
+| `Idgham.jsx` | 1.2 | — | ✅ | ✅ | — |
+| `TilawahTahun2.jsx` | 1.3 | — | ✅ | ✅ | — |
+| `Hadis.jsx` | 1.4 | — | ✅ | ✅ | — |
+| `AkidahModule.jsx` | 2 Akidah | ✅ | — | — | ✅ 3 custom |
+| `Malaikat.jsx` | 2.1 | — | ✅ | ✅ | — |
+| `AsmaulHusnaTahun2.jsx` | 2.2 | — | ✅ | ✅ | — |
+| `Syirik.jsx` | 2.3 | — | ✅ | ✅ | — |
+| `IbadahModule.jsx` | 3 Ibadah | ✅ | — | — | ✅ 3 custom |
+| `SyaratSolat.jsx` | 3.1 | — | ✅ | ✅ | — |
+| `RukunSolat.jsx` | 3.2 | — | ✅ | ✅ | — |
+| `AzanIqamah.jsx` | 3.3 | — | ✅ | ✅ | — |
+| `SirahModule.jsx` | 4 Sirah | ✅ | — | — | ✅ 3 custom |
+| `TandaKerasulan.jsx` | 4.1 | — | ✅ | ✅ | — |
+| `WahyuPertama.jsx` | 4.2 | — | ✅ | ✅ | — |
+| `DakwahAwal.jsx` | 4.3 | — | ✅ | ✅ | — |
+| `AdabModule.jsx` | 5 Adab | ✅ | — | — | ✅ 3 custom |
+| `AdabBerpakaian.jsx` | 5.1 | — | ✅ | ✅ | — |
+| `AdabKasihSayang.jsx` | 5.2 | — | ✅ | ✅ | — |
+| `AdabBerkawan.jsx` | 5.3 | — | ✅ | ✅ | — |
+| `JawiModule.jsx` | 6 Jawi | ✅ | — | — | ✅ 2 custom |
+| `SukuKataTertutup.jsx` | 6.1 | — | Local ResultScreen only | — | — |
+| `RangkaiKataJawi.jsx` | 6.2 | — | Local ResultScreen only | — | — |
 
 **Legend:** ✅ = conforms to standard | — = not applicable (hub file)

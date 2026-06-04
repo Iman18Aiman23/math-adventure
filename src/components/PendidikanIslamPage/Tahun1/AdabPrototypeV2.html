@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8"/>
+<title>Adab Makan &amp; Minum · Pendidikan Islam Tahun 1</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --rose:#E8568A;
+    --rose-deep:#A82B5E;
+    --rose-soft:#FCE9F1;
+    --gold:#E0A012;
+    --green:#2E9C57;
+    --ink:#46122E;
+    --muted:#8A5670;
+    --card-radius:24px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:'Fredoka',system-ui,sans-serif;color:var(--ink);
+    background:radial-gradient(ellipse at top,#FDEFF5 0%,#F7D6E3 60%,#F2C4D7 100%);
+    min-height:100vh;-webkit-font-smoothing:antialiased}
+
+  /* ---------- top bar ---------- */
+  .topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:14px;
+    padding:14px clamp(16px,4vw,40px);background:rgba(255,255,255,.85);backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(232,86,138,.18);box-shadow:0 4px 18px rgba(168,43,94,.07)}
+  .back{display:inline-flex;align-items:center;gap:8px;font-family:'Baloo 2',sans-serif;font-weight:700;
+    font-size:15px;color:var(--rose-deep);text-decoration:none;background:#fff;border:2px solid rgba(232,86,138,.25);
+    padding:8px 16px;border-radius:999px;transition:transform .2s ease,box-shadow .2s ease,background .2s ease}
+  .back:hover{transform:translateX(-3px);box-shadow:0 6px 16px -6px rgba(168,43,94,.4);background:var(--rose-soft)}
+  .crumb{font-family:'Baloo 2',sans-serif;font-weight:700;font-size:13px;letter-spacing:.04em;color:var(--muted)}
+  .crumb b{color:var(--rose-deep)}
+
+  /* ---------- hero ---------- */
+  .hero{max-width:760px;margin:0 auto;padding:clamp(34px,6vw,64px) 24px 10px;text-align:center}
+  .badge-topic{display:inline-flex;align-items:center;gap:8px;font-family:'Baloo 2',sans-serif;font-weight:700;
+    font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#fff;
+    background:linear-gradient(180deg,#F0709F,#E8568A);padding:7px 18px;border-radius:999px;
+    box-shadow:0 4px 12px -4px rgba(168,43,94,.5)}
+  .hero .emoji{font-size:clamp(54px,11vw,80px);line-height:1;margin:18px 0 6px;display:block;
+    filter:drop-shadow(0 8px 14px rgba(168,43,94,.28));animation:bobEmoji 3.4s ease-in-out infinite}
+  @keyframes bobEmoji{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-9px) rotate(2deg)}}
+  h1{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:clamp(30px,6.5vw,48px);line-height:1.08;
+    color:var(--rose-deep);margin:0 0 14px;text-shadow:0 2px 0 #fff}
+  .lead{font-size:clamp(15px,2.4vw,18px);font-weight:500;line-height:1.6;color:var(--muted);
+    max-width:600px;margin:0 auto;text-wrap:pretty}
+
+  /* ---------- action buttons ---------- */
+  .actions{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin:30px auto 8px;padding:0 24px}
+  .btn{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:clamp(16px,2.6vw,19px);cursor:pointer;
+    border:none;border-radius:999px;padding:15px 34px;display:inline-flex;align-items:center;gap:10px;
+    min-height:54px;transition:transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .18s ease}
+  .btn .ico{font-size:1.25em;line-height:1}
+  .btn-primary{color:#fff;background:linear-gradient(180deg,#F0709F 0%,#E8568A 55%,#D03A72 100%);
+    box-shadow:0 6px 0 #A82B5E,0 14px 26px -10px rgba(168,43,94,.6)}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 9px 0 #A82B5E,0 20px 32px -10px rgba(168,43,94,.6)}
+  .btn-primary:active{transform:translateY(3px);box-shadow:0 3px 0 #A82B5E,0 8px 16px -8px rgba(168,43,94,.6)}
+  .btn-secondary{color:var(--rose-deep);background:#fff;
+    box-shadow:0 6px 0 #F3C6D8,0 14px 26px -12px rgba(168,43,94,.4)}
+  .btn-secondary:hover{transform:translateY(-3px);box-shadow:0 9px 0 #F3C6D8,0 20px 30px -12px rgba(168,43,94,.4)}
+  .btn-secondary:active{transform:translateY(3px);box-shadow:0 3px 0 #F3C6D8}
+
+  /* ---------- section heading ---------- */
+  .progress{display:flex;align-items:center;justify-content:center;gap:10px;margin:46px auto 6px;
+    font-family:'Baloo 2',sans-serif;font-weight:700;font-size:14px;color:var(--rose-deep)}
+  .progress .dot{width:9px;height:9px;border-radius:50%;background:var(--rose);box-shadow:0 0 0 4px rgba(232,86,138,.18)}
+  .sec-title{text-align:center;font-family:'Baloo 2',sans-serif;font-weight:800;
+    font-size:clamp(22px,4vw,30px);color:var(--rose-deep);margin:4px 0 4px}
+  .sec-sub{text-align:center;font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;
+    color:var(--muted);margin:0 0 36px}
+
+  /* ---------- topic grid ---------- */
+  .grid{max-width:1080px;margin:0 auto;padding:0 clamp(16px,4vw,28px) 30px;
+    display:grid;grid-template-columns:1fr;gap:24px}
+  @media(min-width:600px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(min-width:980px){.grid{grid-template-columns:repeat(3,1fr)}}
+
+  .card{position:relative;background:linear-gradient(180deg,#fff,#FEF4F8);border-radius:var(--card-radius);
+    padding:26px 22px 28px;border:1px solid rgba(232,86,138,.16);
+    box-shadow:0 14px 34px -16px rgba(168,43,94,.28),0 2px 6px rgba(168,43,94,.05);
+    display:flex;flex-direction:column;align-items:center;text-align:center;gap:13px;
+    transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s ease;cursor:default}
+  .card:hover,.card:focus-within{transform:translateY(-8px);box-shadow:0 26px 50px -18px rgba(168,43,94,.4)}
+  .card:active{transform:translateY(-3px) scale(.99)}
+  .num{position:absolute;top:14px;left:16px;font-family:'Baloo 2',sans-serif;font-weight:800;font-size:13px;
+    color:#fff;background:linear-gradient(180deg,#F0709F,#E8568A);width:30px;height:30px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px -2px rgba(168,43,94,.5)}
+  .stage{width:120px;height:120px;border-radius:24px;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(ellipse at 50% 32%,#FFE3EF 0%,#F58FB6 55%,#D94B86 100%);
+    box-shadow:inset 0 -7px 20px rgba(168,43,94,.2),inset 0 2px 0 rgba(255,255,255,.5);margin-top:6px}
+  .stage svg{width:78%;height:78%;overflow:visible}
+  .floatA{animation:floatA 3.6s ease-in-out infinite;transform-origin:center}
+  @keyframes floatA{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  .pulse{animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
+  .card .ctitle{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:19px;color:var(--rose-deep);margin:2px 0 0}
+  .card .csub{font-family:'Baloo 2',sans-serif;font-weight:700;font-size:11px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--rose);margin:0}
+  .card .cdesc{font-size:13.5px;font-weight:500;line-height:1.55;color:var(--muted);margin:2px 0 0;text-wrap:pretty}
+
+  /* ---------- quiz ---------- */
+  .quiz{max-width:680px;margin:20px auto 0;padding:0 clamp(16px,4vw,28px) 60px}
+  .quiz-card{background:linear-gradient(180deg,#fff,#FEF4F8);border-radius:28px;padding:clamp(24px,5vw,40px);
+    border:1px solid rgba(232,86,138,.16);box-shadow:0 18px 44px -18px rgba(168,43,94,.3)}
+  .quiz h3{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:clamp(18px,3vw,22px);color:var(--rose-deep);
+    margin:0 0 4px}
+  .qprog{font-family:'Baloo 2',sans-serif;font-weight:700;font-size:13px;color:var(--muted);margin:0 0 20px}
+  .qtext{font-size:clamp(16px,2.6vw,19px);font-weight:600;line-height:1.5;margin:0 0 20px;color:var(--ink)}
+  .opts{display:flex;flex-direction:column;gap:12px}
+  .opt{font-family:'Fredoka',sans-serif;font-weight:600;font-size:15px;text-align:left;cursor:pointer;
+    background:#fff;border:2px solid rgba(232,86,138,.25);border-radius:16px;padding:15px 18px;min-height:52px;
+    color:var(--ink);display:flex;align-items:center;gap:12px;transition:all .18s ease}
+  .opt .mk{width:26px;height:26px;border-radius:50%;background:var(--rose-soft);color:var(--rose-deep);
+    font-family:'Baloo 2',sans-serif;font-weight:800;font-size:14px;display:flex;align-items:center;
+    justify-content:center;flex:none}
+  .opt:hover:not(:disabled){border-color:var(--rose);transform:translateX(3px);background:var(--rose-soft)}
+  .opt.correct{border-color:var(--green);background:#E6F7EC;color:#1B6B38}
+  .opt.correct .mk{background:var(--green);color:#fff}
+  .opt.wrong{border-color:#E05A5A;background:#FCE9E9;color:#A32626}
+  .opt.wrong .mk{background:#E05A5A;color:#fff}
+  .opt:disabled{cursor:default}
+  .feedback{margin-top:18px;font-family:'Baloo 2',sans-serif;font-weight:700;font-size:15px;min-height:24px;text-align:center}
+  .qnav{display:flex;justify-content:center;margin-top:22px}
+  .qbtn{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:16px;cursor:pointer;border:none;
+    border-radius:999px;padding:13px 30px;color:#fff;background:linear-gradient(180deg,#F0709F,#D03A72);
+    box-shadow:0 5px 0 #A82B5E;transition:transform .15s ease}
+  .qbtn:hover{transform:translateY(-2px)}.qbtn:active{transform:translateY(2px);box-shadow:0 2px 0 #A82B5E}
+  .qbtn[hidden]{display:none}
+  .result{text-align:center}
+  .result .score{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:clamp(34px,8vw,52px);color:var(--rose-deep);margin:6px 0}
+  .result .star{font-size:40px;letter-spacing:4px;margin:8px 0}
+
+  .foot{text-align:center;padding:10px 20px 50px;color:var(--muted);font-size:12.5px;font-weight:500}
+
+  [hidden]{display:none!important}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<!-- ░░░ TOP BAR ░░░ -->
+<div class="topbar">
+  <a class="back" href="ImanCara - Semua Modul.html">← Semua Modul</a>
+  <span class="crumb">Modul 5 · Adab › <b>Adab Makan &amp; Minum</b></span>
+</div>
+
+<!-- ░░░ HERO ░░░ -->
+<header class="hero">
+  <span class="badge-topic">Pendidikan Islam · Tahun 1</span>
+  <span class="emoji" aria-hidden="true">🍽️</span>
+  <h1>Adab Makan &amp; Minum</h1>
+  <p class="lead">Mari belajar adab makan dan minum yang diajar dalam Islam supaya kita sentiasa sihat, bersih dan mendapat keberkatan Allah.</p>
+</header>
+
+<!-- ░░░ ACTIONS ░░░ -->
+<div class="actions">
+  <button class="btn btn-primary" id="goLearn"><span class="ico">📖</span> Belajar</button>
+  <button class="btn btn-secondary" id="goQuiz"><span class="ico">🎯</span> Kuiz</button>
+</div>
+
+<!-- ░░░ LEARNING TOPICS ░░░ -->
+<section id="learn">
+  <div class="progress"><span class="dot"></span> 6 Topik Pembelajaran</div>
+  <h2 class="sec-title">Topik Pembelajaran</h2>
+  <p class="sec-sub">Ketuk setiap kad untuk belajar</p>
+
+  <div class="grid">
+
+    <!-- 1 · Basuh Tangan -->
+    <article class="card" tabindex="0">
+      <span class="num">1</span>
+      <div class="stage">
+        <svg viewBox="0 0 100 100" fill="none">
+          <ellipse cx="50" cy="90" rx="24" ry="4" fill="rgba(168,43,94,.16)"/>
+          <g class="floatA">
+            <!-- tap -->
+            <path d="M30 30 H58 V38 H46 V46" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="26" y="26" width="10" height="9" rx="2.5" fill="#fff"/>
+            <!-- hands (cupped) -->
+            <path d="M34 64 Q34 54 42 54 H58 Q66 54 66 64 Q66 74 50 76 Q34 74 34 64 Z" fill="#FFE3EF" stroke="#fff" stroke-width="2"/>
+            <path d="M50 56 V70" stroke="#F58FB6" stroke-width="1.6" stroke-linecap="round"/>
+          </g>
+          <!-- water drops -->
+          <g fill="#fff" class="pulse">
+            <path d="M46 48 q3 4 0 7 q-3 -3 0 -7z"/>
+            <path d="M53 50 q2.4 3.4 0 6 q-2.4 -2.6 0 -6z" style="animation-delay:.5s"/>
+          </g>
+          <circle cx="40" cy="78" r="2.4" fill="#fff" class="pulse"/>
+          <circle cx="60" cy="80" r="2" fill="#fff" class="pulse" style="animation-delay:.7s"/>
+        </svg>
+      </div>
+      <p class="csub">Sebelum &amp; Selepas</p>
+      <h3 class="ctitle">Basuh Tangan</h3>
+      <p class="cdesc">Basuh tangan dengan air bersih sebelum dan selepas makan. Ini menjaga kebersihan dan kesihatan kita.</p>
+    </article>
+
+    <!-- 2 · Baca Doa -->
+    <article class="card" tabindex="0">
+      <span class="num">2</span>
+      <div class="stage">
+        <svg viewBox="0 0 100 100" fill="none">
+          <ellipse cx="50" cy="90" rx="24" ry="4" fill="rgba(168,43,94,.16)"/>
+          <!-- glow -->
+          <circle cx="50" cy="40" r="20" fill="#fff" opacity=".35" class="pulse"/>
+          <g class="floatA">
+            <!-- sparkle/dua -->
+            <path d="M50 24 l2.4 6.5 6.5 2.4 -6.5 2.4 -2.4 6.5 -2.4 -6.5 -6.5 -2.4 6.5 -2.4z" fill="#FFF1A8" stroke="#fff" stroke-width="1"/>
+            <!-- cupped hands -->
+            <path d="M28 60 Q34 52 42 56 Q50 50 58 56 Q66 52 72 60 Q66 78 50 80 Q34 78 28 60 Z"
+                  fill="#FFE3EF" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M50 56 V78" stroke="#F58FB6" stroke-width="1.6" stroke-linecap="round"/>
+          </g>
+        </svg>
+      </div>
+      <p class="csub">Sebelum &amp; Selepas</p>
+      <h3 class="ctitle">Baca Doa</h3>
+      <p class="cdesc">Baca “Bismillah” sebelum makan dan “Alhamdulillah” selepas makan. Makan yang berkat dimulakan dengan doa.</p>
+    </article>
+
+    <!-- 3 · Tangan Kanan -->
+    <article class="card" tabindex="0">
+      <span class="num">3</span>
+      <div class="stage">
+        <svg viewBox="0 0 100 100" fill="none">
+          <ellipse cx="50" cy="90" rx="24" ry="4" fill="rgba(168,43,94,.16)"/>
+          <g class="floatA">
+            <!-- right hand: palm + fingers -->
+            <path d="M38 56 Q38 44 50 44 Q62 44 62 56 L62 70 Q62 80 50 80 Q38 80 38 70 Z" fill="#FFE3EF" stroke="#fff" stroke-width="2"/>
+            <g stroke="#fff" stroke-width="5" stroke-linecap="round">
+              <line x1="42" y1="48" x2="42" y2="38"/>
+              <line x1="50" y1="46" x2="50" y2="34"/>
+              <line x1="58" y1="48" x2="58" y2="38"/>
+            </g>
+            <!-- thumb -->
+            <path d="M38 60 Q30 58 30 66" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round"/>
+            <!-- rice ball / food -->
+            <circle cx="50" cy="66" r="6" fill="#FFF1A8" stroke="#fff" stroke-width="1.5"/>
+          </g>
+          <!-- check mark badge -->
+          <circle cx="68" cy="34" r="9" fill="#2E9C57"/>
+          <path d="M64 34 l3 3 5.5 -6" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <p class="csub">Sunnah Rasulullah ﷺ</p>
+      <h3 class="ctitle">Makan Dengan Tangan Kanan</h3>
+      <p class="cdesc">Gunakan tangan kanan ketika makan dan minum kerana ia adab yang diajar oleh Rasulullah ﷺ.</p>
+    </article>
+
+    <!-- 4 · Duduk Sopan -->
+    <article class="card" tabindex="0">
+      <span class="num">4</span>
+      <div class="stage">
+        <svg viewBox="0 0 100 100" fill="none">
+          <ellipse cx="50" cy="90" rx="24" ry="4" fill="rgba(168,43,94,.16)"/>
+          <g class="floatA">
+            <!-- head -->
+            <circle cx="50" cy="34" r="9" fill="#fff"/>
+            <!-- body sitting -->
+            <path d="M40 48 Q50 42 60 48 L58 66 L42 66 Z" fill="#FFE3EF" stroke="#fff" stroke-width="2"/>
+            <!-- crossed legs -->
+            <path d="M34 70 Q50 60 66 70 Q60 78 50 76 Q40 78 34 70 Z" fill="#fff"/>
+            <!-- hands on lap -->
+            <circle cx="44" cy="64" r="3" fill="#F58FB6"/>
+            <circle cx="56" cy="64" r="3" fill="#F58FB6"/>
+          </g>
+        </svg>
+      </div>
+      <p class="csub">Adab Ketika Makan</p>
+      <h3 class="ctitle">Duduk Dengan Sopan</h3>
+      <p class="cdesc">Duduk dengan tertib dan sopan ketika makan supaya menunjukkan akhlak yang baik.</p>
+    </article>
+
+    <!-- 5 · Tidak Membazir -->
+    <article class="card" tabindex="0">
+      <span class="num">5</span>
+      <div class="stage">
+        <svg viewBox="0 0 100 100" fill="none">
+          <ellipse cx="50" cy="90" rx="24" ry="4" fill="rgba(168,43,94,.16)"/>
+          <g class="floatA">
+            <!-- plate -->
+            <ellipse cx="50" cy="58" rx="28" ry="10" fill="#fff"/>
+            <ellipse cx="50" cy="56" rx="20" ry="7" fill="#FFE3EF"/>
+            <!-- clean / sparkle -->
+            <path d="M50 50 l1.6 4 4 1.6 -4 1.6 -1.6 4 -1.6 -4 -4 -1.6 4 -1.6z" fill="#FFF1A8" class="pulse"/>
+          </g>
+          <!-- check badge -->
+          <circle cx="68" cy="38" r="10" fill="#2E9C57"/>
+          <path d="M63 38 l3.4 3.4 6 -7" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <p class="csub">Ambil Sekadar Perlu</p>
+      <h3 class="ctitle">Tidak Membazir</h3>
+      <p class="cdesc">Ambil makanan mengikut keperluan dan habiskan makanan yang diambil.</p>
+    </article>
+
+    <!-- 6 · Berkongsi Rezeki -->
+    <article class="card" tabindex="0">
+      <span class="num">6</span>
+      <div class="stage">
+        <svg viewBox="0 0 100 100" fill="none">
+          <ellipse cx="50" cy="90" rx="24" ry="4" fill="rgba(168,43,94,.16)"/>
+          <g class="floatA">
+            <!-- shared bowl -->
+            <path d="M30 54 H70 Q66 72 50 72 Q34 72 30 54 Z" fill="#fff" stroke="#F58FB6" stroke-width="1.5"/>
+            <ellipse cx="50" cy="54" rx="20" ry="5" fill="#FFE3EF"/>
+            <!-- two hands offering from sides -->
+            <path d="M22 60 Q26 54 32 56 L34 62" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M78 60 Q74 54 68 56 L66 62" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- heart -->
+            <path d="M50 30 C47 26 41 27 41 32 C41 37 50 42 50 42 C50 42 59 37 59 32 C59 27 53 26 50 30 Z" fill="#FFF1A8" stroke="#fff" stroke-width="1.2"/>
+          </g>
+        </svg>
+      </div>
+      <p class="csub">Sikap Mulia</p>
+      <h3 class="ctitle">Berkongsi Rezeki</h3>
+      <p class="cdesc">Berkongsi makanan dengan keluarga dan rakan dapat mengeratkan hubungan serta mendapat pahala.</p>
+    </article>
+
+  </div>
+</section>
+
+<!-- ░░░ QUIZ ░░░ -->
+<section class="quiz" id="quiz">
+  <div class="quiz-card">
+    <div id="quizBody">
+      <h3>🎯 Kuiz Adab Makan &amp; Minum</h3>
+      <p class="qprog" id="qprog">Soalan 1 / 4</p>
+      <p class="qtext" id="qtext"></p>
+      <div class="opts" id="opts"></div>
+      <p class="feedback" id="feedback"></p>
+      <div class="qnav"><button class="qbtn" id="next" hidden>Seterusnya →</button></div>
+    </div>
+  </div>
+</section>
+
+<p class="foot">ImanGenius · Pendidikan Islam Tahun 1</p>
+
+<script>
+  // smooth scroll for action buttons
+  document.getElementById('goLearn').addEventListener('click',function(){
+    document.getElementById('learn').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+  document.getElementById('goQuiz').addEventListener('click',function(){
+    document.getElementById('quiz').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+
+  // ---------- quiz ----------
+  var QUIZ=[
+    {q:'Apakah yang perlu dibaca sebelum makan?',
+     opts:['Bismillah','Alhamdulillah','Subhanallah'],a:0},
+    {q:'Tangan manakah yang digunakan untuk makan mengikut sunnah?',
+     opts:['Tangan kiri','Tangan kanan','Kedua-dua tangan'],a:1},
+    {q:'Apakah yang patut kita buat sebelum dan selepas makan?',
+     opts:['Tidur','Basuh tangan','Bermain'],a:1},
+    {q:'Apa sikap yang betul terhadap makanan?',
+     opts:['Membazir makanan','Ambil banyak-banyak','Tidak membazir'],a:2}
+  ];
+  var idx=0, score=0, answered=false;
+  var qprog=document.getElementById('qprog'), qtext=document.getElementById('qtext'),
+      opts=document.getElementById('opts'), feedback=document.getElementById('feedback'),
+      next=document.getElementById('next');
+  var LETTERS=['A','B','C','D'];
+
+  function render(){
+    answered=false; feedback.textContent=''; next.hidden=true;
+    var item=QUIZ[idx];
+    qprog.textContent='Soalan '+(idx+1)+' / '+QUIZ.length;
+    qtext.textContent=item.q;
+    opts.innerHTML='';
+    item.opts.forEach(function(text,i){
+      var b=document.createElement('button');
+      b.className='opt';
+      b.innerHTML='<span class="mk">'+LETTERS[i]+'</span>'+text;
+      b.addEventListener('click',function(){choose(i,b);});
+      opts.appendChild(b);
+    });
+  }
+  function choose(i,btn){
+    if(answered) return; answered=true;
+    var item=QUIZ[idx];
+    var all=opts.querySelectorAll('.opt');
+    all.forEach(function(b){b.disabled=true;});
+    if(i===item.a){
+      btn.classList.add('correct'); score++;
+      feedback.style.color='#2E9C57'; feedback.textContent='✅ Betul! Syabas!';
+    }else{
+      btn.classList.add('wrong');
+      all[item.a].classList.add('correct');
+      feedback.style.color='#A32626'; feedback.textContent='❌ Cuba lagi — jawapan betul ditanda hijau.';
+    }
+    next.hidden=false;
+    next.textContent = (idx===QUIZ.length-1) ? 'Lihat Keputusan →' : 'Seterusnya →';
+  }
+  next.addEventListener('click',function(){
+    if(idx<QUIZ.length-1){ idx++; render(); }
+    else{ showResult(); }
+    document.getElementById('quiz').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+  function showResult(){
+    var stars = score>=4?'⭐⭐⭐':score>=2?'⭐⭐':'⭐';
+    var msg = score>=4?'Hebat! Kamu sudah faham adab makan & minum.':
+              score>=2?'Bagus! Teruskan belajar ya.':'Jangan risau — cuba sekali lagi!';
+    document.getElementById('quizBody').innerHTML=
+      '<div class="result">'+
+        '<h3>🎉 Keputusan Kuiz</h3>'+
+        '<div class="star">'+stars+'</div>'+
+        '<div class="score">'+score+' / '+QUIZ.length+'</div>'+
+        '<p class="qtext" style="margin-bottom:22px">'+msg+'</p>'+
+        '<div class="qnav"><button class="qbtn" id="again">Cuba Lagi 🔄</button></div>'+
+      '</div>';
+    document.getElementById('again').addEventListener('click',function(){
+      idx=0; score=0; 
+      document.getElementById('quizBody').innerHTML=
+        '<h3>🎯 Kuiz Adab Makan &amp; Minum</h3>'+
+        '<p class="qprog" id="qprog"></p><p class="qtext" id="qtext"></p>'+
+        '<div class="opts" id="opts"></div><p class="feedback" id="feedback"></p>'+
+        '<div class="qnav"><button class="qbtn" id="next" hidden>Seterusnya →</button></div>';
+      // rebind
+      qprog=document.getElementById('qprog'); qtext=document.getElementById('qtext');
+      opts=document.getElementById('opts'); feedback=document.getElementById('feedback');
+      next=document.getElementById('next');
+      next.addEventListener('click',function(){ if(idx<QUIZ.length-1){idx++;render();}else{showResult();}
+        document.getElementById('quiz').scrollIntoView({behavior:'smooth',block:'start'});});
+      render();
+    });
+  }
+  render();
+</script>
+</body>
+</html>

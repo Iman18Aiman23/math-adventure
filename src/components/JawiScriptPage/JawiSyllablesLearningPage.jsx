@@ -1,11 +1,8 @@
 import React from 'react';
 import { LOCALIZATION } from '../../utils/localization';
 import { JAWI_ALPHABET } from '../../utils/jawiData';
-import { useGameStateContext } from '../../App';
 import BackButton from '../BackButton';
-import JawiSyllablesGame from './JawiSyllablesGame';
 import LoadingSpinner from '../LoadingSpinner';
-import JawiReadingPage3 from './JawiReadingPage3';
 import JawiReadingPage4 from './JawiReadingPage4';
 
 // Categorize syllables by level
@@ -28,39 +25,17 @@ const SYLLABLE_LEVELS = {
   }
 };
 
-export default function JawiSyllablesLearningPage({ onBack, language }) {
+export default function JawiSyllablesLearningPage({ onBack, onHome, language }) {
   const t = LOCALIZATION[language].jawi;
-  const gameState = useGameStateContext();
-  const [gameStarted, setGameStarted] = React.useState(false);
   const [selectedLevel, setSelectedLevel] = React.useState(null);
   // Keep the level menu visible while a lazy level chunk (KV/KVK) loads.
   const [isPending, startTransition] = React.useTransition();
 
   // Route each level to its dedicated learning page
-  if (selectedLevel === 3) {
-    return (
-      <JawiReadingPage3
-        onBack={() => setSelectedLevel(null)}
-        language={language}
-      />
-    );
-  }
-
   if (selectedLevel === 4) {
     return (
       <JawiReadingPage4
         onBack={() => setSelectedLevel(null)}
-        language={language}
-      />
-    );
-  }
-
-  // If game started (free play), show JawiSyllablesGame
-  if (gameStarted) {
-    return (
-      <JawiSyllablesGame
-        onBack={() => setGameStarted(false)}
-        onHome={onHome}
         language={language}
       />
     );
@@ -92,13 +67,6 @@ export default function JawiSyllablesLearningPage({ onBack, language }) {
         {/* Level Cards */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
           {[
-            {
-              num: 3,
-              title: language === 'bm' ? 'Tahap 3 (Ayat Pendek)' : 'Level 3 (Short Phrases)',
-              desc: language === 'bm' ? 'Gabungan perkataan (Contoh: Buku Baru)' : 'Word combinations (Example: Buku Baru)',
-              color: '#CE82FF',
-              bg: '#EDD9FF'
-            },
             {
               num: 4,
               title: language === 'bm' ? 'Tahap 4 (Ayat Panjang)' : 'Level 4 (Long Sentences)',
@@ -170,58 +138,6 @@ export default function JawiSyllablesLearningPage({ onBack, language }) {
             </button>
           ))}
         </div>
-
-        {/* Game Button */}
-        <button
-          onClick={() => setGameStarted(true)}
-          style={{
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            padding: '1.25rem',
-            background: '#fff',
-            border: '3px solid #FFF0CC',
-            borderLeft: '5px solid #FFC800',
-            borderRadius: '16px',
-            cursor: 'pointer',
-            transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
-            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
-            gap: '1.2rem',
-            textAlign: 'left',
-            minHeight: '80px'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-3px)';
-            e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.15)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'none';
-            e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.1)';
-          }}
-          onMouseDown={(e) => {
-            e.currentTarget.style.transform = 'translateY(2px)';
-            e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
-          }}
-          onMouseUp={(e) => {
-            e.currentTarget.style.transform = 'translateY(-3px)';
-            e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.15)';
-          }}
-        >
-          <div style={{ background: '#FFC800', color: '#fff', borderRadius: '14px', width: '56px', height: '56px', minWidth: '56px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.8rem', fontWeight: 900 }}>
-            🎮
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#3C3C3C', marginBottom: '6px' }}>
-              {language === 'bm' ? 'Permainan Suku Kata Jawi' : 'Jawi Syllables Game'}
-            </div>
-            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#AFAFAF', lineHeight: 1.3 }}>
-              {language === 'bm'
-                ? 'Tantang diri anda dengan permainan interaktif suku kata Jawi!'
-                : 'Challenge yourself with interactive Jawi syllable games!'}
-            </div>
-          </div>
-          <div style={{ fontSize: '1.5rem', color: '#AFAFAF' }}>›</div>
-        </button>
       </div>
     </div>
   );

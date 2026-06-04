@@ -121,7 +121,7 @@ export default function WahyuPertama({ onBack, language = 'bm' }) {
     >
       {tab === 'belajar' ? (
         <div style={{ flex: 1, overflowY: 'auto', padding: '0 1.25rem calc(80px + var(--safe-bottom, 0px))' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.8rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.8rem' }}>
             {KONSEP.map((k, i) => <ConceptCard key={i} k={k} />)}
           </div>
           <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>

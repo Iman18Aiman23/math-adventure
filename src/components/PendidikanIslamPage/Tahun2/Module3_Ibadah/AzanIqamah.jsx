@@ -203,7 +203,7 @@ export default function AzanIqamah({ onBack, language = 'bm' }) {
             fontSize: 'clamp(0.9rem, 2.2vw, 1rem)', color: '#2563EB',
             margin: '0 0 10px',
           }}>Lafaz Azan (7)</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.7rem', marginBottom: '1.2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.7rem', marginBottom: '1.2rem' }}>
             {AZAN.map(a => <PhraseCard key={a.n} item={a} type="azan" />)}
           </div>
 

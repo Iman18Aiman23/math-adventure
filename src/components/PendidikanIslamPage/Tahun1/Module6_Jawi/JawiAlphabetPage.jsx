@@ -83,6 +83,7 @@ export default function JawiAlphabetPage({ onBack, language }) {
           grid-template-columns: repeat(3, 1fr);
           gap: 12px;
         }
+        @media (max-width: 400px) { .jawi-kv-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
         @media (min-width: 500px) { .jawi-kv-grid { grid-template-columns: repeat(4, 1fr); gap: 14px; } }
         @media (min-width: 760px) { .jawi-kv-grid { grid-template-columns: repeat(5, 1fr); gap: 16px; } }
         .jawi-kv-letter-tile {
@@ -90,7 +91,6 @@ export default function JawiAlphabetPage({ onBack, language }) {
           aspect-ratio: 1 / 1.05; width: 100%;
           container-type: inline-size;
           border-radius: 24px; cursor: pointer; font-family: inherit;
-          overflow: hidden;
           transition: transform .25s cubic-bezier(.34,1.56,.64,1);
           -webkit-tap-highlight-color: transparent;
           animation: jawiKvTileIn .5s cubic-bezier(.34,1.56,.64,1) forwards;

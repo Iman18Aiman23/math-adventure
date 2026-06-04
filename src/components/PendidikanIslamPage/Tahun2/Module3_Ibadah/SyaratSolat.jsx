@@ -155,7 +155,7 @@ export default function SyaratSolat({ onBack, language = 'bm' }) {
             fontSize: 'clamp(0.9rem, 2.2vw, 1rem)', color: '#2563EB',
             margin: '0 0 10px',
           }}>Syarat Wajib Solat</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.7rem', marginBottom: '1.2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.7rem', marginBottom: '1.2rem' }}>
             {SYARAT_WAJIB.map((w, i) => <InfoCard key={i} item={w} />)}
           </div>
 

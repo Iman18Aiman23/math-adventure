@@ -173,7 +173,7 @@ export default function RukunSolat({ onBack, language = 'bm' }) {
             fontSize: 'clamp(0.9rem, 2.2vw, 1rem)', color: '#2563EB',
             margin: '0 0 10px',
           }}>Rukun Fi'li (Perbuatan)</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.7rem', marginBottom: '1.2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.7rem', marginBottom: '1.2rem' }}>
             {RUKUN_FILI.map(r => <RukunCard key={r.n} r={r} isFili />)}
           </div>
 

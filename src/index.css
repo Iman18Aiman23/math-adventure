@@ -187,6 +187,7 @@ button {
    APP SHELL
    ============================================= */
 .app-container {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;

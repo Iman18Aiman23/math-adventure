@@ -155,6 +155,9 @@ export default function Syirik({ onBack, language = 'bm' }) {
         @media (min-width: 640px) {
           .sy-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
         }
+        @media (max-width: 480px) {
+          .sy-grid { grid-template-columns: 1fr; }
+        }
       `}</style>
 
       {tab === 'belajar' ? (

@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8"/>
+<title>Adab Makan &amp; Minum · Tahun 1</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --purple:#8B43C4; --purple-d:#6E2AA6;
+    --teal:#1BA89C; --teal-d:#127D74;
+    --green:#3FA535; --orange:#F39A12; --navy:#1E3A6E; --pink:#E8568A;
+    --ink:#4A3B2A; --cream:#FBF0D2;
+    --card-r:30px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:'Fredoka',system-ui,sans-serif;color:var(--ink);min-height:100vh;
+    background:linear-gradient(180deg,#FCEFC7 0%,#FBE7B0 38%,#EFE6A8 60%,#CDE89A 100%);
+    overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+  /* ---------- decorative scene ---------- */
+  .bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .bg .cloud{position:absolute;background:rgba(255,255,255,.7);border-radius:50%;filter:blur(2px)}
+  .bg .c1{width:150px;height:46px;top:30px;left:12%}
+  .bg .c2{width:110px;height:38px;top:64px;right:16%}
+  .bg .grass{position:absolute;left:0;right:0;bottom:0;height:140px;
+    background:radial-gradient(ellipse at 20% 120%,#9FD45A,transparent 60%),
+               radial-gradient(ellipse at 70% 120%,#8BCB49,transparent 60%),
+               linear-gradient(180deg,transparent,#86C73F 70%)}
+  .bg .mosque{position:absolute;bottom:120px;opacity:.5}
+  .bg .mq-l{left:1%}.bg .mq-r{right:1%}
+  .bg .sparkle{position:absolute;font-size:20px;color:#F6C945;animation:tw 2.6s ease-in-out infinite}
+
+  @keyframes tw{0%,100%{opacity:.4;transform:scale(.85)}50%{opacity:1;transform:scale(1.1)}}
+
+  /* ---------- layout shell ---------- */
+  .app{position:relative;z-index:2;max-width:1000px;margin:0 auto;padding:16px clamp(12px,3vw,26px) 50px}
+
+  /* ---------- header ---------- */
+  .head{display:grid;grid-template-columns:1fr auto 1fr;align-items:start;gap:10px;margin-bottom:6px}
+  .back{justify-self:start;display:inline-flex;align-items:center;gap:8px;font-family:'Baloo 2',sans-serif;
+    font-weight:700;font-size:15px;color:var(--navy);text-decoration:none;background:#fff;
+    padding:9px 18px;border-radius:999px;box-shadow:0 4px 12px -4px rgba(60,40,10,.3);
+    transition:transform .2s ease}
+  .back:hover{transform:translateX(-3px)}
+  .htitle{text-align:center;min-width:0}
+  .htitle .fork{font-size:26px;line-height:1;filter:drop-shadow(0 3px 4px rgba(168,43,94,.3))}
+  .htitle h1{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:clamp(26px,5vw,42px);
+    margin:2px 0 4px;line-height:1;text-shadow:0 2px 0 rgba(255,255,255,.7)}
+  .htitle h1 .g{color:var(--green)}.htitle h1 .o{color:var(--orange)}
+  .htitle h1 .a{color:#5B4636}.htitle h1 .p{color:var(--purple)}
+  .htitle p{font-size:clamp(12px,1.8vw,15px);font-weight:600;color:#9A6A2E;margin:0;max-width:520px;
+    margin-inline:auto;line-height:1.4;text-wrap:pretty}
+  .tools{justify-self:end;display:flex;gap:10px}
+  .tool{cursor:pointer;border:none;width:74px;border-radius:18px;padding:10px 6px 8px;color:#fff;
+    font-family:'Baloo 2',sans-serif;font-weight:800;font-size:13px;display:flex;flex-direction:column;
+    align-items:center;gap:3px;box-shadow:0 5px 0 var(--sh),0 10px 18px -8px rgba(60,40,10,.4);
+    transition:transform .15s ease}
+  .tool .ti{font-size:22px;line-height:1}
+  .tool:active{transform:translateY(3px);box-shadow:0 2px 0 var(--sh)}
+  .tool.belajar{background:linear-gradient(180deg,#A95FD6,#8B43C4);--sh:#6E2AA6}
+  .tool.kuiz{background:linear-gradient(180deg,#2BC0B2,#1BA89C);--sh:#127D74}
+  .tool[aria-pressed="false"]{filter:grayscale(.35) opacity(.82)}
+  .tool[aria-pressed="true"]{outline:3px solid rgba(255,255,255,.9);outline-offset:1px}
+
+  /* ---------- carousel ---------- */
+  .carousel{position:relative;margin-top:14px}
+  .card{background:linear-gradient(180deg,#FFFEFB,#FFF7EC);border-radius:var(--card-r);
+    padding:clamp(20px,3vw,34px);box-shadow:0 20px 50px -18px rgba(120,80,20,.4),0 4px 10px rgba(120,80,20,.1);
+    border:2px solid rgba(255,255,255,.8)}
+  .slide{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,3vw,34px);align-items:center}
+  .illo-wrap{position:relative}
+  .badge{position:absolute;top:-6px;left:-6px;z-index:3;width:54px;height:54px;border-radius:50%;
+    background:linear-gradient(180deg,#A95FD6,#8B43C4);color:#fff;font-family:'Baloo 2',sans-serif;
+    font-weight:800;font-size:17px;display:flex;align-items:center;justify-content:center;
+    border:3px dashed rgba(255,255,255,.85);box-shadow:0 6px 14px -4px rgba(110,42,166,.6)}
+  .illo{width:100%;border-radius:24px;display:block;overflow:visible}
+  .info .ititle{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:clamp(24px,3.6vw,34px);
+    color:var(--navy);margin:0;line-height:1.05}
+  .info .isub{font-family:'Baloo 2',sans-serif;font-weight:700;font-size:clamp(14px,2vw,18px);
+    color:var(--pink);margin:4px 0 12px}
+  .divider{height:0;border-top:2px dashed #E7C46A;margin:0 0 16px;max-width:90%}
+  .bullets{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:13px}
+  .bullets li{display:flex;gap:12px;align-items:flex-start;font-size:clamp(13px,1.8vw,15.5px);
+    font-weight:500;line-height:1.45;color:#5C4A36;text-wrap:pretty}
+  .bi{flex:none;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:17px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.7)}
+  .bi.blue{background:#D5ECFB}.bi.green{background:#D7F2D6}.bi.pink{background:#FBE0EC}
+  .bi.gold{background:#FBEFC9}.bi.purple{background:#ECDCF8}.bi.teal{background:#D2F1ED}
+
+  /* ---------- ingat ya callout ---------- */
+  .ingat{grid-column:1/-1;margin-top:6px;display:flex;align-items:center;gap:0;
+    border:2px dashed #E7C46A;border-radius:18px;background:#FFFDF4;padding:10px 16px 10px 8px;position:relative}
+  .ingat .star{flex:none;width:58px;height:58px;margin-right:6px;animation:bob 2.6s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-5px) rotate(4deg)}}
+  .ingat .tag{position:absolute;top:-13px;left:60px;white-space:nowrap;background:linear-gradient(180deg,#A95FD6,#8B43C4);
+    color:#fff;font-family:'Baloo 2',sans-serif;font-weight:800;font-size:12px;padding:4px 12px;border-radius:999px}
+  .ingat .say{font-family:'Baloo 2',sans-serif;font-weight:700;font-size:clamp(14px,2vw,17px);color:#5C4A36}
+
+  /* ---------- nav arrows ---------- */
+  .arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:50px;height:50px;border-radius:50%;
+    border:none;cursor:pointer;background:linear-gradient(180deg,#C79BE8,#A45FD6);color:#fff;font-size:24px;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 8px 18px -6px rgba(110,42,166,.7);
+    transition:transform .15s ease}
+  .arrow:hover{transform:translateY(-50%) scale(1.08)}
+  .arrow:active{transform:translateY(-50%) scale(.94)}
+  .arrow.prev{left:-20px}.arrow.next{right:-20px}
+
+  /* ---------- dots ---------- */
+  .dots{display:flex;justify-content:center;gap:10px;margin-top:20px}
+  .dot{width:12px;height:12px;border-radius:50%;background:rgba(140,90,30,.28);cursor:pointer;border:none;
+    transition:all .2s ease}
+  .dot.active{background:var(--purple);width:30px;border-radius:999px}
+
+  /* ---------- quiz ---------- */
+  .quizwrap{margin-top:14px}
+  .quiz-card{background:linear-gradient(180deg,#FFFEFB,#FFF7EC);border-radius:var(--card-r);
+    padding:clamp(24px,5vw,40px);box-shadow:0 20px 50px -18px rgba(120,80,20,.4);border:2px solid rgba(255,255,255,.8);
+    max-width:680px;margin:0 auto}
+  .quiz-card h3{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:clamp(19px,3vw,23px);color:var(--purple-d);margin:0 0 4px}
+  .qprog{font-family:'Baloo 2',sans-serif;font-weight:700;font-size:13px;color:#9A6A2E;margin:0 0 18px}
+  .qtext{font-size:clamp(16px,2.6vw,19px);font-weight:600;line-height:1.5;margin:0 0 18px;color:var(--ink)}
+  .opts{display:flex;flex-direction:column;gap:11px}
+  .opt{font-family:'Fredoka',sans-serif;font-weight:600;font-size:15px;text-align:left;cursor:pointer;
+    background:#fff;border:2px solid #ECD9B6;border-radius:16px;padding:14px 16px;min-height:52px;color:var(--ink);
+    display:flex;align-items:center;gap:12px;transition:all .18s ease}
+  .opt .mk{width:26px;height:26px;border-radius:50%;background:#F4E7C6;color:#9A6A2E;font-family:'Baloo 2',sans-serif;
+    font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;flex:none}
+  .opt:hover:not(:disabled){border-color:var(--purple);transform:translateX(3px);background:#FBF3FF}
+  .opt.correct{border-color:var(--green);background:#E6F7EC;color:#1B6B38}
+  .opt.correct .mk{background:var(--green);color:#fff}
+  .opt.wrong{border-color:#E05A5A;background:#FCE9E9;color:#A32626}
+  .opt.wrong .mk{background:#E05A5A;color:#fff}
+  .opt:disabled{cursor:default}
+  .feedback{margin-top:16px;font-family:'Baloo 2',sans-serif;font-weight:700;font-size:15px;min-height:22px;text-align:center}
+  .qnav{display:flex;justify-content:center;margin-top:20px}
+  .qbtn{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:16px;cursor:pointer;border:none;border-radius:999px;
+    padding:13px 30px;color:#fff;background:linear-gradient(180deg,#A95FD6,#8B43C4);box-shadow:0 5px 0 #6E2AA6;transition:transform .15s ease}
+  .qbtn:hover{transform:translateY(-2px)}.qbtn:active{transform:translateY(2px);box-shadow:0 2px 0 #6E2AA6}
+  .qbtn[hidden]{display:none}
+  .result{text-align:center}
+  .result .score{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:clamp(34px,8vw,52px);color:var(--purple-d);margin:6px 0}
+  .result .star2{font-size:40px;letter-spacing:4px;margin:8px 0}
+
+  /* ---------- responsive: stack ---------- */
+  @media(max-width:780px){
+    .head{grid-template-columns:auto 1fr auto;align-items:center}
+    .htitle .fork{display:none}
+    .tool{width:62px;font-size:11px;border-radius:15px}.tool .ti{font-size:18px}
+    .slide{grid-template-columns:1fr;text-align:center}
+    .info .isub{margin-bottom:10px}
+    .divider{margin-inline:auto;max-width:80%}
+    .bullets li{text-align:left}
+    .ingat{flex-direction:row;text-align:left}
+    .arrow{width:42px;height:42px;font-size:20px}
+    .arrow.prev{left:2px}.arrow.next{right:2px}
+    .badge{width:46px;height:46px;font-size:15px}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto}}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- decorative background -->
+<div class="bg" aria-hidden="true">
+  <div class="cloud c1"></div><div class="cloud c2"></div>
+  <svg class="mosque mq-l" width="150" height="200" viewBox="0 0 150 200"><g fill="#F2C24A"><rect x="20" y="90" width="110" height="110"/><path d="M75 40 Q40 70 35 90 H115 Q110 70 75 40Z"/><circle cx="75" cy="34" r="9"/><rect x="2" y="70" width="14" height="130" rx="7"/><rect x="134" y="70" width="14" height="130" rx="7"/><circle cx="9" cy="64" r="7"/><circle cx="141" cy="64" r="7"/></g></svg>
+  <svg class="mosque mq-r" width="150" height="200" viewBox="0 0 150 200"><g fill="#F2C24A"><rect x="20" y="90" width="110" height="110"/><path d="M75 40 Q40 70 35 90 H115 Q110 70 75 40Z"/><circle cx="75" cy="34" r="9"/><rect x="2" y="70" width="14" height="130" rx="7"/><rect x="134" y="70" width="14" height="130" rx="7"/><circle cx="9" cy="64" r="7"/><circle cx="141" cy="64" r="7"/></g></svg>
+  <div class="grass"></div>
+  <span class="sparkle" style="top:90px;left:24%">✦</span>
+  <span class="sparkle" style="top:130px;left:30%;animation-delay:.8s">✦</span>
+  <span class="sparkle" style="top:110px;right:28%;animation-delay:1.3s">✧</span>
+</div>
+
+<div class="app">
+  <!-- header -->
+  <header class="head">
+    <a class="back" href="ImanCara - Semua Modul.html">← Kembali</a>
+    <div class="htitle">
+      <div class="fork" aria-hidden="true">🍽️</div>
+      <h1><span class="g">Adab</span> <span class="o">Makan</span> <span class="a">&amp;</span> <span class="p">Minum</span></h1>
+      <p>Mari belajar adab makan dan minum yang diajar dalam Islam supaya kita sentiasa sihat, bersih dan mendapat keberkatan Allah.</p>
+    </div>
+    <div class="tools">
+      <button class="tool belajar" id="tBelajar" aria-pressed="true"><span class="ti">📖</span>Belajar</button>
+      <button class="tool kuiz" id="tKuiz" aria-pressed="false"><span class="ti">🎯</span>Kuiz</button>
+    </div>
+  </header>
+
+  <!-- carousel (Belajar) -->
+  <div class="carousel" id="carousel">
+    <button class="arrow prev" id="prev" aria-label="Sebelum">‹</button>
+    <button class="arrow next" id="next" aria-label="Seterus">›</button>
+    <div class="card">
+      <div class="slide" id="slide"></div>
+    </div>
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <!-- quiz -->
+  <div class="quizwrap" id="quizwrap" hidden>
+    <div class="quiz-card"><div id="quizBody"></div></div>
+  </div>
+</div>
+
+<script>
+  // cute star mascot
+  var STAR='<svg class="star" viewBox="0 0 64 64"><path d="M32 4l8 16 18 2-13 12 4 18-17-9-17 9 4-18L6 22l18-2z" fill="#FFD23F" stroke="#E8A100" stroke-width="2.5" stroke-linejoin="round"/><circle cx="26" cy="30" r="3.2" fill="#5B3A00"/><circle cx="38" cy="30" r="3.2" fill="#5B3A00"/><circle cx="25" cy="29" r="1" fill="#fff"/><circle cx="37" cy="29" r="1" fill="#fff"/><path d="M26 37 q6 6 12 0" stroke="#5B3A00" stroke-width="2.4" fill="none" stroke-linecap="round"/><circle cx="21" cy="35" r="2.4" fill="#FF9BB3" opacity=".7"/><circle cx="43" cy="35" r="2.4" fill="#FF9BB3" opacity=".7"/></svg>';
+
+  // illustration frame
+  function frame(bg,inner){
+    return '<svg class="illo" viewBox="0 0 220 170"><defs><clipPath id="cl"><rect x="6" y="6" width="208" height="158" rx="22"/></clipPath></defs>'+
+      '<rect x="6" y="6" width="208" height="158" rx="22" fill="'+bg+'"/>'+
+      '<g clip-path="url(#cl)">'+inner+'</g>'+
+      '<rect x="6" y="6" width="208" height="158" rx="22" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="3"/></svg>';
+  }
+
+  // ---- illustrations ----
+  var ILLO_WASH = frame('#DCF0FB',
+    // tiles
+    '<g stroke="#C2E4F6" stroke-width="1.5" opacity=".8">'+
+    '<path d="M6 50 H214 M6 90 H214 M50 6 V164 M120 6 V164 M170 6 V164"/></g>'+
+    // sink
+    '<path d="M70 110 H180 L172 138 H78 Z" fill="#fff" stroke="#B9D4E2" stroke-width="2"/>'+
+    '<ellipse cx="125" cy="110" rx="55" ry="8" fill="#EAF6FD" stroke="#B9D4E2" stroke-width="2"/>'+
+    // tap
+    '<path d="M96 108 V78 H120" fill="none" stroke="#9FB2BE" stroke-width="6" stroke-linecap="round"/>'+
+    '<rect x="90" y="104" width="14" height="8" rx="2" fill="#B9C7D0"/>'+
+    // water
+    '<g stroke="#7CC9F0" stroke-width="3" stroke-linecap="round" class="pulse">'+
+    '<path d="M120 84 V100"/><path d="M126 84 V98"/><path d="M114 84 V98"/></g>'+
+    // hands + bubbles
+    '<ellipse cx="120" cy="116" rx="20" ry="9" fill="#FCE3CF" stroke="#E9B894" stroke-width="2"/>'+
+    '<g fill="#fff" opacity=".95"><circle cx="110" cy="110" r="4"/><circle cx="122" cy="106" r="5"/><circle cx="132" cy="111" r="3.5"/><circle cx="118" cy="116" r="3"/></g>'+
+    // soap
+    '<rect x="46" y="96" width="20" height="30" rx="4" fill="#5FB7E8" stroke="#3F92C4" stroke-width="2"/>'+
+    '<rect x="52" y="88" width="8" height="9" rx="2" fill="#3F92C4"/>'+
+    '<text x="56" y="114" text-anchor="middle" font-family="Baloo 2" font-size="7" font-weight="800" fill="#fff">SABUN</text>');
+
+  var ILLO_DOA = frame('#FBEEDA',
+    '<circle cx="110" cy="64" r="34" fill="#FFF3C4" opacity=".8" class="pulse"/>'+
+    '<path d="M110 26 l5 13 13 5 -13 5 -5 13 -5 -13 -13 -5 13 -5z" fill="#FFD23F" stroke="#E8A100" stroke-width="2"/>'+
+    // cupped hands
+    '<path d="M64 96 Q78 78 96 88 Q110 76 124 88 Q142 78 156 96 Q140 130 110 134 Q80 130 64 96 Z" fill="#FCE3CF" stroke="#E9B894" stroke-width="2.5" stroke-linejoin="round"/>'+
+    '<path d="M110 90 V128" stroke="#E9B894" stroke-width="2"/>'+
+    '<g fill="#FFD23F"><circle cx="84" cy="70" r="2.5"/><circle cx="138" cy="72" r="2.5"/></g>');
+
+  var ILLO_RIGHT = frame('#FBE9DA',
+    // plate
+    '<ellipse cx="110" cy="118" rx="58" ry="14" fill="#fff" stroke="#E2C3A8" stroke-width="2"/>'+
+    '<ellipse cx="110" cy="115" rx="42" ry="9" fill="#FDEFD8"/>'+
+    '<path d="M86 116 Q110 92 134 116 Z" fill="#F6B45A" stroke="#D98B33" stroke-width="2" stroke-linejoin="round"/>'+
+    // right hand reaching
+    '<path d="M150 60 Q150 40 130 40 Q108 40 108 62 L108 84 Q108 100 130 100 Q150 100 150 82 Z" fill="#FCE3CF" stroke="#E9B894" stroke-width="2.5"/>'+
+    '<g stroke="#FCE3CF" stroke-width="9" stroke-linecap="round"><line x1="116" y1="48" x2="116" y2="30"/><line x1="129" y1="46" x2="129" y2="26"/><line x1="142" y1="48" x2="142" y2="30"/></g>'+
+    '<circle cx="129" cy="80" r="8" fill="#FFF3C4" stroke="#E8C76A" stroke-width="2"/>'+
+    // check
+    '<circle cx="62" cy="48" r="14" fill="#3FA535"/>'+
+    '<path d="M55 48 l5 5 9 -10" stroke="#fff" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>');
+
+  var ILLO_SIT = frame('#EDEAFB',
+    // mat
+    '<ellipse cx="110" cy="138" rx="70" ry="14" fill="#C9BEEF"/>'+
+    // child sitting
+    '<circle cx="110" cy="58" r="20" fill="#FCE3CF" stroke="#E9B894" stroke-width="2"/>'+
+    '<path d="M96 44 Q110 30 124 44 Q120 38 110 38 Q100 38 96 44Z" fill="#fff" stroke="#D9D2C2" stroke-width="1.5"/>'+ // songkok/cap
+    '<circle cx="103" cy="58" r="2.6" fill="#5B3A00"/><circle cx="117" cy="58" r="2.6" fill="#5B3A00"/>'+
+    '<path d="M104 66 q6 5 12 0" stroke="#5B3A00" stroke-width="2.2" fill="none" stroke-linecap="round"/>'+
+    '<path d="M86 120 Q86 84 110 84 Q134 84 134 120 Z" fill="#5BC47A" stroke="#3FA535" stroke-width="2.5"/>'+
+    // crossed legs
+    '<path d="M74 124 Q110 108 146 124 Q132 138 110 134 Q88 138 74 124Z" fill="#7FD497" stroke="#3FA535" stroke-width="2"/>'+
+    '<circle cx="92" cy="112" r="5" fill="#FCE3CF"/><circle cx="128" cy="112" r="5" fill="#FCE3CF"/>');
+
+  var ILLO_NOWASTE = frame('#FBF0DA',
+    '<ellipse cx="110" cy="100" rx="60" ry="16" fill="#fff" stroke="#E2C3A8" stroke-width="2.5"/>'+
+    '<ellipse cx="110" cy="96" rx="44" ry="11" fill="#FDEFD8" stroke="#EAD6B2" stroke-width="1.5"/>'+
+    '<path d="M110 84 l4 10 10 4 -10 4 -4 10 -4 -10 -10 -4 10 -4z" fill="#FFD23F" class="pulse"/>'+
+    // fork & spoon
+    '<g stroke="#B9C7D0" stroke-width="5" stroke-linecap="round"><line x1="48" y1="78" x2="48" y2="120"/><line x1="172" y1="78" x2="172" y2="120"/></g>'+
+    '<circle cx="172" cy="74" r="7" fill="#CDD8DF"/>'+
+    // check badge
+    '<circle cx="158" cy="52" r="15" fill="#3FA535"/>'+
+    '<path d="M150 52 l5.5 5.5 10 -11" stroke="#fff" stroke-width="3.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>');
+
+  var ILLO_SHARE = frame('#FBE7EE',
+    // bowl
+    '<path d="M70 92 H150 Q142 128 110 128 Q78 128 70 92 Z" fill="#fff" stroke="#E9B0C6" stroke-width="2.5"/>'+
+    '<ellipse cx="110" cy="92" rx="40" ry="9" fill="#FCD9E6"/>'+
+    '<path d="M92 92 Q110 76 128 92Z" fill="#F6B45A" stroke="#D98B33" stroke-width="1.8"/>'+
+    // two hands
+    '<path d="M30 104 Q40 88 56 94 L60 104" fill="none" stroke="#FCE3CF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>'+
+    '<path d="M190 104 Q180 88 164 94 L160 104" fill="none" stroke="#FCE3CF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>'+
+    // heart
+    '<path d="M110 40 C104 32 90 34 90 46 C90 58 110 70 110 70 C110 70 130 58 130 46 C130 34 116 32 110 40Z" fill="#FF7FA6" stroke="#E8568A" stroke-width="2" class="pulse"/>');
+
+  // ---- data ----
+  var SLIDES=[
+    {n:1,title:'Basuh Tangan',sub:'Sebelum &amp; Selepas Makan',illo:ILLO_WASH,
+     bullets:[['blue','💧','Basuh tangan dengan air dan sabun sebelum makan.'],
+              ['green','🦠','Tangan yang bersih membantu mengelakkan kuman daripada masuk ke dalam badan.'],
+              ['pink','👋','Selepas makan, basuh tangan semula supaya sentiasa bersih dan sihat.']],
+     say:'Saya basuh tangan sebelum dan selepas makan. 💗'},
+    {n:2,title:'Baca Doa',sub:'Sebelum &amp; Selepas Makan',illo:ILLO_DOA,
+     bullets:[['purple','🤲','Baca “Bismillah” sebelum mula makan.'],
+              ['gold','⭐','Baca “Alhamdulillah” sebagai tanda syukur selepas makan.'],
+              ['pink','💝','Makan yang dimulakan dengan doa menjadi lebih berkat.']],
+     say:'Saya baca Bismillah sebelum makan. 💗'},
+    {n:3,title:'Makan Dengan Tangan Kanan',sub:'Sunnah Rasulullah ﷺ',illo:ILLO_RIGHT,
+     bullets:[['gold','✋','Gunakan tangan kanan untuk makan dan minum.'],
+              ['green','🌟','Ini adalah sunnah yang diajar oleh Rasulullah ﷺ.'],
+              ['pink','😊','Makan dengan tangan kanan menunjukkan adab yang baik.']],
+     say:'Saya makan dengan tangan kanan. 💗'},
+    {n:4,title:'Duduk Dengan Sopan',sub:'Adab Ketika Makan',illo:ILLO_SIT,
+     bullets:[['purple','🪑','Duduk dengan tertib semasa makan.'],
+              ['pink','🚫','Jangan makan sambil berjalan atau berlari.'],
+              ['green','😇','Duduk sopan menunjukkan akhlak yang mulia.']],
+     say:'Saya duduk dengan sopan ketika makan. 💗'},
+    {n:5,title:'Tidak Membazir',sub:'Ambil Sekadar Perlu',illo:ILLO_NOWASTE,
+     bullets:[['gold','🍽️','Ambil makanan sekadar yang perlu.'],
+              ['green','✅','Habiskan makanan yang telah diambil.'],
+              ['blue','🌍','Tidak membazir adalah amalan yang disukai Allah.']],
+     say:'Saya habiskan makanan dan tidak membazir. 💗'},
+    {n:6,title:'Berkongsi Rezeki',sub:'Sikap Mulia',illo:ILLO_SHARE,
+     bullets:[['teal','🤝','Berkongsi makanan dengan keluarga dan rakan.'],
+              ['pink','❤️','Berkongsi mengeratkan kasih sayang sesama kita.'],
+              ['gold','🎁','Berkongsi rezeki mendapat pahala daripada Allah.']],
+     say:'Saya suka berkongsi makanan. 💗'}
+  ];
+
+  var idx=0;
+  var slide=document.getElementById('slide'), dots=document.getElementById('dots');
+
+  function render(){
+    var s=SLIDES[idx];
+    var bl=s.bullets.map(function(b){
+      return '<li><span class="bi '+b[0]+'">'+b[1]+'</span><span>'+b[2]+'</span></li>';
+    }).join('');
+    slide.innerHTML=
+      '<div class="illo-wrap"><span class="badge">'+s.n+'/6</span>'+s.illo+'</div>'+
+      '<div class="info"><h2 class="ititle">'+s.title+'</h2><p class="isub">'+s.sub+'</p>'+
+        '<div class="divider"></div><ul class="bullets">'+bl+'</ul></div>'+
+      '<div class="ingat">'+STAR+'<span class="tag">Ingat Ya!</span><span class="say">'+s.say+'</span></div>';
+    slide.style.animation='none'; void slide.offsetWidth; slide.style.animation='fadeIn .35s ease';
+    [].forEach.call(dots.children,function(d,i){d.classList.toggle('active',i===idx);});
+  }
+  // build dots
+  SLIDES.forEach(function(_,i){
+    var d=document.createElement('button'); d.className='dot';
+    d.addEventListener('click',function(){idx=i;render();});
+    dots.appendChild(d);
+  });
+  document.getElementById('prev').addEventListener('click',function(){idx=(idx-1+SLIDES.length)%SLIDES.length;render();});
+  document.getElementById('next').addEventListener('click',function(){idx=(idx+1)%SLIDES.length;render();});
+  document.addEventListener('keydown',function(e){
+    if(document.getElementById('quizwrap').hidden===false) return;
+    if(e.key==='ArrowLeft')document.getElementById('prev').click();
+    if(e.key==='ArrowRight')document.getElementById('next').click();
+  });
+  var st=document.createElement('style');st.textContent='@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}';document.head.appendChild(st);
+  render();
+
+  // ---- Belajar / Kuiz toggle ----
+  var tB=document.getElementById('tBelajar'), tK=document.getElementById('tKuiz'),
+      carousel=document.getElementById('carousel'), quizwrap=document.getElementById('quizwrap');
+  function showLearn(){carousel.hidden=false;quizwrap.hidden=true;tB.setAttribute('aria-pressed','true');tK.setAttribute('aria-pressed','false');}
+  function showQuiz(){carousel.hidden=true;quizwrap.hidden=false;tB.setAttribute('aria-pressed','false');tK.setAttribute('aria-pressed','true');initQuiz();}
+  tB.addEventListener('click',showLearn);
+  tK.addEventListener('click',showQuiz);
+
+  // ---- quiz ----
+  var QUIZ=[
+    {q:'Apakah yang perlu dibaca sebelum makan?',opts:['Bismillah','Alhamdulillah','Subhanallah'],a:0},
+    {q:'Tangan manakah yang digunakan untuk makan mengikut sunnah?',opts:['Tangan kiri','Tangan kanan','Kedua-dua tangan'],a:1},
+    {q:'Apakah yang patut dibuat sebelum dan selepas makan?',opts:['Tidur','Basuh tangan','Bermain'],a:1},
+    {q:'Apa sikap yang betul terhadap makanan?',opts:['Membazir makanan','Ambil banyak-banyak','Tidak membazir'],a:2}
+  ];
+  var qi=0,score=0,L=['A','B','C','D'];
+  function initQuiz(){qi=0;score=0;qFresh();qRender();}
+  function qFresh(){
+    document.getElementById('quizBody').innerHTML=
+      '<h3>🎯 Kuiz Adab Makan &amp; Minum</h3><p class="qprog" id="qprog"></p>'+
+      '<p class="qtext" id="qtext"></p><div class="opts" id="opts"></div>'+
+      '<p class="feedback" id="feedback"></p><div class="qnav"><button class="qbtn" id="qnext" hidden></button></div>';
+  }
+  function qRender(){
+    var it=QUIZ[qi];
+    document.getElementById('qprog').textContent='Soalan '+(qi+1)+' / '+QUIZ.length;
+    document.getElementById('qtext').textContent=it.q;
+    var opts=document.getElementById('opts');opts.innerHTML='';
+    var fb=document.getElementById('feedback');fb.textContent='';
+    var nx=document.getElementById('qnext');nx.hidden=true;
+    it.opts.forEach(function(t,i){
+      var b=document.createElement('button');b.className='opt';
+      b.innerHTML='<span class="mk">'+L[i]+'</span>'+t;
+      b.addEventListener('click',function(){
+        var all=opts.querySelectorAll('.opt');if(all[0].disabled)return;
+        all.forEach(function(x){x.disabled=true;});
+        if(i===it.a){b.classList.add('correct');score++;fb.style.color='#2E9C57';fb.textContent='✅ Betul! Syabas!';}
+        else{b.classList.add('wrong');all[it.a].classList.add('correct');fb.style.color='#A32626';fb.textContent='❌ Cuba lagi — jawapan betul ditanda hijau.';}
+        nx.hidden=false;nx.textContent=(qi===QUIZ.length-1)?'Lihat Keputusan →':'Seterusnya →';
+      });
+      opts.appendChild(b);
+    });
+    nx.onclick=function(){if(qi<QUIZ.length-1){qi++;qRender();}else{qResult();}};
+  }
+  function qResult(){
+    var stars=score>=4?'⭐⭐⭐':score>=2?'⭐⭐':'⭐';
+    var msg=score>=4?'Hebat! Kamu sudah faham adab makan & minum.':score>=2?'Bagus! Teruskan belajar ya.':'Jangan risau — cuba sekali lagi!';
+    document.getElementById('quizBody').innerHTML=
+      '<div class="result"><h3>🎉 Keputusan Kuiz</h3><div class="star2">'+stars+'</div>'+
+      '<div class="score">'+score+' / '+QUIZ.length+'</div>'+
+      '<p class="qtext" style="margin-bottom:22px">'+msg+'</p>'+
+      '<div class="qnav"><button class="qbtn" id="qagain">Cuba Lagi 🔄</button></div></div>';
+    document.getElementById('qagain').onclick=initQuiz;
+  }
+</script>
+</body>
+</html>

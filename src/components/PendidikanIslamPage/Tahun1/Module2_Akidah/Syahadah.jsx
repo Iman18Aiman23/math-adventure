@@ -1,10 +1,7 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import Tahun1LessonLayout, { QuizScreen, ResultScreen } from '../Tahun1LessonLayout';
-import { playHoverSound, playSound } from '../../../../utils/soundManager';
-import SpeechManager from '../../../../services/SpeechManager';
+import React from 'react';
+import Tahun1LessonScrollLayout from '../Tahun1LessonScrollLayout';
 import { ARABIC_FONT } from '../../_shared/arabic';
 import { shuffle } from '../../_shared/utils';
-import Celebration from '../../_shared/Celebration';
 
 const KALIMAH = [
   {
@@ -16,9 +13,6 @@ const KALIMAH = [
     meaningEng: 'I bear witness that there is no god worthy of worship except Allah.',
     about: 'Kalimah ini menegaskan bahawa Allah sahaja yang wajib disembah. Tiada sebarang makhluk atau benda lain yang layak dijadikan Tuhan.',
     icon: '☝️',
-    color: '#4C1D95', accent: '#8B5CF6',
-    gradient: 'linear-gradient(135deg, #E7D9FF 0%, #B79CFF 55%, #7A55E0 100%)',
-    border: 'rgba(122,85,224,0.5)', glow: 'rgba(122,85,224,0.3)',
   },
   {
     n: 2,
@@ -29,13 +23,8 @@ const KALIMAH = [
     meaningEng: 'And I bear witness that Muhammad is the Messenger of Allah.',
     about: 'Kalimah ini mengiktiraf bahawa Nabi Muhammad SAW adalah nabi dan rasul terakhir yang diutuskan Allah kepada umat manusia.',
     icon: '🌟',
-    color: '#065F46', accent: '#10B981',
-    gradient: 'linear-gradient(135deg, #D6F5DD 0%, #8AD9A8 55%, #2A9A6C 100%)',
-    border: 'rgba(42,154,108,0.5)', glow: 'rgba(42,154,108,0.3)',
   },
 ];
-
-const FULL_AR = 'أَشْهَدُ أَنْ لَا إِلَٰهَ إِلَّا اللهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ اللهِ';
 
 const KEPENTINGAN = [
   { icon: '🏳️', text: 'Merupakan Rukun Islam yang pertama.' },
@@ -99,167 +88,49 @@ const QUESTIONS = shuffle([
 
 const TOTAL_ROUNDS = 10;
 
-function KalimahCard({ k, language, showMeaning, playing, onPlayAudio }) {
-  return (
-    <div style={{
-      background: k.gradient, border: `2.5px solid ${k.border}`,
-      borderRadius: 22, padding: '20px 16px',
-      display: 'flex', flexDirection: 'column', gap: 12,
-      boxShadow: '0 2px 0 rgba(255,255,255,0.35) inset, 0 10px 28px rgba(0,0,0,0.1)',
-    }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{
-          fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-          fontSize: 'clamp(0.72rem, 1.6vw, 0.85rem)', color: k.color,
-          background: 'rgba(255,255,255,0.45)', padding: '3px 10px', borderRadius: 999,
-        }}>{k.label}</span>
-        <button
-          onClick={(e) => { e.stopPropagation(); onPlayAudio(k); }}
-          style={{
-            background: 'rgba(255,255,255,0.45)', border: 'none',
-            borderRadius: '50%', width: 32, height: 32,
-            fontSize: '1rem', cursor: 'pointer', flexShrink: 0,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            WebkitTapHighlightColor: 'transparent',
-          }}
-        >
-          {playing ? '🔊' : '🔈'}
-        </button>
-      </div>
-
-      <div style={{
-        background: 'rgba(255,255,255,0.5)', borderRadius: 16, padding: '14px 16px',
-        textAlign: 'right', direction: 'rtl',
-      }}>
-        <p style={{
-          fontFamily: ARABIC_FONT, fontSize: 'clamp(1.35rem, 5vw, 1.9rem)',
-          color: k.color, margin: 0, lineHeight: 2,
-        }}>{k.ar}</p>
-      </div>
-
-      <p style={{
-        fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 600, fontStyle: 'italic',
-        fontSize: 'clamp(0.78rem, 2vw, 0.92rem)', color: k.accent,
-        margin: 0, lineHeight: 1.5,
-      }}>{k.rumi}</p>
-
-      {showMeaning && (
-        <div style={{ background: 'rgba(255,255,255,0.55)', borderRadius: 12, padding: '10px 12px' }}>
-          <p style={{
-            fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 700,
-            fontSize: 'clamp(0.74rem, 1.8vw, 0.88rem)', color: k.color, margin: '0 0 4px', lineHeight: 1.4,
-          }}>
-            {language === 'bm' ? k.meaning : k.meaningEng}
-          </p>
-          <p style={{
-            fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 500,
-            fontSize: 'clamp(0.68rem, 1.6vw, 0.8rem)', color: '#374151', margin: 0, lineHeight: 1.5,
-          }}>{k.about}</p>
-        </div>
-      )}
-    </div>
-  );
-}
+const THEME = {
+  pageGradient: 'linear-gradient(180deg,#E7D9FF 0%,#B79CFF 50%,#9D7AEA 100%)',
+  dark: '#4C1D95',
+  accent: '#8B5CF6',
+  stageGradient: 'radial-gradient(ellipse at 50% 32%,#E7D9FF 0%,#B79CFF 55%,#7A55E0 100%)',
+  pillGradient: 'linear-gradient(180deg,#B79CFF,#8B5CF6)',
+};
 
 export default function Syahadah({ onBack, language = 'bm' }) {
-  const [tab,        setTab]        = useState('belajar');
-  const [showMeaning, setShowMeaning] = useState(true);
-  const [quizDone,   setQuizDone]   = useState(false);
-  const [finalScore, setFinalScore] = useState(0);
-  const [quizKey,    setQuizKey]    = useState(0);
-  const [playing,    setPlaying]    = useState(null);
-
-  useEffect(() => {
-    return () => SpeechManager.stopSpeaking();
-  }, []);
-
-  const handlePlayAudio = useCallback((k) => {
-    SpeechManager.stopSpeaking();
-    setPlaying(k.n);
-    SpeechManager.speak(k.ar, 'ar-SA', { rate: 0.7 })
-      .then(() => SpeechManager.speak(k.meaning, 'ms-MY', { rate: 0.8 }))
-      .then(() => setPlaying(null))
-      .catch(() => setPlaying(null));
-  }, []);
-
-  const handleTabChange = useCallback((t) => {
-    setTab(t);
-    playHoverSound();
-    if (t === 'kuiz') {
-      setQuizDone(false);
-      setQuizKey(k => k + 1);
-    }
-  }, []);
-
   return (
-    <Tahun1LessonLayout
+    <Tahun1LessonScrollLayout
       onBack={onBack}
       language={language}
-      breadcrumb="Akidah › Topik 2.3"
+      breadcrumb="Akidah › "
+      breadcrumbActive={language === 'bm' ? 'Dua Kalimah Syahadah' : 'The Two Declarations of Faith'}
       title={language === 'bm' ? 'Dua Kalimah Syahadah' : 'The Two Declarations of Faith'}
-      accentColor="#8B5CF6"
-      tab={tab}
-      onTabChange={handleTabChange}
-    >
-      {tab === 'belajar' ? (
-        <div style={{ flex: 1, overflowY: 'auto', padding: '0 1.25rem calc(80px + var(--safe-bottom, 0px))' }}>
-          <div style={{
-            background: 'linear-gradient(135deg, rgba(124,58,237,0.25), rgba(139,92,246,0.15))',
-            border: '2px solid rgba(139,92,246,0.35)', borderRadius: 18,
-            padding: '16px', marginBottom: '1.1rem', textAlign: 'right', direction: 'rtl',
-          }}>
-            <p style={{ fontFamily: ARABIC_FONT, fontSize: 'clamp(1.1rem, 3.5vw, 1.5rem)', color: '#E9D5FF', margin: 0, lineHeight: 2 }}>
-              {FULL_AR}
-            </p>
-          </div>
-
-          <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-            <button onClick={() => { setShowMeaning(m => !m); playHoverSound(); }}
-              style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 700, fontSize: '0.88rem', background: showMeaning ? 'rgba(0,0,0,0.08)' : 'rgba(0,0,0,0.04)', color: 'var(--pi-ink)', border: '2px solid rgba(0,0,0,0.1)', borderRadius: 999, padding: '7px 20px', cursor: 'pointer' }}>
-              {showMeaning
-                ? (language === 'bm' ? '🕌 Sembunyi Maksud' : '🕌 Hide Meaning')
-                : (language === 'bm' ? '🕌 Tunjuk Maksud' : '🕌 Show Meaning')}
-            </button>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {KALIMAH.map(k => <KalimahCard key={k.n} k={k} language={language} showMeaning={showMeaning} playing={playing === k.n} onPlayAudio={handlePlayAudio} />)}
-          </div>
-
-          <div style={{ marginTop: '1.5rem' }}>
-            <h3 style={{ fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 'clamp(0.85rem, 2.2vw, 1rem)', color: '#C4B5FD', margin: '0 0 0.75rem', paddingLeft: 10, borderLeft: '4px solid #8B5CF6' }}>
-              {language === 'bm' ? 'Kepentingan Syahadah' : 'Importance of Syahadah'}
-            </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              {KEPENTINGAN.map((k, i) => (
-                <div key={i} style={{
-                  background: 'rgba(139,92,246,0.1)', border: '1.5px solid rgba(139,92,246,0.25)',
-                  borderRadius: 12, padding: '10px 14px',
-                  display: 'flex', alignItems: 'center', gap: 10,
-                }}>
-                  <span style={{ fontSize: '1.2rem', flexShrink: 0 }}>{k.icon}</span>
-                  <p style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 600, fontSize: 'clamp(0.78rem, 2vw, 0.9rem)', color: 'var(--pi-ink)', margin: 0, lineHeight: 1.4 }}>{k.text}</p>
-                </div>
-              ))}
+      lead={language === 'bm'
+        ? 'Syahadah adalah pintu masuk ke dalam agama Islam — mari kita fahami dua kalimah syahadah.'
+        : 'The Shahada is the gateway to Islam — let us understand the two declarations of faith.'}
+      icon="☝️"
+      theme={THEME}
+      topics={[
+        ...KALIMAH.map(k => ({
+          visual: (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+              <span style={{ fontSize: '2rem', lineHeight: 1 }}>{k.icon}</span>
+              <span style={{ fontFamily: ARABIC_FONT, fontSize: '0.55rem', color: '#fff', textShadow: '0 1px 2px rgba(0,0,0,0.3)', direction: 'rtl', lineHeight: 1.3 }}>{k.ar}</span>
             </div>
-          </div>
-
-          <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-            <button onClick={() => { setTab('kuiz'); setQuizDone(false); setQuizKey(k => k + 1); playHoverSound(); }}
-              style={{ fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 700, fontSize: 'clamp(0.9rem, 2.2vw, 1.05rem)', background: 'linear-gradient(135deg, #7C3AED, #8B5CF6)', color: '#fff', border: 'none', borderRadius: 999, padding: '12px 32px', cursor: 'pointer', boxShadow: '0 4px 14px rgba(124,58,237,0.4)' }}>
-              🎯 {language === 'bm' ? 'Mula Kuiz' : 'Start Quiz'} →
-            </button>
-          </div>
-        </div>
-      ) : quizDone ? (
-        <div style={{ flex: 1, overflowY: 'auto' }}>
-          <ResultScreen score={finalScore} totalRounds={TOTAL_ROUNDS} accentColor="#8B5CF6" accentGradient="linear-gradient(135deg, #7C3AED, #8B5CF6)" onRetry={() => { setQuizDone(false); setQuizKey(k => k + 1); }} onBack={() => setTab('belajar')} language={language} />
-        </div>
-      ) : (
-        <div style={{ flex: 1, minHeight: 0, display: 'flex', overflow: 'hidden' }}>
-          <QuizScreen key={quizKey} language={language} questions={QUESTIONS} totalRounds={TOTAL_ROUNDS} accentColor="#8B5CF6" emoji="✨" onDone={(s) => { setFinalScore(s); setQuizDone(true); }} />
-        </div>
-      )}
-    </Tahun1LessonLayout>
+          ),
+          title: k.label,
+          sublabel: k.rumi,
+          desc: language === 'bm' ? `${k.meaning} ${k.about}` : `${k.meaningEng}`,
+        })),
+        ...KEPENTINGAN.map(k => ({
+          visual: <span style={{ fontSize: '3.2rem', lineHeight: 1 }}>{k.icon}</span>,
+          title: '',
+          sublabel: 'Kepentingan',
+          desc: k.text,
+        })),
+      ]}
+      questions={QUESTIONS}
+      totalRounds={TOTAL_ROUNDS}
+      accentColor="#8B5CF6"
+    />
   );
 }

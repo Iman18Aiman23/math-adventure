@@ -72,8 +72,61 @@ export default function Tahun1LessonLayout({
   );
 }
 
-export function ConceptCard({ k, children }) {
+export function ConceptCard({ k, children, variant = 'v1' }) {
   const [showDesc, setShowDesc] = React.useState(false);
+
+  if (variant === 'v2') {
+    return (
+      <div style={{
+        background: k.gradient || 'linear-gradient(180deg,#fff,#FEF4F8)',
+        border: `2.5px solid ${k.border || 'rgba(232,86,138,0.16)'}`,
+        borderRadius: 20, padding: '16px 12px',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
+        boxShadow: '0 2px 0 rgba(255,255,255,0.35) inset, 0 8px 20px rgba(0,0,0,0.1)',
+        textAlign: 'center', position: 'relative',
+        transition: 'transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s ease',
+        cursor: 'default',
+      }}
+        onMouseEnter={e => { if (!('ontouchstart' in window)) { e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.boxShadow = '0 2px 0 rgba(255,255,255,0.35) inset, 0 16px 32px -14px rgba(0,0,0,0.18)'; } }}
+        onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
+      >
+        {k.num && <span style={{
+          position: 'absolute', top: 10, left: 12,
+          fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: '12px',
+          color: '#fff', background: 'linear-gradient(180deg,#F0709F,#E8568A)',
+          width: 26, height: 26, borderRadius: '50%',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          boxShadow: '0 3px 8px -2px rgba(168,43,94,0.5)',
+        }}>{k.num}</span>}
+        <div style={{
+          width: 90, height: 90, borderRadius: 20,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: k.stageGradient || 'radial-gradient(ellipse at 50% 32%,#FFE3EF 0%,#F58FB6 55%,#D94B86 100%)',
+          boxShadow: 'inset 0 -7px 20px rgba(168,43,94,0.2), inset 0 2px 0 rgba(255,255,255,0.5)',
+          marginTop: 4,
+        }}>
+          <span style={{ fontSize: '2.8rem', lineHeight: 1 }}>{k.icon}</span>
+        </div>
+        <span style={{
+          fontFamily: "'Baloo 2', sans-serif", fontWeight: 700,
+          fontSize: 'clamp(0.6rem, 1.4vw, 0.7rem)', letterSpacing: '.08em',
+          textTransform: 'uppercase', color: k.accent || '#E8568A', margin: 0,
+        }}>{k.sublabel}</span>
+        <p style={{
+          fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
+          fontSize: 'clamp(0.85rem, 2.2vw, 1rem)',
+          color: k.color || '#46122E', margin: 0, lineHeight: 1.2,
+        }}>{k.label}</p>
+        <p style={{
+          fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 500,
+          fontSize: 'clamp(0.72rem, 1.8vw, 0.84rem)',
+          color: k.muted || '#8A5670', margin: 0, lineHeight: 1.55,
+        }}>{k.desc}</p>
+        {children}
+      </div>
+    );
+  }
+
   return (
     <div style={{
       background: k.gradient,
@@ -122,7 +175,9 @@ export function ConceptCard({ k, children }) {
   );
 }
 
-export function QuizScreen({ language, questions, totalRounds, accentColor, onDone, emoji, headerContent }) {
+const QLETTERS = ['A', 'B', 'C', 'D'];
+
+export function QuizScreen({ language, questions, totalRounds, accentColor, onDone, emoji, headerContent, letterMarkers, manualAdvance }) {
   const [pool] = React.useState(() => shuffle(questions).slice(0, totalRounds));
   const [round, setRound] = React.useState(0);
   const [score, setScore] = React.useState(0);
@@ -135,17 +190,32 @@ export function QuizScreen({ language, questions, totalRounds, accentColor, onDo
     const isCorrect = opt === q.answer;
     setChosen(opt); setCorrect(isCorrect);
     if (isCorrect) setScore(s => s + 1);
-    setAnimating(true);
-    setTimeout(() => {
-      setChosen(null); setCorrect(null); setAnimating(false);
-      if (round + 1 >= totalRounds) {
-        onDone(isCorrect ? score + 1 : score);
-      } else {
-        setRound(r => r + 1);
-      }
-    }, 900);
-  }, [animating, chosen, q, round, score, onDone, totalRounds]);
+    if (manualAdvance) {
+      setAnimating(true);
+    } else {
+      setAnimating(true);
+      setTimeout(() => {
+        setChosen(null); setCorrect(null); setAnimating(false);
+        if (round + 1 >= totalRounds) {
+          onDone(isCorrect ? score + 1 : score);
+        } else {
+          setRound(r => r + 1);
+        }
+      }, 900);
+    }
+  }, [animating, chosen, q, round, score, onDone, totalRounds, manualAdvance]);
+  const handleNext = React.useCallback(() => {
+    setChosen(null); setCorrect(null); setAnimating(false);
+    if (round + 1 >= totalRounds) {
+      onDone(score);
+    } else {
+      setRound(r => r + 1);
+    }
+  }, [round, score, onDone, totalRounds]);
   if (!q) return null;
+
+  const correctIdx = q.options.indexOf(q.answer);
+
   return (
     <div style={{
       flex: 1, minHeight: 0,
@@ -175,7 +245,7 @@ export function QuizScreen({ language, questions, totalRounds, accentColor, onDo
         }}>{q.question}</p>
       </div>
       <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-        {q.options.map(opt => {
+        {q.options.map((opt, i) => {
           const isChosen = chosen === opt;
           const isCorrect = isChosen && correct;
           const isWrong = isChosen && !correct;
@@ -196,25 +266,56 @@ export function QuizScreen({ language, questions, totalRounds, accentColor, onDo
                 fontSize: 'clamp(0.9rem, 2.2vw, 1.05rem)',
                 padding: '13px 16px', borderRadius: 14,
                 border: '2.5px solid', cursor: chosen ? 'default' : 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                display: 'flex', alignItems: 'center', gap: 12,
                 transition: 'all 0.2s ease',
                 background: bg, borderColor: bd, color: cl,
                 transform: isChosen ? 'scale(1.02)' : 'scale(1)',
               }}
             >
+              {letterMarkers && (
+                <span style={{
+                  width: 26, height: 26, borderRadius: '50%',
+                  background: chosen ? (isCorrect || isAnswer ? '#10B981' : '#E05A5A') : `${accentColor}22`,
+                  color: chosen ? '#fff' : accentColor,
+                  fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 14,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 'none',
+                }}>{QLETTERS[i]}</span>
+              )}
               <span>{opt}</span>
-              <span>{isCorrect ? '✅' : isWrong ? '❌' : isAnswer ? '✅' : ''}</span>
+              <span style={{ marginLeft: 'auto' }}>{isCorrect ? '✅' : isWrong ? '❌' : isAnswer ? '✅' : ''}</span>
             </button>
           );
         })}
       </div>
+      {manualAdvance && chosen && (
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 8 }}>
+          <button
+            onClick={handleNext}
+            style={{
+              fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 16,
+              cursor: 'pointer', border: 'none', borderRadius: 999, padding: '13px 30px',
+              color: '#fff', background: `linear-gradient(180deg,${accentColor}cc,${accentColor}99)`,
+              boxShadow: `0 5px 0 ${accentColor}66`,
+              transition: 'transform .15s ease',
+            }}
+            onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+            onMouseLeave={e => e.currentTarget.style.transform = ''}
+            onMouseDown={e => { e.currentTarget.style.transform = 'translateY(2px)'; e.currentTarget.style.boxShadow = `0 2px 0 ${accentColor}66`; }}
+            onMouseUp={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = `0 5px 0 ${accentColor}66`; }}
+          >
+            {round + 1 >= totalRounds
+              ? (language === 'bm' ? 'Lihat Keputusan →' : 'See Results →')
+              : (language === 'bm' ? 'Seterusnya →' : 'Next →')}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
 
 export function ResultScreen({ score, totalRounds, onRetry, onBack, language, accentColor = '#2A9A6C', accentGradient = 'linear-gradient(135deg, #2A9A6C, #065F46)' }) {
   const pct = Math.round((score / totalRounds) * 100);
-  const star = pct >= 80 ? '🌟🌟🌟' : pct >= 50 ? '⭐⭐' : '⭐';
+  const star = pct >= 80 ? '⭐⭐⭐' : pct >= 50 ? '⭐⭐' : '⭐';
   const msg = pct >= 80
     ? (language === 'bm' ? 'Hebat! Teruskan!' : 'Great! Keep it up!')
     : pct >= 50
@@ -226,7 +327,7 @@ export function ResultScreen({ score, totalRounds, onRetry, onBack, language, ac
       alignItems: 'center', justifyContent: 'center',
       padding: '2rem', textAlign: 'center', gap: '1.25rem',
     }}>
-      <div style={{ fontSize: '3rem' }}>{star}</div>
+      <div style={{ fontSize: 'clamp(2rem,6vw,3.5rem)', letterSpacing: 4 }}>{star}</div>
       <h2 style={{
         fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
         fontSize: 'clamp(1.4rem, 4vw, 2rem)',

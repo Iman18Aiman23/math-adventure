@@ -154,8 +154,8 @@ export default function AlQuranTajwidModule({ onSelectTopic, language = 'bm' }) 
           box-shadow: 0 22px 48px -14px rgba(146,64,14,.32);
         }
         .aq-stage {
-          width: 170px;
-          height: 170px;
+          width: min(170px, 65vw);
+          height: min(170px, 65vw);
           border-radius: 24px;
           display: flex;
           align-items: center;

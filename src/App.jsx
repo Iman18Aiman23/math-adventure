@@ -127,6 +127,7 @@ const JawiKVLearningPage   = React.lazy(() => import('./components/PendidikanIsl
 const JawiKVKLearningPage  = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module6_Jawi/JawiKVKLearningPage'));
 const JawiAlphabetPage     = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module6_Jawi/JawiAlphabetPage'));
 const JawiWordsPage        = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module6_Jawi/JawiWordsPage'));
+const JawiSyllablesGame    = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module6_Jawi/JawiSyllablesGame'));
 
 // Tahun 2
 const AlQuranTajwidHadisModule = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module1_AlQuranTajwidHadis/AlQuranTajwidHadisModule'));
@@ -154,6 +155,7 @@ const AdabBerkawan        = React.lazy(() => import('./components/PendidikanIsla
 const JawiModuleT2        = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module6_Jawi/JawiModule'));
 const SukuKataTertutup    = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module6_Jawi/SukuKataTertutup'));
 const RangkaiKataJawi     = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module6_Jawi/RangkaiKataJawi'));
+const AyatPendekJawi      = React.lazy(() => import('./components/PendidikanIslamPage/Tahun2/Module6_Jawi/AyatPendekJawi'));
 import TahunModulePage from './components/PendidikanIslamPage/TahunModulePage';
 const AchievementHome  = React.lazy(() => import('./components/Achievement/AchievementHome'));
 const LeaderboardHome  = React.lazy(() => import('./components/Leaderboard/LeaderboardHome'));
@@ -435,6 +437,8 @@ export default function App() {
         if (islamModule === 'jawi'       && islamTopic === 'suku-kata-terbuka-jawi'){return <JawiKVKLearningPage onBack={() => setIslamTopic(null)} language={language} />; }
         if (islamModule === 'jawi'       && islamTopic === 'jawi-alphabet')     { return <JawiAlphabetPage onBack={() => setIslamTopic(null)} language={language} />; }
         if (islamModule === 'jawi'       && islamTopic === 'jawi-100-words')    { return <JawiWordsPage    onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === 'jawi'       && islamTopic === 'jawi-suku-kata-game'){return <JawiSyllablesGame onBack={() => setIslamTopic(null)} onHome={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === '2-jawi'     && islamTopic === 'jawi-ayat-pendek')  { return <AyatPendekJawi   onBack={() => setIslamTopic(null)} language={language} />; }
 
         // ── Hub + Nav page (islamModule set, no topic) ──
         if (islamModule) {

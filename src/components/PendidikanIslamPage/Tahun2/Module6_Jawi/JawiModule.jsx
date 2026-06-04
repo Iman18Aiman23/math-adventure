@@ -52,6 +52,26 @@ const topics = [
       </svg>
     ),
   },
+  {
+    id: 'jawi-ayat-pendek',
+    pill: 'TOPIK 6.3',
+    title: 'Tahap 3 (Ayat Pendek)',
+    desc: 'Gabungan perkataan (Contoh: Buku Baru)',
+    visual: (
+      <svg viewBox="0 0 100 100">
+        <rect x="10" y="14" width="80" height="72" rx="12" fill="#FFFDF8" stroke="rgba(249,115,22,0.35)" strokeWidth="2" />
+        <rect x="10" y="14" width="80" height="16" rx="12" fill="#F97316" />
+        <rect x="10" y="20" width="80" height="10" fill="#F97316" />
+        <text x="50" y="26" textAnchor="middle" fontFamily="'Fredoka',sans-serif" fontSize="8" fontWeight="700" fill="#fff">TOPIK 6.3</text>
+        <text x="35" y="48" textAnchor="middle" fontFamily={ARABIC_FONT} fontSize="14" fontWeight="700" fill="#9A3412">بوكو</text>
+        <text x="65" y="48" textAnchor="middle" fontFamily={ARABIC_FONT} fontSize="14" fontWeight="700" fill="#9A3412">بارو</text>
+        <rect x="20" y="58" width="60" height="10" rx="5" fill="#F97316" opacity=".12" />
+        <text x="50" y="66" textAnchor="middle" fontFamily="'Fredoka',sans-serif" fontSize="6.5" fontWeight="700" fill="#9A3412">Buku Baru</text>
+        <circle cx="34" cy="78" r="1.3" fill="#F97316" opacity=".5" />
+        <circle cx="66" cy="78" r="1.3" fill="#F97316" opacity=".5" />
+      </svg>
+    ),
+  },
 ];
 
 export default function JawiModule({ onBack, onSelectTopic, language = 'bm' }) {

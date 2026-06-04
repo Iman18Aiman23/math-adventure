@@ -134,17 +134,17 @@ export default function JawiKVLearningPage({ onBack, language }) {
         <style>{`
           .jawi-kv-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-          }
-          @media (min-width: 500px) { .jawi-kv-grid { grid-template-columns: repeat(4, 1fr); gap: 14px; } }
-          @media (min-width: 760px) { .jawi-kv-grid { grid-template-columns: repeat(5, 1fr); gap: 16px; } }
-          .jawi-kv-letter-tile {
-            position: relative; border: 0; padding: 0;
-            aspect-ratio: 1 / 1.05; width: 100%;
-            container-type: inline-size;
-            border-radius: 24px; cursor: pointer; font-family: inherit;
-            overflow: hidden;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 12px;
+        }
+        @media (max-width: 400px) { .jawi-kv-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
+        @media (min-width: 500px) { .jawi-kv-grid { grid-template-columns: repeat(4, 1fr); gap: 14px; } }
+        @media (min-width: 760px) { .jawi-kv-grid { grid-template-columns: repeat(5, 1fr); gap: 16px; } }
+        .jawi-kv-letter-tile {
+          position: relative; border: 0; padding: 0;
+          aspect-ratio: 1 / 1.05; width: 100%;
+          container-type: inline-size;
+          border-radius: 24px; cursor: pointer; font-family: inherit;
             transition: transform .25s cubic-bezier(.34,1.56,.64,1);
             -webkit-tap-highlight-color: transparent;
             animation: jawiKvTileIn .5s cubic-bezier(.34,1.56,.64,1) forwards;
