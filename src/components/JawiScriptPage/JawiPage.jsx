@@ -5,7 +5,7 @@ import { useGameStateContext } from '../../App';
 
 import JawiMatchGame from './JawiMatchGame';
 import JawiSyllablesLearningPage from './JawiSyllablesLearningPage';
-import Jawi100WordsGame from './Jawi100WordsGame';
+import Jawi100WordsGame from '../PendidikanIslamPage/Tahun1/Module6_Jawi/Jawi100WordsGame';
 import JawiShortStoriesPage from './JawiShortStoriesPage';
 import IqraPage from './IqraPage';
 import PageLayout from '../PageLayout';

@@ -926,16 +926,16 @@
     --accent: #1E72D6;
 }
 .pi-year.t3 {
-    --soft: #F0F2F6;
-    --ring: #D5DCE6;
-    --sh: rgba(70,88,110,.26);
-    --d1: #EAEDF2;
-    --d2: #BCC6D3;
-    --d3: #8C9AAB;
-    --r1: #A7B6C6;
-    --r2: #7C8D9E;
-    --r3: #5A6B7C;
-    --accent: #7C8D9E;
+    --soft: #F3EEFF;
+    --ring: #D5C6F7;
+    --sh: rgba(109,60,185,.32);
+    --d1: #EDE5FF;
+    --d2: #B794F4;
+    --d3: #805AD5;
+    --r1: #B794F4;
+    --r2: #805AD5;
+    --r3: #6B46C1;
+    --accent: #805AD5;
 }
 
 @media (max-width: 560px) {

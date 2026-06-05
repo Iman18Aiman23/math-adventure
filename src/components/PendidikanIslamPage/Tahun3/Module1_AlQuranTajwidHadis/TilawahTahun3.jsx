@@ -12,76 +12,76 @@ const BASMALAH_FILE = 'basmalah';
 
 const SURAHS = [
   {
-    id: 'an-nasr', num: 110,
-    arabicName: 'ٱلنَّصْر', name: 'An-Nasr',
-    meaning: 'Pertolongan', meaningEng: 'Divine Support',
+    id: 'al-fil', num: 105,
+    arabicName: 'ٱلْفِيل', name: 'Al-Fil',
+    meaning: 'Gajah', meaningEng: 'The Elephant',
     basmalahHeader: true,
     gradient: 'linear-gradient(135deg, #FFF7D6 0%, #FDD97A 55%, #D4960A 100%)',
     color: '#92400E', accent: '#F59E0B', border: 'rgba(212,150,10,0.5)', glow: 'rgba(212,150,10,0.3)',
     ayahs: [
-      { n: 1, ar: 'إِذَا جَاءَ نَصْرُ اللَّهِ وَالْفَتْحُ', rumi: 'Iza ja-a nasru Allahi wal fath', ms: 'Apabila datang pertolongan Allah dan kemenangan,', en: 'When the victory of Allah has come and the conquest,' },
-      { n: 2, ar: 'وَرَأَيْتَ النَّاسَ يَدْخُلُونَ فِي دِينِ اللَّهِ أَفْوَاجًا', rumi: 'Wa ra-aytan naasa yadkhuluna fi deenillahi afwaja', ms: 'dan engkau melihat manusia masuk ke dalam agama Allah berbondong-bondong,', en: 'and you see the people entering into the religion of Allah in multitudes,' },
-      { n: 3, ar: 'فَسَبِّحْ بِحَمْدِ رَبِّكَ وَاسْتَغْفِرْهُ ۚ إِنَّهُ كَانَ تَوَّابًا', rumi: 'Fa sabbih bihamdi rabbika wastaghfirh, innahu kana tawwaba', ms: 'maka bertasbihlah dengan memuji Tuhanmu dan mohonlah ampun kepada-Nya. Sesungguhnya Dia Maha Penerima taubat.', en: 'then exalt [Him] with praise of your Lord and ask forgiveness of Him. Indeed, He is ever Accepting of repentance.' },
+      { n: 1, ar: 'أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ بِأَصْحَابِ الْفِيلِ', rumi: 'Alam tara kayfa fa\'ala rabbuka bi as-habil feel', ms: 'Tidakkah engkau perhatikan bagaimana Tuhanmu bertindak terhadap tentera bergajah?', en: 'Have you not considered how your Lord dealt with the companions of the elephant?' },
+      { n: 2, ar: 'أَلَمْ يَجْعَلْ كَيْدَهُمْ فِي تَضْلِيلٍ', rumi: 'Alam yaj\'al kaydahum fee tadleel', ms: 'Bukankah Dia telah menjadikan rancangan mereka gagal?', en: 'Did He not make their plan go astray?' },
+      { n: 3, ar: 'وَأَرْسَلَ عَلَيْهِمْ طَيْرًا أَبَابِيلَ', rumi: 'Wa arsala \'alayhim tayran ababeel', ms: 'dan Dia mengirimkan kepada mereka burung-burung yang berbondong-bondong,', en: 'And He sent against them birds in flocks,' },
+      { n: 4, ar: 'تَرْمِيهِم بِحِجَارَةٍ مِّن سِجِّيلٍ', rumi: 'Tarmeehim bi hijaratin min sijjeel', ms: 'yang melempari mereka dengan batu dari tanah liat yang dibakar,', en: 'Striking them with stones of baked clay,' },
+      { n: 5, ar: 'فَجَعَلَهُمْ كَعَصْفٍ مَّأْكُولٍ', rumi: 'Faja\'alahum ka\'asfim ma\'kool', ms: 'lalu Dia menjadikan mereka seperti daun-daun yang dimakan (ulat).', en: 'And He made them like eaten straw.' },
     ],
   },
   {
-    id: 'al-kawthar', num: 108,
-    arabicName: 'ٱلْكَوْثَر', name: 'Al-Kawthar',
-    meaning: 'Nikmat Berlimpah', meaningEng: 'Abundance',
+    id: 'al-humazah', num: 104,
+    arabicName: 'ٱلْهُمَزَة', name: 'Al-Humazah',
+    meaning: 'Pengumpat', meaningEng: 'The Slanderer',
     basmalahHeader: true,
     gradient: 'linear-gradient(135deg, #D6F5DD 0%, #8AD9A8 55%, #2A9A6C 100%)',
     color: '#065F46', accent: '#10B981', border: 'rgba(42,154,108,0.5)', glow: 'rgba(42,154,108,0.3)',
     ayahs: [
-      { n: 1, ar: 'إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ', rumi: 'Inna a\'tainakal kawthar', ms: 'Sesungguhnya Kami telah memberimu (Nabi Muhammad) al-Kawthar,', en: 'Indeed, We have granted you, [O Muhammad], al-Kawthar,' },
-      { n: 2, ar: 'فَصَلِّ لِرَبِّكَ وَانْحَرْ', rumi: 'Fa salli li rabbika wanhar', ms: 'maka dirikanlah solat kerana Tuhanmu dan berkorbanlah,', en: 'So pray to your Lord and sacrifice [to Him alone],' },
-      { n: 3, ar: 'إِنَّ شَانِئَكَ هُوَ الْأَبْتَرُ', rumi: 'Inna shani\'aka huwal abtar', ms: 'sesungguhnya orang yang membencimu, dialah yang terputus.', en: 'Indeed, your enemy is the one cut off.' },
+      { n: 1, ar: 'وَيْلٌ لِّكُلِّ هُمَزَةٍ لُّمَزَةٍ', rumi: 'Waylun li kulli humazatil lumazah', ms: 'Kecelakaanlah bagi setiap pencaci dan pengumpat,', en: 'Woe to every slanderer and backbiter,' },
+      { n: 2, ar: 'الَّذِي جَمَعَ مَالًا وَعَدَّدَهُ', rumi: 'Alladhi jama\'a malan wa \'addadah', ms: 'yang mengumpulkan harta dan menghitung-hitungnya,', en: 'Who collects wealth and counts it,' },
+      { n: 3, ar: 'يَحْسَبُ أَنَّ مَالَهُ أَخْلَدَهُ', rumi: 'Yahsabu anna maalahu akhladah', ms: 'dia menyangka hartanya itu dapat mengekalkannya,', en: 'He thinks that his wealth will make him immortal,' },
+      { n: 4, ar: 'كَلَّا ۖ لَيُنۢبَذَنَّ فِي الْحُطَمَةِ', rumi: 'Kalla, layunbadhanna fil hutamah', ms: 'sekali-kali tidak! Sesungguhnya dia akan dicampakkan ke dalam al-Hutamah,', en: 'No! He will surely be thrown into the Crusher,' },
+      { n: 5, ar: 'وَمَا أَدْرَاكَ مَا الْحُطَمَةُ', rumi: 'Wa ma adraka mal hutamah', ms: 'dan tahukah engkau apa al-Hutamah itu?', en: 'And what can make you know what the Crusher is?' },
+      { n: 6, ar: 'نَارُ اللَّهِ الْمُوقَدَةُ', rumi: 'Narullahil mooqadah', ms: '(Iaitu) api Allah yang dinyalakan,', en: 'It is the fire of Allah, [eternally] fueled,' },
+      { n: 7, ar: 'الَّتِي تَطَّلِعُ عَلَى الْأَفْئِدَةِ', rumi: 'Allatee tattali\'u \'alal af\'idah', ms: 'yang menjulang naik ke hati,', en: 'Which mounts directed at the hearts,' },
+      { n: 8, ar: 'إِنَّهَا عَلَيْهِم مُّؤْصَدَةٌ', rumi: 'Innaha \'alayhim mu\'sadah', ms: 'sesungguhnya api itu ditutup rapat (mengepung) mereka,', en: 'Indeed, it will be closed down upon them,' },
+      { n: 9, ar: 'فِي عَمَدٍ مُّمَدَّدَةٍ', rumi: 'Fee \'amadim mumaddadah', ms: 'dalam tiang-tiang yang panjang.', en: 'In extended columns.' },
     ],
   },
   {
-    id: 'al-kafirun', num: 109,
-    arabicName: 'ٱلْكَافِرُون', name: 'Al-Kafirun',
-    meaning: 'Orang-orang Kafir', meaningEng: 'The Disbelievers',
+    id: 'at-takathur', num: 102,
+    arabicName: 'ٱلتَّكَاثُر', name: 'At-Takathur',
+    meaning: 'Bermegah-megahan', meaningEng: 'The Rivalry',
     basmalahHeader: true,
     gradient: 'linear-gradient(135deg, #D6EEFF 0%, #6BAEE8 55%, #2563EB 100%)',
     color: '#1E40AF', accent: '#3B82F6', border: 'rgba(37,99,235,0.5)', glow: 'rgba(37,99,235,0.3)',
     ayahs: [
-      { n: 1, ar: 'قُلْ يَا أَيُّهَا الْكَافِرُونَ', rumi: 'Qul ya ayyuhal kafirun', ms: 'Katakanlah (Nabi Muhammad): "Wahai orang-orang kafir!', en: 'Say, "O disbelievers,' },
-      { n: 2, ar: 'لَا أَعْبُدُ مَا تَعْبُدُونَ', rumi: 'La a\'budu ma ta\'budun', ms: 'aku tidak menyembah apa yang kamu sembah,', en: 'I do not worship what you worship,' },
-      { n: 3, ar: 'وَلَا أَنتُمْ عَابِدُونَ مَا أَعْبُدُ', rumi: 'Wa la antum \'abiduna ma a\'bud', ms: 'dan kamu bukan penyembah Tuhan yang aku sembah,', en: 'nor are you worshippers of what I worship,' },
-      { n: 4, ar: 'وَلَا أَنَا عَابِدٌ مَّا عَبَدتُّمْ', rumi: 'Wa la ana \'abidum ma \'abattum', ms: 'dan aku tidak akan pernah menyembah apa yang kamu sembah,', en: 'nor will I be a worshipper of what you worship,' },
-      { n: 5, ar: 'وَلَا أَنتُمْ عَابِدُونَ مَا أَعْبُدُ', rumi: 'Wa la antum \'abiduna ma a\'bud', ms: 'dan kamu tidak akan (pula) menjadi penyembah Tuhan yang aku sembah,', en: 'nor will you be worshippers of what I worship,' },
-      { n: 6, ar: 'لَكُمْ دِينُكُمْ وَلِيَ دِينِ', rumi: 'Lakum deenukum wa liya deen', ms: 'untukmu agamamu, dan untukku agamaku.', en: 'For you is your religion, and for me is my religion.' },
+      { n: 1, ar: 'أَلْهَاكُمُ التَّكَاثُرُ', rumi: 'Alhakumut takathur', ms: 'Kamu telah dilalaikan oleh bermegah-megahan,', en: 'Competition in [worldly] increase diverts you,' },
+      { n: 2, ar: 'حَتَّىٰ زُرْتُمُ الْمَقَابِرَ', rumi: 'Hatta zurtumul maqabir', ms: 'sampai kamu masuk ke dalam kubur.', en: 'Until you visit the graveyards.' },
+      { n: 3, ar: 'كَلَّا سَوْفَ تَعْلَمُونَ', rumi: 'Kalla sawfa ta\'lamoon', ms: 'Sekali-kali tidak! Kelak kamu akan mengetahui (akibat perbuatanmu),', en: 'No! You are going to know.' },
+      { n: 4, ar: 'ثُمَّ كَلَّا سَوْفَ تَعْلَمُونَ', rumi: 'Thumma kalla sawfa ta\'lamoon', ms: 'kemudian sekali-kali tidak! Kelak kamu akan mengetahui,', en: 'Then no! You are going to know.' },
+      { n: 5, ar: 'كَلَّا لَوْ تَعْلَمُونَ عِلْمَ الْيَقِينِ', rumi: 'Kalla law ta\'lamoona \'ilmal yaqeen', ms: 'Sekali-kali tidak! Sekiranya kamu mengetahui dengan pengetahuan yang yakin,', en: 'No! If you only knew with knowledge of certainty,' },
+      { n: 6, ar: 'لَتَرَوُنَّ الْجَحِيمَ', rumi: 'Latarawnnal jaheem', ms: 'nescaya kamu akan melihat neraka Jahim,', en: 'You will surely see the Hellfire,' },
+      { n: 7, ar: 'ثُمَّ لَتَرَوُنَّهَا عَيْنَ الْيَقِينِ', rumi: 'Thumma latarawnnaha \'aynal yaqeen', ms: 'kemudian kamu benar-benar akan melihatnya dengan mata kepala sendiri,', en: 'Then you will surely see it with the eye of certainty,' },
+      { n: 8, ar: 'ثُمَّ لَتُسْأَلُنَّ يَوْمَئِذٍ عَنِ النَّعِيمِ', rumi: 'Thumma latus\'alunna yawma\'idhin \'anin na\'eem', ms: 'kemudian kamu pasti akan ditanya pada hari itu tentang kenikmatan (yang kamu sia-siakan).', en: 'Then you will surely be asked that Day about pleasure.' },
     ],
   },
   {
-    id: 'al-quraysh', num: 106,
-    arabicName: 'قُرَيْش', name: 'Al-Quraysh',
-    meaning: 'Suku Quraisy', meaningEng: 'Quraysh',
+    id: 'al-qariah', num: 101,
+    arabicName: 'ٱلْقَارِعَة', name: 'Al-Qari\'ah',
+    meaning: 'Hari Kiamat', meaningEng: 'The Striking Calamity',
     basmalahHeader: true,
     gradient: 'linear-gradient(135deg, #E7D9FF 0%, #B79CFF 55%, #7A55E0 100%)',
     color: '#4C1D95', accent: '#8B5CF6', border: 'rgba(122,85,224,0.5)', glow: 'rgba(122,85,224,0.3)',
     ayahs: [
-      { n: 1, ar: 'لِإِيلَافِ قُرَيْشٍ', rumi: 'Li-eelafi quraish', ms: 'Disebabkan kebiasaan (aman) orang Quraisy,', en: 'For the security of Quraysh,' },
-      { n: 2, ar: 'إِيلَافِهِمْ رِحْلَةَ الشِّتَاءِ وَالصَّيْفِ', rumi: 'Eelafihim rihlatash shita-i was saif', ms: 'iaitu kebiasaan mereka melakukan perjalanan pada musim sejuk dan musim panas,', en: 'Their security during winter and summer journeys,' },
-      { n: 3, ar: 'فَلْيَعْبُدُوا رَبَّ هَذَا الْبَيْتِ', rumi: 'Falya\'budu rabba haazal bayt', ms: 'maka hendaklah mereka menyembah Tuhan (Pemilik) rumah ini (Kaabah),', en: 'Let them worship the Lord of this House,' },
-      { n: 4, ar: 'الَّذِي أَطْعَمَهُم مِّن جُوعٍ وَآمَنَهُم مِّنْ خَوْفٍ', rumi: 'Alladhee at\'amahum min joo\'in wa aamanahum min khawf', ms: 'yang memberi mereka makanan untuk menghilangkan lapar dan mengamankan mereka dari ketakutan.', en: 'Who has fed them against hunger and made them safe from fear.' },
-    ],
-  },
-  {
-    id: 'al-maun', num: 107,
-    arabicName: 'ٱلْمَاعُون', name: 'Al-Ma\'un',
-    meaning: 'Bantuan', meaningEng: 'Small Kindness',
-    basmalahHeader: true,
-    gradient: 'linear-gradient(135deg, #FFE9F3 0%, #FFBFDD 55%, #FF8CBF 100%)',
-    color: '#9D174D', accent: '#EC4899', border: 'rgba(236,72,153,0.5)', glow: 'rgba(236,72,153,0.3)',
-    ayahs: [
-      { n: 1, ar: 'أَرَأَيْتَ الَّذِي يُكَذِّبُ بِالدِّينِ', rumi: 'Ara-aital ladhee yukazzibu bid deen', ms: 'Tahukah engkau akan orang yang mendustakan agama?', en: 'Have you seen the one who denies the Recompense?' },
-      { n: 2, ar: 'فَذَٰلِكَ الَّذِي يَدُعُّ الْيَتِيمَ', rumi: 'Fazalikal ladhee yadu\'ul yateem', ms: 'Itulah orang yang menghardik anak yatim,', en: 'For that is the one who drives away the orphan,' },
-      { n: 3, ar: 'وَلَا يَحُضُّ عَلَىٰ طَعَامِ الْمِسْكِينِ', rumi: 'Wa la yahuddu \'ala ta\'amil miskeen', ms: 'dan tidak mendorong untuk memberi makan orang miskin.', en: 'and does not encourage the feeding of the poor.' },
-      { n: 4, ar: 'فَوَيْلٌ لِّلْمُصَلِّينَ', rumi: 'Fa waylun lil musalleen', ms: 'Maka celakalah orang yang solat,', en: 'So woe to those who pray,' },
-      { n: 5, ar: 'الَّذِينَ هُمْ عَن صَلَاتِهِمْ سَاهُونَ', rumi: 'Alladheena hum \'an salatihim sahoon', ms: 'iaitu mereka yang lalai dalam solatnya,', en: '[But] who are heedless of their prayer,' },
-      { n: 6, ar: 'الَّذِينَ هُمْ يُرَاءُونَ', rumi: 'Alladheena hum yuraa\'oon', ms: 'yang berbuat kerana ingin dipuji,', en: 'those who make show [of their deeds],' },
-      { n: 7, ar: 'وَيَمْنَعُونَ الْمَاعُونَ', rumi: 'Wa yamna\'oonal ma\'oon', ms: 'dan enggan memberi bantuan.', en: 'and withhold [simple] assistance.' },
+      { n: 1, ar: 'ٱلْقَارِعَةُ', rumi: 'Al qari\'ah', ms: 'Hari Kiamat,', en: 'The Striking Calamity,' },
+      { n: 2, ar: 'مَا الْقَارِعَةُ', rumi: 'Mal qari\'ah', ms: 'apakah hari Kiamat itu?', en: 'What is the Striking Calamity?' },
+      { n: 3, ar: 'وَمَا أَدْرَاكَ مَا الْقَارِعَةُ', rumi: 'Wa ma adraka mal qari\'ah', ms: 'dan tahukah engkau apakah hari Kiamat itu?', en: 'And what can make you know what the Striking Calamity is?' },
+      { n: 4, ar: 'يَوْمَ يَكُونُ النَّاسُ كَالْفَرَاشِ الْمَبْثُوثِ', rumi: 'Yawma yakoonun naasu kalfarashil mabthooth', ms: 'Pada hari itu manusia seperti anai-anai yang bertebaran,', en: 'It is the Day when people will be like scattered moths,' },
+      { n: 5, ar: 'وَتَكُونُ الْجِبَالُ كَالْعِهْنِ الْمَنفُوشِ', rumi: 'Wa takoonul jibalu kal\'ihnil manfoosh', ms: 'dan gunung-gunung seperti bulu yang dihambur-hamburkan,', en: 'And the mountains will be like carded wool,' },
+      { n: 6, ar: 'فَأَمَّا مَن ثَقُلَتْ مَوَازِينُهُ', rumi: 'Fa amma man thaqulat mawazeenuh', ms: 'maka sesiapa yang berat timbangan (kebaikan)nya,', en: 'Then as for one whose scales are heavy [with good deeds],' },
+      { n: 7, ar: 'فَهُوَ فِي عِيشَةٍ رَّاضِيَةٍ', rumi: 'Fahuwa fee \'eeshatin raadiyah', ms: 'maka dia berada dalam kehidupan yang memuaskan,', en: 'He will be in a pleasant life.' },
+      { n: 8, ar: 'وَأَمَّا مَنْ خَفَّتْ مَوَازِينُهُ', rumi: 'Wa amma man khaffat mawazeenuh', ms: 'dan sesiapa yang ringan timbangan (kebaikan)nya,', en: 'But as for one whose scales are light,' },
+      { n: 9, ar: 'فَأُمُّهُ هَاوِيَةٌ', rumi: 'Fa ummuhu hawiyah', ms: 'maka tempat kembalinya adalah neraka Hawiyah,', en: 'His refuge will be an abyss.' },
+      { n: 10, ar: 'وَمَا أَدْرَاكَ مَا هِيَهْ', rumi: 'Wa ma adraka ma hiyah', ms: 'dan tahukah engkau apakah neraka Hawiyah itu?', en: 'And what can make you know what that is?' },
+      { n: 11, ar: 'نَارٌ حَامِيَةٌ', rumi: 'Narun hamiyah', ms: '(Iaitu) api yang sangat panas.', en: 'It is a Fire, intensely hot.' },
     ],
   },
 ];
@@ -245,9 +245,9 @@ function BacaView({ surah, surahs, language, rec, dropdownRef, dropdownOpen, set
               <button
                 key={s.id}
                 onClick={() => { setDropdownOpen(false); if (s.id !== surah.id) { rec.stop(); onSelectSurah(s.id); } }}
-                style={{ display: 'block', width: '100%', textAlign: 'left', fontFamily: "'Fredoka', sans-serif", fontWeight: s.id === surah.id ? 700 : 500, fontSize: '0.82rem', padding: '8px 14px', border: 'none', background: s.id === surah.id ? 'rgba(37,99,235,0.1)' : '#fff', color: s.id === surah.id ? '#1E40AF' : 'var(--pi-ink)', cursor: 'pointer' }}
-                onMouseEnter={e => e.target.style.background = s.id === surah.id ? 'rgba(37,99,235,0.1)' : 'rgba(0,0,0,0.04)'}
-                onMouseLeave={e => e.target.style.background = s.id === surah.id ? 'rgba(37,99,235,0.1)' : '#fff'}
+                style={{ display: 'block', width: '100%', textAlign: 'left', fontFamily: "'Fredoka', sans-serif", fontWeight: s.id === surah.id ? 700 : 500, fontSize: '0.82rem', padding: '8px 14px', border: 'none', background: s.id === surah.id ? 'rgba(122,85,224,0.1)' : '#fff', color: s.id === surah.id ? '#4C1D95' : 'var(--pi-ink)', cursor: 'pointer' }}
+                onMouseEnter={e => e.target.style.background = s.id === surah.id ? 'rgba(122,85,224,0.1)' : 'rgba(0,0,0,0.04)'}
+                onMouseLeave={e => e.target.style.background = s.id === surah.id ? 'rgba(122,85,224,0.1)' : '#fff'}
               >
                 <span style={{ fontFamily: ARABIC_FONT, fontSize: '0.85rem', marginRight: 8 }}>{s.arabicName}</span>
                 {s.name}
@@ -447,7 +447,7 @@ function SurahDetail({ surah, surahs, language, onSelectSurah }) {
   );
 }
 
-export default function TilawahTahun2({ onBack, language = 'bm' }) {
+export default function TilawahTahun3({ onBack, language = 'bm' }) {
   const [selected, setSelected] = useState(SURAHS[0].id);
   const surah = SURAHS.find(s => s.id === selected);
 
@@ -455,7 +455,7 @@ export default function TilawahTahun2({ onBack, language = 'bm' }) {
     <Tahun1LessonLayout
       onBack={onBack}
       language={language}
-      breadcrumb="Al-Quran & Tajwid › Topik 1.4"
+      breadcrumb="Al-Quran & Tajwid › Topik 1.2"
       title={language === 'bm' ? 'Tilawah & Hafazan' : 'Recitation & Memorization'}
       accentColor="#D4960A"
     >

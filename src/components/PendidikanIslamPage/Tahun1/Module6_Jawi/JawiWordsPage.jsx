@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { JAWI_TOPICS } from '../../../../utils/jawiWordsData';
 import BackButton from '../../../BackButton';
 import { FONT_IMPORT } from '../../_shared/arabic';
-import JawiAlphabetPage from './JawiAlphabetPage';
+import Jawi100WordsGame from './Jawi100WordsGame';
 
 const THEME = {
   pageGradient: 'linear-gradient(180deg,#ECFDF5 0%,#D1FAE5 50%,#A7F3D0 100%)',
@@ -94,11 +94,29 @@ function SvgSifatRasa() {
   );
 }
 
+function SvgTypingQuiz() {
+  return (
+    <svg viewBox="0 0 100 100" fill="none">
+      <ellipse cx="50" cy="90" rx="24" ry="4" fill="rgba(6,95,70,.16)"/>
+      <g className="floatA">
+        <rect x="22" y="30" width="56" height="40" rx="8" fill="#fff"/>
+        <rect x="22" y="30" width="56" height="8" rx="8" fill="#34D399" opacity=".5"/>
+        <line x1="32" y1="48" x2="68" y2="48" stroke="#065F46" strokeWidth="2" strokeLinecap="round" opacity=".2"/>
+        <line x1="40" y1="58" x2="62" y2="58" stroke="#065F46" strokeWidth="2" strokeLinecap="round" opacity=".15"/>
+        <rect x="38" y="55" width="24" height="20" rx="4" fill="#34D399" opacity=".2"/>
+        <text x="50" y="71" textAnchor="middle" fontFamily="'Fredoka',sans-serif" fontWeight="700" fontSize="11" fill="#fff">JK</text>
+      </g>
+      <circle cx="77" cy="28" r="10" fill="#FCD34D" className="pulse" opacity=".7"/>
+      <path d="M73 28 L76 31 L82 24" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
 const SVGS = [SvgKataKerja, SvgAnggotaBadan, SvgObjekAlatan, SvgAlamHaiwan, SvgSifatRasa];
 
 export default function JawiWordsPage({ onBack, language = 'bm' }) {
   const [selectedTopic, setSelectedTopic] = useState(null);
-  const [showAlphabet, setShowAlphabet] = useState(false);
+  const [showTypingQuiz, setShowTypingQuiz] = useState(false);
 
   useEffect(() => {
     if (selectedTopic) {
@@ -109,8 +127,8 @@ export default function JawiWordsPage({ onBack, language = 'bm' }) {
     return () => { document.body.style.overflow = ''; };
   }, [selectedTopic]);
 
-  if (showAlphabet) {
-    return <JawiAlphabetPage onBack={() => setShowAlphabet(false)} language={language} />;
+  if (showTypingQuiz) {
+    return <Jawi100WordsGame onBack={() => setShowTypingQuiz(false)} onHome={() => setShowTypingQuiz(false)} language={language} />;
   }
 
   return (
@@ -406,42 +424,15 @@ export default function JawiWordsPage({ onBack, language = 'bm' }) {
           </p>
         </header>
 
-        <div style={{ maxWidth: 200, margin: '30px auto 0' }}>
-          <button
-            className="jw-icon-card t-alphabet"
-            onClick={() => setShowAlphabet(true)}
-            type="button"
-            aria-label={language === 'bm' ? 'Alif Ba Ta' : 'Alif Ba Ta'}
-          >
-            <svg viewBox="0 0 200 200" fill="none">
-              <rect x="10" y="10" width="180" height="180" rx="30" fill="#fff" stroke="#9D4EDD" strokeWidth="4"/>
-              <rect x="38" y="40" width="124" height="120" rx="32" fill="#8E24AA"/>
-              <rect x="48" y="80" width="28" height="38" rx="5" fill="#FFF6E2" stroke="#5B3A0A" strokeWidth="2"/>
-              <rect x="48" y="80" width="28" height="8" rx="5" fill="rgba(255,255,255,.55)"/>
-              <text x="62" y="108" textAnchor="middle" fontFamily="'Baloo 2','Noto Sans Arabic',sans-serif" fontWeight="800" fontSize="24" fill="#5B3A0A">ت</text>
-              <g transform="rotate(-6 100 98)">
-                <rect x="86" y="76" width="28" height="38" rx="5" fill="#fff" stroke="#5B3A0A" strokeWidth="2"/>
-                <rect x="86" y="76" width="28" height="8" rx="5" fill="rgba(123,31,162,.18)"/>
-                <text x="100" y="104" textAnchor="middle" fontFamily="'Baloo 2','Noto Sans Arabic',sans-serif" fontWeight="800" fontSize="24" fill="#5B3A0A">ب</text>
-              </g>
-              <rect x="124" y="80" width="28" height="38" rx="5" fill="#FFE082" stroke="#7A4D02" strokeWidth="2"/>
-              <rect x="124" y="80" width="28" height="8" rx="5" fill="rgba(255,255,255,.55)"/>
-              <text x="138" y="108" textAnchor="middle" fontFamily="'Baloo 2','Noto Sans Arabic',sans-serif" fontWeight="800" fontSize="24" fill="#7A4D02">ا</text>
-              <text x="100" y="174" fontSize="13" fontFamily="'Fredoka','Baloo 2',sans-serif" fontWeight="700" fill="#7B1FA2" textAnchor="middle">Alif Ba Ta</text>
-            </svg>
-          </button>
-        </div>
 
-        <div className="jw-progress">
-          <span className="jw-dot"></span>
-          {JAWI_TOPICS.length} {language === 'bm' ? 'Topik Pembelajaran' : 'Learning Topics'}
-        </div>
+
+
         <h2 className="jw-sec-title">
           {language === 'bm' ? 'Topik Pembelajaran' : 'Learning Topics'}
         </h2>
-        <p className="jw-sec-sub">
-          {language === 'bm' ? 'Ketuk setiap kad untuk melihat perkataan' : 'Tap each card to see the words'}
-        </p>
+          <p className="jw-sec-sub">
+            {language === 'bm' ? 'Ketuk setiap kad untuk melihat perkataan' : 'Tap each card to see the words'}
+          </p>
 
         <div className="jw-grid">
           {JAWI_TOPICS.map((topic, idx) => (
@@ -465,6 +456,27 @@ export default function JawiWordsPage({ onBack, language = 'bm' }) {
               </p>
             </button>
           ))}
+
+          {/* Typing quiz card */}
+          <button
+            className="jw-card"
+            onClick={() => setShowTypingQuiz(true)}
+            style={{ borderColor: '#F59E0B44', background: 'linear-gradient(180deg,#FFF6E2,#FEF4E6)' }}
+          >
+            <span className="jw-num" style={{ background: 'linear-gradient(180deg,#FCD34D,#F59E0B)' }}>🎯</span>
+            <div className="jw-stage" style={{ background: 'radial-gradient(ellipse at 50% 32%,#FDE68A 0%,#FCD34D 55%,#F59E0B 100%)' }}>
+              <SvgTypingQuiz />
+            </div>
+            <p className="jw-csub" style={{ color: '#D97706' }}>
+              {language === 'bm' ? 'Cabaran Menulis' : 'Writing Challenge'}
+            </p>
+            <h3 className="jw-ctitle">
+              {language === 'bm' ? 'Taip Rumi dari Jawi' : 'Type Rumi from Jawi'}
+            </h3>
+            <p className="jw-cdesc">
+              {language === 'bm' ? 'Lihat Jawi, taip jawapan Rumi' : 'See Jawi, type the Rumi answer'}
+            </p>
+          </button>
         </div>
 
         <p className="jw-foot">ImanGenius · Pendidikan Islam</p>

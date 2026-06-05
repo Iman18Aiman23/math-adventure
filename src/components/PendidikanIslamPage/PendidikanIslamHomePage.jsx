@@ -19,8 +19,9 @@ const YEARS = [
   },
   {
     id: 3, labelBM: 'Tahun 3', labelEN: 'Year 3',
-    theme: 't3',
-    locked: true,
+    theme: 't3', emoji: '📕',
+    metaBM: '6 Modul · Mula belajar', metaEN: '6 Modules · Start learning',
+    locked: false,
   },
 ];
 

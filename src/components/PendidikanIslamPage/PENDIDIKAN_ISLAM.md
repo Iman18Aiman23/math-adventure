@@ -178,7 +178,7 @@
 | 1.2 | 3 large year cards with robot SVG discs (replaces tabs + module grid) | ✅ Complete |
 | 1.3 | .pi-year responsive grid — 3 col → 1 col at 840px | ✅ Complete |
 | 1.4 | Theme colours per year (.t1 green, .t2 blue, .t3 grey) | ✅ Complete |
-| 1.5 | Lock state for Tahun 3 — lock chip, grayscale robot, "Akan datang" | ✅ Complete |
+| 1.5 | Lock state for Tahun 3 — lock chip, grayscale robot, "Akan datang" (later removed — Tahun 3 now active) | ✅ Complete → Removed |
 | 1.6 | BackButton wired to return to HomePage | ✅ Complete |
 | 1.7 | SkyStars animated background effect | ✅ Complete |
 | 1.8 | Hover lift animation + disc scale + robot bounce | ✅ Complete |
@@ -292,50 +292,50 @@
 
 | # | Task | Status |
 |---|------|--------|
-| 4.1.1 | Topic 1.1 — Mim Sakinah (Ikhfa', Idgham, Izhar Syafawi) | ⏳ Pending |
-| 4.1.2 | Topic 1.2 — Tilawah & Hafazan | ⏳ Pending |
-| 4.1.3 | Topic 1.3 — Kefahaman Surah Al-Asr | ⏳ Pending |
-| 4.1.4 | Topic 1.4 — Hadis: Tuntutan Adab Islamiah | ⏳ Pending |
+| 4.1.1 | Topic 1.1 — Mim Sakinah (Ikhfa', Idgham, Izhar Syafawi) | ✅ Complete |
+| 4.1.2 | Topic 1.2 — Tilawah & Hafazan | ✅ Complete |
+| 4.1.3 | Topic 1.3 — Kefahaman Surah Al-Asr | ✅ Complete |
+| 4.1.4 | Topic 1.4 — Hadis: Tuntutan Adab Islamiah | ✅ Complete |
 
 #### Module 2: Akidah
 
 | # | Task | Status |
 |---|------|--------|
-| 4.2.1 | Topic 2.1 — Beriman kepada Kitab-Kitab Allah | ⏳ Pending |
-| 4.2.2 | Topic 2.2 — Al-Quran sebagai Panduan Hidup | ⏳ Pending |
-| 4.2.3 | Topic 2.3 — Asmaul Husna: Al-Alim & Al-Hakim | ⏳ Pending |
+| 4.2.1 | Topic 2.1 — Beriman kepada Kitab-Kitab Allah | ✅ Complete |
+| 4.2.2 | Topic 2.2 — Al-Quran sebagai Panduan Hidup | ✅ Complete |
+| 4.2.3 | Topic 2.3 — Asmaul Husna: Al-Alim & Al-Hakim | ✅ Complete |
 
 #### Module 3: Ibadah
 
 | # | Task | Status |
 |---|------|--------|
-| 4.3.1 | Topic 3.1 — Perkara Membatalkan Solat | ⏳ Pending |
-| 4.3.2 | Topic 3.2 — Khusyuk dalam Solat | ⏳ Pending |
-| 4.3.3 | Topic 3.3 — Fardu Ain vs Fardu Kifayah | ⏳ Pending |
+| 4.3.1 | Topic 3.1 — Perkara Membatalkan Solat | ✅ Complete |
+| 4.3.2 | Topic 3.2 — Khusyuk dalam Solat | ✅ Complete |
+| 4.3.3 | Topic 3.3 — Fardu Ain vs Fardu Kifayah | ✅ Complete |
 
 #### Module 4: Sirah
 
 | # | Task | Status |
 |---|------|--------|
-| 4.4.1 | Topic 4.1 — Hijrah ke Madinah | ⏳ Pending |
-| 4.4.2 | Topic 4.2 — Piagam Madinah | ⏳ Pending |
-| 4.4.3 | Topic 4.3 — Sifat Kepimpinan Nabi | ⏳ Pending |
+| 4.4.1 | Topic 4.1 — Hijrah ke Madinah | ✅ Complete |
+| 4.4.2 | Topic 4.2 — Piagam Madinah | ✅ Complete |
+| 4.4.3 | Topic 4.3 — Sifat Kepimpinan Nabi | ✅ Complete |
 
 #### Module 5: Adab & Akhlak
 
 | # | Task | Status |
 |---|------|--------|
-| 4.5.1 | Topic 5.1 — Adab Menuntut Ilmu | ⏳ Pending |
-| 4.5.2 | Topic 5.2 — Adab Menghormati Guru & Ibu Bapa | ⏳ Pending |
-| 4.5.3 | Topic 5.3 — Adab Menggunakan Kemudahan Awam | ⏳ Pending |
+| 4.5.1 | Topic 5.1 — Adab Menuntut Ilmu | ✅ Complete |
+| 4.5.2 | Topic 5.2 — Adab Menghormati Guru & Ibu Bapa | ✅ Complete |
+| 4.5.3 | Topic 5.3 — Adab Menggunakan Kemudahan Awam | ✅ Complete |
 
 #### Module 6: Celik Jawi
 
 | # | Task | Status |
 |---|------|--------|
-| 4.6.1 | Topic 6.1 — Imbuhan Awalan & Akhiran Jawi | ⏳ Pending |
-| 4.6.2 | Topic 6.2 — Teks/Petikan Jawi Pendek | ⏳ Pending |
-| 4.6.3 | Topic 6.3 — Tanda Baca Jawi | ⏳ Pending |
+| 4.6.1 | Topic 6.1 — Imbuhan Awalan & Akhiran Jawi | ✅ Complete |
+| 4.6.2 | Topic 6.2 — Teks/Petikan Jawi Pendek | ✅ Complete |
+| 4.6.3 | Topic 6.3 — Tanda Baca Jawi | ✅ Complete |
 
 ### Phase 5 — Redesign & Navigation
 
@@ -352,7 +352,7 @@
 
 ## 3. Homepage Visual Wireframe
 
-> **Note:** The current design uses a year-selector homepage (no hero banner, no year tabs, no module grid). Module navigation happens *after* selecting a year via `TahunModulePage` + `ModuleNavBar`.
+> **Note:** All 3 years are now unlocked. Module navigation happens *after* selecting a year via `TahunModulePage` + `ModuleNavBar`.
 
 ### Desktop (≥ 1024px)
 
@@ -367,18 +367,18 @@
 │                                                             │
 │              KLIK PADA ROBOT UNTUK MEMULAKAN...             │  ← hint
 │                                                             │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌────────────┐  │
-│  │    ┌───────┐    │  │    ┌───────┐    │  │  ┌──────┐  │  │
-│  │    │  🤖   │    │  │    │  🤖   │    │  │  │ 🔒  │  │  │
-│  │    └───────┘    │  │    └───────┘    │  │  │ 🤖  │  │  │
-│  │       📗        │  │       📘        │  │  └──────┘  │  │
-│  │   ┌─────────┐   │  │   ┌─────────┐   │  │  Tahun 3   │  │
-│  │   │ TAHUN 1 │   │  │   │ TAHUN 2 │   │  │ 🔒 Akan   │  │
-│  │   └─────────┘   │  │   └─────────┘   │  │   datang   │  │
-│  │  6 Modul · Mula │  │  6 Modul ·      │  └────────────┘  │
-│  │    belajar      │  │   Teruskan      │                   │
-│  │    Mula ▸       │  │    Mula ▸       │                   │
-│  └─────────────────┘  └─────────────────┘  └────────────┘  │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  │
+│  │    ┌───────┐    │  │    ┌───────┐    │  │    ┌───────┐    │  │
+│  │    │  🤖   │    │  │    │  🤖   │    │  │    │  🤖   │    │  │
+│  │    └───────┘    │  │    └───────┘    │  │    └───────┘    │  │
+│  │       📗        │  │       📘        │  │       📕        │  │
+│  │   ┌─────────┐   │  │   ┌─────────┐   │  │   ┌─────────┐   │  │
+│  │   │ TAHUN 1 │   │  │   │ TAHUN 2 │   │  │   │ TAHUN 3 │   │  │
+│  │   └─────────┘   │  │   └─────────┘   │  │   └─────────┘   │  │
+│  │  6 Modul · Mula │  │  6 Modul ·      │  │  6 Modul ·      │  │
+│  │    belajar      │  │   Teruskan      │  │   Mula belajar  │  │
+│  │    Mula ▸       │  │    Mula ▸       │  │    Mula ▸       │  │
+│  └─────────────────┘  └─────────────────┘  └─────────────────┘  │
 │                                                             │
 │  — each pi-year card has a large circular gradient disc     │
 │    (224×224px) with a robot SVG + radial gradient background│
@@ -420,45 +420,95 @@
 │  │         Mula ▸              │  │
 │  └─────────────────────────────┘  │
 │  ┌─────────────────────────────┐  │
-│  │     🔒                     │  │
 │  │      ┌───────────┐          │  │
 │  │      │    🤖     │          │  │
 │  │      └───────────┘          │  │
-│  │         TAHUN 3             │  │
-│  │      🔒 Akan datang         │  │
+│  │         📕                  │  │
+│  │     ┌──────────┐            │  │
+│  │     │  TAHUN 3 │            │  │
+│  │     └──────────┘            │  │
+│  │    6 Modul · Mula belajar   │  │
+│  │         Mula ▸              │  │
 │  └─────────────────────────────┘  │
 └───────────────────────────────────┘
 ```
 
-### Navigation Flow (after clicking a year)
+### Navigation Flow — Page Layout Structure (after clicking a year)
 
+#### Layout A — Year Selector Page (`PendidikanIslamHomePage`)
 ```
 ┌──────────────────────────────────────────────────┐
 │  PI HOME                                (above)  │
-│  Click "Tahun 1" or "Tahun 2"                    │
+│  Click "Tahun 1", "Tahun 2", or "Tahun 3"        │
 └──────────────────────┬───────────────────────────┘
                        │
                        ▼
-┌──────────────────────────────────────────────────┐
-│  TAHUNMODULEPAGE                                  │
-│  ┌──────────────────────────────────────────┐     │
-│  │  pi-top-bar (sticky top:0, z-index:110)  │     │
-│  │  [ ← back ]         Tahun  1             │     │
-│  ├──────────────────────────────────────────┤     │
-│  │  ModuleNavBar (sticky top:56, z-index:100)│     │
-│  │  ┌──────┬──────┬──────┬──────┬──────┬───┐ │     │
-│  │  │  1   │  2   │  3   │  4   │  5   │ 6 │ │     │
-│  │  │ Quran│Akidah│Ibadah│Sirah │ Adab │Jawi│ │     │
-│  │  └──────┴──────┴──────┴──────┴──────┴───┘ │     │
-│  ├──────────────────────────────────────────┤     │
-│  │  pi-module-content                        │     │
-│  │  ┌──────────────────────────────────────┐ │     │
-│  │  │  Module hub (e.g. AlQuranTajwid...)   │ │     │
-│  │  │  Title + topic cards with SVG visuals│ │     │
-│  │  │  Click topic → Tahun1LessonLayout    │ │     │
-│  │  └──────────────────────────────────────┘ │     │
-│  └──────────────────────────────────────────┘     │
-└──────────────────────────────────────────────────┘
+```
+#### Layout B — Module Hub Page (`TahunModulePage` + `Tahun1ModuleHubLayout`)
+```
+┌─────────────────────────────────────────────────────┐
+│  TAHUNMODULEPAGE                                    │
+│  ┌─────────────────────────────────────────────┐    │
+│  │  pi-top-bar (sticky top:0, z-index:110)     │    │
+│  │  [ ← back ]         Tahun  1                │    │
+│  ├─────────────────────────────────────────────┤    │
+│  │  ModuleNavBar (sticky top:56, z-index:100)   │    │
+│  │  ┌──────┬──────┬──────┬──────┬──────┬───┐   │    │
+│  │  │  1   │  2   │  3   │  4   │  5   │ 6 │   │    │
+│  │  │ Quran│Akidah│Ibadah│Sirah │ Adab │Jawi│   │    │
+│  │  └──────┴──────┴──────┴──────┴──────┴───┘   │    │
+│  ├─────────────────────────────────────────────┤    │
+│  │  pi-module-content                          │    │
+│  │  ┌──────────────────────────────────────┐   │    │
+│  │  │  MODULE HUB (e.g. AkidahModule)      │   │    │
+│  │  │  ┌──────────┬──────────┬──────────┐  │   │    │
+│  │  │  │TopicCard1│TopicCard2│TopicCard3│ …│   │    │
+│  │  │  │ [SVG]    │ [SVG]    │ [SVG]    │  │   │    │
+│  │  │  │ Rukun    │ Rukun    │ Dua      │  │   │    │
+│  │  │  │ Iman     │ Islam    │ Kalimah  │  │   │    │
+│  │  │  │          │          │ Syahadah │  │   │    │
+│  │  │  └──────────┴──────────┴──────────┘  │   │    │
+│  │  │  Click topic card ↓                   │   │    │
+│  │  └──────────────────────────────────────┘   │    │
+│  └─────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────┘
+                       │
+                       ▼
+```
+#### Layout C — Topic Lesson Page (`Tahun1LessonScrollLayout`)
+```
+┌─────────────────────────────────────────────────────┐
+│  TOPIC PAGE (e.g. RukunIman.jsx)                    │
+│                                                     │
+│  ┌──────────────────────────────────────────────┐   │
+│  │  scl-topbar (sticky)                         │   │
+│  │  [ ← Back ]  Akidah › Rukun Iman            │   │
+│  ├──────────────────────────────────────────────┤   │
+│  │  scl-hero                                    │   │
+│  │  [Pendidikan Islam · T1]                     │   │
+│  │  🌟                                          │   │
+│  │  Rukun Iman (6 Perkara)                      │   │
+│  │  Mari belajar 6 rukun iman...                │   │
+│  ├──────────────────────────────────────────────┤   │
+│  │  scl-actions                                 │   │
+│  │  [📖 Belajar]  [🎯 Kuiz]                     │   │
+│  ├──────────────────────────────────────────────┤   │
+│  │  #learn — Topik Pembelajaran section         │   │
+│  │  ● 6 Topik Pembelajaran                      │   │
+│  │  Topik Pembelajaran                          │   │
+│  │  Ketuk setiap kad untuk belajar              │   │
+│  │  ┌─────┐  ┌─────┐  ┌─────┐                  │   │
+│  │  │ 🌟 │  │ 😇 │  │ 📚 │                  │   │
+│  │  │Rkn1│  │Rkn2│  │Rkn3│                  │   │
+│  │  └─────┘  └─────┘  └─────┘                  │   │
+│  │  (flexbox, justify-content: center,          │   │
+│  │   max-width: 1080px)                         │   │
+│  ├──────────────────────────────────────────────┤   │
+│  │  #quiz — Kuiz Pembelajaran                   │   │
+│  │  [🎯 Mula Kuiz]                              │   │
+│  └──────────────────────────────────────────────┘   │
+│                                                     │
+└─────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -494,23 +544,10 @@ CSS variables per year (.t1, .t2, .t3):
   --r1..r3:  robot accent colours
 ```
 
-### Lock State (Tahun 3)
-```
-┌───────────────────────────────────┐
-│  ┌──────────────────┐             │  ← .pi-lockchip
-│  │ 🔒 lock icon SVG │             │     top-left overlay
-│  └──────────────────┘             │
-│  ┌───────────────────────────┐    │
-│  │   Robot SVG (grayscale)   │    │  ← filter: grayscale(.6)
-│  └───────────────────────────┘    │
-│     ┌──────────────────┐          │  ← .pi-soonbadge
-│     │     TAHUN 3      │          │
-│     └──────────────────┘          │
-│     🔒 Akan datang               │  ← .pi-soontag
-│  (cursor: not-allowed,            │
-│   no hover transform)             │
-└───────────────────────────────────┘
-```
+### ~~Lock State (Tahun 3 — Obsolete)~~
+> Tahun 3 is now unlocked and matches the Active Card anatomy above.
+> The lock state was removed; `.pi-lockchip`, `.pi-soonbadge`, `.pi-soontag`,
+> and `filter: grayscale(.6)` classes are no longer used in the codebase.
 
 ---
 
@@ -531,7 +568,8 @@ PendidikanIslamPage/
 │
 ├── Tahun1/
 │   ├── Tahun1ModuleHubLayout.jsx     ★ Shared hub component (all modules)
-│   ├── Tahun1LessonLayout.jsx        ★ Shared lesson + QuizScreen + ResultScreen
+│   ├── Tahun1LessonScrollLayout.jsx  ★ Scrollable lesson page (hero + topic cards + quiz)
+│   ├── Tahun1LessonLayout.jsx        ★ Legacy lesson layout (QuizScreen + ResultScreen)
 │   ├── Module1_AlQuran/
 │   │   ├── AlQuranTajwidModule.jsx
 │   │   ├── HurufHijaiyah.jsx
@@ -614,7 +652,8 @@ PendidikanIslamHomePage
         │     └── onClick → TahunModulePage(year=1)
         ├── Tahun 2 (active, blue theme)
         │     └── onClick → TahunModulePage(year=2)
-        └── Tahun 3 (locked, grey theme)
+        └── Tahun 3 (active, grey theme)
+              └── onClick → TahunModulePage(year=3)
 
 TahunModulePage
   ├── pi-top-bar (sticky)
@@ -632,9 +671,13 @@ TahunModulePage
               └── Tahun1ModuleHubLayout (shared, see §6.1)
                     └── TopicCard × N
                           └── onClick → TopicPage (e.g. RukunIman)
-                                └── Tahun1LessonLayout (shared, see §6.2)
-                                      ├── Belajar tab → ConceptCard × N
-                                      └── Kuiz tab → QuizScreen → ResultScreen
+                                └── Tahun1LessonScrollLayout (shared, see §6.3)
+                                      ├── Hero section (badge, icon, title, lead)
+                                      ├── [Belajar] [Kuiz] CTA buttons
+                                      ├── Topik Pembelajaran section
+                                      │     └── TopicCard × N (flex row, centered)
+                                      └── Quiz section
+                                            └── Start → MCQ × N → Result screen
 ```
 
 ---
@@ -743,6 +786,154 @@ Individual topic pages use this shared lesson layout. It provides:
 
 ---
 
+### 6.3 `Tahun1LessonScrollLayout.jsx`
+
+The primary reusable layout for individual topic/lesson pages. Used by all Tahun 2 and Tahun 3 lessons, and most Tahun 1 lessons. Provides hero section, topic card grid (flexbox, centered), and built-in MCQ quiz.
+
+**Props:**
+
+| Prop | Type | Description |
+|---|---|---|
+| `onBack` | `func` | Navigate back to module hub |
+| `language` | `'bm' \| 'en'` | Default: `'bm'` |
+| `breadcrumb` | `string` | Breadcrumb path (e.g. `"Al-Quran, Tajwid & Hadis › "`) |
+| `breadcrumbActive` | `string` | Current topic name |
+| `title` | `string` | Page title |
+| `lead` | `string` | Subtitle / description |
+| `icon` | `string` | Emoji icon |
+| `theme` | `object` | Colour configuration (same shape as hub theme) |
+| `topics` | `array` | Topic card definitions |
+| `questions` | `array` | Quiz question pool |
+| `totalRounds` | `number` | Number of quiz rounds (default: `10`) |
+| `accentColor` | `string` | CSS colour for accents |
+
+**`theme` object:**
+```js
+{
+  pageGradient:   'radial-gradient(...)',
+  dark:           '#92400E',
+  accent:         '#F59E0B',
+  stageGradient:  'radial-gradient(...)',
+  pillGradient:   'linear-gradient(...)',
+}
+```
+
+**`topics[]` object:**
+```js
+{
+  visual:   <span>...</span>,     // emoji or SVG element
+  title:    'Sukun (Tanda Mati)', // card title
+  sublabel: 'بْت · تْب · كْت · مْت', // Jawi / subtitle text
+  desc:     'Tanda bulat kecil...',   // card description
+}
+```
+
+**Page layout (top to bottom):**
+```
+┌──────────────────────────────────────┐
+│  Sticky top bar                      │
+│  [ ← Back ]  Breadcrumb › Topic      │
+├──────────────────────────────────────┤
+│  Hero section                        │
+│  [Badge]  [Emoji]                    │
+│  Title                               │
+│  Lead text                           │
+│  [📖 Belajar] [🎯 Kuiz] buttons      │
+├──────────────────────────────────────┤
+│  Topik Pembelajaran section          │
+│  ● 2 Topik Pembelajaran (progress)   │
+│  Topik Pembelajaran (heading)        │
+│  Ketuk setiap kad untuk belajar      │
+│  ┌─────────┐  ┌─────────┐           │
+│  │ Card 1  │  │ Card 2  │           │
+│  └─────────┘  └─────────┘           │
+│  (flexbox wrap, justify-content:     │
+│   center, max-width: 1080px)        │
+├──────────────────────────────────────┤
+│  Quiz section                        │
+│  ┌──────────────────────────────┐    │
+│  │  🎯 Kuiz Pembelajaran       │    │
+│  │  ─────────────────────      │    │
+│  │  Soalan 1 / 10              │    │
+│  │  ┌──────────────────┐       │    │
+│  │  │ Question text    │       │    │
+│  │  ├──────────────────┤       │    │
+│  │  │ ○ Option A       │       │    │
+│  │  │ ○ Option B       │       │    │
+│  │  │ ○ Option C       │       │    │
+│  │  │ ○ Option D       │       │    │
+│  │  └──────────────────┘       │    │
+│  │  → Seterusnya               │    │
+│  └──────────────────────────────┘    │
+└──────────────────────────────────────┘
+```
+
+**CSS classes:**
+
+| Class | Purpose |
+|---|---|
+| `.scl-wrapper` | Root container, full page background |
+| `.scl-topbar` | Sticky top bar with back button + breadcrumb |
+| `.scl-hero` | Hero section (badge, emoji, title, lead) |
+| `.scl-actions` | CTA button row (Belajar, Kuiz) |
+| `.scl-progress` | "X Topik Pembelajaran" progress indicator |
+| `.scl-sec-title` | "Topik Pembelajaran" section heading |
+| `.scl-sec-sub` | Section subtitle |
+| `.scl-grid` | Topic card flexbox container (wrap, centered) |
+| `.scl-card` | Individual topic card (flex, centered content) |
+| `.scl-num` | Card number badge |
+| `.scl-stage` | Card visual/svg container |
+| `.scl-ctitle` | Card title |
+| `.scl-csub` | Card subtitle (Jawi text, 24px) |
+| `.scl-cdesc` | Card description |
+| `.scl-quiz` | Quiz section container |
+| `.quiz-card` | Quiz card background |
+| `.scl-qprog` | Quiz progress indicator |
+| `.scl-qtext` | Question text |
+| `.scl-opts` | Options container (vertical stack) |
+| `.scl-opt` | Option button |
+| `.scl-feedback` | Correct/wrong answer feedback |
+| `.scl-qbtn` | "Seterusnya" / next button |
+| `.scl-result-score` | Quiz result score display |
+
+**Responsive grid behaviour:**
+- Mobile (`< 600px`): 1 column, cards stack vertically
+- Tablet (`600-979px`): 2 columns
+- Desktop (`≥ 980px`): 3 columns, cards centered via flexbox
+- Cards have `min-width: 280px`, `max-width: 380px`
+- Container `max-width: 1080px`, centered with `margin: 0 auto`
+
+**Quiz behaviour:**
+- Built-in MCQ quiz with automatic question shuffling
+- `totalRounds` sampled from the `questions` pool (default: 10)
+- Score tracking with star result: ⭐⭐⭐ (≥80%), ⭐⭐ (≥50%), ⭐ (<50%)
+- Celebration overlay on completion
+- "Cuba Lagi" button resets and re-shuffles questions
+
+**Component usage (example):**
+```jsx
+export default function SukunSyaddah({ onBack, language = 'bm' }) {
+  return (
+    <Tahun1LessonScrollLayout
+      onBack={onBack}
+      language={language}
+      breadcrumb="Al-Quran, Tajwid & Hadis › "
+      breadcrumbActive="Sukun & Syaddah"
+      title="Sukun & Syaddah"
+      lead="Mari belajar dua tanda penting dalam bacaan Al-Quran..."
+      icon="📖"
+      theme={THEME}
+      topics={TOPICS}
+      questions={QUESTIONS}
+      totalRounds={4}
+      accentColor="#F59E0B"
+    />
+  );
+}
+```
+
+---
+
 ## 7. Module Hub Template
 
 Each module hub file follows this exact pattern:
@@ -796,13 +987,33 @@ export default function ModuleName({ onBack, onSelectTopic, language = 'bm' }) {
 
 ```jsx
 import React, { useState, useCallback, useEffect } from 'react';
-import Tahun1LessonLayout, { QuizScreen, ResultScreen } from '../Tahun1LessonLayout';
+import Tahun1LessonScrollLayout from '../Tahun1LessonScrollLayout';
 import { playHoverSound, playSound } from '../../../../utils/soundManager';
 import SpeechManager from '../../../../services/SpeechManager';
 import { shuffle } from '../../_shared/utils';
 import Celebration from '../../_shared/Celebration';
+import { ARABIC_FONT } from '../../_shared/arabic';
 
-// ── Data ──────────────────────────────────────────────────────────────
+// ── Theme ──────────────────────────────────────────────────────────────
+const THEME = {
+  pageGradient:  'radial-gradient(ellipse at top,{LIGHT} 0%,{MID} 60%,{DARK} 100%)',
+  dark:          '{DARK}',
+  accent:        '{ACCENT}',
+  stageGradient: 'radial-gradient(ellipse at 50% 32%,{LIGHT} 0%,{MID} 55%,{DARK} 100%)',
+  pillGradient:  'linear-gradient(180deg,{ACCENT},{DARK})',
+};
+
+// ── Topic Cards ────────────────────────────────────────────────────────
+const TOPICS = [
+  {
+    visual:   <span style={{ fontFamily: ARABIC_FONT, fontSize: '3.2rem', lineHeight: 1, color: '{DARK}', direction: 'rtl' }}>{JawiChar}</span>,
+    title:    'Topic Title',
+    sublabel: 'Jawi subtitle text',
+    desc:     'Topic description.',
+  },
+];
+
+// ── Quiz configuration ────────────────────────────────────────────────
 const ITEMS = [ /* ... */ ];
 
 // ── Quiz configuration ────────────────────────────────────────────────
@@ -850,14 +1061,19 @@ export default function TopicName({ onBack, language = 'bm' }) {
   }, []);
 
   return (
-    <Tahun1LessonLayout
+    <Tahun1LessonScrollLayout
       onBack={onBack}
       language={language}
-      breadcrumb="Module › Topik X.Y"
+      breadcrumb="Module › "
+      breadcrumbActive="Topik X.Y"
       title="Topic Title"
+      lead="Topic description / subtitle."
+      icon="{EMOJI}"
+      theme={THEME}
+      topics={TOPICS}
+      questions={QUESTIONS}
+      totalRounds={10}
       accentColor="#ACCENT_HEX"
-      tab={tab}
-      onTabChange={handleTabChange}
     >
       <style>{`
         .pi-topic-grid {
@@ -909,7 +1125,7 @@ export default function TopicName({ onBack, language = 'bm' }) {
           />
         </div>
       )}
-    </Tahun1LessonLayout>
+    </Tahun1LessonScrollLayout>
   );
 }
 ```
@@ -985,6 +1201,33 @@ Each topic card visual follows this frame template:
 }
 ```
 
+### Topic card flexbox (`.scl-grid` — Topik Pembelajaran section)
+
+| Breakpoint | Columns | Gap | Card sizing |
+|------------|---------|-----|-------------|
+| Desktop `≥ 980px` | 3 | 24px | `flex: 1 1 calc((100% - 48px) / 3)` |
+| Tablet `600–979px` | 2 | 24px | `flex: 1 1 calc((100% - 24px) / 2)`, `max-width: none` |
+| Mobile `< 600px` | 1 | 24px | `flex: 1 1 100%`, `min-width: 280px`, `max-width: 380px` |
+
+```css
+.scl-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 clamp(16px,4vw,28px) 30px;
+}
+.scl-card {
+  flex: 1 1 100%;
+  min-width: 280px;
+  max-width: 380px;
+}
+@media(min-width:600px){.scl-card{flex:1 1 calc((100% - 24px) / 2);max-width:none}}
+@media(min-width:980px){.scl-card{flex:1 1 calc((100% - 48px) / 3)}}
+```
+
 ### Typography — fluid scale
 ```css
 .pi-home-h1    { font-size: clamp(1.5rem, 4vw, 2.25rem); }
@@ -1012,7 +1255,7 @@ Each topic card visual follows this frame template:
 
 1. Create module folder: `Tahun3/Module{X}_{Name}/`
 2. Create `{Name}Module.jsx` — use `Tahun1ModuleHubLayout` for consistency (see §7)
-3. Create one `.jsx` per topic using `Tahun1LessonLayout` (see §8)
+3. Create one `.jsx` per topic using `Tahun1LessonScrollLayout` (see §6.3)
 4. Add lazy imports in `src/App.jsx`
 5. Add routing in the `case 'pendidikan-islam-v1':` block
 6. Wire module ID into `ModuleNavBar`'s `MODULES` array (prefix with `3-`)

@@ -354,10 +354,9 @@ export default function Tahun1LessonScrollLayout({
         .scl-grid {
           max-width: 1080px; margin: 0 auto;
           padding: 0 clamp(16px,4vw,28px) 30px;
-          display: grid; grid-template-columns: 1fr; gap: 24px;
+          display: flex; flex-wrap: wrap; justify-content: center;
+          gap: 24px;
         }
-        @media(min-width:600px){.scl-grid{grid-template-columns:repeat(2,1fr)}}
-        @media(min-width:980px){.scl-grid{grid-template-columns:repeat(3,1fr)}}
         .scl-card {
           position: relative;
           background: linear-gradient(180deg,#fff,#FEF4F8);
@@ -369,9 +368,14 @@ export default function Tahun1LessonScrollLayout({
           gap: 13px;
           transition: transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s ease;
           cursor: default;
+          flex: 1 1 100%;
+          min-width: 280px;
+          max-width: 380px;
         }
         .scl-card:hover { transform: translateY(-8px); box-shadow: 0 26px 50px -18px ${theme.dark}66; }
         .scl-card:active { transform: translateY(-3px) scale(.99); }
+        @media(min-width:600px){.scl-card{flex:1 1 calc((100% - 24px) / 2);max-width:none}}
+        @media(min-width:980px){.scl-card{flex:1 1 calc((100% - 48px) / 3)}}
         .scl-num {
           position: absolute; top: 14px; left: 16px;
           font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 13px;
@@ -396,7 +400,7 @@ export default function Tahun1LessonScrollLayout({
         }
         .scl-csub {
           font-family: 'Baloo 2', sans-serif; font-weight: 700;
-          font-size: 11px; letter-spacing: .08em;
+          font-size: 24px; letter-spacing: .08em;
           text-transform: uppercase; color: var(--scl-rose); margin: 0;
         }
         .scl-cdesc {
