@@ -54,23 +54,42 @@ const TOPICS = HARAKAT.map(h => ({
 
 function buildQuestions() {
   const qs = [];
+
   HARAKAT.forEach(h => {
     qs.push({
-      question: `Apakah nama baris pada huruf ${h.symbol}?`,
+      question: `Apakah nama baris ini ${h.symbol}?`,
       answer: h.name,
       options: shuffle(HARAKAT.map(x => x.name)),
     });
   });
-  const qa = [
-    { q: 'Huruf yang manakah mempunyai baris di ATAS?', a: 'Fathah', d: ['Kasrah', 'Dammah'] },
-    { q: 'Huruf yang manakah mempunyai baris di BAWAH?', a: 'Kasrah', d: ['Fathah', 'Dammah'] },
-    { q: 'Bunyi apakah yang dihasilkan oleh baris Fathah?', a: '"a"', d: ['"i"', '"u"'] },
-    { q: 'Bunyi apakah yang dihasilkan oleh baris Kasrah?', a: '"i"', d: ['"a"', '"u"'] },
-    { q: 'Bunyi apakah yang dihasilkan oleh baris Dammah?', a: '"u"', d: ['"a"', '"i"'] },
+
+  const pos = [
+    { q: 'Huruf berbaris ATAS', a: 'Fathah', d: ['Kasrah', 'Dammah'] },
+    { q: 'Huruf berbaris BAWAH', a: 'Kasrah', d: ['Fathah', 'Dammah'] },
+    { q: 'Huruf berbaris DEPAN', a: 'Dammah', d: ['Fathah', 'Kasrah'] },
   ];
-  qa.forEach(({ q, a, d }) => {
+  pos.forEach(({ q, a, d }) => {
     qs.push({ question: q, answer: a, options: shuffle([a, ...d]) });
   });
+
+  HARAKAT.forEach(h => {
+    const bunyi = { fathah: '"a"', kasrah: '"i"', dammah: '"u"' };
+    qs.push({
+      question: `Apakah bunyi huruf ini ${h.symbol}?`,
+      answer: bunyi[h.id],
+      options: shuffle(['"a"', '"i"', '"u"']),
+    });
+  });
+
+  HARAKAT.forEach(h => {
+    const kedudukan = { fathah: 'ATAS', kasrah: 'BAWAH', dammah: 'DEPAN' };
+    qs.push({
+      question: `${h.symbol} berbaris di?`,
+      answer: kedudukan[h.id],
+      options: shuffle(['ATAS', 'BAWAH', 'DEPAN']),
+    });
+  });
+
   return qs;
 }
 

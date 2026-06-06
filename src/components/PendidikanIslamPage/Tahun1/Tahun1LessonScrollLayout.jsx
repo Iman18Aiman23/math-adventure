@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { FONT_IMPORT } from '../_shared/arabic';
 import { shuffle } from '../_shared/utils';
 import BackButton from '../../BackButton';
@@ -8,13 +8,15 @@ import Celebration from '../_shared/Celebration';
 
 const LETTERS = ['A', 'B', 'C', 'D'];
 
-function shuffleOptions(q) {
-  const opts = [...q.options];
-  for (let i = opts.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [opts[i], opts[j]] = [opts[j], opts[i]];
-  }
-  return { ...q, options: opts, correctIndex: opts.indexOf(q.answer) };
+function preparePool(allQuestions, totalRounds) {
+  const picked = shuffle(allQuestions).slice(0, totalRounds);
+  const answers = {};
+  const pool = picked.map(q => {
+    const opts = shuffle(q.options);
+    answers[q.question] = { answer: q.answer, correctIndex: opts.indexOf(q.answer) };
+    return { question: q.question, options: opts };
+  });
+  return { pool, answers };
 }
 
 const DEFAULT_THEME = {
@@ -33,6 +35,7 @@ function QuizSection({
   answered,
   selected,
   correctIdx,
+  correctAnswer,
   totalRounds,
   language,
   accentColor,
@@ -156,7 +159,7 @@ function QuizSection({
           {answered
             ? (selected === correctIdx
                 ? '✅ Betul! Syabas!'
-                : `❌ Jawapan betul: ${q.answer}`)
+                : `❌ Jawapan betul: ${correctAnswer}`)
             : ''}
         </p>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -191,7 +194,9 @@ export default function Tahun1LessonScrollLayout({
 }) {
   const learnRef = useRef(null);
   const quizRef = useRef(null);
-  const [pool, setPool] = useState(() => shuffle(allQuestions).slice(0, totalRounds).map(shuffleOptions));
+  const initial = useMemo(() => preparePool(allQuestions, totalRounds), []);
+  const ansRef = useRef(initial.answers);
+  const [pool, setPool] = useState(initial.pool);
   const [showCelebration, setShowCelebration] = useState(false);
   const [quizStarted, setQuizStarted] = useState(false);
   const [idx, setIdx] = useState(0);
@@ -229,6 +234,9 @@ export default function Tahun1LessonScrollLayout({
   };
 
   const handleRestart = () => {
+    const { pool: newPool, answers: newAnswers } = preparePool(allQuestions, totalRounds);
+    ansRef.current = newAnswers;
+    setPool(newPool);
     setQuizStarted(false);
     setIdx(0);
     setScore(0);
@@ -236,11 +244,11 @@ export default function Tahun1LessonScrollLayout({
     setSelected(null);
     setFinished(false);
     setShowCelebration(false);
-    setPool(shuffle(allQuestions).slice(0, totalRounds).map(shuffleOptions));
   };
   
   const currentQ = pool && pool[idx];
-  const correctIdx = currentQ ? currentQ.correctIndex : -1;
+  const correctIdx = currentQ ? ansRef.current[currentQ.question].correctIndex : -1;
+  const correctAnswer = currentQ ? ansRef.current[currentQ.question].answer : '';
 
   return (
     <>
@@ -574,6 +582,7 @@ export default function Tahun1LessonScrollLayout({
             answered={answered}
             selected={selected}
             correctIdx={correctIdx}
+            correctAnswer={correctAnswer}
             totalRounds={totalRounds}
             language={language}
             accentColor={accentColor}

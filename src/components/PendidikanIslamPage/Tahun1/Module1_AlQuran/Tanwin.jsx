@@ -54,26 +54,51 @@ const TOPICS = TANWIN.map(t => ({
 
 function buildQuestions() {
   const qs = [];
+
   TANWIN.forEach(t => {
     qs.push({
-      question: `Apakah nama tanwin pada huruf ${t.symbol}?`,
+      question: `Apakah nama tanwin ini ${t.symbol}?`,
       answer: t.name,
       options: shuffle(TANWIN.map(x => x.name)),
     });
   });
-  const qa = [
-    { q: 'Tanwin yang manakah mempunyai dua baris di ATAS?', a: 'Tanwin Fathah', d: ['Tanwin Kasrah', 'Tanwin Dammah'] },
-    { q: 'Tanwin yang manakah mempunyai dua baris di BAWAH?', a: 'Tanwin Kasrah', d: ['Tanwin Fathah', 'Tanwin Dammah'] },
-    { q: 'Bunyi apakah yang dihasilkan oleh Tanwin Fathah?', a: '"an"', d: ['"in"', '"un"'] },
-    { q: 'Bunyi apakah yang dihasilkan oleh Tanwin Kasrah?', a: '"in"', d: ['"an"', '"un"'] },
-    { q: 'Bunyi apakah yang dihasilkan oleh Tanwin Dammah?', a: '"un"', d: ['"an"', '"in"'] },
-    { q: 'Apakah nama lain bagi Tanwin Fathah?', a: 'Fathatain', d: ['Kasratain', 'Dammatain'] },
-    { q: 'Apakah nama lain bagi Tanwin Kasrah?', a: 'Kasratain', d: ['Fathatain', 'Dammatain'] },
-    { q: 'Apakah nama lain bagi Tanwin Dammah?', a: 'Dammatain', d: ['Fathatain', 'Kasratain'] },
+
+  const pos = [
+    { q: 'Tanwin berbaris dua ATAS', a: 'Tanwin Fathah', d: ['Tanwin Kasrah', 'Tanwin Dammah'] },
+    { q: 'Tanwin berbaris dua BAWAH', a: 'Tanwin Kasrah', d: ['Tanwin Fathah', 'Tanwin Dammah'] },
+    { q: 'Tanwin berbaris dua DEPAN', a: 'Tanwin Dammah', d: ['Tanwin Fathah', 'Tanwin Kasrah'] },
   ];
-  qa.forEach(({ q, a, d }) => {
+  pos.forEach(({ q, a, d }) => {
     qs.push({ question: q, answer: a, options: shuffle([a, ...d]) });
   });
+
+  TANWIN.forEach(t => {
+    const bunyi = { fathatain: '"an"', kasratain: '"in"', dammatain: '"un"' };
+    qs.push({
+      question: `Apakah bunyi huruf ini ${t.symbol}?`,
+      answer: bunyi[t.id],
+      options: shuffle(['"an"', '"in"', '"un"']),
+    });
+  });
+
+  TANWIN.forEach(t => {
+    const kedudukan = { fathatain: 'ATAS', kasratain: 'BAWAH', dammatain: 'DEPAN' };
+    qs.push({
+      question: `${t.symbol} berbaris di?`,
+      answer: kedudukan[t.id],
+      options: shuffle(['ATAS', 'BAWAH', 'DEPAN']),
+    });
+  });
+
+  const namaLain = [
+    { q: 'Nama lain Tanwin Fathah', a: 'Fathatain', d: ['Kasratain', 'Dammatain'] },
+    { q: 'Nama lain Tanwin Kasrah', a: 'Kasratain', d: ['Fathatain', 'Dammatain'] },
+    { q: 'Nama lain Tanwin Dammah', a: 'Dammatain', d: ['Fathatain', 'Kasratain'] },
+  ];
+  namaLain.forEach(({ q, a, d }) => {
+    qs.push({ question: q, answer: a, options: shuffle([a, ...d]) });
+  });
+
   return shuffle(qs);
 }
 

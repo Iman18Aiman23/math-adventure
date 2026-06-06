@@ -146,6 +146,10 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             background: radial-gradient(ellipse at 50% 38%, #D0F7FA 0%, #67D6E8 55%, #0891B2 100%);
             border-color: rgba(8, 145, 178, 0.4);
         }
+        .subject-card.card-matematik-kssr {
+            background: radial-gradient(ellipse at 50% 38%, #CCFBF1 0%, #5EEAD4 55%, #0F766E 100%);
+            border-color: rgba(20, 184, 166, 0.4);
+        }
 
         .subject-card:hover {
             transform: translateY(-6px) scale(1.02);
@@ -571,6 +575,17 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             </div>
             <span className="rb-pill">PENDIDIKAN ISLAM</span>
             <p className="rb-desc">{language === 'bm' ? 'Belajar Pendidikan Islam dengan mudah!' : 'Learn Islamic Education easily!'}</p>
+          </div>
+
+          {/* 6. Matematik KSSR */}
+          <div className="subject-card card-matematik-kssr" onClick={() => onSelectSubject('matematik-kssr')} role="button" tabIndex="0" aria-label="Matematik KSSR">
+            <div className="rb-stage">
+              <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
+              <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
+              <RobotMath />
+            </div>
+            <span className="rb-pill">{language === 'bm' ? 'MATEMATIK KSSR' : 'MATH KSSR'}</span>
+            <p className="rb-desc">{language === 'bm' ? 'Ikut silibus KSSR Tahun 1–3!' : 'Follow the KSSR syllabus for Year 1–3!'}</p>
           </div>
         </div>
 

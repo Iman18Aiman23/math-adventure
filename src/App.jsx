@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext, Suspense, useTransition } from 'react';
+import React, { useState, useEffect, useRef, createContext, useContext, Suspense, useTransition } from 'react';
 import HomePage from './components/HomePage';
 import LoadingSpinner from './components/LoadingSpinner';
 const BMPage = React.lazy(() => import('./components/SpeakingPage/BMPage'));
@@ -53,34 +53,39 @@ const BinaPerkataanJawi = React.lazy(() => import('./components/AgeGroup-7/BinaP
 const PadanPerkataanJawi = React.lazy(() => import('./components/AgeGroup-7/PadanPerkataanJawi'));
 const BacaAyatJawi = React.lazy(() => import('./components/AgeGroup-7/BacaAyatJawi'));
 const TulisJawi = React.lazy(() => import('./components/AgeGroup-7/TulisJawi'));
-const TimeTeller = React.lazy(() => import('./components/AgeGroup-7/TimeTeller'));
-const CountingMoney = React.lazy(() => import('./components/AgeGroup-7/CountingMoney'));
-const SubtractionStory = React.lazy(() => import('./components/AgeGroup-7/SubtractionStory'));
+const TimeTeller = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_Sukatan/TimeTeller'));
+const CountingMoney = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/CountingMoney'));
+const SubtractionStory = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/SubtractionStory'));
 const BacaAyatKuat = React.lazy(() => import('./components/AgeGroup-7/BacaAyatKuat'));
 const BertuturBertatasusila = React.lazy(() => import('./components/AgeGroup-7/BertuturBertatasusila'));
 const JawabSoalan = React.lazy(() => import('./components/AgeGroup-7/JawabSoalan'));
 const SebutLawanKata = React.lazy(() => import('./components/AgeGroup-7/SebutLawanKata'));
 const SebutFrasaBergambar = React.lazy(() => import('./components/AgeGroup-7/SebutFrasaBergambar'));
-const Nombor100 = React.lazy(() => import('./components/AgeGroup-7/Nombor100'));
-const Tambah100 = React.lazy(() => import('./components/AgeGroup-7/Tambah100'));
-const Bentuk3D = React.lazy(() => import('./components/AgeGroup-7/Bentuk3D'));
-const UkurPanjang = React.lazy(() => import('./components/AgeGroup-7/UkurPanjang'));
-const BacaPictograph = React.lazy(() => import('./components/AgeGroup-7/BacaPictograph'));
-const Jisim = React.lazy(() => import('./components/AgeGroup-7/Jisim'));
-const IsiPaduCecair = React.lazy(() => import('./components/AgeGroup-7/IsiPaduCecair'));
+const Nombor100 = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/Nombor100'));
+const Tambah100 = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/Tambah100'));
+const Bentuk3D = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_Sukatan/Bentuk3D'));
+const UkurPanjang = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_Sukatan/UkurPanjang'));
+const BacaPictograph = React.lazy(() => import('./components/MatematikPage/Tahun1/Module3_Statistik/BacaPictograph'));
+const Jisim = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_Sukatan/Jisim'));
+const IsiPaduCecair = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_Sukatan/IsiPaduCecair'));
 const KosaKataKontekstual = React.lazy(() => import('./components/AgeGroup-8/KosaKataKontekstual'));
 const BacaanPemahaman = React.lazy(() => import('./components/AgeGroup-8/BacaanPemahaman'));
 const CeritaBacaan = React.lazy(() => import('./components/AgeGroup-8/CeritaBacaan'));
 const PengenalanNilai = React.lazy(() => import('./components/AgeGroup-8/PengenalanNilai'));
 const PantunBacaan = React.lazy(() => import('./components/AgeGroup-8/PantunBacaan'));
-const DarabMudah = React.lazy(() => import('./components/AgeGroup-8/DarabMudah'));
-const Wang = React.lazy(() => import('./components/AgeGroup-8/Wang'));
-const Masa = React.lazy(() => import('./components/AgeGroup-8/Masa'));
-const Pecahan = React.lazy(() => import('./components/AgeGroup-8/Pecahan'));
-const Nombor1000 = React.lazy(() => import('./components/AgeGroup-8/Nombor1000'));
-const TambahTahun2 = React.lazy(() => import('./components/AgeGroup-8/TambahTahun2'));
-const TolakTahun2 = React.lazy(() => import('./components/AgeGroup-8/TolakTahun2'));
-const UkuranPanjangTahun2 = React.lazy(() => import('./components/AgeGroup-8/UkuranPanjangTahun2'));
+const DarabMudah = React.lazy(() => import('./components/MatematikPage/Tahun2/Module1_Nombor/DarabMudah'));
+const Wang = React.lazy(() => import('./components/MatematikPage/Tahun2/Module1_Nombor/Wang'));
+const Masa = React.lazy(() => import('./components/MatematikPage/Tahun2/Module2_Sukatan/Masa'));
+const Pecahan = React.lazy(() => import('./components/MatematikPage/Tahun2/Module1_Nombor/Pecahan'));
+const Nombor1000 = React.lazy(() => import('./components/MatematikPage/Tahun2/Module1_Nombor/Nombor1000'));
+const TambahTahun2 = React.lazy(() => import('./components/MatematikPage/Tahun2/Module1_Nombor/TambahTahun2'));
+const TolakTahun2 = React.lazy(() => import('./components/MatematikPage/Tahun2/Module1_Nombor/TolakTahun2'));
+const UkuranPanjangTahun2 = React.lazy(() => import('./components/MatematikPage/Tahun2/Module2_Sukatan/UkuranPanjangTahun2'));
+const PerpuluhanT2 = React.lazy(() => import('./components/MatematikPage/Tahun2/Module1_Nombor/PerpuluhanT2'));
+const BahagiT2 = React.lazy(() => import('./components/MatematikPage/Tahun2/Module1_Nombor/BahagiT2'));
+const JisimCecairT2 = React.lazy(() => import('./components/MatematikPage/Tahun2/Module2_Sukatan/JisimCecairT2'));
+const GeometriT2 = React.lazy(() => import('./components/MatematikPage/Tahun2/Module2_Sukatan/GeometriT2'));
+const DataT2 = React.lazy(() => import('./components/MatematikPage/Tahun2/Module3_Statistik/DataT2'));
 const BacaPetikanJawi = React.lazy(() => import('./components/AgeGroup-8/BacaPetikanJawi'));
 const PadanKataKerjaJawi = React.lazy(() => import('./components/AgeGroup-8/PadanKataKerjaJawi'));
 const SusunAyatJawi = React.lazy(() => import('./components/AgeGroup-8/SusunAyatJawi'));
@@ -90,16 +95,33 @@ const PenjodohBilangan = React.lazy(() => import('./components/AgeGroup-9/Penjod
 const ImbuhanLanjutan = React.lazy(() => import('./components/AgeGroup-9/ImbuhanLanjutan'));
 const SimpulanBahasa = React.lazy(() => import('./components/AgeGroup-9/SimpulanBahasa'));
 const BacaanPemahamanLanjutan = React.lazy(() => import('./components/AgeGroup-9/BacaanPemahamanLanjutan'));
-const Nombor10000    = React.lazy(() => import('./components/AgeGroup-9/Nombor10000'));
-const DarabLanjutan  = React.lazy(() => import('./components/AgeGroup-9/DarabLanjutan'));
-const BahagiTahun3    = React.lazy(() => import('./components/AgeGroup-9/BahagiTahun3'));
-const PecahanLanjutan = React.lazy(() => import('./components/AgeGroup-9/PecahanLanjutan'));
-const Perpuluhan      = React.lazy(() => import('./components/AgeGroup-9/Perpuluhan'));
-const WangTahun3      = React.lazy(() => import('./components/AgeGroup-9/WangTahun3'));
-const MasaTahun3      = React.lazy(() => import('./components/AgeGroup-9/MasaTahun3'));
-const PerimeterLuas   = React.lazy(() => import('./components/AgeGroup-9/PerimeterLuas'));
+const Nombor10000    = React.lazy(() => import('./components/MatematikPage/Tahun3/Module1_Nombor/Nombor10000'));
+const DarabLanjutan  = React.lazy(() => import('./components/MatematikPage/Tahun3/Module1_Nombor/DarabLanjutan'));
+const BahagiTahun3    = React.lazy(() => import('./components/MatematikPage/Tahun3/Module1_Nombor/BahagiTahun3'));
+const PecahanLanjutan = React.lazy(() => import('./components/MatematikPage/Tahun3/Module1_Nombor/PecahanLanjutan'));
+const Perpuluhan      = React.lazy(() => import('./components/MatematikPage/Tahun3/Module1_Nombor/Perpuluhan'));
+const WangTahun3      = React.lazy(() => import('./components/MatematikPage/Tahun3/Module1_Nombor/WangTahun3'));
+const MasaTahun3      = React.lazy(() => import('./components/MatematikPage/Tahun3/Module2_Sukatan/MasaTahun3'));
+const PerimeterLuas   = React.lazy(() => import('./components/MatematikPage/Tahun3/Module2_Sukatan/PerimeterLuas'));
+const OperasiBergabungT3 = React.lazy(() => import('./components/MatematikPage/Tahun3/Module1_Nombor/OperasiBergabungT3'));
+const PeratusT3       = React.lazy(() => import('./components/MatematikPage/Tahun3/Module1_Nombor/PeratusT3'));
+const UkuranT3        = React.lazy(() => import('./components/MatematikPage/Tahun3/Module2_Sukatan/UkuranT3'));
+const DataT3          = React.lazy(() => import('./components/MatematikPage/Tahun3/Module3_StatistikKebarangkalian/DataT3'));
+const KebarangkalianT3 = React.lazy(() => import('./components/MatematikPage/Tahun3/Module3_StatistikKebarangkalian/KebarangkalianT3'));
+const PecahanAsasT1 = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/PecahanAsasT1'));
 const ProfileHome = React.lazy(() => import('./components/Profile/ProfileHome'));
 const PendidikanIslamHomePage = React.lazy(() => import('./components/PendidikanIslamPage/PendidikanIslamHomePage'));
+const MatematikHomePage = React.lazy(() => import('./components/MatematikPage/MatematikHomePage'));
+const MatematikModulePage = React.lazy(() => import('./components/MatematikPage/MatematikModulePage'));
+const NomborModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/NomborModule'));
+const SukatanModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_Sukatan/SukatanModule'));
+const StatistikModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module3_Statistik/StatistikModule'));
+const NomborModuleT2 = React.lazy(() => import('./components/MatematikPage/Tahun2/Module1_Nombor/NomborModule'));
+const SukatanModuleT2 = React.lazy(() => import('./components/MatematikPage/Tahun2/Module2_Sukatan/SukatanModule'));
+const StatistikModuleT2 = React.lazy(() => import('./components/MatematikPage/Tahun2/Module3_Statistik/StatistikModule'));
+const NomborModuleT3 = React.lazy(() => import('./components/MatematikPage/Tahun3/Module1_Nombor/NomborModule'));
+const SukatanModuleT3 = React.lazy(() => import('./components/MatematikPage/Tahun3/Module2_Sukatan/SukatanModule'));
+const StatistikModuleT3 = React.lazy(() => import('./components/MatematikPage/Tahun3/Module3_StatistikKebarangkalian/StatistikModule'));
 const AlQuranTajwidModule = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module1_AlQuran/AlQuranTajwidModule'));
 const HurufHijaiyah       = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module1_AlQuran/HurufHijaiyah'));
 const TandaBacaan         = React.lazy(() => import('./components/PendidikanIslamPage/Tahun1/Module1_AlQuran/TandaBacaan'));
@@ -309,6 +331,14 @@ export default function App() {
   const [islamModule, setIslamModule] = useState(null);
   const [islamTopic,  setIslamTopic]  = useState(null);
   const [islamYear,   setIslamYear]   = useState(1);
+  const [matematikModule, setMatematikModule] = useState(null);
+  const [matematikTopic,  setMatematikTopic]  = useState(null);
+  const [matematikYear,   setMatematikYear]   = useState(1);
+
+  const viewContainerRef = useRef(null);
+  useEffect(() => {
+    if (viewContainerRef.current) viewContainerRef.current.scrollTop = 0;
+  }, [islamModule, islamTopic, islamYear, matematikModule, matematikTopic, matematikYear]);
 
   // useTransition keeps the current screen visible while a lazy game chunk
   // loads, so navigation never blanks to a fallback for fast loads. isPending
@@ -345,7 +375,7 @@ export default function App() {
   const handleStartGame    = (op, diff, _nums = [], qType = 'multiple') => { setGameConfig({ operation: op, difficulty: diff, nums: _nums, quizType: qType }); setIsPlaying(true); };
   const handleBackToMenu   = () => setIsPlaying(false);
   const handleStartTimeGame= (gameId) => { setDateTimeSubGame(gameId); setIsPlaying(true); };
-  const handleBackToHome   = () => { setIsPlaying(false); setMathSubGame(null); setDateTimeSubGame(null); setCurrentSubject(null); setCurrentAgeGroup(null); setCurrentAgeGame(null); setIslamModule(null); setIslamTopic(null); setActiveTab('learn'); };
+  const handleBackToHome   = () => { setIsPlaying(false); setMathSubGame(null); setDateTimeSubGame(null); setCurrentSubject(null); setCurrentAgeGroup(null); setCurrentAgeGame(null); setIslamModule(null); setIslamTopic(null); setMatematikModule(null); setMatematikTopic(null); setMatematikYear(1); setActiveTab('learn'); };
   const handleToggleMute   = () => { const m = !isMuted; setIsMuted(m); setMuted(m); };
   const handleToggleLang   = () => setLanguage(l => l === 'bm' ? 'eng' : 'bm');
 
@@ -423,6 +453,74 @@ export default function App() {
         return <BMPage onBack={handleBackToHome} onHome={handleBackToHome} language={language} />;
       case 'jawi':
         return <JawiPage onBack={handleBackToHome} onHome={handleBackToHome} language={language} onGameStart={() => setIsPlayingJawiGame(true)} onGameEnd={() => setIsPlayingJawiGame(false)} />;
+      case 'matematik-kssr':
+        // ── Topic games ──
+        if (matematikTopic === 'nombor-100')        return <Nombor100       onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'tambah-tolak')      return <Tambah100       onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'tambah-cerita')     return <SubtractionStory onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'wang-t1')           return <CountingMoney   onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'masa-t1')           return <TimeTeller      onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'ukuran-t1-panjang') return <UkurPanjang     onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'ukuran-t1-jisim')   return <Jisim           onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'ukuran-t1-cecair')  return <IsiPaduCecair  onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'ruang-t1')          return <Bentuk3D        onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'data-t1')           return <BacaPictograph  onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '2-nombor-1000')     return <Nombor1000         onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '2-tambah')          return <TambahTahun2       onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '2-tolak')           return <TolakTahun2        onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '2-darab')           return <DarabMudah         onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '2-pecahan')         return <Pecahan            onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '2-perpuluhan')      return <PerpuluhanT2       onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '2-wang')            return <Wang              onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '2-masa')            return <Masa              onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '2-ukuran-panjang')  return <UkuranPanjangTahun2 onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '3-nombor-10000')    return <Nombor10000        onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '3-darab')           return <DarabLanjutan      onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '3-bahagi')          return <BahagiTahun3       onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '3-pecahan')         return <PecahanLanjutan    onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '3-perpuluhan')      return <Perpuluhan         onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '3-wang')            return <WangTahun3         onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '3-masa')            return <MasaTahun3         onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '3-perimeter')       return <PerimeterLuas      onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '3-operasi-bergabung') return <OperasiBergabungT3 onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '3-peratus')          return <PeratusT3          onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '3-ukuran')           return <UkuranT3           onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '3-data')             return <DataT3             onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '3-kebarangkalian')   return <KebarangkalianT3   onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'pecahan-asas')       return <PecahanAsasT1      onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '2-bahagi')           return <BahagiT2           onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '2-ukuran-jisim-cecair') return <JisimCecairT2   onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '2-geometri')         return <GeometriT2         onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === '2-data')             return <DataT2             onBack={() => setMatematikTopic(null)} language={language} />;
+
+        // ── Module hub (matematikModule set, no topic) ──
+        if (matematikModule) {
+          const hubOnBack = () => { setMatematikModule(null); setMatematikTopic(null); };
+          let hubComponent;
+          const strip = (id) => id.replace(/^\d-/, '');
+          const mod = strip(matematikModule);
+          if (mod === 'nombor')    hubComponent = matematikYear === 1 ? <NomborModule /> : matematikYear === 2 ? <NomborModuleT2 /> : <NomborModuleT3 />;
+          if (mod === 'sukatan')   hubComponent = matematikYear === 1 ? <SukatanModule /> : matematikYear === 2 ? <SukatanModuleT2 /> : <SukatanModuleT3 />;
+          if (mod === 'statistik') hubComponent = matematikYear === 1 ? <StatistikModule /> : matematikYear === 2 ? <StatistikModuleT2 /> : <StatistikModuleT3 />;
+          return (
+            <Suspense fallback={<LoadingSpinner />}>
+              <MatematikModulePage year={matematikYear} activeModule={matematikModule} language={language}
+                onBack={hubOnBack}
+                onModuleChange={(id) => navigate(() => { setMatematikModule(id); setMatematikTopic(null); })}
+                onSelectTopic={(id) => navigate(() => setMatematikTopic(id))}>
+                {hubComponent}
+              </MatematikModulePage>
+            </Suspense>
+          );
+        }
+
+        // ── Year selector ──
+        return (
+          <Suspense fallback={<LoadingSpinner />}>
+            <MatematikHomePage onBack={handleBackToHome} language={language}
+              onSelectYear={(y) => navigate(() => { setMatematikYear(y); setMatematikModule(y === 1 ? 'nombor' : y === 2 ? '2-nombor' : '3-nombor'); })} />
+          </Suspense>
+        );
       case 'pendidikan-islam-v1':
         // ── Lessons (islamTopic set) ──
         if (islamModule === '2-al-quran' && islamTopic === 'sukun-syaddah')     { return <SukunSyaddah     onBack={() => setIslamTopic(null)} language={language} />; }
@@ -837,7 +935,7 @@ export default function App() {
             now only shows on a true cold mount, when there's nothing to keep. */}
         <div className="app-content">
           <Suspense fallback={<LoadingSpinner />}>
-            <div key={viewKey} className="view-container">
+            <div key={viewKey} ref={viewContainerRef} className="view-container">
               {renderContent()}
             </div>
           </Suspense>

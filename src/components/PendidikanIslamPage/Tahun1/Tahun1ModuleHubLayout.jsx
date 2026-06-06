@@ -116,7 +116,20 @@ export default function Tahun1ModuleHubLayout({
           line-height: 1.5;
           padding: 0 4px;
         }
+        .pi-mhub-card-disabled {
+          opacity: 0.6;
+          cursor: default;
+          pointer-events: none;
+          filter: grayscale(0.6);
+        }
+        .pi-mhub-card-disabled:hover {
+          transform: none;
+          box-shadow: 0 12px 32px -12px ${theme.dark}38, 0 2px 6px ${theme.accent}1A;
+        }
         @keyframes pi-mhub-float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-5px); }
+        }
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-5px); }
         }
@@ -157,8 +170,8 @@ export default function Tahun1ModuleHubLayout({
           {topics.map((t) => (
             <div
               key={t.id}
-              className="pi-mhub-card"
-              onClick={() => onSelectTopic?.(t.id)}
+              className={`pi-mhub-card${t.disabled ? ' pi-mhub-card-disabled' : ''}`}
+              onClick={() => { if (!t.disabled) onSelectTopic?.(t.id); }}
             >
               <div className="pi-mhub-stage">
                 {t.visual}
