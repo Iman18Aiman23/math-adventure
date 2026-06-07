@@ -1,4 +1,5 @@
 import React from 'react';
+import BahasaMelayuModuleNavBar from './BahasaMelayuModuleNavBar';
 
 export default function BahasaMelayuModulePage({ year, activeModule, onModuleChange, onBack, onSelectTopic, children, language }) {
   return (
@@ -14,6 +15,12 @@ export default function BahasaMelayuModulePage({ year, activeModule, onModuleCha
           <span className="bm-top-year-num">{year}</span>
         </div>
       </div>
+      <BahasaMelayuModuleNavBar
+        year={year}
+        activeModule={activeModule}
+        onModuleChange={onModuleChange}
+        language={language}
+      />
       <div className="bm-module-content">
         {React.isValidElement(children)
           ? React.cloneElement(children, { language, onSelectTopic })

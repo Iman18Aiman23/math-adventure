@@ -6,23 +6,13 @@ function stripPrefix(id) {
   return id ? id.replace(/^\d-/, '') : '';
 }
 
-export default function BMModuleHubLayout({ year, activeModule, onModuleChange, onSelectTopic, language }) {
+export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, language }) {
   const modules = useMemo(() => getModulesForYear(year), [year]);
 
   const activeIdx = useMemo(() => {
     const stripped = stripPrefix(activeModule);
     return modules.findIndex(m => m.id === stripped);
   }, [modules, activeModule]);
-
-  const activeMod = activeIdx >= 0 ? modules[activeIdx] : modules[0];
-
-  const handleTabClick = useCallback((idx) => {
-    const mod = modules[idx];
-    if (!mod) return;
-    const id = year === 1 ? mod.id : `${year}-${mod.id}`;
-    try { localStorage.setItem(`bm_t${year}_modul`, String(mod.num)); } catch (e) {}
-    if (onModuleChange) onModuleChange(id);
-  }, [modules, year, onModuleChange]);
 
   const handleTopicClick = useCallback((topicId) => {
     if (onSelectTopic) onSelectTopic(topicId);
@@ -104,54 +94,9 @@ export default function BMModuleHubLayout({ year, activeModule, onModuleChange, 
 
   return (
     <div className="bm-hub-layout">
-      <nav className="modnav">
-        <a className="brand" href="#" onClick={(e) => e.preventDefault()} style={{ textDecoration: 'none' }} title={language === 'bm' ? 'Bahasa Melayu' : 'Malay Language'}>
-          BM <span>{language === 'bm' ? `Tahun ${year}` : `Year ${year}`}</span>
-        </a>
-        {modules.map((mod, idx) => {
-          const themeColor = mod.theme.c;
-          const shortName = mod.id === 'mendengar' ? 'Mendengar & Bertutur'
-            : mod.id === 'membaca' ? 'Membaca'
-            : mod.id === 'menulis' ? 'Menulis'
-            : mod.id === 'seni-bahasa' ? 'Seni Bahasa'
-            : 'Tatabahasa';
-          const shortNameEn = mod.id === 'mendengar' ? 'Listening & Speaking'
-            : mod.id === 'membaca' ? 'Reading'
-            : mod.id === 'menulis' ? 'Writing'
-            : mod.id === 'seni-bahasa' ? 'Language Arts'
-            : 'Grammar';
-          return (
-            <button
-              key={mod.num}
-              className={`tab${idx === activeIdx ? ' active' : ''}`}
-              data-go={mod.num}
-              style={{ '--tc': themeColor }}
-              onClick={() => handleTabClick(idx)}
-            >
-              <b>{language === 'bm' ? `Modul ${mod.num}` : `Module ${mod.num}`}</b>
-              <span>{language === 'bm' ? shortName : shortNameEn}</span>
-            </button>
-          );
-        })}
-      </nav>
-
       {modules.map((mod, idx) => renderModule(mod, idx === activeIdx))}
 
       <style>{`
-        .modnav{position:sticky;top:0;z-index:50;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center;
-          padding:12px 16px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);
-          border-bottom:1px solid #E6E9F0;box-shadow:0 4px 16px rgba(20,40,70,.06)}
-        .modnav .brand{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:18px;color:#10243A;margin-right:10px;letter-spacing:-.01em}
-        .modnav .brand span{color:#E8821A}
-        .modnav .tab{font-family:'Baloo 2',sans-serif;font-weight:700;cursor:pointer;border:2px solid #E6E9F0;background:#fff;
-          border-radius:14px;padding:7px 14px;display:flex;flex-direction:column;align-items:center;line-height:1.1;gap:1px;
-          color:#5B6F86;transition:all .2s ease}
-        .modnav .tab b{font-size:13px}
-        .modnav .tab span{font-size:10px;font-weight:600;opacity:.8}
-        .modnav .tab:hover{transform:translateY(-2px);border-color:var(--tc);color:var(--tc)}
-        .modnav .tab.active{background:var(--tc);border-color:var(--tc);color:#fff}
-        .modnav .tab.active span{opacity:.92}
-
         .module[hidden]{display:none}
         .module{min-height:100vh;padding:34px 16px 120px}
         .mod-1{--c:#E8821A;--cd:#A34F0A;--stage:radial-gradient(ellipse at 50% 34%,#FEE9C8 0%,#F5B76A 55%,#E8821A 100%);background:radial-gradient(ellipse at top,#FEF4E6,#FAE0BB);}

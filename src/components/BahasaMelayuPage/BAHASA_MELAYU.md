@@ -196,9 +196,11 @@
 
 | # | Task | Status |
 |---|------|--------|
-| 2.1 | Create `BahasaMelayuModulePage.jsx` — top bar + hub wrapper | ✅ Complete (refactored, no NavBar) |
-| 2.2 | Create `BMModuleHubLayout.jsx` — journey trail with embedded 5-tab nav + localStorage | ✅ Complete (replaces old NavBar + flat grid hubs) |
-| 2.3 | Wire router to show module hub when `bmModule` is set | ✅ Complete |
+| 2.1 | Create `BahasaMelayuModulePage.jsx` — top bar + NavBar + hub wrapper | ✅ Complete |
+| 2.2 | Create `BahasaMelayuModuleNavBar.jsx` — standalone sticky 5-tab nav (mirrors `MatematikModuleNavBar`, `top: 56px`) | ✅ Complete |
+| 2.3 | Create `BMModuleHubLayout.jsx` — journey trail content only (nav extracted out) | ✅ Complete |
+| 2.4 | Move `BMModuleHubLayout.jsx`, `ModuleData.js`, `BMJourneySvgs.jsx` into `_shared/` (shared across all 3 years, mirrors PI's `_shared/` convention) | ✅ Complete |
+| 2.5 | Wire router to show module hub when `bmModule` is set | ✅ Complete |
 
 ### Phase 3 — Tahun 1 Content (Data-driven)
 
@@ -373,10 +375,13 @@ The main app `HomePage` gets a new card alongside the existing age-group cards.
 BahasaMelayuPage/                          <- Phase 6 final state
 +-- BAHASA_MELAYU.md                  ★ This reference
 +-- BahasaMelayuHomePage.jsx          ★ Homepage - year selector with robot cards
-+-- BahasaMelayuModulePage.jsx        ★ Hub wrapper - top bar only (NavBar removed)
-+-- BMJourneySvgs.jsx                 ★ 18 reusable SVG components (badges + topic icons + trophy)
-+-- ModuleData.js                     ★ All 3 years' module data (id, name, badge, theme, topics[])
-+-- BMModuleHubLayout.jsx             ★ Journey trail layout + embedded tab nav + localStorage
++-- BahasaMelayuModulePage.jsx        ★ Top bar + renders BahasaMelayuModuleNavBar + hub content
++-- BahasaMelayuModuleNavBar.jsx      ★ Standalone sticky 5-tab nav (mirrors MatematikModuleNavBar, top:56px)
+|
++-- _shared/                           ★ Shared across all 3 years (mirrors PI's _shared/ convention)
+|   +-- BMJourneySvgs.jsx             ★ 18 reusable SVG components (badges + topic icons + trophy)
+|   +-- ModuleData.js                 ★ All 3 years' module data (id, name, badge, theme, topics[])
+|   +-- BMModuleHubLayout.jsx         ★ Journey trail content only (nav lives in BahasaMelayuModuleNavBar)
 |
 +-- Tahun1/
 |   +-- Module1_Mendengar/
@@ -394,20 +399,22 @@ BahasaMelayuPage/                          <- Phase 6 final state
 |   +-- Module5_Tatabahasa/
 |       +-- ... (migrated games)
 |
-+-- Tahun2/                            (same pattern)
++-- Tahun2/                            (same Module1-5 pattern, folder skeleton ready)
+|   +-- Module1_Mendengar/
 |   +-- Module2_Membaca/
 |   +-- Module3_Menulis/
 |   +-- Module4_SeniBahasa/
 |   +-- Module5_Tatabahasa/
 |
-+-- Tahun3/                            (same pattern)
++-- Tahun3/                            (same Module1-5 pattern, folder skeleton ready)
+    +-- Module1_Mendengar/
     +-- Module2_Membaca/
     +-- Module3_Menulis/
     +-- Module4_SeniBahasa/
     +-- Module5_Tatabahasa/
 ```
 
-> All BM KSSR game files will be permanently located under `BahasaMelayuPage/` after Phase 6 migration.
+> All BM KSSR game files will be permanently located under `BahasaMelayuPage/Tahun{N}/Module{M}_{Name}/` after Phase 6 migration — this mirrors `MatematikPage`'s folder convention exactly. The empty `Module{N}_{Name}/` folders are pre-created skeletons (untracked by git until populated) waiting for their first game/lesson file.
 > `AgeGroup-7/`, `AgeGroup-8/`, and `AgeGroup-9/` retain only their hub shells and non-BM subject games.
 
 ### Component Tree
@@ -428,17 +435,18 @@ BahasaMelayuHomePage
               +-- onClick -> BahasaMelayuModulePage(year=3)
 
 BahasaMelayuModulePage
-  +-- bm-top-bar (sticky)
+  +-- bm-top-bar (sticky, top:0, z-index:110)
   |     +-- BackButton
   |     +-- "Tahun X" label
+  +-- BahasaMelayuModuleNavBar (sticky, top:56px, z-index:100 — stacks below top-bar)
+  |     +-- bm-mnav-tab x5
+  |           +-- 1 Mendengar & Bertutur
+  |           +-- 2 Membaca
+  |           +-- 3 Menulis
+  |           +-- 4 Seni Bahasa
+  |           +-- 5 Tatabahasa
   +-- bm-module-content
-        +-- BMModuleHubLayout
-              +-- modnav (sticky tab bar, 5 tabs, embedded in layout)
-              |     +-- 1 Mendengar & Bertutur
-              |     +-- 2 Membaca
-              |     +-- 3 Menulis
-              |     +-- 4 Seni Bahasa
-              |     +-- 5 Tatabahasa
+        +-- BMModuleHubLayout (_shared/ — journey trail content only, no nav)
               +-- section.module (hidden/shown per active tab)
                     +-- unit-banner
                     +-- trail (journey steps)
@@ -498,7 +506,7 @@ The homepage uses large year-selector cards (`.bm-year`) matching the PI/Matemat
                                    v
 ```
 
-### Layout B - Module Hub Page (BahasaMelayuModulePage + BMModuleHubLayout)
+### Layout B - Module Hub Page (BahasaMelayuModulePage + BahasaMelayuModuleNavBar + BMModuleHubLayout)
 
 ```
 +--------------------------------------------------------------------+
@@ -507,13 +515,16 @@ The homepage uses large year-selector cards (`.bm-year`) matching the PI/Matemat
 |  |  bm-top-bar (sticky top:0, z-index:110)                      |  |
 |  |  [ <- back ]         Tahun  1                                |  |
 |  +--------------------------------------------------------------+  |
-|  |  BMMODULEHUBLAYOUT                                            |  |
-|  |  +----------------------------------------------------------+  |  |
-|  |  |  modnav (sticky, embedded in BMModuleHubLayout)           |  |  |
-|  |  |  +--------+--------+--------+---------+---------+        |  |  |
-|  |  |  | Modul 1| Modul 2| Modul 3| Modul 4 | Modul 5 |        |  |  |
-|  |  |  |Mendengar|Membaca |Menulis |Seni Ba. |Tatabhs |        |  |  |
-|  |  |  +--------+--------+--------+---------+---------+        |  |  |
+|  |  BAHASAMELAYUMODULENAVBAR (sticky top:56px, z-index:100)      |  |
+|  |  +--------+--------+--------+---------+---------+            |  |
+|  |  | Modul 1| Modul 2| Modul 3| Modul 4 | Modul 5 |            |  |
+|  |  |Mendengar|Membaca |Menulis |Seni Ba. |Tatabhs |            |  |
+|  |  +--------+--------+--------+---------+---------+            |  |
+|  |  Standalone component — mirrors MatematikModuleNavBar exactly.|  |
+|  |  Stacks cleanly BELOW bm-top-bar (no overlap, unlike the old  |  |
+|  |  embedded-at-top:0 nav).                                      |  |
+|  +--------------------------------------------------------------+  |
+|  |  BMMODULEHUBLAYOUT (_shared/ — content only, no nav)          |  |
 |  |  +----------------------------------------------------------+  |  |
 |  |  |  JOURNEY TRAIL (only active module shown)                 |  |  |
 |  |  |                                                           |  |  |
@@ -536,7 +547,6 @@ The homepage uses large year-selector cards (`.bm-year`) matching the PI/Matemat
 |  |  |  - circular 96px node buttons with radial gradient       |  |  |
 |  |  |  - zigzag offset: even steps shift right (+138px)        |  |  |
 |  |  |    next even step shifts left (-138px) via --x CSS var   |  |  |
-|  |  |  - localStorage('bm_t{year}_modul') persists tab         |  |  |
 |  |  +----------------------------------------------------------+  |  |
 |  +--------------------------------------------------------------+  |
 +--------------------------------------------------------------------+
@@ -639,10 +649,17 @@ case "bm-kssr":
   // -- Module hub (bmModule set, no topic) --
   if (bmModule) {
     const hubOnBack = () => { setBmModule(null); setBmTopic(null); };
-    return <BahasaMelayuModulePage year={bmYear} activeModule={bmModule} language={language}
-      onBack={hubOnBack}
-      onModuleChange={(id) => navigate(() => { setBmModule(id); setBmTopic(null); })}
-      onSelectTopic={(id) => navigate(() => setBmTopic(id))} />;
+    return (
+      <BahasaMelayuModulePage year={bmYear} activeModule={bmModule} language={language}
+        onBack={hubOnBack}
+        onModuleChange={(id) => navigate(() => { setBmModule(id); setBmTopic(null); })}
+        onSelectTopic={(id) => navigate(() => setBmTopic(id))}>
+        {/* BahasaMelayuModulePage renders BahasaMelayuModuleNavBar internally,
+            then this child as the hub content (mirrors MatematikModulePage) */}
+        <BMModuleHubLayout year={bmYear} activeModule={bmModule} language={language}
+          onSelectTopic={(id) => navigate(() => setBmTopic(id))} />
+      </BahasaMelayuModulePage>
+    );
   }
 
   // -- Year selector --
@@ -902,10 +919,12 @@ Two columns: **Phase 1-5 state** (hub files only, games still in AgeGroup-*) and
 src/components/BahasaMelayuPage/
 +-- BahasaMelayuHomePage.jsx
 +-- BahasaMelayuModulePage.jsx
-+-- Tahun1/
++-- BahasaMelayuModuleNavBar.jsx
++-- _shared/
 |   +-- BMJourneySvgs.jsx
 |   +-- ModuleData.js
 |   +-- BMModuleHubLayout.jsx
++-- Tahun1/
 |   +-- Module1_Mendengar/
 |   |   +-- MendengarMenyebut.jsx    (future)
 |   |   +-- BertuturMaklumat.jsx     (future — migrated)
@@ -920,11 +939,11 @@ src/components/BahasaMelayuPage/
 |   +-- Module5_Tatabahasa/
 |       +-- MorfologiGolonganKata.jsx (future — migrated)
 |       +-- SintaksisAyatTunggal.jsx  (future — migrated)
-+-- Tahun2/                            (same pattern — game files only)
-+-- Tahun3/                            (same pattern — game files only)
++-- Tahun2/                            (same Module1-5 pattern — game files only)
++-- Tahun3/                            (same Module1-5 pattern — game files only)
 ```
 
-> **Note:** Hub/wrapper components per-module (`M1Module.jsx`, etc.) are **eliminated**. All 15 modules are defined as data objects in `ModuleData.js` and rendered by the single `BMModuleHubLayout.jsx` component. Game/lesson files are added per-module folder when ready.
+> **Note:** Hub/wrapper components per-module (`M1Module.jsx`, etc.) are **eliminated**. All 15 modules are defined as data objects in `_shared/ModuleData.js` and rendered by the single `_shared/BMModuleHubLayout.jsx` component (data-driven, like PI's `Tahun1ModuleHubLayout` but with journey-trail visuals). Game/lesson files drop into the matching `Tahun{N}/Module{M}_{Name}/` folder when ready — pre-created as an empty skeleton mirroring `MatematikPage`'s structure.
 
 ### Phase 6 Final State (after migration)
 
@@ -932,11 +951,13 @@ src/components/BahasaMelayuPage/
 src/components/BahasaMelayuPage/
 +-- BahasaMelayuHomePage.jsx
 +-- BahasaMelayuModulePage.jsx
-+-- Tahun1/
++-- BahasaMelayuModuleNavBar.jsx
++-- _shared/
 |   +-- BMJourneySvgs.jsx
 |   +-- ModuleData.js
 |   +-- BMModuleHubLayout.jsx
-|   |   +-- AsasMembaca.jsx               <- from AgeGroup-7/
++-- Tahun1/
+|   +-- AsasMembaca.jsx               <- from AgeGroup-7/
 |   |   +-- MembacaMekanis.jsx            <- New
 |   |   +-- MembacaMenaakul.jsx           <- from AgeGroup-7/
 |   +-- Module3_Menulis/

@@ -115,7 +115,7 @@ const PendidikanIslamHomePage = React.lazy(() => import('./components/Pendidikan
 const MatematikHomePage = React.lazy(() => import('./components/MatematikPage/MatematikHomePage'));
 const BahasaMelayuHomePage = React.lazy(() => import('./components/BahasaMelayuPage/BahasaMelayuHomePage'));
 const BahasaMelayuModulePage = React.lazy(() => import('./components/BahasaMelayuPage/BahasaMelayuModulePage'));
-const BMModuleHubLayout = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/BMModuleHubLayout'));
+const BMModuleHubLayout = React.lazy(() => import('./components/BahasaMelayuPage/_shared/BMModuleHubLayout'));
 const MatematikModulePage = React.lazy(() => import('./components/MatematikPage/MatematikModulePage'));
 const NomborModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/NomborModule'));
 const SukatanModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_Sukatan/SukatanModule'));
@@ -647,7 +647,6 @@ export default function App() {
                 onModuleChange={(id) => navigate(() => { setBmModule(id); setBmTopic(null); })}
                 onSelectTopic={(id) => navigate(() => setBmTopic(id))}>
                 <BMModuleHubLayout year={bmYear} activeModule={bmModule} language={language}
-                  onModuleChange={(id) => navigate(() => { setBmModule(id); setBmTopic(null); })}
                   onSelectTopic={(id) => navigate(() => setBmTopic(id))} />
               </BahasaMelayuModulePage>
             </Suspense>
