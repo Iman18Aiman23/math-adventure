@@ -116,6 +116,7 @@ const MatematikHomePage = React.lazy(() => import('./components/MatematikPage/Ma
 const BahasaMelayuHomePage = React.lazy(() => import('./components/BahasaMelayuPage/BahasaMelayuHomePage'));
 const BahasaMelayuModulePage = React.lazy(() => import('./components/BahasaMelayuPage/BahasaMelayuModulePage'));
 const BMModuleHubLayout = React.lazy(() => import('./components/BahasaMelayuPage/_shared/BMModuleHubLayout'));
+const MendengarMenyebut = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/MendengarMenyebut'));
 const MatematikModulePage = React.lazy(() => import('./components/MatematikPage/MatematikModulePage'));
 const NomborModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/NomborModule'));
 const SukatanModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_Sukatan/SukatanModule'));
@@ -221,6 +222,7 @@ import { useGameState } from './hooks/useGameState';
 import { loadPlayerName, savePlayerName, recordLogin, calcStreak } from './services/storageService';
 import { getGameData } from './utils/gameStatsManager';
 import { baseAssessments } from './data/curriculum/assessment';
+import { markTopicCompleted } from './components/BahasaMelayuPage/_shared/useModuleProgress';
 
 // ── Themes ───────────────────────────────────────────────────────────────────
 export const THEMES = {
@@ -317,6 +319,13 @@ function findMatchingAssessment(achievement) {
   }) || baseAssessments.find(a => a.topic === achievement.topic);
 }
 
+
+// ── ProgressWrapper for reused BM games ────────────────────────────────────
+function ProgressWrapper({ topicId, onBack, children }) {
+  return React.cloneElement(children, {
+    onBack: () => { markTopicCompleted(topicId); onBack?.(); }
+  });
+}
 
 export default function App() {
   const isDesktop = useIsDesktop();
@@ -637,6 +646,56 @@ export default function App() {
 
         return <PendidikanIslamHomePage initialYear={islamYear} onBack={handleBackToHome} language={language} onSelectModule={(id) => navigate(() => { const y = id.startsWith('2-') ? 2 : id.startsWith('3-') ? 3 : 1; setIslamYear(y); setIslamModule(id); })} />;
       case 'bm-kssr':
+        // ── Topic page (bmTopic set) ──
+        if (bmTopic) {
+          const topicOnBack = () => setBmTopic(null);
+
+          // ── New inline topics ──
+          if (bmTopic === '1-1-1-mendengar-menyebut')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <MendengarMenyebut onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)} />
+            </Suspense>;
+
+          // ── Reused games (wrapped in ProgressWrapper) ──
+          if (bmTopic === '1-1-2-bertutur-maklumat')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+                <SebutFrasaBergambar language={language} />
+              </ProgressWrapper>
+            </Suspense>;
+          if (bmTopic === '1-2-1-asas-membaca')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+                <SukuKataBinaPerkataan language={language} />
+              </ProgressWrapper>
+            </Suspense>;
+          if (bmTopic === '1-2-3-membaca-menaakul')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+                <KefahamanBacaan language={language} />
+              </ProgressWrapper>
+            </Suspense>;
+          if (bmTopic === '1-3-2-bina-ayat')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+                <SentenceBuilder language={language} />
+              </ProgressWrapper>
+            </Suspense>;
+          if (bmTopic === '1-5-1-morfologi-kata')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+                <JenisKata language={language} />
+              </ProgressWrapper>
+            </Suspense>;
+          if (bmTopic === '1-5-2-sintaksis-ayat')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+                <SentenceBuilder language={language} />
+              </ProgressWrapper>
+            </Suspense>;
+        }
+
         // ── Module hub (bmModule set, no topic) ──
         if (bmModule) {
           const hubOnBack = () => { setBmModule(null); setBmTopic(null); };

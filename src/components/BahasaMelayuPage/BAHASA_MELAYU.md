@@ -166,6 +166,11 @@
 |----------|---------|------|
 | HomePage entry point | **Separate card** — new "Bahasa Melayu KSSR" card alongside existing pink "Sebutan" BM card. Class `card-bm-kssr`, green gradient, routes to `"bm-kssr"`. Existing `"bm"` card stays unchanged. | 2026-06-07 |
 | Gap topic cards | **Show disabled "Segera Hadir"** — gaps always rendered in hub as greyed-out cards with "Segera Hadir" badge. Never hidden — shows curriculum completeness. | 2026-06-07 |
+| Topic page layout | **New `BMLessonQuizLayout`** — Duolingo-style, quiz-first with brief explanation card. NOT PI's `Tahun1LessonScrollLayout`. | 2026-06-07 |
+| Question bank location | **`ModuleData.js`** — centralized `BM_QUESTIONS` export for spaced repetition reference across topics | 2026-06-07 |
+| Quiz model | **Spaced repetition** — each quiz includes ~70% current topic + ~30% review from all previous topics | 2026-06-07 |
+| Topic unlock mode | **Fully open** — all topics clickable from the start. No sequential locking. | 2026-06-07 |
+| Progress for reused games | **Wrap at App.jsx level** — `ProgressWrapper` component saves progress before calling `onBack`. No edits to existing game files. | 2026-06-07 |
 
 ### Phase 0 — App Integration
 
@@ -202,12 +207,23 @@
 | 2.4 | Move `BMModuleHubLayout.jsx`, `ModuleData.js`, `BMJourneySvgs.jsx` into `_shared/` (shared across all 3 years, mirrors PI's `_shared/` convention) | ✅ Complete |
 | 2.5 | Wire router to show module hub when `bmModule` is set | ✅ Complete |
 
-### Phase 3 — Tahun 1 Content (Data-driven)
+### Phase 2B — Shared Hooks & Layout Components
+
+| # | Task | Status |
+|---|------|--------|
+| 2.6 | Create `_shared/useModuleProgress.js` — localStorage progress hook (`isTopicCompleted`, `markTopicCompleted`) | ✅ Complete |
+| 2.7 | Create `_shared/useBMQuiz.js` — quiz state hook with weighted merge (70/30), `preparePool()`, `ansRef` security | ✅ Complete |
+| 2.8 | Create `_shared/BMLessonQuizLayout.jsx` — Duolingo-style layout (brief explanation card + quiz-focused UI) | ✅ Complete |
+| 2.9 | Add `BM_QUESTIONS` bank to `ModuleData.js` — all topic questions centralized for spaced repetition | ✅ Complete |
+| 2.10 | Update `BMModuleHubLayout.jsx` — add progress indicators (green checks on completed nodes, trophy count) | ✅ Complete |
+| 2.11 | Add BM lesson root class to full-bleed exceptions in `index.css` | ✅ Complete |
+
+### Phase 3 — Tahun 1 Content (Two-Page Routed)
 
 | # | Task | Status |
 |---|------|--------|
 | 3.1 | `ModuleData.js` — T1 module data (2-3 topics each) | ✅ Complete |
-| 3.2 | T1 Topik 1.1 — Mendengar & Menyebut | 🆕 New |
+| 3.2 | T1 Topik 1.1 — Mendengar & Menyebut | ✅ Complete |
 | 3.3 | T1 Topik 1.2 — Bertutur & Menyampaikan Maklumat | ✅ Reuse |
 | 3.4 | T1 Topik 2.1 — Asas Membaca & Memahami | ✅ Reuse |
 | 3.5 | T1 Topik 2.2 — Membaca secara Mekanis | 🆕 New |
@@ -378,10 +394,13 @@ BahasaMelayuPage/                          <- Phase 6 final state
 +-- BahasaMelayuModulePage.jsx        ★ Top bar + renders BahasaMelayuModuleNavBar + hub content
 +-- BahasaMelayuModuleNavBar.jsx      ★ Standalone sticky 5-tab nav (mirrors MatematikModuleNavBar, top:56px)
 |
-+-- _shared/                           ★ Shared across all 3 years (mirrors PI's _shared/ convention)
++-- _shared/                           ★ Shared across all 3 years
 |   +-- BMJourneySvgs.jsx             ★ 18 reusable SVG components (badges + topic icons + trophy)
-|   +-- ModuleData.js                 ★ All 3 years' module data (id, name, badge, theme, topics[])
-|   +-- BMModuleHubLayout.jsx         ★ Journey trail content only (nav lives in BahasaMelayuModuleNavBar)
+|   +-- ModuleData.js                 ★ All 3 years' module data + BM_QUESTIONS bank
+|   +-- BMModuleHubLayout.jsx         ★ Journey trail with progress indicators
+|   +-- BMLessonQuizLayout.jsx        ★ Duolingo-style topic page (explanation + quiz)
+|   +-- useBMQuiz.js                  ★ Quiz state hook (spaced repetition, ref-hidden answers)
+|   +-- useModuleProgress.js          ★ localStorage progress persistence
 |
 +-- Tahun1/
 |   +-- Module1_Mendengar/
@@ -438,7 +457,7 @@ BahasaMelayuModulePage
   +-- bm-top-bar (sticky, top:0, z-index:110)
   |     +-- BackButton
   |     +-- "Tahun X" label
-  +-- BahasaMelayuModuleNavBar (sticky, top:56px, z-index:100 — stacks below top-bar)
+  +-- BahasaMelayuModuleNavBar (sticky, top:56px, z-index:100)
   |     +-- bm-mnav-tab x5
   |           +-- 1 Mendengar & Bertutur
   |           +-- 2 Membaca
@@ -446,15 +465,24 @@ BahasaMelayuModulePage
   |           +-- 4 Seni Bahasa
   |           +-- 5 Tatabahasa
   +-- bm-module-content
-        +-- BMModuleHubLayout (_shared/ — journey trail content only, no nav)
+        +-- BMModuleHubLayout (_shared/ — journey trail with progress indicators)
               +-- section.module (hidden/shown per active tab)
                     +-- unit-banner
                     +-- trail (journey steps)
                           +-- NodeButton x N (circular 96px, zigzag offsets)
-                          +-- Trophy end node
-                          +-- onClick -> setBmTopic(id)
-                                +-- App.jsx renders game/lesson directly
-                                      e.g. <MendengarMenyebut onBack={...} language={...} />
+                          |     +-- 🟢 green check if completed (via isTopicCompleted)
+                          |     +-- onClick -> setBmTopic(id) via onSelectTopic
+                          +-- Trophy end node (shows "X/Y" completion count)
+                                +-- onClick -> routes to topic page via App.jsx
+
+App.jsx (case "bm-kssr")
+  +-- if bmTopic set -> renders topic page component
+  |     +-- Pattern 1 (new): <MendengarMenyebut onBack={...} />
+  |     |     +-- uses BMLessonQuizLayout + useBMQuiz + BM_QUESTIONS
+  |     |     +-- onBack -> markTopicCompleted(id) + setBmTopic(null)
+  |     +-- Pattern 2 (reuse): <ProgressWrapper><ExistingGame /></ProgressWrapper>
+  |           +-- ProgressWrapper saves progress before onBack
+  +-- else if bmModule -> shows module hub
 ```
 
 ---
@@ -558,25 +586,51 @@ The homepage uses large year-selector cards (`.bm-year`) matching the PI/Matemat
 
 Two patterns exist for topic pages:
 
-**Pattern 1 - Reused standalone game** (existing game from AgeGroup-*):
+**Pattern 1 - New Duolingo-style lesson page** (using BMLessonQuizLayout):
 ```
-TopicCard onClick
-  -> setBmTopic("1-1-mendengar-menyebut")
-  -> App.jsx case: return <MendengarMenyebut onBack={() => setBmTopic(null)} language={language} />
-  -> Game fills the screen with its own layout
-  <- onBack returns user to the module hub
+Trail node onClick
+  -> setBmTopic("1-1-1-mendengar-menyebut")
+  -> App.jsx renders <MendengarMenyebut onBack={...} />
+  -> Topic page layout:
+       ┌──────────────────────────────────────┐
+       │  ← Kembali                    ⭐ 0    │
+       │                                       │
+       │  ┌─── 📖 Pelajari Sekejap ─────────┐  │
+       │  │  Brief explanation (1 card)     │  │
+       │  │  🔊 Dengar (TTS button)         │  │
+       │  └──────────────────────────────────┘  │
+       │                                       │
+       │  🎯 KUZI                              │
+       │  ┌──────────────────────────────────┐ │
+       │  │ Soalan X/15  ██░░░░░            │ │
+       │  │ [question]                       │ │
+       │  │ ○ A  ○ B  ● C  ○ D             │ │
+       │  │ ✅ Betul! / ❌ Jawapan: ...     │ │
+       │  │ [Teruskan →]                     │ │
+       │  └──────────────────────────────────┘ │
+       │                                       │
+       │  🏆 Keputusan ⭐⭐⭐ X/15          │ │
+       │  [Cuba Lagi] [← Kembali ke Trail]    │ │
+       └──────────────────────────────────────┘
+  -> Quiz uses useBMQuiz hook:
+       ~70% current topic questions + ~30% review from previous topics
+       ref-hidden answers (ansRef) — invisible to DevTools
+  <- onBack -> markTopicCompleted(id) + setBmTopic(null) -> back to hub
 ```
 
-**Pattern 2 - New lesson page** (using Tahun1LessonScrollLayout):
+**Pattern 2 - Reused standalone game** (existing game from AgeGroup-*):
 ```
-TopicCard onClick
-  -> setBmTopic("1-2-mendengar-menyebut")
-  -> App.jsx renders <Component> using Tahun1LessonScrollLayout
-  -> Lesson cards + built-in MCQ quiz (ref-hidden answers)
-  <- onBack returns user to the module hub
+Trail node onClick
+  -> setBmTopic("...")
+  -> App.jsx wraps in <ProgressWrapper topicId="...">
+       <ExistingGame onBack={handleOnBack} ... />
+     </ProgressWrapper>
+  -> ProgressWrapper intercepts onBack to call markTopicCompleted(id)
+  <- Game fills screen with its own layout
+  <- onBack -> markTopicCompleted + setBmTopic(null) -> back to hub
 ```
 
-To inspect the UI of any reused game, open its source file in `AgeGroup-*`. For new lesson pages, see the PI `Tahun1LessonScrollLayout` pattern.
+To inspect the UI of any reused game, open its source file in `AgeGroup-*`. For new lesson pages, see the `_shared/BMLessonQuizLayout.jsx` component.
 
 ---
 
@@ -592,15 +646,27 @@ const [bmTopic,  setBmTopic]  = useState(null);
 const [bmYear,   setBmYear]   = useState(1);
 ```
 
+### Progress Persistence
+
+Progress is stored per-topic in localStorage under key `"bm-progress"`:
+
+```js
+// _shared/useModuleProgress.js
+isTopicCompleted("1-1-mendengar-menyebut")  // -> true/false
+markTopicCompleted("1-1-mendengar-menyebut") // saves to localStorage
+```
+
+The hub reads `isTopicCompleted(id)` for each node to show 🟢 indicators. Topic pages call `markTopicCompleted(id)` before `onBack`.
+
 ### Topic ID Naming Convention
 
-Topic IDs are unique per year via year prefix. This avoids routing collisions when different years share similarly named topics.
+Topic IDs follow the format `{year}-{module}-{topic}-{slug}`. This avoids routing collisions and matches ModuleData.js.
 
-| Year | Prefix | Example IDs |
+| Year | Format | Example IDs |
 |------|--------|-------------|
-| Tahun 1 | `"1-"` | `"1-1-mendengar-menyebut"`, `"1-2-bertutur"`, `"2-1-asas-membaca"`, `"2-2-membaca-mekanis"`, `"3-1-asas-menulis"` |
-| Tahun 2 | `"2-"` | `"2-1-mendengar-merespons"`, `"2-2-bercerita"`, `"2-1-perkataan-sukar"`, `"2-2-teks-pelbagai"`, `"2-3-mentafsir"` |
-| Tahun 3 | `"3-"` | `"3-1-mendengar-mengulas"`, `"3-2-berkomunikasi"`, `"3-1-teks-kompleks"`, `"3-2-kelancaran"`, `"3-3-membaca-kritikal"` |
+| Tahun 1 | `"1-{M}-{T}-{slug}"` | `"1-1-1-mendengar-menyebut"`, `"1-1-2-bertutur-maklumat"`, `"1-2-1-asas-membaca"`, `"1-2-2-membaca-mekanis"`, `"1-3-1-asas-menulis"` |
+| Tahun 2 | `"2-{M}-{T}-{slug}"` | `"2-1-1-mendengar-merespons"`, `"2-1-2-bercerita"`, `"2-2-1-perkataan-sukar"`, `"2-2-2-teks-pelbagai"`, `"2-2-3-mentafsir-menaakul"` |
+| Tahun 3 | `"3-{M}-{T}-{slug}"` | `"3-1-1-mendengar-mengulas"`, `"3-1-2-berkomunikasi"`, `"3-2-1-teks-kompleks"`, `"3-2-2-kelancaran-membaca"`, `"3-2-3-membaca-kritikal"` |
 
 ### Module ID Naming Convention
 
@@ -627,24 +693,40 @@ const hubOnBack = () => { setBmModule(null); setBmTopic(null); };
 ### Routing Logic in `case "bm-kssr"`
 
 ```js
-case "bm-kssr":
-  // -- Tahun 1 Topics --
-  if (bmTopic === "1-1-mendengar-menyebut")  return <MendengarMenyebut  onBack={() => setBmTopic(null)} language={language} />;
-  if (bmTopic === "1-2-bertutur")            return <BertuturMaklumat   onBack={() => setBmTopic(null)} language={language} />;
-  if (bmTopic === "2-1-asas-membaca")        return <AsasMembaca        onBack={() => setBmTopic(null)} language={language} />;
-  if (bmTopic === "2-2-membaca-mekanis")     return <MembacaMekanis     onBack={() => setBmTopic(null)} language={language} />;
-  if (bmTopic === "2-3-membaca-menaakul")    return <MembacaMenaakul    onBack={() => setBmTopic(null)} language={language} />;
-  if (bmTopic === "3-1-asas-menulis")        return <AsasMenulis        onBack={() => setBmTopic(null)} language={language} />;
-  if (bmTopic === "3-2-bina-ayat")           return <BinaAyat           onBack={() => setBmTopic(null)} language={language} />;
-  if (bmTopic === "3-3-mencatat-maklumat")   return <MencatatMaklumat   onBack={() => setBmTopic(null)} language={language} />;
-  if (bmTopic === "4-1-keindahan-bahasa")    return <KeindahanBahasa    onBack={() => setBmTopic(null)} language={language} />;
-  if (bmTopic === "5-1-morfologi-kata")      return <MorfologiGolonganKata onBack={() => setBmTopic(null)} language={language} />;
-  if (bmTopic === "5-2-sintaksis-ayat")      return <SintaksisAyatTunggal  onBack={() => setBmTopic(null)} language={language} />;
+// Helper: wraps onBack to save progress before returning to hub
+const topicOnBack = () => { setBmTopic(null); };
+const topicComplete = (id) => { markTopicCompleted(id); };
 
-  // -- Tahun 2 Topics --
-  if (bmTopic === "2-1-mendengar-merespons") return <MendengarMerespons    onBack={() => setBmTopic(null)} language={language} />;
-  if (bmTopic === "2-2-bercerita")           return <BerceritaBerbincang   onBack={() => setBmTopic(null)} language={language} />;
-  // ... see full list in folder structure
+case "bm-kssr":
+  // -- Tahun 1 Topics (new — use BMLessonQuizLayout) --
+  if (bmTopic === "1-1-1-mendengar-menyebut")
+    return <MendengarMenyebut onBack={topicOnBack} language={language} topicComplete={topicComplete} />;
+
+  // -- Tahun 1 Topics (reuse — wrapped in ProgressWrapper) --
+  if (bmTopic === "1-1-2-bertutur-maklumat")
+    return <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+             <SebutFrasaBergambar language={language} />
+           </ProgressWrapper>;
+  if (bmTopic === "1-2-1-asas-membaca")
+    return <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+             <SukuKataBinaPerkataan language={language} />
+           </ProgressWrapper>;
+  if (bmTopic === "1-2-3-membaca-menaakul")
+    return <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+             <KefahamanBacaan language={language} />
+           </ProgressWrapper>;
+  if (bmTopic === "1-3-2-bina-ayat")
+    return <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+             <SentenceBuilder language={language} />
+           </ProgressWrapper>;
+  if (bmTopic === "1-5-1-morfologi-kata")
+    return <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+             <JenisKata language={language} />
+           </ProgressWrapper>;
+  if (bmTopic === "1-5-2-sintaksis-ayat")
+    return <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+             <SentenceBuilder language={language} />
+           </ProgressWrapper>;
 
   // -- Module hub (bmModule set, no topic) --
   if (bmModule) {
@@ -654,8 +736,6 @@ case "bm-kssr":
         onBack={hubOnBack}
         onModuleChange={(id) => navigate(() => { setBmModule(id); setBmTopic(null); })}
         onSelectTopic={(id) => navigate(() => setBmTopic(id))}>
-        {/* BahasaMelayuModulePage renders BahasaMelayuModuleNavBar internally,
-            then this child as the hub content (mirrors MatematikModulePage) */}
         <BMModuleHubLayout year={bmYear} activeModule={bmModule} language={language}
           onSelectTopic={(id) => navigate(() => setBmTopic(id))} />
       </BahasaMelayuModulePage>
@@ -664,7 +744,8 @@ case "bm-kssr":
 
   // -- Year selector --
   return <BahasaMelayuHomePage onBack={handleBackToHome} language={language}
-    onSelectYear={(y) => navigate(() => { setBmYear(y); setBmModule(y + "-mendengar"); })} />;
+    onSelectYear={(y) => navigate(() => { setBmYear(y); setBmModule(y === 1 ? 'mendengar' : y + '-mendengar'); })} />;
+```
 ```
 
 ### Navigation Flow (Simplified)
@@ -676,9 +757,9 @@ HomePage
       -> Click "Tahun 1" -> setBmYear(1) + setBmModule("1-mendengar")
         -> BahasaMelayuModulePage + BahasaMelayuModuleNavBar (5 tabs)
           -> M1Module hub (topic cards)
-            -> Click "1.1 Mendengar dan Menyebut"
-              -> setBmTopic("1-1-mendengar-menyebut")
-              -> App.jsx renders: <MendengarMenyebut onBack={...} language={...} />
+               -> Click "1.1 Mendengar dan Menyebut"
+               -> setBmTopic("1-1-1-mendengar-menyebut")
+               -> App.jsx renders: <MendengarMenyebut onBack={...} language={...} />
                 <- onBack -> setBmTopic(null) -> back to hub
           <- hubOnBack -> setBmModule(null) + setBmTopic(null) -> year selector
 ```
@@ -747,7 +828,7 @@ HomePage
 
 | Year | Missing Topics |
 |------|----------------|
-| T1 | 2.2 Membaca Mekanis, 3.1 Asas Menulis, 3.3 Mencatat Maklumat, 4.1 Keindahan Bahasa (4 new games) |
+| T1 | ~~1.1 Mendengar & Menyebut~~ (complete), 2.2 Membaca Mekanis, 3.1 Asas Menulis, 3.3 Mencatat Maklumat, 4.1 Keindahan Bahasa (4 new games remaining) |
 | T2 | 2.1 Perkataan Sukar, 3.1 Menulis Mekanis, 3.2 Hasilkan Penulisan, 3.3 Jawapan Pemahaman, 4.2 Persembahan Karya, 5.3 Ayat Majmuk (6 new games) |
 | T3 | 1.1 Mendengar & Mengulas, 1.2 Berkomunikasi, 2.2 Kelancaran Membaca, 3.1 Karangan, 3.3 Kreatif, 5.1 Morfologi Lanjutan (6 new games) |
 
@@ -755,9 +836,9 @@ These can be built later as standalone games or lesson pages using `Tahun1Lesson
 
 ---
 
-## 10. Recommended Approach: Navigation Wrapper (No Refactoring Needed)
+## 10. Architecture — Two-Page Routed Approach (Duolingo-Style)
 
-The existing BM games already work perfectly as standalone components. The new BM KSSR learning path is just a navigation layer on top — the games themselves stay completely untouched.
+The BM KSSR learning path uses a **two-page routed architecture** — the module hub stays as pure navigation, and each topic is a separate page routed via App.jsx.
 
 ### How It Works
 
@@ -765,88 +846,100 @@ App.jsx state: `bmYear` -> `bmModule` -> `bmTopic`
 
 ```
 bmYear=1, bmModule="1-mendengar", bmTopic=null
-  -> Render BahasaMelayuModulePage -> shows M1 module hub
+  -> Render BahasaMelayuModulePage -> shows M1 journey trail
 
 bmYear=1, bmModule="1-mendengar", bmTopic="1-1-mendengar-menyebut"
-  -> Render <MendengarMenyebut onBack={() => setBmTopic(null)} language={language} />
-  -> Game/lesson launches directly in-place, onBack returns to module hub
+  -> Render <MendengarMenyebut onBack={...} topicComplete={...} language={...} />
+  -> Duolingo-style lesson: brief explanation + quiz with spaced repetition
+  -> onBack -> markTopicCompleted(id) + setBmTopic(null) -> returns to hub
+```
+
+### Data Flow
+
+```
+Hub:   isTopicCompleted(id) → 🟢 green check on completed nodes
+       Trophy: "X/Y" completion count
+
+Topic: useBMQuiz(currentQs, reviewQs, 15)
+       → weighted merge: ~70% current + ~30% review
+       → preparePool + ansRef (ref-hidden answers)
+       → on complete: markTopicCompleted(id) + onBack()
+
+App.jsx:
+       → New topics: direct component render
+       → Reused topics: <ProgressWrapper> wraps existing game
+         (saves progress onBack with no edits to game file)
 ```
 
 ### What New Files Are Needed
 
 | File | Purpose |
 |------|---------|
-| `BahasaMelayuPage/BahasaMelayuHomePage.jsx` | Year selector (like PI/Matematik home) |
-| `BahasaMelayuPage/BahasaMelayuModulePage.jsx` | Top bar wrapper (NavBar removed) |
-| `BahasaMelayuPage/Tahun1/BMJourneySvgs.jsx` | 18 reusable SVG components for badges, topic icons, trophy |
-| `BahasaMelayuPage/Tahun1/ModuleData.js` | Data aggregator: all 15 module data objects (3 years × 5 modules) |
-| `BahasaMelayuPage/Tahun1/BMModuleHubLayout.jsx` | Journey trail layout + embedded tab nav + localStorage |
-| (No per-module hub files needed — all driven by `ModuleData.js`) | |
+| `BahasaMelayuPage/_shared/useModuleProgress.js` | localStorage read/write for topic completion |
+| `BahasaMelayuPage/_shared/useBMQuiz.js` | Quiz hook: weighted merge, preparePool, ansRef, scoring |
+| `BahasaMelayuPage/_shared/BMLessonQuizLayout.jsx` | Duolingo-style layout (explanation card + quiz) |
+| `BahasaMelayuPage/_shared/ModuleData.js` (extend) | Add `BM_QUESTIONS` bank for all topics |
+| `BahasaMelayuPage/_shared/BMModuleHubLayout.jsx` (extend) | Add progress indicators to nodes + trophy |
+| `Tahun1/Module1_Mendengar/MendengarMenyebut.jsx` | First new topic page (T1 M1 T1.1) |
 
 ### What Stays UNCHANGED
 
-- All existing game files (`SebutFrasaBergambar.jsx`, `SentenceBuilder.jsx`, etc.) — zero changes
+- All existing game files — zero changes (wrapped at App.jsx level)
 - All `AgeGroup-*` home pages
-- The existing `"bm"` subject routing (still works for speech-practice BMPage)
-- The existing PI layouts (`Tahun1ModuleHubLayout`, `Tahun1LessonScrollLayout`)
-- The existing games already have `onBack` props — they naturally return to the module hub
+- The existing `"bm"` subject routing (speech-practice BMPage)
+- The existing PI layouts remain untouched
 
 ---
 
-## 11. Shared Components
+## 11. Shared Components (BM-Specific)
 
-The BM module reuses the module hub layout from the PI project. Topic pages follow two patterns: standalone existing games (for reused content) and `Tahun1LessonScrollLayout` (for new lesson pages).
+BM has its own shared components — the PI layout components are NOT used for new topic pages.
 
 | Component | Source | Purpose |
 |-----------|--------|---------|
-| `Tahun1ModuleHubLayout` | `PI/Tahun1/` | Module hub with topic card grid |
-| `Tahun1LessonScrollLayout` | `PI/Tahun1/` | Lesson cards + built-in MCQ quiz |
-| `Celebration` | `PI/_shared/` | Confetti overlay |
-| `shuffle` | `PI/_shared/utils.js` | Fisher-Yates shuffle |
+| `useModuleProgress` | `BM/_shared/` | `isTopicCompleted()`, `markTopicCompleted()`, `clearAllProgress()` |
+| `useBMQuiz` | `BM/_shared/` | Quiz state: weighted merge (70/30), preparePool, ansRef, scoring |
+| `BMLessonQuizLayout` | `BM/_shared/` | Duolingo-style layout (explanation card + quiz section) |
+| `Celebration` | `PI/_shared/` | Confetti overlay (shared across subjects) |
+| `shuffle` | `PI/_shared/utils.js` | Fisher-Yates shuffle (shared across subjects) |
 
-Module hubs use this pattern:
+### BMLessonQuizLayout Usage
 
 ```jsx
-export default function M1Module({ onBack, language = "bm", onSelectTopic }) {
-  const THEME = { ... }; // mendengar theme from colour system
-  const TOPICS = [
-    {
-      id: "1-1-mendengar-menyebut",
-      pill: "Mendengar",
-      title: "Mendengar dan Menyebut",
-      desc: "Mari belajar bunyi bahasa dan menyebut perkataan...",
-      visual: <MendengarSvg />,
-    },
-    {
-      id: "1-2-bertutur",
-      pill: "Bertutur",
-      title: "Bertutur dan Menyampaikan Maklumat",
-      desc: "Belajar bertutur dengan sopan dan jelas...",
-      visual: <BertuturSvg />,
-    },
-  ];
+export default function MendengarMenyebut({ onBack, language = 'bm', topicComplete }) {
+  const explanation = "Mari belajar mengenal dan menyebut bunyi...";
+  const currentQs = BM_QUESTIONS["1-1-1-mendengar-menyebut"];
+  const reviewQs = []; // first topic — no review
+  const quiz = useBMQuiz(currentQs, reviewQs, 15);
+
   return (
-    <Tahun1ModuleHubLayout
-      moduleNum={1}
-      moduleName="Mendengar dan Bertutur"
-      moduleNameEn="Listening and Speaking"
-      theme={THEME}
-      topics={TOPICS}
-      onBack={onBack}
-      onSelectTopic={onSelectTopic}
+    <BMLessonQuizLayout
+      onBack={() => { topicComplete?.("1-1-mendengar-menyebut"); onBack(); }}
+      topicTitle="Mendengar dan Menyebut"
+      explanation={explanation}
+      explanationAudio="Mari belajar mengenal dan menyebut bunyi..."
+      quiz={quiz}
       language={language}
+      accentColor="#3B82F6"
     />
   );
 }
 ```
 
-Topic pages are imported from their permanent `BahasaMelayuPage/` locations (after Phase 6 migration):
+### ProgressWrapper Pattern (for reused games)
 
 ```jsx
-// In App.jsx lazy imports:
+function ProgressWrapper({ topicId, onBack, children }) {
+  return React.cloneElement(children, {
+    onBack: () => { markTopicCompleted(topicId); onBack(); }
+  });
+}
+```
+
+Topic pages are lazy-imported in App.jsx:
+
+```jsx
 const MendengarMenyebut = lazy(() => import("./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/MendengarMenyebut"));
-const BertuturMaklumat = lazy(() => import("./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/BertuturMaklumat"));
-// etc. -- see section 14 file checklist for all paths
 ```
 
 ---
@@ -881,9 +974,19 @@ const THEME = {
 };
 ```
 
-### Theme Standardization Note
+### Theme Usage in BMLessonQuizLayout
 
-When building new topic pages using `Tahun1LessonScrollLayout`, the `const THEME` object **must** match the corresponding module hub's values exactly. The hub's THEME is the source of truth. This prevents visual inconsistency when navigating from hub to topic page, as previously encountered in the PI project.
+Each topic page passes `accentColor` matching the module colour:
+
+| Module | Color Code | Value |
+|--------|-----------|-------|
+| M1 — Mendengar & Bertutur | `accentColor` | `#3B82F6` |
+| M2 — Membaca | `accentColor` | `#10B981` |
+| M3 — Menulis | `accentColor` | `#8B5CF6` |
+| M4 — Seni Bahasa | `accentColor` | `#EC4899` |
+| M5 — Tatabahasa | `accentColor` | `#F59E0B` |
+
+The accent color drives the quiz UI (button gradients, borders, progress bar) via CSS custom properties injected by `<style>` in `BMLessonQuizLayout`.
 
 ---
 
@@ -913,7 +1016,7 @@ Same as PI: flexbox wrap, `min-width: 280px`, `max-width: 380px`, container `max
 
 Two columns: **Phase 1-5 state** (hub files only, games still in AgeGroup-*) and **Phase 6 final state** (games migrated in).
 
-### Phase 2-5 Target (build state)
+### Phase 2-5 Target (build state — current)
 
 ```
 src/components/BahasaMelayuPage/
@@ -922,11 +1025,14 @@ src/components/BahasaMelayuPage/
 +-- BahasaMelayuModuleNavBar.jsx
 +-- _shared/
 |   +-- BMJourneySvgs.jsx
-|   +-- ModuleData.js
-|   +-- BMModuleHubLayout.jsx
+|   +-- ModuleData.js                 (+ BM_QUESTIONS bank)
+|   +-- BMModuleHubLayout.jsx         (progress indicators)
+|   +-- BMLessonQuizLayout.jsx        ★ NEW — Duolingo-style
+|   +-- useBMQuiz.js                  ★ NEW — quiz hook
+|   +-- useModuleProgress.js          ★ NEW — progress persistence
 +-- Tahun1/
 |   +-- Module1_Mendengar/
-|   |   +-- MendengarMenyebut.jsx    (future)
+|   |   +-- MendengarMenyebut.jsx    ★ First topic (building)
 |   |   +-- BertuturMaklumat.jsx     (future — migrated)
 |   +-- Module2_Membaca/
 |   |   +-- MembacaMekanis.jsx       (future)
@@ -939,11 +1045,11 @@ src/components/BahasaMelayuPage/
 |   +-- Module5_Tatabahasa/
 |       +-- MorfologiGolonganKata.jsx (future — migrated)
 |       +-- SintaksisAyatTunggal.jsx  (future — migrated)
-+-- Tahun2/                            (same Module1-5 pattern — game files only)
-+-- Tahun3/                            (same Module1-5 pattern — game files only)
++-- Tahun2/                            (same Module1-5 pattern)
++-- Tahun3/                            (same Module1-5 pattern)
 ```
 
-> **Note:** Hub/wrapper components per-module (`M1Module.jsx`, etc.) are **eliminated**. All 15 modules are defined as data objects in `_shared/ModuleData.js` and rendered by the single `_shared/BMModuleHubLayout.jsx` component (data-driven, like PI's `Tahun1ModuleHubLayout` but with journey-trail visuals). Game/lesson files drop into the matching `Tahun{N}/Module{M}_{Name}/` folder when ready — pre-created as an empty skeleton mirroring `MatematikPage`'s structure.
+> **Key difference from PI:** BM no longer uses per-module hub files (`M1Module.jsx`, etc.). All 15 modules are data-driven from `_shared/ModuleData.js` and rendered by `BMModuleHubLayout`. New BM-specific shared hooks and layout (`useBMQuiz`, `useModuleProgress`, `BMLessonQuizLayout`) provide the Duolingo-style learning experience.
 
 ### Phase 6 Final State (after migration)
 
@@ -1035,5 +1141,6 @@ src/components/BahasaMelayuPage/
 
 ---
 
-> **Build Order:** Phase 0 -> Phase 1 -> Phase 2 -> Phase 3 (T1) -> Phase 4 (T2) -> Phase 5 (T3) -> Phase 6 (migration)
-> Start with T1 as proof of concept (fewest gaps = 4 new pages).
+> **Build Order:** Phase 0 -> Phase 1 -> Phase 2 -> Phase 2B (hooks + layout) -> Phase 3 (T1 content) -> Phase 4 (T2) -> Phase 5 (T3) -> Phase 6 (migration)
+> Phase 2B establishes the shared infrastructure (useModuleProgress, useBMQuiz, BMLessonQuizLayout, BM_QUESTIONS). Then Phase 3+ builds topic pages using this foundation.
+> Start with T1 as proof of concept (5 new pages + 6 reused games).

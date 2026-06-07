@@ -2019,26 +2019,18 @@ button {
     display: none !important;
   }
 
-  /* ── Content column centering ── */
-  .view-container > * {
+  /* ── Content column centering ──
+     Default is full-bleed: .view-container is a flex column with
+     align-items: stretch, so page roots stretch to 100% width with no
+     rule needed. Only "shell" style pages (Home, Leaderboard, Profile,
+     Achievement) opt into the narrow centered reading-width layout via
+     .page-shell — this replaces the old allowlist of full-bleed page
+     classes that had to be updated every time a new lesson/game page
+     was added. */
+  .view-container > .page-shell {
     max-width: var(--content-max);
     margin-left: auto;
     margin-right: auto;
-    width: 100%;
-  }
-
-  /* Full-bleed exceptions (saga map, game pages, PI, Matematik) */
-  .view-container > .game-container,
-  .view-container > .ops-game-shell,
-  .view-container > .pi-home-root,
-  .view-container > .pi-module-page,
-  .view-container > .mt-home-root,
-  .view-container > .mt-module-page,
-  .view-container > .bm-home-root,
-  .view-container > .bm-module-page,
-  .view-container > .bm-hub-layout,
-  .view-container > div[style] {
-    max-width: 100%;
   }
 
   /* Center content inside game-container too */

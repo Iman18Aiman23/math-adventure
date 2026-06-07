@@ -50,7 +50,7 @@ const T1_MODULES = [
     'Kemahiran Mendengar & Bertutur',
     'Listening and Speaking',
     M1Badge, M1_THEME, 1, [
-      { id: '1-1-1-mendengar-menyebut',   num: '1.1', label: 'Mendengar & Menyebut',                icon: M1Topic1, disabled: true },
+      { id: '1-1-1-mendengar-menyebut',   num: '1.1', label: 'Mendengar & Menyebut',                icon: M1Topic1, disabled: false },
       { id: '1-1-2-bertutur-maklumat',    num: '1.2', label: 'Bertutur & Menyampaikan Maklumat',    icon: M1Topic2, disabled: true },
     ]),
   buildModule(2,
@@ -181,5 +181,39 @@ export function getModulesForYear(year) {
 export function getModuleByNum(year, moduleNum) {
   return (DATA[year] || []).find(m => m.num === moduleNum) || null;
 }
+
+/* ─── BM_QUESTIONS Bank ───────────────────────────────────────── */
+
+export const BM_QUESTIONS = {
+  // ── T1 M1 T1.1: Mendengar & Menyebut ───────────────────────
+  // All questions are audio-driven for Tahun 1 (kids who can't read).
+  // TTS speaks the audioText; child picks the correct letter from 2×2 grid.
+  '1-1-1-mendengar-menyebut': [
+    // ── Pure vowel recognition ──
+    { question: 'Apakah bunyi ini?', audioText: 'a', answer: 'A', options: ['A', 'B', 'C', 'D'] },
+    { question: 'Apakah bunyi ini?', audioText: 'e', answer: 'E', options: ['E', 'F', 'G', 'H'] },
+    { question: 'Apakah bunyi ini?', audioText: 'i', answer: 'I', options: ['I', 'J', 'K', 'L'] },
+    { question: 'Apakah bunyi ini?', audioText: 'o', answer: 'O', options: ['O', 'P', 'Q', 'R'] },
+    { question: 'Apakah bunyi ini?', audioText: 'u', answer: 'U', options: ['U', 'V', 'W', 'X'] },
+    // ── First-sound from word ──
+    { question: 'Apakah bunyi ini?', audioText: 'a, a-yam', answer: 'A', options: ['A', 'E', 'I', 'O'] },
+    { question: 'Apakah bunyi ini?', audioText: 'e, e-kor', answer: 'E', options: ['E', 'A', 'O', 'U'] },
+    { question: 'Apakah bunyi ini?', audioText: 'i, i-bu', answer: 'I', options: ['I', 'A', 'E', 'U'] },
+    { question: 'Apakah bunyi ini?', audioText: 'o, o-range', answer: 'O', options: ['O', 'A', 'E', 'U'] },
+    { question: 'Apakah bunyi ini?', audioText: 'u, u-lar', answer: 'U', options: ['U', 'A', 'I', 'O'] },
+    // ── Vowel discrimination ──
+    { question: 'Apakah bunyi ini?', audioText: 'a', answer: 'A', options: ['A', 'E', 'I', 'O'] },
+    { question: 'Apakah bunyi ini?', audioText: 'e', answer: 'E', options: ['A', 'E', 'I', 'O'] },
+    { question: 'Apakah bunyi ini?', audioText: 'i', answer: 'I', options: ['A', 'E', 'I', 'O'] },
+    { question: 'Apakah bunyi ini?', audioText: 'o', answer: 'O', options: ['A', 'E', 'I', 'O'] },
+    { question: 'Apakah bunyi ini?', audioText: 'u', answer: 'U', options: ['A', 'E', 'I', 'U'] },
+    // ── Word association ──
+    { question: 'Apakah bunyi ini?', audioText: 'a-pel', answer: 'A', options: ['A', 'I', 'U', 'O'] },
+    { question: 'Apakah bunyi ini?', audioText: 'e-lang', answer: 'E', options: ['E', 'A', 'I', 'U'] },
+    { question: 'Apakah bunyi ini?', audioText: 'i-sing', answer: 'I', options: ['I', 'O', 'E', 'A'] },
+    { question: 'Apakah bunyi ini?', audioText: 'o-bor', answer: 'O', options: ['O', 'U', 'A', 'I'] },
+    { question: 'Apakah bunyi ini?', audioText: 'u-dang', answer: 'U', options: ['U', 'A', 'I', 'O'] },
+  ],
+};
 
 export default DATA;

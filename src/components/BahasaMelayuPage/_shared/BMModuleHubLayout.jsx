@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { getModulesForYear } from './ModuleData';
 import { TrophyIcon } from './BMJourneySvgs';
+import { isTopicCompleted } from './useModuleProgress';
 
 function stripPrefix(id) {
   return id ? id.replace(/^\d-/, '') : '';
@@ -22,13 +23,15 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
     const isFirst = index === 0;
     const xOffset = index % 2 === 1 ? '138px' : index % 2 === 0 && index > 0 ? '-138px' : '0px';
     const IconComp = topic.icon;
+    const completed = isTopicCompleted(topic.id);
 
     return (
       <div key={topic.id} className="step" style={{ '--x': xOffset }}>
         {isFirst && <div className="start-bubble">MULA<i></i></div>}
+        {completed && <div className="completed-badge">✓</div>}
         <button
           type="button"
-          className={`node-btn${topic.disabled ? ' node-disabled' : ''}`}
+          className={`node-btn${topic.disabled ? ' node-disabled' : ''}${completed ? ' node-done' : ''}`}
           aria-label={`TOPIK ${topic.num}`}
           onClick={() => !topic.disabled && handleTopicClick(topic.id)}
           disabled={topic.disabled}
@@ -48,6 +51,7 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
   const renderModule = (mod, isActive) => {
     const BadgeComp = mod.badge;
     const totalTopics = mod.topics.length;
+    const doneCount = mod.topics.filter(t => isTopicCompleted(t.id)).length;
 
     return (
       <section
@@ -77,12 +81,17 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
             {mod.topics.map((topic, i) => renderTopic(topic, i, totalTopics))}
 
             <div className="step is-goal" style={{ '--x': '0px' }}>
-              <button type="button" className="node-btn node-goal" aria-label={language === 'bm' ? 'Tamat Modul' : 'End Module'}>
-                <span className="node-ico"><TrophyIcon /></span>
-              </button>
+              <div className={`trophy-wrap${doneCount === totalTopics && totalTopics > 0 ? ' trophy-all-done' : ''}`}>
+                <button type="button" className="node-btn node-goal" aria-label={language === 'bm' ? 'Tamat Modul' : 'End Module'}>
+                  <span className="node-ico"><TrophyIcon /></span>
+                </button>
+                <span className="trophy-count">{doneCount}/{totalTopics}</span>
+              </div>
               <div className="node-meta">
                 <div className="node-label node-label-goal">
-                  {language === 'bm' ? 'Tamat Modul!' : 'Module Complete!'}
+                  {doneCount === totalTopics && totalTopics > 0
+                    ? (language === 'bm' ? 'Semua Lengkap! 🎉' : 'All Complete! 🎉')
+                    : (language === 'bm' ? 'Tamat Modul' : 'End Module')}
                 </div>
               </div>
             </div>
@@ -135,6 +144,17 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
         .node-goal{background:radial-gradient(ellipse at 50% 32%,#FFF3CC 0%,#FFD968 52%,#E0A012 100%);
           box-shadow:0 6px 18px -8px rgba(120,80,4,.4)}
         .node-goal:hover{box-shadow:0 10px 26px -8px rgba(120,80,4,.45)}
+        .node-done{opacity:.75;filter:saturate(.6)}
+        .node-done:hover{opacity:.85}
+        .completed-badge{position:absolute;z-index:2;width:28px;height:28px;border-radius:50%;
+          background:#16A34A;color:#fff;font-family:'Baloo 2',sans-serif;font-weight:800;
+          font-size:14px;display:flex;align-items:center;justify-content:center;
+          box-shadow:0 3px 8px rgba(22,163,74,.4);margin-top:-4px}
+        .trophy-wrap{position:relative;display:flex;flex-direction:column;align-items:center}
+        .trophy-count{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:13px;
+          color:#A9740A;margin-top:-4px;background:rgba(255,255,255,.7);
+          padding:2px 12px;border-radius:99px;border:1px solid #E0A01244;position:relative;z-index:1}
+        .trophy-all-done .trophy-count{background:#16A34A;color:#fff;border-color:#16A34A44}
 
         .node-meta{margin-top:12px;text-align:center;max-width:160px}
         .node-topic{font-family:'Baloo 2',sans-serif;font-weight:700;font-size:10px;letter-spacing:.13em;
