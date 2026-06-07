@@ -23,7 +23,7 @@ function buildQuestions() {
 }
 
 const THEME = {
-  pageGradient: 'radial-gradient(ellipse at top,#F5F3FF 0%,#EDE9FE 60%,#DDD6FE 100%)',
+  pageGradient: 'radial-gradient(ellipse at top, #E7D9FF 0%, #B79CFF 55%, #7A55E0 100%)',
   dark: '#5B21B6',
   accent: '#8B5CF6',
   stageGradient: 'radial-gradient(ellipse at 50% 32%,#EDE9FE 0%,#C4B5FD 55%,#8B5CF6 100%)',

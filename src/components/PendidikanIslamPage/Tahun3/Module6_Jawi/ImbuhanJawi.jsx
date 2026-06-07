@@ -26,7 +26,7 @@ function buildQuestions() {
 }
 
 const THEME = {
-  pageGradient: 'radial-gradient(ellipse at top,#FFF7ED 0%,#FFEDD5 60%,#FED7AA 100%)',
+  pageGradient: 'radial-gradient(ellipse at top, #FEF3C7 0%, #FDBA74 55%, #F97316 100%)',
   dark: '#C2410C',
   accent: '#F97316',
   stageGradient: 'radial-gradient(ellipse at 50% 32%,#FFEDD5 0%,#FDBA74 55%,#F97316 100%)',

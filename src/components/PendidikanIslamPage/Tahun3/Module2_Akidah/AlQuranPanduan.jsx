@@ -27,11 +27,11 @@ function buildQuestions() {
 }
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#D6F5DD 0%,#8AD9A8 50%,#5BBF8A 100%)',
+  pageGradient: 'radial-gradient(ellipse at top, #D6F5DD 0%, #8AD9A8 55%, #2A9A6C 100%)',
   dark: '#065F46',
-  accent: '#10B981',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#D6F5DD 0%,#8AD9A8 55%,#2A9A6C 100%)',
-  pillGradient: 'linear-gradient(180deg,#8AD9A8,#10B981)',
+  accent: '#2A9A6C',
+  stageGradient: 'radial-gradient(ellipse at 50% 34%, #D6F5DD 0%, #8AD9A8 55%, #2A9A6C 100%)',
+  pillGradient: 'linear-gradient(180deg, #2A9A6C, #065F46)',
 };
 
 export default function AlQuranPanduan({ onBack, language = 'bm' }) {
@@ -55,7 +55,7 @@ export default function AlQuranPanduan({ onBack, language = 'bm' }) {
       }))}
       questions={buildQuestions()}
       totalRounds={TOTAL_ROUNDS}
-      accentColor="#10B981"
+      accentColor="#2A9A6C"
     />
   );
 }

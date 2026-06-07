@@ -89,11 +89,11 @@ const QUESTIONS = shuffle([
 const TOTAL_ROUNDS = 10;
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#E7D9FF 0%,#B79CFF 50%,#9D7AEA 100%)',
-  dark: '#4C1D95',
-  accent: '#8B5CF6',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#E7D9FF 0%,#B79CFF 55%,#7A55E0 100%)',
-  pillGradient: 'linear-gradient(180deg,#B79CFF,#8B5CF6)',
+  pageGradient: 'radial-gradient(ellipse at top, #D6F5DD 0%, #8AD9A8 55%, #2A9A6C 100%)',
+  dark: '#065F46',
+  accent: '#2A9A6C',
+  stageGradient: 'radial-gradient(ellipse at 50% 34%, #D6F5DD 0%, #8AD9A8 55%, #2A9A6C 100%)',
+  pillGradient: 'linear-gradient(180deg, #2A9A6C, #065F46)',
 };
 
 export default function Syahadah({ onBack, language = 'bm' }) {
@@ -130,7 +130,7 @@ export default function Syahadah({ onBack, language = 'bm' }) {
       ]}
       questions={QUESTIONS}
       totalRounds={TOTAL_ROUNDS}
-      accentColor="#8B5CF6"
+      accentColor="#2A9A6C"
     />
   );
 }

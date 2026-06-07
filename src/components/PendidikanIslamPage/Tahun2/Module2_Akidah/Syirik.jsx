@@ -3,11 +3,11 @@ import Tahun1LessonScrollLayout from '../../Tahun1/Tahun1LessonScrollLayout';
 import { shuffle } from '../../_shared/utils';
 
 const THEME = {
-  pageGradient: 'radial-gradient(ellipse at top,#FEF2F2 0%,#FECACA 60%,#EF4444 100%)',
-  dark: '#991B1B',
-  accent: '#EF4444',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#FEE2E2 0%,#FCA5A5 55%,#EF4444 100%)',
-  pillGradient: 'linear-gradient(180deg,#F87171,#DC2626)',
+  pageGradient: 'radial-gradient(ellipse at top, #D6F5DD 0%, #8AD9A8 55%, #2A9A6C 100%)',
+  dark: '#065F46',
+  accent: '#2A9A6C',
+  stageGradient: 'radial-gradient(ellipse at 50% 34%, #D6F5DD 0%, #8AD9A8 55%, #2A9A6C 100%)',
+  pillGradient: 'linear-gradient(180deg, #2A9A6C, #065F46)',
 };
 
 const TOPICS = [
@@ -66,7 +66,7 @@ export default function Syirik({ onBack, language = 'bm' }) {
       topics={TOPICS}
       questions={QUESTIONS}
       totalRounds={8}
-      accentColor="#EF4444"
+      accentColor="#2A9A6C"
     />
   );
 }

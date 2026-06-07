@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { getGameData } from '../utils/gameStatsManager';
+import React, { useState, Suspense } from 'react';
 import { AGE_GROUPS } from '../data/ageCurriculum';
 import { playHoverSound } from '../utils/soundManager';
 import { RobotDefs, RobotReading, RobotSpeaking, RobotArabic, RobotMath } from './SubjectRobots';
+
+const HomePagePrototype = React.lazy(() => import('./HomePagePrototype'));
 
 // ── 28 animated star particles for the hero (stable, never re-generated) ──────
 const HERO_STARS = Array.from({ length: 28 }, (_, i) => ({
@@ -14,8 +15,25 @@ const HERO_STARS = Array.from({ length: 28 }, (_, i) => ({
   o: [0.4,0.65,0.35,0.7,0.5,0.25,0.6,0.45,0.55,0.72,0.3,0.58,0.42,0.68,0.38,0.62,0.28,0.5,0.75,0.33,0.6,0.48,0.4,0.7,0.32,0.56,0.78,0.44][i],
 }));
 
-export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, playerName, gameState, streak = 0, activeTab, onTabChange, onHome, onToggleLang, theme }) {
+export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, playerName, gameState, streak = 0 }) {
+  const [showRobotInterface, setShowRobotInterface] = useState(false);
   const currentLevel = gameState?.level ?? 1;
+
+  // Show Robot & Kod interface when clicked
+  if (showRobotInterface) {
+    return (
+      <Suspense fallback={null}>
+        <HomePagePrototype
+          onSelectSubject={onSelectSubject}
+          onSelectAgeGroup={onSelectAgeGroup}
+          language={language}
+          playerName={playerName}
+          gameState={gameState}
+          streak={streak}
+        />
+      </Suspense>
+    );
+  }
 
   /* Streak logic */
   const days = [
@@ -142,13 +160,13 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             background: radial-gradient(ellipse at 50% 38%, #E7D9FF 0%, #B79CFF 55%, #7A55E0 100%);
             border-color: rgba(122, 85, 224, 0.4);
         }
-        .subject-card.card-islamic-v1 {
-            background: radial-gradient(ellipse at 50% 38%, #D0F7FA 0%, #67D6E8 55%, #0891B2 100%);
-            border-color: rgba(8, 145, 178, 0.4);
-        }
         .subject-card.card-matematik-kssr {
             background: radial-gradient(ellipse at 50% 38%, #CCFBF1 0%, #5EEAD4 55%, #0F766E 100%);
             border-color: rgba(20, 184, 166, 0.4);
+        }
+        .subject-card.card-bm-kssr {
+            background: radial-gradient(ellipse at 50% 38%, #E0F2FE 0%, #7DD3FC 55%, #0284C7 100%);
+            border-color: rgba(2, 132, 199, 0.4);
         }
 
         .subject-card:hover {
@@ -544,18 +562,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             <p className="rb-desc">{language === 'bm' ? 'Perbaiki sebutan dengan yakin!' : 'Improve pronunciation with confidence!'}</p>
           </div>
 
-          {/* 3. Jawi */}
-          <div className="subject-card card-arabic" onClick={() => onSelectSubject('jawi')} role="button" tabIndex="0" aria-label="Jawi">
-            <div className="rb-stage">
-              <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
-              <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
-              <RobotArabic />
-            </div>
-            <span className="rb-pill">PENDIDIKAN ISLAM</span>
-            <p className="rb-desc">{language === 'bm' ? 'Belajar Jawi dengan mudah!' : 'Learn Jawi easily!'}</p>
-          </div>
-
-          {/* 4. Matematik */}
+          {/* 3. Matematik */}
           <div className="subject-card card-math" onClick={() => onSelectSubject('math')} role="button" tabIndex="0" aria-label="Matematik">
             <div className="rb-stage">
               <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
@@ -566,8 +573,8 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             <p className="rb-desc">{language === 'bm' ? 'Teroka dunia nombor dan logik!' : 'Explore the world of numbers and shapes!'}</p>
           </div>
 
-          {/* 5. Pendidikan Islam V1 */}
-          <div className="subject-card card-islamic-v1" onClick={() => onSelectSubject('pendidikan-islam-v1')} role="button" tabIndex="0" aria-label="Pendidikan Islam V1">
+          {/* 4. Pendidikan Islam V1 */}
+          <div className="subject-card card-arabic" onClick={() => onSelectSubject('pendidikan-islam-v1')} role="button" tabIndex="0" aria-label="Pendidikan Islam V1">
             <div className="rb-stage">
               <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
               <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
@@ -577,7 +584,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             <p className="rb-desc">{language === 'bm' ? 'Belajar Pendidikan Islam dengan mudah!' : 'Learn Islamic Education easily!'}</p>
           </div>
 
-          {/* 6. Matematik KSSR */}
+          {/* 5. Matematik KSSR */}
           <div className="subject-card card-matematik-kssr" onClick={() => onSelectSubject('matematik-kssr')} role="button" tabIndex="0" aria-label="Matematik KSSR">
             <div className="rb-stage">
               <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
@@ -586,6 +593,28 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             </div>
             <span className="rb-pill">{language === 'bm' ? 'MATEMATIK KSSR' : 'MATH KSSR'}</span>
             <p className="rb-desc">{language === 'bm' ? 'Ikut silibus KSSR Tahun 1–3!' : 'Follow the KSSR syllabus for Year 1–3!'}</p>
+          </div>
+
+          {/* 6. Bahasa Melayu KSSR */}
+          <div className="subject-card card-bm-kssr" onClick={() => onSelectSubject('bm-kssr')} role="button" tabIndex="0" aria-label="Bahasa Melayu KSSR">
+            <div className="rb-stage">
+              <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
+              <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
+              <RobotSpeaking />
+            </div>
+            <span className="rb-pill" style={{ background: 'linear-gradient(180deg, #38BDF8 0%, #0284C7 100%)', boxShadow: '0 2px 0 #0369A1' }}>{language === 'bm' ? 'B. MELAYU KSSR' : 'MALAY KSSR'}</span>
+            <p className="rb-desc">{language === 'bm' ? 'Ikut silibus BM KSSR Tahun 1–3!' : 'Follow the Malay KSSR syllabus!'}</p>
+          </div>
+
+          {/* 7. Robot & Kod */}
+          <div className="subject-card card-robot" style={{ background: 'radial-gradient(ellipse at 50% 38%, #FFF1E6 0%, #FFD4A8 60%, #F97316 100%)', borderColor: 'rgba(249, 115, 22, 0.4)' }} onClick={() => setShowRobotInterface(true)} role="button" tabIndex="0" aria-label="Robot & Kod">
+            <div className="rb-stage">
+              <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
+              <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
+              <RobotMath />
+            </div>
+            <span className="rb-pill" style={{ background: 'linear-gradient(180deg, #F97316 0%, #EA580C 100%)', boxShadow: '0 2px 0 #C2410C' }}>{language === 'bm' ? 'ROBOT & KÓD' : 'ROBOT & CODE'}</span>
+            <p className="rb-desc">{language === 'bm' ? 'Belajar robotik dan kod dengan mudah!' : 'Learn robotics and coding the fun way!'}</p>
           </div>
         </div>
 
@@ -615,7 +644,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
               { main: '#22D3EE', dark: '#0E4D6E', glow: 'rgba(34,211,238,0.55)'  },  // Cyan nebula (age-8)
               { main: '#A78BFA', dark: '#4C1D95', glow: 'rgba(167,139,250,0.55)' },  // Violet nebula (age-9)
             ];
-            const colors = nebulaColors[i];
+            const colors = nebulaColors[i % nebulaColors.length];
             return (
               <button
                 key={group.id}

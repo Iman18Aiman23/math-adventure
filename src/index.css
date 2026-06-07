@@ -2034,6 +2034,9 @@ button {
   .view-container > .pi-module-page,
   .view-container > .mt-home-root,
   .view-container > .mt-module-page,
+  .view-container > .bm-home-root,
+  .view-container > .bm-module-page,
+  .view-container > .bm-hub-layout,
   .view-container > div[style] {
     max-width: 100%;
   }

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { readingData } from '../../data/curriculum/readingData';
+import { readingData } from '../../../../data/curriculum/readingData';
 import { ChevronLeft, ChevronRight, Volume2, ArrowLeft } from 'lucide-react';
-import { playHoverSound } from '../../utils/soundManager';
-import SpeechManager from '../../services/SpeechManager';
+import { playHoverSound } from '../../../../utils/soundManager';
+import SpeechManager from '../../../../services/SpeechManager';
 
 // ── Script button config ──────────────────────────────────────────────────────
 const SCRIPTS = [
@@ -77,7 +77,7 @@ export default function JawiReadingPage4({ onBack, language }) {
   // ── VIEW: Flashcard Interface ────────────────────────────────────────────
   // ─────────────────────────────────────────────────────────────────────────
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#F7F7F7', padding: '1rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: 'radial-gradient(ellipse at top, #FEF3C7 0%, #FDBA74 55%, #F97316 100%)', padding: '1rem' }}>
 
       {/* Header with Script Buttons */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', gap: '0.75rem', flexWrap: 'wrap' }}>

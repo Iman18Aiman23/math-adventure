@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, createContext, useContext, Suspense
 import HomePage from './components/HomePage';
 import LoadingSpinner from './components/LoadingSpinner';
 const BMPage = React.lazy(() => import('./components/SpeakingPage/BMPage'));
-const JawiPage = React.lazy(() => import('./components/JawiScriptPage/JawiPage'));
 const MathHome = React.lazy(() => import('./components/MathematicsPage/MathHome'));
 const OpsLandingPage = React.lazy(() => import('./components/MathematicsPage/OpsLandingPage'));
 const TimeGameMenu = React.lazy(() => import('./components/MathematicsPage/TimeGameMenu'));
@@ -53,6 +52,8 @@ const BinaPerkataanJawi = React.lazy(() => import('./components/AgeGroup-7/BinaP
 const PadanPerkataanJawi = React.lazy(() => import('./components/AgeGroup-7/PadanPerkataanJawi'));
 const BacaAyatJawi = React.lazy(() => import('./components/AgeGroup-7/BacaAyatJawi'));
 const TulisJawi = React.lazy(() => import('./components/AgeGroup-7/TulisJawi'));
+const JawiMatchGame = React.lazy(() => import('./components/AgeGroup-7/JawiMatchGame'));
+const IqraPage = React.lazy(() => import('./components/AgeGroup-7/IqraPage'));
 const TimeTeller = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_Sukatan/TimeTeller'));
 const CountingMoney = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/CountingMoney'));
 const SubtractionStory = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/SubtractionStory'));
@@ -112,6 +113,9 @@ const PecahanAsasT1 = React.lazy(() => import('./components/MatematikPage/Tahun1
 const ProfileHome = React.lazy(() => import('./components/Profile/ProfileHome'));
 const PendidikanIslamHomePage = React.lazy(() => import('./components/PendidikanIslamPage/PendidikanIslamHomePage'));
 const MatematikHomePage = React.lazy(() => import('./components/MatematikPage/MatematikHomePage'));
+const BahasaMelayuHomePage = React.lazy(() => import('./components/BahasaMelayuPage/BahasaMelayuHomePage'));
+const BahasaMelayuModulePage = React.lazy(() => import('./components/BahasaMelayuPage/BahasaMelayuModulePage'));
+const BMModuleHubLayout = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/BMModuleHubLayout'));
 const MatematikModulePage = React.lazy(() => import('./components/MatematikPage/MatematikModulePage'));
 const NomborModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/NomborModule'));
 const SukatanModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_Sukatan/SukatanModule'));
@@ -205,6 +209,8 @@ const JawiModuleT3               = React.lazy(() => import('./components/Pendidi
 const ImbuhanJawi                = React.lazy(() => import('./components/PendidikanIslamPage/Tahun3/Module6_Jawi/ImbuhanJawi'));
 const PetikanJawi                = React.lazy(() => import('./components/PendidikanIslamPage/Tahun3/Module6_Jawi/PetikanJawi'));
 const TandaBacaJawi              = React.lazy(() => import('./components/PendidikanIslamPage/Tahun3/Module6_Jawi/TandaBacaJawi'));
+const JawiReadingPage4           = React.lazy(() => import('./components/PendidikanIslamPage/Tahun3/Module6_Jawi/JawiReadingPage4'));
+const JawiShortStoriesPage       = React.lazy(() => import('./components/PendidikanIslamPage/Tahun3/Module6_Jawi/JawiShortStoriesPage'));
 import TahunModulePage from './components/PendidikanIslamPage/TahunModulePage';
 const AchievementHome  = React.lazy(() => import('./components/Achievement/AchievementHome'));
 const LeaderboardHome  = React.lazy(() => import('./components/Leaderboard/LeaderboardHome'));
@@ -286,6 +292,7 @@ function useIsDesktop(breakpoint = 768) {
 function getActiveGameId(currentSubject, mathSubGame) {
   if (currentSubject === 'jawi') return 'jawi';
   if (currentSubject === 'bm')   return 'bm';
+  if (currentSubject === 'bm-kssr') return 'bm-kssr';
   if (currentSubject === 'math') {
     if (mathSubGame === 'operations') return 'math-operations';
     if (mathSubGame === 'datetime')   return 'math-datetime';
@@ -323,7 +330,6 @@ export default function App() {
   const [language,       setLanguage]       = useState('bm');
   const [activeTab,      setActiveTab]      = useState('learn');
   const [streak,         setStreak]         = useState(0);
-  const [isPlayingJawiGame, setIsPlayingJawiGame] = useState(false);
   const [selectedAssessment, setSelectedAssessment] = useState(null);
   const [currentAgeGroup, setCurrentAgeGroup] = useState(null);
   const [currentAgeGame, setCurrentAgeGame] = useState(null);
@@ -334,11 +340,14 @@ export default function App() {
   const [matematikModule, setMatematikModule] = useState(null);
   const [matematikTopic,  setMatematikTopic]  = useState(null);
   const [matematikYear,   setMatematikYear]   = useState(1);
+  const [bmModule, setBmModule] = useState(null);
+  const [bmTopic,  setBmTopic]  = useState(null);
+  const [bmYear,   setBmYear]   = useState(1);
 
   const viewContainerRef = useRef(null);
   useEffect(() => {
     if (viewContainerRef.current) viewContainerRef.current.scrollTop = 0;
-  }, [islamModule, islamTopic, islamYear, matematikModule, matematikTopic, matematikYear]);
+  }, [islamModule, islamTopic, islamYear, matematikModule, matematikTopic, matematikYear, bmModule, bmTopic, bmYear]);
 
   // useTransition keeps the current screen visible while a lazy game chunk
   // loads, so navigation never blanks to a fallback for fast loads. isPending
@@ -375,7 +384,7 @@ export default function App() {
   const handleStartGame    = (op, diff, _nums = [], qType = 'multiple') => { setGameConfig({ operation: op, difficulty: diff, nums: _nums, quizType: qType }); setIsPlaying(true); };
   const handleBackToMenu   = () => setIsPlaying(false);
   const handleStartTimeGame= (gameId) => { setDateTimeSubGame(gameId); setIsPlaying(true); };
-  const handleBackToHome   = () => { setIsPlaying(false); setMathSubGame(null); setDateTimeSubGame(null); setCurrentSubject(null); setCurrentAgeGroup(null); setCurrentAgeGame(null); setIslamModule(null); setIslamTopic(null); setMatematikModule(null); setMatematikTopic(null); setMatematikYear(1); setActiveTab('learn'); };
+  const handleBackToHome   = () => { setIsPlaying(false); setMathSubGame(null); setDateTimeSubGame(null); setCurrentSubject(null); setCurrentAgeGroup(null); setCurrentAgeGame(null); setIslamModule(null); setIslamTopic(null); setMatematikModule(null); setMatematikTopic(null); setMatematikYear(1); setBmModule(null); setBmTopic(null); setBmYear(1); setActiveTab('learn'); };
   const handleToggleMute   = () => { const m = !isMuted; setIsMuted(m); setMuted(m); };
   const handleToggleLang   = () => setLanguage(l => l === 'bm' ? 'eng' : 'bm');
 
@@ -383,7 +392,7 @@ export default function App() {
   const viewKey = `${activeTab}-${currentSubject}-${mathSubGame}-${dateTimeSubGame}-${isPlaying}-${selectedAssessment?.id}`;
 
   // Hide sidebar during game play or assessment
-  const shouldHideSidebar = isPlaying || (currentSubject === 'math' && mathSubGame === 'faq') || isPlayingJawiGame || selectedAssessment || !!currentAgeGame;
+  const shouldHideSidebar = isPlaying || (currentSubject === 'math' && mathSubGame === 'faq') || selectedAssessment || !!currentAgeGame;
 
   // ── Content renderer ──────────────────────────────────────────────────────
   const renderContent = () => {
@@ -451,8 +460,6 @@ export default function App() {
         return <MathHome onSelectSubGame={setMathSubGame} onBack={handleBackToHome} onHome={handleBackToHome} language={language} />;
       case 'bm':
         return <BMPage onBack={handleBackToHome} onHome={handleBackToHome} language={language} />;
-      case 'jawi':
-        return <JawiPage onBack={handleBackToHome} onHome={handleBackToHome} language={language} onGameStart={() => setIsPlayingJawiGame(true)} onGameEnd={() => setIsPlayingJawiGame(false)} />;
       case 'matematik-kssr':
         // ── Topic games ──
         if (matematikTopic === 'nombor-100')        return <Nombor100       onBack={() => setMatematikTopic(null)} language={language} />;
@@ -585,6 +592,8 @@ export default function App() {
         if (islamModule === '3-jawi'     && islamTopic === 'imbuhan-jawi')       { return <ImbuhanJawi      onBack={() => setIslamTopic(null)} language={language} />; }
         if (islamModule === '3-jawi'     && islamTopic === 'petikan-jawi')       { return <PetikanJawi      onBack={() => setIslamTopic(null)} language={language} />; }
         if (islamModule === '3-jawi'     && islamTopic === 'tanda-baca-jawi')    { return <TandaBacaJawi    onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === '3-jawi'     && islamTopic === 'ayat-panjang')       { return <JawiReadingPage4 onBack={() => setIslamTopic(null)} language={language} />; }
+        if (islamModule === '3-jawi'     && islamTopic === 'short_stories')      { return <JawiShortStoriesPage onBack={() => setIslamTopic(null)} language={language} />; }
 
         // ── Hub + Nav page (islamModule set, no topic) ──
         if (islamModule) {
@@ -627,6 +636,31 @@ export default function App() {
         }
 
         return <PendidikanIslamHomePage initialYear={islamYear} onBack={handleBackToHome} language={language} onSelectModule={(id) => navigate(() => { const y = id.startsWith('2-') ? 2 : id.startsWith('3-') ? 3 : 1; setIslamYear(y); setIslamModule(id); })} />;
+      case 'bm-kssr':
+        // ── Module hub (bmModule set, no topic) ──
+        if (bmModule) {
+          const hubOnBack = () => { setBmModule(null); setBmTopic(null); };
+          return (
+            <Suspense fallback={<LoadingSpinner />}>
+              <BahasaMelayuModulePage year={bmYear} activeModule={bmModule} language={language}
+                onBack={hubOnBack}
+                onModuleChange={(id) => navigate(() => { setBmModule(id); setBmTopic(null); })}
+                onSelectTopic={(id) => navigate(() => setBmTopic(id))}>
+                <BMModuleHubLayout year={bmYear} activeModule={bmModule} language={language}
+                  onModuleChange={(id) => navigate(() => { setBmModule(id); setBmTopic(null); })}
+                  onSelectTopic={(id) => navigate(() => setBmTopic(id))} />
+              </BahasaMelayuModulePage>
+            </Suspense>
+          );
+        }
+
+        // ── Year selector ──
+        return (
+          <Suspense fallback={<LoadingSpinner />}>
+            <BahasaMelayuHomePage onBack={handleBackToHome} language={language}
+              onSelectYear={(y) => navigate(() => { setBmYear(y); setBmModule(y === 1 ? 'mendengar' : y === 2 ? '2-mendengar' : '3-mendengar'); })} />
+          </Suspense>
+        );
       case 'reading':
         return <ReadingPage onBack={handleBackToHome} language={language} />;
       default:
@@ -723,6 +757,12 @@ export default function App() {
         }
         if (currentAgeGame === 'tulis-jawi') {
           return <TulisJawi onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'padanan-huruf-jawi') {
+          return <JawiMatchGame onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'iqra-buku') {
+          return <IqraPage onBack={() => setCurrentAgeGame(null)} language={language} />;
         }
         if (currentAgeGame === 'time-teller') {
           return <TimeTeller onBack={() => setCurrentAgeGame(null)} language={language} />;
@@ -942,7 +982,7 @@ export default function App() {
         </div>
 
         {/* CosmicMobileNav — rendered outside view-container so position:fixed works correctly */}
-        {!inActiveQuiz && !isPlayingJawiGame && !selectedAssessment && !currentAgeGame && !currentAgeGroup && !currentSubject && (
+        {!inActiveQuiz && !selectedAssessment && !currentAgeGame && !currentAgeGroup && !currentSubject && (
           <CosmicMobileNav
             activeTab={activeTab}
             language={language}

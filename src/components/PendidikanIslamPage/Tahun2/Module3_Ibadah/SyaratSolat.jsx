@@ -3,11 +3,11 @@ import Tahun1LessonScrollLayout from '../../Tahun1/Tahun1LessonScrollLayout';
 import { shuffle } from '../../_shared/utils';
 
 const THEME = {
-  pageGradient: 'radial-gradient(ellipse at top,#EFF6FF 0%,#BFDBFE 60%,#3B82F6 100%)',
-  dark: '#1E40AF',
+  pageGradient: 'linear-gradient(180deg, #D6EEFF 0%, #EBF5FF 40%, #F5F9FF 100%)',
+  dark: '#2563EB',
   accent: '#3B82F6',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#DBEAFE 0%,#93C5FD 55%,#3B82F6 100%)',
-  pillGradient: 'linear-gradient(180deg,#60A5FA,#2563EB)',
+  stageGradient: 'linear-gradient(145deg, #2563EB, #3B82F6, #60A5FA)',
+  pillGradient: 'linear-gradient(135deg, #3B82F6, #60A5FA)',
 };
 
 const SYARAT_WAJIB = [

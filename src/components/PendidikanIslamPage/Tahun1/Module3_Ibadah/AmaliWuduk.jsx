@@ -45,11 +45,11 @@ const QUESTIONS = shuffle([
 const TOTAL_ROUNDS = 10;
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#D6F5DD 0%,#8AD9A8 50%,#5BBF8A 100%)',
-  dark: '#065F46',
-  accent: '#2A9A6C',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#D6F5DD 0%,#8AD9A8 55%,#2A9A6C 100%)',
-  pillGradient: 'linear-gradient(180deg,#8AD9A8,#2A9A6C)',
+  pageGradient: 'linear-gradient(180deg, #EBF8FF 0%, #E0F2FE 40%, #F0F9FF 100%)',
+  dark: '#0C4A6E',
+  accent: '#0891B2',
+  stageGradient: 'linear-gradient(145deg, #0E7490, #0891B2, #06B6D4)',
+  pillGradient: 'linear-gradient(135deg, #0891B2, #06B6D4)',
 };
 
 export default function AmaliWuduk({ onBack, language = 'bm' }) {
@@ -82,7 +82,7 @@ export default function AmaliWuduk({ onBack, language = 'bm' }) {
       topics={topics}
       questions={QUESTIONS}
       totalRounds={TOTAL_ROUNDS}
-      accentColor="#2A9A6C"
+      accentColor="#0891B2"
     />
   );
 }

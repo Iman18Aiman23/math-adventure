@@ -45,11 +45,11 @@ const QUESTIONS = shuffle([
 const TOTAL_ROUNDS = 10;
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#D0F7FA 0%,#67D6E8 50%,#3BC4D8 100%)',
-  dark: '#0C4A6E',
-  accent: '#0891B2',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#D0F7FA 0%,#67D6E8 55%,#0891B2 100%)',
-  pillGradient: 'linear-gradient(180deg,#67D6E8,#0891B2)',
+  pageGradient: 'linear-gradient(180deg, #FAF5FF 0%, #F3E8FF 40%, #FAFAFF 100%)',
+  dark: '#4C1D95',
+  accent: '#8B5CF6',
+  stageGradient: 'linear-gradient(145deg, #5B21B6, #7A55E0, #A78BFA)',
+  pillGradient: 'linear-gradient(135deg, #7A55E0, #A78BFA)',
 };
 
 export default function KelahiranPenyusuan({ onBack, language = 'bm' }) {
@@ -73,7 +73,7 @@ export default function KelahiranPenyusuan({ onBack, language = 'bm' }) {
       }))}
       questions={QUESTIONS}
       totalRounds={TOTAL_ROUNDS}
-      accentColor="#0891B2"
+      accentColor="#8B5CF6"
     />
   );
 }

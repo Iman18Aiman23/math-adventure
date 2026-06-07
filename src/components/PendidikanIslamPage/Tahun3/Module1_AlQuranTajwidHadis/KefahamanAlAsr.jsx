@@ -37,11 +37,11 @@ function buildQuestions() {
 }
 
 const THEME = {
-  pageGradient: 'radial-gradient(ellipse at top,#FFFBEB 0%,#FEF3C7 60%,#FDE68A 100%)',
-  dark: '#92400E',
+  pageGradient: 'radial-gradient(ellipse at top, #FFF7D6 0%, #FDD97A 55%, #D4960A 100%)',
+  dark: '#B45309',
   accent: '#F59E0B',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#FFFBEB 0%,#FDE68A 55%,#D97706 100%)',
-  pillGradient: 'linear-gradient(180deg,#FDE68A,#F59E0B)',
+  stageGradient: 'radial-gradient(ellipse at 50% 34%, #FFF7D6 0%, #FDD97A 55%, #D4960A 100%)',
+  pillGradient: 'linear-gradient(180deg, #F59E0B, #B45309)',
 };
 
 export default function KefahamanAlAsr({ onBack, language = 'bm' }) {

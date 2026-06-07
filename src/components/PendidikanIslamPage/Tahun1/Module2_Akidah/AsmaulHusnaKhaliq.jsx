@@ -68,11 +68,11 @@ const QUESTIONS = shuffle([
 const TOTAL_ROUNDS = 10;
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#FFF7D6 0%,#FDD97A 50%,#F2C44D 100%)',
-  dark: '#92400E',
-  accent: '#F59E0B',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#FFF7D6 0%,#FDD97A 55%,#D4960A 100%)',
-  pillGradient: 'linear-gradient(180deg,#FDD97A,#F59E0B)',
+  pageGradient: 'radial-gradient(ellipse at top, #D6F5DD 0%, #8AD9A8 55%, #2A9A6C 100%)',
+  dark: '#065F46',
+  accent: '#2A9A6C',
+  stageGradient: 'radial-gradient(ellipse at 50% 34%, #D6F5DD 0%, #8AD9A8 55%, #2A9A6C 100%)',
+  pillGradient: 'linear-gradient(180deg, #2A9A6C, #065F46)',
 };
 
 export default function AsmaulHusnaKhaliq({ onBack, language = 'bm' }) {
@@ -96,7 +96,7 @@ export default function AsmaulHusnaKhaliq({ onBack, language = 'bm' }) {
       }))}
       questions={QUESTIONS}
       totalRounds={TOTAL_ROUNDS}
-      accentColor="#F59E0B"
+      accentColor="#2A9A6C"
     />
   );
 }

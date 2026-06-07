@@ -45,7 +45,7 @@ const QUESTIONS = shuffle([
 const TOTAL_ROUNDS = 10;
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#E7D9FF 0%,#B79CFF 50%,#9D7AEA 100%)',
+  pageGradient: 'linear-gradient(180deg, #FAF5FF 0%, #F3E8FF 40%, #FAFAFF 100%)',
   dark: '#4C1D95',
   accent: '#7A55E0',
   stageGradient: 'radial-gradient(ellipse at 50% 32%,#E7D9FF 0%,#B79CFF 55%,#7A55E0 100%)',

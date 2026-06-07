@@ -3,11 +3,11 @@ import Tahun1LessonScrollLayout from '../Tahun1LessonScrollLayout';
 import { shuffle } from '../../_shared/utils';
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#FDEFF5 0%,#F7D6E3 50%,#F2C4D7 100%)',
-  dark: '#46122E',
-  accent: '#E8568A',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#FFE3EF 0%,#F58FB6 55%,#D94B86 100%)',
-  pillGradient: 'linear-gradient(180deg,#F0709F,#E8568A)',
+  pageGradient: 'linear-gradient(180deg, #FFF1F2 0%, #FFE4E6 40%, #FFF5F6 100%)',
+  dark: '#9F1239',
+  accent: '#F43F5E',
+  stageGradient: 'linear-gradient(145deg, #BE185D, #FF8CBF, #FBCFE8)',
+  pillGradient: 'linear-gradient(135deg, #FF8CBF, #FDA4AF)',
 };
 
 function SvgBasuhTangan() {
@@ -177,7 +177,7 @@ export default function AdabMakanMinum({ onBack, language = 'bm' }) {
       topics={TOPICS}
       questions={QUESTIONS}
       totalRounds={10}
-      accentColor="#E8568A"
+      accentColor="#F43F5E"
     />
   );
 }

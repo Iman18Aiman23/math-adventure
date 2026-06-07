@@ -4,11 +4,11 @@ import { ARABIC_FONT } from '../../_shared/arabic';
 import { shuffle } from '../../_shared/utils';
 
 const THEME = {
-  pageGradient: 'radial-gradient(ellipse at top,#ECFDF5 0%,#A7F3D0 60%,#10B981 100%)',
+  pageGradient: 'radial-gradient(ellipse at top, #D6F5DD 0%, #8AD9A8 55%, #2A9A6C 100%)',
   dark: '#065F46',
-  accent: '#10B981',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#D1FAE5 0%,#6EE7B7 55%,#10B981 100%)',
-  pillGradient: 'linear-gradient(180deg,#34D399,#059669)',
+  accent: '#2A9A6C',
+  stageGradient: 'radial-gradient(ellipse at 50% 34%, #D6F5DD 0%, #8AD9A8 55%, #2A9A6C 100%)',
+  pillGradient: 'linear-gradient(180deg, #2A9A6C, #065F46)',
 };
 
 const MALAIKAT = [
@@ -75,7 +75,7 @@ export default function Malaikat({ onBack, language = 'bm' }) {
       topics={TOPICS}
       questions={QUESTIONS}
       totalRounds={TOTAL_ROUNDS}
-      accentColor="#10B981"
+      accentColor="#2A9A6C"
     />
   );
 }

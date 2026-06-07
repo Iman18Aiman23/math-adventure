@@ -45,11 +45,11 @@ const QUESTIONS = shuffle([
 const TOTAL_ROUNDS = 10;
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#FFE9F3 0%,#FFBFDD 50%,#FF9EC8 100%)',
-  dark: '#9D174D',
-  accent: '#EC4899',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#FFE9F3 0%,#FFBFDD 55%,#FF8CBF 100%)',
-  pillGradient: 'linear-gradient(180deg,#FFBFDD,#EC4899)',
+  pageGradient: 'linear-gradient(180deg, #FAF5FF 0%, #F3E8FF 40%, #FAFAFF 100%)',
+  dark: '#4C1D95',
+  accent: '#8B5CF6',
+  stageGradient: 'linear-gradient(145deg, #5B21B6, #7A55E0, #A78BFA)',
+  pillGradient: 'linear-gradient(135deg, #7A55E0, #A78BFA)',
 };
 
 export default function SifatAlAmin({ onBack, language = 'bm' }) {
@@ -73,7 +73,7 @@ export default function SifatAlAmin({ onBack, language = 'bm' }) {
       }))}
       questions={QUESTIONS}
       totalRounds={TOTAL_ROUNDS}
-      accentColor="#EC4899"
+      accentColor="#8B5CF6"
     />
   );
 }

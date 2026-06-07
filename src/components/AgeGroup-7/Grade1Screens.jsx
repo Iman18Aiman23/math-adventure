@@ -253,6 +253,33 @@ const STulisJawi = (
   </g>
 );
 
+/* Padanan Huruf Jawi — memory card grid: 2 Jawi letters face-up, 2 cards face-down with ? */
+const SPadanHurufJawi = (
+  <g transform="translate(0 6)">
+    <rect x="54" y="68" width="26" height="26" rx="4" fill="#FFFFFF" stroke="#1B6E4B" strokeWidth="2" />
+    <text x="67" y="81" textAnchor="middle" fontFamily={jawiFont} fontSize="16" fill="#1B6E4B">ب</text>
+    <rect x="120" y="68" width="26" height="26" rx="4" fill="#FFFFFF" stroke="#1B6E4B" strokeWidth="2" />
+    <text x="133" y="81" textAnchor="middle" fontFamily={jawiFont} fontSize="16" fill="#1B6E4B">ت</text>
+    <rect x="54" y="104" width="26" height="26" rx="4" fill="#4DD0E1" stroke="#00838F" strokeWidth="2" />
+    <text x="67" y="116" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontSize="16" fontWeight="800" fill="#FFFFFF">?</text>
+    <rect x="120" y="104" width="26" height="26" rx="4" fill="#4DD0E1" stroke="#00838F" strokeWidth="2" />
+    <text x="133" y="116" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontSize="16" fontWeight="800" fill="#FFFFFF">?</text>
+    {spark}
+  </g>
+);
+
+/* Iqra Buku — open Quran book with Arabic script. */
+const SIqraBuku = (
+  <g transform="translate(0 6)">
+    <path d="M58 70 L58 120 Q80 110 100 115 Q120 110 142 120 L142 70 Q120 78 100 75 Q80 78 58 70 Z" fill="#FFFFFF" stroke="#1B6E4B" strokeWidth="2" />
+    <line x1="100" y1="75" x2="100" y2="115" stroke="#1B6E4B" strokeWidth="1.5" />
+    <text x="82" y="95" textAnchor="middle" fontFamily={jawiFont} fontSize="13" fill="#1B6E4B" fontWeight="700">اقرأ</text>
+    <text x="118" y="95" textAnchor="middle" fontFamily={jawiFont} fontSize="13" fill="#1B6E4B" fontWeight="700">بسم</text>
+    <text x="100" y="108" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontSize="9" fontWeight="800" fill="#2A9A6C">1–6</text>
+    {spark}
+  </g>
+);
+
 /* ════════════════ MATH (Matematik) — purple face, white/bright ════════════════ */
 
 /* Nombor 1–100 — big 100. */
@@ -402,6 +429,8 @@ export const GRADE1_GAME_INNER = {
   'padan-perkataan-jawi':     SPadanJawi,
   'baca-ayat-jawi':           SBacaAyatJawi,
   'tulis-jawi':               STulisJawi,
+  'padanan-huruf-jawi':       SPadanHurufJawi,
+  'iqra-buku':                SIqraBuku,
   // Matematik
   'nombor-100':               SNombor100,
   'tambah-100':               STambah100,

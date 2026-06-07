@@ -4,11 +4,11 @@ import { ARABIC_FONT } from '../../_shared/arabic';
 import { shuffle } from '../../_shared/utils';
 
 const THEME = {
-  pageGradient: 'radial-gradient(ellipse at top,#EFF6FF 0%,#BFDBFE 60%,#3B82F6 100%)',
-  dark: '#1E40AF',
-  accent: '#3B82F6',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#DBEAFE 0%,#93C5FD 55%,#3B82F6 100%)',
-  pillGradient: 'linear-gradient(180deg,#60A5FA,#2563EB)',
+  pageGradient: 'radial-gradient(ellipse at top, #FFF7D6 0%, #FDD97A 55%, #F5CD6D 100%)',
+  dark: '#92400E',
+  accent: '#F59E0B',
+  stageGradient: 'radial-gradient(ellipse at 50% 34%, #FFF7D6 0%, #FDD97A 55%, #D4960A 100%)',
+  pillGradient: 'linear-gradient(180deg, #F59E0B, #D4960A)',
 };
 
 const TOPICS = [
@@ -60,7 +60,7 @@ export default function Idgham({ onBack, language = 'bm' }) {
       topics={TOPICS}
       questions={QUESTIONS}
       totalRounds={5}
-      accentColor="#3B82F6"
+      accentColor="#F59E0B"
     />
   );
 }

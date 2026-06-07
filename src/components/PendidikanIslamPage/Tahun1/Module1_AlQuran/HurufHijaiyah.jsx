@@ -199,7 +199,23 @@ function CompletionScreen({ onRestart, onBack, language }) {
         {HIJAIYAH.map(l => l.arabic).join(' ')}
       </div>
 
-      <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+      <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center', direction: 'rtl' }}>
+        <button
+          onClick={onBack}
+          style={{
+            fontFamily: "'Fredoka', system-ui, sans-serif",
+            fontWeight: 700,
+            fontSize: 'clamp(0.85rem, 2vw, 1rem)',
+            background: 'rgba(0,0,0,0.04)',
+            color: 'var(--pi-muted)',
+            border: '2px solid rgba(0,0,0,0.1)',
+            borderRadius: 999,
+            padding: '10px 28px',
+            cursor: 'pointer',
+          }}
+        >
+          {language === 'bm' ? 'Kembali' : 'Back'} ←
+        </button>
         <button
           onClick={onRestart}
           style={{
@@ -215,23 +231,7 @@ function CompletionScreen({ onRestart, onBack, language }) {
             boxShadow: '0 4px 14px rgba(217,119,6,0.4)',
           }}
         >
-          🔁 {language === 'bm' ? 'Cuba Semula' : 'Try Again'}
-        </button>
-        <button
-          onClick={onBack}
-          style={{
-            fontFamily: "'Fredoka', system-ui, sans-serif",
-            fontWeight: 700,
-            fontSize: 'clamp(0.85rem, 2vw, 1rem)',
-            background: 'rgba(0,0,0,0.04)',
-            color: 'var(--pi-muted)',
-            border: '2px solid rgba(0,0,0,0.1)',
-            borderRadius: 999,
-            padding: '10px 28px',
-            cursor: 'pointer',
-          }}
-        >
-          ← {language === 'bm' ? 'Kembali' : 'Back'}
+          {language === 'bm' ? 'Cuba Semula' : 'Try Again'} 🔁
         </button>
       </div>
     </div>
@@ -315,24 +315,26 @@ export default function HurufHijaiyah({ onBack, language = 'bm' }) {
       breadcrumb="Al-Quran & Tajwid › Topik 1.1"
       title={language === 'bm' ? 'Huruf Hijaiyah Tunggal' : 'Hijaiyah Letters'}
       accentColor="#D4960A"
+      pageBackground="radial-gradient(ellipse at top, #FFF7D6 0%, #FDD97A 55%, #F5CD6D 100%)"
     >
       <style>{`
         .hh-grid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
           gap: 0.6rem;
+          direction: rtl;
         }
         @media (max-width: 380px) {
-          .hh-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+          .hh-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; direction: rtl; }
         }
         @media (min-width: 480px) {
-          .hh-grid { grid-template-columns: repeat(5, 1fr); gap: 0.7rem; }
+          .hh-grid { grid-template-columns: repeat(5, 1fr); gap: 0.7rem; direction: rtl; }
         }
         @media (min-width: 768px) {
-          .hh-grid { grid-template-columns: repeat(7, 1fr); gap: 0.85rem; }
+          .hh-grid { grid-template-columns: repeat(7, 1fr); gap: 0.85rem; direction: rtl; }
         }
         @media (min-width: 1024px) {
-          .hh-grid { grid-template-columns: repeat(7, 1fr); gap: 1rem; }
+          .hh-grid { grid-template-columns: repeat(7, 1fr); gap: 1rem; direction: rtl; }
         }
 
         @keyframes hh-pulse {

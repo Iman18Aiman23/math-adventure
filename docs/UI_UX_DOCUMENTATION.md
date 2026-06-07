@@ -838,7 +838,93 @@ Used in game screens at bottom
 
 ---
 
-## 15. Summary
+## 15. Subject HomePage Year Selector Layout
+
+Every subject homepage (Matematik KSSR, Pendidikan Islam, etc.) follows a standardised year-selector layout.
+
+### Layout Anatomy
+
+```
+.{prefix}-home-root (flex column, flex:1, full-bleed)
+  └── .{prefix}-home-scroll (flex:1, overflow-y:auto, flex column)
+       └── .{prefix}-body (flex:1, flex column)
+            └── .{prefix}-home-wrap (flex:1, max-width:1040px, centered)
+                 ├── BackButton (absolute top-left)
+                 ├── Brand (logo + subject name)
+                 ├── Tagline
+                 ├── H1 "Pilih Tahun" / "Choose Year"
+                 ├── Hint text
+                 └── .{prefix}-years (flex:1, grid, align-content:center)
+                      ├── Year card 1 (Tahun 1)
+                      ├── Year card 2 (Tahun 2)
+                      └── Year card 3 (Tahun 3)
+```
+
+### CSS Grid Behaviour
+
+| Viewport | Columns | Grid Template |
+|----------|---------|---------------|
+| ≥841px (desktop) | 3 equal columns | `repeat(3, 1fr)` |
+| ≤840px (mobile/tablet) | 1 column | `1fr`, max-width 380px |
+
+- **Always `repeat(3, 1fr)`** on desktop — never `auto-fit`/`auto-fill` with min-widths (those can cause 2-column fallback at 1366×768).
+- **`flex: 1; align-content: center`** on the grid so cards expand to fill viewport height.
+
+### No Desktop Scroll
+
+On laptop/desktop (≥841px), the entire page fits in one viewport with no scrollbar:
+
+- `.{prefix}-home-root`: `display: flex; flex-direction: column; flex: 1; width: 100%; overflow: hidden;`
+- `.{prefix}-home-scroll`: `flex: 1; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column;`
+- `.{prefix}-body`: `flex: 1; display: flex; flex-direction: column;`
+- `.{prefix}-home-wrap`: `flex: 1; max-width: 1040px; margin: 0 auto; padding: 30px 24px; display: flex; flex-direction: column; align-items: center;`
+- `.{prefix}-years`: `flex: 1; align-content: center;`
+
+On mobile (≤840px, 1 column), the `overflow-y: auto` on the scroll container enables scrolling when 3 cards stack vertically.
+
+### Compact Sizing
+
+Year cards use compact dimensions to fit laptop screens (1366×768):
+
+| Element | Desktop | Mobile (≤560px) |
+|---------|---------|-----------------|
+| Wrap padding | `30px 24px` | `20px 14px 40px` |
+| H1 font-size | `34px` | `28px` |
+| Grid gap | `24px` | `16px` |
+| Card padding | `20px 18px 18px` | `16px 14px 16px` |
+| Card border-radius | `24px` | `20px` |
+| Disc diameter | `150px` | `140px` |
+| Robot SVG | `118×148px` | `110×138px` |
+| Ribbon margin-top | `6px` | `6px` |
+| Ribbon font-size | `17px` | `16px` |
+| Ribbon padding | `6px 22px` | `5px 18px` |
+| Meta margin-top | `6px` | `4px` |
+| Go margin-top | `6px` | `4px` |
+| Go padding | `5px 14px` | `4px 12px` |
+
+### Full-Bleed Exception
+
+The root class (`.{prefix}-home-root`) **must** be added to the full-bleed exceptions list in `src/index.css` to prevent the desktop layout from being squeezed to 700-800px wide:
+
+```css
+.view-container > .mt-home-root,
+.view-container > .pi-home-root { max-width: 100%; }
+```
+
+### Creating a New Subject
+
+When adding a new subject homepage:
+
+1. Create `SubjectHomePage.jsx` following the layout anatomy above.
+2. Create corresponding CSS with the `.{prefix}-home-root` → `.years` class chain.
+3. Use `repeat(3, 1fr)` grid — never `auto-fit`/`auto-fill`.
+4. Apply compact sizing values from the table above.
+5. Add the root class to the full-bleed exceptions list in `index.css`.
+6. Add any new sub-navigation state variables to the `useEffect` scroll-reset dependency array in `App.jsx`.
+
+---
+
+## 16. Summary
 
 The **Math Adventure** UI is built with a **mobile-first responsive design**:
 

@@ -75,7 +75,7 @@ export default function JawiAlphabetPage({ onBack, language }) {
   return (
     <div style={{
       display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto',
-      background: 'radial-gradient(ellipse 75% 55% at 0% 0%, rgba(196,181,253,.18) 0%, transparent 70%), radial-gradient(ellipse 75% 55% at 100% 0%, rgba(167,243,208,.18) 0%, transparent 70%), radial-gradient(ellipse 75% 55% at 0% 100%, rgba(122,227,255,.16) 0%, transparent 70%), radial-gradient(ellipse 75% 55% at 100% 100%, rgba(196,181,253,.18) 0%, transparent 70%), #FFFDF8',
+      background: 'linear-gradient(180deg, #ECFDF5 0%, #D1FAE5 40%, #F0FDFA 100%)',
     }}>
       <style>{`
         .jawi-kv-grid {

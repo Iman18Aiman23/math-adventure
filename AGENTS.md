@@ -65,8 +65,88 @@ At `min-width: 768px`, `index.css` applies `max-width: var(--content-max)` (700�
 
 **Pattern for a full-bleed page:**
 - Root element: `width: 100%; overflow: hidden;` — no max-width here
-- Inner scroll/wrap element: `max-width: 1040px; margin: 0 auto; padding: 46px 24px 90px;` — centring happens here
+- Inner scroll/wrap element: `max-width: 1040px; margin: 0 auto; padding: 46px 24px;` — centring happens here
 - Root class added to the exceptions list in `index.css`
+
+## Subject HomePage Year Selector Layout Standard
+
+Every subject homepage (e.g. `MatematikHomePage`, `PendidikanIslamHomePage`) must follow this shared layout for the "Pilih Tahun" year-selector screen.
+
+### CSS Classes (subject-prefixed)
+
+| Element | Maths prefix | PI prefix | Role |
+|---------|-------------|-----------|------|
+| Root | `.mt-home-root` | `.pi-home-root` | Full-bleed flex column, no max-width |
+| Scroll wrapper | `.mt-home-scroll` | `.pi-home-scroll` | `flex:1; overflow-y:auto; overflow-x:hidden; display:flex; flex-direction:column` |
+| Body | `.mt-body` | `.pi-body` | `flex:1; display:flex; flex-direction:column` |
+| Wrap | `.mt-home-wrap` | `.pi-home-wrap` | `flex:1; max-width:1040px; margin:0 auto; padding:30px 24px;` |
+| Grid | `.mt-years` | `.pi-years` | 3-column grid (see below) |
+| Card | `.mt-year` | `.pi-year` | Single year-selector card |
+
+### Grid Specification
+
+```css
+/* Desktop: 3 equal columns */
+.{prefix}-years {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  width: 100%;
+  flex: 1;
+  align-content: center;
+}
+
+/* Mobile / tablet: single column */
+@media (max-width: 840px) {
+  .{prefix}-years { grid-template-columns: 1fr; max-width: 380px; }
+}
+```
+
+### No Desktop Scroll Rule
+
+On laptop/desktop (≥841px), the entire page must fit in one viewport — **no scrollbar**. Achieved via the flex chain:
+```
+.{prefix}-home-root (flex column, flex:1)
+  → .{prefix}-home-scroll (flex column, flex:1, overflow-y:auto)
+    → .{prefix}-body (flex column, flex:1)
+      → .{prefix}-home-wrap (flex column, flex:1, padding:30px 24px)
+        → brand, tagline, h1, hint (fixed height)
+        → .{prefix}-years (flex:1, align-content:center)
+```
+The cards expand to fill remaining vertical space and center themselves. On mobile (≤840px, single column), `overflow-y: auto` allows scrolling since 3 stacked cards exceed the viewport.
+
+### Year Card Sizing (Desktop)
+
+| Property | Value |
+|----------|-------|
+| Card padding | `20px 18px 18px` |
+| Card border-radius | `24px` |
+| Disc diameter | `150px` |
+| Robot SVG | `118px × 148px` |
+| Ribbon margin-top / font / padding | `6px / 17px / 6px 22px` |
+| Meta margin-top | `6px` |
+| Go (Mula ▸) margin-top / padding | `6px / 5px 14px` |
+
+### Mobile Overrides (≤560px)
+
+| Property | Value |
+|----------|-------|
+| Wrap padding | `20px 14px 40px` |
+| H1 font-size | `28px` |
+| Card padding | `16px 14px 16px` |
+| Card border-radius | `20px` |
+| Disc diameter | `140px` |
+| Robot SVG | `110px × 138px` |
+| Ribbon font / padding | `16px / 5px 18px` |
+| Grid gap | `16px` |
+
+### Consistency Rules
+
+1. **Always use `repeat(3, 1fr)`** for the year grid on desktop — never `auto-fit`/`auto-fill` with fixed min-widths, which can cause 2-column fallback.
+2. **Always use `flex: 1; align-content: center`** on the grid to fill remaining viewport height and center cards vertically.
+3. **Always add the root class** to the full-bleed exceptions list in `index.css` (see Desktop Full-Bleed Exception Rule above).
+4. **Scroll container must use `overflow-y: auto`** (not `hidden`) — desktop content fits without scrollbar, mobile needs scroll.
+5. **Keep compact sizing** — discs at 150px, ribbons at 17px font. The original 224px disc + 46px h1 caused content to overflow laptop screens (1366×768).
 
 ## Component Blueprint (subject lesson page)
 

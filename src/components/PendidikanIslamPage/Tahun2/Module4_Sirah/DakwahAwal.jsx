@@ -3,11 +3,11 @@ import Tahun1LessonScrollLayout from '../../Tahun1/Tahun1LessonScrollLayout';
 import { shuffle } from '../../_shared/utils';
 
 const THEME = {
-  pageGradient: 'radial-gradient(ellipse at top,#F5F3FF 0%,#DDD6FE 60%,#8B5CF6 100%)',
-  dark: '#4C1D95',
+  pageGradient: 'linear-gradient(180deg, #FAF5FF 0%, #F3E8FF 40%, #FAFAFF 100%)',
+  dark: '#7A55E0',
   accent: '#8B5CF6',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#EDE9FE 0%,#C4B5FD 55%,#8B5CF6 100%)',
-  pillGradient: 'linear-gradient(180deg,#A78BFA,#7C3AED)',
+  stageGradient: 'linear-gradient(145deg, #7A55E0, #8B5CF6, #B79CFF)',
+  pillGradient: 'linear-gradient(135deg, #7A55E0, #B79CFF)',
 };
 
 const KONSEP = [

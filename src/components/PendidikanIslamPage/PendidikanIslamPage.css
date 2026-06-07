@@ -34,6 +34,8 @@
     overflow-y: auto;
     overflow-x: hidden;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .pi-shell {
@@ -591,6 +593,7 @@
 }
 
 .pi-home-root .pi-body {
+    flex: 1; display: flex; flex-direction: column;
     background: transparent;
 }
 
@@ -619,10 +622,11 @@
     width: 100%;
     max-width: 1040px;
     margin: 0 auto;
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 46px 24px 90px;
+    padding: 30px 24px;
 }
 
 .pi-home-back {
@@ -674,14 +678,14 @@
     font-weight: 600;
     font-size: 14px;
     color: #5B6F86;
-    margin: 0 0 30px;
+    margin: 0 0 16px;
     text-align: center;
 }
 
 .pi-home-h1 {
     font-family: 'Baloo 2', sans-serif;
     font-weight: 800;
-    font-size: 46px;
+    font-size: 34px;
     line-height: 1.1;
     letter-spacing: -.015em;
     color: #123A5E;
@@ -699,15 +703,16 @@
     letter-spacing: .16em;
     text-transform: uppercase;
     color: #8AA0B6;
-    margin: 0 0 42px;
+    margin: 0 0 20px;
     text-align: center;
 }
 
 .pi-years {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
+    gap: 24px;
     width: 100%;
+    flex: 1; align-content: center;
 }
 @media (max-width: 840px) {
     .pi-years { grid-template-columns: 1fr; max-width: 380px; }
@@ -720,8 +725,8 @@
     text-decoration: none;
     color: inherit;
     background: linear-gradient(180deg, #FFFFFF 0%, var(--soft) 100%);
-    border-radius: 30px;
-    padding: 30px 24px 28px;
+    border-radius: 24px;
+    padding: 20px 18px 18px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -745,8 +750,8 @@
 }
 
 .pi-disc {
-    width: 224px;
-    height: 224px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     display: grid;
     place-items: center;
@@ -764,8 +769,8 @@
 }
 
 .pi-year-robot-svg {
-    width: 178px;
-    height: 222px;
+    width: 118px;
+    height: 148px;
     display: block;
     position: relative;
     z-index: 1;
@@ -799,14 +804,14 @@
 }
 
 .pi-ribbon {
-    margin-top: 18px;
+    margin-top: 6px;
     z-index: 2;
     font-family: 'Baloo 2', sans-serif;
     font-weight: 800;
-    font-size: 24px;
+    font-size: 17px;
     color: #fff;
     white-space: nowrap;
-    padding: 9px 30px;
+    padding: 6px 22px;
     border-radius: 999px;
     position: relative;
     background: linear-gradient(180deg, var(--r1), var(--r2));
@@ -819,7 +824,7 @@
     font-weight: 600;
     font-size: 13px;
     color: #5B6F86;
-    margin-top: 12px;
+    margin-top: 6px;
     display: flex;
     align-items: center;
     gap: 7px;
@@ -830,7 +835,7 @@
 }
 
 .pi-go {
-    margin-top: 14px;
+    margin-top: 6px;
     font-family: 'Baloo 2', sans-serif;
     font-weight: 700;
     font-size: 13px;
@@ -838,7 +843,7 @@
     white-space: nowrap;
     color: #fff;
     background: var(--accent);
-    padding: 8px 20px;
+    padding: 5px 14px;
     border-radius: 999px;
     display: inline-flex;
     align-items: center;
@@ -940,33 +945,40 @@
 
 @media (max-width: 560px) {
     .pi-home-wrap {
-        padding: 24px 16px 60px;
+        padding: 20px 14px 40px;
     }
     .pi-home-h1 {
-        font-size: 32px;
+        font-size: 28px;
     }
     .pi-years {
-        gap: 20px;
+        gap: 16px;
     }
     .pi-year {
-        padding: 20px 16px 22px;
-        border-radius: 22px;
+        padding: 16px 14px 16px;
+        border-radius: 20px;
     }
     .pi-disc {
-        width: 180px;
-        height: 180px;
+        width: 140px;
+        height: 140px;
     }
     .pi-year-robot-svg {
-        width: 140px;
-        height: 174px;
+        width: 110px;
+        height: 138px;
     }
     .pi-ribbon {
-        font-size: 20px;
-        padding: 7px 22px;
+        font-size: 16px;
+        padding: 5px 18px;
+    }
+    .pi-meta {
+        margin-top: 4px;
+    }
+    .pi-go {
+        margin-top: 4px;
+        padding: 4px 12px;
     }
     .pi-soonbadge {
-        font-size: 18px;
-        padding: 7px 22px;
+        font-size: 16px;
+        padding: 5px 18px;
     }
 }
 

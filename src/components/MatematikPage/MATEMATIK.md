@@ -387,8 +387,9 @@ The main app `HomePage` gets a new card alongside the existing age-group "Matema
 │  │    Mula ▸       │  │    Mula ▸       │  │    Mula ▸       │  │
 │  └─────────────────┘  └─────────────────┘  └─────────────────┘  │
 │                                                             │
-│  — each year card has a large circular gradient disc        │
-│    (224×224px) with a robot SVG + radial gradient background│
+│  — each year card has a circular gradient disc (150×150px)  │
+│    with a robot SVG (118×148px) + radial gradient background│
+│  — fitted to viewport, no page scroll on laptop/desktop     │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -549,7 +550,7 @@ The homepage uses large year-selector cards (`.mt-year`) matching the PI design.
 ```
 ┌───────────────────────────────────┐
 │  ┌───────────────────────────┐    │  ← .mt-disc
-│  │  ┌─────────────┐          │    │     224×224px circle
+│  │  ┌─────────────┐          │    │     150×150px circle
 │  │  │  🤖 Robot   │          │    │     radial gradient bg
 │  │  │  SVG art    │          │    │     (varies per year)
 │  │  └─────────────┘          │    │
@@ -919,16 +920,77 @@ const THEME = {
 
 ---
 
-## 13. Responsive Grid Spec
+## 12.1 Theme Standardization (PI Reference)
+
+In June 2026, a full theme-standardization pass was completed across all **Pendidikan Islam** topic pages (Tahun 1–3, 29 files). This section documents the approach so the same pattern can be applied to Matematik or any other subject in the future.
+
+### Problem
+
+Topic pages had `dark`, `accent`, `stageGradient`, `pillGradient` values that **differed from their own module hub's THEME object**. For example, a topic inside the Akidah hub (green `#065F46`/`#2A9A6C`) might use blue or purple colors instead, causing visual inconsistency when navigating from hub to topic.
+
+### Fix
+
+Each topic page's `const THEME = {...}` block was replaced with the hub's exact values:
+
+```js
+// Before (RukunIslam.jsx — mismatched blue)
+const THEME = {
+  pageGradient: 'radial-gradient(ellipse at top, #D6F5DD 0%, #8AD9A8 55%, #2A9A6C 100%)',
+  dark: '#1E40AF',
+  accent: '#3B82F6',
+  stageGradient: 'radial-gradient(ellipse at 50% 32%,#D6EEFF 0%,#6BAEE8 55%,#2563EB 100%)',
+  pillGradient: 'linear-gradient(180deg,#6BAEE8,#3B82F6)',
+};
+
+// After — matches Akidah hub exactly
+const THEME = {
+  pageGradient: 'radial-gradient(ellipse at top, #D6F5DD 0%, #8AD9A8 55%, #2A9A6C 100%)',
+  dark: '#065F46',
+  accent: '#2A9A6C',
+  stageGradient: 'radial-gradient(ellipse at 50% 34%, #D6F5DD 0%, #8AD9A8 55%, #2A9A6C 100%)',
+  pillGradient: 'linear-gradient(180deg, #2A9A6C, #065F46)',
+};
+```
+
+The `accentColor` prop passed to `Tahun1LessonScrollLayout` was also updated to match.
+
+### Scope
+
+| Year | Topic files updated | Hub source |
+|------|-------------------|------------|
+| T1 | 10 files (M2–M5) | `{Module}Module.jsx`'s `const THEME` |
+| T2 | 10 files (M2–M5 plus Idgham) | `{Module}Module.jsx`'s `const THEME` or CSS-class hub |
+| T3 | 6 files (M1–M2) | `{Module}ModuleT3.jsx`'s `const THEME` |
+
+Total: **29 topic files** across all 6 modules × 3 years. Files with no `const THEME` (custom pages like JawiKVLearningPage, TilawahTahun2) were left unchanged — their colors are embedded in separate data structures.
+
+### How to Apply to Matematik
+
+- **Matematik hub files** (`NomborModule.jsx`, `SukatanModule.jsx`, `StatistikModule.jsx`) already define a `const THEME` — see §12 above.
+- **Matematik topic pages** are standalone games (e.g. `Nombor100.jsx`) with their own self-contained UI — they do **not** use `Tahun1LessonScrollLayout` or consume a `theme` prop, so this fix does not directly apply.
+- If any future Matematik topic page is built using `Tahun1LessonScrollLayout` (PI pattern), its `const THEME` **must** match the corresponding module hub's values exactly. The hub's THEME is the source of truth.
+- If a game file embeds colors inline (e.g. hardcoded button colors, SVG fills), those should be parameterised or derived from a shared theme constant to prevent drift.
+
+### Verification
+
+Build must pass with 0 errors:
+```bash
+npm run build
+```
+
+All 29 PI topic file edits compiled successfully (2254 modules, 0 errors).
+
+---
 
 ### Year selector grid (homepage `.mt-years`)
 
-CSS: `display: grid; grid-template-columns: repeat(auto-fit, minmax(272px, 360px)); gap: 30px; justify-content: center;`
+CSS: `display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; width: 100%; flex: 1; align-content: center;`
 
-- `272px` min = 224px disc + 48px card padding — ensures disc never clips
-- `360px` max — prevents a solo last-row card from stretching full width
-- `auto-fit` + `justify-content: center` — wraps naturally at any viewport; no explicit breakpoints needed
-- Retains `@media (max-width: 560px)` in `MatematikPage.css` where disc shrinks to 180px
+- **Always 3 equal columns on desktop** — never `auto-fit`/`auto-fill` with min-widths (those can cause 2-column fallback on common laptop widths like 1366×768).
+- `flex: 1; align-content: center` — the grid fills remaining viewport height and center-cards vertically.
+- **No desktop scroll rule**: The flex chain `root → scroll → body → wrap → years` cascades `flex: 1` so content fills the viewport without scrolling on laptop/desktop.
+- Mobile (`≤840px`): collapses to `1fr` single column, `max-width: 380px`. `overflow-y: auto` on the scroll container allows scrolling when 3 cards stack vertically.
+- Mobile (`≤560px`): disc shrinks to 140px, robot SVG to 110×138px, card padding to 16px 14px 16px.
 
 ### Module hub topic grid (`.pi-mhub-grid`)
 

@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { LOCALIZATION } from '../../utils/localization';
-import { JAWI_STORIES } from '../../utils/jawiStoriesData';
-import { useGameStateContext } from '../../App';
-import BackButton from '../BackButton';
+import { LOCALIZATION } from '../../../../utils/localization';
+import { JAWI_STORIES } from '../../../../utils/jawiStoriesData';
+import BackButton from '../../../BackButton';
 
 export default function JawiShortStoriesPage({ onBack, language }) {
     const t = LOCALIZATION[language].jawi;
-    const gameState = useGameStateContext();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [displayLang, setDisplayLang] = useState('jawi');
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -56,7 +54,7 @@ export default function JawiShortStoriesPage({ onBack, language }) {
     };
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#f7f7f7' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: 'radial-gradient(ellipse at top, #FEF3C7 0%, #FDBA74 55%, #F97316 100%)' }}>
             <BackButton onClick={onBack} />
 
             {/* Story Selector & Language Tabs - Same Line */}

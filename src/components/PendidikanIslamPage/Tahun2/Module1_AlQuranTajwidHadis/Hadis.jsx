@@ -4,7 +4,7 @@ import { ARABIC_FONT } from '../../_shared/arabic';
 import { shuffle } from '../../_shared/utils';
 
 const THEME = {
-  pageGradient: 'radial-gradient(ellipse at top,#FFFBEB 0%,#FDE68A 60%,#F59E0B 100%)',
+  pageGradient: 'radial-gradient(ellipse at top, #FFF7D6 0%, #FDD97A 55%, #F5CD6D 100%)',
   dark: '#92400E',
   accent: '#F59E0B',
   stageGradient: 'radial-gradient(ellipse at 50% 32%,#FFFBEB 0%,#FDE68A 55%,#F59E0B 100%)',

@@ -45,11 +45,11 @@ const QUESTIONS = shuffle([
 const TOTAL_ROUNDS = 10;
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#D6EEFF 0%,#6BAEE8 50%,#4299E0 100%)',
-  dark: '#1E40AF',
-  accent: '#2563EB',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#D6EEFF 0%,#6BAEE8 55%,#2563EB 100%)',
-  pillGradient: 'linear-gradient(180deg,#6BAEE8,#2563EB)',
+  pageGradient: 'linear-gradient(180deg, #EBF8FF 0%, #E0F2FE 40%, #F0F9FF 100%)',
+  dark: '#0C4A6E',
+  accent: '#0891B2',
+  stageGradient: 'linear-gradient(145deg, #0E7490, #0891B2, #06B6D4)',
+  pillGradient: 'linear-gradient(135deg, #0891B2, #06B6D4)',
 };
 
 export default function Istinja({ onBack, language = 'bm' }) {
@@ -73,7 +73,7 @@ export default function Istinja({ onBack, language = 'bm' }) {
       }))}
       questions={QUESTIONS}
       totalRounds={TOTAL_ROUNDS}
-      accentColor="#2563EB"
+      accentColor="#0891B2"
     />
   );
 }

@@ -12,7 +12,7 @@ import { getGameData, addCorrectAnswer, deductHeart } from '../../../../utils/ga
 import { FONT_IMPORT } from '../../_shared/arabic';
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#ECFDF5 0%,#D1FAE5 50%,#A7F3D0 100%)',
+  pageGradient: 'linear-gradient(180deg, #ECFDF5 0%, #D1FAE5 40%, #F0FDFA 100%)',
   dark: '#065F46',
   accent: '#10B981',
   stageGradient: 'radial-gradient(ellipse at 50% 32%,#D1FAE5 0%,#6EE7B7 55%,#10B981 100%)',

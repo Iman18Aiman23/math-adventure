@@ -13,6 +13,7 @@ export default function Tahun1LessonLayout({
   tab,
   onTabChange,
   children,
+  pageBackground,
 }) {
   const tabs = [
     { id: 'belajar', label: language === 'bm' ? '📖 Belajar' : '📖 Learn' },
@@ -20,7 +21,7 @@ export default function Tahun1LessonLayout({
   ];
 
   return (
-    <div className="pi-body" style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: '100%' }}>
+    <div className="pi-body" style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: '100%', background: pageBackground }}>
       <div style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
         <div className="pi-shell" style={{ paddingBottom: 80 }}>
           <style>{`${FONT_IMPORT}`}</style>

@@ -90,11 +90,11 @@ function buildQuestions() {
 const TOTAL_ROUNDS = 10;
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#D6EEFF 0%,#6BAEE8 50%,#4299E0 100%)',
-  dark: '#1E40AF',
-  accent: '#3B82F6',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#D6EEFF 0%,#6BAEE8 55%,#2563EB 100%)',
-  pillGradient: 'linear-gradient(180deg,#6BAEE8,#3B82F6)',
+  pageGradient: 'radial-gradient(ellipse at top, #D6F5DD 0%, #8AD9A8 55%, #2A9A6C 100%)',
+  dark: '#065F46',
+  accent: '#2A9A6C',
+  stageGradient: 'radial-gradient(ellipse at 50% 34%, #D6F5DD 0%, #8AD9A8 55%, #2A9A6C 100%)',
+  pillGradient: 'linear-gradient(180deg, #2A9A6C, #065F46)',
 };
 
 export default function RukunIslam({ onBack, language = 'bm' }) {
@@ -123,7 +123,7 @@ export default function RukunIslam({ onBack, language = 'bm' }) {
       }))}
       questions={buildQuestions()}
       totalRounds={TOTAL_ROUNDS}
-      accentColor="#3B82F6"
+      accentColor="#2A9A6C"
     />
   );
 }

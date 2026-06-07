@@ -3,11 +3,11 @@ import Tahun1LessonScrollLayout from '../Tahun1LessonScrollLayout';
 import { shuffle } from '../../_shared/utils';
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#EDF4FF 0%,#DAEAFF 50%,#C8DFFF 100%)',
-  dark: '#1E3A5F',
-  accent: '#2563EB',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#D6EEFF 0%,#6BAEE8 55%,#2563EB 100%)',
-  pillGradient: 'linear-gradient(180deg,#6BAEE8,#2563EB)',
+  pageGradient: 'linear-gradient(180deg, #FFF1F2 0%, #FFE4E6 40%, #FFF5F6 100%)',
+  dark: '#9F1239',
+  accent: '#F43F5E',
+  stageGradient: 'linear-gradient(145deg, #BE185D, #FF8CBF, #FBCFE8)',
+  pillGradient: 'linear-gradient(135deg, #FF8CBF, #FDA4AF)',
 };
 
 const EMOJI = [
@@ -48,7 +48,7 @@ export default function AdabTandas({ onBack, language = 'bm' }) {
       topics={EMOJI.map((e) => ({ visual: <span style={{ fontSize: '3.2rem', lineHeight: 1 }}>{e.emoji}</span>, ...e }))}
       questions={QUESTIONS}
       totalRounds={10}
-      accentColor="#2563EB"
+      accentColor="#F43F5E"
     />
   );
 }

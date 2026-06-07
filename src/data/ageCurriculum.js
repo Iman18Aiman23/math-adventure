@@ -122,6 +122,8 @@ export const CURRICULUM = {
       { id: 'padan-perkataan-jawi', name: 'Padan Perkataan Jawi', emoji: '📖', cardColor: '#FF9800', cardDark: '#E68900', status: 'complete' },
       { id: 'baca-ayat-jawi',       name: 'Baca Ayat Jawi',       emoji: '📜', cardColor: '#009688', cardDark: '#00796B', status: 'complete' },
       { id: 'tulis-jawi',           name: 'Tulis Jawi (Khat)',    emoji: '✍️', cardColor: '#E91E63', cardDark: '#C2185B', status: 'complete' },
+      { id: 'padanan-huruf-jawi',  name: 'Padanan Huruf Jawi',  emoji: '🃏', cardColor: '#26C6DA', cardDark: '#0097A7', status: 'complete' },
+      { id: 'iqra-buku',          name: 'Iqra 1-6',            emoji: '📖', cardColor: '#E53935', cardDark: '#B71C1C', status: 'complete' },
     ],
     math: [
       { id: 'nombor-100',          name: 'Nombor 1–100',        emoji: '💯', cardColor: '#3F51B5', cardDark: '#303F9F', status: 'complete' },

@@ -58,7 +58,7 @@ export default function AyatPendekJawi({ onBack }) {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#F7F7F7', padding: '1rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: 'linear-gradient(180deg, #FEF3C7 0%, #FDE68A 40%, #FFF7ED 100%)', padding: '1rem' }}>
 
       {/* Header with Script Buttons */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', gap: '0.75rem', flexWrap: 'wrap' }}>

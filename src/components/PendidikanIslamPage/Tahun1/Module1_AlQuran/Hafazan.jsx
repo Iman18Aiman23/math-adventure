@@ -497,6 +497,7 @@ export default function Hafazan({ onBack, language = 'bm' }) {
       breadcrumb="Al-Quran & Tajwid › Topik 1.4"
       title={language === 'bm' ? 'Tilawah & Hafazan' : 'Recitation & Memorization'}
       accentColor="#D4960A"
+      pageBackground="radial-gradient(ellipse at top, #FFF7D6 0%, #FDD97A 55%, #F5CD6D 100%)"
     >
 
 
