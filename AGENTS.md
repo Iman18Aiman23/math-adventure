@@ -355,3 +355,22 @@ cubic-bezier(.34,1.56,.64,1)
 Preferred animation names: `bounceIn`, `fadeSlideUp`, `swipeIn`, `popSuccess`, `shakeError`, `scl-bob`, `pi-bounce`
 
 Reduced motion: `@media (prefers-reduced-motion: reduce)` disables all animations.
+
+## Confetti Celebration Pattern (for quiz/game correct answers)
+
+Every quiz or game correct answer MUST use `canvas-confetti` + sound. This is the standard celebration across all subjects.
+
+```js
+import confetti from 'canvas-confetti';
+import { playSound } from '../../../utils/soundManager';
+
+// For each correct answer (small burst):
+playSound('correct');
+confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 }, scalar: 0.8 });
+
+// For streak milestone every 5 (big burst):
+playSound('streak');
+confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
+```
+
+No ribbon banners, no slide-down text banners — the confetti burst IS the celebration.

@@ -117,6 +117,7 @@ const BahasaMelayuHomePage = React.lazy(() => import('./components/BahasaMelayuP
 const BahasaMelayuModulePage = React.lazy(() => import('./components/BahasaMelayuPage/BahasaMelayuModulePage'));
 const BMModuleHubLayout = React.lazy(() => import('./components/BahasaMelayuPage/_shared/BMModuleHubLayout'));
 const MendengarMenyebut = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/MendengarMenyebut'));
+const MembacaMekanis = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module2_Membaca/MembacaMekanis'));
 const MatematikModulePage = React.lazy(() => import('./components/MatematikPage/MatematikModulePage'));
 const NomborModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/NomborModule'));
 const SukatanModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_Sukatan/SukatanModule'));
@@ -654,6 +655,11 @@ export default function App() {
           if (bmTopic === '1-1-1-mendengar-menyebut')
             return <Suspense fallback={<LoadingSpinner />}>
               <MendengarMenyebut onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)} />
+            </Suspense>;
+          if (bmTopic === '1-2-2-membaca-mekanis')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <MembacaMekanis onBack={topicOnBack} language={language}
                 topicComplete={(id) => markTopicCompleted(id)} />
             </Suspense>;
 

@@ -3,6 +3,7 @@ import { RefreshCw, SkipForward } from 'lucide-react';
 import SpeechManager from '../../services/SpeechManager';
 import BackButton from '../BackButton';
 import confetti from 'canvas-confetti';
+import { playSound } from '../../utils/soundManager';
 
 // BM Tahun 1 — picture-anchored short-phrase READING (was: describe-from-emoji).
 // The phrase TEXT is shown under the picture and modelled by TTS; the child
@@ -83,7 +84,7 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
   const [score,     setScore]     = useState(0);
   const [streak,    setStreak]    = useState(0);
   const [attempts,  setAttempts]  = useState(0);
-  const [lastHeard, setLastHeard] = useState('');
+
   const [micError,  setMicError]  = useState(null); // 'perm' | 'net' | 'nospeech' | null
 
   const indexRef = useRef(0);
@@ -109,7 +110,6 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
     }
     setIndex(ni);
     setAttempts(0);
-    setLastHeard('');
     setMicError(null);
     setPhase(PHASE_SPEAKING);
   }, []);
@@ -137,7 +137,13 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
     setScore(s => s + 1);
     setStreak(s => {
       const next = s + 1;
-      if (next % 5 === 0) confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+      if (next % 5 === 0) {
+        playSound('streak');
+        confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
+      } else {
+        playSound('correct');
+        confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 }, scalar: 0.8 });
+      }
       return next;
     });
     setAttempts(0);
@@ -167,7 +173,6 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
                                          // effect must not both start one (abort race resets button)
     listenActiveRef.current = true;
     setMicError(null);
-    setLastHeard('');
     setPhase(PHASE_LISTENING);
 
     const cur = itemsRef.current[indexRef.current];
@@ -179,7 +184,6 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
         if (!matched && alts?.length > 1) {
           matched = alts.some(a => checkMatch(a.transcript, cur));
         }
-        setLastHeard(transcript);
         matched ? handleCorrect() : handleWrong();
       },
       (err) => {
@@ -197,7 +201,6 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
         } else {
           setMicError(null);
           setPhase(PHASE_WRONG);
-          setLastHeard('');
           setTimeout(() => advanceItem(), 2000);
         }
       },
@@ -229,7 +232,6 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
     setScore(0);
     setStreak(0);
     setAttempts(0);
-    setLastHeard('');
     setMicError(null);
     setPhase(PHASE_SPEAKING);
   };
@@ -393,11 +395,7 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
             </p>
           )}
 
-          {lastHeard && (isCorrect || isWrong) && (
-            <p style={{ fontWeight: 700, fontSize: '0.88rem', color: isCorrect ? C.correctDark : C.wrongDark }}>
-              "{lastHeard}"
-            </p>
-          )}
+
         </div>
 
         {/* Repeat + Skip (no Hint needed — phrase is always visible) */}

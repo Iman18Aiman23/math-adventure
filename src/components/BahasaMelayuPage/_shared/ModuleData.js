@@ -51,22 +51,22 @@ const T1_MODULES = [
     'Listening and Speaking',
     M1Badge, M1_THEME, 1, [
       { id: '1-1-1-mendengar-menyebut',   num: '1.1', label: 'Mendengar & Menyebut',                icon: M1Topic1, disabled: false },
-      { id: '1-1-2-bertutur-maklumat',    num: '1.2', label: 'Bertutur & Menyampaikan Maklumat',    icon: M1Topic2, disabled: true },
+      { id: '1-1-2-bertutur-maklumat',    num: '1.2', label: 'Bertutur & Menyampaikan Maklumat',    icon: M1Topic2, disabled: false },
     ]),
   buildModule(2,
     'Kemahiran Membaca',
     'Reading Skills',
     M2Badge, M2_THEME, 1, [
-      { id: '1-2-1-asas-membaca',         num: '2.1', label: 'Asas Membaca & Memahami',             icon: M2Topic1, disabled: true },
-      { id: '1-2-2-membaca-mekanis',      num: '2.2', label: 'Membaca secara Mekanis',              icon: M2Topic2, disabled: true },
-      { id: '1-2-3-membaca-menaakul',     num: '2.3', label: 'Membaca & Menaakul',                  icon: M2Topic3, disabled: true },
+      { id: '1-2-1-asas-membaca',         num: '2.1', label: 'Asas Membaca & Memahami',             icon: M2Topic1, disabled: false },
+      { id: '1-2-2-membaca-mekanis',      num: '2.2', label: 'Membaca secara Mekanis',              icon: M2Topic2, disabled: false },
+      { id: '1-2-3-membaca-menaakul',     num: '2.3', label: 'Membaca & Menaakul',                  icon: M2Topic3, disabled: false },
     ]),
   buildModule(3,
     'Kemahiran Menulis',
     'Writing Skills',
     M3Badge, M3_THEME, 1, [
       { id: '1-3-1-asas-menulis',         num: '3.1', label: 'Asas Menulis',                        icon: M3Topic1, disabled: true },
-      { id: '1-3-2-bina-ayat',            num: '3.2', label: 'Menulis & Membina Ayat',             icon: M3Topic2, disabled: true },
+      { id: '1-3-2-bina-ayat',            num: '3.2', label: 'Menulis & Membina Ayat',             icon: M3Topic2, disabled: false },
       { id: '1-3-3-mencatat-maklumat',    num: '3.3', label: 'Mencatat Maklumat',                   icon: M3Topic3, disabled: true },
     ]),
   buildModule(4,
@@ -79,8 +79,8 @@ const T1_MODULES = [
     'Aspek Tatabahasa',
     'Grammar',
     M5Badge, M5_THEME, 1, [
-      { id: '1-5-1-morfologi-kata',       num: '5.1', label: 'Morfologi (Golongan Kata)',           icon: M5Topic1, disabled: true },
-      { id: '1-5-2-sintaksis-ayat',       num: '5.2', label: 'Sintaksis (Ayat Tunggal)',            icon: M5Topic3, disabled: true },
+      { id: '1-5-1-morfologi-kata',       num: '5.1', label: 'Morfologi (Golongan Kata)',           icon: M5Topic1, disabled: false },
+      { id: '1-5-2-sintaksis-ayat',       num: '5.2', label: 'Sintaksis (Ayat Tunggal)',            icon: M5Topic3, disabled: false },
     ]),
 ];
 
@@ -185,6 +185,27 @@ export function getModuleByNum(year, moduleNum) {
 /* ─── BM_QUESTIONS Bank ───────────────────────────────────────── */
 
 export const BM_QUESTIONS = {
+  // ── T1 M2 T2.2: Membaca secara Mekanis ──────────────────────
+  // Audio-driven: child hears a sentence read aloud, picks matching text.
+  '1-2-2-membaca-mekanis': [
+    { question: 'Ayat manakah yang kamu dengar?', audioText: 'Saya suka bola.', answer: 'Saya suka bola.', options: ['Saya suka bola.', 'Saya suka buku.', 'Saya makan bola.', 'Saya ada bola.'] },
+    { question: 'Ayat manakah yang kamu dengar?', audioText: 'Emak pergi pasar.', answer: 'Emak pergi pasar.', options: ['Emak pergi pasar.', 'Emak pergi rumah.', 'Ayah pergi pasar.', 'Emak suka pasar.'] },
+    { question: 'Ayat manakah yang kamu dengar?', audioText: 'Adik tidur nyenyak.', answer: 'Adik tidur nyenyak.', options: ['Adik tidur nyenyak.', 'Adik tidur lena.', 'Kakak tidur nyenyak.', 'Adik mandi nyenyak.'] },
+    { question: 'Ayat manakah yang kamu dengar?', audioText: 'Ayah membaca surat khabar.', answer: 'Ayah membaca surat khabar.', options: ['Ayah membaca surat khabar.', 'Ayah membaca buku.', 'Emak membaca surat.', 'Ayah menulis surat.'] },
+    { question: 'Ayat manakah yang kamu dengar?', audioText: 'Kucing itu comel.', answer: 'Kucing itu comel.', options: ['Kucing itu comel.', 'Anjing itu comel.', 'Kucing itu gemuk.', 'Arnab itu comel.'] },
+    { question: 'Ayat manakah yang kamu dengar?', audioText: 'Kakak dan abang pergi ke sekolah.', answer: 'Kakak dan abang pergi ke sekolah.', options: ['Kakak dan abang pergi ke sekolah.', 'Kakak dan adik pergi ke sekolah.', 'Abang pergi ke sekolah.', 'Kakak pergi ke pasar.'] },
+    { question: 'Ayat manakah yang kamu dengar?', audioText: 'Budi membaca buku di perpustakaan.', answer: 'Budi membaca buku di perpustakaan.', options: ['Budi membaca buku di perpustakaan.', 'Budi membaca buku di rumah.', 'Ali membaca buku di perpustakaan.', 'Budi menulis buku di perpustakaan.'] },
+    // ── Intonation / punctuation awareness ──
+    { question: 'Ayat manakah yang kamu dengar?', audioText: 'Apa khabar?', answer: 'Apa khabar?', options: ['Apa khabar?', 'Apa khabar.', 'Apa khabar!', 'Ada khabar?'] },
+    { question: 'Ayat manakah yang kamu dengar?', audioText: 'Tolong ambilkan buku itu.', answer: 'Tolong ambilkan buku itu.', options: ['Tolong ambilkan buku itu.', 'Tolong ambilkan buku itu?', 'Ambilkan buku itu.', 'Tolong ambilkan pensel itu.'] },
+    { question: 'Ayat manakah yang kamu dengar?', audioText: 'Wah, cantiknya bunga ini!', answer: 'Wah, cantiknya bunga ini!', options: ['Wah, cantiknya bunga ini!', 'Wah, cantiknya bunga ini?', 'Wah, cantiknya bunga ini.', 'Wah, besarnya bunga ini!'] },
+    // ── Simple sentence comprehension ──
+    { question: 'Ayat manakah yang betul?', audioText: 'Ibu memasak di dapur.', answer: 'Ibu memasak di dapur.', options: ['Ibu memasak di dapur.', 'Ibu memasak di bilik.', 'Ayah memasak di dapur.', 'Ibu mencuci di dapur.'] },
+    { question: 'Ayat manakah yang betul?', audioText: 'Mereka bermain bola di padang.', answer: 'Mereka bermain bola di padang.', options: ['Mereka bermain bola di padang.', 'Mereka bermain bola di rumah.', 'Dia bermain bola di padang.', 'Mereka bermain guli di padang.'] },
+    { question: 'Ayat manakah yang betul?', audioText: 'Cikgu mengajar di dalam kelas.', answer: 'Cikgu mengajar di dalam kelas.', options: ['Cikgu mengajar di dalam kelas.', 'Cikgu mengajar di padang.', 'Murid belajar di dalam kelas.', 'Cikgu bercerita di dalam kelas.'] },
+    { question: 'Ayat manakah yang betul?', audioText: 'Nenek menanam sayur di kebun.', answer: 'Nenek menanam sayur di kebun.', options: ['Nenek menanam sayur di kebun.', 'Nenek menanam bunga di kebun.', 'Atuk menanam sayur di kebun.', 'Nenek menjual sayur di kebun.'] },
+    { question: 'Ayat manakah yang betul?', audioText: 'Pak Ali membawa bakul ke pasar.', answer: 'Pak Ali membawa bakul ke pasar.', options: ['Pak Ali membawa bakul ke pasar.', 'Pak Ali membawa bakul ke rumah.', 'Pak Abu membawa bakul ke pasar.', 'Pak Ali membawa beg ke pasar.'] },
+  ],
   // ── T1 M1 T1.1: Mendengar & Menyebut ───────────────────────
   // All questions are audio-driven for Tahun 1 (kids who can't read).
   // TTS speaks the audioText; child picks the correct letter from 2×2 grid.

@@ -226,7 +226,7 @@
 | 3.2 | T1 Topik 1.1 — Mendengar & Menyebut | ✅ Complete |
 | 3.3 | T1 Topik 1.2 — Bertutur & Menyampaikan Maklumat | ✅ Reuse |
 | 3.4 | T1 Topik 2.1 — Asas Membaca & Memahami | ✅ Reuse |
-| 3.5 | T1 Topik 2.2 — Membaca secara Mekanis | 🆕 New |
+| 3.5 | T1 Topik 2.2 — Membaca secara Mekanis | ✅ Complete |
 | 3.6 | T1 Topik 2.3 — Membaca & Menaakul | ✅ Reuse |
 | 3.7 | T1 Topik 3.1 — Asas Menulis | 🆕 New |
 | 3.8 | T1 Topik 3.2 — Menulis & Membina Ayat | ✅ Reuse |

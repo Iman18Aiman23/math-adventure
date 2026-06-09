@@ -45,7 +45,7 @@ export default function SentenceBuilder({ onBack, language = 'bm' }) {
         setScore(s => s + 10);
         confetti({ particleCount: 50, spread: 60 });
       } else {
-        playSound('incorrect');
+        playSound('wrong');
         setFeedback('❌ ' + (language === 'bm' ? 'Cuba lagi!' : 'Try again!'));
       }
       setIsAnswered(true);
@@ -59,8 +59,8 @@ export default function SentenceBuilder({ onBack, language = 'bm' }) {
       setFeedback('');
       setIsAnswered(false);
     } else {
-      playSound('levelup');
-      confetti({ particleCount: 100, spread: 70 });
+      playSound('streak');
+      confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
       setIsComplete(true);
     }
   }, [currentIndex]);
