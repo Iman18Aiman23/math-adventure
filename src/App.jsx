@@ -118,6 +118,9 @@ const BahasaMelayuModulePage = React.lazy(() => import('./components/BahasaMelay
 const BMModuleHubLayout = React.lazy(() => import('./components/BahasaMelayuPage/_shared/BMModuleHubLayout'));
 const MendengarMenyebut = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/MendengarMenyebut'));
 const MembacaMekanis = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module2_Membaca/MembacaMekanis'));
+const AsasMenulis = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module3_Menulis/AsasMenulis'));
+const MencatatMaklumat = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module3_Menulis/MencatatMaklumat'));
+const KeindahanBahasa = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module4_SeniBahasa/KeindahanBahasa'));
 const MatematikModulePage = React.lazy(() => import('./components/MatematikPage/MatematikModulePage'));
 const NomborModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/NomborModule'));
 const SukatanModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_Sukatan/SukatanModule'));
@@ -219,6 +222,7 @@ const LeaderboardHome  = React.lazy(() => import('./components/Leaderboard/Leade
 const AssessmentSelector = React.lazy(() => import('./pages/AssessmentSelector'));
 const AssessmentPage = React.lazy(() => import('./pages/AssessmentPage'));
 import { getMuted, setMuted, preloadSounds, unlockAudio, playHoverSound } from './utils/soundManager';
+import SpeechManager from './services/SpeechManager';
 import { useGameState } from './hooks/useGameState';
 import { loadPlayerName, savePlayerName, recordLogin, calcStreak } from './services/storageService';
 import { getGameData } from './utils/gameStatsManager';
@@ -309,15 +313,12 @@ function getActiveGameId(currentSubject, mathSubGame) {
 function findMatchingAssessment(achievement) {
   if (!achievement) return null;
 
-  // Try to find assessment that matches the achievement's topic and level
-  return baseAssessments.find(assessment => {
-    const topicMatch = assessment.topic === achievement.topic;
-    const levelMatch = assessment.level === achievement.level;
-    const questionTypeMatch = assessment.questionType === achievement.questionType;
-
-    // Return if all three match, or at least topic and level match
-    return topicMatch && levelMatch && (questionTypeMatch || true);
-  }) || baseAssessments.find(a => a.topic === achievement.topic);
+  // Prefer a full topic+level+questionType match, then topic+level, then topic.
+  return baseAssessments.find(a =>
+    a.topic === achievement.topic && a.level === achievement.level && a.questionType === achievement.questionType
+  ) || baseAssessments.find(a =>
+    a.topic === achievement.topic && a.level === achievement.level
+  ) || baseAssessments.find(a => a.topic === achievement.topic);
 }
 
 
@@ -357,7 +358,17 @@ export default function App() {
   const viewContainerRef = useRef(null);
   useEffect(() => {
     if (viewContainerRef.current) viewContainerRef.current.scrollTop = 0;
-  }, [islamModule, islamTopic, islamYear, matematikModule, matematikTopic, matematikYear, bmModule, bmTopic, bmYear]);
+  }, [islamModule, islamTopic, islamYear, matematikModule, matematikTopic, matematikYear, bmModule, bmTopic, bmYear, currentAgeGroup, currentAgeGame]);
+
+  // Stop any in-flight TTS when navigating away from a page. Most leaf games
+  // don't cancel speech on unmount, so a long reading would keep playing after
+  // Back. Cleanup runs before the next view's mount effects, so a new page's
+  // auto-intro speech is not affected.
+  useEffect(() => {
+    return () => SpeechManager.stopSpeaking();
+  }, [activeTab, currentSubject, mathSubGame, dateTimeSubGame, isPlaying, selectedAssessment,
+      currentAgeGroup, currentAgeGame, islamModule, islamTopic, matematikModule, matematikTopic,
+      bmModule, bmTopic]);
 
   // useTransition keeps the current screen visible while a lazy game chunk
   // loads, so navigation never blanks to a fallback for fast loads. isPending
@@ -427,22 +438,17 @@ export default function App() {
           language={language}
           gameState={gameState}
           onTakeAssessment={(achievement) => {
-          console.log('Taking assessment:', achievement);
           // The achievement from baseAssessments can be used directly as an assessment
           // if it has all required properties (totalQuestions, duration, topic, level, questionType)
           if (achievement && achievement.totalQuestions && achievement.duration) {
-            console.log('✓ Assessment has required fields, using directly:', achievement);
             setSelectedAssessment(achievement);
           } else {
             // Otherwise try to find a matching one
-            console.log('Assessment missing fields, finding match...', achievement);
             const matchingAssessment = findMatchingAssessment(achievement);
             if (matchingAssessment) {
-              console.log('✓ Found matching assessment:', matchingAssessment);
               setSelectedAssessment(matchingAssessment);
             } else {
-              console.error('✗ No matching assessment found for:', achievement);
-              alert('Could not find matching assessment');
+              console.error('No matching assessment found for:', achievement);
             }
           }
         }}
@@ -660,6 +666,21 @@ export default function App() {
           if (bmTopic === '1-2-2-membaca-mekanis')
             return <Suspense fallback={<LoadingSpinner />}>
               <MembacaMekanis onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)} />
+            </Suspense>;
+          if (bmTopic === '1-3-1-asas-menulis')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <AsasMenulis onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)} />
+            </Suspense>;
+          if (bmTopic === '1-3-3-mencatat-maklumat')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <MencatatMaklumat onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)} />
+            </Suspense>;
+          if (bmTopic === '1-4-1-keindahan-bahasa')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <KeindahanBahasa onBack={topicOnBack} language={language}
                 topicComplete={(id) => markTopicCompleted(id)} />
             </Suspense>;
 

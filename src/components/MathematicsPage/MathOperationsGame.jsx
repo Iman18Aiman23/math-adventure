@@ -124,11 +124,19 @@ export default function MathOperationsGame({
     setStreak(gameData.streak);
   }, []);
 
+  const loadNext = useCallback(() => {
+    setProblem(generateProblem(operation, difficulty, nums));
+    setFeedback(null);
+    setSelectedOption(null);
+    setTypedAnswer('');
+    setIsAnimating(false);
+  }, [operation, difficulty, nums]);
+
   // Generate first problem on mount / config change
   useEffect(() => {
     loadNext();
     return () => { if (feedbackTimer.current) clearTimeout(feedbackTimer.current); };
-  }, [operation, difficulty]);
+  }, [loadNext]);
 
   // Re-focus input after feedback clears (typing mode)
   useEffect(() => {
@@ -144,14 +152,6 @@ export default function MathOperationsGame({
       window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
     }
   }, []);
-
-  const loadNext = useCallback(() => {
-    setProblem(generateProblem(operation, difficulty, nums));
-    setFeedback(null);
-    setSelectedOption(null);
-    setTypedAnswer('');
-    setIsAnimating(false);
-  }, [operation, Math.max(0, ...[difficulty.length, (nums||[]).length])]); // ensure reactivity if nums array reference changes but content same. Actually just `nums` is fine.
 
   const problemIcon = useMemo(() => {
     if (!problem) return null;

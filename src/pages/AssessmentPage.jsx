@@ -143,7 +143,13 @@ const AssessmentPage = ({ assessment, onBack, language = 'eng', gameState }) => 
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Timer effect
+  // Timer effect. The interval is created once per attempt, so it must not
+  // capture handleSubmitAssessment directly — that closure would hold the
+  // first render's empty `questions` and the timeout auto-submit would no-op.
+  // A ref always points at the latest submit callback instead.
+  const submitRef = useRef(null);
+  useEffect(() => { submitRef.current = handleSubmitAssessment; });
+
   useEffect(() => {
     if (showCertificate) return;
 
@@ -151,7 +157,7 @@ const AssessmentPage = ({ assessment, onBack, language = 'eng', gameState }) => 
       setTimeRemaining((prev) => {
         if (prev <= 1) {
           setIsTimeUp(true);
-          handleSubmitAssessment();
+          submitRef.current?.();
           return 0;
         }
         return prev - 1;
@@ -181,6 +187,13 @@ const AssessmentPage = ({ assessment, onBack, language = 'eng', gameState }) => 
     }));
   }, [currentQuestionIndex, questions]);
 
+  // Navigate to next question
+  const handleNextQuestion = useCallback(() => {
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(prev => prev + 1);
+    }
+  }, [currentQuestionIndex, questions.length]);
+
   // Mark question as answered
   const handleAnswerSubmit = useCallback(() => {
     const currentQuestion = questions[currentQuestionIndex];
@@ -188,14 +201,7 @@ const AssessmentPage = ({ assessment, onBack, language = 'eng', gameState }) => 
 
     setAnsweredQuestions(prev => new Set([...prev, currentQuestionIndex + 1]));
     handleNextQuestion();
-  }, [currentQuestionIndex, questions]);
-
-  // Navigate to next question
-  const handleNextQuestion = useCallback(() => {
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(prev => prev + 1);
-    }
-  }, [currentQuestionIndex, questions.length]);
+  }, [currentQuestionIndex, questions, handleNextQuestion]);
 
   // Navigate to previous question
   const handlePreviousQuestion = useCallback(() => {
