@@ -171,14 +171,15 @@ export default function AsasMenulis({ onBack, language = 'bm', topicComplete }) 
         }
         .am-trace-topbar {
           flex-shrink: 0; position: relative;
-          display: flex; align-items: center; justify-content: center;
-          padding: 10px 16px; min-height: 44px;
+          display: flex; align-items: center; gap: 4px;
+          padding: 10px 12px; min-height: 44px;
           background: rgba(255,255,255,.88);
           backdrop-filter: blur(10px);
           border-bottom: 1px solid rgba(0,0,0,.06);
         }
+        .am-trace-topbar::after { content: ''; flex: 0 1 88px; }
         .am-trace-back {
-          position: absolute; left: 12px;
+          flex-shrink: 0;
           display: flex; align-items: center; gap: 4px;
           font-family: 'Baloo 2', sans-serif; font-weight: 700;
           font-size: 13px; color: #64748B;
@@ -186,9 +187,16 @@ export default function AsasMenulis({ onBack, language = 'bm', topicComplete }) 
           border-radius: 10px;
         }
         .am-trace-back:hover { background: #F1F5F9; }
+        @media (max-width: 480px) {
+          .am-back-label { display: none; }
+          .am-trace-topbar::after { flex-basis: 42px; }
+        }
         .am-trace-title {
+          flex: 1; min-width: 0;
+          text-align: center;
+          white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
           font-family: 'Baloo 2', sans-serif; font-weight: 800;
-          font-size: 14px; color: #1E293B;
+          font-size: clamp(12px, 3.4vw, 14px); color: #1E293B;
         }
         .am-trace-body {
           flex: 1; min-height: 0;
@@ -317,7 +325,7 @@ export default function AsasMenulis({ onBack, language = 'bm', topicComplete }) 
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
-            {language === 'bm' ? 'Kembali' : 'Back'}
+            <span className="am-back-label">{language === 'bm' ? 'Kembali' : 'Back'}</span>
           </button>
           <span className="am-trace-title">{topicTitle}</span>
         </div>

@@ -7,9 +7,9 @@ function preparePool(allQuestions, totalRounds) {
   const answers = {};
   const pool = picked.map(q => {
     const opts = shuffle(q.options);
-    const uid = q.question + '|' + (q.audioText || q.question);
+    const uid = q.question + '|' + (q.audioText || q.emoji || q.question);
     answers[uid] = { answer: q.answer, correctIndex: opts.indexOf(q.answer) };
-    return { _uid: uid, question: q.question, options: opts, audioText: q.audioText || '' };
+    return { _uid: uid, question: q.question, options: opts, audioText: q.audioText || '', emoji: q.emoji || '' };
   });
   return { pool, answers };
 }

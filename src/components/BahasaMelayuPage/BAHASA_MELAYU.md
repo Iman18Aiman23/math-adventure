@@ -171,6 +171,12 @@
 | Quiz model | **Spaced repetition** — each quiz includes ~70% current topic + ~30% review from all previous topics | 2026-06-07 |
 | Topic unlock mode | **Fully open** — all topics clickable from the start. No sequential locking. | 2026-06-07 |
 | Progress for reused games | **Wrap at App.jsx level** — `ProgressWrapper` component saves progress before calling `onBack`. No edits to existing game files. | 2026-06-07 |
+| Topic node display labels | **Child-friendly content names**, not silibus headings — hub labels describe what the child actually does (1.1 "Mengenal Huruf Vokal", 1.5 "Baca Frasa Bergambar"). Module names and nav tabs follow the same policy (T1 M1 = "Huruf Vokal & Frasa Bergambar", tab "Huruf & Frasa" via `NAMES_BY_YEAR` in NavBar). Silibus headings remain in this doc's tables; topic IDs are opaque progress keys — never renumber them. | 2026-06-11 |
+| T1 M1 structure | **A–Z letter journey** — 7 nodes: vokal → konsonan B–J → K–R → S–Z → Suku Kata (segmentation bridge) → Dengar & Teka (listening) → Baca Frasa Bergambar. Letter + suku kata topics share one configurable `MengenalHuruf.jsx` (`group` prop); Dengar & Teka is quiz-only (`DengarTeka.jsx`, audioText questions). | 2026-06-11 |
+| Letter-topic quiz format | **Emoji-driven** — "Apakah ini?" + big emoji prompt + 4 full-word options (proper casing, smaller `word-opt` font). No TTS in these quizzes: ms-MY TTS reads bare letters / hyphenated fragments unreliably. Correct answers fire a confetti burst (`canvas-confetti`; the old 🎀 ribbon banner was removed from `BMLessonQuizLayout`). | 2026-06-11 |
+| Tahun 1 vocabulary rule | **KV/KVK words only** in T1 reading content — no meN-/ber- affixed verbs, no digraphs (ng, ny), no diphthongs (ai, au, oi); those arrive in Tahun 2. STT matching still *accepts* advanced spoken forms (membaca, melompat). | 2026-06-11 |
+| Quiz mastery gate | **Pass ≥ 70%** (`PASS_PCT` in `BMLessonQuizLayout`) required before a quiz topic is marked complete. Results screen: pass → "Topik Seterusnya →" (`getNextTopicId`, next node in same module; last node falls back to "Kembali ke Trail") + secondary "Cuba Lagi"; fail → "Cuba Lagi" primary + minimum-score notice, **no completion saved**. The back button no longer marks Pattern-1 quiz topics complete; Pattern-2 reuse games (ProgressWrapper) keep mark-on-back. App.jsx keys topic pages with `key={bmTopic}` so "Topik Seterusnya" remounts shared components (MengenalHuruf groups). | 2026-06-11 |
+| Lesson-page header pattern | **`BMHeader` reusable component** (`_shared/BMHeader.jsx`) — glassmorphism topbar with back button (label hidden ≤480px, arrow only), centred truncating title, optional `sectionLabel` with gradient decorative lines, optional `sticky` mode for quiz layouts. Replaces all inline per-prefix topbars (`mh-`, `mmk-`, `mmt-`, `kib-`, `sfb-`, `kv-`, `bm-lesson-`). Applied to `BMLessonQuizLayout`, all learn pages, `BacaFrasaBergambar`, `AsasMembaca`, and `KVLearningPage`. | 2026-06-11 |
 
 ### Phase 0 — App Integration
 
@@ -223,66 +229,79 @@
 | # | Task | Status |
 |---|------|--------|
 | 3.1 | `ModuleData.js` — T1 module data (2-3 topics each) | ✅ Complete |
-| 3.2 | T1 Topik 1.1 — Mendengar & Menyebut | ✅ Complete |
-| 3.3 | T1 Topik 1.2 — Bertutur & Menyampaikan Maklumat | ✅ Reuse |
+| 3.2 | T1 Topik 1.1 — Mendengar & Menyebut (app label: "Mengenal Huruf Vokal") | ✅ Complete |
+| 3.3 | T1 Topik 1.2 — Bertutur & Menyampaikan Maklumat (app label: "Baca Frasa Bergambar", shows as node 1.5) | ✅ Reuse (game redesigned 2026-06-11) |
 | 3.4 | T1 Topik 2.1 — Asas Membaca & Memahami | ✅ Reuse |
 | 3.5 | T1 Topik 2.2 — Membaca secara Mekanis | ✅ Complete |
 | 3.6 | T1 Topik 2.3 — Membaca & Menaakul | ✅ Reuse |
-| 3.7 | T1 Topik 3.1 — Asas Menulis | 🆕 New |
+| 3.7 | T1 Topik 3.1 — Asas Menulis | ✅ Complete |
 | 3.8 | T1 Topik 3.2 — Menulis & Membina Ayat | ✅ Reuse |
-| 3.9 | T1 Topik 3.3 — Mencatat Maklumat | 🆕 New |
-| 3.10 | T1 Topik 4.1 — Keindahan Bahasa | 🆕 New |
+| 3.9 | T1 Topik 3.3 — Mencatat Maklumat | ✅ Complete |
+| 3.10 | T1 Topik 4.1 — Keindahan Bahasa | ✅ Complete |
 | 3.11 | T1 Topik 5.1 — Morfologi (Golongan Kata) | ✅ Reuse |
-| 3.12 | T1 Topik 5.2 — Sintaksis (Ayat Tunggal) | ✅ Reuse |
+| 3.12 | T1 Topik 5.2 — Sintaksis (Ayat Tunggal) | ✅ Complete (new `SintaksisAyat.jsx` — was SentenceBuilder duplicate of 3.2) |
+| 3.13 | T1 M1 A–Z journey — Konsonan B–J / K–R / S–Z (3 new topics, all 4 letter topics share `MengenalHuruf.jsx`; `MendengarMenyebut.jsx` deleted. IDs `1-1-3/4/5-*`) | ✅ Complete |
+| 3.14 | T1 M1 Topik 1.5 — Dengar & Teka (listening; quiz-only `DengarTeka.jsx` + audioText bank `1-1-6-dengar-teka`; frasa shows as 1.6). Also: SpeechManager Malay voice fix — Indonesian (`id-*`) voices now qualify as fallback (Damayanti on iOS, Google Bahasa Indonesia) instead of browser-default English voice | ✅ Complete |
+| 3.15 | M1 spaced repetition wired — each konsonan quiz reviews all earlier letter groups (`REVIEW_SOURCES` in `MengenalHuruf.jsx`); Dengar & Teka reviews all letter + suku kata banks (~70% current / ~30% review via `useBMQuiz`) | ✅ Complete |
+| 3.16 | T1 M1 Topik 1.5 — Suku Kata. Learn page = full `ReadingPage/KVLearningPage.jsx` flashcard system reused (letter picker A–Z, vowel-series cards, RUMI/ENG/JAWI toggle, tap-to-listen; optional `onStartQuiz` prop added — Age 4–6 usage unaffected) via thin `SukuKata.jsx` wrapper; quiz = bank `1-1-7-suku-kata` (hear word → pick first syllable) + letter reviews. `bm_kv.js` data cleaned (wrong pairings ri/ju/ni fixed, Indonesian *sepeda* removed, non-BM words dropped, digraph/diftong swaps); KVLearningPage vowel labels now item-derived so shortened series stay correct. Dengar & Teka shows as 1.6, frasa as 1.7 | ✅ Complete |
 
 ### Phase 4 — Tahun 2 Content
 
 | # | Task | Status |
 |---|------|--------|
 | 4.1 | `ModuleData.js` — T2 module data (2-3 topics each) | ✅ Complete |
-| 4.2 | T2 Topik 1.1 — Mendengar, Memahami & Merespons | ✅ Reuse |
-| 4.3 | T2 Topik 1.2 — Bercerita & Berbincang | ✅ Reuse |
-| 4.4 | T2 Topik 2.1 — Perkataan Sukar (Digraf/Diftong) | 🆕 New |
-| 4.5 | T2 Topik 2.2 — Teks Pelbagai Gaya | ✅ Reuse |
-| 4.6 | T2 Topik 2.3 — Mentafsir & Menaakul | ✅ Reuse |
-| 4.7 | T2 Topik 3.1 — Menulis secara Mekanis | 🆕 New |
-| 4.8 | T2 Topik 3.2 — Membina & Menghasilkan Penulisan | 🆕 New |
-| 4.9 | T2 Topik 3.3 — Menulis Jawapan Pemahaman | 🆕 New |
-| 4.10 | T2 Topik 4.1 — Apresiasi Sastera | ✅ Reuse |
-| 4.11 | T2 Topik 4.2 — Persembahan Karya | 🆕 New |
-| 4.12 | T2 Topik 5.1 — Morfologi (Perluasan) | ✅ Reuse |
-| 4.13 | T2 Topik 5.2 — Pembentukan Perkataan | ✅ Reuse |
-| 4.14 | T2 Topik 5.3 — Sintaksis (Ayat Majmuk) | 🆕 New |
+| 4.2 | T2 Topik 1.1 — Mendengar, Memahami & Merespons | ✅ Complete (wired) |
+| 4.3 | T2 Topik 1.2 — Bercerita & Berbincang | ✅ Complete (wired) |
+| 4.4 | T2 Topik 2.1 — Perkataan Sukar (Digraf/Diftong) | ✅ Complete (new) |
+| 4.5 | T2 Topik 2.2 — Teks Pelbagai Gaya | ✅ Complete (wired) |
+| 4.6 | T2 Topik 2.3 — Mentafsir & Menaakul | ✅ Complete (wired) |
+| 4.7 | T2 Topik 3.1 — Menulis secara Mekanis | ✅ Complete (new) |
+| 4.8 | T2 Topik 3.2 — Membina & Menghasilkan Penulisan | ✅ Complete (new) |
+| 4.9 | T2 Topik 3.3 — Menulis Jawapan Pemahaman | ✅ Complete (new) |
+| 4.10 | T2 Topik 4.1 — Apresiasi Sastera | ✅ Complete (wired) |
+| 4.11 | T2 Topik 4.2 — Persembahan Karya | ✅ Complete (new) |
+| 4.12 | T2 Topik 5.1 — Morfologi (Perluasan) | ✅ Complete (wired) |
+| 4.13 | T2 Topik 5.2 — Pembentukan Perkataan | ✅ Complete (wired) |
+| 4.14 | T2 Topik 5.3 — Sintaksis (Ayat Majmuk) | ✅ Complete (new) |
 
 ### Phase 5 — Tahun 3 Content
 
 | # | Task | Status |
 |---|------|--------|
 | 5.1 | `ModuleData.js` — T3 module data (2-3 topics each) | ✅ Complete |
-| 5.2 | T3 Topik 1.1 — Mendengar & Mengulas | 🆕 New |
-| 5.3 | T3 Topik 1.2 — Berkomunikasi Bertatasusila | 🆕 New |
-| 5.4 | T3 Topik 2.1 — Teks Kompleks | ✅ Reuse |
-| 5.5 | T3 Topik 2.2 — Kelancaran Membaca | 🆕 New |
-| 5.6 | T3 Topik 2.3 — Membaca Kritikal | ✅ Reuse |
-| 5.7 | T3 Topik 3.1 — Menulis Karangan | 🆕 New |
-| 5.8 | T3 Topik 3.2 — Kemahiran Mengedit Teks | ✅ Reuse |
-| 5.9 | T3 Topik 3.3 — Menulis Kreatif | 🆕 New |
-| 5.10 | T3 Topik 4.1 — Estetika Bahasa & Sastera | ✅ Reuse |
-| 5.11 | T3 Topik 4.2 — Apresiasi Karya Seni | ✅ Reuse |
-| 5.12 | T3 Topik 5.1 — Morfologi Lanjutan | 🆕 New |
-| 5.13 | T3 Topik 5.2 — Pembentukan Perkataan | ✅ Reuse |
-| 5.14 | T3 Topik 5.3 — Sintaksis (Jenis Ayat) | ✅ Reuse |
+| 5.2 | T3 Topik 1.1 — Mendengar & Mengulas | ✅ Complete (new) |
+| 5.3 | T3 Topik 1.2 — Berkomunikasi Bertatasusila | ✅ Complete (new) |
+| 5.4 | T3 Topik 2.1 — Teks Kompleks | ✅ Complete (wired) |
+| 5.5 | T3 Topik 2.2 — Kelancaran Membaca | ✅ Complete (new) |
+| 5.6 | T3 Topik 2.3 — Membaca Kritikal | ✅ Complete (wired) |
+| 5.7 | T3 Topik 3.1 — Menulis Karangan | ✅ Complete (new) |
+| 5.8 | T3 Topik 3.2 — Kemahiran Mengedit Teks | ✅ Complete (wired) |
+| 5.9 | T3 Topik 3.3 — Menulis Kreatif | ✅ Complete (new) |
+| 5.10 | T3 Topik 4.1 — Estetika Bahasa & Sastera | ✅ Complete (wired) |
+| 5.11 | T3 Topik 4.2 — Apresiasi Karya Seni | ✅ Complete (wired) |
+| 5.12 | T3 Topik 5.1 — Morfologi Lanjutan | ✅ Complete (new) |
+| 5.13 | T3 Topik 5.2 — Pembentukan Perkataan | ✅ Complete (wired) |
+| 5.14 | T3 Topik 5.3 — Sintaksis (Jenis Ayat) | ✅ Complete (wired) |
 
 ### Phase 6 — File Migration (After All Phases Complete)
 
 | # | Task | Status |
 |---|------|--------|
-| 6.1 | Move T1 BM games from AgeGroup-7 to `BahasaMelayuPage/Tahun1/` | ⏳ Pending |
-| 6.2 | Move T2 BM games from AgeGroup-7/8 to `BahasaMelayuPage/Tahun2/` | ⏳ Pending |
-| 6.3 | Move T3 BM games from AgeGroup-7/8/9 to `BahasaMelayuPage/Tahun3/` | ⏳ Pending |
-| 6.4 | Update App.jsx lazy import paths for all moved files | ⏳ Pending |
-| 6.5 | Fix relative import paths in moved files | ⏳ Pending |
-| 6.6 | Build verification | ⏳ Pending |
+| 6.1 | Move T1 BM games from AgeGroup-7 to `BahasaMelayuPage/Tahun1/` | ✅ Complete |
+| 6.2 | Move T2 BM games from AgeGroup-7/8 to `BahasaMelayuPage/Tahun2/` | ✅ Complete |
+| 6.3 | Move T3 BM games from AgeGroup-7/8/9 to `BahasaMelayuPage/Tahun3/` | ✅ Complete |
+| 6.4 | Update App.jsx lazy import paths for all moved files | ✅ Complete |
+| 6.5 | Fix relative import paths in moved files | ✅ Complete |
+| 6.6 | Build verification | ✅ Complete |
+
+### Phase 7 — Curriculum Coverage Audits
+
+Per-module silibus audits live in `reports/` (`_CHECKLIST_TEMPLATE.md` = reusable checklist; one report per modul).
+
+| Report | Verdict | Date |
+|--------|---------|------|
+| `reports/T1_M1_COVERAGE_REPORT.md` | ⚠️ Partial — Mendengar strong (5✅/3⚠️/5❌/1➖); Topik 1.2 Bertutur gaps (arahan/pesanan/perkenalan diri/permintaan sopan); 2 P1 fixes identified | 2026-06-11 |
+| T1 M2–M5 · T2 · T3 | ⏳ Pending | |
 
 ---
 
@@ -395,6 +414,7 @@ BahasaMelayuPage/                          <- Phase 6 final state
 +-- BahasaMelayuModuleNavBar.jsx      ★ Standalone sticky 5-tab nav (mirrors MatematikModuleNavBar, top:56px)
 |
 +-- _shared/                           ★ Shared across all 3 years
+|   +-- BMHeader.jsx                  ★ Reusable glassmorphism topbar (back button, title, optional sectionLabel/sticky)
 |   +-- BMJourneySvgs.jsx             ★ 18 reusable SVG components (badges + topic icons + trophy)
 |   +-- ModuleData.js                 ★ All 3 years' module data + BM_QUESTIONS bank
 |   +-- BMModuleHubLayout.jsx         ★ Journey trail with progress indicators
@@ -404,37 +424,67 @@ BahasaMelayuPage/                          <- Phase 6 final state
 |
 +-- Tahun1/
 |   +-- Module1_Mendengar/
-|   |   +-- MendengarMenyebut.jsx    ★ 1.1 (new lesson page)
-|   |   +-- ... (migrated games)
+|   |   +-- MengenalHuruf.jsx        ★ 1.1–1.4 A–Z letter journey (group: vokal | konsonan-bj | kr | sz)
+|   |   +-- SukuKata.jsx             ★ 1.5 (KVLearningPage wrapper)
+|   |   +-- DengarTeka.jsx           ★ 1.6 (quiz-only listening)
+|   |   +-- BacaFrasaBergambar.jsx   ★ 1.7 (reuse, migrated from AG-7)
 |   +-- Module2_Membaca/
+|   |   +-- AsasMembaca.jsx          ★ 2.1 (reuse, migrated from AG-7)
 |   |   +-- MembacaMekanis.jsx       ★ 2.2 (new)
-|   |   +-- ... (migrated games)
+|   |   +-- MembacaMenaakul.jsx      ★ 2.3 (reuse, migrated from AG-7)
 |   +-- Module3_Menulis/
 |   |   +-- AsasMenulis.jsx          ★ 3.1 (new tracing canvas)
+|   |   +-- BinaAyat.jsx             ★ 3.2 (reuse, migrated from AG-7)
 |   |   +-- MencatatMaklumat.jsx     ★ 3.3 (new)
-|   |   +-- ... (migrated games)
 |   +-- Module4_SeniBahasa/
 |   |   +-- KeindahanBahasa.jsx      ★ 4.1 (new)
 |   +-- Module5_Tatabahasa/
-|       +-- ... (migrated games)
+|       +-- MorfologiGolonganKata.jsx ★ 5.1 (reuse, migrated from AG-7)
+|       +-- SintaksisAyat.jsx        ★ 5.2 (new)
 |
-+-- Tahun2/                            (same Module1-5 pattern, folder skeleton ready)
++-- Tahun2/
 |   +-- Module1_Mendengar/
+|   |   +-- MendengarMerespons.jsx   ★ 1.1 (reuse, migrated from AG-7)
+|   |   +-- BerceritaBerbincang.jsx  ★ 1.2 (reuse, migrated from AG-7)
 |   +-- Module2_Membaca/
+|   |   +-- PerkataanSukar.jsx       ★ 2.1 (new)
+|   |   +-- TeksPelbagaiGaya.jsx     ★ 2.2 (reuse, migrated from AG-8)
+|   |   +-- MentafsirMenaakul.jsx    ★ 2.3 (reuse, migrated from AG-8)
 |   +-- Module3_Menulis/
+|   |   +-- MenulisMekanis.jsx       ★ 3.1 (new)
+|   |   +-- HasilkanPenulisan.jsx    ★ 3.2 (new)
+|   |   +-- JawapanPemahaman.jsx     ★ 3.3 (new)
 |   +-- Module4_SeniBahasa/
+|   |   +-- ApresiasiSastera.jsx     ★ 4.1 (reuse, migrated from AG-8)
+|   |   +-- PersembahanKarya.jsx     ★ 4.2 (new)
 |   +-- Module5_Tatabahasa/
+|       +-- MorfologiPerluasan.jsx   ★ 5.1 (reuse, migrated from AG-7)
+|       +-- PembentukanPerkataan.jsx ★ 5.2 (reuse, migrated from AG-7)
+|       +-- SintaksisAyatMajmuk.jsx  ★ 5.3 (new)
 |
-+-- Tahun3/                            (same Module1-5 pattern, folder skeleton ready)
++-- Tahun3/
     +-- Module1_Mendengar/
+    |   +-- MendengarMengulas.jsx    ★ 1.1 (new)
+    |   +-- KomunikasiBertatasusila.jsx ★ 1.2 (new)
     +-- Module2_Membaca/
+    |   +-- TeksKompleks.jsx         ★ 2.1 (reuse, migrated from AG-8)
+    |   +-- KelancaranMembaca.jsx    ★ 2.2 (new)
+    |   +-- MembacaKritikal.jsx      ★ 2.3 (reuse, migrated from AG-9)
     +-- Module3_Menulis/
+    |   +-- MenulisKarangan.jsx      ★ 3.1 (new)
+    |   +-- MengeditTeks.jsx         ★ 3.2 (reuse, migrated from AG-7)
+    |   +-- MenulisKreatif.jsx       ★ 3.3 (new)
     +-- Module4_SeniBahasa/
+    |   +-- EstetikaBahasa.jsx       ★ 4.1 (reuse, migrated from AG-9)
+    |   +-- ApresiasiKaryaSeni.jsx   ★ 4.2 (reuse, migrated from AG-8)
     +-- Module5_Tatabahasa/
+        +-- MorfologiLanjutan.jsx    ★ 5.1 (new)
+        +-- ImbuhanMajmukGanda.jsx   ★ 5.2 (reuse, migrated from AG-9)
+        +-- JenisJenisAyat.jsx       ★ 5.3 (reuse, migrated from AG-9)
 ```
 
-> All BM KSSR game files will be permanently located under `BahasaMelayuPage/Tahun{N}/Module{M}_{Name}/` after Phase 6 migration — this mirrors `MatematikPage`'s folder convention exactly. The empty `Module{N}_{Name}/` folders are pre-created skeletons (untracked by git until populated) waiting for their first game/lesson file.
-> `AgeGroup-7/`, `AgeGroup-8/`, and `AgeGroup-9/` retain only their hub shells and non-BM subject games.
+> All BM KSSR game files now live under `BahasaMelayuPage/Tahun{N}/Module{M}_{Name}/` — this mirrors `MatematikPage`'s folder convention exactly.
+> `AgeGroup-7/`, `AgeGroup-8/`, and `AgeGroup-9/` retain only their hub shells and non-BM subject games (BM originals still present but unused; App.jsx imports point to the migrated copies).
 
 ### Component Tree
 
@@ -458,8 +508,8 @@ BahasaMelayuModulePage
   |     +-- BackButton
   |     +-- "Tahun X" label
   +-- BahasaMelayuModuleNavBar (sticky, top:56px, z-index:100)
-  |     +-- bm-mnav-tab x5
-  |           +-- 1 Mendengar & Bertutur
+  |     +-- bm-mnav-tab x5 (labels: NAMES_BY_YEAR[year] override -> NAMES fallback)
+  |           +-- 1 Huruf & Frasa      (T1 override; T2/T3: Mendengar & Bertutur)
   |           +-- 2 Membaca
   |           +-- 3 Menulis
   |           +-- 4 Seni Bahasa
@@ -477,7 +527,7 @@ BahasaMelayuModulePage
 
 App.jsx (case "bm-kssr")
   +-- if bmTopic set -> renders topic page component
-  |     +-- Pattern 1 (new): <MendengarMenyebut onBack={...} />
+  |     +-- Pattern 1 (new): <MengenalHuruf group="vokal" onBack={...} />
   |     |     +-- uses BMLessonQuizLayout + useBMQuiz + BM_QUESTIONS
   |     |     +-- onBack -> markTopicCompleted(id) + setBmTopic(null)
   |     +-- Pattern 2 (reuse): <ProgressWrapper><ExistingGame /></ProgressWrapper>
@@ -546,8 +596,9 @@ The homepage uses large year-selector cards (`.bm-year`) matching the PI/Matemat
 |  |  BAHASAMELAYUMODULENAVBAR (sticky top:56px, z-index:100)      |  |
 |  |  +--------+--------+--------+---------+---------+            |  |
 |  |  | Modul 1| Modul 2| Modul 3| Modul 4 | Modul 5 |            |  |
-|  |  |Mendengar|Membaca |Menulis |Seni Ba. |Tatabhs |            |  |
+|  |  |Huruf&Fr.|Membaca |Menulis |Seni Ba. |Tatabhs |            |  |
 |  |  +--------+--------+--------+---------+---------+            |  |
+|  |  (T1 tab labels via NAMES_BY_YEAR; T2/T3 keep silibus names)  |  |
 |  |  Standalone component — mirrors MatematikModuleNavBar exactly.|  |
 |  |  Stacks cleanly BELOW bm-top-bar (no overlap, unlike the old  |  |
 |  |  embedded-at-top:0 nav).                                      |  |
@@ -558,18 +609,20 @@ The homepage uses large year-selector cards (`.bm-year`) matching the PI/Matemat
 |  |  |                                                           |  |  |
 |  |  |     +------------------------------------------------+   |  |  |
 |  |  |     | unit-banner: [badge] Modul 1 · Unit Pembelajaran|   |  |  |
-|  |  |     |               Kemahiran Mendengar & Bertutur    |   |  |  |
+|  |  |     |               Huruf Vokal & Frasa Bergambar     |   |  |  |
 |  |  |     +------------------------------------------------+   |  |  |
 |  |  |                                                           |  |  |
 |  |  |              [MULA]                                      |  |  |
 |  |  |             (96px)                                       |  |  |
-|  |  |         ⭕ NodeBtn ──TOPIK 1.1                          |  |  |
-|  |  |         Mendengar & Merespons                            |  |  |
+|  |  |         ⭕ TOPIK 1.1 Mengenal Huruf Vokal               |  |  |
+|  |  |                ⭕ TOPIK 1.2 Konsonan B–J                |  |  |
+|  |  |         ⭕ TOPIK 1.3 Konsonan K–R                       |  |  |
+|  |  |                ⭕ TOPIK 1.4 Konsonan S–Z                |  |  |
+|  |  |         ⭕ TOPIK 1.5 Suku Kata                           |  |  |
+|  |  |                ⭕ TOPIK 1.6 Dengar & Teka                |  |  |
+|  |  |         ⭕ TOPIK 1.7 Baca Frasa Bergambar               |  |  |
 |  |  |                                                           |  |  |
-|  |  |                     ⭕ NodeBtn ──TOPIK 1.2              |  |  |
-|  |  |                     Bercerita & Berbincang               |  |  |
-|  |  |                                                           |  |  |
-|  |  |              🏆 Tamat Modul!                             |  |  |
+|  |  |              🏆 Tamat Modul! (X/7)                       |  |  |
 |  |  |               (trophy node)                              |  |  |
 |  |  |                                                           |  |  |
 |  |  |  - circular 96px node buttons with radial gradient       |  |  |
@@ -586,35 +639,39 @@ The homepage uses large year-selector cards (`.bm-year`) matching the PI/Matemat
 
 Two patterns exist for topic pages:
 
-**Pattern 1 - New Duolingo-style lesson page** (using BMLessonQuizLayout):
+**Pattern 1 - New two-page lesson** (learn page + BMLessonQuizLayout quiz):
 ```
 Trail node onClick
   -> setBmTopic("1-1-1-mendengar-menyebut")
-  -> App.jsx renders <MendengarMenyebut onBack={...} />
-  -> Topic page layout:
+  -> App.jsx renders <MengenalHuruf group="vokal" onBack={...} />
+  -> Page 1 — LEARN (component's own page, single viewport, no scroll):
        ┌──────────────────────────────────────┐
-       │  ← Kembali                    ⭐ 0    │
-       │                                       │
-       │  ┌─── 📖 Pelajari Sekejap ─────────┐  │
-       │  │  Brief explanation (1 card)     │  │
-       │  │  🔊 Dengar (TTS button)         │  │
-       │  └──────────────────────────────────┘  │
-       │                                       │
-       │  🎯 KUZI                              │
-       │  ┌──────────────────────────────────┐ │
-       │  │ Soalan X/15  ██░░░░░            │ │
-       │  │ [question]                       │ │
-       │  │ ○ A  ○ B  ● C  ○ D             │ │
-       │  │ ✅ Betul! / ❌ Jawapan: ...     │ │
-       │  │ [Teruskan →]                     │ │
-       │  └──────────────────────────────────┘ │
-       │                                       │
-       │  🏆 Keputusan ⭐⭐⭐ X/15          │ │
-       │  [Cuba Lagi] [← Kembali ke Trail]    │ │
+       │  ←  ·  Mengenal Huruf Vokal          │  <- standardized topbar
+       │  [📖 LANGKAH 1 · BELAJAR DULU]        │
+       │  Mari Belajar Huruf Vokal             │
+       │  ┌────┐ ┌────┐ ┌────┐                │  letter cards (tap = TTS word)
+       │  │ Aa │ │ Ee │ │ Ii │                │  3+2 grid (5) / 4+3 (7 letters)
+       │  └────┘ └────┘ └────┘                │  one row on ≥680px
+       │      ┌────┐ ┌────┐                   │
+       │      │ Oo │ │ Uu │                   │
+       │      └────┘ └────┘                   │
+       │  [ 🎯 Sedia untuk Kuiz? ]            │
+       └──────────────────────────────────────┘
+  -> Page 2 — QUIZ (BMLessonQuizLayout, emoji format):
+       ┌──────────────────────────────────────┐
+       │  ←  ·  Mengenal Huruf Vokal          │
+       │  Soalan X/15  ██░░░░░   ⭐ score     │
+       │              🐫                       │  <- big emoji prompt
+       │         Apakah ini?                   │
+       │  [ Unta ] [ Itik ] [ Enam ] [Anggur] │  <- full-word options
+       │  ✅ confetti burst / ❌ Jawapan: ...  │
+       │  [Teruskan →]                         │
+       │  🏆 Keputusan ⭐⭐⭐ X/15            │
        └──────────────────────────────────────┘
   -> Quiz uses useBMQuiz hook:
        ~70% current topic questions + ~30% review from previous topics
        ref-hidden answers (ansRef) — invisible to DevTools
+       question fields: { question, answer, options, emoji? | audioText? }
   <- onBack -> markTopicCompleted(id) + setBmTopic(null) -> back to hub
 ```
 
@@ -656,7 +713,7 @@ isTopicCompleted("1-1-mendengar-menyebut")  // -> true/false
 markTopicCompleted("1-1-mendengar-menyebut") // saves to localStorage
 ```
 
-The hub reads `isTopicCompleted(id)` for each node to show 🟢 indicators. Topic pages call `markTopicCompleted(id)` before `onBack`.
+The hub reads `isTopicCompleted(id)` for each node to show 🟢 indicators. Quiz topics (Pattern 1) are marked complete by `BMLessonQuizLayout` **only when the quiz is passed (≥ 70%)**; reused games (Pattern 2) still mark complete via `ProgressWrapper` on back.
 
 ### Topic ID Naming Convention
 
@@ -664,7 +721,7 @@ Topic IDs follow the format `{year}-{module}-{topic}-{slug}`. This avoids routin
 
 | Year | Format | Example IDs |
 |------|--------|-------------|
-| Tahun 1 | `"1-{M}-{T}-{slug}"` | `"1-1-1-mendengar-menyebut"`, `"1-1-2-bertutur-maklumat"`, `"1-2-1-asas-membaca"`, `"1-2-2-membaca-mekanis"`, `"1-3-1-asas-menulis"` |
+| Tahun 1 | `"1-{M}-{T}-{slug}"` | `"1-1-1-mendengar-menyebut"` (shows as 1.1), `"1-1-3-konsonan-bj"` (1.2), `"1-1-4-konsonan-kr"` (1.3), `"1-1-5-konsonan-sz"` (1.4), `"1-1-7-suku-kata"` (1.5), `"1-1-6-dengar-teka"` (1.6), `"1-1-2-bertutur-maklumat"` (1.7 — id kept so saved progress survives), `"1-2-1-asas-membaca"`, `"1-2-2-membaca-mekanis"`, `"1-3-1-asas-menulis"` |
 | Tahun 2 | `"2-{M}-{T}-{slug}"` | `"2-1-1-mendengar-merespons"`, `"2-1-2-bercerita"`, `"2-2-1-perkataan-sukar"`, `"2-2-2-teks-pelbagai"`, `"2-2-3-mentafsir-menaakul"` |
 | Tahun 3 | `"3-{M}-{T}-{slug}"` | `"3-1-1-mendengar-mengulas"`, `"3-1-2-berkomunikasi"`, `"3-2-1-teks-kompleks"`, `"3-2-2-kelancaran-membaca"`, `"3-2-3-membaca-kritikal"` |
 
@@ -700,7 +757,9 @@ const topicComplete = (id) => { markTopicCompleted(id); };
 case "bm-kssr":
   // -- Tahun 1 Topics (new — use BMLessonQuizLayout) --
   if (bmTopic === "1-1-1-mendengar-menyebut")
-    return <MendengarMenyebut onBack={topicOnBack} language={language} topicComplete={topicComplete} />;
+    return <MengenalHuruf group="vokal" onBack={topicOnBack} language={language} topicComplete={topicComplete} />;
+  // ...same for "1-1-3-konsonan-bj" / "1-1-4-konsonan-kr" / "1-1-5-konsonan-sz"
+  //    with group="konsonan-bj" / "konsonan-kr" / "konsonan-sz"
 
   // -- Tahun 1 Topics (reuse — wrapped in ProgressWrapper) --
   if (bmTopic === "1-1-2-bertutur-maklumat")
@@ -724,9 +783,8 @@ case "bm-kssr":
              <JenisKata language={language} />
            </ProgressWrapper>;
   if (bmTopic === "1-5-2-sintaksis-ayat")
-    return <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
-             <SentenceBuilder language={language} />
-           </ProgressWrapper>;
+    return <SintaksisAyat onBack={topicOnBack} language={language}
+             topicComplete={(id) => markTopicCompleted(id)} />;
 
   // -- Module hub (bmModule set, no topic) --
   if (bmModule) {
@@ -756,10 +814,10 @@ HomePage
     -> BahasaMelayuHomePage (year selector)
       -> Click "Tahun 1" -> setBmYear(1) + setBmModule("1-mendengar")
         -> BahasaMelayuModulePage + BahasaMelayuModuleNavBar (5 tabs)
-          -> M1Module hub (topic cards)
-               -> Click "1.1 Mendengar dan Menyebut"
+          -> M1 hub trail (5 nodes: A–Z journey)
+               -> Click "1.1 Mengenal Huruf Vokal"
                -> setBmTopic("1-1-1-mendengar-menyebut")
-               -> App.jsx renders: <MendengarMenyebut onBack={...} language={...} />
+               -> App.jsx renders: <MengenalHuruf group="vokal" onBack={...} language={...} />
                 <- onBack -> setBmTopic(null) -> back to hub
           <- hubOnBack -> setBmModule(null) + setBmTopic(null) -> year selector
 ```
@@ -768,71 +826,67 @@ HomePage
 
 ## 9. Existing Games Inventory
 
-### Tahun 1 (AgeGroup-7)
+### Tahun 1 (all under `BahasaMelayuPage/Tahun1/`)
 
-| Existing Game | BM Module | BM Topic | Status |
-|---------------|-----------|----------|--------|
-| `SebutFrasaBergambar.jsx` | M1: Mendengar | 1.2 Bertutur & Maklumat | ✅ Reuse |
-| `SukuKataBinaPerkataan.jsx` | M2: Membaca | 2.1 Asas Membaca | ✅ Reuse |
-| -- | M2: Membaca | 2.2 Membaca Mekanis | ❌ No game |
-| `KefahamanBacaan.jsx` | M2: Membaca | 2.3 Membaca & Menaakul | ✅ Reuse |
-| -- | M3: Menulis | 3.1 Asas Menulis | ❌ No game |
-| `SentenceBuilder.jsx` | M3: Menulis | 3.2 Bina Ayat | ✅ Reuse |
-| -- | M3: Menulis | 3.3 Mencatat Maklumat | ❌ No game |
-| -- | M4: Seni Bahasa | 4.1 Keindahan Bahasa | ❌ No game |
-| `JenisKata.jsx` | M5: Tatabahasa | 5.1 Morfologi | ✅ Reuse |
-| `KataTanya.jsx` | M5: Tatabahasa | 5.1 Morfologi | ✅ Reuse |
-| `SentenceBuilder.jsx` | M5: Tatabahasa | 5.2 Sintaksis | ✅ Reuse |
+| File | BM Module | BM Topic | Status |
+|------|-----------|----------|--------|
+| `Module1_Mendengar/MengenalHuruf.jsx` | M1: Mendengar | 1.1–1.4 A–Z letters | ✅ New shared lesson page (`group` prop) |
+| `Module1_Mendengar/DengarTeka.jsx` | M1: Mendengar | 1.6 Dengar & Teka | ✅ New quiz-only |
+| `Module1_Mendengar/SukuKata.jsx` | M1: Mendengar | 1.5 Suku Kata | ✅ New wrapper (reuses KVLearningPage) |
+| `Module1_Mendengar/BacaFrasaBergambar.jsx` | M1: Mendengar | 1.7 Baca Frasa Bergambar | ✅ Reuse (migrated from AgeGroup-7) |
+| `Module2_Membaca/AsasMembaca.jsx` | M2: Membaca | 2.1 Asas Membaca | ✅ Reuse (migrated from AgeGroup-7) |
+| `Module2_Membaca/MembacaMekanis.jsx` | M2: Membaca | 2.2 Membaca Mekanis | ✅ New |
+| `Module2_Membaca/MembacaMenaakul.jsx` | M2: Membaca | 2.3 Membaca & Menaakul | ✅ Reuse (migrated from AgeGroup-7) |
+| `Module3_Menulis/AsasMenulis.jsx` | M3: Menulis | 3.1 Asas Menulis | ✅ New |
+| `Module3_Menulis/BinaAyat.jsx` | M3: Menulis | 3.2 Bina Ayat | ✅ Reuse (migrated from AgeGroup-7) |
+| `Module3_Menulis/MencatatMaklumat.jsx` | M3: Menulis | 3.3 Mencatat Maklumat | ✅ New |
+| `Module4_SeniBahasa/KeindahanBahasa.jsx` | M4: Seni Bahasa | 4.1 Keindahan Bahasa | ✅ New |
+| `Module5_Tatabahasa/MorfologiGolonganKata.jsx` | M5: Tatabahasa | 5.1 Morfologi | ✅ Reuse (migrated from AgeGroup-7) |
+| `Module5_Tatabahasa/SintaksisAyat.jsx` | M5: Tatabahasa | 5.2 Sintaksis | ✅ New |
 
-### Tahun 2 (AgeGroup-7/8)
+### Tahun 2 (all under `BahasaMelayuPage/Tahun2/`)
 
-| Existing Game | BM Module | BM Topic | Status |
-|---------------|-----------|----------|--------|
-| `JawabSoalan.jsx` (AG-7) | M1: Mendengar | 1.1 Mendengar & Merespons | ✅ Reuse |
-| `BertuturBertatasusila.jsx` (AG-7) | M1: Mendengar | 1.2 Bercerita & Berbincang | ✅ Reuse |
-| -- | M2: Membaca | 2.1 Perkataan Sukar | ❌ No game |
-| `BacaanPemahaman.jsx` (AG-8) | M2: Membaca | 2.2 Teks Pelbagai Gaya | ✅ Reuse |
-| `KosaKataKontekstual.jsx` (AG-8) | M2: Membaca | 2.3 Mentafsir & Menaakul | ✅ Reuse |
-| -- | M3: Menulis | 3.1 Menulis Mekanis | ❌ No game |
-| -- | M3: Menulis | 3.2 Hasilkan Penulisan | ❌ No game |
-| -- | M3: Menulis | 3.3 Jawapan Pemahaman | ❌ No game |
-| `PantunBacaan.jsx` (AG-8) | M4: Seni Bahasa | 4.1 Apresiasi Sastera | ✅ Reuse |
-| `PengenalanNilai.jsx` (AG-8) | M4: Seni Bahasa | 4.1 Apresiasi Sastera | ✅ Reuse |
-| -- | M4: Seni Bahasa | 4.2 Persembahan Karya | ❌ No game |
-| `KataHubungSendi.jsx` (AG-7) | M5: Tatabahasa | 5.1 Morfologi | ✅ Reuse |
-| `KataImbuhan.jsx` (AG-7) | M5: Tatabahasa | 5.2 Pembentukan Kata | ✅ Reuse |
-| -- | M5: Tatabahasa | 5.3 Ayat Majmuk | ❌ No game |
+| File | BM Module | BM Topic | Status |
+|------|-----------|----------|--------|
+| `Module1_Mendengar/MendengarMerespons.jsx` | M1: Mendengar | 1.1 Mendengar & Merespons | ✅ Reuse (migrated from AgeGroup-7) |
+| `Module1_Mendengar/BerceritaBerbincang.jsx` | M1: Mendengar | 1.2 Bercerita & Berbincang | ✅ Reuse (migrated from AgeGroup-7) |
+| `Module2_Membaca/PerkataanSukar.jsx` | M2: Membaca | 2.1 Perkataan Sukar | ✅ New |
+| `Module2_Membaca/TeksPelbagaiGaya.jsx` | M2: Membaca | 2.2 Teks Pelbagai Gaya | ✅ Reuse (migrated from AgeGroup-8) |
+| `Module2_Membaca/MentafsirMenaakul.jsx` | M2: Membaca | 2.3 Mentafsir & Menaakul | ✅ Reuse (migrated from AgeGroup-8) |
+| `Module3_Menulis/MenulisMekanis.jsx` | M3: Menulis | 3.1 Menulis Mekanis | ✅ New |
+| `Module3_Menulis/HasilkanPenulisan.jsx` | M3: Menulis | 3.2 Hasilkan Penulisan | ✅ New |
+| `Module3_Menulis/JawapanPemahaman.jsx` | M3: Menulis | 3.3 Jawapan Pemahaman | ✅ New |
+| `Module4_SeniBahasa/ApresiasiSastera.jsx` | M4: Seni Bahasa | 4.1 Apresiasi Sastera | ✅ Reuse (migrated from AgeGroup-8) |
+| `Module4_SeniBahasa/PersembahanKarya.jsx` | M4: Seni Bahasa | 4.2 Persembahan Karya | ✅ New |
+| `Module5_Tatabahasa/MorfologiPerluasan.jsx` | M5: Tatabahasa | 5.1 Morfologi | ✅ Reuse (migrated from AgeGroup-7) |
+| `Module5_Tatabahasa/PembentukanPerkataan.jsx` | M5: Tatabahasa | 5.2 Pembentukan Kata | ✅ Reuse (migrated from AgeGroup-7) |
+| `Module5_Tatabahasa/SintaksisAyatMajmuk.jsx` | M5: Tatabahasa | 5.3 Ayat Majmuk | ✅ New |
 
-### Tahun 3 (AgeGroup-7/8/9)
+### Tahun 3 (all under `BahasaMelayuPage/Tahun3/`)
 
-| Existing Game | BM Module | BM Topic | Status |
-|---------------|-----------|----------|--------|
-| -- | M1: Mendengar | 1.1 Mendengar & Mengulas | ❌ No game |
-| -- | M1: Mendengar | 1.2 Berkomunikasi | ❌ No game |
-| `CeritaBacaan.jsx` (AG-8) | M2: Membaca | 2.1 Teks Kompleks | ✅ Reuse |
-| -- | M2: Membaca | 2.2 Kelancaran Membaca | ❌ No game |
-| `BacaanPemahamanLanjutan.jsx` (AG-9) | M2: Membaca | 2.3 Membaca Kritikal | ✅ Reuse |
-| -- | M3: Menulis | 3.1 Menulis Karangan | ❌ No game |
-| `EjaanTandaBaca.jsx` (AG-7) | M3: Menulis | 3.2 Mengedit Teks | ✅ Reuse |
-| -- | M3: Menulis | 3.3 Menulis Kreatif | ❌ No game |
-| `SimpulanBahasa.jsx` (AG-9) | M4: Seni Bahasa | 4.1 Estetika Bahasa | ✅ Reuse |
-| `PenjodohBilangan.jsx` (AG-9) | M4: Seni Bahasa | 4.1 Estetika Bahasa | ✅ Reuse |
-| `LafazPantun.jsx` (AG-8) | M4: Seni Bahasa | 4.2 Apresiasi Karya | ✅ Reuse |
-| -- | M5: Tatabahasa | 5.1 Morfologi Lanjutan | ❌ No game |
-| `KataImbuhan.jsx` (AG-7) | M5: Tatabahasa | 5.2 Pembentukan Kata | ✅ Reuse |
-| `KataGanda.jsx` (AG-7) | M5: Tatabahasa | 5.2 Pembentukan Kata | ✅ Reuse |
-| `ImbuhanLanjutan.jsx` (AG-9) | M5: Tatabahasa | 5.2 Pembentukan Kata | ✅ Reuse |
-| `JenisAyat.jsx` (AG-9) | M5: Tatabahasa | 5.3 Jenis Ayat | ✅ Reuse |
+| File | BM Module | BM Topic | Status |
+|------|-----------|----------|--------|
+| `Module1_Mendengar/MendengarMengulas.jsx` | M1: Mendengar | 1.1 Mendengar & Mengulas | ✅ New |
+| `Module1_Mendengar/KomunikasiBertatasusila.jsx` | M1: Mendengar | 1.2 Berkomunikasi | ✅ New |
+| `Module2_Membaca/TeksKompleks.jsx` | M2: Membaca | 2.1 Teks Kompleks | ✅ Reuse (migrated from AgeGroup-8) |
+| `Module2_Membaca/KelancaranMembaca.jsx` | M2: Membaca | 2.2 Kelancaran Membaca | ✅ New |
+| `Module2_Membaca/MembacaKritikal.jsx` | M2: Membaca | 2.3 Membaca Kritikal | ✅ Reuse (migrated from AgeGroup-9) |
+| `Module3_Menulis/MenulisKarangan.jsx` | M3: Menulis | 3.1 Menulis Karangan | ✅ New |
+| `Module3_Menulis/MengeditTeks.jsx` | M3: Menulis | 3.2 Mengedit Teks | ✅ Reuse (migrated from AgeGroup-7) |
+| `Module3_Menulis/MenulisKreatif.jsx` | M3: Menulis | 3.3 Menulis Kreatif | ✅ New |
+| `Module4_SeniBahasa/EstetikaBahasa.jsx` | M4: Seni Bahasa | 4.1 Estetika Bahasa | ✅ Reuse (migrated from AgeGroup-9) |
+| `Module4_SeniBahasa/ApresiasiKaryaSeni.jsx` | M4: Seni Bahasa | 4.2 Apresiasi Karya | ✅ Reuse (migrated from AgeGroup-8) |
+| `Module5_Tatabahasa/MorfologiLanjutan.jsx` | M5: Tatabahasa | 5.1 Morfologi Lanjutan | ✅ New |
+| `Module5_Tatabahasa/ImbuhanMajmukGanda.jsx` | M5: Tatabahasa | 5.2 Pembentukan Kata | ✅ Reuse (migrated from AgeGroup-9) |
+| `Module5_Tatabahasa/JenisJenisAyat.jsx` | M5: Tatabahasa | 5.3 Jenis Ayat | ✅ Reuse (migrated from AgeGroup-9) |
 
 ### Gaps Summary
 
 | Year | Missing Topics |
 |------|----------------|
-| T1 | ~~1.1 Mendengar & Menyebut~~ (complete), 2.2 Membaca Mekanis, 3.1 Asas Menulis, 3.3 Mencatat Maklumat, 4.1 Keindahan Bahasa (4 new games remaining) |
-| T2 | 2.1 Perkataan Sukar, 3.1 Menulis Mekanis, 3.2 Hasilkan Penulisan, 3.3 Jawapan Pemahaman, 4.2 Persembahan Karya, 5.3 Ayat Majmuk (6 new games) |
-| T3 | 1.1 Mendengar & Mengulas, 1.2 Berkomunikasi, 2.2 Kelancaran Membaca, 3.1 Karangan, 3.3 Kreatif, 5.1 Morfologi Lanjutan (6 new games) |
-
-These can be built later as standalone games or lesson pages using `Tahun1LessonScrollLayout`.
+| T1 | ✅ None — all 16 topics complete (8 new lesson files + 5 reused games + 2 shared wrappers) |
+| T2 | ✅ None — all 13 topics complete (6 new + 7 reused) |
+| T3 | ✅ None — all 13 topics complete (6 new + 7 reused) |
 
 ---
 
@@ -848,9 +902,9 @@ App.jsx state: `bmYear` -> `bmModule` -> `bmTopic`
 bmYear=1, bmModule="1-mendengar", bmTopic=null
   -> Render BahasaMelayuModulePage -> shows M1 journey trail
 
-bmYear=1, bmModule="1-mendengar", bmTopic="1-1-mendengar-menyebut"
-  -> Render <MendengarMenyebut onBack={...} topicComplete={...} language={...} />
-  -> Duolingo-style lesson: brief explanation + quiz with spaced repetition
+bmYear=1, bmModule="1-mendengar", bmTopic="1-1-1-mendengar-menyebut"
+  -> Render <MengenalHuruf group="vokal" onBack={...} topicComplete={...} language={...} />
+  -> Two-page lesson: learn page (letter cards, tap = TTS word) + emoji quiz
   -> onBack -> markTopicCompleted(id) + setBmTopic(null) -> returns to hub
 ```
 
@@ -880,11 +934,11 @@ App.jsx:
 | `BahasaMelayuPage/_shared/BMLessonQuizLayout.jsx` | Duolingo-style layout (explanation card + quiz) |
 | `BahasaMelayuPage/_shared/ModuleData.js` (extend) | Add `BM_QUESTIONS` bank for all topics |
 | `BahasaMelayuPage/_shared/BMModuleHubLayout.jsx` (extend) | Add progress indicators to nodes + trophy |
-| `Tahun1/Module1_Mendengar/MendengarMenyebut.jsx` | First new topic page (T1 M1 T1.1) |
+| `Tahun1/Module1_Mendengar/MengenalHuruf.jsx` | Shared A–Z letter lesson (T1 M1 topics 1.1–1.4 via `group` prop) |
 
 ### What Stays UNCHANGED
 
-- All existing game files — zero changes (wrapped at App.jsx level)
+- Reused game files are wrapped at App.jsx level (no routing edits inside them). Exception: `SebutFrasaBergambar.jsx` was redesigned 2026-06-11 (standardized header, no auto-TTS, KV/KVK phrases) — the upgrade applies in both BM KSSR and the AgeGroup-7 hub.
 - All `AgeGroup-*` home pages
 - The existing `"bm"` subject routing (speech-practice BMPage)
 - The existing PI layouts remain untouched
@@ -897,34 +951,83 @@ BM has its own shared components — the PI layout components are NOT used for n
 
 | Component | Source | Purpose |
 |-----------|--------|---------|
+| `BMHeader` | `BM/_shared/` | Reusable glassmorphism topbar: back button (label hidden ≤480px), centred title, optional `sectionLabel` (gradient decorative lines), optional `sticky` for quiz layouts |
 | `useModuleProgress` | `BM/_shared/` | `isTopicCompleted()`, `markTopicCompleted()`, `clearAllProgress()` |
 | `useBMQuiz` | `BM/_shared/` | Quiz state: weighted merge (70/30), preparePool, ansRef, scoring |
-| `BMLessonQuizLayout` | `BM/_shared/` | Duolingo-style layout (explanation card + quiz section) |
+| `BMLessonQuizLayout` | `BM/_shared/` | Quiz page layout — renders each question's own text, optional big `emoji` prompt **or** `audioText` (auto-play + replay button), confetti burst on correct, star result screen |
 | `Celebration` | `PI/_shared/` | Confetti overlay (shared across subjects) |
 | `shuffle` | `PI/_shared/utils.js` | Fisher-Yates shuffle (shared across subjects) |
 
 ### BMLessonQuizLayout Usage
 
+Lesson pages are two-page components: a self-contained learn page plus the
+shared quiz layout. Current API (see `MengenalHuruf.jsx` / `SintaksisAyat.jsx`):
+
 ```jsx
-export default function MendengarMenyebut({ onBack, language = 'bm', topicComplete }) {
-  const explanation = "Mari belajar mengenal dan menyebut bunyi...";
-  const currentQs = BM_QUESTIONS["1-1-1-mendengar-menyebut"];
-  const reviewQs = []; // first topic — no review
-  const quiz = useBMQuiz(currentQs, reviewQs, 15);
+export default function MengenalHuruf({ group = 'vokal', onBack, language = 'bm', topicComplete }) {
+  const cfg = GROUPS[group];                       // letters, titles, topicId
+  const quiz = useBMQuiz(BM_QUESTIONS[cfg.topicId] || [], [], 15);
+  const [page, setPage] = useState('learn');
+
+  const handleBack = () => { topicComplete?.(cfg.topicId); onBack?.(); };
+
+  if (page === 'learn')
+    return <LetterLearnPage cfg={cfg} onBack={handleBack}
+             onStartQuiz={() => setPage('quiz')} language={language} />;
 
   return (
     <BMLessonQuizLayout
-      onBack={() => { topicComplete?.("1-1-mendengar-menyebut"); onBack(); }}
-      topicTitle="Mendengar dan Menyebut"
-      explanation={explanation}
-      explanationAudio="Mari belajar mengenal dan menyebut bunyi..."
+      onBack={handleBack}
+      topicTitle={language === 'bm' ? cfg.title.bm : cfg.title.en}
       quiz={quiz}
       language={language}
-      accentColor="#3B82F6"
+      accentColor="#E8821A"
+      onShowLearn={() => setPage('learn')}   // "Belajar Dulu" button on quiz start screen
     />
   );
 }
 ```
+
+Question objects support three prompt modes (set per question in `BM_QUESTIONS`):
+`{ question, answer, options }` text-only · `+ emoji` big visual prompt ·
+`+ audioText` TTS auto-play with replay button.
+
+### BMHeader Usage
+
+All BM topic pages use the shared `BMHeader` instead of inline per-prefix topbars.
+Imported from `_shared/BMHeader.jsx`:
+
+```jsx
+import BMHeader from '../../_shared/BMHeader';
+```
+
+Props:
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `onBack` | `function` | ✅ | Click handler for the back button |
+| `language` | `'bm' \| 'en'` | ✅ | Controls "Kembali" / "Back" label |
+| `title` | `string` | ✅ | Centred heading text (truncated with ellipsis) |
+| `sectionLabel` | `string` | ❌ | If set, renders a decorative sub-label with gradient lines (e.g. "Pilih Huruf untuk Belajar") |
+| `sticky` | `boolean` | ❌ | If true, topbar uses `position: sticky; top: 0; z-index: 40` (used by `BMLessonQuizLayout`) |
+
+Example — learn page (single row):
+```jsx
+<BMHeader onBack={onBack} language={language} title="Mengenal Huruf Vokal" />
+```
+
+Example — letter picker with section label:
+```jsx
+<BMHeader onBack={onBack} language={language} title="Suku Kata"
+  sectionLabel={language === 'bm' ? 'Pilih Huruf untuk Belajar' : 'Select a Letter to Learn'} />
+```
+
+Example — quiz page (sticky):
+```jsx
+<BMHeader onBack={onBack} language={language} title={topicTitle} sticky />
+```
+
+The component injects its own CSS via an embedded `<style>` tag — no external stylesheet needed.
 
 ### ProgressWrapper Pattern (for reused games)
 
@@ -939,20 +1042,22 @@ function ProgressWrapper({ topicId, onBack, children }) {
 Topic pages are lazy-imported in App.jsx:
 
 ```jsx
-const MendengarMenyebut = lazy(() => import("./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/MendengarMenyebut"));
+const MengenalHuruf = lazy(() => import("./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/MengenalHuruf"));
 ```
 
 ---
 
 ## 12. Module Colour System
 
-| Module | Name | Light | Mid | Dark | Accent | Card Gradient |
-|--------|------|-------|-----|------|--------|---------------|
-| 1 | Mendengar & Bertutur | `#DBEAFE` | `#60A5FA` | `#1D4ED8` | `#3B82F6` | Blue |
-| 2 | Membaca | `#D1FAE5` | `#34D399` | `#047857` | `#10B981` | Green |
-| 3 | Menulis | `#EDE9FE` | `#A78BFA` | `#5B21B6` | `#8B5CF6` | Purple |
-| 4 | Seni Bahasa | `#FCE7F3` | `#F472B6` | `#9D174D` | `#EC4899` | Pink |
-| 5 | Tatabahasa | `#FEF3C7` | `#FBBF24` | `#B45309` | `#F59E0B` | Amber |
+Implemented module themes (`M{N}_THEME` in `_shared/ModuleData.js`):
+
+| Module | Name (T1) | Accent `c` | Dark `cd` | Card Gradient |
+|--------|-----------|-----------|-----------|---------------|
+| 1 | Huruf Vokal & Frasa Bergambar | `#E8821A` | `#A34F0A` | Orange |
+| 2 | Membaca | `#1E7AC9` | `#0E4A7E` | Blue |
+| 3 | Menulis | `#7A4FD0` | `#3F2A86` | Purple |
+| 4 | Seni Bahasa | `#E8568A` | `#A81E59` | Pink |
+| 5 | Tatabahasa | `#159E96` | `#0B5E5A` | Teal |
 
 Per-year theme for homepage:
 
@@ -962,29 +1067,27 @@ Per-year theme for homepage:
 | Tahun 2 | Amber | `#F59E0B` |
 | Tahun 3 | Rose | `#E11D48` |
 
-Each module theme object:
+Each module theme object (actual shape in `ModuleData.js`):
 
 ```js
-const THEME = {
-  pageGradient: "linear-gradient(180deg,#DBEAFE 0%,#60A5FA 50%,#1D4ED8 100%)",
-  dark: "#1D4ED8",
-  accent: "#3B82F6",
-  stageGradient: "radial-gradient(ellipse at 50% 32%,#DBEAFE 0%,#60A5FA 55%,#1D4ED8 100%)",
-  pillGradient: "linear-gradient(180deg,#3B82F6,#1D4ED8)",
+const M1_THEME = {
+  c: '#E8821A', cd: '#A34F0A',
+  stage: 'radial-gradient(ellipse at 50% 34%,#FEE9C8 0%,#F5B76A 55%,#E8821A 100%)',
+  background: 'radial-gradient(ellipse at top,#FEF4E6,#FAE0BB)',
 };
 ```
 
 ### Theme Usage in BMLessonQuizLayout
 
-Each topic page passes `accentColor` matching the module colour:
+Each topic page passes `accentColor` matching the module's theme `c`:
 
 | Module | Color Code | Value |
 |--------|-----------|-------|
-| M1 — Mendengar & Bertutur | `accentColor` | `#3B82F6` |
-| M2 — Membaca | `accentColor` | `#10B981` |
-| M3 — Menulis | `accentColor` | `#8B5CF6` |
-| M4 — Seni Bahasa | `accentColor` | `#EC4899` |
-| M5 — Tatabahasa | `accentColor` | `#F59E0B` |
+| M1 — Huruf Vokal & Frasa Bergambar | `accentColor` | `#E8821A` |
+| M2 — Membaca | `accentColor` | `#1E7AC9` |
+| M3 — Menulis | `accentColor` | `#7A4FD0` |
+| M4 — Seni Bahasa | `accentColor` | `#E8568A` |
+| M5 — Tatabahasa | `accentColor` | `#159E96` |
 
 The accent color drives the quiz UI (button gradients, borders, progress bar) via CSS custom properties injected by `<style>` in `BMLessonQuizLayout`.
 
@@ -1027,27 +1130,28 @@ src/components/BahasaMelayuPage/
 |   +-- BMJourneySvgs.jsx
 |   +-- ModuleData.js                 (+ BM_QUESTIONS bank)
 |   +-- BMModuleHubLayout.jsx         (progress indicators)
+|   +-- BMHeader.jsx                  ★ NEW — reusable topbar
 |   +-- BMLessonQuizLayout.jsx        ★ NEW — Duolingo-style
 |   +-- useBMQuiz.js                  ★ NEW — quiz hook
 |   +-- useModuleProgress.js          ★ NEW — progress persistence
 +-- Tahun1/
 |   +-- Module1_Mendengar/
-|   |   +-- MendengarMenyebut.jsx    ★ First topic (building)
-|   |   +-- BertuturMaklumat.jsx     (future — migrated)
+|   |   +-- MengenalHuruf.jsx        ★ 1.1–1.4 A–Z letter journey (group prop)
 |   +-- Module2_Membaca/
-|   |   +-- MembacaMekanis.jsx       (future)
-|   |   +-- AsasMembaca.jsx          (future — migrated)
+|   |   +-- MembacaMekanis.jsx       ★ 2.2
 |   +-- Module3_Menulis/
-|   |   +-- AsasMenulis.jsx          (future)
-|   |   +-- BinaAyat.jsx             (future — migrated)
+|   |   +-- AsasMenulis.jsx          ★ 3.1 (tracing canvas)
+|   |   +-- MencatatMaklumat.jsx     ★ 3.3
 |   +-- Module4_SeniBahasa/
-|   |   +-- KeindahanBahasa.jsx      (future)
+|   |   +-- KeindahanBahasa.jsx      ★ 4.1
 |   +-- Module5_Tatabahasa/
-|       +-- MorfologiGolonganKata.jsx (future — migrated)
-|       +-- SintaksisAyatTunggal.jsx  (future — migrated)
-+-- Tahun2/                            (same Module1-5 pattern)
-+-- Tahun3/                            (same Module1-5 pattern)
+|       +-- SintaksisAyat.jsx        ★ 5.2
++-- Tahun2/                            (same Module1-5 pattern, skeleton)
++-- Tahun3/                            (same Module1-5 pattern, skeleton)
 ```
+
+> Reused T1 games (SebutFrasaBergambar, SukuKataBinaPerkataan, KefahamanBacaan,
+> SentenceBuilder, JenisKata) still live in `AgeGroup-7/` until Phase 6.
 
 > **Key difference from PI:** BM no longer uses per-module hub files (`M1Module.jsx`, etc.). All 15 modules are data-driven from `_shared/ModuleData.js` and rendered by `BMModuleHubLayout`. New BM-specific shared hooks and layout (`useBMQuiz`, `useModuleProgress`, `BMLessonQuizLayout`) provide the Duolingo-style learning experience.
 
@@ -1063,21 +1167,22 @@ src/components/BahasaMelayuPage/
 |   +-- ModuleData.js
 |   +-- BMModuleHubLayout.jsx
 +-- Tahun1/
-|   +-- AsasMembaca.jsx               <- from AgeGroup-7/
-|   |   +-- MembacaMekanis.jsx            <- New
-|   |   +-- MembacaMenaakul.jsx           <- from AgeGroup-7/
+|   +-- Module1_Mendengar/
+|   |   +-- MengenalHuruf.jsx             <- built (1.1–1.4)
+|   |   +-- BacaFrasaBergambar.jsx        <- from AgeGroup-7/ (SebutFrasaBergambar)
+|   +-- Module2_Membaca/
+|   |   +-- AsasMembaca.jsx               <- from AgeGroup-7/ (SukuKataBinaPerkataan)
+|   |   +-- MembacaMekanis.jsx            <- built
+|   |   +-- MembacaMenaakul.jsx           <- from AgeGroup-7/ (KefahamanBacaan)
 |   +-- Module3_Menulis/
-|   |   +-- M3Module.jsx
-|   |   +-- AsasMenulis.jsx               <- New (tracing canvas)
-|   |   +-- BinaAyat.jsx                  <- from AgeGroup-7/
-|   |   +-- MencatatMaklumat.jsx          <- New
+|   |   +-- AsasMenulis.jsx               <- built (tracing canvas)
+|   |   +-- BinaAyat.jsx                  <- from AgeGroup-7/ (SentenceBuilder)
+|   |   +-- MencatatMaklumat.jsx          <- built
 |   +-- Module4_SeniBahasa/
-|   |   +-- M4Module.jsx
-|   |   +-- KeindahanBahasa.jsx           <- New
+|   |   +-- KeindahanBahasa.jsx           <- built
 |   +-- Module5_Tatabahasa/
-|       +-- M5Module.jsx
-|       +-- MorfologiGolonganKata.jsx     <- from AgeGroup-7/
-|       +-- SintaksisAyatTunggal.jsx      <- from AgeGroup-7/
+|       +-- MorfologiGolonganKata.jsx     <- from AgeGroup-7/ (JenisKata)
+|       +-- SintaksisAyat.jsx             <- built
 +-- Tahun2/
 |   +-- Module1_Mendengar/
 |   |   +-- M1Module.jsx
@@ -1143,4 +1248,4 @@ src/components/BahasaMelayuPage/
 
 > **Build Order:** Phase 0 -> Phase 1 -> Phase 2 -> Phase 2B (hooks + layout) -> Phase 3 (T1 content) -> Phase 4 (T2) -> Phase 5 (T3) -> Phase 6 (migration)
 > Phase 2B establishes the shared infrastructure (useModuleProgress, useBMQuiz, BMLessonQuizLayout, BM_QUESTIONS). Then Phase 3+ builds topic pages using this foundation.
-> Start with T1 as proof of concept (5 new pages + 6 reused games).
+> **Status (2026-06-11): Phases 0–5 complete!** All 41 topics across 3 years done (T1=14, T2=14, T3=13). Next: Phase 6 (file migration).

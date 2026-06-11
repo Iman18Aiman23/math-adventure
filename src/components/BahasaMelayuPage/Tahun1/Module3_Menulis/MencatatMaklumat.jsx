@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import useBMQuiz from '../../_shared/useBMQuiz';
+import BMHeader from '../../_shared/BMHeader';
 import BMLessonQuizLayout from '../../_shared/BMLessonQuizLayout';
 import { BM_QUESTIONS } from '../../_shared/ModuleData';
 
@@ -65,27 +66,7 @@ function MencatatLearnPage({ onBack, onStartQuiz, topicTitle, language }) {
           font-family: 'Fredoka', system-ui, sans-serif;
           display: flex; flex-direction: column;
         }
-        .mmt-learn-topbar {
-          flex-shrink: 0; position: relative;
-          display: flex; align-items: center; justify-content: center;
-          padding: 10px 16px; min-height: 44px;
-          background: rgba(255,255,255,.88);
-          backdrop-filter: blur(10px);
-          border-bottom: 1px solid rgba(0,0,0,.06);
-        }
-        .mmt-learn-back {
-          position: absolute; left: 12px;
-          display: flex; align-items: center; gap: 4px;
-          font-family: 'Baloo 2', sans-serif; font-weight: 700;
-          font-size: 13px; color: #64748B;
-          background: none; border: none; cursor: pointer; padding: 6px 10px;
-          border-radius: 10px;
-        }
-        .mmt-learn-back:hover { background: #F1F5F9; }
-        .mmt-learn-title {
-          font-family: 'Baloo 2', sans-serif; font-weight: 800;
-          font-size: 14px; color: #1E293B;
-        }
+
         .mmt-learn-body {
           flex: 1; min-height: 0;
           display: flex; flex-direction: column;
@@ -206,15 +187,7 @@ function MencatatLearnPage({ onBack, onStartQuiz, topicTitle, language }) {
       `}</style>
 
       <div className="mmt-learn-root">
-        <div className="mmt-learn-topbar">
-          <button className="mmt-learn-back" onClick={onBack}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-            {language === 'bm' ? 'Kembali' : 'Back'}
-          </button>
-          <span className="mmt-learn-title">{topicTitle}</span>
-        </div>
+        <BMHeader onBack={onBack} language={language} title={topicTitle} />
 
         <div className="mmt-learn-body">
           <div className="mmt-learn-heading">
@@ -273,7 +246,7 @@ function MencatatLearnPage({ onBack, onStartQuiz, topicTitle, language }) {
   );
 }
 
-export default function MencatatMaklumat({ onBack, language = 'bm', topicComplete }) {
+export default function MencatatMaklumat({ onBack, language = 'bm', topicComplete, onNextTopic }) {
   const [page, setPage] = useState('learn');
 
   const currentQs = BM_QUESTIONS[TOPIC_ID] || [];
@@ -284,7 +257,6 @@ export default function MencatatMaklumat({ onBack, language = 'bm', topicComplet
   const topicTitle = language === 'bm' ? 'Mencatat Maklumat' : 'Recording Information';
 
   const handleBack = () => {
-    topicComplete?.(TOPIC_ID);
     onBack?.();
   };
 
@@ -301,7 +273,7 @@ export default function MencatatMaklumat({ onBack, language = 'bm', topicComplet
 
   return (
     <BMLessonQuizLayout
-      onBack={handleBack}
+      onBack={handleBack} topicId={TOPIC_ID} topicComplete={topicComplete} onNextTopic={onNextTopic}
       topicTitle={topicTitle}
       quiz={quiz}
       language={language}

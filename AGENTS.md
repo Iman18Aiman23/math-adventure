@@ -374,3 +374,37 @@ confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
 ```
 
 No ribbon banners, no slide-down text banners — the confetti burst IS the celebration.
+
+## BMHeader Reusable Topbar (Bahasa Melayu)
+
+All BM topic pages use `BMHeader` from `_shared/BMHeader.jsx` instead of inline per-prefix topbars.
+
+```jsx
+import BMHeader from '../../_shared/BMHeader';
+```
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `onBack` | `function` | ✅ | Click handler for back button |
+| `language` | `'bm' \| 'en'` | ✅ | Controls "Kembali" / "Back" label |
+| `title` | `string` | ✅ | Centred heading text (truncated with ellipsis) |
+| `sectionLabel` | `string` | ❌ | Decorative sub-label with gradient lines (e.g. "Pilih Huruf untuk Belajar") |
+| `sticky` | `boolean` | ❌ | `position: sticky; top: 0; z-index: 40` for quiz layouts |
+
+**Pattern — learn page:**
+```jsx
+<BMHeader onBack={onBack} language={language} title={title} />
+```
+
+**Pattern — letter picker with section label:**
+```jsx
+<BMHeader onBack={onBack} language={language} title={title}
+  sectionLabel={language === 'bm' ? 'Pilih Huruf untuk Belajar' : 'Select a Letter to Learn'} />
+```
+
+**Pattern — quiz page (sticky):**
+```jsx
+<BMHeader onBack={onBack} language={language} title={topicTitle} sticky />
+```
+
+**Important:** If you replace `BackButton` imports with `BMHeader`, ensure all JSX references to `<BackButton>` are also replaced — failing to do so causes a white screen (ReferenceError).

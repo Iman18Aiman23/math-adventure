@@ -5,7 +5,7 @@
 
 const bm_kv_complete = [
   // --- VOKAL AEIOU SERIES ---
-  { id: 'v_a', kv: 'a', icon: '🦆', ms: { word: 'ayam', prompt: 'Sebut: ayam' }, en: { word: 'chicken', prompt: 'Say: chicken' }, jawi: { word: 'ايم', prompt: 'Sebut: ayam' } },
+  { id: 'v_a', kv: 'a', icon: '🐔', ms: { word: 'ayam', prompt: 'Sebut: ayam' }, en: { word: 'chicken', prompt: 'Say: chicken' }, jawi: { word: 'ايم', prompt: 'Sebut: ayam' } },
   { id: 'v_e_t', kv: 'e', icon: '🍏', ms: { word: 'epal', prompt: 'Sebut: epal' }, en: { word: 'apple', prompt: 'Say: apple' }, jawi: { word: 'ايڤل', prompt: 'Sebut: epal' } },
   { id: 'v_i', kv: 'i', icon: '🐟', ms: { word: 'ikan', prompt: 'Sebut: ikan' }, en: { word: 'fish', prompt: 'Say: fish' }, jawi: { word: 'ايکن', prompt: 'Sebut: ikan' } },
   { id: 'v_o', kv: 'o', icon: '🍊', ms: { word: 'oren', prompt: 'Sebut: oren' }, en: { word: 'orange', prompt: 'Say: orange' }, jawi: { word: 'اورين', prompt: 'Sebut: oren' } },
@@ -25,7 +25,7 @@ const bm_kv_complete = [
   { id: 'kv_ci', kv: 'ci', icon: '🌶️', ms: { word: 'cili', prompt: 'Sebut: cili' }, en: { word: 'chilli', prompt: 'Say: chilli' }, jawi: { word: 'چيلي', prompt: 'Sebut: cili' } },
   { id: 'kv_cu', kv: 'cu', icon: '🧼', ms: { word: 'cuci', prompt: 'Sebut: cuci' }, en: { word: 'wash', prompt: 'Say: wash' }, jawi: { word: 'چوچي', prompt: 'Sebut: cuci' } },
   { id: 'kv_ce_t', kv: 'ce', icon: '🫖', ms: { word: 'cerek', prompt: 'Sebut: cerek' }, en: { word: 'kettle', prompt: 'Say: kettle' }, jawi: { word: 'چيريک', prompt: 'Sebut: cerek' } },
-  { id: 'kv_co', kv: 'co', icon: '🍫', ms: { word: 'coklat', prompt: 'Sebut: coklat' }, en: { word: 'chocolate', prompt: 'Say: chocolate' }, jawi: { word: 'چوکلت', prompt: 'Sebut: coklat' } },
+  { id: 'kv_co', kv: 'co', icon: '🥰', ms: { word: 'comel', prompt: 'Sebut: comel' }, en: { word: 'cute', prompt: 'Say: cute' }, jawi: { word: 'چوميل', prompt: 'Sebut: comel' } },
   { id: 'kv_ce_p', kv: 'ce', icon: '⚡', ms: { word: 'cepat', prompt: 'Sebut: cepat' }, en: { word: 'fast', prompt: 'Say: fast' }, jawi: { word: 'چڤت', prompt: 'Sebut: cepat' } },
 
   // --- D SERIES ---
@@ -39,10 +39,9 @@ const bm_kv_complete = [
   // --- F SERIES ---
   { id: 'kv_fa', kv: 'fa', icon: '💡', ms: { word: 'faham', prompt: 'Sebut: faham' }, en: { word: 'understand', prompt: 'Say: understand' }, jawi: { word: 'فهيم', prompt: 'Sebut: faham' } },
   { id: 'kv_fi', kv: 'fi', icon: '🤔', ms: { word: 'fikir', prompt: 'Sebut: fikir' }, en: { word: 'think', prompt: 'Say: think' }, jawi: { word: 'فيکير', prompt: 'Sebut: fikir' } },
-  { id: 'kv_fu', kv: 'fu', icon: '🖊️', ms: { word: 'fulut', prompt: 'Sebut: fulut' }, en: { word: 'flute', prompt: 'Say: flute' }, jawi: { word: 'فولوت', prompt: 'Sebut: fulut' } },
+  { id: 'kv_fu', kv: 'fu', icon: '⚽', ms: { word: 'futsal', prompt: 'Sebut: futsal' }, en: { word: 'futsal', prompt: 'Say: futsal' }, jawi: { word: 'فوتسل', prompt: 'Sebut: futsal' } },
   { id: 'kv_fe_t', kv: 'fe', icon: '⛴️', ms: { word: 'feri', prompt: 'Sebut: feri' }, en: { word: 'ferry', prompt: 'Say: ferry' }, jawi: { word: 'فيري', prompt: 'Sebut: feri' } },
   { id: 'kv_fo', kv: 'fo', icon: '📷', ms: { word: 'foto', prompt: 'Sebut: foto' }, en: { word: 'photo', prompt: 'Say: photo' }, jawi: { word: 'فوتو', prompt: 'Sebut: foto' } },
-  { id: 'kv_fe_p', kv: 'fe', icon: '🏢', ms: { word: 'federal', prompt: 'Sebut: federal' }, en: { word: 'federal', prompt: 'Say: federal' }, jawi: { word: 'فدرل', prompt: 'Sebut: federal' } },
 
   // --- G SERIES ---
   { id: 'kv_ga', kv: 'ga', icon: '🐘', ms: { word: 'gajah', prompt: 'Sebut: gajah' }, en: { word: 'elephant', prompt: 'Say: elephant' }, jawi: { word: 'ݢاجه', prompt: 'Sebut: gajah' } },
@@ -54,7 +53,7 @@ const bm_kv_complete = [
 
   // --- H SERIES ---
   { id: 'kv_ha', kv: 'ha', icon: '📅', ms: { word: 'hari', prompt: 'Sebut: hari' }, en: { word: 'day', prompt: 'Say: day' }, jawi: { word: 'هاري', prompt: 'Sebut: hari' } },
-  { id: 'kv_hi', kv: 'hi', icon: '👃', ms: { word: 'hidung', prompt: 'Sebut: hidung' }, en: { word: 'nose', prompt: 'Say: nose' }, jawi: { word: 'هيدوڠ', prompt: 'Sebut: hidung' } },
+  { id: 'kv_hi', kv: 'hi', icon: '⚫', ms: { word: 'hitam', prompt: 'Sebut: hitam' }, en: { word: 'black', prompt: 'Say: black' }, jawi: { word: 'هيتم', prompt: 'Sebut: hitam' } },
   { id: 'kv_hu', kv: 'hu', icon: '🌧️', ms: { word: 'hujan', prompt: 'Sebut: hujan' }, en: { word: 'rain', prompt: 'Say: rain' }, jawi: { word: 'هوجن', prompt: 'Sebut: hujan' } },
   { id: 'kv_he_t', kv: 'he', icon: '📢', ms: { word: 'hebah', prompt: 'Sebut: hebah' }, en: { word: 'announce', prompt: 'Say: announce' }, jawi: { word: 'هيباه', prompt: 'Sebut: hebah' } },
   { id: 'kv_ho', kv: 'ho', icon: '🏨', ms: { word: 'hotel', prompt: 'Sebut: hotel' }, en: { word: 'hotel', prompt: 'Say: hotel' }, jawi: { word: 'هوتيل', prompt: 'Sebut: hotel' } },
@@ -62,8 +61,8 @@ const bm_kv_complete = [
 
   // --- J SERIES ---
   { id: 'kv_ja', kv: 'ja', icon: '☝️', ms: { word: 'jari', prompt: 'Sebut: jari' }, en: { word: 'finger', prompt: 'Say: finger' }, jawi: { word: 'جاري', prompt: 'Sebut: jari' } },
-  { id: 'kv_ji', kv: 'ji', icon: '👻', ms: { word: 'jiwa', prompt: 'Sebut: jiwa' }, en: { word: 'soul', prompt: 'Say: soul' }, jawi: { word: 'جيوا', prompt: 'Sebut: jiwa' } },
-  { id: 'kv_ju', kv: 'ju', icon: '👕', ms: { word: 'baju', prompt: 'Sebut: baju' }, en: { word: 'shirt', prompt: 'Say: shirt' }, jawi: { word: 'باجو', prompt: 'Sebut: baju' } },
+  { id: 'kv_ji', kv: 'ji', icon: '🏘️', ms: { word: 'jiran', prompt: 'Sebut: jiran' }, en: { word: 'neighbour', prompt: 'Say: neighbour' }, jawi: { word: 'جيران', prompt: 'Sebut: jiran' } },
+  { id: 'kv_ju', kv: 'ju', icon: '🧃', ms: { word: 'jus', prompt: 'Sebut: jus' }, en: { word: 'juice', prompt: 'Say: juice' }, jawi: { word: 'جوس', prompt: 'Sebut: jus' } },
   { id: 'kv_je_t', kv: 'je', icon: '🛩️', ms: { word: 'jet', prompt: 'Sebut: jet' }, en: { word: 'jet', prompt: 'Say: jet' }, jawi: { word: 'جيت', prompt: 'Sebut: jet' } },
   { id: 'kv_jo', kv: 'jo', icon: '💃', ms: { word: 'joget', prompt: 'Sebut: joget' }, en: { word: 'dance', prompt: 'Say: dance' }, jawi: { word: 'جوݢيت', prompt: 'Sebut: joget' } },
   { id: 'kv_je_p', kv: 'je', icon: '🔍', ms: { word: 'jelas', prompt: 'Sebut: jelas' }, en: { word: 'clear', prompt: 'Say: clear' }, jawi: { word: 'جلس', prompt: 'Sebut: jelas' } },
@@ -94,23 +93,23 @@ const bm_kv_complete = [
 
   // --- N SERIES ---
   { id: 'kv_na', kv: 'na', icon: '🍚', ms: { word: 'nasi', prompt: 'Sebut: nasi' }, en: { word: 'rice', prompt: 'Say: rice' }, jawi: { word: 'ناسي', prompt: 'Sebut: nasi' } },
-  { id: 'kv_ni', kv: 'ni', icon: '📍', ms: { word: 'ini', prompt: 'Sebut: ini' }, en: { word: 'this', prompt: 'Say: this' }, jawi: { word: 'اين', prompt: 'Sebut: ini' } },
+  { id: 'kv_ni', kv: 'ni', icon: '📄', ms: { word: 'nipis', prompt: 'Sebut: nipis' }, en: { word: 'thin', prompt: 'Say: thin' }, jawi: { word: 'نيڤيس', prompt: 'Sebut: nipis' } },
   { id: 'kv_nu', kv: 'nu', icon: '🦜', ms: { word: 'nuri', prompt: 'Sebut: nuri' }, en: { word: 'parrot', prompt: 'Say: parrot' }, jawi: { word: 'نوري', prompt: 'Sebut: nuri' } },
   { id: 'kv_ne_t', kv: 'ne', icon: '👵', ms: { word: 'nenek', prompt: 'Sebut: nenek' }, en: { word: 'grandma', prompt: 'Say: grandma' }, jawi: { word: 'نينيک', prompt: 'Sebut: nenek' } },
-  { id: 'kv_no', kv: 'no', icon: '🔢', ms: { word: 'nombor', prompt: 'Sebut: nombor' }, en: { word: 'number', prompt: 'Say: number' }, jawi: { word: 'نومبور', prompt: 'Sebut: nombor' } },
+  { id: 'kv_no', kv: 'no', icon: '📝', ms: { word: 'nota', prompt: 'Sebut: nota' }, en: { word: 'note', prompt: 'Say: note' }, jawi: { word: 'نوتا', prompt: 'Sebut: nota' } },
   { id: 'kv_ne_p', kv: 'ne', icon: '🇲🇾', ms: { word: 'negeri', prompt: 'Sebut: negeri' }, en: { word: 'state', prompt: 'Say: state' }, jawi: { word: 'نݢري', prompt: 'Sebut: negeri' } },
 
   // --- P SERIES ---
   { id: 'kv_pa', kv: 'pa', icon: '🔨', ms: { word: 'paku', prompt: 'Sebut: paku' }, en: { word: 'nail', prompt: 'Say: nail' }, jawi: { word: 'ڤاکو', prompt: 'Sebut: paku' } },
   { id: 'kv_pi', kv: 'pi', icon: '😊', ms: { word: 'pipi', prompt: 'Sebut: pipi' }, en: { word: 'cheek', prompt: 'Say: cheek' }, jawi: { word: 'ڤيڤي', prompt: 'Sebut: pipi' } },
-  { id: 'kv_pu', kv: 'pu', icon: '🏝️', ms: { word: 'pulau', prompt: 'Sebut: pulau' }, en: { word: 'island', prompt: 'Say: island' }, jawi: { word: 'ڤولاو', prompt: 'Sebut: pulau' } },
+  { id: 'kv_pu', kv: 'pu', icon: '👸', ms: { word: 'puteri', prompt: 'Sebut: puteri' }, en: { word: 'princess', prompt: 'Say: princess' }, jawi: { word: 'ڤوتري', prompt: 'Sebut: puteri' } },
   { id: 'kv_pe_t', kv: 'pe', icon: '🗺️', ms: { word: 'peta', prompt: 'Sebut: peta' }, en: { word: 'map', prompt: 'Say: map' }, jawi: { word: 'ڤيتا', prompt: 'Sebut: peta' } },
   { id: 'kv_po', kv: 'po', icon: '👖', ms: { word: 'poket', prompt: 'Sebut: poket' }, en: { word: 'pocket', prompt: 'Say: pocket' }, jawi: { word: 'ڤوکيت', prompt: 'Sebut: poket' } },
   { id: 'kv_pe_p', kv: 'pe', icon: '🤰', ms: { word: 'perut', prompt: 'Sebut: perut' }, en: { word: 'stomach', prompt: 'Say: stomach' }, jawi: { word: 'ڤروت', prompt: 'Sebut: perut' } },
 
   // --- R SERIES ---
   { id: 'kv_ra', kv: 'ra', icon: '👑', ms: { word: 'raja', prompt: 'Sebut: raja' }, en: { word: 'king', prompt: 'Say: king' }, jawi: { word: 'راجا', prompt: 'Sebut: raja' } },
-  { id: 'kv_ri', kv: 'ri', icon: '🎉', ms: { word: 'raya', prompt: 'Sebut: raya' }, en: { word: 'celebration', prompt: 'Say: celebration' }, jawi: { word: 'راي', prompt: 'Sebut: raya' } },
+  { id: 'kv_ri', kv: 'ri', icon: '🌪️', ms: { word: 'ribut', prompt: 'Sebut: ribut' }, en: { word: 'storm', prompt: 'Say: storm' }, jawi: { word: 'ريبوت', prompt: 'Sebut: ribut' } },
   { id: 'kv_ru', kv: 'ru', icon: '🏠', ms: { word: 'rumah', prompt: 'Sebut: rumah' }, en: { word: 'house', prompt: 'Say: house' }, jawi: { word: 'رومه', prompt: 'Sebut: rumah' } },
   { id: 'kv_re_t', kv: 're', icon: '🎀', ms: { word: 'reben', prompt: 'Sebut: reben' }, en: { word: 'ribbon', prompt: 'Say: ribbon' }, jawi: { word: 'ريبين', prompt: 'Sebut: reben' } },
   { id: 'kv_ro', kv: 'ro', icon: '🍞', ms: { word: 'roti', prompt: 'Sebut: roti' }, en: { word: 'bread', prompt: 'Say: bread' }, jawi: { word: 'روتي', prompt: 'Sebut: roti' } },
@@ -118,11 +117,11 @@ const bm_kv_complete = [
 
   // --- S SERIES ---
   { id: 'kv_sa', kv: 'sa', icon: '1️⃣', ms: { word: 'satu', prompt: 'Sebut: satu' }, en: { word: 'one', prompt: 'Say: one' }, jawi: { word: 'ساتو', prompt: 'Sebut: satu' } },
-  { id: 'kv_si', kv: 'si', icon: '🦁', ms: { word: 'singa', prompt: 'Sebut: singa' }, en: { word: 'lion', prompt: 'Say: lion' }, jawi: { word: 'سيڠا', prompt: 'Sebut: singa' } },
+  { id: 'kv_si', kv: 'si', icon: '🪮', ms: { word: 'sikat', prompt: 'Sebut: sikat' }, en: { word: 'comb', prompt: 'Say: comb' }, jawi: { word: 'سيکت', prompt: 'Sebut: sikat' } },
   { id: 'kv_su', kv: 'su', icon: '🥛', ms: { word: 'susu', prompt: 'Sebut: susu' }, en: { word: 'milk', prompt: 'Say: milk' }, jawi: { word: 'سوسو', prompt: 'Sebut: susu' } },
   { id: 'kv_se_t', kv: 'se', icon: '🔑', ms: { word: 'sewa', prompt: 'Sebut: sewa' }, en: { word: 'rent', prompt: 'Say: rent' }, jawi: { word: 'سيوا', prompt: 'Sebut: sewa' } },
   { id: 'kv_so', kv: 'so', icon: '🛋️', ms: { word: 'sofa', prompt: 'Sebut: sofa' }, en: { word: 'sofa', prompt: 'Say: sofa' }, jawi: { word: 'سوفا', prompt: 'Sebut: sofa' } },
-  { id: 'kv_se_p', kv: 'se', icon: '🚲', ms: { word: 'sepeda', prompt: 'Sebut: basikal' }, en: { word: 'bicycle', prompt: 'Say: bicycle' }, jawi: { word: 'باسيکل', prompt: 'Sebut: basikal' } },
+  { id: 'kv_se_p', kv: 'se', icon: '🏫', ms: { word: 'sekolah', prompt: 'Sebut: sekolah' }, en: { word: 'school', prompt: 'Say: school' }, jawi: { word: 'سکوله', prompt: 'Sebut: sekolah' } },
 
   // --- T SERIES ---
   { id: 'kv_ta', kv: 'ta', icon: '🪢', ms: { word: 'tali', prompt: 'Sebut: tali' }, en: { word: 'rope', prompt: 'Say: rope' }, jawi: { word: 'تالي', prompt: 'Sebut: tali' } },
@@ -135,29 +134,24 @@ const bm_kv_complete = [
   // --- V SERIES ---
   { id: 'kv_va', kv: 'va', icon: '🏺', ms: { word: 'vas', prompt: 'Sebut: vas' }, en: { word: 'vase', prompt: 'Say: vase' }, jawi: { word: 'ۏاس', prompt: 'Sebut: vas' } },
   { id: 'kv_vi', kv: 'vi', icon: '🎬', ms: { word: 'video', prompt: 'Sebut: video' }, en: { word: 'video', prompt: 'Say: video' }, jawi: { word: 'ۏيديو', prompt: 'Sebut: video' } },
-  { id: 'kv_vu', kv: 'vu', icon: '🌋', ms: { word: 'vulkan', prompt: 'Sebut: vulkan' }, en: { word: 'vulcan', prompt: 'Say: vulcan' }, jawi: { word: 'ۏولکن', prompt: 'Sebut: vulkan' } },
   { id: 'kv_ve_t', kv: 've', icon: '🩺', ms: { word: 'vet', prompt: 'Sebut: vet' }, en: { word: 'vet', prompt: 'Say: vet' }, jawi: { word: 'ۏيت', prompt: 'Sebut: vet' } },
   { id: 'kv_vo', kv: 'vo', icon: '🗳️', ms: { word: 'vokal', prompt: 'Sebut: vokal' }, en: { word: 'vocal', prompt: 'Say: vocal' }, jawi: { word: 'ۏوکل', prompt: 'Sebut: vokal' } },
   { id: 'kv_ve_p', kv: 've', icon: '📑', ms: { word: 'versi', prompt: 'Sebut: versi' }, en: { word: 'version', prompt: 'Say: version' }, jawi: { word: 'ۏرسي', prompt: 'Sebut: versi' } },
 
   // --- W SERIES ---
-  { id: 'kv_wa', kv: 'wa', icon: '💵', ms: { word: 'wang', prompt: 'Sebut: wang' }, en: { word: 'money', prompt: 'Say: money' }, jawi: { word: 'واڠ', prompt: 'Sebut: wang' } },
+  { id: 'kv_wa', kv: 'wa', icon: '🎨', ms: { word: 'warna', prompt: 'Sebut: warna' }, en: { word: 'colour', prompt: 'Say: colour' }, jawi: { word: 'ورنا', prompt: 'Sebut: warna' } },
   { id: 'kv_wi', kv: 'wi', icon: '🦸', ms: { word: 'wira', prompt: 'Sebut: wira' }, en: { word: 'hero', prompt: 'Say: hero' }, jawi: { word: 'ويرا', prompt: 'Sebut: wira' } },
   { id: 'kv_wu', kv: 'wu', icon: '⛲', ms: { word: 'wuduk', prompt: 'Sebut: wuduk' }, en: { word: 'ablution', prompt: 'Say: ablution' }, jawi: { word: 'وضوء', prompt: 'Sebut: wuduk' } },
   { id: 'kv_we_t', kv: 'we', icon: '🌐', ms: { word: 'web', prompt: 'Sebut: web' }, en: { word: 'web', prompt: 'Say: web' }, jawi: { word: 'ويب', prompt: 'Sebut: web' } },
   { id: 'kv_wo', kv: 'wo', icon: '🍳', ms: { word: 'wok', prompt: 'Sebut: wok' }, en: { word: 'wok', prompt: 'Say: wok' }, jawi: { word: 'ووق', prompt: 'Sebut: wok' } },
-  { id: 'kv_we_p', kv: 'we', icon: '👨‍🏭', ms: { word: 'weld', prompt: 'Sebut: weld' }, en: { word: 'weld', prompt: 'Say: weld' }, jawi: { word: 'ويلد', prompt: 'Sebut: weld' } },
 
   // --- Y SERIES ---
   { id: 'kv_ya', kv: 'ya', icon: '🧒', ms: { word: 'yatim', prompt: 'Sebut: yatim' }, en: { word: 'orphan', prompt: 'Say: orphan' }, jawi: { word: 'يتيم', prompt: 'Sebut: yatim' } },
-  { id: 'kv_yi', kv: 'yi', icon: '☯️', ms: { word: 'yin', prompt: 'Sebut: yin' }, en: { word: 'yin', prompt: 'Say: yin' }, jawi: { word: 'يين', prompt: 'Sebut: yin' } },
   { id: 'kv_yu', kv: 'yu', icon: '🦈', ms: { word: 'yu', prompt: 'Sebut: yu' }, en: { word: 'shark', prompt: 'Say: shark' }, jawi: { word: 'يو', prompt: 'Sebut: yu' } },
-  { id: 'kv_ye_t', kv: 'ye', icon: '💛', ms: { word: 'yellow', prompt: 'Sebut: yellow' }, en: { word: 'yellow', prompt: 'Say: yellow' }, jawi: { word: 'يلو', prompt: 'Sebut: yellow' } },
   { id: 'kv_yo', kv: 'yo', icon: '🪀', ms: { word: 'yoyo', prompt: 'Sebut: yoyo' }, en: { word: 'yoyo', prompt: 'Say: yoyo' }, jawi: { word: 'يويو', prompt: 'Sebut: yoyo' } },
-  { id: 'kv_ye_p', kv: 'ye', icon: '🍞', ms: { word: 'yis', prompt: 'Sebut: yis' }, en: { word: 'yeast', prompt: 'Say: yeast' }, jawi: { word: 'ييس', prompt: 'Sebut: yis' } },
 
   // --- Z SERIES ---
-  { id: 'kv_za', kv: 'za', icon: '🫒', ms: { word: 'zaitun', prompt: 'Sebut: zaitun' }, en: { word: 'olive', prompt: 'Say: olive' }, jawi: { word: 'زيتون', prompt: 'Sebut: zaitun' } },
+  { id: 'kv_za', kv: 'za', icon: '⏳', ms: { word: 'zaman', prompt: 'Sebut: zaman' }, en: { word: 'era', prompt: 'Say: era' }, jawi: { word: 'زمان', prompt: 'Sebut: zaman' } },
   { id: 'kv_zi', kv: 'zi', icon: '🤝', ms: { word: 'ziarah', prompt: 'Sebut: ziarah' }, en: { word: 'visit', prompt: 'Say: visit' }, jawi: { word: 'زياره', prompt: 'Sebut: ziarah' } },
   { id: 'kv_zu', kv: 'zu', icon: '🦁', ms: { word: 'zoo', prompt: 'Sebut: zoo' }, en: { word: 'zoo', prompt: 'Say: zoo' }, jawi: { word: 'زو', prompt: 'Sebut: zoo' } },
   { id: 'kv_ze_t', kv: 'ze', icon: '🦓', ms: { word: 'zebra', prompt: 'Sebut: zebra' }, en: { word: 'zebra', prompt: 'Say: zebra' }, jawi: { word: 'زيبرا', prompt: 'Sebut: zebra' } },

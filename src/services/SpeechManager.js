@@ -171,6 +171,7 @@ class SpeechManagerClass {
     const PREF_MS = [
       'Yasmin',                                     // Microsoft Malay (female)
       'Google Bahasa Melayu', 'Bahasa Melayu', 'Malay', 'ms-MY',
+      'Damayanti',                                  // iOS Indonesian (female) — closest to Malay on Apple devices
       'Google Bahasa Indonesia', 'Indonesian',
     ];
     const PREF_EN = [
@@ -188,7 +189,7 @@ class SpeechManagerClass {
     // Generic gender hints (applied on top of the named preferences above).
     const FEMALE_NAMES = ['yasmin', 'zira', 'samantha', 'karen', 'tessa', 'heather',
       'fiona', 'moira', 'serena', 'susan', 'hazel', 'catherine', 'aria', 'jenny',
-      'hoda', 'laila', 'dalia'];
+      'hoda', 'laila', 'dalia', 'damayanti'];
     const MALE_NAMES = ['osman', 'david', 'mark', 'daniel', 'rishi', 'aaron',
       'fred', 'arthur', 'oliver', 'guy', 'james'];
 
@@ -205,6 +206,9 @@ class SpeechManagerClass {
       let score = 0;
       if (v.lang === normalLang)           score += 100;
       else if (v.lang.startsWith(prefix))  score += 50;
+      // Indonesian fallback for Malay: id-ID pronounces Malay correctly,
+      // unlike the browser-default English voice used when no voice matches.
+      else if (prefix === 'ms' && v.lang.toLowerCase().startsWith('id')) score += 30;
       else return { voice: v, score: -1 };
 
       if (!v.localService) score += 10; // network/online voices sound better

@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { RefreshCw, SkipForward } from 'lucide-react';
-import SpeechManager from '../../services/SpeechManager';
+import BMHeader from '../../_shared/BMHeader';
+import SpeechManager from '../../../../services/SpeechManager';
 import confetti from 'canvas-confetti';
-import { playSound } from '../../utils/soundManager';
+import { playSound } from '../../../../utils/soundManager';
 
 // BM Tahun 1 — picture-anchored short-phrase READING (was: describe-from-emoji).
 // The phrase TEXT is shown under the picture; the child reads it aloud.
@@ -90,37 +91,7 @@ const STYLE = `
     font-family: 'Fredoka', system-ui, sans-serif;
     display: flex; flex-direction: column;
   }
-  .sfb-topbar {
-    flex-shrink: 0; position: relative; z-index: 1;
-    display: flex; align-items: center; gap: 4px;
-    padding: 10px 12px; min-height: 44px;
-    background: rgba(255,255,255,.88);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(0,0,0,.06);
-  }
-  .sfb-topbar::after { content: ''; flex: 0 1 88px; }
-  .sfb-back {
-    flex-shrink: 0;
-    display: flex; align-items: center; gap: 4px;
-    font-family: 'Baloo 2', sans-serif; font-weight: 700;
-    font-size: 13px; color: #64748B;
-    background: none; border: none; cursor: pointer; padding: 6px 10px;
-    border-radius: 10px;
-  }
-  @media (hover: hover) {
-    .sfb-back:hover { background: #F1F5F9; }
-  }
-  .sfb-title {
-    flex: 1; min-width: 0;
-    text-align: center;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    font-family: 'Baloo 2', sans-serif; font-weight: 800;
-    font-size: clamp(12px, 3.4vw, 14px); color: #1E293B;
-  }
-  @media (max-width: 480px) {
-    .sfb-back-label { display: none; }
-    .sfb-topbar::after { flex-basis: 42px; }
-  }
+
   .sfb-body {
     flex: 1; min-height: 0;
     display: flex; flex-direction: column; align-items: center;
@@ -289,22 +260,6 @@ const STYLE = `
   }
 `;
 
-function TopBar({ onBack, language }) {
-  return (
-    <div className="sfb-topbar">
-      <button className="sfb-back" onClick={onBack}>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M19 12H5M12 19l-7-7 7-7"/>
-        </svg>
-        <span className="sfb-back-label">{language === 'bm' ? 'Kembali' : 'Back'}</span>
-      </button>
-      <span className="sfb-title">
-        {language === 'bm' ? 'Baca Frasa Bergambar' : 'Read the Picture Phrase'}
-      </span>
-    </div>
-  );
-}
-
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
   const isMobile = SpeechManager.isMobile();
@@ -459,7 +414,7 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
       <>
         <style>{STYLE}</style>
         <div className="sfb-root">
-          <TopBar onBack={onBack} language={language} />
+          <BMHeader onBack={onBack} language={language} title={language === 'bm' ? 'Baca Frasa Bergambar' : 'Read the Picture Phrase'} />
           <div className="sfb-center">
             <div style={{ fontSize: 'clamp(56px, 12vh, 90px)', lineHeight: 1 }}>🖼️</div>
             <h2 style={{ fontFamily: "'Baloo 2', sans-serif", color: C.primary, fontSize: 'clamp(24px, 5vh, 36px)', fontWeight: 800, margin: 0 }}>
@@ -495,7 +450,7 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
       <>
         <style>{STYLE}</style>
         <div className="sfb-root">
-          <TopBar onBack={onBack} language={language} />
+          <BMHeader onBack={onBack} language={language} title={language === 'bm' ? 'Baca Frasa Bergambar' : 'Read the Picture Phrase'} />
           <div className="sfb-center">
             <div style={{ fontSize: '4rem' }}>🎤</div>
             <h2 style={{ fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: '1.2rem', color: '#333', margin: 0 }}>
@@ -516,7 +471,7 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
     <>
       <style>{STYLE}</style>
       <div className="sfb-root">
-        <TopBar onBack={onBack} language={language} />
+        <BMHeader onBack={onBack} language={language} title={language === 'bm' ? 'Baca Frasa Bergambar' : 'Read the Picture Phrase'} />
 
         <div className="sfb-body">
           {/* Stats row */}

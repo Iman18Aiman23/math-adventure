@@ -7,6 +7,10 @@ function stripPrefix(id) {
   return id ? id.replace(/^\d-/, '') : '';
 }
 
+// Serpentine path: centre → right → centre → left, so every consecutive
+// pair of nodes is the same horizontal distance apart.
+const SERPENTINE = [0, 1, 0, -1];
+
 export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, language }) {
   const modules = useMemo(() => getModulesForYear(year), [year]);
 
@@ -19,16 +23,14 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
     if (onSelectTopic) onSelectTopic(topicId);
   }, [onSelectTopic]);
 
-  const renderTopic = (topic, index, total) => {
+  const renderTopic = (topic, index) => {
     const isFirst = index === 0;
-    const xOffset = index % 2 === 1 ? '138px' : index % 2 === 0 && index > 0 ? '-138px' : '0px';
     const IconComp = topic.icon;
     const completed = isTopicCompleted(topic.id);
 
     return (
-      <div key={topic.id} className="step" style={{ '--x': xOffset }}>
+      <div key={topic.id} className="step" style={{ '--dir': SERPENTINE[index % 4] }}>
         {isFirst && <div className="start-bubble">MULA<i></i></div>}
-        {completed && <div className="completed-badge">✓</div>}
         <button
           type="button"
           className={`node-btn${topic.disabled ? ' node-disabled' : ''}${completed ? ' node-done' : ''}`}
@@ -36,6 +38,7 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
           onClick={() => !topic.disabled && handleTopicClick(topic.id)}
           disabled={topic.disabled}
         >
+          {completed && <span className="completed-badge">✓</span>}
           <span className="node-ico">
             {IconComp ? <IconComp /> : null}
           </span>
@@ -78,9 +81,9 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
           </div>
 
           <div className="trail">
-            {mod.topics.map((topic, i) => renderTopic(topic, i, totalTopics))}
+            {mod.topics.map((topic, i) => renderTopic(topic, i))}
 
-            <div className="step is-goal" style={{ '--x': '0px' }}>
+            <div className="step is-goal">
               <div className={`trophy-wrap${doneCount === totalTopics && totalTopics > 0 ? ' trophy-all-done' : ''}`}>
                 <button type="button" className="node-btn node-goal" aria-label={language === 'bm' ? 'Tamat Modul' : 'End Module'}>
                   <span className="node-ico"><TrophyIcon /></span>
@@ -127,36 +130,44 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
           display:flex;align-items:center;justify-content:center}
         .unit-badge svg{width:26px;height:26px}
 
-        .trail{display:flex;flex-direction:column;align-items:center}
-        .step{display:flex;flex-direction:column;align-items:center;padding:18px 0;
-          transform:translateX(var(--x,0));transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+        .trail{--amp:clamp(48px,24vw,118px);display:flex;flex-direction:column;align-items:center}
+        .step{display:flex;flex-direction:column;align-items:center;padding:9px 0;
+          transform:translateX(calc(var(--dir,0) * var(--amp)));
+          transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
 
         .node-btn{position:relative;width:96px;height:96px;border-radius:50%;padding:0;border:none;cursor:pointer;
-          background:var(--stage);overflow:hidden;display:flex;align-items:center;justify-content:center;
-          box-shadow:0 6px 18px -8px rgba(0,0,0,.25);transition:transform .2s ease,box-shadow .2s ease}
-        .node-btn:hover{transform:translateY(-4px);box-shadow:0 10px 26px -8px rgba(0,0,0,.3)}
-        .node-btn:active{transform:translateY(-2px);box-shadow:0 4px 12px -6px rgba(0,0,0,.25)}
+          background:transparent;-webkit-tap-highlight-color:transparent;
+          box-shadow:0 9px 20px -8px rgba(0,0,0,.38);
+          display:flex;align-items:center;justify-content:center;
+          transition:transform .16s cubic-bezier(.34,1.56,.64,1),box-shadow .16s ease}
+        @media (hover:hover){
+          .node-btn:hover{transform:translateY(-4px) scale(1.06);
+            box-shadow:0 0 0 5px rgba(255,255,255,.65),0 18px 30px -10px rgba(0,0,0,.42)}
+          .node-btn.node-disabled:hover{transform:none;box-shadow:0 9px 20px -8px rgba(0,0,0,.38)}
+          .node-goal:hover{transform:translateY(-4px) scale(1.04);
+            box-shadow:0 8px 0 #B45309,0 16px 30px -10px rgba(120,80,4,.45)}
+        }
+        .node-btn:active{transform:translateY(2px) scale(.96);box-shadow:0 4px 10px -6px rgba(0,0,0,.3)}
         .node-btn.node-disabled{opacity:.5;cursor:default;filter:grayscale(.6)}
-        .node-btn.node-disabled:hover{transform:none;box-shadow:0 6px 18px -8px rgba(0,0,0,.25)}
-        .node-ico{width:76px;height:76px;display:flex;align-items:center;justify-content:center;pointer-events:none}
+        .node-ico{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
         .node-ico svg{width:100%;height:100%;display:block}
 
-        .node-goal{background:radial-gradient(ellipse at 50% 32%,#FFF3CC 0%,#FFD968 52%,#E0A012 100%);
-          box-shadow:0 6px 18px -8px rgba(120,80,4,.4)}
-        .node-goal:hover{box-shadow:0 10px 26px -8px rgba(120,80,4,.45)}
-        .node-done{opacity:.75;filter:saturate(.6)}
-        .node-done:hover{opacity:.85}
-        .completed-badge{position:absolute;z-index:2;width:28px;height:28px;border-radius:50%;
-          background:#16A34A;color:#fff;font-family:'Baloo 2',sans-serif;font-weight:800;
-          font-size:14px;display:flex;align-items:center;justify-content:center;
-          box-shadow:0 3px 8px rgba(22,163,74,.4);margin-top:-4px}
+        .node-goal{background:radial-gradient(circle at 42% 32%,#FFFBEB 0%,#FBBF24 75%,#D97706 100%);
+          border:3px solid rgba(255,255,255,.45);box-shadow:0 5px 0 #B45309,0 10px 24px -10px rgba(120,80,4,.4)}
+        .node-goal:active{transform:translateY(2px);box-shadow:0 2px 0 #B45309,0 4px 12px -8px rgba(120,80,4,.25)}
+        .node-goal .node-ico svg{width:62px;height:62px}
+        .node-done .node-ico svg{opacity:.7}
+        .completed-badge{position:absolute;z-index:2;top:-2px;right:-2px;width:26px;height:26px;border-radius:50%;
+          background:#16A34A;color:#fff;border:2px solid #fff;font-family:'Baloo 2',sans-serif;font-weight:800;
+          font-size:13px;display:flex;align-items:center;justify-content:center;
+          box-shadow:0 3px 8px rgba(22,163,74,.4)}
         .trophy-wrap{position:relative;display:flex;flex-direction:column;align-items:center}
         .trophy-count{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:13px;
           color:#A9740A;margin-top:-4px;background:rgba(255,255,255,.7);
           padding:2px 12px;border-radius:99px;border:1px solid #E0A01244;position:relative;z-index:1}
         .trophy-all-done .trophy-count{background:#16A34A;color:#fff;border-color:#16A34A44}
 
-        .node-meta{margin-top:12px;text-align:center;max-width:160px}
+        .node-meta{margin-top:8px;text-align:center;max-width:160px}
         .node-topic{font-family:'Baloo 2',sans-serif;font-weight:700;font-size:10px;letter-spacing:.13em;
           text-transform:uppercase;color:var(--c)}
         .node-label{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:15px;line-height:1.15;
@@ -188,8 +199,7 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
           .floatA,.pulse,.bob,.wave,.beat,.start-bubble{animation:none}
         }
         @media (max-width:380px){
-          .step{transform:translateX(calc(var(--x,0) * .72))}
-          .node-btn{width:86px;height:86px}.node-ico{width:70px;height:70px}
+          .node-btn{width:86px;height:86px}
         }
       `}</style>
     </div>

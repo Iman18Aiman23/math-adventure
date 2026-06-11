@@ -38,15 +38,15 @@ const LetterTrace = React.lazy(() => import('./components/AgeGroup-4-6/LetterTra
 const PhoneticsPop = React.lazy(() => import('./components/AgeGroup-4-6/PhoneticsPop'));
 const SoundMatching = React.lazy(() => import('./components/AgeGroup-4-6/SoundMatching'));
 const LetterSoundPuzzle = React.lazy(() => import('./components/AgeGroup-4-6/LetterSoundPuzzle'));
-const SentenceBuilder = React.lazy(() => import('./components/AgeGroup-7/SentenceBuilder'));
-const SukuKataBinaPerkataan = React.lazy(() => import('./components/AgeGroup-7/SukuKataBinaPerkataan'));
-const JenisKata = React.lazy(() => import('./components/AgeGroup-7/JenisKata'));
+const SentenceBuilder = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module3_Menulis/BinaAyat'));
+const SukuKataBinaPerkataan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module2_Membaca/AsasMembaca'));
+const JenisKata = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module5_Tatabahasa/MorfologiGolonganKata'));
 const KataTanya = React.lazy(() => import('./components/AgeGroup-7/KataTanya'));
-const KataHubungSendi = React.lazy(() => import('./components/AgeGroup-7/KataHubungSendi'));
-const KataImbuhan = React.lazy(() => import('./components/AgeGroup-7/KataImbuhan'));
-const EjaanTandaBaca = React.lazy(() => import('./components/AgeGroup-7/EjaanTandaBaca'));
+const KataHubungSendi = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module5_Tatabahasa/MorfologiPerluasan'));
+const KataImbuhan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module5_Tatabahasa/PembentukanPerkataan'));
+const EjaanTandaBaca = React.lazy(() => import('./components/BahasaMelayuPage/Tahun3/Module3_Menulis/MengeditTeks'));
 const KataGanda = React.lazy(() => import('./components/AgeGroup-7/KataGanda'));
-const KefahamanBacaan = React.lazy(() => import('./components/AgeGroup-7/KefahamanBacaan'));
+const KefahamanBacaan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module2_Membaca/MembacaMenaakul'));
 const BacaSukuKataJawi = React.lazy(() => import('./components/AgeGroup-7/BacaSukuKataJawi'));
 const BinaPerkataanJawi = React.lazy(() => import('./components/AgeGroup-7/BinaPerkataanJawi'));
 const PadanPerkataanJawi = React.lazy(() => import('./components/AgeGroup-7/PadanPerkataanJawi'));
@@ -58,10 +58,10 @@ const TimeTeller = React.lazy(() => import('./components/MatematikPage/Tahun1/Mo
 const CountingMoney = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/CountingMoney'));
 const SubtractionStory = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/SubtractionStory'));
 const BacaAyatKuat = React.lazy(() => import('./components/AgeGroup-7/BacaAyatKuat'));
-const BertuturBertatasusila = React.lazy(() => import('./components/AgeGroup-7/BertuturBertatasusila'));
-const JawabSoalan = React.lazy(() => import('./components/AgeGroup-7/JawabSoalan'));
+const BertuturBertatasusila = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/BerceritaBerbincang'));
+const JawabSoalan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/MendengarMerespons'));
 const SebutLawanKata = React.lazy(() => import('./components/AgeGroup-7/SebutLawanKata'));
-const SebutFrasaBergambar = React.lazy(() => import('./components/AgeGroup-7/SebutFrasaBergambar'));
+const SebutFrasaBergambar = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/BacaFrasaBergambar'));
 const Nombor100 = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/Nombor100'));
 const Tambah100 = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/Tambah100'));
 const Bentuk3D = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_Sukatan/Bentuk3D'));
@@ -69,11 +69,11 @@ const UkurPanjang = React.lazy(() => import('./components/MatematikPage/Tahun1/M
 const BacaPictograph = React.lazy(() => import('./components/MatematikPage/Tahun1/Module3_Statistik/BacaPictograph'));
 const Jisim = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_Sukatan/Jisim'));
 const IsiPaduCecair = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_Sukatan/IsiPaduCecair'));
-const KosaKataKontekstual = React.lazy(() => import('./components/AgeGroup-8/KosaKataKontekstual'));
-const BacaanPemahaman = React.lazy(() => import('./components/AgeGroup-8/BacaanPemahaman'));
-const CeritaBacaan = React.lazy(() => import('./components/AgeGroup-8/CeritaBacaan'));
+const KosaKataKontekstual = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module2_Membaca/MentafsirMenaakul'));
+const BacaanPemahaman = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module2_Membaca/TeksPelbagaiGaya'));
+const CeritaBacaan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun3/Module2_Membaca/TeksKompleks'));
 const PengenalanNilai = React.lazy(() => import('./components/AgeGroup-8/PengenalanNilai'));
-const PantunBacaan = React.lazy(() => import('./components/AgeGroup-8/PantunBacaan'));
+const PantunBacaan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module4_SeniBahasa/ApresiasiSastera'));
 const DarabMudah = React.lazy(() => import('./components/MatematikPage/Tahun2/Module1_Nombor/DarabMudah'));
 const Wang = React.lazy(() => import('./components/MatematikPage/Tahun2/Module1_Nombor/Wang'));
 const Masa = React.lazy(() => import('./components/MatematikPage/Tahun2/Module2_Sukatan/Masa'));
@@ -90,12 +90,12 @@ const DataT2 = React.lazy(() => import('./components/MatematikPage/Tahun2/Module
 const BacaPetikanJawi = React.lazy(() => import('./components/AgeGroup-8/BacaPetikanJawi'));
 const PadanKataKerjaJawi = React.lazy(() => import('./components/AgeGroup-8/PadanKataKerjaJawi'));
 const SusunAyatJawi = React.lazy(() => import('./components/AgeGroup-8/SusunAyatJawi'));
-const LafazPantun = React.lazy(() => import('./components/AgeGroup-8/LafazPantun'));
-const JenisAyat = React.lazy(() => import('./components/AgeGroup-9/JenisAyat'));
+const LafazPantun = React.lazy(() => import('./components/BahasaMelayuPage/Tahun3/Module4_SeniBahasa/ApresiasiKaryaSeni'));
+const JenisAyat = React.lazy(() => import('./components/BahasaMelayuPage/Tahun3/Module5_Tatabahasa/JenisJenisAyat'));
 const PenjodohBilangan = React.lazy(() => import('./components/AgeGroup-9/PenjodohBilangan'));
-const ImbuhanLanjutan = React.lazy(() => import('./components/AgeGroup-9/ImbuhanLanjutan'));
-const SimpulanBahasa = React.lazy(() => import('./components/AgeGroup-9/SimpulanBahasa'));
-const BacaanPemahamanLanjutan = React.lazy(() => import('./components/AgeGroup-9/BacaanPemahamanLanjutan'));
+const ImbuhanLanjutan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun3/Module5_Tatabahasa/ImbuhanMajmukGanda'));
+const SimpulanBahasa = React.lazy(() => import('./components/BahasaMelayuPage/Tahun3/Module4_SeniBahasa/EstetikaBahasa'));
+const BacaanPemahamanLanjutan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun3/Module2_Membaca/MembacaKritikal'));
 const Nombor10000    = React.lazy(() => import('./components/MatematikPage/Tahun3/Module1_Nombor/Nombor10000'));
 const DarabLanjutan  = React.lazy(() => import('./components/MatematikPage/Tahun3/Module1_Nombor/DarabLanjutan'));
 const BahagiTahun3    = React.lazy(() => import('./components/MatematikPage/Tahun3/Module1_Nombor/BahagiTahun3'));
@@ -116,11 +116,26 @@ const MatematikHomePage = React.lazy(() => import('./components/MatematikPage/Ma
 const BahasaMelayuHomePage = React.lazy(() => import('./components/BahasaMelayuPage/BahasaMelayuHomePage'));
 const BahasaMelayuModulePage = React.lazy(() => import('./components/BahasaMelayuPage/BahasaMelayuModulePage'));
 const BMModuleHubLayout = React.lazy(() => import('./components/BahasaMelayuPage/_shared/BMModuleHubLayout'));
-const MendengarMenyebut = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/MendengarMenyebut'));
+const MengenalHuruf = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/MengenalHuruf'));
+const DengarTeka = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/DengarTeka'));
+const SukuKataBM = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/SukuKata'));
 const MembacaMekanis = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module2_Membaca/MembacaMekanis'));
 const AsasMenulis = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module3_Menulis/AsasMenulis'));
 const MencatatMaklumat = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module3_Menulis/MencatatMaklumat'));
 const KeindahanBahasa = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module4_SeniBahasa/KeindahanBahasa'));
+const SintaksisAyat = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module5_Tatabahasa/SintaksisAyat'));
+const PerkataanSukar = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module2_Membaca/PerkataanSukar'));
+const MenulisMekanis = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module3_Menulis/MenulisMekanis'));
+const HasilkanPenulisan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module3_Menulis/HasilkanPenulisan'));
+const JawapanPemahaman = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module3_Menulis/JawapanPemahaman'));
+const PersembahanKarya = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module4_SeniBahasa/PersembahanKarya'));
+const SintaksisAyatMajmuk = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module5_Tatabahasa/SintaksisAyatMajmuk'));
+const MendengarMengulas = React.lazy(() => import('./components/BahasaMelayuPage/Tahun3/Module1_Mendengar/MendengarMengulas'));
+const KomunikasiBertatasusila = React.lazy(() => import('./components/BahasaMelayuPage/Tahun3/Module1_Mendengar/KomunikasiBertatasusila'));
+const KelancaranMembaca = React.lazy(() => import('./components/BahasaMelayuPage/Tahun3/Module2_Membaca/KelancaranMembaca'));
+const MenulisKarangan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun3/Module3_Menulis/MenulisKarangan'));
+const MenulisKreatif = React.lazy(() => import('./components/BahasaMelayuPage/Tahun3/Module3_Menulis/MenulisKreatif'));
+const MorfologiLanjutan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun3/Module5_Tatabahasa/MorfologiLanjutan'));
 const MatematikModulePage = React.lazy(() => import('./components/MatematikPage/MatematikModulePage'));
 const NomborModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/NomborModule'));
 const SukatanModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_Sukatan/SukatanModule'));
@@ -228,6 +243,7 @@ import { loadPlayerName, savePlayerName, recordLogin, calcStreak } from './servi
 import { getGameData } from './utils/gameStatsManager';
 import { baseAssessments } from './data/curriculum/assessment';
 import { markTopicCompleted } from './components/BahasaMelayuPage/_shared/useModuleProgress';
+import { getNextTopicId } from './components/BahasaMelayuPage/_shared/ModuleData';
 
 // ── Themes ───────────────────────────────────────────────────────────────────
 export const THEMES = {
@@ -656,32 +672,71 @@ export default function App() {
         // ── Topic page (bmTopic set) ──
         if (bmTopic) {
           const topicOnBack = () => setBmTopic(null);
+          // Post-quiz "Topik Seterusnya" — next node in the same module trail
+          // (undefined on the last topic, the layout then offers the trail).
+          const bmNextId = getNextTopicId(bmTopic);
+          const bmNextTopic = bmNextId ? () => navigate(() => setBmTopic(bmNextId)) : undefined;
 
           // ── New inline topics ──
           if (bmTopic === '1-1-1-mendengar-menyebut')
             return <Suspense fallback={<LoadingSpinner />}>
-              <MendengarMenyebut onBack={topicOnBack} language={language}
-                topicComplete={(id) => markTopicCompleted(id)} />
+              <MengenalHuruf group="vokal" onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '1-1-3-konsonan-bj')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <MengenalHuruf group="konsonan-bj" onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '1-1-4-konsonan-kr')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <MengenalHuruf group="konsonan-kr" onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '1-1-5-konsonan-sz')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <MengenalHuruf group="konsonan-sz" onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '1-1-7-suku-kata')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <SukuKataBM onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '1-1-6-dengar-teka')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <DengarTeka onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
           if (bmTopic === '1-2-2-membaca-mekanis')
             return <Suspense fallback={<LoadingSpinner />}>
               <MembacaMekanis onBack={topicOnBack} language={language}
-                topicComplete={(id) => markTopicCompleted(id)} />
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
           if (bmTopic === '1-3-1-asas-menulis')
             return <Suspense fallback={<LoadingSpinner />}>
               <AsasMenulis onBack={topicOnBack} language={language}
-                topicComplete={(id) => markTopicCompleted(id)} />
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
           if (bmTopic === '1-3-3-mencatat-maklumat')
             return <Suspense fallback={<LoadingSpinner />}>
               <MencatatMaklumat onBack={topicOnBack} language={language}
-                topicComplete={(id) => markTopicCompleted(id)} />
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
           if (bmTopic === '1-4-1-keindahan-bahasa')
             return <Suspense fallback={<LoadingSpinner />}>
               <KeindahanBahasa onBack={topicOnBack} language={language}
-                topicComplete={(id) => markTopicCompleted(id)} />
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
 
           // ── Reused games (wrapped in ProgressWrapper) ──
@@ -717,8 +772,172 @@ export default function App() {
             </Suspense>;
           if (bmTopic === '1-5-2-sintaksis-ayat')
             return <Suspense fallback={<LoadingSpinner />}>
+              <SintaksisAyat onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+
+          // ── Tahun 2 new inline ──
+          if (bmTopic === '2-2-1-perkataan-sukar')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <PerkataanSukar onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '2-3-1-menulis-mekanis')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <MenulisMekanis onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '2-3-2-hasilkan-penulisan')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <HasilkanPenulisan onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '2-3-3-jawapan-pemahaman')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <JawapanPemahaman onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '2-4-2-persembahan-karya')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <PersembahanKarya onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '2-5-3-sintaksis-ayat-majmuk')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <SintaksisAyatMajmuk onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+
+          // ── Tahun 2 reuse ──
+          if (bmTopic === '2-1-1-mendengar-merespons')
+            return <Suspense fallback={<LoadingSpinner />}>
               <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
-                <SentenceBuilder language={language} />
+                <JawabSoalan language={language} />
+              </ProgressWrapper>
+            </Suspense>;
+          if (bmTopic === '2-1-2-bercerita')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+                <BertuturBertatasusila language={language} />
+              </ProgressWrapper>
+            </Suspense>;
+          if (bmTopic === '2-2-2-teks-pelbagai')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+                <BacaanPemahaman language={language} />
+              </ProgressWrapper>
+            </Suspense>;
+          if (bmTopic === '2-2-3-mentafsir-menaakul')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+                <KosaKataKontekstual language={language} />
+              </ProgressWrapper>
+            </Suspense>;
+          if (bmTopic === '2-4-1-apresiasi-sastera')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+                <PantunBacaan language={language} />
+              </ProgressWrapper>
+            </Suspense>;
+          if (bmTopic === '2-5-1-morfologi-perluasan')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+                <KataHubungSendi language={language} />
+              </ProgressWrapper>
+            </Suspense>;
+          if (bmTopic === '2-5-2-pembentukan-perkataan')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+                <KataImbuhan language={language} />
+              </ProgressWrapper>
+            </Suspense>;
+
+          // ── Tahun 3 new inline ──
+          if (bmTopic === '3-1-1-mendengar-mengulas')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <MendengarMengulas onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '3-1-2-berkomunikasi')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <KomunikasiBertatasusila onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '3-2-2-kelancaran-membaca')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <KelancaranMembaca onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '3-3-1-menulis-karangan')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <MenulisKarangan onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '3-3-3-menulis-kreatif')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <MenulisKreatif onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '3-5-1-morfologi-lanjutan')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <MorfologiLanjutan onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+
+          // ── Tahun 3 reuse ──
+          if (bmTopic === '3-2-1-teks-kompleks')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+                <CeritaBacaan language={language} />
+              </ProgressWrapper>
+            </Suspense>;
+          if (bmTopic === '3-2-3-membaca-kritikal')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+                <BacaanPemahamanLanjutan language={language} />
+              </ProgressWrapper>
+            </Suspense>;
+          if (bmTopic === '3-3-2-mengedit-teks')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+                <EjaanTandaBaca language={language} />
+              </ProgressWrapper>
+            </Suspense>;
+          if (bmTopic === '3-4-1-estetika-bahasa')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+                <SimpulanBahasa language={language} />
+              </ProgressWrapper>
+            </Suspense>;
+          if (bmTopic === '3-4-2-apresiasi-karya')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+                <LafazPantun language={language} />
+              </ProgressWrapper>
+            </Suspense>;
+          if (bmTopic === '3-5-2-pembentukan-perkataan')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+                <ImbuhanLanjutan language={language} />
+              </ProgressWrapper>
+            </Suspense>;
+          if (bmTopic === '3-5-3-sintaksis-jenis-ayat')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
+                <JenisAyat language={language} />
               </ProgressWrapper>
             </Suspense>;
         }

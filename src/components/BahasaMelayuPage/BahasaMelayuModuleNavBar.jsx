@@ -10,6 +10,14 @@ const NAMES = {
   tatabahasa:   { bm: 'Tatabahasa',           en: 'Grammar' },
 };
 
+// Per-year overrides — tab labels follow the content names policy
+// (what the child actually does), not the silibus strand headings.
+const NAMES_BY_YEAR = {
+  1: {
+    mendengar: { bm: 'Huruf & Frasa', en: 'Letters & Phrases' },
+  },
+};
+
 export default function BahasaMelayuModuleNavBar({ year, activeModule, onModuleChange, language = 'bm' }) {
   const stripPrefix = (id) => id.replace(/^\d-/, '');
   const current = stripPrefix(activeModule);
@@ -98,7 +106,7 @@ export default function BahasaMelayuModuleNavBar({ year, activeModule, onModuleC
         <div className="bm-mnav-tab-wrap">
           {modules.map(m => {
             const isActive = current === m.id;
-            const name = NAMES[m.id] || { bm: m.name, en: m.nameEn };
+            const name = NAMES_BY_YEAR[year]?.[m.id] || NAMES[m.id] || { bm: m.name, en: m.nameEn };
             return (
               <button
                 key={m.id}
