@@ -119,11 +119,15 @@ const BMModuleHubLayout = React.lazy(() => import('./components/BahasaMelayuPage
 const MengenalHuruf = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/MengenalHuruf'));
 const DengarTeka = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/DengarTeka'));
 const SukuKataBM = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/SukuKata'));
+const DengarBuat = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/DengarBuat'));
 const MembacaMekanis = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module2_Membaca/MembacaMekanis'));
+const BacaPerkataan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module2_Membaca/BacaPerkataan'));
+const FahamiCerita = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module2_Membaca/FahamiCerita'));
 const AsasMenulis = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module3_Menulis/AsasMenulis'));
 const MencatatMaklumat = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module3_Menulis/MencatatMaklumat'));
 const KeindahanBahasa = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module4_SeniBahasa/KeindahanBahasa'));
 const SintaksisAyat = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module5_Tatabahasa/SintaksisAyat'));
+const JenisKataLesson = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module5_Tatabahasa/JenisKataLesson'));
 const PerkataanSukar = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module2_Membaca/PerkataanSukar'));
 const MenulisMekanis = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module3_Menulis/MenulisMekanis'));
 const HasilkanPenulisan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module3_Menulis/HasilkanPenulisan'));
@@ -243,7 +247,7 @@ import { loadPlayerName, savePlayerName, recordLogin, calcStreak } from './servi
 import { getGameData } from './utils/gameStatsManager';
 import { baseAssessments } from './data/curriculum/assessment';
 import { markTopicCompleted } from './components/BahasaMelayuPage/_shared/useModuleProgress';
-import { getNextTopicId } from './components/BahasaMelayuPage/_shared/ModuleData';
+import { getNextTopicId, getNextModuleId } from './components/BahasaMelayuPage/_shared/ModuleData';
 
 // ── Themes ───────────────────────────────────────────────────────────────────
 export const THEMES = {
@@ -676,6 +680,11 @@ export default function App() {
           // (undefined on the last topic, the layout then offers the trail).
           const bmNextId = getNextTopicId(bmTopic);
           const bmNextTopic = bmNextId ? () => navigate(() => setBmTopic(bmNextId)) : undefined;
+          // "Modul Seterusnya" — open the NEXT module's hub (trail) page, not a topic.
+          const bmNextModId = getNextModuleId(bmTopic);
+          const bmNextModule = bmNextModId
+            ? () => navigate(() => { setBmModule(bmYear === 1 ? bmNextModId : `${bmYear}-${bmNextModId}`); setBmTopic(null); })
+            : undefined;
 
           // ── New inline topics ──
           if (bmTopic === '1-1-1-mendengar-menyebut')
@@ -714,6 +723,18 @@ export default function App() {
                 topicComplete={(id) => markTopicCompleted(id)}
                 onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
+          if (bmTopic === '1-1-8-dengar-buat')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <DengarBuat onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} onNextModule={bmNextModule} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '1-2-4-baca-perkataan')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <BacaPerkataan onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
           if (bmTopic === '1-2-2-membaca-mekanis')
             return <Suspense fallback={<LoadingSpinner />}>
               <MembacaMekanis onBack={topicOnBack} language={language}
@@ -738,6 +759,12 @@ export default function App() {
                 topicComplete={(id) => markTopicCompleted(id)}
                 onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
+          if (bmTopic === '1-2-5-fahami-cerita')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <FahamiCerita onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
 
           // ── Reused games (wrapped in ProgressWrapper) ──
           if (bmTopic === '1-1-2-bertutur-maklumat')
@@ -748,15 +775,15 @@ export default function App() {
             </Suspense>;
           if (bmTopic === '1-2-1-asas-membaca')
             return <Suspense fallback={<LoadingSpinner />}>
-              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
-                <SukuKataBinaPerkataan language={language} />
-              </ProgressWrapper>
+              <SukuKataBinaPerkataan onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
           if (bmTopic === '1-2-3-membaca-menaakul')
             return <Suspense fallback={<LoadingSpinner />}>
-              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
-                <KefahamanBacaan language={language} />
-              </ProgressWrapper>
+              <KefahamanBacaan onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
           if (bmTopic === '1-3-2-bina-ayat')
             return <Suspense fallback={<LoadingSpinner />}>
@@ -766,9 +793,9 @@ export default function App() {
             </Suspense>;
           if (bmTopic === '1-5-1-morfologi-kata')
             return <Suspense fallback={<LoadingSpinner />}>
-              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
-                <JenisKata language={language} />
-              </ProgressWrapper>
+              <JenisKataLesson onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
           if (bmTopic === '1-5-2-sintaksis-ayat')
             return <Suspense fallback={<LoadingSpinner />}>

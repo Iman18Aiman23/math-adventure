@@ -335,6 +335,38 @@ export function M1DengarTeka() {
   );
 }
 
+export function M1DengarBuat() {
+  const uid = useUid('m1buat');
+  return (
+    <svg viewBox="0 0 100 100" width="100" height="100" fill="none">
+      <defs>
+        <radialGradient id={`${uid}-bg`} cx="38%" cy="28%" r="85%">
+          <stop offset="0%" stopColor="#A8E6DB"/>
+          <stop offset="55%" stopColor="#4ECDC4"/>
+          <stop offset="100%" stopColor="#2B9A96"/>
+        </radialGradient>
+      </defs>
+      <circle cx="50" cy="50" r="48" fill={`url(#${uid}-bg)`}/>
+      <circle cx="50" cy="50" r="48" stroke="rgba(255,255,255,.35)" strokeWidth="2"/>
+      <ellipse cx="50" cy="92" rx="18" ry="3" fill="rgba(0,0,0,.08)"/>
+      <g className="floatA">
+        <circle cx="50" cy="48" r="12" fill="white"/>
+        <path d="M38 62 L38 72 Q38 76 42 76 L58 76 Q62 76 62 72 L62 62" stroke="white" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M32 58 L38 52" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+        <path d="M68 58 L62 52" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+      </g>
+      <g className="bob">
+        <path d="M18 48 Q14 50 18 52" stroke="#FFD166" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+        <path d="M82 48 Q86 50 82 52" stroke="#FFD166" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+        <path d="M12 42 Q8 45 12 48" stroke="#FFD166" strokeWidth="2" fill="none" strokeLinecap="round" opacity=".7"/>
+        <path d="M88 42 Q92 45 88 48" stroke="#FFD166" strokeWidth="2" fill="none" strokeLinecap="round" opacity=".7"/>
+      </g>
+      <circle cx="28" cy="22" r="2" fill="white" opacity=".8"/>
+      <circle cx="74" cy="20" r="2.5" fill="#FFD166" opacity=".85"/>
+    </svg>
+  );
+}
+
 export function M1FrasaBergambar() {
   const uid = useUid('m1frasa');
   return (
@@ -465,6 +497,69 @@ export function M2Topic3() {
       </g>
       <circle cx="22" cy="28" r="2.5" fill="white" opacity=".7"/>
       <circle cx="24" cy="72" r="2.5" fill="#F15BB5" opacity=".8"/>
+    </svg>
+  );
+}
+
+export function M2Topic4() {
+  const uid = useUid('m2t4');
+  return (
+    <svg viewBox="0 0 100 100" width="100" height="100" fill="none">
+      <defs>
+        <radialGradient id={`${uid}-bg`} cx="38%" cy="28%" r="85%">
+          <stop offset="0%" stopColor="#A7EFE8"/>
+          <stop offset="55%" stopColor="#2BB5AB"/>
+          <stop offset="100%" stopColor="#0E7E76"/>
+        </radialGradient>
+      </defs>
+      <circle cx="50" cy="50" r="48" fill={`url(#${uid}-bg)`}/>
+      <circle cx="50" cy="50" r="48" stroke="rgba(255,255,255,.35)" strokeWidth="2"/>
+      <ellipse cx="50" cy="92" rx="18" ry="3" fill="rgba(0,0,0,.08)"/>
+      <g className="floatA">
+        <rect x="22" y="24" width="56" height="52" rx="8" fill="white"/>
+        <rect x="28" y="30" width="44" height="14" rx="5" fill="#2BB5AB"/>
+        <text x="50" y="40.5" textAnchor="middle" fontFamily="Baloo 2,sans-serif" fontSize="7" fontWeight="800" fill="white">KVK</text>
+        <rect x="28" y="48" width="20" height="14" rx="5" fill="#FFD166"/>
+        <text x="38" y="58.5" textAnchor="middle" fontFamily="Baloo 2,sans-serif" fontSize="7" fontWeight="800" fill="#8A5200">lam</text>
+        <rect x="51" y="48" width="20" height="14" rx="5" fill="#F15BB5"/>
+        <text x="61" y="58.5" textAnchor="middle" fontFamily="Baloo 2,sans-serif" fontSize="7" fontWeight="800" fill="white">pu</text>
+        <path d="M36 62 L50 52 L64 62" stroke="#2BB5AB" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+      </g>
+      <circle cx="18" cy="42" r="2.5" fill="white" opacity=".6"/>
+      <circle cx="82" cy="30" r="2.5" fill="#FFD166" opacity=".8"/>
+    </svg>
+  );
+}
+
+export function M2Topic5() {
+  const uid = useUid('m2t5');
+  return (
+    <svg viewBox="0 0 100 100" width="100" height="100" fill="none">
+      <defs>
+        <radialGradient id={`${uid}-bg`} cx="38%" cy="28%" r="85%">
+          <stop offset="0%" stopColor="#C8E9FA"/>
+          <stop offset="55%" stopColor="#5FB6E0"/>
+          <stop offset="100%" stopColor="#2274A5"/>
+        </radialGradient>
+      </defs>
+      <circle cx="50" cy="50" r="48" fill={`url(#${uid}-bg)`}/>
+      <circle cx="50" cy="50" r="48" stroke="rgba(255,255,255,.35)" strokeWidth="2"/>
+      <ellipse cx="50" cy="92" rx="18" ry="3" fill="rgba(0,0,0,.08)"/>
+      <g className="floatA">
+        <rect x="16" y="28" width="60" height="48" rx="6" fill="white" opacity=".9"/>
+        <rect x="20" y="34" width="52" height="6" rx="3" fill="#5FB6E0" opacity=".3"/>
+        <rect x="20" y="44" width="40" height="4" rx="2" fill="#5FB6E0" opacity=".2"/>
+        <rect x="20" y="52" width="44" height="4" rx="2" fill="#5FB6E0" opacity=".2"/>
+        <rect x="20" y="60" width="30" height="4" rx="2" fill="#5FB6E0" opacity=".2"/>
+        <circle cx="66" cy="64" r="18" fill="#FFD166" opacity=".8"/>
+        <text x="66" y="68" textAnchor="middle" fontFamily="Baloo 2,sans-serif" fontSize="13" fontWeight="800" fill="#8A5200">?</text>
+      </g>
+      <g className="bob">
+        <circle cx="80" cy="20" r="7" fill="#F15BB5"/>
+        <text x="80" y="23.5" textAnchor="middle" fontFamily="Baloo 2,sans-serif" fontSize="7" fontWeight="800" fill="white">💡</text>
+      </g>
+      <circle cx="22" cy="22" r="2.5" fill="white" opacity=".7"/>
+      <circle cx="20" cy="82" r="2.5" fill="#FFD166" opacity=".8"/>
     </svg>
   );
 }

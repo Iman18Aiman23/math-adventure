@@ -63,7 +63,7 @@ const RAW = {
   A: {
     char: 'A',
     segments: [
-      { type: 'L', points: [{ x: 25, y: 82 }, { x: 50, y: 18 }] },
+      { type: 'L', points: [{ x: 50, y: 18 }, { x: 25, y: 82 }] },
       { type: 'L', points: [{ x: 50, y: 18 }, { x: 75, y: 82 }] },
       { type: 'L', points: [{ x: 35, y: 50 }, { x: 65, y: 50 }] },
     ],
@@ -145,10 +145,10 @@ const RAW = {
   E: {
     char: 'E',
     segments: [
-      { type: 'L', points: [{ x: 75, y: 18 }, { x: 32, y: 18 }] },
       { type: 'L', points: [{ x: 32, y: 18 }, { x: 32, y: 82 }] },
-      { type: 'L', points: [{ x: 32, y: 82 }, { x: 75, y: 82 }] },
+      { type: 'L', points: [{ x: 32, y: 18 }, { x: 75, y: 18 }] },
       { type: 'L', points: [{ x: 32, y: 50 }, { x: 68, y: 50 }] },
+      { type: 'L', points: [{ x: 32, y: 82 }, { x: 75, y: 82 }] },
     ],
   },
   F: {
@@ -159,50 +159,45 @@ const RAW = {
       { type: 'L', points: [{ x: 32, y: 50 }, { x: 65, y: 50 }] },
     ],
   },
-G: {
-  char: 'G',
-  segments: [
-    // O-shaped curve (circular, not oval) that stops before closing
-    {
-      type: 'C',
-      points: [
-        { x: 78, y: 40 }, // start at middle-right
-        { x: 78, y: 18 }, // cp1 - top-right corner
-        { x: 22, y: 18 }, // cp2 - top-left corner
-        { x: 22, y: 50 }, // end at middle-left
-      ],
-    },
-    {
-      type: 'C',
-      points: [
-        { x: 22, y: 50 }, // start at middle-left
-        { x: 22, y: 82 }, // cp1 - bottom-left corner
-        { x: 78, y: 82 }, // cp2 - bottom-right corner
-        { x: 78, y: 60 }, // end at middle-right (stops short, doesn't close)
-      ],
-    },
-    // Horizontal line merging at the end point
-    {
-      type: 'L',
-      points: [
-        { x: 78, y: 60 },
-        { x: 55, y: 60 },
-      ],
-    },
-  ],
-},
+  G: {
+    char: 'G',
+    segments: [
+      // Same arc geometry as C — top sweep from upper-right around to mid-left
+      {
+        type: 'C', points: [
+          { x: 78, y: 28 },
+          { x: 78, y: 10 },
+          { x: 20, y: 10 },
+          { x: 20, y: 50 },
+        ]
+      },
+      // Bottom sweep rising up the right side to meet the bar
+      {
+        type: 'C', points: [
+          { x: 20, y: 50 },
+          { x: 20, y: 90 },
+          { x: 78, y: 90 },
+          { x: 78, y: 62 },
+        ]
+      },
+      // Horizontal bar drawn inward from the curve's end
+      { type: 'L', points: [{ x: 78, y: 62 }, { x: 52, y: 62 }] },
+    ],
+  },
   H: {
     char: 'H',
     segments: [
       { type: 'L', points: [{ x: 32, y: 18 }, { x: 32, y: 82 }] },
-      { type: 'L', points: [{ x: 32, y: 50 }, { x: 68, y: 50 }] },
       { type: 'L', points: [{ x: 68, y: 18 }, { x: 68, y: 82 }] },
+      { type: 'L', points: [{ x: 32, y: 50 }, { x: 68, y: 50 }] },
     ],
   },
   I: {
     char: 'I',
     segments: [
       { type: 'L', points: [{ x: 50, y: 18 }, { x: 50, y: 82 }] },
+      { type: 'L', points: [{ x: 35, y: 18 }, { x: 65, y: 18 }] },
+      { type: 'L', points: [{ x: 35, y: 82 }, { x: 65, y: 82 }] },
     ],
   },
   J: {
@@ -237,7 +232,7 @@ G: {
   M: {
     char: 'M',
     segments: [
-      { type: 'L', points: [{ x: 28, y: 82 }, { x: 28, y: 18 }] },
+      { type: 'L', points: [{ x: 28, y: 18 }, { x: 28, y: 82 }] },
       { type: 'L', points: [{ x: 28, y: 18 }, { x: 50, y: 68 }] },
       { type: 'L', points: [{ x: 50, y: 68 }, { x: 72, y: 18 }] },
       { type: 'L', points: [{ x: 72, y: 18 }, { x: 72, y: 82 }] },
@@ -246,9 +241,9 @@ G: {
   N: {
     char: 'N',
     segments: [
-      { type: 'L', points: [{ x: 32, y: 82 }, { x: 32, y: 18 }] },
+      { type: 'L', points: [{ x: 32, y: 18 }, { x: 32, y: 82 }] },
       { type: 'L', points: [{ x: 32, y: 18 }, { x: 68, y: 82 }] },
-      { type: 'L', points: [{ x: 68, y: 82 }, { x: 68, y: 18 }] },
+      { type: 'L', points: [{ x: 68, y: 18 }, { x: 68, y: 82 }] },
     ],
   },
   O: {
@@ -291,7 +286,7 @@ G: {
   P: {
     char: 'P',
     segments: [
-      { type: 'L', points: [{ x: 32, y: 82 }, { x: 32, y: 18 }] },
+      { type: 'L', points: [{ x: 32, y: 18 }, { x: 32, y: 82 }] },
       { type: 'L', points: [{ x: 32, y: 18 }, { x: 60, y: 18 }] },
       {
         type: 'C', points: [
@@ -344,7 +339,7 @@ G: {
   R: {
     char: 'R',
     segments: [
-      { type: 'L', points: [{ x: 32, y: 82 }, { x: 32, y: 18 }] },
+      { type: 'L', points: [{ x: 32, y: 18 }, { x: 32, y: 82 }] },
       { type: 'L', points: [{ x: 32, y: 18 }, { x: 60, y: 18 }] },
       {
         type: 'C', points: [
@@ -358,35 +353,42 @@ G: {
     ],
   },
   S: {
-  char: 'S',
-  segments: [
-    // Top bowl
-    {
-      type: 'C',
-      points: [
-        { x: 60, y: 24 }, // start top-right
-        { x: 10, y: 8 }, // cp1
-        { x: 10, y: 50 }, // cp2
-        { x: 40, y: 50 }, // end center
-      ],
-    },
-    // Bottom bowl
-    {
-      type: 'C',
-      points: [
-        { x: 40, y: 50 }, // start center
-        { x: 68, y: 50 }, // cp1
-        { x: 88, y: 90 }, // cp2
-        { x: 24, y: 84 }, // end bottom-left
-      ],
-    },
-  ],
-},
+    char: 'S',
+    segments: [
+      // Top hook: start upper-right, sweep over the top to the left side
+      {
+        type: 'C', points: [
+          { x: 66, y: 28 },
+          { x: 62, y: 15 },
+          { x: 36, y: 14 },
+          { x: 33, y: 32 },
+        ]
+      },
+      // Spine: diagonal through the centre to the right side
+      {
+        type: 'C', points: [
+          { x: 33, y: 32 },
+          { x: 30, y: 48 },
+          { x: 70, y: 52 },
+          { x: 67, y: 68 },
+        ]
+      },
+      // Bottom hook: sweep around the bottom, finishing lower-left
+      {
+        type: 'C', points: [
+          { x: 67, y: 68 },
+          { x: 64, y: 86 },
+          { x: 38, y: 88 },
+          { x: 33, y: 74 },
+        ]
+      },
+    ],
+  },
   T: {
     char: 'T',
     segments: [
-      { type: 'L', points: [{ x: 28, y: 18 }, { x: 72, y: 18 }] },
       { type: 'L', points: [{ x: 50, y: 18 }, { x: 50, y: 82 }] },
+      { type: 'L', points: [{ x: 28, y: 18 }, { x: 72, y: 18 }] },
     ],
   },
   U: {
@@ -401,7 +403,7 @@ G: {
           { x: 72, y: 70 },
         ]
       },
-      { type: 'L', points: [{ x: 72, y: 70 }, { x: 72, y: 20 }] },
+      { type: 'L', points: [{ x: 72, y: 20 }, { x: 72, y: 70 }] },
     ],
   },
   V: {
@@ -415,8 +417,8 @@ G: {
     char: 'W',
     segments: [
       { type: 'L', points: [{ x: 22, y: 18 }, { x: 35, y: 82 }] },
-      { type: 'L', points: [{ x: 35, y: 82 }, { x: 50, y: 68 }] },
-      { type: 'L', points: [{ x: 50, y: 68 }, { x: 65, y: 82 }] },
+      { type: 'L', points: [{ x: 35, y: 82 }, { x: 50, y: 32 }] },
+      { type: 'L', points: [{ x: 50, y: 32 }, { x: 65, y: 82 }] },
       { type: 'L', points: [{ x: 65, y: 82 }, { x: 78, y: 18 }] },
     ],
   },
@@ -454,21 +456,35 @@ const RAW_LOWER = {
   a: {
     char: 'a',
     segments: [
+      // Round bowl: two arcs counterclockwise from the right (cps overshoot
+      // so the curve's extremes land on the true bowl edges)
       {
         type: 'C', points: [
-          { x: 68, y: 55 }, { x: 30, y: 45 }, { x: 30, y: 82 }, { x: 68, y: 78 },
+          { x: 68, y: 63 }, { x: 68, y: 38 }, { x: 28, y: 38 }, { x: 28, y: 63 },
         ]
       },
-      { type: 'L', points: [{ x: 68, y: 55 }, { x: 68, y: 82 }] },
+      {
+        type: 'C', points: [
+          { x: 28, y: 63 }, { x: 28, y: 88 }, { x: 68, y: 88 }, { x: 68, y: 63 },
+        ]
+      },
+      // Right-side stem from bowl top to baseline
+      { type: 'L', points: [{ x: 68, y: 44 }, { x: 68, y: 82 }] },
     ],
   },
   b: {
     char: 'b',
     segments: [
       { type: 'L', points: [{ x: 30, y: 18 }, { x: 30, y: 82 }] },
+      // Round bowl: two arcs clockwise from the stem
       {
         type: 'C', points: [
-          { x: 30, y: 55 }, { x: 72, y: 45 }, { x: 72, y: 85 }, { x: 30, y: 80 },
+          { x: 30, y: 63 }, { x: 30, y: 38 }, { x: 70, y: 38 }, { x: 70, y: 63 },
+        ]
+      },
+      {
+        type: 'C', points: [
+          { x: 70, y: 63 }, { x: 70, y: 88 }, { x: 30, y: 88 }, { x: 30, y: 63 },
         ]
       },
     ],
@@ -498,26 +514,35 @@ const RAW_LOWER = {
   d: {
     char: 'd',
     segments: [
-      { type: 'L', points: [{ x: 70, y: 18 }, { x: 70, y: 82 }] },
+      // Bowl first (like 'a'), then the tall stem — per textbook stroke order
       {
         type: 'C', points: [
-          { x: 70, y: 55 }, { x: 28, y: 45 }, { x: 28, y: 85 }, { x: 70, y: 80 },
+          { x: 70, y: 63 }, { x: 70, y: 38 }, { x: 30, y: 38 }, { x: 30, y: 63 },
         ]
       },
+      {
+        type: 'C', points: [
+          { x: 30, y: 63 }, { x: 30, y: 88 }, { x: 70, y: 88 }, { x: 70, y: 63 },
+        ]
+      },
+      { type: 'L', points: [{ x: 70, y: 18 }, { x: 70, y: 82 }] },
     ],
   },
   e: {
     char: 'e',
     segments: [
-      { type: 'L', points: [{ x: 28, y: 62 }, { x: 72, y: 62 }] },
+      // Crossbar at the bowl's midline, left to right
+      { type: 'L', points: [{ x: 28, y: 63 }, { x: 70, y: 63 }] },
+      // Round top half counterclockwise (same construction as the d/q bowls)
       {
         type: 'C', points: [
-          { x: 72, y: 62 }, { x: 72, y: 42 }, { x: 28, y: 48 }, { x: 28, y: 75 },
+          { x: 70, y: 63 }, { x: 70, y: 38 }, { x: 28, y: 38 }, { x: 28, y: 63 },
         ]
       },
+      // Bottom sweep ending open at the lower-right, like the c
       {
         type: 'C', points: [
-          { x: 28, y: 75 }, { x: 40, y: 86 }, { x: 60, y: 85 }, { x: 72, y: 78 },
+          { x: 28, y: 63 }, { x: 28, y: 87 }, { x: 66, y: 88 }, { x: 68, y: 73 },
         ]
       },
     ],
@@ -537,15 +562,23 @@ const RAW_LOWER = {
   g: {
     char: 'g',
     segments: [
+      // Round bowl (two arcs counterclockwise), stem down past baseline, tail hook
       {
         type: 'C', points: [
-          { x: 68, y: 52 }, { x: 28, y: 42 }, { x: 28, y: 80 }, { x: 68, y: 75 },
+          { x: 68, y: 63 }, { x: 68, y: 38 }, { x: 28, y: 38 }, { x: 28, y: 63 },
         ]
       },
-      { type: 'L', points: [{ x: 68, y: 52 }, { x: 68, y: 88 }] },
       {
         type: 'C', points: [
-          { x: 68, y: 88 }, { x: 64, y: 96 }, { x: 32, y: 96 }, { x: 28, y: 88 },
+          { x: 28, y: 63 }, { x: 28, y: 88 }, { x: 68, y: 88 }, { x: 68, y: 63 },
+        ]
+      },
+      { type: 'L', points: [{ x: 68, y: 44 }, { x: 68, y: 86 }] },
+      // Tail hook: narrow (about half the bowl width) and dipping well below
+      // the baseline, so the descender reads clearly
+      {
+        type: 'C', points: [
+          { x: 68, y: 86 }, { x: 68, y: 99 }, { x: 46, y: 101 }, { x: 38, y: 93 },
         ]
       },
     ],
@@ -556,7 +589,7 @@ const RAW_LOWER = {
       { type: 'L', points: [{ x: 30, y: 18 }, { x: 30, y: 82 }] },
       {
         type: 'C', points: [
-          { x: 30, y: 60 }, { x: 50, y: 40 }, { x: 68, y: 55 }, { x: 68, y: 82 },
+          { x: 30, y: 58 }, { x: 34, y: 36 }, { x: 66, y: 37 }, { x: 68, y: 82 },
         ]
       },
     ],
@@ -570,10 +603,11 @@ const RAW_LOWER = {
   j: {
     char: 'j',
     segments: [
-      { type: 'L', points: [{ x: 58, y: 45 }, { x: 58, y: 82 }] },
+      { type: 'L', points: [{ x: 58, y: 45 }, { x: 58, y: 86 }] },
+      // Tight hook below the baseline, finishing just left of the stem
       {
         type: 'C', points: [
-          { x: 58, y: 82 }, { x: 58, y: 95 }, { x: 28, y: 95 }, { x: 25, y: 85 },
+          { x: 58, y: 86 }, { x: 58, y: 99 }, { x: 36, y: 101 }, { x: 30, y: 92 },
         ]
       },
     ],
@@ -598,12 +632,12 @@ const RAW_LOWER = {
       { type: 'L', points: [{ x: 18, y: 45 }, { x: 18, y: 82 }] },
       {
         type: 'C', points: [
-          { x: 18, y: 55 }, { x: 32, y: 40 }, { x: 48, y: 55 }, { x: 48, y: 82 },
+          { x: 18, y: 58 }, { x: 22, y: 36 }, { x: 44, y: 37 }, { x: 48, y: 82 },
         ]
       },
       {
         type: 'C', points: [
-          { x: 48, y: 55 }, { x: 62, y: 40 }, { x: 80, y: 55 }, { x: 80, y: 82 },
+          { x: 48, y: 58 }, { x: 52, y: 36 }, { x: 76, y: 37 }, { x: 80, y: 82 },
         ]
       },
     ],
@@ -614,7 +648,7 @@ const RAW_LOWER = {
       { type: 'L', points: [{ x: 28, y: 45 }, { x: 28, y: 82 }] },
       {
         type: 'C', points: [
-          { x: 28, y: 55 }, { x: 50, y: 40 }, { x: 72, y: 55 }, { x: 72, y: 82 },
+          { x: 28, y: 58 }, { x: 32, y: 36 }, { x: 68, y: 37 }, { x: 72, y: 82 },
         ]
       },
     ],
@@ -638,10 +672,16 @@ const RAW_LOWER = {
   p: {
     char: 'p',
     segments: [
-      { type: 'L', points: [{ x: 30, y: 45 }, { x: 30, y: 95 }] },
+      { type: 'L', points: [{ x: 30, y: 44 }, { x: 30, y: 95 }] },
+      // Round bowl: two arcs clockwise from the stem
       {
         type: 'C', points: [
-          { x: 30, y: 55 }, { x: 72, y: 42 }, { x: 72, y: 82 }, { x: 30, y: 80 },
+          { x: 30, y: 63 }, { x: 30, y: 38 }, { x: 70, y: 38 }, { x: 70, y: 63 },
+        ]
+      },
+      {
+        type: 'C', points: [
+          { x: 70, y: 63 }, { x: 70, y: 88 }, { x: 30, y: 88 }, { x: 30, y: 63 },
         ]
       },
     ],
@@ -649,50 +689,57 @@ const RAW_LOWER = {
   q: {
     char: 'q',
     segments: [
+      // Round bowl first (two arcs counterclockwise), then the descender stem
       {
         type: 'C', points: [
-          { x: 70, y: 52 }, { x: 28, y: 42 }, { x: 28, y: 82 }, { x: 70, y: 80 },
+          { x: 70, y: 63 }, { x: 70, y: 38 }, { x: 30, y: 38 }, { x: 30, y: 63 },
         ]
       },
-      { type: 'L', points: [{ x: 70, y: 52 }, { x: 70, y: 95 }] },
+      {
+        type: 'C', points: [
+          { x: 30, y: 63 }, { x: 30, y: 88 }, { x: 70, y: 88 }, { x: 70, y: 63 },
+        ]
+      },
+      { type: 'L', points: [{ x: 70, y: 44 }, { x: 70, y: 98 }] },
     ],
   },
   r: {
     char: 'r',
     segments: [
       { type: 'L', points: [{ x: 30, y: 45 }, { x: 30, y: 82 }] },
+      // Shoulder: first half of an n-arch, cresting at x-height and
+      // ending with a slight downward hang
       {
         type: 'C', points: [
-          { x: 30, y: 55 }, { x: 50, y: 40 }, { x: 65, y: 45 }, { x: 70, y: 52 },
+          { x: 30, y: 58 }, { x: 34, y: 40 }, { x: 58, y: 40 }, { x: 66, y: 52 },
         ]
       },
     ],
   },
   s: {
-  char: 's',
-  segments: [
-    // Top bowl
-    {
-      type: 'C',
-      points: [
-        { x: 68, y: 48 }, // start top-right
-        { x: 28, y: 42 }, // cp1
-        { x: 28, y: 58 }, // cp2
-        { x: 50, y: 62 }, // end center
-      ],
-    },
-    // Bottom bowl
-    {
-      type: 'C',
-      points: [
-        { x: 50, y: 62 }, // start center
-        { x: 72, y: 65 }, // cp1
-        { x: 72, y: 85 }, // cp2
-        { x: 32, y: 82 }, // end bottom-left
-      ],
-    },
-  ],
-},
+    char: 's',
+    segments: [
+      // Scaled-down version of uppercase S (x-height ~45-82)
+      // Top hook: start upper-right, sweep over the top to the left side
+      {
+        type: 'C', points: [
+          { x: 64, y: 51 }, { x: 60, y: 43 }, { x: 38, y: 43 }, { x: 36, y: 53 },
+        ]
+      },
+      // Spine: diagonal through the centre to the right side
+      {
+        type: 'C', points: [
+          { x: 36, y: 53 }, { x: 33, y: 62 }, { x: 67, y: 65 }, { x: 64, y: 74 },
+        ]
+      },
+      // Bottom hook: sweep around the bottom, finishing lower-left
+      {
+        type: 'C', points: [
+          { x: 64, y: 74 }, { x: 62, y: 84 }, { x: 40, y: 86 }, { x: 36, y: 77 },
+        ]
+      },
+    ],
+  },
   t: {
     char: 't',
     segments: [
@@ -728,8 +775,8 @@ const RAW_LOWER = {
     char: 'w',
     segments: [
       { type: 'L', points: [{ x: 18, y: 45 }, { x: 32, y: 82 }] },
-      { type: 'L', points: [{ x: 32, y: 82 }, { x: 50, y: 58 }] },
-      { type: 'L', points: [{ x: 50, y: 58 }, { x: 68, y: 82 }] },
+      { type: 'L', points: [{ x: 32, y: 82 }, { x: 50, y: 52 }] },
+      { type: 'L', points: [{ x: 50, y: 52 }, { x: 68, y: 82 }] },
       { type: 'L', points: [{ x: 68, y: 82 }, { x: 82, y: 45 }] },
     ],
   },
@@ -776,10 +823,21 @@ const centerLetterY = (segments, targetCenterY = 50) => {
   }));
 };
 
+// Uniformly scale a letter's points around the canvas centre (50,50).
+const scaleLetter = (segments, factor) =>
+  segments.map(seg => ({
+    ...seg,
+    points: seg.points.map(p => ({
+      x: 50 + (p.x - 50) * factor,
+      y: 50 + (p.y - 50) * factor,
+    })),
+  }));
+
 // Compile each letter once at module load; the engine consumes the
 // pre-sampled Float32Array directly.
-const compile = (raw, displayChar, { center = false } = {}) => {
-  const segments = center ? centerLetterY(raw.segments) : raw.segments;
+const compile = (raw, displayChar, { center = false, scale = 1 } = {}) => {
+  let segments = center ? centerLetterY(raw.segments) : raw.segments;
+  if (scale !== 1) segments = scaleLetter(segments, scale);
   return {
     char: displayChar,
     start: segments[0].points[0],
@@ -820,8 +878,9 @@ export const LETTERS_UPPER = [
 
 // Lowercase letters — each auto-centered vertically in the 100x100 box
 // (centerLetterY shifts the bbox center to y:50) so individual glyphs
-// sit in the middle of the drawing area regardless of ascenders/descenders.
-const lc = (raw, ch) => compile(raw, ch, { center: true });
+// sit in the middle of the drawing area regardless of ascenders/descenders,
+// then scaled up 1.25x so they fill the canvas comparably to uppercase.
+const lc = (raw, ch) => compile(raw, ch, { center: true, scale: 1.25 });
 export const LETTERS_LOWER = [
   lc(RAW_LOWER.a, 'a'),
   lc(RAW_LOWER.b, 'b'),

@@ -17,7 +17,8 @@ const PHASE_READY     = 'ready';
 const PHASE_LISTENING = 'listening';
 const PHASE_CORRECT   = 'correct';
 const PHASE_WRONG     = 'wrong';
-const PHASE_COMPLETE  = 'complete';
+const PHASE_TIER_COMPLETE = 'tier-complete'; // between phrases and sentences
+const PHASE_COMPLETE  = 'complete'; // all tiers done
 
 const ITEMS_PER_ROUND = 8;
 const MAX_ATTEMPTS    = 3;
@@ -60,9 +61,33 @@ const PICTURES = [
     keywords: [['katak','frog'], ['lompat','melompat','jump','jumping','hop']] },
 ];
 
+// ── Sentences (Ayat tunggal) ──────────────────────────────────────────────────
+// Simple sentences: subject + verb (+ object). KV/KVK only, no affixes.
+const SENTENCES = [
+  { id: 's1',  emoji: '👦🎮', phrase: 'Saya main',
+    keywords: [['saya','i','me'], ['main','bermain','play','playing']] },
+  { id: 's2',  emoji: '😴🛏️', phrase: 'Saya tidur',
+    keywords: [['saya','i','me'], ['tidur','sleep','sleeping']] },
+  { id: 's3',  emoji: '👨💼', phrase: 'Ayah kerja',
+    keywords: [['ayah','bapa','father','dad'], ['kerja','work','working']] },
+  { id: 's4',  emoji: '🍽️', phrase: 'Saya makan',
+    keywords: [['saya','i','me'], ['makan','eat','eating']] },
+  { id: 's5',  emoji: '👩💺', phrase: 'Ibu duduk',
+    keywords: [['ibu','mak','emak','mother','mom'], ['duduk','sit','sitting']] },
+  { id: 's6',  emoji: '🏃💨', phrase: 'Budak lari',
+    keywords: [['budak','anak','adik','boy','kid','child'], ['lari','run','running']] },
+  { id: 's7',  emoji: '👧🚿', phrase: 'Kakak mandi',
+    keywords: [['kakak','kak','sister','girl'], ['mandi','bathe','bathing','wash','washing']] },
+  { id: 's8',  emoji: '👶🪑', phrase: 'Adik duduk',
+    keywords: [['adik','bayi','baby'], ['duduk','sit','sitting']] },
+];
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const shuffleArr = (arr) => [...arr].sort(() => Math.random() - 0.5);
-const buildItems = () => shuffleArr(PICTURES).slice(0, Math.min(ITEMS_PER_ROUND, PICTURES.length));
+const buildItems = (tier = 'sentences') => {
+  const source = tier === 'sentences' ? SENTENCES : PICTURES;
+  return shuffleArr(source).slice(0, Math.min(ITEMS_PER_ROUND, source.length));
+};
 const normalize  = (s) => s.toLowerCase().replace(/[.,!?]/g, '').replace(/\s+/g, ' ').trim();
 
 // Forgiving: count slots that had at least one accepted form in the transcript;
@@ -264,10 +289,12 @@ const STYLE = `
 export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
   const isMobile = SpeechManager.isMobile();
 
-  const [items,     setItems]     = useState(() => buildItems());
+  const [tier,      setTier]      = useState('sentences'); // 'sentences' first, then 'phrases'
+  const [items,     setItems]     = useState(() => buildItems('sentences'));
   const [index,     setIndex]     = useState(0);
   const [phase,     setPhase]     = useState(PHASE_READY);
   const [score,     setScore]     = useState(0);
+  const [scoreSent, setScoreSent] = useState(0); // sentences tier score
   const [streak,    setStreak]    = useState(0);
   const [attempts,  setAttempts]  = useState(0);
 
@@ -290,15 +317,22 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
   const advanceItem = useCallback(() => {
     const ni = indexRef.current + 1;
     if (ni >= itemsRef.current.length) {
-      setPhase(PHASE_COMPLETE);
-      confetti({ particleCount: 200, spread: 160, origin: { y: 0.4 } });
+      // End of current tier
+      if (tier === 'sentences') {
+        setPhase(PHASE_TIER_COMPLETE);
+        confetti({ particleCount: 150, spread: 140, origin: { y: 0.4 } });
+      } else {
+        // End of all tiers (phrases tier complete)
+        setPhase(PHASE_COMPLETE);
+        confetti({ particleCount: 200, spread: 160, origin: { y: 0.4 } });
+      }
       return;
     }
     setIndex(ni);
     setAttempts(0);
     setMicError(null);
     setPhase(PHASE_READY);
-  }, []);
+  }, [tier]);
 
   const handleCorrect = () => {
     setScore(s => s + 1);
@@ -391,13 +425,30 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
     advanceItem();
   };
 
+  const handleNextTier = () => {
+    SpeechManager.stop();
+    SpeechManager.stopSpeaking();
+    listenActiveRef.current = false;
+    setScoreSent(score); // save sentences tier score
+    setTier('phrases');
+    setItems(buildItems('phrases'));
+    setIndex(0);
+    setScore(0);
+    setStreak(0);
+    setAttempts(0);
+    setMicError(null);
+    setPhase(PHASE_READY);
+  };
+
   const handleReset = () => {
     SpeechManager.stop();
     SpeechManager.stopSpeaking();
     listenActiveRef.current = false;
-    setItems(buildItems());
+    setTier('sentences');
+    setItems(buildItems('sentences'));
     setIndex(0);
     setScore(0);
+    setScoreSent(0);
     setStreak(0);
     setAttempts(0);
     setMicError(null);
@@ -408,21 +459,59 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
   const isWrong     = phase === PHASE_WRONG;
   const isListening = phase === PHASE_LISTENING;
 
-  // ── Complete screen ────────────────────────────────────────────────────────
-  if (phase === PHASE_COMPLETE) {
+  // ── Tier transition screen ─────────────────────────────────────────────────
+  if (phase === PHASE_TIER_COMPLETE && tier === 'sentences') {
     return (
       <>
         <style>{STYLE}</style>
         <div className="sfb-root">
           <BMHeader onBack={onBack} language={language} title={language === 'bm' ? 'Baca Frasa Bergambar' : 'Read the Picture Phrase'} />
           <div className="sfb-center">
-            <div style={{ fontSize: 'clamp(56px, 12vh, 90px)', lineHeight: 1 }}>🖼️</div>
+            <div style={{ fontSize: 'clamp(56px, 12vh, 90px)', lineHeight: 1 }}>⭐</div>
             <h2 style={{ fontFamily: "'Baloo 2', sans-serif", color: C.primary, fontSize: 'clamp(24px, 5vh, 36px)', fontWeight: 800, margin: 0 }}>
-              {language === 'bm' ? 'Tahniah!' : 'Well Done!'}
+              {language === 'bm' ? 'Bagus Sekali!' : 'Well Done!'}
             </h2>
-            <p style={{ fontSize: 'clamp(16px, 3vh, 21px)', color: '#555', fontWeight: 600, margin: 0 }}>
-              {language === 'bm' ? 'Markah: ' : 'Score: '}<strong>{score}</strong>/{items.length}
+            <p style={{ fontSize: 'clamp(14px, 2.6vh, 18px)', color: '#555', fontWeight: 600, margin: '0.6rem 0 1.2rem' }}>
+              {language === 'bm' ? `Ayat Tunggal: ${score}/${items.length}` : `Sentences: ${score}/${items.length}`}
             </p>
+            <p style={{ fontSize: 'clamp(12px, 2.2vh, 15px)', color: '#777', fontWeight: 500, margin: '0 0 1.8rem', maxWidth: 320, lineHeight: 1.5 }}>
+              {language === 'bm' ? 'Kamu siap mencuba frasa!' : 'Ready to try phrases?'}
+            </p>
+            <div style={{ display: 'flex', gap: '0.8rem' }}>
+              <button onClick={handleNextTier} style={{ fontFamily: "'Baloo 2', sans-serif", padding: '0.8rem 1.5rem', background: `linear-gradient(180deg, ${C.primary}cc, ${C.primary})`, color: '#fff', border: 'none', borderRadius: 999, fontSize: '1rem', cursor: 'pointer', fontWeight: 800, boxShadow: `0 4px 0 ${C.primaryDark}` }}>
+                {language === 'bm' ? '→ Seterusnya' : '→ Next'}
+              </button>
+              <button onClick={onBack} style={{ fontFamily: "'Baloo 2', sans-serif", padding: '0.8rem 1.5rem', background: '#fff', color: '#475569', border: '2px solid #E2E8F0', borderRadius: 999, fontSize: '1rem', cursor: 'pointer', fontWeight: 800 }}>
+                {language === 'bm' ? '← Kembali' : '← Back'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // ── Complete screen ────────────────────────────────────────────────────────
+  if (phase === PHASE_COMPLETE) {
+    const totalScore = scoreSent + score;
+    const totalItems = (scoreSent > 0 ? ITEMS_PER_ROUND : 0) + items.length;
+    return (
+      <>
+        <style>{STYLE}</style>
+        <div className="sfb-root">
+          <BMHeader onBack={onBack} language={language} title={language === 'bm' ? 'Baca Frasa Bergambar' : 'Read the Picture Phrase'} />
+          <div className="sfb-center">
+            <div style={{ fontSize: 'clamp(56px, 12vh, 90px)', lineHeight: 1 }}>🎯</div>
+            <h2 style={{ fontFamily: "'Baloo 2', sans-serif", color: C.primary, fontSize: 'clamp(24px, 5vh, 36px)', fontWeight: 800, margin: 0 }}>
+              {language === 'bm' ? 'Tahniah!' : 'Congratulations!'}
+            </h2>
+            <p style={{ fontSize: 'clamp(14px, 2.6vh, 18px)', color: '#555', fontWeight: 600, margin: '0.6rem 0' }}>
+              {language === 'bm' ? 'Jumlah Markah: ' : 'Total Score: '}<strong>{totalScore}</strong>/{totalItems}
+            </p>
+            <div style={{ fontSize: 'clamp(12px, 2.2vh, 14px)', color: '#777', fontWeight: 500, margin: '0.8rem 0 1.2rem', lineHeight: 1.6 }}>
+              <div>{language === 'bm' ? 'Ayat Tunggal: ' : 'Sentences: '}{scoreSent}/{ITEMS_PER_ROUND}</div>
+              <div>{language === 'bm' ? 'Frasa: ' : 'Phrases: '}{score}/{items.length}</div>
+            </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', background: '#FFF6D6', borderRadius: 999, padding: '0.5rem 1.2rem', border: '1.5px solid #FFE08A' }}>
               <span style={{ fontSize: '1.1rem' }}>🔥</span>
               <span style={{ fontWeight: 800, fontFamily: "'Baloo 2', sans-serif", color: '#B58800', fontSize: 'clamp(13px, 2.4vh, 16px)' }}>
@@ -467,11 +556,16 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
   }
 
   // ── Active game ────────────────────────────────────────────────────────────
+  const tierLabel = tier === 'sentences'
+    ? (language === 'bm' ? 'Ayat Tunggal' : 'Sentences')
+    : (language === 'bm' ? 'Frasa' : 'Phrases');
+  const mainTitle = language === 'bm' ? `Baca: ${tierLabel}` : `Read: ${tierLabel}`;
+
   return (
     <>
       <style>{STYLE}</style>
       <div className="sfb-root">
-        <BMHeader onBack={onBack} language={language} title={language === 'bm' ? 'Baca Frasa Bergambar' : 'Read the Picture Phrase'} />
+        <BMHeader onBack={onBack} language={language} title={mainTitle} />
 
         <div className="sfb-body">
           {/* Stats row */}
@@ -492,7 +586,9 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
             {/* Picture + phrase card */}
             <div className={`sfb-card${isCorrect ? ' correct' : isWrong ? ' wrong' : ''}`}>
               <div className="sfb-card-label">
-                {language === 'bm' ? 'BACA FRASA INI' : 'READ THIS PHRASE'}
+                {tier === 'sentences'
+                  ? (language === 'bm' ? 'BACA AYAT INI' : 'READ THIS SENTENCE')
+                  : (language === 'bm' ? 'BACA FRASA INI' : 'READ THIS PHRASE')}
               </div>
               {item && (
                 <>

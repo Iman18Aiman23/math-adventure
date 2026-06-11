@@ -5,6 +5,9 @@ import SpeechManager from '../../../../services/SpeechManager';
 import TraceCanvas from '../../../AgeGroup-4-6/TraceCanvas';
 import { LETTERS_UPPER, LETTERS_LOWER } from '../../../../data/letterPaths';
 import Celebration from '../../../PendidikanIslamPage/_shared/Celebration';
+import useBMQuiz from '../../_shared/useBMQuiz';
+import BMLessonQuizLayout from '../../_shared/BMLessonQuizLayout';
+import { BM_QUESTIONS } from '../../_shared/ModuleData';
 
 const TOPIC_ID = '1-3-1-asas-menulis';
 const ACCENT = '#7A4FD0';
@@ -18,16 +21,21 @@ function getLetterPair(char) {
 
 const LETTER_PAIRS = ALL_LETTERS.map(getLetterPair).filter(p => p.upper);
 
-export default function AsasMenulis({ onBack, language = 'bm', topicComplete }) {
+export default function AsasMenulis({ onBack, language = 'bm', topicComplete, onNextTopic }) {
   const [idx, setIdx] = useState(0);
   const [upperDone, setUpperDone] = useState(false);
   const [lowerDone, setLowerDone] = useState(false);
   const [finished, setFinished] = useState(false);
   const [resetSignal, setResetSignal] = useState(0);
   const [showCelebration, setShowCelebration] = useState(false);
+  const [phase, setPhase] = useState('tracing'); // 'tracing' or 'quiz'
+  const [caseStep, setCaseStep] = useState('upper'); // which canvas is visible: 'upper' | 'lower'
+
+  const quiz = useBMQuiz(BM_QUESTIONS[TOPIC_ID] || [], [], 15);
 
   const upperRef = useRef(null);
   const lowerRef = useRef(null);
+  const advanceTimerRef = useRef(null);
 
   const current = LETTER_PAIRS[idx];
   const isLast = idx >= LETTER_PAIRS.length - 1;
@@ -35,7 +43,10 @@ export default function AsasMenulis({ onBack, language = 'bm', topicComplete }) 
   const bothDone = upperDone && lowerDone;
 
   useEffect(() => {
-    return () => SpeechManager.stopSpeaking();
+    return () => {
+      SpeechManager.stopSpeaking();
+      clearTimeout(advanceTimerRef.current);
+    };
   }, []);
 
   useEffect(() => {
@@ -52,7 +63,7 @@ export default function AsasMenulis({ onBack, language = 'bm', topicComplete }) 
     playSound('correct');
     confetti({ particleCount: 80, spread: 70, origin: { y: 0.5 }, scalar: 0.8 });
     if (isLast) {
-      const t = setTimeout(() => { setShowCelebration(true); setFinished(true); }, 700);
+      const t = setTimeout(() => { setShowCelebration(true); setPhase('quiz'); }, 700);
       return () => clearTimeout(t);
     }
   }, [bothDone, isLast]);
@@ -61,25 +72,44 @@ export default function AsasMenulis({ onBack, language = 'bm', topicComplete }) 
     setUpperDone(true);
     playSound('correct');
     confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 }, scalar: 0.7 });
-  }, []);
+    if (!lowerDone) {
+      clearTimeout(advanceTimerRef.current);
+      advanceTimerRef.current = setTimeout(() => setCaseStep('lower'), 900);
+    }
+  }, [lowerDone]);
 
   const handleLowerComplete = useCallback(() => {
     setLowerDone(true);
     playSound('correct');
     confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 }, scalar: 0.7 });
+    if (!upperDone) {
+      clearTimeout(advanceTimerRef.current);
+      advanceTimerRef.current = setTimeout(() => setCaseStep('upper'), 900);
+    }
+  }, [upperDone]);
+
+  const goToLetter = useCallback((i) => {
+    clearTimeout(advanceTimerRef.current);
+    setIdx(i);
+    setUpperDone(false);
+    setLowerDone(false);
+    setCaseStep('upper');
+    setResetSignal(s => s + 1);
   }, []);
 
   const handleNext = useCallback(() => {
     if (isLast) {
       setShowCelebration(true);
-      setFinished(true);
+      setPhase('quiz');
       return;
     }
-    setIdx(i => i + 1);
-    setUpperDone(false);
-    setLowerDone(false);
-    setResetSignal(s => s + 1);
-  }, [isLast]);
+    goToLetter(idx + 1);
+  }, [isLast, idx, goToLetter]);
+
+  const showCase = useCallback((step) => {
+    clearTimeout(advanceTimerRef.current);
+    setCaseStep(step);
+  }, []);
 
   const handleReplay = useCallback(() => {
     if (!current) return;
@@ -88,20 +118,37 @@ export default function AsasMenulis({ onBack, language = 'bm', topicComplete }) 
   }, [current]);
 
   const handleBack = () => {
-    topicComplete?.(TOPIC_ID);
     onBack?.();
   };
 
   const handleRestart = () => {
+    clearTimeout(advanceTimerRef.current);
     setIdx(0);
     setUpperDone(false);
     setLowerDone(false);
+    setCaseStep('upper');
     setFinished(false);
     setResetSignal(s => s + 1);
     setShowCelebration(false);
+    setPhase('tracing');
   };
 
   const topicTitle = language === 'bm' ? 'Asas Menulis' : 'Basic Writing';
+
+  if (phase === 'quiz') {
+    return (
+      <BMLessonQuizLayout
+        onBack={handleBack}
+        topicId={TOPIC_ID}
+        topicComplete={topicComplete}
+        onNextTopic={onNextTopic}
+        topicTitle={topicTitle}
+        quiz={quiz}
+        language={language}
+        accentColor={ACCENT}
+      />
+    );
+  }
 
   if (finished) {
     return (
@@ -245,13 +292,39 @@ export default function AsasMenulis({ onBack, language = 'bm', topicComplete }) 
         .am-trace-picker option:checked {
           background: ${ACCENT}20;
         }
+        .am-case-pills {
+          flex-shrink: 0;
+          display: flex; gap: 10px; justify-content: center;
+          margin-bottom: clamp(6px, 1.2vh, 12px);
+        }
+        .am-case-pill {
+          font-family: 'Baloo 2', sans-serif; font-weight: 800;
+          font-size: clamp(13px, 2.6vw, 16px);
+          display: flex; align-items: center; gap: 7px;
+          padding: clamp(6px, 1vh, 9px) clamp(14px, 3.4vw, 24px);
+          border-radius: 999px; cursor: pointer;
+          border: 2px solid #E2E8F0; background: #fff; color: #64748B;
+          transition: background .2s, border-color .2s, color .2s;
+        }
+        .am-case-pill .pill-char {
+          font-weight: 900; font-size: 1.3em; line-height: 1;
+        }
+        .am-case-pill.active {
+          border-color: ${ACCENT}; background: ${ACCENT}14; color: ${ACCENT};
+        }
+        .am-case-pill.done {
+          border-color: #58CC02; background: #F0FBE6; color: #46A302;
+        }
+        .am-case-pill.done.active {
+          background: #E2F7CC;
+        }
         .am-trace-canvas-area {
           flex: 1; min-height: 0;
-          display: flex; gap: clamp(8px, 1.4vh, 14px);
+          display: flex; justify-content: center;
           width: 100%;
         }
         .am-trace-card {
-          flex: 1; min-width: 0;
+          flex: 1; min-width: 0; max-width: 560px;
           background: #fff;
           border-radius: 20px;
           display: flex; flex-direction: column;
@@ -263,21 +336,6 @@ export default function AsasMenulis({ onBack, language = 'bm', topicComplete }) 
         .am-trace-card.done {
           border-color: #58CC02;
           box-shadow: 0 6px 0 #46A302, 0 8px 20px rgba(88,204,2,.12);
-        }
-        .am-trace-card-header {
-          flex-shrink: 0;
-          display: flex; justify-content: space-between; align-items: center;
-          padding: clamp(4px, .6vh, 8px) clamp(8px, 1.2vw, 14px);
-          border-bottom: 2px solid #F1F5F9;
-        }
-        .am-trace-card-char {
-          font-family: 'Baloo 2', sans-serif; font-weight: 900;
-          font-size: clamp(18px, 3.4vw, 28px);
-          line-height: 1;
-        }
-        .am-trace-card-label {
-          font-weight: 800; font-size: clamp(9px, 1.6vw, 12px);
-          letter-spacing: .06em;
         }
         .am-trace-card-canvas {
           flex: 1; min-height: 0;
@@ -334,12 +392,7 @@ export default function AsasMenulis({ onBack, language = 'bm', topicComplete }) 
           <div className="am-trace-picker-wrap">
             <span className="am-trace-picker-label">{language === 'bm' ? 'Huruf:' : 'Letter:'}</span>
             <select className="am-trace-picker" value={idx}
-              onChange={e => {
-                setIdx(Number(e.target.value));
-                setUpperDone(false);
-                setLowerDone(false);
-                setResetSignal(s => s + 1);
-              }}
+              onChange={e => goToLetter(Number(e.target.value))}
             >
               <optgroup label={language === 'bm' ? '— Pilih Huruf —' : '— Select Letter —'}>
                 {LETTER_PAIRS.map((p, i) => (
@@ -351,16 +404,30 @@ export default function AsasMenulis({ onBack, language = 'bm', topicComplete }) 
             </select>
           </div>
 
+          <div className="am-case-pills">
+            <button
+              className={`am-case-pill${caseStep === 'upper' ? ' active' : ''}${upperDone ? ' done' : ''}`}
+              onClick={() => showCase('upper')}
+            >
+              <span className="pill-char">{current.upper.char}</span>
+              {language === 'bm' ? 'Besar' : 'Big'}{upperDone ? ' ✓' : ''}
+            </button>
+            <button
+              className={`am-case-pill${caseStep === 'lower' ? ' active' : ''}${lowerDone ? ' done' : ''}`}
+              onClick={() => showCase('lower')}
+            >
+              <span className="pill-char">{current.lower?.char || current.upper.char.toLowerCase()}</span>
+              {language === 'bm' ? 'Kecil' : 'Small'}{lowerDone ? ' ✓' : ''}
+            </button>
+          </div>
+
           <div className="am-trace-canvas-area">
-            <div className={`am-trace-card${upperDone ? ' done' : ''}`}>
-              <div className="am-trace-card-header">
-                <span className="am-trace-card-char" style={{ color: upperDone ? '#46A302' : '#334155' }}>
-                  {current.upper.char}
-                </span>
-                <span className="am-trace-card-label" style={{ color: upperDone ? '#46A302' : '#94A3B8' }}>
-                  {upperDone ? '✓ Besar' : language === 'bm' ? 'Huruf Besar' : 'Uppercase'}
-                </span>
-              </div>
+            {/* Both canvases stay mounted so traced work survives switching;
+                the inactive one is just hidden. */}
+            <div
+              className={`am-trace-card${upperDone ? ' done' : ''}`}
+              style={{ display: caseStep === 'upper' ? undefined : 'none' }}
+            >
               <div className="am-trace-card-canvas">
                 <TraceCanvas
                   ref={upperRef}
@@ -373,15 +440,10 @@ export default function AsasMenulis({ onBack, language = 'bm', topicComplete }) 
               </div>
             </div>
 
-            <div className={`am-trace-card${lowerDone ? ' done' : ''}`}>
-              <div className="am-trace-card-header">
-                <span className="am-trace-card-char" style={{ color: lowerDone ? '#46A302' : '#334155' }}>
-                  {current.lower?.char || current.upper.char.toLowerCase()}
-                </span>
-                <span className="am-trace-card-label" style={{ color: lowerDone ? '#46A302' : '#94A3B8' }}>
-                  {lowerDone ? '✓ Kecil' : language === 'bm' ? 'Huruf Kecil' : 'Lowercase'}
-                </span>
-              </div>
+            <div
+              className={`am-trace-card${lowerDone ? ' done' : ''}`}
+              style={{ display: caseStep === 'lower' ? undefined : 'none' }}
+            >
               <div className="am-trace-card-canvas">
                 <TraceCanvas
                   ref={lowerRef}
@@ -396,7 +458,7 @@ export default function AsasMenulis({ onBack, language = 'bm', topicComplete }) 
           </div>
 
           <div className="am-trace-controls">
-            <button className="am-trace-btn ghost" onClick={() => { setUpperDone(false); setLowerDone(false); setResetSignal(s => s + 1); setIdx(Math.max(0, idx - 1)); }} disabled={isFirst}>
+            <button className="am-trace-btn ghost" onClick={() => goToLetter(Math.max(0, idx - 1))} disabled={isFirst}>
               ← {language === 'bm' ? 'Sebelum' : 'Prev'}
             </button>
             <button className="am-trace-btn ghost" onClick={handleReplay}>

@@ -7,20 +7,30 @@ import BMHeader from '../../_shared/BMHeader';
 
 const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
 
+// Pure KVK / KV+KVK words only — no digraphs (ng/ny) or diphthongs (ai/au/oi),
+// which are Tahun 2 content. Every word is a concrete noun whose emoji makes
+// the meaning self-checkable for a non-reader.
 const QUESTIONS = [
-  { id: 1, word: 'buku',  syllables: ['bu', 'ku'], blank: 1, options: ['ku', 'ta', 'la', 'pi'], image: '📚', hint_bm: 'benda untuk membaca',          hint_eng: 'book'  },
-  { id: 2, word: 'bola',  syllables: ['bo', 'la'], blank: 0, options: ['bo', 'ku', 'ma', 'ti'], image: '⚽', hint_bm: 'alat permainan bulat',          hint_eng: 'ball'  },
-  { id: 3, word: 'mata',  syllables: ['ma', 'ta'], blank: 1, options: ['ta', 'ku', 'la', 'ji'], image: '👁️', hint_bm: 'digunakan untuk melihat',       hint_eng: 'eye'   },
-  { id: 4, word: 'kuda',  syllables: ['ku', 'da'], blank: 0, options: ['ku', 'ma', 'bi', 'ta'], image: '🐴', hint_bm: 'haiwan yang berlari laju',      hint_eng: 'horse' },
-  { id: 5, word: 'baju',  syllables: ['ba', 'ju'], blank: 1, options: ['ju', 'ku', 'ta', 'pi'], image: '👕', hint_bm: 'pakaian yang dipakai',          hint_eng: 'shirt' },
-  { id: 6, word: 'meja',  syllables: ['me', 'ja'], blank: 0, options: ['me', 'bu', 'ka', 'ti'], image: '🪑', hint_bm: 'perabot untuk belajar',         hint_eng: 'table' },
-  { id: 7, word: 'kaki',  syllables: ['ka', 'ki'], blank: 1, options: ['ki', 'ta', 'la', 'bu'], image: '🦵', hint_bm: 'anggota badan untuk berjalan',  hint_eng: 'leg'   },
-  { id: 8, word: 'topi',  syllables: ['to', 'pi'], blank: 0, options: ['to', 'bu', 'ke', 'da'], image: '🎩', hint_bm: 'dipakai di atas kepala',        hint_eng: 'hat'   },
+  { id: 1,  word: 'lampu',  syllables: ['lam', 'pu'],  blank: 0, options: ['lam', 'lum', 'lap', 'lan'], image: '💡', hint_bm: 'alat untuk cahaya',         hint_eng: 'lamp'    },
+  { id: 2,  word: 'pintu',  syllables: ['pin', 'tu'],  blank: 1, options: ['tu', 'ta', 'pa', 'ti'],     image: '🚪', hint_bm: 'tempat keluar masuk rumah', hint_eng: 'door'    },
+  { id: 3,  word: 'bantal', syllables: ['ban', 'tal'], blank: 0, options: ['ban', 'bat', 'bal', 'pan'], image: '🛏️', hint_bm: 'alas kepala tidur',         hint_eng: 'pillow'  },
+  { id: 4,  word: 'cincin', syllables: ['cin', 'cin'], blank: 0, options: ['cin', 'cun', 'cen', 'can'], image: '💍', hint_bm: 'perhiasan di jari',         hint_eng: 'ring'    },
+  { id: 5,  word: 'rumput', syllables: ['rum', 'put'], blank: 1, options: ['put', 'pat', 'puk', 'pam'], image: '🌿', hint_bm: 'tumbuhan di halaman',       hint_eng: 'grass'   },
+  { id: 6,  word: 'sandal', syllables: ['san', 'dal'], blank: 0, options: ['san', 'sal', 'dan', 'sen'], image: '🩴', hint_bm: 'alas kaki',                hint_eng: 'sandal'  },
+  { id: 7,  word: 'sampan', syllables: ['sam', 'pan'], blank: 0, options: ['sam', 'sap', 'sem', 'sab'], image: '⛵', hint_bm: 'perahu kecil',             hint_eng: 'boat'    },
+  { id: 8,  word: 'tandas', syllables: ['tan', 'das'], blank: 1, options: ['das', 'tas', 'dan', 'dus'], image: '🚽', hint_bm: 'tempat buang air',         hint_eng: 'toilet'  },
+  { id: 9,  word: 'kantin', syllables: ['kan', 'tin'], blank: 1, options: ['tin', 'tan', 'tun', 'kin'], image: '🍜', hint_bm: 'tempat jual makanan',      hint_eng: 'canteen' },
+  { id: 10, word: 'kipas',  syllables: ['ki', 'pas'],  blank: 1, options: ['pas', 'pis', 'pus', 'kas'], image: '🪭', hint_bm: 'alat untuk angin',         hint_eng: 'fan'     },
+  { id: 11, word: 'botol',  syllables: ['bo', 'tol'],  blank: 1, options: ['tol', 'tal', 'tul', 'bol'], image: '🧴', hint_bm: 'bekas untuk air',          hint_eng: 'bottle'  },
+  { id: 12, word: 'kasut',  syllables: ['ka', 'sut'],  blank: 1, options: ['sut', 'sat', 'sit', 'kut'], image: '👟', hint_bm: 'dipakai di kaki',          hint_eng: 'shoe'    },
+  { id: 13, word: 'mulut',  syllables: ['mu', 'lut'],  blank: 1, options: ['lut', 'lat', 'lit', 'mut'], image: '👄', hint_bm: 'untuk makan dan bercakap',  hint_eng: 'mouth'   },
+  { id: 14, word: 'doktor', syllables: ['dok', 'tor'], blank: 0, options: ['dok', 'duk', 'tok', 'dak'], image: '🩺', hint_bm: 'merawat orang sakit',       hint_eng: 'doctor'  },
+  { id: 15, word: 'roket',  syllables: ['ro', 'ket'],  blank: 1, options: ['ket', 'kat', 'kit', 'rok'], image: '🚀', hint_bm: 'terbang ke angkasa',        hint_eng: 'rocket'  },
 ];
 
 const C = { bg: '#E6F1FB', primary: '#1E7AC9', primaryDark: '#0E4A7E', correct: '#4CAF50', wrong: '#FF6B6B' };
 
-export default function SukuKataBinaPerkataan({ onBack, language = 'bm', topicComplete, onNextTopic }) {
+export default function BacaPerkataan({ onBack, language = 'bm', topicComplete, onNextTopic }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
@@ -31,6 +41,8 @@ export default function SukuKataBinaPerkataan({ onBack, language = 'bm', topicCo
   const q = QUESTIONS[currentIndex];
   const correctSyllable = q.syllables[q.blank];
   const isCorrect = selectedAnswer === correctSyllable;
+
+  const topicTitle = language === 'bm' ? 'Baca Perkataan KVK' : 'Read KVK Words';
 
   const shuffledOptions = useMemo(() => shuffle(q.options), [q]);
 
@@ -61,7 +73,7 @@ export default function SukuKataBinaPerkataan({ onBack, language = 'bm', topicCo
       setSelectedAnswer(null);
       setIsAnswered(false);
     } else {
-      if (topicComplete) topicComplete('1-2-1-asas-membaca');
+      if (topicComplete) topicComplete('1-2-4-baca-perkataan');
       setIsDone(true);
     }
   }, [currentIndex, topicComplete]);
@@ -78,38 +90,37 @@ export default function SukuKataBinaPerkataan({ onBack, language = 'bm', topicCo
   if (isDone) {
     return (
       <div style={{ height: '100dvh', background: C.bg, display: 'flex', flexDirection: 'column' }}>
-        <BMHeader onBack={onBack} language={language} title={language === 'bm' ? 'Asas Membaca & Memahami' : 'Basic Reading & Comprehension'} />
+        <BMHeader onBack={onBack} language={language} title={topicTitle} />
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'clamp(16px, 3vh, 36px)' }}>
-        <div style={{ fontSize: 'clamp(64px, 14vh, 120px)', marginBottom: 'clamp(10px, 1.8vh, 22px)' }}>🎉</div>
-        <h2 style={{ color: C.primary, fontSize: 'clamp(28px, 5vh, 48px)', margin: '0 0 clamp(6px, 1vh, 12px)' }}>
-          {language === 'bm' ? 'Tahniah!' : 'Well Done!'}
-        </h2>
-        <p style={{ fontSize: 'clamp(18px, 3.2vh, 28px)', color: '#555', margin: '0 0 clamp(16px, 3vh, 32px)' }}>
-          {language === 'bm' ? 'Markah: ' : 'Score: '}<strong>{score}</strong>/{QUESTIONS.length * 10}
-        </p>
-        <div style={{ display: 'flex', gap: 'clamp(10px, 1.8vw, 20px)' }}>
-          <button onClick={handleReset} style={{ padding: 'clamp(10px, 1.6vh, 16px) clamp(20px, 3.6vw, 34px)', background: '#E0E0E0', color: '#333', border: 'none', borderRadius: '12px', fontSize: 'clamp(16px, 2.6vh, 22px)', cursor: 'pointer', fontWeight: 'bold' }}>
-            {language === 'bm' ? 'Main Semula' : 'Play Again'}
-          </button>
-          {onNextTopic ? (
-            <button onClick={onNextTopic} style={{ padding: 'clamp(10px, 1.6vh, 16px) clamp(20px, 3.6vw, 34px)', background: C.primary, color: 'white', border: 'none', borderRadius: '12px', fontSize: 'clamp(16px, 2.6vh, 22px)', cursor: 'pointer', fontWeight: 'bold', boxShadow: `0 4px 0 ${C.primaryDark}` }}>
-              {language === 'bm' ? 'Topik Seterusnya →' : 'Next Topic →'}
+          <div style={{ fontSize: 'clamp(64px, 14vh, 120px)', marginBottom: 'clamp(10px, 1.8vh, 22px)' }}>🎉</div>
+          <h2 style={{ color: C.primary, fontSize: 'clamp(28px, 5vh, 48px)', margin: '0 0 clamp(6px, 1vh, 12px)' }}>
+            {language === 'bm' ? 'Tahniah!' : 'Well Done!'}
+          </h2>
+          <p style={{ fontSize: 'clamp(18px, 3.2vh, 28px)', color: '#555', margin: '0 0 clamp(16px, 3vh, 32px)' }}>
+            {language === 'bm' ? 'Markah: ' : 'Score: '}<strong>{score}</strong>/{QUESTIONS.length * 10}
+          </p>
+          <div style={{ display: 'flex', gap: 'clamp(10px, 1.8vw, 20px)' }}>
+            <button onClick={handleReset} style={{ padding: 'clamp(10px, 1.6vh, 16px) clamp(20px, 3.6vw, 34px)', background: '#E0E0E0', color: '#333', border: 'none', borderRadius: '12px', fontSize: 'clamp(16px, 2.6vh, 22px)', cursor: 'pointer', fontWeight: 'bold' }}>
+              {language === 'bm' ? 'Main Semula' : 'Play Again'}
             </button>
-          ) : (
-            <button onClick={onBack} style={{ padding: 'clamp(10px, 1.6vh, 16px) clamp(20px, 3.6vw, 34px)', background: C.primary, color: 'white', border: 'none', borderRadius: '12px', fontSize: 'clamp(16px, 2.6vh, 22px)', cursor: 'pointer', fontWeight: 'bold', boxShadow: `0 4px 0 ${C.primaryDark}` }}>
-              {language === 'bm' ? 'Kembali' : 'Back'}
-            </button>
-          )}
+            {onNextTopic ? (
+              <button onClick={onNextTopic} style={{ padding: 'clamp(10px, 1.6vh, 16px) clamp(20px, 3.6vw, 34px)', background: C.primary, color: 'white', border: 'none', borderRadius: '12px', fontSize: 'clamp(16px, 2.6vh, 22px)', cursor: 'pointer', fontWeight: 'bold', boxShadow: `0 4px 0 ${C.primaryDark}` }}>
+                {language === 'bm' ? 'Topik Seterusnya →' : 'Next Topic →'}
+              </button>
+            ) : (
+              <button onClick={onBack} style={{ padding: 'clamp(10px, 1.6vh, 16px) clamp(20px, 3.6vw, 34px)', background: C.primary, color: 'white', border: 'none', borderRadius: '12px', fontSize: 'clamp(16px, 2.6vh, 22px)', cursor: 'pointer', fontWeight: 'bold', boxShadow: `0 4px 0 ${C.primaryDark}` }}>
+                {language === 'bm' ? 'Kembali' : 'Back'}
+              </button>
+            )}
+          </div>
         </div>
       </div>
-    </div>
     );
   }
 
   return (
     <div style={{ height: '100dvh', overflow: 'hidden', display: 'flex', flexDirection: 'column', background: C.bg, fontFamily: "'Fredoka', system-ui, sans-serif" }}>
       <style>{`
-
         .sk-progress-track { width: clamp(50px, 12vw, 100px); height: clamp(5px, .8vh, 8px); background: #FFD9A8; border-radius: 999px; overflow: hidden; }
         .sk-progress-fill { height: 100%; background: ${C.primary}; border-radius: 999px; transition: width .3s; }
         .sk-label { font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: clamp(22px, 3.2vh, 28px); color: #888; white-space: nowrap; }
@@ -145,7 +156,7 @@ export default function SukuKataBinaPerkataan({ onBack, language = 'bm', topicCo
         @media (max-height: 500px) { .sk-hint { display: none; } .sk-card-label { display: none; } }
       `}</style>
 
-      <BMHeader onBack={onBack} language={language} title={language === 'bm' ? 'Asas Membaca & Memahami' : 'Basic Reading & Comprehension'} />
+      <BMHeader onBack={onBack} language={language} title={topicTitle} />
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', padding: '6px 12px', background: 'rgba(255,255,255,.3)' }}>
         <span className="sk-label">{language === 'bm' ? 'Soalan' : 'Q'}</span>
         <div className="sk-progress-track">
@@ -155,16 +166,12 @@ export default function SukuKataBinaPerkataan({ onBack, language = 'bm', topicCo
         <span className="sk-score">⭐ {score}</span>
       </div>
 
-      {/* Body */}
       <div className="sk-body">
         <div className="sk-body-inner">
-          {/* Emoji */}
           <div className="sk-emoji">{q.image}</div>
 
-          {/* Hint */}
           <p className="sk-hint">({language === 'bm' ? q.hint_bm : q.hint_eng})</p>
 
-          {/* Word builder card */}
           <div className="sk-card">
             <p className="sk-card-label">{language === 'bm' ? 'Pilih suku kata yang sesuai:' : 'Pick the correct syllable:'}</p>
             <div className="sk-slot-row">
@@ -187,7 +194,6 @@ export default function SukuKataBinaPerkataan({ onBack, language = 'bm', topicCo
             )}
           </div>
 
-          {/* 2×2 option grid */}
           <div className="sk-grid">
             {shuffledOptions.map((suku, idx) => {
               let extra = '';
@@ -203,7 +209,6 @@ export default function SukuKataBinaPerkataan({ onBack, language = 'bm', topicCo
             })}
           </div>
 
-          {/* Feedback + action buttons */}
           {isAnswered && (
             <div className="sk-feedback" style={{ background: isCorrect ? '#D4EDDA' : '#F8D7DA', color: isCorrect ? '#155724' : '#721C24' }}>
               {isCorrect

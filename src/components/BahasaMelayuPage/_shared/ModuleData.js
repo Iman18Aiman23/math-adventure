@@ -2,8 +2,8 @@ import {
   M1Badge, M2Badge, M3Badge, M4Badge, M5Badge,
   M1Topic1, M1Topic2,
   M1Vokal, M1KonsonanBJ, M1KonsonanKR, M1KonsonanSZ,
-  M1SukuKata, M1DengarTeka, M1FrasaBergambar,
-  M2Topic1, M2Topic2, M2Topic3,
+  M1SukuKata, M1DengarTeka, M1DengarBuat, M1FrasaBergambar,
+  M2Topic1, M2Topic2, M2Topic3, M2Topic4, M2Topic5,
   M3Topic1, M3Topic2, M3Topic3,
   M4Topic1, M4Topic2,
   M5Topic1, M5Topic2, M5Topic3,
@@ -62,14 +62,21 @@ const T1_MODULES = [
       { id: '1-1-7-suku-kata',            num: '1.5', label: 'Suku Kata',                           icon: M1SukuKata, disabled: false },
       { id: '1-1-6-dengar-teka',          num: '1.6', label: 'Dengar & Teka',                       icon: M1DengarTeka, disabled: false },
       { id: '1-1-2-bertutur-maklumat',    num: '1.7', label: 'Baca Frasa Bergambar',                icon: M1FrasaBergambar, disabled: false },
+      { id: '1-1-8-dengar-buat',          num: '1.8', label: 'Dengar & Buat',                       icon: M1DengarBuat, disabled: false },
     ]),
   buildModule(2,
     'Kemahiran Membaca',
     'Reading Skills',
     M2Badge, M2_THEME, 1, [
+      // Display order = learning ladder. `num` is display-only and now runs
+      // sequentially (2.1–2.5) so the visible numbering matches the trail
+      // order; opaque `id`s keep their original numbering so saved progress
+      // survives.
       { id: '1-2-1-asas-membaca',         num: '2.1', label: 'Asas Membaca & Memahami',             icon: M2Topic1, disabled: false },
-      { id: '1-2-2-membaca-mekanis',      num: '2.2', label: 'Membaca secara Mekanis',              icon: M2Topic2, disabled: false },
-      { id: '1-2-3-membaca-menaakul',     num: '2.3', label: 'Membaca & Menaakul',                  icon: M2Topic3, disabled: false },
+      { id: '1-2-4-baca-perkataan',       num: '2.2', label: 'Baca Perkataan KVK',                  icon: M2Topic4, disabled: false },
+      { id: '1-2-2-membaca-mekanis',      num: '2.3', label: 'Baca dengan Lancar',                  icon: M2Topic2, disabled: false },
+      { id: '1-2-5-fahami-cerita',        num: '2.4', label: 'Fahami Cerita',                       icon: M2Topic5, disabled: false },
+      { id: '1-2-3-membaca-menaakul',     num: '2.5', label: 'Baca & Fahami',                       icon: M2Topic3, disabled: false },
     ]),
   buildModule(3,
     'Kemahiran Menulis',
@@ -89,8 +96,8 @@ const T1_MODULES = [
     'Aspek Tatabahasa',
     'Grammar',
     M5Badge, M5_THEME, 1, [
-      { id: '1-5-1-morfologi-kata',       num: '5.1', label: 'Morfologi (Golongan Kata)',           icon: M5Topic1, disabled: false },
-      { id: '1-5-2-sintaksis-ayat',       num: '5.2', label: 'Sintaksis (Ayat Tunggal)',            icon: M5Topic3, disabled: false },
+      { id: '1-5-1-morfologi-kata',       num: '5.1', label: 'Golongan Kata',                     icon: M5Topic1, disabled: false },
+      { id: '1-5-2-sintaksis-ayat',       num: '5.2', label: 'Ayat Tunggal',                       icon: M5Topic3, disabled: false },
     ]),
 ];
 
@@ -208,29 +215,45 @@ export function getNextTopicId(topicId) {
   return null;
 }
 
+// Next module's id (e.g. 'membaca') given a topic — used by a module's
+// last-topic completion to jump to the NEXT module's hub (trail) page.
+// Returns null when this is the last module of the year. The caller is
+// responsible for adding the year prefix (`${year}-${id}`) for year 2/3.
+export function getNextModuleId(topicId) {
+  if (!topicId) return null;
+  for (const year of Object.keys(DATA)) {
+    const yearModules = DATA[year];
+    for (let modIdx = 0; modIdx < yearModules.length; modIdx++) {
+      if (yearModules[modIdx].topics.some(t => t.id === topicId)) {
+        const nextMod = yearModules[modIdx + 1];
+        return nextMod ? nextMod.id : null;
+      }
+    }
+  }
+  return null;
+}
+
 /* ─── BM_QUESTIONS Bank ───────────────────────────────────────── */
 
 export const BM_QUESTIONS = {
-  // ── T1 M2 T2.2: Membaca secara Mekanis ──────────────────────
-  // Audio-driven: child hears a sentence read aloud, picks matching text.
-  '1-2-2-membaca-mekanis': [
-    { question: 'Ayat manakah yang kamu dengar?', audioText: 'Saya suka bola.', answer: 'Saya suka bola.', options: ['Saya suka bola.', 'Saya suka buku.', 'Saya makan bola.', 'Saya ada bola.'] },
-    { question: 'Ayat manakah yang kamu dengar?', audioText: 'Emak pergi pasar.', answer: 'Emak pergi pasar.', options: ['Emak pergi pasar.', 'Emak pergi rumah.', 'Ayah pergi pasar.', 'Emak suka pasar.'] },
-    { question: 'Ayat manakah yang kamu dengar?', audioText: 'Adik tidur nyenyak.', answer: 'Adik tidur nyenyak.', options: ['Adik tidur nyenyak.', 'Adik tidur lena.', 'Kakak tidur nyenyak.', 'Adik mandi nyenyak.'] },
-    { question: 'Ayat manakah yang kamu dengar?', audioText: 'Ayah membaca surat khabar.', answer: 'Ayah membaca surat khabar.', options: ['Ayah membaca surat khabar.', 'Ayah membaca buku.', 'Emak membaca surat.', 'Ayah menulis surat.'] },
-    { question: 'Ayat manakah yang kamu dengar?', audioText: 'Kucing itu comel.', answer: 'Kucing itu comel.', options: ['Kucing itu comel.', 'Anjing itu comel.', 'Kucing itu gemuk.', 'Arnab itu comel.'] },
-    { question: 'Ayat manakah yang kamu dengar?', audioText: 'Kakak dan abang pergi ke sekolah.', answer: 'Kakak dan abang pergi ke sekolah.', options: ['Kakak dan abang pergi ke sekolah.', 'Kakak dan adik pergi ke sekolah.', 'Abang pergi ke sekolah.', 'Kakak pergi ke pasar.'] },
-    { question: 'Ayat manakah yang kamu dengar?', audioText: 'Budi membaca buku di perpustakaan.', answer: 'Budi membaca buku di perpustakaan.', options: ['Budi membaca buku di perpustakaan.', 'Budi membaca buku di rumah.', 'Ali membaca buku di perpustakaan.', 'Budi menulis buku di perpustakaan.'] },
-    // ── Intonation / punctuation awareness ──
-    { question: 'Ayat manakah yang kamu dengar?', audioText: 'Apa khabar?', answer: 'Apa khabar?', options: ['Apa khabar?', 'Apa khabar.', 'Apa khabar!', 'Ada khabar?'] },
-    { question: 'Ayat manakah yang kamu dengar?', audioText: 'Tolong ambilkan buku itu.', answer: 'Tolong ambilkan buku itu.', options: ['Tolong ambilkan buku itu.', 'Tolong ambilkan buku itu?', 'Ambilkan buku itu.', 'Tolong ambilkan pensel itu.'] },
-    { question: 'Ayat manakah yang kamu dengar?', audioText: 'Wah, cantiknya bunga ini!', answer: 'Wah, cantiknya bunga ini!', options: ['Wah, cantiknya bunga ini!', 'Wah, cantiknya bunga ini?', 'Wah, cantiknya bunga ini.', 'Wah, besarnya bunga ini!'] },
-    // ── Simple sentence comprehension ──
-    { question: 'Ayat manakah yang betul?', audioText: 'Ibu memasak di dapur.', answer: 'Ibu memasak di dapur.', options: ['Ibu memasak di dapur.', 'Ibu memasak di bilik.', 'Ayah memasak di dapur.', 'Ibu mencuci di dapur.'] },
-    { question: 'Ayat manakah yang betul?', audioText: 'Mereka bermain bola di padang.', answer: 'Mereka bermain bola di padang.', options: ['Mereka bermain bola di padang.', 'Mereka bermain bola di rumah.', 'Dia bermain bola di padang.', 'Mereka bermain guli di padang.'] },
-    { question: 'Ayat manakah yang betul?', audioText: 'Cikgu mengajar di dalam kelas.', answer: 'Cikgu mengajar di dalam kelas.', options: ['Cikgu mengajar di dalam kelas.', 'Cikgu mengajar di padang.', 'Murid belajar di dalam kelas.', 'Cikgu bercerita di dalam kelas.'] },
-    { question: 'Ayat manakah yang betul?', audioText: 'Nenek menanam sayur di kebun.', answer: 'Nenek menanam sayur di kebun.', options: ['Nenek menanam sayur di kebun.', 'Nenek menanam bunga di kebun.', 'Atuk menanam sayur di kebun.', 'Nenek menjual sayur di kebun.'] },
-    { question: 'Ayat manakah yang betul?', audioText: 'Pak Ali membawa bakul ke pasar.', answer: 'Pak Ali membawa bakul ke pasar.', options: ['Pak Ali membawa bakul ke pasar.', 'Pak Ali membawa bakul ke rumah.', 'Pak Abu membawa bakul ke pasar.', 'Pak Ali membawa beg ke pasar.'] },
+  // ── T1 M2 T2.4: Fahami Cerita ───────────────────────────────
+  // Main-idea practice. Distractors are deliberately PARTIAL details
+  // (a single fact from the story), never a competing full summary —
+  // age-7 readers cannot reliably choose between two valid summaries.
+  // NOTE: the audio-driven 'membaca-mekanis' and KVK 'baca-perkataan'
+  // banks were removed (2026-06) — both topics ship their own data and
+  // these banks were never imported.
+  '1-2-5-fahami-cerita': [
+    { question: 'Apakah idea utama? Kucing itu berwarna hitam. Ia suka main di halaman.', answer: 'Kucing hitam suka main di halaman.', options: ['Kucing hitam suka main di halaman.', 'Kucing itu warna hitam.', 'Kucing main di halaman.', 'Kucing hitam suka makan.'] },
+    { question: 'Apakah idea utama? Bas sekolah berwarna kuning. Ali naik bas setiap pagi.', answer: 'Ali naik bas kuning ke sekolah.', options: ['Ali naik bas kuning ke sekolah.', 'Bas sekolah warna kuning.', 'Ali naik bas pagi-pagi.', 'Bas kuning pergi sekolah.'] },
+    { question: 'Apakah idea utama? Pokok rambutan tinggi. Buahnya manis. Adik suka makan.', answer: 'Adik suka buah rambutan manis.', options: ['Adik suka buah rambutan manis.', 'Pokok rambutan tinggi.', 'Buah rambutan manis.', 'Adik makan rambutan.'] },
+    { question: 'Apakah idea utama? Ibu tanam bunga ros, cempaka dan matahari di taman.', answer: 'Ibu tanam pelbagai bunga di taman.', options: ['Ibu tanam pelbagai bunga di taman.', 'Ibu tanam bunga ros.', 'Bunga cempaka ada di taman.', 'Taman ibu cantik.'] },
+    { question: 'Apakah idea utama? Ayah beli ikan di pasar. Ibu masak ikan untuk makan malam.', answer: 'Ibu masak ikan yang dibeli ayah.', options: ['Ibu masak ikan yang dibeli ayah.', 'Ayah pergi ke pasar.', 'Ibu masak untuk makan malam.', 'Ayah beli ikan.'] },
+    { question: 'Apakah idea utama? Adik demam panas. Ibu bawa adik jumpa doktor.', answer: 'Ibu bawa adik yang demam ke doktor.', options: ['Ibu bawa adik yang demam ke doktor.', 'Adik demam panas.', 'Ibu jumpa doktor.', 'Doktor rawat adik.'] },
+    { question: 'Apakah idea utama? Rani suka tolong ibu. Rani sapu sampah dan lap meja.', answer: 'Rani rajin tolong ibu di rumah.', options: ['Rani rajin tolong ibu di rumah.', 'Rani sapu sampah.', 'Rani lap meja.', 'Rani tolong ibu sekali.'] },
+    { question: 'Apakah cerita ini tentang? Kucing dan tikus tinggal dalam rumah yang sama.', answer: 'Kucing dan tikus tinggal serumah.', options: ['Kucing dan tikus tinggal serumah.', 'Kucing suka tikus.', 'Tikus tinggal di rumah.', 'Kucing tinggal di rumah.'] },
+    { question: 'Apakah cerita ini tentang? Aiman tanam biji kacang. Selepas seminggu, biji tumbuh.', answer: 'Aiman tanam kacang dan ia tumbuh.', options: ['Aiman tanam kacang dan ia tumbuh.', 'Biji kacang tumbuh.', 'Aiman tanam biji.', 'Kacang ditanam seminggu.'] },
+    { question: 'Apakah idea utama? Kakak baca buku cerita. Adik dengar sambil tersenyum.', answer: 'Kakak bercerita dan adik suka mendengar.', options: ['Kakak bercerita dan adik suka mendengar.', 'Kakak baca buku.', 'Adik dengar cerita.', 'Adik tersenyum.'] },
   ],
   // ── T1 M1 T1.1: Mendengar & Menyebut ───────────────────────
   // Emoji-driven: a big emoji is shown (no audio); the child names
@@ -668,6 +691,41 @@ export const BM_QUESTIONS = {
     { question: 'Manakah cara untuk mengakhiri cerita kreatif?', answer: 'Memberi pengajaran atau kesimpulan', options: ['Memberi pengajaran atau kesimpulan', 'Berhenti mengejut', 'Tamat tanpa sebab', 'Ulang semula cerita'] },
     { question: 'Apakah yang membuat sesuatu cerita itu menarik?', answer: 'Watak yang kuat dan plot yang tidak dijangka', options: ['Watak yang kuat dan plot yang tidak dijangka', 'Ayat yang panjang', 'Banyak gambar', 'Muka surat tebal'] },
     { question: 'Apakah contoh kata adjektif yang boleh digunakan dalam penulisan kreatif?', answer: 'Indah, menakjubkan, mempesona', options: ['Indah, menakjubkan, mempesona', 'Besar, kecil', 'Hitam, putih', 'Satu, dua'] },
+  ],
+  // ── T1 M5 T5.1: Morfologi (Golongan Kata) ─────────────────────
+  // Rebuilt 2026-06-11: 8 word-class categories (Kata Nama Am/Khas,
+  // Kerja/Adjektif, Hubung, Sendi Nama, Tanya, Ganti Nama Diri).
+  '1-5-1-morfologi-kata': [
+    // ── Kata Nama Am (common nouns) ──
+    { question: '"kucing" ialah?', emoji: '🐱', answer: 'Kata Nama Am', options: ['Kata Nama Am', 'Kata Nama Khas', 'Kata Kerja', 'Kata Adjektif'] },
+    { question: '"sekolah" ialah?', emoji: '🏫', answer: 'Kata Nama Am', options: ['Kata Nama Am', 'Kata Nama Khas', 'Kata Kerja', 'Kata Adjektif'] },
+    // ── Kata Nama Khas (proper nouns) ──
+    { question: '"Ahmad" ialah?', emoji: '👦', answer: 'Kata Nama Khas', options: ['Kata Nama Khas', 'Kata Nama Am', 'Kata Kerja', 'Kata Adjektif'] },
+    { question: '"Malaysia" ialah?', emoji: '🇲🇾', answer: 'Kata Nama Khas', options: ['Kata Nama Khas', 'Kata Nama Am', 'Kata Kerja', 'Kata Adjektif'] },
+    // ── Kata Kerja (verbs) ──
+    { question: '"berlari" ialah?', emoji: '🏃', answer: 'Kata Kerja', options: ['Kata Kerja', 'Kata Nama Am', 'Kata Adjektif', 'Kata Nama Khas'] },
+    { question: '"membaca" ialah?', emoji: '📖', answer: 'Kata Kerja', options: ['Kata Kerja', 'Kata Nama Am', 'Kata Adjektif', 'Kata Nama Khas'] },
+    // ── Kata Adjektif (adjectives) ──
+    { question: '"cantik" ialah?', emoji: '🌸', answer: 'Kata Adjektif', options: ['Kata Adjektif', 'Kata Nama Am', 'Kata Kerja', 'Kata Nama Khas'] },
+    { question: '"besar" ialah?', emoji: '🐘', answer: 'Kata Adjektif', options: ['Kata Adjektif', 'Kata Nama Am', 'Kata Kerja', 'Kata Nama Khas'] },
+    // ── Kata Hubung (conjunctions: dan, atau, tetapi) ──
+    { question: '"Saya suka nasi ___ ayam goreng." Pilih kata hubung yang BETUL.', answer: 'dan', options: ['dan', 'atau', 'tetapi', 'kerana'] },
+    { question: '"Kamu mahu teh ___ kopi?" Pilih kata hubung yang BETUL.', answer: 'atau', options: ['atau', 'dan', 'tetapi', 'lalu'] },
+    { question: '"Dia miskin ___ pemurah." Pilih kata hubung yang BETUL.', answer: 'tetapi', options: ['tetapi', 'dan', 'atau', 'kerana'] },
+    // ── Kata Sendi Nama (prepositions: di, ke, dari, daripada) ──
+    { question: '"Saya pergi ___ sekolah." Pilih kata sendi nama yang BETUL.', answer: 'ke', options: ['ke', 'di', 'dari', 'daripada'] },
+    { question: '"Kucing tidur ___ atas tikar." Pilih kata sendi nama yang BETUL.', answer: 'di', options: ['di', 'ke', 'dari', 'daripada'] },
+    { question: '"Dia datang ___ Kuala Lumpur." Pilih kata sendi nama yang BETUL.', answer: 'dari', options: ['dari', 'daripada', 'di', 'ke'] },
+    { question: '"Hadiah ini ___ Cikgu Siti." Pilih kata sendi nama yang BETUL.', answer: 'daripada', options: ['daripada', 'dari', 'di', 'ke'] },
+    // ── Kata Tanya (question words) ──
+    { question: '"___ nama kamu?" Pilih kata tanya yang BETUL.', answer: 'Siapa', options: ['Siapa', 'Apa', 'Mengapa', 'Di mana'] },
+    { question: '"___ kamu menangis?" Pilih kata tanya yang BETUL.', answer: 'Mengapa', options: ['Mengapa', 'Apa', 'Siapa', 'Bila'] },
+    { question: '"___ awak tinggal?" Pilih kata tanya yang BETUL.', answer: 'Di mana', options: ['Di mana', 'Apa', 'Siapa', 'Mengapa'] },
+    { question: '"___ warna kegemaran kamu?" Pilih kata tanya yang BETUL.', answer: 'Apa', options: ['Apa', 'Siapa', 'Mengapa', 'Di mana'] },
+    // ── Kata Ganti Nama Diri (personal pronouns) ──
+    { question: '"___ suka membaca buku." (tunjuk diri sendiri)', emoji: '🧑', answer: 'Saya', options: ['Saya', 'Kamu', 'Dia', 'Kami'] },
+    { question: '"___ pergi ke pasar." (tunjuk orang ketiga)', emoji: '👤', answer: 'Dia', options: ['Dia', 'Saya', 'Kamu', 'Mereka'] },
+    { question: '"Buku ini untuk ___." (tunjuk orang kedua)', emoji: '👋', answer: 'Kamu', options: ['Kamu', 'Saya', 'Dia', 'Mereka'] },
   ],
   // ── T3 M5 T5.1: Morfologi Lanjutan ───────────────────────────
   // Advanced: Kata Hubung Pancangan, Kata Sendi Nama, Kata Sandang, Kata Banyak Makna.
