@@ -122,7 +122,7 @@ class SpeechManagerClass {
             this._micPermission = 'granted';
             return true;
           }
-        } catch (_) { /* permissions API may not support 'microphone' */ }
+        } catch { /* permissions API may not support 'microphone' */ }
       }
 
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -212,6 +212,8 @@ class SpeechManagerClass {
       else return { voice: v, score: -1 };
 
       if (!v.localService) score += 10; // network/online voices sound better
+      // Edge/Android "Natural"/"Neural" voices are far less robotic — prefer them.
+      if (/natural|neural/.test(name)) score += 12;
 
       const idx  = preferred.findIndex(p => name.includes(p.toLowerCase()));
       if (idx !== -1) score += (preferred.length - idx) * 4;
@@ -331,7 +333,7 @@ class SpeechManagerClass {
           grammarList = new this._GrammarListClass();
           grammarList.addFromString(grammarStr, 1.0);
         }
-      } catch (_) {}
+      } catch { /* grammar list unsupported */ }
     }
 
     const startRecognition = () => {
@@ -344,7 +346,7 @@ class SpeechManagerClass {
       recognition.maxAlternatives = this._isIOSSafari ? 1 : 5;
 
       if (grammarList) {
-        try { recognition.grammars = grammarList; } catch (_) {}
+        try { recognition.grammars = grammarList; } catch { /* read-only on some engines */ }
       }
 
       recognition.onaudiostart = () => {
@@ -418,7 +420,7 @@ class SpeechManagerClass {
         recognition.start();
       } catch (e) {
         if (e.message?.includes('already started')) {
-          try { recognition.abort(); } catch (_) {}
+          try { recognition.abort(); } catch { /* already stopped */ }
           setTimeout(() => startRecognition(), 400);
         } else {
           this._listening = false;
@@ -441,7 +443,7 @@ class SpeechManagerClass {
   stop() {
     this._listening = false;
     if (this._recognition) {
-      try { this._recognition.abort(); } catch (_) {}
+      try { this._recognition.abort(); } catch { /* already stopped */ }
       this._recognition = null;
     }
   }

@@ -3,6 +3,7 @@ import { X, RefreshCw } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { playSound, playHoverSound } from '../../../../utils/soundManager';
 import BMHeader from '../../_shared/BMHeader';
+import useTopicGamification from '../../../../hooks/useTopicGamification';
 
 function shuffle(arr) {
   const a = [...arr];
@@ -57,6 +58,9 @@ const PASSAGES = [
 
 const TOTAL_QUESTIONS = PASSAGES.reduce((sum, p) => sum + p.questions.length, 0);
 
+// Mastery gate: minimum % required to mark this topic complete.
+const PASS_PCT = 70;
+
 export default function KefahamanBacaan({ onBack, language = 'bm', topicComplete, onNextTopic }) {
   const topicTitle = language === 'bm' ? 'Baca & Fahami' : 'Read & Understand';
   const passages = useMemo(() =>
@@ -70,6 +74,7 @@ export default function KefahamanBacaan({ onBack, language = 'bm', topicComplete
   const [score, setScore]                 = useState(0);
   const [isDone, setIsDone]               = useState(false);
   const [showQuiz, setShowQuiz]           = useState(false);
+  const { awardCorrect, awardWrong, completeTopic } = useTopicGamification('1-2-3-membaca-menaakul');
 
   const passage  = passages[passageIdx];
   const question = passage.questions[qIdx];
@@ -82,12 +87,14 @@ export default function KefahamanBacaan({ onBack, language = 'bm', topicComplete
     if (option === question.answer) {
       playSound('correct');
       setScore(s => s + 10);
+      awardCorrect(); // +10 XP live per correct answer
       confetti({ particleCount: 40, spread: 55 });
     } else {
+      awardWrong(); // reset XP streak
       playSound('wrong');
     }
     setIsAnswered(true);
-  }, [isAnswered, question]);
+  }, [isAnswered, question, awardCorrect, awardWrong]);
 
   const handleNext = useCallback(() => {
     if (!isAnswered) return;
@@ -105,10 +112,12 @@ export default function KefahamanBacaan({ onBack, language = 'bm', topicComplete
       setShowQuiz(false);
       playSound('streak');
       confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
-      if (topicComplete) topicComplete('1-2-3-membaca-menaakul');
+      const pct = Math.round((score / (TOTAL_QUESTIONS * 10)) * 100);
+      if (topicComplete && pct >= PASS_PCT) topicComplete('1-2-3-membaca-menaakul');
+      completeTopic(score / 10, TOTAL_QUESTIONS, PASS_PCT);
       setIsDone(true);
     }
-  }, [isAnswered, qIdx, passageIdx, passage?.questions.length, topicComplete]);
+  }, [isAnswered, qIdx, passageIdx, passage?.questions.length, topicComplete, score, completeTopic]);
 
   const handleStartQuiz = useCallback(() => {
     setShowQuiz(true);
@@ -142,29 +151,55 @@ export default function KefahamanBacaan({ onBack, language = 'bm', topicComplete
   };
 
   if (isDone) {
+    const pct = Math.round((score / (TOTAL_QUESTIONS * 10)) * 100);
+    const passed = pct >= PASS_PCT;
+    const primaryBtnStyle = { padding: '0.75rem 1.5rem', background: '#1E7AC9', color: 'white', border: 'none', borderRadius: '10px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold', boxShadow: '0 4px 0 #0E4A7E' };
+    const secondaryBtnStyle = { padding: '0.75rem 1.5rem', background: '#E0E0E0', color: '#333', border: 'none', borderRadius: '10px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold' };
     return (
       <div style={{ height: '100dvh', background: '#E6F1FB', display: 'flex', flexDirection: 'column' }}>
         <BMHeader onBack={onBack} language={language} title={topicTitle} />
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
-          <div style={{ fontSize: '5rem', marginBottom: '1rem' }}>📜</div>
+          <div style={{ fontSize: '5rem', marginBottom: '1rem' }}>{passed ? '📜' : '💪'}</div>
           <h2 style={{ color: '#1E7AC9', fontSize: '2rem', margin: '0 0 0.5rem' }}>
-            {language === 'bm' ? 'Tahniah!' : 'Well Done!'}
+            {passed
+              ? (language === 'bm' ? 'Tahniah!' : 'Well Done!')
+              : (language === 'bm' ? 'Cuba Lagi!' : 'Try Again!')}
           </h2>
-          <p style={{ fontSize: '1.4rem', color: '#555', margin: '0 0 2rem' }}>
-            {language === 'bm' ? 'Markah: ' : 'Score: '}<strong>{score}</strong>/{TOTAL_QUESTIONS * 10}
+          <p style={{ fontSize: '1.4rem', color: '#555', margin: '0 0 0.5rem' }}>
+            {language === 'bm' ? 'Markah: ' : 'Score: '}<strong>{score}</strong>/{TOTAL_QUESTIONS * 10} ({pct}%)
           </p>
-          <div style={{ display: 'flex', gap: '1rem' }}>
-            <button onClick={handleReset} style={{ padding: '0.75rem 1.5rem', background: '#E0E0E0', color: '#333', border: 'none', borderRadius: '10px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold' }}>
-              {language === 'bm' ? 'Main Semula' : 'Play Again'}
-            </button>
-            {onNextTopic ? (
-              <button onClick={onNextTopic} style={{ padding: '0.75rem 1.5rem', background: '#1E7AC9', color: 'white', border: 'none', borderRadius: '10px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold', boxShadow: '0 4px 0 #0E4A7E' }}>
-                {language === 'bm' ? 'Topik Seterusnya →' : 'Next Topic →'}
-              </button>
+          {!passed && (
+            <p style={{ fontSize: '0.95rem', color: '#FF6B6B', fontWeight: 'bold', margin: '0 0 2rem', textAlign: 'center' }}>
+              {language === 'bm'
+                ? `Skor minima ${PASS_PCT}% diperlukan untuk lulus topik ini.`
+                : `You need at least ${PASS_PCT}% to pass this topic.`}
+            </p>
+          )}
+          <div style={{ display: 'flex', gap: '1rem', marginTop: passed ? '1.5rem' : 0 }}>
+            {passed ? (
+              <>
+                <button onClick={handleReset} style={secondaryBtnStyle}>
+                  {language === 'bm' ? 'Main Semula' : 'Play Again'}
+                </button>
+                {onNextTopic ? (
+                  <button onClick={onNextTopic} style={primaryBtnStyle}>
+                    {language === 'bm' ? 'Topik Seterusnya →' : 'Next Topic →'}
+                  </button>
+                ) : (
+                  <button onClick={onBack} style={primaryBtnStyle}>
+                    {language === 'bm' ? 'Kembali' : 'Back'}
+                  </button>
+                )}
+              </>
             ) : (
-              <button onClick={onBack} style={{ padding: '0.75rem 1.5rem', background: '#1E7AC9', color: 'white', border: 'none', borderRadius: '10px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold', boxShadow: '0 4px 0 #0E4A7E' }}>
-                {language === 'bm' ? 'Kembali' : 'Back'}
-              </button>
+              <>
+                <button onClick={handleReset} style={primaryBtnStyle}>
+                  🔄 {language === 'bm' ? 'Cuba Lagi' : 'Try Again'}
+                </button>
+                <button onClick={onBack} style={secondaryBtnStyle}>
+                  {language === 'bm' ? 'Kembali' : 'Back'}
+                </button>
+              </>
             )}
           </div>
         </div>

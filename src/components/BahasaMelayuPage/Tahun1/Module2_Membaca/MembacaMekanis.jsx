@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { RefreshCw, SkipForward } from 'lucide-react';
 import BMHeader from '../../_shared/BMHeader';
+import useTopicGamification from '../../../../hooks/useTopicGamification';
 import SpeechManager from '../../../../services/SpeechManager';
 import confetti from 'canvas-confetti';
 import { playSound } from '../../../../utils/soundManager';
@@ -45,6 +46,14 @@ const ITEMS = [
     keywords: [['cikgu','guru','teacher'], ['ajar','mengajar','teach'], ['murid','student'], ['tulis','menulis','write']] },
   { id: 's15',emoji: '🧒🧒🏠', phrase: 'Kawan-kawan main tepi rumah',
     keywords: [['kawan','friend'], ['main','play'], ['tepi','side','beside'], ['rumah','house']] },
+  { id: 's16',emoji: '👦🍚👧🥤', phrase: 'Abang makan nasi dan kakak minum air',
+    keywords: [['abang','bang','brother'], ['makan','eat'], ['nasi','rice'], ['dan','and'], ['kakak','kak','sister'], ['minum','drink'], ['air','water']] },
+  { id: 's17',emoji: '🌧️🏃🏫', phrase: 'Hujan turun tetapi kami pergi sekolah',
+    keywords: [['hujan','rain'], ['turun','jatuh','fall','falling'], ['tetapi','tapi','but'], ['kami','kita','we'], ['pergi','go','going'], ['sekolah','school']] },
+  { id: 's18',emoji: '⚽🏊', phrase: 'Kita boleh main bola atau kita boleh berenang',
+    keywords: [['kita','kami','we'], ['boleh','can'], ['main','bermain','play'], ['bola','ball'], ['atau','or'], ['renang','berenang','swim','swimming']] },
+  { id: 's19',emoji: '🧒😢', phrase: 'Adik menangis kerana dia jatuh',
+    keywords: [['adik','kid'], ['menangis','tangis','cry','crying'], ['kerana','sebab','because'], ['dia','he','she'], ['jatuh','fall','fell']] },
 ];
 
 const shuffleArr = (arr) => [...arr].sort(() => Math.random() - 0.5);
@@ -231,8 +240,7 @@ const STYLE = `
     background: #fff; color: ${C.primary};
     border: 2px solid ${C.primary};
   }
-  .sfb-main-btn.good { background: ${C.correct}; box-shadow: 0 4px 0 ${C.correctDark}; }
-  .sfb-main-btn.bad  { background: ${C.wrong};   box-shadow: 0 4px 0 ${C.wrongDark}; }
+  .sfb-icon-btn:disabled, .sfb-main-btn:disabled { opacity: 0.45; cursor: not-allowed; }
   .sfb-center {
     flex: 1; min-height: 0;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -251,6 +259,7 @@ export default function MembacaMekanis({ onBack, language = 'bm', topicComplete,
   const [attempts,  setAttempts]  = useState(0);
   const [micError,  setMicError]  = useState(null);
   const [isDone,    setIsDone]    = useState(false);
+  const { completeActivity } = useTopicGamification('1-2-2-membaca-mekanis');
 
   const indexRef = useRef(0);
   const itemsRef = useRef(items);
@@ -271,6 +280,7 @@ export default function MembacaMekanis({ onBack, language = 'bm', topicComplete,
     const ni = indexRef.current + 1;
     if (ni >= itemsRef.current.length) {
       if (topicComplete) topicComplete('1-2-2-membaca-mekanis');
+      completeActivity(); // read-aloud activity → completion crown
       confetti({ particleCount: 150, spread: 140, origin: { y: 0.4 } });
       setIsDone(true);
       return;
@@ -279,7 +289,7 @@ export default function MembacaMekanis({ onBack, language = 'bm', topicComplete,
     setAttempts(0);
     setMicError(null);
     setPhase('ready');
-  }, [topicComplete]);
+  }, [topicComplete, completeActivity]);
 
   const handleCorrect = () => {
     setScore(s => s + 1);
@@ -530,35 +540,23 @@ export default function MembacaMekanis({ onBack, language = 'bm', topicComplete,
         </div>
 
         <div className="sfb-footer">
-          {(phase === 'ready' || isListening) && (
-            <>
-              <button className="sfb-icon-btn repeat" onClick={handleRepeat}
-                title={language === 'bm' ? 'Dengar ayat' : 'Hear the sentence'}>
-                <RefreshCw size={22} color={C.primary} />
-              </button>
-              {phase === 'ready' ? (
-                <button className="sfb-main-btn mic" onClick={() => startListening()}>
-                  🎤 {language === 'bm' ? 'Tekan untuk Membaca' : 'Tap to Read'}
-                </button>
-              ) : (
-                <button className="sfb-main-btn stop" onClick={() => { SpeechManager.stop(); listenActiveRef.current = false; setPhase('ready'); }}>
-                  ⏸ {language === 'bm' ? 'Berhenti' : 'Stop'}
-                </button>
-              )}
-              <button className="sfb-icon-btn skip" onClick={handleSkip}
-                title={language === 'bm' ? 'Langkau' : 'Skip'}>
-                <SkipForward size={22} color={C.wrong} />
-              </button>
-            </>
-          )}
-
-          {(isCorrect || isWrong) && (
-            <button className={`sfb-main-btn ${isCorrect ? 'good' : 'bad'}`} onClick={() => advanceItem()}>
-              {isCorrect
-                ? (language === 'bm' ? '✓ Teruskan' : '✓ Continue')
-                : (language === 'bm' ? '→ Seterusnya' : '→ Next')}
+          <button className="sfb-icon-btn repeat" onClick={handleRepeat} disabled={isCorrect || isWrong}
+            title={language === 'bm' ? 'Dengar ayat' : 'Hear the sentence'}>
+            <RefreshCw size={22} color={C.primary} />
+          </button>
+          {isListening ? (
+            <button className="sfb-main-btn stop" onClick={() => { SpeechManager.stop(); listenActiveRef.current = false; setPhase('ready'); }}>
+              ⏸ {language === 'bm' ? 'Berhenti' : 'Stop'}
+            </button>
+          ) : (
+            <button className="sfb-main-btn mic" onClick={() => startListening()} disabled={isCorrect || isWrong}>
+              🎤 {language === 'bm' ? 'Tekan untuk Membaca' : 'Tap to Read'}
             </button>
           )}
+          <button className="sfb-icon-btn skip" onClick={handleSkip} disabled={isCorrect || isWrong}
+            title={language === 'bm' ? 'Langkau' : 'Skip'}>
+            <SkipForward size={22} color={C.wrong} />
+          </button>
         </div>
       </div>
     </>

@@ -264,7 +264,8 @@ export default function FahamiCerita({ onBack, language = 'bm', topicComplete, o
   const [page, setPage] = useState('learn');
 
   const currentQs = BM_QUESTIONS[TOPIC_ID] || [];
-  const reviewQs = [];
+  // Review M1's "Dengar & Teka" vocabulary (1.1.6) — spaced repetition.
+  const reviewQs = BM_QUESTIONS['1-1-6-dengar-teka'] || [];
 
   // Pass 15 (not 10) so all 10 items surface: useBMQuiz reserves ~30% of
   // totalRounds for review questions, so a value equal to the bank size

@@ -2,7 +2,8 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { RefreshCw } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { playSound, playHoverSound } from '../../../../utils/soundManager';
-import BackButton from '../../../BackButton';
+import BMStdShell from '../../_shared/BMStdShell';
+import BMHeader from '../../_shared/BMHeader';
 
 function shuffle(arr) {
   const a = [...arr];
@@ -81,133 +82,149 @@ export default function JenisKata({ onBack, language = 'bm' }) {
     setIsDone(false);
   }, []);
 
+  const topicTitle = language === 'bm' ? 'Morfologi Golongan Kata' : 'Word Type Morphology';
+
   if (isDone) {
     return (
-      <div style={{ height: '100dvh', background: C.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'clamp(16px, 3vh, 36px)' }}>
-        <div style={{ position: 'absolute', top: 12, left: 12 }}><BackButton onClick={onBack} /></div>
-        <div style={{ fontSize: 'clamp(64px, 14vh, 120px)', marginBottom: 'clamp(10px, 1.8vh, 22px)' }}>🔍</div>
-        <h2 style={{ color: C.primary, fontSize: 'clamp(28px, 5vh, 48px)', margin: '0 0 clamp(6px, 1vh, 12px)' }}>
-          {language === 'bm' ? 'Tahniah!' : 'Well Done!'}
-        </h2>
-        <p style={{ fontSize: 'clamp(18px, 3.2vh, 28px)', color: '#555', margin: '0 0 clamp(16px, 3vh, 32px)' }}>
-          {language === 'bm' ? 'Markah: ' : 'Score: '}<strong>{score}</strong>/{QUESTIONS.length * 10}
-        </p>
-        <div style={{ display: 'flex', gap: 'clamp(10px, 1.8vw, 20px)' }}>
-          <button onClick={handleReset} style={{ padding: 'clamp(10px, 1.6vh, 16px) clamp(20px, 3.6vw, 34px)', background: '#E0E0E0', color: '#333', border: 'none', borderRadius: '12px', fontSize: 'clamp(16px, 2.6vh, 22px)', cursor: 'pointer', fontWeight: 'bold' }}>
-            {language === 'bm' ? 'Main Semula' : 'Play Again'}
-          </button>
-          <button onClick={onBack} style={{ padding: 'clamp(10px, 1.6vh, 16px) clamp(20px, 3.6vw, 34px)', background: C.primary, color: 'white', border: 'none', borderRadius: '12px', fontSize: 'clamp(16px, 2.6vh, 22px)', cursor: 'pointer', fontWeight: 'bold', boxShadow: `0 4px 0 ${C.primaryDark}` }}>
-            {language === 'bm' ? 'Kembali' : 'Back'}
-          </button>
+      <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', background: C.bg }}>
+        <BMHeader onBack={onBack} language={language} title={topicTitle} />
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 16, textAlign: 'center' }}>
+          <div style={{ fontSize: 'clamp(56px, 12vh, 90px)', marginBottom: 'clamp(8px, 1.6vh, 16px)' }}>🔍</div>
+          <h2 style={{ fontFamily: "'Baloo 2', sans-serif", color: C.primary, fontSize: 'clamp(24px, 5vh, 36px)', fontWeight: 800, margin: 0 }}>
+            {language === 'bm' ? 'Tahniah!' : 'Well Done!'}
+          </h2>
+          <p style={{ fontSize: 'clamp(14px, 2.6vh, 18px)', color: '#555', fontWeight: 600, margin: '0.6rem 0 1.2rem' }}>
+            {language === 'bm' ? 'Markah: ' : 'Score: '}<strong>{score}</strong>/{QUESTIONS.length * 10}
+          </p>
+          <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <button onClick={handleReset} style={{ fontFamily: "'Baloo 2', sans-serif", padding: '0.8rem 1.5rem', background: '#fff', color: '#475569', border: '2px solid #E2E8F0', borderRadius: 999, fontSize: '1rem', cursor: 'pointer', fontWeight: 800 }}>
+              🔄 {language === 'bm' ? 'Main Semula' : 'Play Again'}
+            </button>
+            <button onClick={onBack} style={{ fontFamily: "'Baloo 2', sans-serif", padding: '0.8rem 1.5rem', background: `linear-gradient(180deg, ${C.primary}cc, ${C.primary})`, color: '#fff', border: 'none', borderRadius: 999, fontSize: '1rem', cursor: 'pointer', fontWeight: 800, boxShadow: `0 4px 0 ${C.primaryDark}` }}>
+              {language === 'bm' ? 'Kembali' : 'Back'}
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div style={{ height: '100dvh', overflow: 'hidden', display: 'flex', flexDirection: 'column', background: C.bg, fontFamily: "'Fredoka', system-ui, sans-serif" }}>
+    <>
       <style>{`
-        .jk-topbar { flex-shrink:0; display:flex; align-items:center; justify-content:space-between; padding:clamp(4px,.8vh,10px) 8px; background:rgba(255,255,255,.5); border-bottom:1px solid rgba(255,150,0,.15); }
-        .jk-topbar-left { display:flex; align-items:center; gap:4px; }
-        .jk-topbar-right { display:flex; align-items:center; gap:clamp(6px,1vw,14px); }
-        .jk-progress-track { width:clamp(50px,12vw,100px); height:clamp(5px,.8vh,8px); background:#FFD9A8; border-radius:999px; overflow:hidden; }
-        .jk-progress-fill { height:100%; background:${C.primary}; border-radius:999px; transition:width .3s; }
-        .jk-label { font-family:'Baloo 2',sans-serif; font-weight:700; font-size:clamp(22px,3.2vh,28px); color:#888; white-space:nowrap; }
-        .jk-score { font-family:'Baloo 2',sans-serif; font-weight:800; font-size:clamp(24px,3.6vh,30px); color:${C.primary}; white-space:nowrap; }
-        .jk-body { flex:1; min-height:0; display:flex; flex-direction:column; align-items:center; width:100%; max-width:520px; margin:0 auto; padding:clamp(2px,.4vh,6px) 12px; overflow:hidden; }
-        .jk-body-inner { width:100%; display:flex; flex-direction:column; align-items:center; gap:clamp(4px,.6vh,10px); flex:1; min-height:0; justify-content:center; }
-        .jk-emoji { font-size:clamp(34px,8vh,64px); line-height:1; }
-        .jk-word { font-size:clamp(24px,5vw,40px); font-weight:bold; color:#333; letter-spacing:0.05em; font-family:'Baloo 2',sans-serif; }
-        .jk-listen-btn { background:none; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:4px; font-family:'Baloo 2',sans-serif; font-weight:700; font-size:clamp(13px,1.6vh,16px); color:#fff; background:${C.primary}; padding:clamp(4px,.6vh,8px) clamp(10px,1.4vw,18px); border-radius:999px; }
-        .jk-example { background:rgba(255,150,0,0.08); border-radius:8px; padding:clamp(5px,.7vh,10px) clamp(8px,1vw,14px); font-size:clamp(12px,1.5vh,16px); color:#555; font-style:italic; width:100%; box-sizing:border-box; text-align:center; }
-        .jk-prompt { color:#555; font-weight:bold; font-size:clamp(13px,1.6vh,17px); margin:0; }
-        .jk-op { background:#fff; border:2.5px solid ${C.primary}; border-radius:clamp(10px,1.4vw,14px); cursor:pointer; font-weight:800; font-size:clamp(18px,3.4vw,26px); padding:clamp(10px,1.4vh,16px); width:100%; transition:all .15s; font-family:'Baloo 2',sans-serif; color:#333; }
-        .jk-op:hover { transform:scale(1.04); }
-        .jk-op:disabled { cursor:default; }
-        .jk-feedback { padding:clamp(6px,.8vh,12px) clamp(10px,1.4vw,20px); border-radius:clamp(8px,1.2vw,14px); text-align:center; font-weight:bold; font-size:clamp(13px,1.8vh,17px); width:100%; box-sizing:border-box; }
-        .jk-act-row { display:flex; gap:clamp(8px,1.2vw,16px); width:100%; }
-        .jk-act-row button { flex:1; padding:clamp(8px,1.2vh,14px); border:none; border-radius:clamp(8px,1.2vw,12px); font-family:'Baloo 2',sans-serif; font-weight:700; font-size:clamp(16px,2.2vh,22px); cursor:pointer; transition:background .15s; }
-        .jk-btn-next-enabled { background:${C.primary}; color:#fff; box-shadow:0 4px 0 ${C.primaryDark}; }
-        .jk-btn-reset { background:#E0E0E0; color:#555; display:flex; align-items:center; justify-content:center; gap:4px; }
-        @keyframes jk-pop { 0%{transform:scale(1)} 50%{transform:scale(1.08)} 100%{transform:scale(1)} }
-        @keyframes jk-shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
-        @media (max-height:500px) { .jk-prompt{display:none} .jk-example{display:none} }
+        .mg-opts { display: flex; flex-direction: column; gap: clamp(6px, 1vh, 14px); width: 100%; }
+        .mg-op {
+          background: #fff;
+          border: 2.5px solid ${C.primary}66;
+          border-radius: clamp(10px, 1.4vw, 14px);
+          cursor: pointer; font-weight: 800;
+          font-size: clamp(18px, 3.4vw, 26px);
+          padding: clamp(10px, 1.4vh, 16px);
+          width: 100%; transition: all .15s;
+          font-family: 'Baloo 2', sans-serif; color: #333;
+        }
+        .mg-op:hover { transform: scale(1.04); }
+        .mg-op:disabled { cursor: default; transform: none; }
+        .mg-feedback {
+          padding: clamp(6px,.8vh,12px) clamp(10px,1.4vw,20px);
+          border-radius: clamp(8px,1.2vw,14px);
+          text-align: center; font-weight: bold;
+          font-size: clamp(13px,1.8vh,17px);
+          width: 100%; box-sizing: border-box;
+        }
+        .mg-card {
+          flex-shrink: 0; width: 100%;
+          display: flex; flex-direction: column; align-items: center;
+          gap: clamp(10px, 2.2vh, 20px);
+          text-align: center;
+          background: #fff;
+          border: 3px solid ${C.primary}66;
+          border-radius: clamp(18px, 3vh, 28px);
+          padding: clamp(16px, 3.4vh, 30px) clamp(16px, 4vw, 28px) clamp(18px, 3.6vh, 32px);
+          box-shadow: 0 clamp(3px, 0.6vh, 5px) 0 ${C.primary}2e, 0 12px 26px -16px rgba(0,0,0,.2);
+        }
+        .mg-card-emoji { font-size: clamp(48px, 11vh, 84px); line-height: 1.15; user-select: none; }
+        .mg-card-example {
+          width: 100%;
+          border-top: 2px dashed #F5E6D0;
+          padding-top: clamp(10px, 2.2vh, 20px);
+          font-family: 'Baloo 2', sans-serif; font-weight: 800;
+          font-size: clamp(20px, 4.6vh, 36px);
+          line-height: 1.25; color: #333;
+        }
+        .mg-prompt { flex-shrink: 0; font-size: clamp(13px, 2vw, 17px); color: #888; font-weight: 600; }
+        .mg-footer-btn {
+          flex: 1; min-width: 0;
+          font-family: 'Baloo 2', sans-serif; font-weight: 800;
+          font-size: clamp(15px, 2.8vh, 18px);
+          border: none; border-radius: 14px; cursor: pointer;
+          padding: clamp(10px, 2vh, 14px) 12px;
+          transition: transform .12s ease, box-shadow .12s ease;
+          display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .mg-footer-btn:active { transform: translateY(2px); }
+        .mg-footer-btn.primary { background: linear-gradient(180deg, ${C.primary}cc, ${C.primary}); box-shadow: 0 4px 0 ${C.primaryDark}; color: #fff; }
+        .mg-footer-btn.secondary { background: #fff; color: #64748B; border: 2px solid #E2E8F0; }
+        @keyframes mg-pop { 0%{transform:scale(1)} 50%{transform:scale(1.08)} 100%{transform:scale(1)} }
+        @keyframes mg-shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+        @media (max-height:500px) { .mg-prompt{display:none} }
       `}</style>
 
-      {/* Top bar */}
-      <div className="jk-topbar">
-        <div className="jk-topbar-left">
-          <BackButton onClick={onBack} />
+      <BMStdShell
+        onBack={onBack} language={language} title={topicTitle}
+        current={currentIndex} total={QUESTIONS.length} score={score}
+        accentColor={C.primary}
+        footer={isAnswered && (
+          <div style={{ display: 'flex', gap: 'clamp(8px, 2vw, 12px)', width: '100%' }}>
+            <button className="mg-footer-btn secondary" onClick={handleReset}>
+              <RefreshCw size={16} /> {language === 'bm' ? 'Semula' : 'Reset'}
+            </button>
+            <button className="mg-footer-btn primary" onClick={handleNext}>
+              {currentIndex < QUESTIONS.length - 1
+                ? (language === 'bm' ? 'Seterusnya →' : 'Next →')
+                : (language === 'bm' ? 'Selesai ✓' : 'Finish ✓')}
+            </button>
+          </div>
+        )}
+      >
+        <div className="mg-card">
+          <div className="mg-card-emoji">{q.image}</div>
+          <div className="mg-card-example">
+            {language === 'bm' ? q.example_bm : q.example_eng}
+          </div>
+          <div className="mg-prompt">
+            {language === 'bm' ? `"${q.word}" adalah?` : `"${q.word}" is?`}
+          </div>
         </div>
-        <div className="jk-topbar-right">
-          <span className="jk-label">{language === 'bm' ? 'Soalan' : 'Q'}</span>
-          <div className="jk-progress-track">
-            <div className="jk-progress-fill" style={{ width: `${((currentIndex + 1) / QUESTIONS.length) * 100}%` }} />
-          </div>
-          <span className="jk-label">{currentIndex + 1}/{QUESTIONS.length}</span>
-          <span className="jk-score">⭐ {score}</span>
-        </div>
-      </div>
 
-      {/* Body */}
-      <div className="jk-body">
-        <div className="jk-body-inner">
-          {/* Main card: emoji + example sentence + prompt */}
-          <div style={{ background: '#fff', borderRadius: 'clamp(12px,1.8vw,20px)', border: `2.5px solid ${C.primary}`, padding: 'clamp(12px,2vh,24px) clamp(14px,2vw,22px)', width: '100%', textAlign: 'center', boxSizing: 'border-box' }}>
-            <div style={{ fontSize: 'clamp(34px,8vh,64px)', lineHeight: 1, marginBottom: 'clamp(4px,.6vh,10px)' }}>{q.image}</div>
-            <div style={{ fontSize: 'clamp(20px,4.4vw,34px)', fontWeight: 'bold', color: '#333', lineHeight: 1.4, fontFamily: "'Baloo 2',sans-serif", marginBottom: 'clamp(6px,.8vh,12px)' }}>
-              {language === 'bm' ? q.example_bm : q.example_eng}
-            </div>
-            <div style={{ fontSize: 'clamp(14px,2vw,18px)', color: '#888', fontWeight: 600 }}>
-              {language === 'bm' ? `"${q.word}" adalah?` : `"${q.word}" is?`}
-            </div>
-          </div>
-
-          {/* Options */}
-
-          {/* Options */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(6px,1vh,14px)', width: '100%' }}>
-            {q.options.map((option, idx) => {
-              const tc = TYPE_COLORS[option] || { bg: '#FFF', border: '#FF9600', text: '#333' };
-              let style = {};
-              if (isAnswered) {
-                if (option === q.answer) style = { background: '#4CAF50', borderColor: '#388E3C', color: '#fff' };
-                else if (option === selectedAnswer) style = { background: '#FF6B6B', borderColor: '#D32F2F', color: '#fff' };
-                else style = { background: '#F5F5F5', borderColor: '#DDD', color: '#AAA' };
-              } else {
-                style = { background: tc.bg, borderColor: tc.border, color: tc.text };
-              }
-              return (
-                <button key={idx} className="jk-op" onClick={() => handleSelect(option)} disabled={isAnswered}
-                  style={{ ...style, animation: isAnswered && option === q.answer ? 'jk-pop .35s cubic-bezier(.34,1.56,.64,1)' : isAnswered && option === selectedAnswer && option !== q.answer ? 'jk-shake .3s ease' : 'none' }}>
-                  {option}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Feedback + action buttons (only after answer) */}
-          {isAnswered && (
-            <div className="jk-feedback" style={{ background: isCorrect ? '#D4EDDA' : '#F8D7DA', color: isCorrect ? '#155724' : '#721C24' }}>
-              {isCorrect
-                ? (language === 'bm' ? `✅ Betul!` : `✅ Correct!`)
-                : (language === 'bm' ? `❌ Jawapan: ${q.answer}` : `❌ Answer: ${q.answer}`)}
-            </div>
-          )}
-          {isAnswered && (
-            <div className="jk-act-row">
-              <button className="jk-btn-reset" onClick={handleReset}>
-                <RefreshCw size={14} /> {language === 'bm' ? 'Semula' : 'Reset'}
+        <div className="mg-opts">
+          {q.options.map((option, idx) => {
+            const tc = TYPE_COLORS[option] || { bg: '#FFF', border: '#FF9600', text: '#333' };
+            let style = {};
+            if (isAnswered) {
+              if (option === q.answer) style = { background: '#4CAF50', borderColor: '#388E3C', color: '#fff' };
+              else if (option === selectedAnswer) style = { background: '#FF6B6B', borderColor: '#D32F2F', color: '#fff' };
+              else style = { background: '#F5F5F5', borderColor: '#DDD', color: '#AAA' };
+            } else {
+              style = { background: tc.bg, borderColor: tc.border, color: tc.text };
+            }
+            return (
+              <button key={idx} className="mg-op" onClick={() => handleSelect(option)} disabled={isAnswered}
+                style={{ ...style, animation: isAnswered && option === q.answer ? 'mg-pop .35s cubic-bezier(.34,1.56,.64,1)' : isAnswered && option === selectedAnswer && option !== q.answer ? 'mg-shake .3s ease' : 'none' }}>
+                {option}
               </button>
-              <button className="jk-btn-next-enabled" onClick={handleNext}>
-                {currentIndex < QUESTIONS.length - 1
-                  ? (language === 'bm' ? 'Seterusnya →' : 'Next →')
-                  : (language === 'bm' ? 'Selesai ✓' : 'Finish ✓')}
-              </button>
-            </div>
-          )}
+            );
+          })}
         </div>
-      </div>
-    </div>
+
+        {isAnswered && (
+          <div className="mg-feedback" style={{ background: isCorrect ? '#D4EDDA' : '#F8D7DA', color: isCorrect ? '#155724' : '#721C24' }}>
+            {isCorrect
+              ? (language === 'bm' ? '✅ Betul!' : '✅ Correct!')
+              : (language === 'bm' ? `❌ Jawapan: ${q.answer}` : `❌ Answer: ${q.answer}`)}
+          </div>
+        )}
+      </BMStdShell>
+    </>
   );
 }

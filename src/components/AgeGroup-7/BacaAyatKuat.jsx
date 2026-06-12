@@ -429,11 +429,9 @@ export default function BacaAyatKuat({ onBack, language = 'bm' }) {
         )}
 
         {(isCorrect || isWrong) && (
-          <button onClick={() => advanceItem()}
-            style={{ flex: 1, padding: '0.85rem', background: isCorrect ? C.correct : C.wrong, color: 'white', border: 'none', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 'bold', cursor: 'pointer', boxShadow: `0 4px 0 ${isCorrect ? C.correctDark : C.wrongDark}` }}>
-            {isCorrect
-              ? (language === 'bm' ? '✓ Teruskan' : '✓ Continue')
-              : (language === 'bm' ? '→ Seterusnya' : '→ Next')}
+          <button disabled
+            style={{ flex: 1, padding: '0.85rem', background: C.primary, color: 'white', border: 'none', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 'bold', cursor: 'not-allowed', boxShadow: `0 4px 0 ${C.primaryDark}`, opacity: 0.45 }}>
+            🎤 {language === 'bm' ? 'Tekan untuk Membaca' : 'Tap to Read'}
           </button>
         )}
       </div>

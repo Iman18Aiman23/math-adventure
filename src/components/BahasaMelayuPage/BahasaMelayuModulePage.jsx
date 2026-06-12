@@ -1,5 +1,6 @@
 import React from 'react';
 import BahasaMelayuModuleNavBar from './BahasaMelayuModuleNavBar';
+import StatsBar from '../_shared/StatsBar';
 
 export default function BahasaMelayuModulePage({ year, activeModule, onModuleChange, onBack, onSelectTopic, children, language }) {
   return (
@@ -21,6 +22,9 @@ export default function BahasaMelayuModulePage({ year, activeModule, onModuleCha
         onModuleChange={onModuleChange}
         language={language}
       />
+      <div className="bm-stats-band">
+        <StatsBar subject="bm" />
+      </div>
       <div className="bm-module-content">
         {React.isValidElement(children)
           ? React.cloneElement(children, { language, onSelectTopic })
@@ -29,6 +33,21 @@ export default function BahasaMelayuModulePage({ year, activeModule, onModuleCha
       <style>{`
         .bm-module-page { position: relative; min-height: 100vh; }
         .bm-module-content { position: relative; }
+
+        /* Stats band: third tier of the header chrome, on the same white
+           surface as the tabs so the bar reads as part of the header instead
+           of floating in the gap above the trail. */
+        .bm-stats-band {
+          display: flex;
+          justify-content: center;
+          background: #fff;
+          padding: 2px 16px 16px;
+        }
+        .bm-stats-band .sb-root {
+          width: 100%;
+          max-width: 480px;
+          margin-bottom: 0;
+        }
         .bm-module-content .pi-mhub-page {
           margin: 0 !important;
         }

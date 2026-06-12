@@ -158,7 +158,6 @@ function buildItems(cat) {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function SpeakingGame4to6({ category = 'huruf', onBack, language = 'bm' }) {
-  const isIOS    = SpeechManager.isIOS();
   const isMobile = SpeechManager.isMobile();
   const cfg      = CATEGORY_CONFIG[category] ?? CATEGORY_CONFIG['huruf'];
 
@@ -573,11 +572,9 @@ export default function SpeakingGame4to6({ category = 'huruf', onBack, language 
 
         {(isCorrect || isWrong) && (
           <button
-            onClick={() => advanceItem()}
-            className="ee-btn ee-btn--block" style={{ fontSize: '1.1rem', '--btn-bg': isCorrect ? '#58CC02' : '#FF4B4B', '--btn-shadow': isCorrect ? '#46A302' : '#CC3B3B' }}>
-            {isCorrect
-              ? (language === 'bm' ? '✓ Teruskan' : '✓ Continue')
-              : (language === 'bm' ? '→ Seterusnya' : '→ Next')}
+            disabled
+            className="ee-btn ee-btn--block" style={{ fontSize: '1.1rem', '--btn-bg': '#58CC02', '--btn-shadow': '#46A302', opacity: 0.45, cursor: 'not-allowed' }}>
+            🎤 {language === 'bm' ? 'Tekan untuk Bercakap' : 'Tap to Speak'}
           </button>
         )}
       </div>

@@ -42,7 +42,6 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
   const [lang,        setLang]        = useState(category === 'en_long_vowels' ? 'en' : 'ms');       // 'ms' | 'en'
   const [showHint,    setShowHint]    = useState(false);
   const [lastHeard,   setLastHeard]   = useState('');
-  const [phaseTimers, setPhaseTimers] = useState([]);
   const [micError,    setMicError]    = useState(null); // 'perm' | 'net' | 'nospeech' | null
 
   // stable refs to avoid stale closures in callbacks
@@ -83,7 +82,6 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
   // ── Current item ───────────────────────────────────────────────────────────
   const item     = items[index] ?? null;
   const langData = item ? item[lang] : null;
-  const progress = items.length > 0 ? (index / items.length) * 100 : 0;
 
   // ── TTS helper ─────────────────────────────────────────────────────────────
   const speak = useCallback(async (text, l) => {
@@ -207,7 +205,7 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
   };
 
   // ── Result handlers ────────────────────────────────────────────────────────
-  const handleCorrect = (currentItem, transcript) => {
+  const handleCorrect = () => {
     setScore(s => s + 1);
     setStreak(s => {
       const next = s + 1;
@@ -229,7 +227,7 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
     setTimeout(() => advanceItem(), 1800);
   };
 
-  const handleWrong = (currentItem, transcript) => {
+  const handleWrong = () => {
     setStreak(0);
     setAttempts(a => a + 1);
     const over = attRef.current + 1 >= MAX_ATTEMPTS;
@@ -241,7 +239,7 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
     }
   };
 
-  const handleCrossLang = (currentItem, transcript) => {
+  const handleCrossLang = () => {
     setPhase(PHASE_CROSSLANG);
     const msg = lang === 'en'
       ? "That's Malay! Try English."
@@ -355,8 +353,6 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
   const isListening = phase === PHASE_LISTENING;
   const isCorrect   = phase === PHASE_CORRECT;
   const isWrong     = phase === PHASE_WRONG || phase === PHASE_CROSSLANG;
-  const canTap      = phase === PHASE_READY && isMobile;
-  const canTapIOS   = phase === PHASE_READY && isIOS; // iOS: must call startListening directly in onClick
 
   // Display item text
   const displayText = !item ? '' :
@@ -625,15 +621,17 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
 
           {(phase === PHASE_CORRECT || phase === PHASE_WRONG) && (
             <button
-              onClick={() => advanceItem()}
+              disabled
               className="btn-primary w-full"
               style={{
                 padding: '1.1rem', fontSize: '1.1rem',
-                background: isCorrect ? '#58CC02' : '#FF4B4B',
-                borderBottomColor: isCorrect ? '#46A302' : '#CC3B3B',
+                background: '#1CB0F6',
+                borderBottomColor: '#0B8DC0',
+                opacity: 0.45, cursor: 'not-allowed',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
               }}
             >
-              {isCorrect ? (language === 'bm' ? '✓ Teruskan' : '✓ Continue') : (language === 'bm' ? '→ Soalan Seterusnya' : '→ Next')}
+              🎤 {language === 'bm' ? 'Tekan untuk Bercakap' : 'Tap to Speak'}
             </button>
           )}
         </div>

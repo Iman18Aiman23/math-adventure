@@ -3,6 +3,7 @@ import confetti from 'canvas-confetti';
 import { playSound } from '../../../../utils/soundManager';
 import SpeechManager from '../../../../services/SpeechManager';
 import BMHeader from '../../_shared/BMHeader';
+import useGamification from '../../../../hooks/useGamification';
 
 const TOPIC_ID = '1-1-8-dengar-buat';
 const ACCENT = '#E8821A';
@@ -153,6 +154,8 @@ const STYLE = `
 
   .db-btn:active { transform: translateY(2px); }
 
+  .db-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
   .db-btn.primary {
     color: #fff;
     background: linear-gradient(180deg, ${C.primary}cc, ${C.primary});
@@ -171,14 +174,14 @@ const STYLE = `
   }
 `;
 
-export default function DengarBuat({ onBack, language = 'bm', topicComplete, onNextTopic, onNextModule }) {
-  const isMobile = SpeechManager.isMobile();
-
+export default function DengarBuat({ onBack, language = 'bm', topicComplete, onNextModule }) {
   const [items, setItems] = useState(() => buildItems());
   const [index, setIndex] = useState(0);
   const [phase, setPhase] = useState(PHASE_READY);
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
+
+  const { markActivityComplete } = useGamification('bm');
 
   const indexRef = useRef(0);
   const itemsRef = useRef(items);
@@ -198,13 +201,13 @@ export default function DengarBuat({ onBack, language = 'bm', topicComplete, onN
   // Auto-play instruction when phase is ready
   useEffect(() => {
     if (phase !== PHASE_READY || !item) return;
-    setPhase(PHASE_LISTENING);
+    const t0 = setTimeout(() => setPhase(PHASE_LISTENING), 0);
     const t = setTimeout(() => {
       speak(item.audioText);
     }, 400);
-    timeoutsRef.current.push(t);
+    timeoutsRef.current.push(t0, t);
     return () => {
-      timeoutsRef.current = timeoutsRef.current.filter(x => x !== t);
+      timeoutsRef.current = timeoutsRef.current.filter(x => x !== t0 && x !== t);
     };
   }, [phase, item, speak]);
 
@@ -214,13 +217,15 @@ export default function DengarBuat({ onBack, language = 'bm', topicComplete, onN
       setPhase(PHASE_COMPLETE);
       confetti({ particleCount: 200, spread: 160, origin: { y: 0.4 } });
       topicComplete?.(TOPIC_ID);
+      markActivityComplete(TOPIC_ID); // non-quiz activity → completion crown
       return;
     }
     setIndex(ni);
     setPhase(PHASE_READY);
-  }, [topicComplete]);
+  }, [topicComplete, markActivityComplete]);
 
   const handleDone = () => {
+    if (phase === PHASE_DONE) return; // already advancing — guard double-tap
     playSound('correct');
     confetti({ particleCount: 60, spread: 70, origin: { y: 0.5 }, scalar: 0.8 });
     setScore(s => s + 1);
@@ -233,7 +238,8 @@ export default function DengarBuat({ onBack, language = 'bm', topicComplete, onN
       return next;
     });
     setPhase(PHASE_DONE);
-    setTimeout(() => advanceItem(), 1600);
+    const t = setTimeout(() => advanceItem(), 1600);
+    timeoutsRef.current.push(t);
   };
 
   const handleRepeat = () => {

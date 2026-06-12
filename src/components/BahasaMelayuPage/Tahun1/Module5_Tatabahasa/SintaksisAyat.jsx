@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import useBMQuiz from '../../_shared/useBMQuiz';
 import BMLessonQuizLayout from '../../_shared/BMLessonQuizLayout';
+import BMHeader from '../../_shared/BMHeader';
 import { BM_QUESTIONS } from '../../_shared/ModuleData';
 
 const TOPIC_ID = '1-5-2-sintaksis-ayat';
@@ -28,42 +29,6 @@ function SintaksisLearnPage({ onBack, onStartQuiz, topicTitle, language }) {
           font-family: 'Fredoka', system-ui, sans-serif;
           display: flex; flex-direction: column;
           position: relative;
-        }
-
-        /* ── Top bar ── */
-        .sx-top {
-          flex-shrink: 0; position: relative; z-index: 10;
-          display: flex; align-items: center; gap: 2px;
-          padding: 10px 12px; min-height: 46px;
-          background: rgba(255,255,255,.82);
-          backdrop-filter: blur(14px);
-          -webkit-backdrop-filter: blur(14px);
-          border-bottom: 1px solid rgba(21,158,150,.10);
-        }
-        .sx-top::after { content: ''; flex: 0 1 88px; }
-        .sx-top-back {
-          flex-shrink: 0;
-          display: flex; align-items: center; gap: 4px;
-          font-family: 'Baloo 2', sans-serif; font-weight: 700;
-          font-size: 13px; color: #64748B;
-          background: none; border: none; cursor: pointer;
-          padding: 8px 12px; border-radius: 12px;
-          transition: background .18s, transform .12s;
-          -webkit-tap-highlight-color: transparent;
-        }
-        .sx-top-back:hover { background: #F1F5F9; }
-        .sx-top-back:active { transform: scale(.94); }
-        .sx-top-back svg { flex-shrink: 0; }
-        @media (max-width: 480px) {
-          .sx-back-label { display: none; }
-          .sx-top::after { flex-basis: 42px; }
-        }
-        .sx-top-title {
-          flex: 1; min-width: 0;
-          text-align: center;
-          white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-          font-family: 'Baloo 2', sans-serif; font-weight: 800;
-          font-size: clamp(13px, 3.6vw, 15px); color: #1E293B;
         }
 
         /* ── Body — scrollable but fills viewport ── */
@@ -349,16 +314,7 @@ function SintaksisLearnPage({ onBack, onStartQuiz, topicTitle, language }) {
       `}</style>
 
       <div className="sx-root">
-        {/* ── Top bar ── */}
-        <div className="sx-top">
-          <button className="sx-top-back" onClick={onBack}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-            <span className="sx-back-label">{language === 'bm' ? 'Kembali' : 'Back'}</span>
-          </button>
-          <span className="sx-top-title">{topicTitle}</span>
-        </div>
+        <BMHeader onBack={onBack} language={language} title={topicTitle} />
 
         {/* ── Scrollable body ── */}
         <div className="sx-body">
@@ -495,9 +451,8 @@ export default function SintaksisAyat({ onBack, language = 'bm', topicComplete, 
   const [page, setPage] = useState('learn');
 
   const currentQs = BM_QUESTIONS[TOPIC_ID] || [];
-  const reviewQs = [];
 
-  const quiz = useBMQuiz(currentQs, reviewQs, 15);
+  const quiz = useBMQuiz(currentQs, [], 15);
 
   const topicTitle = language === 'bm' ? 'Ayat Tunggal' : 'Simple Sentences';
 

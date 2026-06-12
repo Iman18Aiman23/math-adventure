@@ -1,11 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { playHoverSound } from '../../../../utils/soundManager';
-import BackButton from '../../../BackButton';
+import BMHeader from '../../_shared/BMHeader';
 
-// KSSR BM Tahun 2 — Authentic Pantun 2 kerat and 4 kerat
 const PANTUN_LIST = [
-  // PANTUN 2 KERAT
   {
     id: 1,
     type: '2 kerat',
@@ -46,8 +44,6 @@ const PANTUN_LIST = [
     tema: 'Menjaga maruah dan lisan',
     huraian: 'Mengingatkan kita agar sentiasa menjaga tingkah laku dan tutur kata supaya tidak menjadi bahan bualan, umpatan, atau fitnah negatif dalam kalangan masyarakat.',
   },
-
-  // PANTUN 4 KERAT
   {
     id: 5,
     type: '4 kerat',
@@ -98,6 +94,10 @@ const PANTUN_LIST = [
   },
 ];
 
+const ACCENT = '#1CB0F6';
+const DARK = '#0B8DC0';
+const TOTAL = PANTUN_LIST.length;
+
 export default function PantunBacaan({ onBack, language = 'bm' }) {
   const [pantunIdx, setPantunIdx] = useState(0);
 
@@ -112,102 +112,116 @@ export default function PantunBacaan({ onBack, language = 'bm' }) {
   }, [pantunIdx]);
 
   const handleNext = useCallback(() => {
-    if (pantunIdx < PANTUN_LIST.length - 1) {
+    if (pantunIdx < TOTAL - 1) {
       playHoverSound();
       setPantunIdx(pantunIdx + 1);
     }
   }, [pantunIdx]);
 
-  return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: '#D0F0FF', overflow: 'hidden' }}>
-      <BackButton onClick={onBack} />
+  const progressPct = ((pantunIdx + 1) / TOTAL) * 100;
 
-      {/* Header */}
-      <div style={{ flexShrink: 0, padding: '3.5rem 1rem 0.75rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
-        <div style={{ textAlign: 'center', marginBottom: '0.85rem' }}>
-          <h1 style={{ color: '#1CB0F6', marginBottom: '0.25rem', fontSize: '1.6rem' }}>
-            {language === 'bm' ? 'Pantun Bacaan' : 'Pantun Reading'}
-          </h1>
-          <p style={{ color: '#888', fontSize: '0.9rem' }}>
-            {language === 'bm' ? 'Pantun Tradisional Melayu' : 'Traditional Malay Pantun'}
-          </p>
+  return (
+    <div className="as-root">
+      <style>{`
+        .as-root { height: 100%; display: flex; flex-direction: column; background: radial-gradient(ellipse at 50% 0%,#E1F5FE 0%,#D0F0FF 40%,#B3E5FC 75%,#81D4FA 100%); overflow: hidden; }
+        .as-body { flex: 1; overflow-y: auto; padding: 0 1rem 1rem; max-width: 600px; width: 100%; align-self: center; box-sizing: border-box; display: flex; flex-direction: column; }
+        .as-progress-wrap { padding: 0 1rem; max-width: 600px; width: 100%; align-self: center; box-sizing: border-box; flex-shrink: 0; }
+        .as-progress-track { height: 8px; background: rgba(255,255,255,0.5); border-radius: 999px; overflow: hidden; margin-bottom: 0.5rem; }
+        .as-progress-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg,#4FC3F7,#1CB0F6,#0B8DC0); transition: width 0.4s ease; }
+        .as-stats-row { display: flex; justify-content: space-between; align-items: center; padding: 0.35rem 0.85rem; background: rgba(255,255,255,0.35); backdrop-filter: blur(4px); border-radius: 999px; margin-bottom: 0.75rem; font-family: 'Fredoka',sans-serif; font-size: 0.82rem; }
+        .as-stat { display: flex; align-items: center; gap: 0.3rem; color: #666; }
+        .as-stat strong { color: ${DARK}; }
+        .as-badge { background: ${isTwoLine ? '#FFB74D' : '#FF7043'}; color: white; padding: 0.3rem 0.7rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; font-family: 'Fredoka',sans-serif; }
+        .as-card { background: rgba(255,255,255,0.92); backdrop-filter: blur(6px); border-radius: 16px; border: 2px solid rgba(28,176,246,0.25); padding: 1.1rem 1.25rem; margin-bottom: 1rem; box-shadow: 0 4px 20px rgba(28,176,246,0.12); }
+        .as-emoji { font-size: 2.5rem; text-align: center; margin-bottom: 0.6rem; }
+        .as-title { font-family: 'Baloo 2',sans-serif; font-size: 1.15rem; font-weight: 700; color: ${DARK}; text-align: center; margin-bottom: 0.85rem; }
+        .as-section { padding: 0.75rem 1rem; margin-bottom: 0.75rem; border-radius: 8px; }
+        .as-section-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.25rem; font-family: 'Fredoka',sans-serif; letter-spacing: 0.04em; }
+        .as-tema { background: #E3F2FD; border-left: 4px solid ${ACCENT}; }
+        .as-tema-label { color: #1565C0; }
+        .as-tema-text { font-family: 'Fredoka',sans-serif; font-size: 0.95rem; color: #333; margin: 0; font-weight: 600; }
+        .as-pantun-box { background: #FFF9C4; border-left: 4px solid #FBC02D; padding: 1rem; border-radius: 8px; margin-bottom: 0.75rem; }
+        .as-pantun-text { font-family: 'Fredoka',sans-serif; font-size: 1rem; color: #333; line-height: 1.9; margin: 0; font-weight: 600; }
+        .as-huraian { background: #F3E5F5; border-left: 4px solid #9C27B0; }
+        .as-huraian-label { color: #6A1B9A; }
+        .as-huraian-text { font-family: 'Fredoka',sans-serif; font-size: 0.9rem; color: #333; line-height: 1.5; margin: 0; }
+        .as-footer { flex-shrink: 0; background: rgba(255,255,255,0.3); backdrop-filter: blur(4px); border-top: 1.5px solid rgba(28,176,246,0.2); padding: 0.65rem 1rem; display: flex; gap: 0.75rem; }
+        .as-footer-inner { max-width: 600px; width: 100%; margin: 0 auto; display: flex; gap: 0.75rem; }
+        .as-btn-foot { flex: 1; padding: 0.7rem; border: none; border-radius: 10px; font-family: 'Fredoka',sans-serif; font-size: 0.95rem; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.4rem; transition: background 0.2s; }
+        .as-btn-disabled { background: #BDBDBD; color: white; cursor: not-allowed; }
+        .as-btn-enabled { background: ${ACCENT}; color: white; box-shadow: 0 4px 0 ${DARK}; cursor: pointer; }
+        .as-btn-enabled:active { transform: translateY(3px); box-shadow: 0 1px 0 ${DARK}; }
+      `}</style>
+
+      <BMHeader onBack={onBack} language={language} title={language === 'bm' ? 'Pantun Bacaan' : 'Pantun Reading'} />
+
+      <div className="as-progress-wrap">
+        <div className="as-progress-track">
+          <div className="as-progress-fill" style={{ width: `${progressPct}%` }} />
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.65rem 1rem', background: 'rgba(28,176,246,0.12)', borderRadius: '10px' }}>
-          <span style={{ color: '#666', fontSize: '0.9rem' }}>
-            {language === 'bm' ? `Pantun ${pantunIdx + 1}/${PANTUN_LIST.length}` : `Pantun ${pantunIdx + 1}/${PANTUN_LIST.length}`}
-          </span>
-          <span style={{ background: isTwoLine ? '#FFB74D' : '#FF7043', color: 'white', padding: '0.3rem 0.7rem', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 700 }}>
-            {pantun.type}
-          </span>
+        <div className="as-stats-row">
+          <span className="as-stat">{language === 'bm' ? 'Pantun' : 'Pantun'} <strong>{pantunIdx + 1}/{TOTAL}</strong></span>
+          <span className="as-badge">{pantun.type}</span>
         </div>
       </div>
 
-      {/* Body */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '0.75rem 1rem 1rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
-
-        {/* Pantun card */}
-        <div style={{ background: '#FFF', borderRadius: '12px', border: '2px solid #1CB0F6', padding: '1.1rem 1.25rem', marginBottom: '1rem' }}>
-          {/* Tema */}
-          <div style={{ background: '#E3F2FD', borderLeft: '4px solid #1CB0F6', padding: '0.8rem 1rem', marginBottom: '1rem', borderRadius: '6px' }}>
-            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#1565C0', marginBottom: '0.3rem', textTransform: 'uppercase' }}>
-              Tema
-            </div>
-            <p style={{ fontSize: '0.95rem', color: '#333', margin: '0', fontWeight: 600 }}>
-              {pantun.tema}
-            </p>
+      <div className="as-body">
+        <div className="as-card">
+          <div className="as-emoji">{pantun.emoji}</div>
+          <div className="as-title">
+            {language === 'bm' ? pantun.title.bm : pantun.title.eng}
           </div>
 
-          {/* Pantun text */}
+          <div className={`as-section as-tema`}>
+            <div className={`as-section-label as-tema-label`}>
+              {language === 'bm' ? 'Tema' : 'Theme'}
+            </div>
+            <p className="as-tema-text">{pantun.tema}</p>
+          </div>
+
           {isTwoLine ? (
-            // Pantun 2 Kerat
-            <div style={{ background: '#FFF9C4', borderLeft: '4px solid #FBC02D', padding: '1rem', marginBottom: '1rem', borderRadius: '6px' }}>
-              <p style={{ fontSize: '1rem', color: '#333', lineHeight: 1.8, margin: '0', fontWeight: 600 }}>
-                {pantun.line1}
-                <br />
-                {pantun.line2}
+            <div className="as-pantun-box">
+              <p className="as-pantun-text">
+                {pantun.line1}<br />{pantun.line2}
               </p>
             </div>
           ) : (
-            // Pantun 4 Kerat
-            <>
-              <div style={{ background: '#FFF9C4', borderLeft: '4px solid #FBC02D', padding: '1rem', marginBottom: '1rem', borderRadius: '6px' }}>
-                <p style={{ fontSize: '1rem', color: '#333', lineHeight: 1.8, margin: '0', fontWeight: 600 }}>
-                  {pantun.sampiran_1}
-                  <br />
-                  {pantun.sampiran_2}
-                  <br />
-                  {pantun.maksud_1}
-                  <br />
-                  {pantun.maksud_2}
-                </p>
-              </div>
-            </>
+            <div className="as-pantun-box">
+              <p className="as-pantun-text">
+                {pantun.sampiran_1}<br />{pantun.sampiran_2}<br />
+                {pantun.maksud_1}<br />{pantun.maksud_2}
+              </p>
+            </div>
           )}
 
-          {/* Huraian */}
-          <div style={{ background: '#F3E5F5', borderLeft: '4px solid #9C27B0', padding: '0.8rem 1rem', borderRadius: '6px' }}>
-            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#6A1B9A', marginBottom: '0.3rem', textTransform: 'uppercase' }}>
-              Huraian
+          <div className={`as-section as-huraian`}>
+            <div className={`as-section-label as-huraian-label`}>
+              {language === 'bm' ? 'Huraian' : 'Explanation'}
             </div>
-            <p style={{ fontSize: '0.9rem', color: '#333', lineHeight: 1.5, margin: '0' }}>
-              {pantun.huraian}
-            </p>
+            <p className="as-huraian-text">{pantun.huraian}</p>
           </div>
         </div>
       </div>
 
-      {/* Footer */}
-      <div style={{ flexShrink: 0, background: '#D0F0FF', borderTop: '2px solid rgba(28,176,246,0.25)', padding: '0.75rem 1rem', display: 'flex', gap: '0.75rem' }}>
-        <button onClick={handlePrev} disabled={pantunIdx === 0}
-          style={{ flex: 1, padding: '0.75rem', background: pantunIdx > 0 ? '#1CB0F6' : '#BDBDBD', color: 'white', border: 'none', borderRadius: '10px', cursor: pantunIdx > 0 ? 'pointer' : 'not-allowed', fontWeight: 'bold', fontSize: '1rem', boxShadow: pantunIdx > 0 ? '0 4px 0 #0B8DC0' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', transition: 'background 0.2s' }}>
-          <ChevronLeft size={18} />
-          {language === 'bm' ? 'Sebelum' : 'Back'}
-        </button>
-        <button onClick={handleNext} disabled={pantunIdx === PANTUN_LIST.length - 1}
-          style={{ flex: 1, padding: '0.75rem', background: pantunIdx < PANTUN_LIST.length - 1 ? '#1CB0F6' : '#BDBDBD', color: 'white', border: 'none', borderRadius: '10px', cursor: pantunIdx < PANTUN_LIST.length - 1 ? 'pointer' : 'not-allowed', fontWeight: 'bold', fontSize: '1rem', boxShadow: pantunIdx < PANTUN_LIST.length - 1 ? '0 4px 0 #0B8DC0' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', transition: 'background 0.2s' }}>
-          {language === 'bm' ? 'Seterus' : 'Next'}
-          <ChevronRight size={18} />
-        </button>
+      <div className="as-footer">
+        <div className="as-footer-inner">
+          <button
+            onClick={handlePrev}
+            disabled={pantunIdx === 0}
+            className={`as-btn-foot ${pantunIdx > 0 ? 'as-btn-enabled' : 'as-btn-disabled'}`}
+          >
+            <ChevronLeft size={18} />
+            {language === 'bm' ? 'Sebelum' : 'Back'}
+          </button>
+          <button
+            onClick={handleNext}
+            disabled={pantunIdx === TOTAL - 1}
+            className={`as-btn-foot ${pantunIdx < TOTAL - 1 ? 'as-btn-enabled' : 'as-btn-disabled'}`}
+          >
+            {language === 'bm' ? 'Seterus' : 'Next'}
+            <ChevronRight size={18} />
+          </button>
+        </div>
       </div>
     </div>
   );

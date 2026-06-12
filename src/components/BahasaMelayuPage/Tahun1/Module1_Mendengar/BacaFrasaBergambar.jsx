@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { RefreshCw, SkipForward } from 'lucide-react';
 import BMHeader from '../../_shared/BMHeader';
+import useTopicGamification from '../../../../hooks/useTopicGamification';
 import SpeechManager from '../../../../services/SpeechManager';
 import confetti from 'canvas-confetti';
 import { playSound } from '../../../../utils/soundManager';
@@ -22,6 +23,9 @@ const PHASE_COMPLETE  = 'complete'; // all tiers done
 
 const ITEMS_PER_ROUND = 8;
 const MAX_ATTEMPTS    = 3;
+
+// Mastery gate: minimum % required to mark this topic complete.
+const PASS_PCT = 70;
 
 // ── Theme (Age 7 orange) ────────────────────────────────────────────────────────
 const C = {
@@ -276,8 +280,7 @@ const STYLE = `
     background: #fff; color: ${C.primary};
     border: 2px solid ${C.primary};
   }
-  .sfb-main-btn.good { background: ${C.correct}; box-shadow: 0 4px 0 ${C.correctDark}; }
-  .sfb-main-btn.bad  { background: ${C.wrong};   box-shadow: 0 4px 0 ${C.wrongDark}; }
+  .sfb-icon-btn:disabled, .sfb-main-btn:disabled { opacity: 0.45; cursor: not-allowed; }
   .sfb-center {
     flex: 1; min-height: 0;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -286,7 +289,7 @@ const STYLE = `
 `;
 
 // ── Component ─────────────────────────────────────────────────────────────────
-export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
+export default function SebutFrasaBergambar({ onBack, language = 'bm', topicComplete, onNextTopic }) {
   const isMobile = SpeechManager.isMobile();
 
   const [tier,      setTier]      = useState('sentences'); // 'sentences' first, then 'phrases'
@@ -295,19 +298,24 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
   const [phase,     setPhase]     = useState(PHASE_READY);
   const [score,     setScore]     = useState(0);
   const [scoreSent, setScoreSent] = useState(0); // sentences tier score
+  const { awardCorrect, awardWrong, completeTopic } = useTopicGamification('1-1-2-bertutur-maklumat');
   const [streak,    setStreak]    = useState(0);
   const [attempts,  setAttempts]  = useState(0);
 
   const [micError,  setMicError]  = useState(null); // 'perm' | 'net' | 'nospeech' | null
 
-  const indexRef = useRef(0);
-  const itemsRef = useRef(items);
-  const attRef   = useRef(0);
+  const indexRef     = useRef(0);
+  const itemsRef     = useRef(items);
+  const attRef       = useRef(0);
+  const scoreRef     = useRef(0);
+  const scoreSentRef = useRef(0);
   const listenActiveRef = useRef(false); // true while a mic session is open (guards double-start)
 
-  useEffect(() => { indexRef.current = index;    }, [index]);
-  useEffect(() => { itemsRef.current = items;    }, [items]);
-  useEffect(() => { attRef.current   = attempts; }, [attempts]);
+  useEffect(() => { indexRef.current     = index;     }, [index]);
+  useEffect(() => { itemsRef.current     = items;     }, [items]);
+  useEffect(() => { attRef.current       = attempts;  }, [attempts]);
+  useEffect(() => { scoreRef.current     = score;     }, [score]);
+  useEffect(() => { scoreSentRef.current = scoreSent; }, [scoreSent]);
 
   useEffect(() => () => { SpeechManager.stop(); SpeechManager.stopSpeaking(); }, []);
 
@@ -325,6 +333,11 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
         // End of all tiers (phrases tier complete)
         setPhase(PHASE_COMPLETE);
         confetti({ particleCount: 200, spread: 160, origin: { y: 0.4 } });
+        const totalScore = scoreSentRef.current + scoreRef.current;
+        const totalItems = ITEMS_PER_ROUND + itemsRef.current.length;
+        const pct = Math.round((totalScore / totalItems) * 100);
+        if (topicComplete && pct >= PASS_PCT) topicComplete('1-1-2-bertutur-maklumat');
+        completeTopic(totalScore, totalItems, PASS_PCT); // tier scores are +1 counts
       }
       return;
     }
@@ -332,10 +345,11 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
     setAttempts(0);
     setMicError(null);
     setPhase(PHASE_READY);
-  }, [tier]);
+  }, [tier, topicComplete, completeTopic]);
 
   const handleCorrect = () => {
     setScore(s => s + 1);
+    awardCorrect(); // +10 XP live per correct answer
     setStreak(s => {
       const next = s + 1;
       if (next % 5 === 0) {
@@ -356,6 +370,7 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
 
   const handleWrong = () => {
     setStreak(0);
+    awardWrong(); // reset XP streak
     setAttempts(a => a + 1);
     const over = attRef.current + 1 >= MAX_ATTEMPTS;
     setPhase(PHASE_WRONG);
@@ -494,24 +509,37 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
   // ── Complete screen ────────────────────────────────────────────────────────
   if (phase === PHASE_COMPLETE) {
     const totalScore = scoreSent + score;
-    const totalItems = (scoreSent > 0 ? ITEMS_PER_ROUND : 0) + items.length;
+    const totalItems = ITEMS_PER_ROUND + items.length;
+    const pct = Math.round((totalScore / totalItems) * 100);
+    const passed = pct >= PASS_PCT;
+    const primaryBtnStyle = { fontFamily: "'Baloo 2', sans-serif", padding: '0.8rem 1.5rem', background: `linear-gradient(180deg, ${C.primary}cc, ${C.primary})`, color: '#fff', border: 'none', borderRadius: 999, fontSize: '1rem', cursor: 'pointer', fontWeight: 800, boxShadow: `0 4px 0 ${C.primaryDark}` };
+    const secondaryBtnStyle = { fontFamily: "'Baloo 2', sans-serif", padding: '0.8rem 1.5rem', background: '#fff', color: '#475569', border: '2px solid #E2E8F0', borderRadius: 999, fontSize: '1rem', cursor: 'pointer', fontWeight: 800 };
     return (
       <>
         <style>{STYLE}</style>
         <div className="sfb-root">
           <BMHeader onBack={onBack} language={language} title={language === 'bm' ? 'Baca Frasa Bergambar' : 'Read the Picture Phrase'} />
           <div className="sfb-center">
-            <div style={{ fontSize: 'clamp(56px, 12vh, 90px)', lineHeight: 1 }}>🎯</div>
+            <div style={{ fontSize: 'clamp(56px, 12vh, 90px)', lineHeight: 1 }}>{passed ? '🎯' : '💪'}</div>
             <h2 style={{ fontFamily: "'Baloo 2', sans-serif", color: C.primary, fontSize: 'clamp(24px, 5vh, 36px)', fontWeight: 800, margin: 0 }}>
-              {language === 'bm' ? 'Tahniah!' : 'Congratulations!'}
+              {passed
+                ? (language === 'bm' ? 'Tahniah!' : 'Congratulations!')
+                : (language === 'bm' ? 'Cuba Lagi!' : 'Try Again!')}
             </h2>
             <p style={{ fontSize: 'clamp(14px, 2.6vh, 18px)', color: '#555', fontWeight: 600, margin: '0.6rem 0' }}>
-              {language === 'bm' ? 'Jumlah Markah: ' : 'Total Score: '}<strong>{totalScore}</strong>/{totalItems}
+              {language === 'bm' ? 'Jumlah Markah: ' : 'Total Score: '}<strong>{totalScore}</strong>/{totalItems} ({pct}%)
             </p>
             <div style={{ fontSize: 'clamp(12px, 2.2vh, 14px)', color: '#777', fontWeight: 500, margin: '0.8rem 0 1.2rem', lineHeight: 1.6 }}>
               <div>{language === 'bm' ? 'Ayat Tunggal: ' : 'Sentences: '}{scoreSent}/{ITEMS_PER_ROUND}</div>
               <div>{language === 'bm' ? 'Frasa: ' : 'Phrases: '}{score}/{items.length}</div>
             </div>
+            {!passed && (
+              <p style={{ fontSize: 'clamp(12px, 2.2vh, 15px)', color: C.wrongDark, fontWeight: 700, margin: '0 0 0.8rem', textAlign: 'center', maxWidth: 320 }}>
+                {language === 'bm'
+                  ? `Skor minima ${PASS_PCT}% diperlukan untuk lulus topik ini.`
+                  : `You need at least ${PASS_PCT}% to pass this topic.`}
+              </p>
+            )}
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', background: '#FFF6D6', borderRadius: 999, padding: '0.5rem 1.2rem', border: '1.5px solid #FFE08A' }}>
               <span style={{ fontSize: '1.1rem' }}>🔥</span>
               <span style={{ fontWeight: 800, fontFamily: "'Baloo 2', sans-serif", color: '#B58800', fontSize: 'clamp(13px, 2.4vh, 16px)' }}>
@@ -519,12 +547,31 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
               </span>
             </div>
             <div style={{ display: 'flex', gap: '0.8rem', marginTop: 'var(--sp-2)' }}>
-              <button onClick={handleReset} style={{ fontFamily: "'Baloo 2', sans-serif", padding: '0.8rem 1.5rem', background: '#fff', color: '#475569', border: '2px solid #E2E8F0', borderRadius: 999, fontSize: '1rem', cursor: 'pointer', fontWeight: 800 }}>
-                🔄 {language === 'bm' ? 'Main Semula' : 'Play Again'}
-              </button>
-              <button onClick={onBack} style={{ fontFamily: "'Baloo 2', sans-serif", padding: '0.8rem 1.5rem', background: `linear-gradient(180deg, ${C.primary}cc, ${C.primary})`, color: '#fff', border: 'none', borderRadius: 999, fontSize: '1rem', cursor: 'pointer', fontWeight: 800, boxShadow: `0 4px 0 ${C.primaryDark}` }}>
-                {language === 'bm' ? 'Kembali' : 'Back'}
-              </button>
+              {passed ? (
+                <>
+                  <button onClick={handleReset} style={secondaryBtnStyle}>
+                    🔄 {language === 'bm' ? 'Main Semula' : 'Play Again'}
+                  </button>
+                  {onNextTopic ? (
+                    <button onClick={onNextTopic} style={primaryBtnStyle}>
+                      {language === 'bm' ? 'Topik Seterusnya →' : 'Next Topic →'}
+                    </button>
+                  ) : (
+                    <button onClick={onBack} style={primaryBtnStyle}>
+                      {language === 'bm' ? 'Kembali' : 'Back'}
+                    </button>
+                  )}
+                </>
+              ) : (
+                <>
+                  <button onClick={handleReset} style={primaryBtnStyle}>
+                    🔄 {language === 'bm' ? 'Cuba Lagi' : 'Try Again'}
+                  </button>
+                  <button onClick={onBack} style={secondaryBtnStyle}>
+                    {language === 'bm' ? 'Kembali' : 'Back'}
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -655,35 +702,23 @@ export default function SebutFrasaBergambar({ onBack, language = 'bm' }) {
 
         {/* ── Footer actions ── */}
         <div className="sfb-footer">
-          {(phase === PHASE_READY || isListening) && (
-            <>
-              <button className="sfb-icon-btn repeat" onClick={handleRepeat}
-                title={language === 'bm' ? 'Dengar frasa' : 'Hear the phrase'}>
-                <RefreshCw size={22} color={C.primary} />
-              </button>
-              {phase === PHASE_READY ? (
-                <button className="sfb-main-btn mic" onClick={() => startListening()}>
-                  🎤 {language === 'bm' ? 'Tekan untuk Membaca' : 'Tap to Read'}
-                </button>
-              ) : (
-                <button className="sfb-main-btn stop" onClick={() => { SpeechManager.stop(); listenActiveRef.current = false; setPhase(PHASE_READY); }}>
-                  ⏸ {language === 'bm' ? 'Berhenti' : 'Stop'}
-                </button>
-              )}
-              <button className="sfb-icon-btn skip" onClick={handleSkip}
-                title={language === 'bm' ? 'Langkau' : 'Skip'}>
-                <SkipForward size={22} color={C.wrong} />
-              </button>
-            </>
-          )}
-
-          {(isCorrect || isWrong) && (
-            <button className={`sfb-main-btn ${isCorrect ? 'good' : 'bad'}`} onClick={() => advanceItem()}>
-              {isCorrect
-                ? (language === 'bm' ? '✓ Teruskan' : '✓ Continue')
-                : (language === 'bm' ? '→ Seterusnya' : '→ Next')}
+          <button className="sfb-icon-btn repeat" onClick={handleRepeat} disabled={isCorrect || isWrong}
+            title={language === 'bm' ? 'Dengar frasa' : 'Hear the phrase'}>
+            <RefreshCw size={22} color={C.primary} />
+          </button>
+          {isListening ? (
+            <button className="sfb-main-btn stop" onClick={() => { SpeechManager.stop(); listenActiveRef.current = false; setPhase(PHASE_READY); }}>
+              ⏸ {language === 'bm' ? 'Berhenti' : 'Stop'}
+            </button>
+          ) : (
+            <button className="sfb-main-btn mic" onClick={() => startListening()} disabled={isCorrect || isWrong}>
+              🎤 {language === 'bm' ? 'Tekan untuk Membaca' : 'Tap to Read'}
             </button>
           )}
+          <button className="sfb-icon-btn skip" onClick={handleSkip} disabled={isCorrect || isWrong}
+            title={language === 'bm' ? 'Langkau' : 'Skip'}>
+            <SkipForward size={22} color={C.wrong} />
+          </button>
         </div>
       </div>
     </>

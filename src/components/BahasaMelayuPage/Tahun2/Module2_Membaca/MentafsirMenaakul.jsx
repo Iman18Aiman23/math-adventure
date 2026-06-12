@@ -2,9 +2,188 @@ import React, { useState, useCallback } from 'react';
 import { RefreshCw } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { playSound, playHoverSound } from '../../../../utils/soundManager';
-import BackButton from '../../../BackButton';
+import BMHeader from '../../_shared/BMHeader';
 
-// KSSR BM Tahun 2 — Obj 4 (membaca & memahami kosa kata dari pelbagai sumber)
+const ACCENT = '#1CB0F6';
+const ACCENT_DARK = '#0B8DC0';
+
+const STYLE = `
+  .mm-root {
+    height: 100dvh; overflow: hidden;
+    background:
+      radial-gradient(ellipse 70% 50% at 18% 0%, #D6F0FF 0%, transparent 60%),
+      radial-gradient(ellipse 60% 45% at 88% 100%, #B0E0FF 0%, transparent 65%),
+      linear-gradient(180deg, #EBF8FF 0%, #D0F0FF 55%, #B5E5FF 100%);
+    font-family: 'Fredoka', system-ui, sans-serif;
+    display: flex; flex-direction: column;
+  }
+
+  .mm-body {
+    flex: 1; min-height: 0;
+    display: flex; flex-direction: column; align-items: center;
+    width: 100%; max-width: 560px;
+    margin: 0 auto;
+    padding: clamp(8px, 1.6vh, 12px) clamp(14px, 3.5vw, 28px);
+  }
+
+  .mm-stats {
+    flex-shrink: 0; width: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px; margin-bottom: clamp(10px, 1.6vh, 14px);
+  }
+
+  .mm-pill {
+    font-family: 'Baloo 2', sans-serif; font-weight: 800;
+    font-size: clamp(11px, 2vh, 13px);
+    border-radius: 999px;
+    padding: clamp(3px, 0.7vh, 5px) clamp(10px, 2.4vw, 14px);
+    white-space: nowrap;
+    background: #FFFFFFCC; color: #1B6B99; border: 1.5px solid ${ACCENT}44;
+  }
+
+  .mm-bar-wrap {
+    flex-shrink: 0; width: 100%;
+    background: #90D4FF; border-radius: 999px;
+    height: clamp(6px, 1.2vh, 9px); overflow: hidden;
+    margin-bottom: clamp(12px, 2vh, 18px);
+  }
+
+  .mm-bar-fill {
+    background: linear-gradient(90deg, ${ACCENT}, #4EC5FF);
+    height: 100%; border-radius: 999px;
+    transition: width 0.3s;
+  }
+
+  .mm-scroll {
+    flex: 1; min-height: 0;
+    overflow-y: auto;
+    width: 100%;
+    padding-bottom: clamp(12px, 2vh, 16px);
+  }
+
+  .mm-card {
+    background: #FFF; border-radius: 14px;
+    border: 2px solid ${ACCENT};
+    padding: clamp(14px, 2.4vh, 20px) clamp(14px, 3vw, 24px);
+    margin-bottom: 1rem;
+  }
+
+  .mm-card-header {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .mm-card-title {
+    font-weight: 800; font-size: clamp(13px, 2.4vh, 16px);
+    color: ${ACCENT};
+  }
+
+  .mm-context {
+    font-size: clamp(13px, 2.2vh, 15px);
+    color: #333; line-height: 1.75;
+    margin: 0;
+  }
+
+  .mm-word-highlight {
+    background: #FFF9C4; color: #F57F17;
+    font-weight: bold; padding: 0.2rem 0.35rem;
+    border-radius: 4px; margin: 0 0.1rem;
+  }
+
+  .mm-q-card {
+    background: #FFF; border-radius: 14px;
+    border: 2px solid ${ACCENT}66;
+    padding: clamp(12px, 2vh, 18px) clamp(12px, 2.5vw, 20px);
+    margin-bottom: 1rem;
+  }
+
+  .mm-q-header {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .mm-q-num {
+    background: ${ACCENT}; color: #fff;
+    border-radius: 50%; width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 0.8rem; flex-shrink: 0;
+  }
+
+  .mm-q-text {
+    margin: 0; font-weight: 700;
+    font-size: clamp(13px, 2.2vh, 15px);
+    color: #333; line-height: 1.4;
+  }
+
+  .mm-options {
+    display: flex; flex-direction: column; gap: 0.55rem;
+  }
+
+  .mm-opt {
+    padding: clamp(10px, 1.6vh, 14px) clamp(12px, 2vw, 16px);
+    background: #FFF; color: #333;
+    border: 2px solid ${ACCENT}; border-radius: 12px;
+    cursor: pointer; font-weight: 700;
+    font-size: clamp(13px, 2.2vh, 15px);
+    text-align: left; transition: all 0.2s;
+    font-family: 'Fredoka', system-ui, sans-serif;
+  }
+
+  .mm-opt:disabled { cursor: default; }
+
+  .mm-opt.correct { background: #4CAF50; border-color: #388E3C; color: #fff; }
+  .mm-opt.wrong { background: #FF6B6B; border-color: #D32F2F; color: #fff; }
+  .mm-opt.reveal { background: #F5F5F5; border-color: #DDD; color: #AAA; }
+
+  .mm-feedback {
+    padding: clamp(10px, 1.6vh, 14px) clamp(14px, 2.4vw, 18px);
+    border-radius: 10px; font-weight: 700;
+    font-size: clamp(12px, 2vh, 14px);
+    margin-bottom: 1rem;
+  }
+
+  .mm-feedback.correct { background: #D4EDDA; color: #155724; }
+  .mm-feedback.wrong { background: #F8D7DA; color: #721C24; }
+
+  .mm-footer {
+    flex-shrink: 0;
+    display: flex; gap: clamp(8px, 2vw, 12px);
+    width: 100%; max-width: 560px;
+    margin: 0 auto;
+    padding: clamp(10px, 1.6vh, 14px) clamp(14px, 3.5vw, 28px) clamp(8px, 1.6vh, 12px);
+    border-top: 2px solid ${ACCENT}33;
+  }
+
+  .mm-btn {
+    flex: 1; min-width: 0;
+    font-family: 'Baloo 2', sans-serif; font-weight: 800;
+    font-size: clamp(13px, 2.4vh, 16px);
+    border: none; border-radius: 14px; cursor: pointer;
+    padding: clamp(10px, 2vh, 14px) 12px;
+    transition: transform .12s ease;
+  }
+
+  .mm-btn:active { transform: translateY(2px); }
+  .mm-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  .mm-btn.primary {
+    color: #fff;
+    background: linear-gradient(180deg, ${ACCENT}cc, ${ACCENT});
+    box-shadow: 0 4px 0 ${ACCENT_DARK};
+  }
+
+  .mm-btn.secondary {
+    color: #64748B; background: #F1F5F9;
+    box-shadow: 0 4px 0 #CBD5E1;
+  }
+
+  .mm-center {
+    flex: 1; min-height: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: clamp(16px, 2.4vh, 20px); padding: 16px; text-align: center;
+  }
+`;
+
 const VOCABULARY_ITEMS = [
   {
     id: 1,
@@ -203,14 +382,15 @@ const VOCABULARY_ITEMS = [
 const TOTAL_ITEMS = VOCABULARY_ITEMS.length;
 
 export default function KosaKataKontekstual({ onBack, language = 'bm' }) {
-  const [itemIdx, setItemIdx]             = useState(0);
+  const [itemIdx, setItemIdx]               = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [isAnswered, setIsAnswered]       = useState(false);
-  const [score, setScore]                 = useState(0);
-  const [isDone, setIsDone]               = useState(false);
+  const [isAnswered, setIsAnswered]         = useState(false);
+  const [score, setScore]                   = useState(0);
+  const [isDone, setIsDone]                 = useState(false);
 
-  const item    = VOCABULARY_ITEMS[itemIdx];
+  const item      = VOCABULARY_ITEMS[itemIdx];
   const isCorrect = selectedAnswer === item.answer;
+  const progressPct = (itemIdx / TOTAL_ITEMS) * 100;
 
   const handleSelect = useCallback((option) => {
     if (isAnswered) return;
@@ -239,13 +419,11 @@ export default function KosaKataKontekstual({ onBack, language = 'bm' }) {
     }
   }, [isAnswered, itemIdx]);
 
-  // Reset current question only
   const handleResetQuestion = useCallback(() => {
     setSelectedAnswer(null);
     setIsAnswered(false);
   }, []);
 
-  // Reset entire game (used on done screen)
   const handleResetGame = useCallback(() => {
     setItemIdx(0);
     setSelectedAnswer(null);
@@ -254,142 +432,137 @@ export default function KosaKataKontekstual({ onBack, language = 'bm' }) {
     setIsDone(false);
   }, []);
 
-  const getOptionStyle = (option) => {
-    if (!isAnswered) return { bg: '#FFF', border: '#1CB0F6', color: '#333' };
-    if (option === item.answer)  return { bg: '#4CAF50', border: '#388E3C', color: 'white' };
-    if (option === selectedAnswer)    return { bg: '#FF6B6B', border: '#D32F2F', color: 'white' };
-    return { bg: '#F5F5F5', border: '#DDD', color: '#AAA' };
+  const getOptionClass = (option) => {
+    if (!isAnswered) return '';
+    if (option === item.answer) return 'correct';
+    if (option === selectedAnswer) return 'wrong';
+    return 'reveal';
   };
+
+  const topicTitle = language === 'bm' ? 'Kosa Kata Kontekstual' : 'Contextual Vocabulary';
 
   if (isDone) {
     return (
-      <div style={{ minHeight: '100%', background: '#D0F0FF', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
-        <BackButton onClick={onBack} />
-        <div style={{ fontSize: '5rem', marginBottom: '1rem' }}>📖</div>
-        <h2 style={{ color: '#1CB0F6', fontSize: '2rem', marginBottom: '0.5rem' }}>
-          {language === 'bm' ? 'Tahniah!' : 'Well Done!'}
-        </h2>
-        <p style={{ fontSize: '1.4rem', color: '#555', marginBottom: '2rem' }}>
-          {language === 'bm' ? 'Markah: ' : 'Score: '}<strong>{score}</strong>/{TOTAL_ITEMS * 10}
-        </p>
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <button onClick={handleResetGame} style={{ padding: '0.75rem 1.5rem', background: '#E0E0E0', color: '#333', border: 'none', borderRadius: '10px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold' }}>
-            {language === 'bm' ? 'Main Semula' : 'Play Again'}
-          </button>
-          <button onClick={onBack} style={{ padding: '0.75rem 1.5rem', background: '#1CB0F6', color: 'white', border: 'none', borderRadius: '10px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold' }}>
-            {language === 'bm' ? 'Kembali' : 'Back'}
-          </button>
+      <>
+        <style>{STYLE}</style>
+        <div className="mm-root">
+          <BMHeader onBack={onBack} language={language} title={topicTitle} />
+          <div className="mm-center">
+            <div style={{ fontSize: 'clamp(56px, 12vh, 90px)', lineHeight: 1 }}>📖</div>
+            <h2 style={{ fontFamily: "'Baloo 2', sans-serif", color: ACCENT, fontSize: 'clamp(24px, 5vh, 36px)', fontWeight: 800, margin: 0 }}>
+              {language === 'bm' ? 'Tahniah!' : 'Well Done!'}
+            </h2>
+            <p style={{ fontSize: 'clamp(16px, 3vh, 21px)', color: '#555', fontWeight: 600, margin: '0.6rem 0 1rem' }}>
+              {language === 'bm' ? 'Markah: ' : 'Score: '}<strong>{score}</strong>/{TOTAL_ITEMS * 10}
+            </p>
+            <div style={{ display: 'flex', gap: '0.8rem' }}>
+              <button onClick={handleResetGame} style={{ fontFamily: "'Baloo 2', sans-serif", padding: '0.8rem 1.5rem', background: '#fff', color: '#475569', border: '2px solid #E2E8F0', borderRadius: 999, fontSize: '1rem', cursor: 'pointer', fontWeight: 800 }}>
+                🔄 {language === 'bm' ? 'Main Semula' : 'Play Again'}
+              </button>
+              <button onClick={onBack} style={{ fontFamily: "'Baloo 2', sans-serif", padding: '0.8rem 1.5rem', background: `linear-gradient(180deg, ${ACCENT}cc, ${ACCENT})`, color: '#fff', border: 'none', borderRadius: 999, fontSize: '1rem', cursor: 'pointer', fontWeight: 800, boxShadow: `0 4px 0 ${ACCENT_DARK}` }}>
+                ← {language === 'bm' ? 'Kembali' : 'Back'}
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: '#D0F0FF', overflow: 'hidden' }}>
-      <BackButton onClick={onBack} />
+    <>
+      <style>{STYLE}</style>
+      <div className="mm-root">
+        <BMHeader onBack={onBack} language={language} title={topicTitle} />
 
-      {/* Header */}
-      <div style={{ flexShrink: 0, padding: '3.5rem 1rem 0.75rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
-        <div style={{ textAlign: 'center', marginBottom: '0.85rem' }}>
-          <h1 style={{ color: '#1CB0F6', marginBottom: '0.25rem', fontSize: '1.6rem' }}>
-            {language === 'bm' ? 'Kosa Kata Kontekstual' : 'Contextual Vocabulary'}
-          </h1>
-          <p style={{ color: '#888', fontSize: '0.9rem' }}>
-            {language === 'bm' ? 'Pelajari perkataan baru dari konteks' : 'Learn new words from context'}
-          </p>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.65rem 1rem', background: 'rgba(28,176,246,0.12)', borderRadius: '10px' }}>
-          <span style={{ color: '#666', fontSize: '0.9rem' }}>
-            {language === 'bm' ? `Perkataan ${itemIdx + 1}/${TOTAL_ITEMS}` : `Word ${itemIdx + 1}/${TOTAL_ITEMS}`}
-          </span>
-          <span style={{ fontWeight: 'bold', color: '#1CB0F6' }}>⭐ {score}</span>
-        </div>
-      </div>
-
-      {/* Body */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '0.75rem 1rem 1rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
-
-        {/* Context card */}
-        <div style={{ background: '#FFF', borderRadius: '12px', border: '2px solid #1CB0F6', padding: '1.1rem 1.25rem', marginBottom: '1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.65rem' }}>
-            <span style={{ fontSize: '1.4rem' }}>{item.emoji}</span>
-            <span style={{ fontWeight: 800, color: '#1CB0F6', fontSize: '0.95rem' }}>
-              {language === 'bm' ? item.source.bm : item.source.eng}
+        <div className="mm-body">
+          {/* Stats */}
+          <div className="mm-stats">
+            <span className="mm-pill">
+              {language === 'bm' ? `Perkataan ${itemIdx + 1}/${TOTAL_ITEMS}` : `Word ${itemIdx + 1}/${TOTAL_ITEMS}`}
             </span>
+            <span className="mm-pill" style={{ background: '#E8F4FD', color: ACCENT_DARK, borderColor: `${ACCENT}66` }}>⭐ {score}</span>
           </div>
-          <p style={{ fontSize: '1rem', color: '#333', lineHeight: 1.75, margin: '0 0 0.5rem' }}>
-            {item.context_bm.split(item.word_bm).map((part, i) => (
-              <React.Fragment key={i}>
-                {part}
-                {i < item.context_bm.split(item.word_bm).length - 1 && (
-                  <span style={{ background: '#FFF9C4', color: '#F57F17', fontWeight: 'bold', padding: '0.2rem 0.35rem', borderRadius: '4px', margin: '0 0.1rem' }}>
+
+          {/* Progress bar */}
+          <div className="mm-bar-wrap">
+            <div className="mm-bar-fill" style={{ width: `${progressPct}%` }} />
+          </div>
+
+          {/* Scrollable content */}
+          <div className="mm-scroll">
+            {/* Context card */}
+            <div className="mm-card">
+              <div className="mm-card-header">
+                <span style={{ fontSize: '1.3rem' }}>{item.emoji}</span>
+                <span className="mm-card-title">
+                  {language === 'bm' ? item.source.bm : item.source.eng}
+                </span>
+              </div>
+              <p className="mm-context">
+                {item.context_bm.split(item.word_bm).map((part, i) => (
+                  <React.Fragment key={i}>
+                    {part}
+                    {i < item.context_bm.split(item.word_bm).length - 1 && (
+                      <span className="mm-word-highlight">{item.word_bm}</span>
+                    )}
+                  </React.Fragment>
+                ))}
+              </p>
+            </div>
+
+            {/* Question card */}
+            <div className="mm-q-card">
+              <div className="mm-q-header">
+                <span className="mm-q-num">?</span>
+                <p className="mm-q-text">
+                  {language === 'bm' ? 'Apakah maksud ' : 'What does '}
+                  <span style={{ background: '#FFF9C4', color: '#F57F17', fontWeight: 'bold', padding: '0.15rem 0.3rem', borderRadius: '3px' }}>
                     {item.word_bm}
                   </span>
-                )}
-              </React.Fragment>
-            ))}
-          </p>
-          <p style={{ fontSize: '0.8rem', color: '#999', fontStyle: 'italic', margin: 0, lineHeight: 1.6, display: 'none' }}>
-            {item.context_eng}
-          </p>
-        </div>
+                  {language === 'bm' ? '?' : ' mean?'}
+                </p>
+              </div>
 
-        {/* Question card */}
-        <div style={{ background: '#FFF', borderRadius: '12px', border: '2px solid rgba(28,176,246,0.4)', padding: '1rem 1.1rem', marginBottom: '1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-            <span style={{ background: '#1CB0F6', color: 'white', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.8rem', flexShrink: 0 }}>
-              ?
-            </span>
-            <p style={{ margin: 0, fontWeight: 700, color: '#333', fontSize: '0.95rem', lineHeight: 1.4 }}>
-              {language === 'bm' ? 'Apakah maksud ' : 'What does '}
-              <span style={{ background: '#FFF9C4', color: '#F57F17', fontWeight: 'bold', padding: '0.15rem 0.3rem', borderRadius: '3px' }}>
-                {item.word_bm}
-              </span>
-              {language === 'bm' ? '?' : ' mean?'}
-            </p>
-          </div>
+              <div className="mm-options">
+                {item.options.map((opt, idx) => (
+                  <button key={idx} onClick={() => handleSelect(opt.text)} disabled={isAnswered}
+                    className={`mm-opt ${getOptionClass(opt.text)}`}>
+                    {opt.text}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
-            {item.options.map((opt, idx) => {
-              const { bg, border, color } = getOptionStyle(opt.text);
-              return (
-                <button key={idx} onClick={() => handleSelect(opt.text)} disabled={isAnswered}
-                  style={{ padding: '0.8rem 1rem', background: bg, color, border: `2px solid ${border}`, borderRadius: '10px', cursor: isAnswered ? 'default' : 'pointer', fontWeight: 'bold', fontSize: '0.95rem', textAlign: 'left', transition: 'all 0.2s' }}>
-                  {opt.text}
-                </button>
-              );
-            })}
+            {/* Feedback */}
+            {isAnswered && (
+              <div className={`mm-feedback ${isCorrect ? 'correct' : 'wrong'}`}>
+                <div style={{ marginBottom: '0.4rem' }}>
+                  {isCorrect
+                    ? (language === 'bm' ? '✅ Betul!' : '✅ Correct!')
+                    : (language === 'bm' ? `❌ Tidak betul. Jawapan: ${item.answer}` : `❌ Wrong. Answer: ${item.answer}`)}
+                </div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 'normal', opacity: 0.9 }}>
+                  {item.explanation_bm}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Feedback */}
-        {isAnswered && (
-          <div style={{ padding: '0.85rem 1rem', background: isCorrect ? '#D4EDDA' : '#F8D7DA', color: isCorrect ? '#155724' : '#721C24', borderRadius: '8px', fontWeight: 'bold' }}>
-            <div style={{ marginBottom: '0.4rem' }}>
-              {isCorrect
-                ? (language === 'bm' ? '✅ Betul!' : '✅ Correct!')
-                : (language === 'bm' ? `❌ Tidak betul. Jawapan: ${item.answer}` : `❌ Wrong. Answer: ${item.answer}`)}
-            </div>
-            <div style={{ fontSize: '0.85rem', fontWeight: 'normal', opacity: 0.9 }}>
-              {item.explanation_bm}
-            </div>
-          </div>
-        )}
+        {/* Footer */}
+        <div className="mm-footer">
+          <button onClick={handleResetQuestion} className="mm-btn secondary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
+            <RefreshCw size={16} />
+            {language === 'bm' ? 'Semula' : 'Reset'}
+          </button>
+          <button onClick={handleNext} disabled={!isAnswered} className="mm-btn primary">
+            {itemIdx < VOCABULARY_ITEMS.length - 1
+              ? (language === 'bm' ? 'Perkataan Seterusnya →' : 'Next Word →')
+              : (language === 'bm' ? 'Selesai ✓' : 'Finish ✓')}
+          </button>
+        </div>
       </div>
-
-      {/* Footer */}
-      <div style={{ flexShrink: 0, background: '#D0F0FF', borderTop: '2px solid rgba(28,176,246,0.25)', padding: '0.75rem 1rem', display: 'flex', gap: '0.75rem' }}>
-        <button onClick={handleResetQuestion} style={{ flex: 1, padding: '0.75rem', background: '#E0E0E0', color: '#555', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
-          <RefreshCw size={16} />
-          {language === 'bm' ? 'Semula' : 'Reset'}
-        </button>
-        <button onClick={handleNext} disabled={!isAnswered}
-          style={{ flex: 1, padding: '0.75rem', background: isAnswered ? '#1CB0F6' : '#7FD4FF', color: 'white', border: 'none', borderRadius: '10px', cursor: isAnswered ? 'pointer' : 'not-allowed', fontWeight: 'bold', fontSize: '1rem', boxShadow: isAnswered ? '0 4px 0 #0B8DC0' : 'none', transition: 'background 0.2s' }}>
-          {itemIdx < VOCABULARY_ITEMS.length - 1
-            ? (language === 'bm' ? 'Perkataan Seterusnya →' : 'Next Word →')
-            : (language === 'bm' ? 'Selesai ✓' : 'Finish ✓')}
-        </button>
-      </div>
-    </div>
+    </>
   );
 }

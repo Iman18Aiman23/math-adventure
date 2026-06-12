@@ -120,14 +120,23 @@ const MengenalHuruf = React.lazy(() => import('./components/BahasaMelayuPage/Tah
 const DengarTeka = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/DengarTeka'));
 const SukuKataBM = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/SukuKata'));
 const DengarBuat = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/DengarBuat'));
+const KenalkanDiri = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/KenalkanDiri'));
 const MembacaMekanis = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module2_Membaca/MembacaMekanis'));
 const BacaPerkataan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module2_Membaca/BacaPerkataan'));
 const FahamiCerita = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module2_Membaca/FahamiCerita'));
-const AsasMenulis = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module3_Menulis/AsasMenulis'));
+const MenulisVokal = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module3_Menulis/MenulisVokal'));
+const KonsonanBJ = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module3_Menulis/KonsonanBJ'));
+const KonsonanKR = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module3_Menulis/KonsonanKR'));
+const KonsonanSZ = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module3_Menulis/KonsonanSZ'));
 const MencatatMaklumat = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module3_Menulis/MencatatMaklumat'));
-const KeindahanBahasa = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module4_SeniBahasa/KeindahanBahasa'));
+const DialogPage = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module4_SeniBahasa/Dialog'));
+const PantunPage = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module4_SeniBahasa/Pantun'));
+const LaguPage = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module4_SeniBahasa/Lagu'));
 const SintaksisAyat = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module5_Tatabahasa/SintaksisAyat'));
-const JenisKataLesson = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module5_Tatabahasa/JenisKataLesson'));
+const GolonganNamaLesson = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module5_Tatabahasa/GolonganNamaLesson'));
+const KerjaAdjektifLesson = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module5_Tatabahasa/KerjaAdjektifLesson'));
+const HubungSendiLesson = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module5_Tatabahasa/HubungSendiLesson'));
+const TanyaGantiLesson = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module5_Tatabahasa/TanyaGantiLesson'));
 const PerkataanSukar = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module2_Membaca/PerkataanSukar'));
 const MenulisMekanis = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module3_Menulis/MenulisMekanis'));
 const HasilkanPenulisan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module3_Menulis/HasilkanPenulisan'));
@@ -248,6 +257,9 @@ import { getGameData } from './utils/gameStatsManager';
 import { baseAssessments } from './data/curriculum/assessment';
 import { markTopicCompleted } from './components/BahasaMelayuPage/_shared/useModuleProgress';
 import { getNextTopicId, getNextModuleId } from './components/BahasaMelayuPage/_shared/ModuleData';
+import { GamificationProvider } from './contexts/GamificationContext';
+import { migrateLegacyData } from './services/legacyMigration';
+import GlobalXpToast from './components/_shared/GlobalXpToast';
 
 // ── Themes ───────────────────────────────────────────────────────────────────
 export const THEMES = {
@@ -420,6 +432,18 @@ export default function App() {
       document.removeEventListener('click', handleFirstClick);
       clearTimeout(t);
     };
+  }, []);
+
+  // Run legacy migration on mount (ref guard: StrictMode double-invokes mount effects in dev)
+  const migrationRanRef = useRef(false);
+  useEffect(() => {
+    if (migrationRanRef.current) return;
+    migrationRanRef.current = true;
+    migrateLegacyData().then(result => {
+      if (result.migrated) {
+        console.log('[App] Legacy migration complete:', result);
+      }
+    });
   }, []);
 
   const handleStartGame    = (op, diff, _nums = [], qType = 'multiple') => { setGameConfig({ operation: op, difficulty: diff, nums: _nums, quizType: qType }); setIsPlaying(true); };
@@ -729,6 +753,12 @@ export default function App() {
                 topicComplete={(id) => markTopicCompleted(id)}
                 onNextTopic={bmNextTopic} onNextModule={bmNextModule} key={bmTopic} />
             </Suspense>;
+          if (bmTopic === '1-1-9-kenalkan-diri')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <KenalkanDiri onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} onNextModule={bmNextModule} key={bmTopic} />
+            </Suspense>;
           if (bmTopic === '1-2-4-baca-perkataan')
             return <Suspense fallback={<LoadingSpinner />}>
               <BacaPerkataan onBack={topicOnBack} language={language}
@@ -741,21 +771,51 @@ export default function App() {
                 topicComplete={(id) => markTopicCompleted(id)}
                 onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
-          if (bmTopic === '1-3-1-asas-menulis')
+          if (bmTopic === '1-3-1-menulis-vokal')
             return <Suspense fallback={<LoadingSpinner />}>
-              <AsasMenulis onBack={topicOnBack} language={language}
+              <MenulisVokal onBack={topicOnBack} language={language}
                 topicComplete={(id) => markTopicCompleted(id)}
                 onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
-          if (bmTopic === '1-3-3-mencatat-maklumat')
+          if (bmTopic === '1-3-2-menulis-konsonan-bj')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <KonsonanBJ onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '1-3-3-menulis-konsonan-kr')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <KonsonanKR onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '1-3-4-menulis-konsonan-sz')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <KonsonanSZ onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '1-3-6-mencatat-maklumat')
             return <Suspense fallback={<LoadingSpinner />}>
               <MencatatMaklumat onBack={topicOnBack} language={language}
                 topicComplete={(id) => markTopicCompleted(id)}
                 onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
-          if (bmTopic === '1-4-1-keindahan-bahasa')
+          if (bmTopic === '1-4-1-dialog')
             return <Suspense fallback={<LoadingSpinner />}>
-              <KeindahanBahasa onBack={topicOnBack} language={language}
+              <DialogPage onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '1-4-2-pantun')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <PantunPage onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '1-4-3-lagu')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <LaguPage onBack={topicOnBack} language={language}
                 topicComplete={(id) => markTopicCompleted(id)}
                 onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
@@ -766,12 +826,12 @@ export default function App() {
                 onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
 
-          // ── Reused games (wrapped in ProgressWrapper) ──
+          // ── Reused games (Tahun 1 — direct-wired with pass-% gate) ──
           if (bmTopic === '1-1-2-bertutur-maklumat')
             return <Suspense fallback={<LoadingSpinner />}>
-              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
-                <SebutFrasaBergambar language={language} />
-              </ProgressWrapper>
+              <SebutFrasaBergambar onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
           if (bmTopic === '1-2-1-asas-membaca')
             return <Suspense fallback={<LoadingSpinner />}>
@@ -785,15 +845,33 @@ export default function App() {
                 topicComplete={(id) => markTopicCompleted(id)}
                 onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
-          if (bmTopic === '1-3-2-bina-ayat')
+          if (bmTopic === '1-3-5-bina-ayat')
             return <Suspense fallback={<LoadingSpinner />}>
-              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
-                <SentenceBuilder language={language} />
-              </ProgressWrapper>
+              <SentenceBuilder onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
           if (bmTopic === '1-5-1-morfologi-kata')
             return <Suspense fallback={<LoadingSpinner />}>
-              <JenisKataLesson onBack={topicOnBack} language={language}
+              <GolonganNamaLesson onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '1-5-6-kerja-adjektif')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <KerjaAdjektifLesson onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '1-5-7-hubung-sendi')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <HubungSendiLesson onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '1-5-8-tanya-ganti')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <TanyaGantiLesson onBack={topicOnBack} language={language}
                 topicComplete={(id) => markTopicCompleted(id)}
                 onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
@@ -1265,67 +1343,70 @@ export default function App() {
   };
 
   return (
-    <GameStateContext.Provider value={gameState}>
-      {/* Desktop Sidebar — rendered outside .app-container, inside #root row */}
-      {isDesktop && !shouldHideSidebar && (
-        <DesktopSidebar
-          activeTab={activeTab}
-          onTabChange={handleTabChange}
-          language={language}
-          onToggleLanguage={handleToggleLang}
-          playerName={playerName}
-          gameState={gameState}
-          onHome={handleBackToHome}
-          theme={THEMES[currentTheme]}
-          onThemeChange={setCurrentTheme}
-          themes={THEMES}
-        />
-      )}
-
-      <div
-        className={`app-container${activeTab === 'leaderboard' ? ' app-leaderboard' : ''}${activeTab === 'learn' && !currentSubject && !currentAgeGroup ? ' app-home' : ''}`}
-        style={{
-          '--theme-hero-bg':     THEMES[currentTheme].heroBg,
-          '--theme-hero-border': THEMES[currentTheme].heroBorder,
-          '--theme-planet-body': THEMES[currentTheme].planetBody,
-          '--theme-planet-ring': THEMES[currentTheme].planetRing,
-        }}
-      >
-        {!playerName && <Suspense fallback={null}><WelcomeModal onSave={handleSaveName} /></Suspense>}
-        <Suspense fallback={null}><LevelUpToast level={levelUpInfo?.newLevel} onDismiss={clearLevelUp} /></Suspense>
-
-        {/* Loading veil — sits on top of the current page (kept visible by the
-            useTransition above) while the next page's lazy chunk loads. */}
-        {isPending && <LoadingSpinner overlay />}
-
-        {/* Page Content.
-            Suspense sits OUTSIDE the keyed view-container so the boundary keeps a
-            stable identity across navigations. That lets useTransition keep the
-            current page visible (with the overlay spinner on top) while the next
-            page's chunk loads, instead of blanking to the fallback. The fallback
-            now only shows on a true cold mount, when there's nothing to keep. */}
-        <div className="app-content">
-          <Suspense fallback={<LoadingSpinner />}>
-            <div key={viewKey} ref={viewContainerRef} className="view-container">
-              {renderContent()}
-            </div>
-          </Suspense>
-        </div>
-
-        {/* CosmicMobileNav — rendered outside view-container so position:fixed works correctly */}
-        {!inActiveQuiz && !selectedAssessment && !currentAgeGame && !currentAgeGroup && !currentSubject && (
-          <CosmicMobileNav
+    <GamificationProvider>
+      <GlobalXpToast />
+      <GameStateContext.Provider value={gameState}>
+        {/* Desktop Sidebar — rendered outside .app-container, inside #root row */}
+        {isDesktop && !shouldHideSidebar && (
+          <DesktopSidebar
             activeTab={activeTab}
-            language={language}
             onTabChange={handleTabChange}
+            language={language}
+            onToggleLanguage={handleToggleLang}
+            playerName={playerName}
+            gameState={gameState}
             onHome={handleBackToHome}
-            onToggleLang={handleToggleLang}
             theme={THEMES[currentTheme]}
-            themes={THEMES}
             onThemeChange={setCurrentTheme}
+            themes={THEMES}
           />
         )}
-      </div>
-    </GameStateContext.Provider>
+
+        <div
+          className={`app-container${activeTab === 'leaderboard' ? ' app-leaderboard' : ''}${activeTab === 'learn' && !currentSubject && !currentAgeGroup ? ' app-home' : ''}`}
+          style={{
+            '--theme-hero-bg':     THEMES[currentTheme].heroBg,
+            '--theme-hero-border': THEMES[currentTheme].heroBorder,
+            '--theme-planet-body': THEMES[currentTheme].planetBody,
+            '--theme-planet-ring': THEMES[currentTheme].planetRing,
+          }}
+        >
+          {!playerName && <Suspense fallback={null}><WelcomeModal onSave={handleSaveName} /></Suspense>}
+          <Suspense fallback={null}><LevelUpToast level={levelUpInfo?.newLevel} onDismiss={clearLevelUp} /></Suspense>
+
+          {/* Loading veil — sits on top of the current page (kept visible by the
+              useTransition above) while the next page's lazy chunk loads. */}
+          {isPending && <LoadingSpinner overlay />}
+
+          {/* Page Content.
+              Suspense sits OUTSIDE the keyed view-container so the boundary keeps a
+              stable identity across navigations. That lets useTransition keep the
+              current page visible (with the overlay spinner on top) while the next
+              page's chunk loads, instead of blanking to the fallback. The fallback
+              now only shows on a true cold mount, when there's nothing to keep. */}
+          <div className="app-content">
+            <Suspense fallback={<LoadingSpinner />}>
+              <div key={viewKey} ref={viewContainerRef} className="view-container">
+                {renderContent()}
+              </div>
+            </Suspense>
+          </div>
+
+          {/* CosmicMobileNav — rendered outside view-container so position:fixed works correctly */}
+          {!inActiveQuiz && !selectedAssessment && !currentAgeGame && !currentAgeGroup && !currentSubject && (
+            <CosmicMobileNav
+              activeTab={activeTab}
+              language={language}
+              onTabChange={handleTabChange}
+              onHome={handleBackToHome}
+              onToggleLang={handleToggleLang}
+              theme={THEMES[currentTheme]}
+              themes={THEMES}
+              onThemeChange={setCurrentTheme}
+            />
+          )}
+        </div>
+      </GameStateContext.Provider>
+    </GamificationProvider>
   );
 }

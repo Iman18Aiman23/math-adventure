@@ -196,6 +196,7 @@
 | T1 M1 — new Topik 1.8 "Dengar & Buat" | **New "Pattern 3" standalone activity** (`DengarBuat.jsx`) — TTS speaks an arahan/pesanan, child performs it physically, self-reports via "✓ Sudah!" (always enabled except a ~1.6s correct-feedback window; "🔊 Ulang" replays anytime, no artificial delay). 13-item bank (10 arahan + 3 pesanan), 8/round. Closes M1 A9 + A11 (T1 report P1 #3). See §16.3. | 2026-06-11 |
 | Cross-module "Modul Seterusnya" | New `getNextModuleId(topicId)` (`ModuleData.js`) + `bmNextModule` callback (`App.jsx`) — jumps to the NEXT module's hub/trail page (not a topic) when the current topic is the last in its module. Used by 1.8's completion screen. **Kept separate from** `getNextTopicId`/`bmNextTopic` (same-module "Topik Seterusnya", used by all Pattern-1 quiz results across 19+ topics) — that contract is UNCHANGED. See §16.5. | 2026-06-11 |
 | T1 M3 Topik 3.1 — quiz wiring | `AsasMenulis.jsx` (tracing canvas) gained a second phase: after tracing all 26 letters, transitions to `BMLessonQuizLayout` using the previously-orphaned `1-3-1-asas-menulis` bank (huruf → suku kata → perkataan → frasa dictation, 15 items). Gives 3.1 a mastery gate (≥70%) for the first time. Closes M3 A2 + B7 (T1 report P1 #1). | 2026-06-11 |
+| KV/KVK rule scope — guided-reading exception (R9) | **Strict KV/KVK rule for decoding activities only.** Decoding (1.1/1.4 letter quizzes, 1.5 suku kata, 2.1 asas membaca, 2.2 baca perkataan KVK) must use only clean KV/KVK words — `Anggur`/`Singa` swapped to `Alat`/`Siput`. **Exception:** Reading comprehension passages (2.3, 2.5, 3.3) and sentence-building (3.2) may use affixed words (meN-/ber-) — these involve whole-sentence guided reading, not isolated decoding. M5 grammar examples are a separate documented exception (inherent to teaching Kata Kerja). | 2026-06-12 |
 
 ### Phase 0 — App Integration
 
@@ -322,8 +323,9 @@ Per-module silibus audits live in `reports/` (`_CHECKLIST_TEMPLATE.md` = reusabl
 
 | Report | Verdict | Date |
 |--------|---------|------|
-| `reports/T1_COVERAGE_REPORT.md` (M1–M5, all of Tahun 1) | ⚠️ Partial — 18✅/11⚠️/11❌/2➖ across 42 rows; every modul ⚠️. Headline gaps: M1 Topik 1.2 Bertutur (arahan/pesanan/perkenalan diri/permintaan sopan); orphaned `1-3-1-asas-menulis` bank never wired into M3 AsasMenulis; M5 5.1 missing Kata Tugas + Kata Ganti Nama Diri; garbled pantun #2 in M4 4.1; ayat-tunggal STT tier missing (M1 A7 / M2 A7) | 2026-06-11 |
-| T2 · T3 | ⏳ Pending | |
+| `reports/T1_COVERAGE_REPORT.md` (M1–M5, all of Tahun 1) | ⚠️ Partial — **38✅ · 1⚠️ · 0❌ · 2➖ (41 rows)**. M1 fully closed (12✅, R8+R9). M2 fully closed (10✅). M5 fully closed (8✅, R1+R10). M4 ⚠️ (3✅·1⚠️·0❌·1➖, only A4 lagu ➖ remains). M3 ⚠️ (2✅·3⚠️·0❌, handwriting 3 partial). All ❌ rows closed. R9 (C1) closes KV/KVK rule scope. | 2026-06-12 |
+| `reports/T2_COVERAGE_REPORT.md` (M1–M5, all of Tahun 2) | ❌ Major gaps — **7✅ · 7⚠️ · 24❌ · 1➖ (39 rows)**. M2 is the only strong module (5✅·1❌). M1 and M5 5.1 need near-total rebuilds. 7 of 13 topics are Pattern-2 reuses of mismatched content. See R12-R24 action plan. | 2026-06-11 |
+| T3 | ⏳ Pending — R11 | |
 
 ---
 
@@ -1305,7 +1307,7 @@ src/components/BahasaMelayuPage/
 
 > **Build Order:** Phase 0 -> Phase 1 -> Phase 2 -> Phase 2B (hooks + layout) -> Phase 3 (T1 content) -> Phase 4 (T2) -> Phase 5 (T3) -> Phase 6 (migration)
 > Phase 2B establishes the shared infrastructure (useModuleProgress, useBMQuiz, BMLessonQuizLayout, BM_QUESTIONS). Then Phase 3+ builds topic pages using this foundation.
-> **Status (2026-06-12): Phases 0–6 complete!** All **45 topics** across 3 years done (T1=**19**, T2=13, T3=13). T1 grew 16→17 with Topik 1.8 "Dengar & Buat" (2026-06-11), then 17→19 with the M2 rebuild (new 2.2 "Baca Perkataan KVK" + 2.4 "Fahami Cerita", 2026-06-12). Next: Phase 7 (curriculum coverage audits — T1 done, T2/T3 pending; see §17 Build Roadmap).
+> **Status (2026-06-12): Phases 0–6 complete!** All **45 topics** across 3 years done (T1=**19**, T2=13, T3=13). T1 grew 16→17 with Topik 1.8 "Dengar & Buat" (2026-06-11), then 17→19 with the M2 rebuild (new 2.2 "Baca Perkataan KVK" + 2.4 "Fahami Cerita", 2026-06-12). Phase 7 (T1 coverage audit) is now at **32✅/41 rows** after R1-R3 + R7 closed all P1 and 5 P2 gaps (R7, 2026-06-12: "Ajuk Saya" mic on 1.1-1.4 + "Main Watak" dialog role-play STT on 4.1). Next: R8 (Kenalkan Diri, needs scope decision), R9 (KV/KVK swaps), T2/T3 audits pending; see §17 Build Roadmap.
 
 ---
 
@@ -1395,7 +1397,7 @@ No per-question scores, streaks, or attempt history are persisted — only a bin
 
 **Completion trigger differs by pattern** (full pattern descriptions in §16):
 - **Pattern 1** (`BMLessonQuizLayout`): `topicComplete(topicId)` fires only when `finished && pct >= passPct` (default `PASS_PCT = 70`, exported from `BMLessonQuizLayout.jsx`). Failing the mastery gate does NOT mark the topic complete — the child sees "Cuba Lagi" (Try Again) instead of "Topik Seterusnya".
-- **Pattern 2** (reused game inside `ProgressWrapper`, defined in `App.jsx`): `markTopicCompleted(topicId)` fires unconditionally the instant the child presses ANY "back" button inside the wrapped game — `ProgressWrapper` intercepts `onBack` via `React.cloneElement` and calls `markTopicCompleted(topicId)` before delegating to the real `onBack`. **There is no score gate** — this is the gap §17 R5 addresses.
+- **Pattern 2** (reused game inside `ProgressWrapper`, defined in `App.jsx`): `markTopicCompleted(topicId)` fires unconditionally the instant the child presses ANY "back" button inside the wrapped game — `ProgressWrapper` intercepts `onBack` via `React.cloneElement` and calls `markTopicCompleted(topicId)` before delegating to the real `onBack`. **There is no score gate** — this is the gap §17 R6 addresses.
 - **Pattern 3** (standalone activity, e.g. DengarBuat): `topicComplete?.(TOPIC_ID)` fires once, inside `advanceItem()`, when the LAST item in the round is finished — regardless of per-item score.
 
 ### 15.4 "Where to Add New Content" — Decision Table
@@ -1512,40 +1514,28 @@ Do not duplicate this table elsewhere — link back to §8 if more detail is nee
 
 ## 17. Build Roadmap (Tahun 1–3)
 
-> **How to use this section:** each item below is independently buildable. Tell the assistant "build R{n}" (or describe the item) and it will implement ONLY that item — per the incremental-workflow rule, work proceeds one slice at a time with a status update between slices. Items are ordered by priority (P1 → P2 → P3 → audits), drawn from `reports/T1_COVERAGE_REPORT.md`'s "Consolidated Improvement Actions" table. T2/T3 equivalents of that report do not exist yet (R10/R11).
+> **How to use this section:** each item below is independently buildable. Tell the assistant "build R{n}" (or describe the item) and it will implement ONLY that item — per the incremental-workflow rule, work proceeds one slice at a time with a status update between slices. Items are ordered by priority (P1 → P2 → P3 → audits), drawn from `reports/T1_COVERAGE_REPORT.md`'s "Consolidated Improvement Actions" table. T2's equivalent (`reports/T2_COVERAGE_REPORT.md`, R10) exists as of 2026-06-11. T3 equivalent (R11) remains pending.
 
-### R1 — Rebuild T1 M5 5.1 "Jenis Kata" as a Pattern-1 bank (P1 #4 — LAST remaining P1)
+### R1 — Rebuild T1 M5 5.1 "Jenis Kata" as a Pattern-1 bank ✅ DONE (2026-06-12)
 
 - **Closes:** T1_COVERAGE_REPORT M5 A2, A4, A5, B1, B6, B7
-- **Current state:** Topic `'1-5-1-morfologi-kata'` (T1 M5, num 5.1) is wired as Pattern 2 (`ProgressWrapper`) reusing `Tahun1/Module5_Tatabahasa/MorfologiGolonganKata.jsx` — 8 hardcoded items (`RAW_QUESTIONS`) covering only **Kata Nama Am / Kata Nama Khas / Kata Kerja / Kata Adjektif**. No mastery gate (marks complete on any back-press). This same component is ALSO used standalone by an AgeGroup-7 game card (`App.jsx` line ~1042, `currentAgeGame` path) — **do not delete or break that usage**.
-- **Target:** Convert `'1-5-1-morfologi-kata'` to Pattern 1 (§16.1) with a NEW learn page + `BMLessonQuizLayout`, backed by a NEW `BM_QUESTIONS['1-5-1-morfologi-kata']` bank of **≥15 items** spanning:
-  - The existing 4 categories (Kata Nama Am, Kata Nama Khas, Kata Kerja, Kata Adjektif) — port a subset of `RAW_QUESTIONS` as `+emoji` variant items (`image` field → `emoji`)
-  - **NEW — Kata Hubung** (dan, atau, tetapi): "Sambungkan ayat ini: Saya suka nasi ___ ayam." → dan
-  - **NEW — Kata Sendi Nama** (di, ke, dari, daripada): "Saya pergi ___ sekolah." → ke
-  - **NEW — Kata Tanya** (apa, siapa, bila, di mana, mengapa, bagaimana): "___ nama awak?" → Siapa
-  - **NEW — Kata Ganti Nama Diri** (saya, kamu/awak, dia, kami, mereka): "___ suka membaca." (pointing at a self-portrait emoji) → Saya
-- **Data:** New array `BM_QUESTIONS['1-5-1-morfologi-kata']` in `_shared/ModuleData.js`, text-only or `+emoji` variants per §15.1 (no audio needed — these are grammar-recognition items, not phonics).
-- **Storage:** Same topic ID `'1-5-1-morfologi-kata'` (no progress migration needed — `markTopicCompleted` already keys on this ID from the old Pattern-2 wiring). Completion now gated at `pct >= 70` per §16.1.
-- **UI/UX:** New file e.g. `Tahun1/Module5_Tatabahasa/JenisKataLesson.jsx` (learn page, follow §7 Layout C / an existing M5 sibling like `SintaksisAyat.jsx` for structure) + quiz via `BMLessonQuizLayout`. `App.jsx` wiring switches from the `ProgressWrapper` block (~line 779-784) to a direct block mirroring `'1-5-2-sintaksis-ayat'` (~line 785-790): `topicComplete={(id) => markTopicCompleted(id)}`, `onNextTopic={bmNextTopic}`, `key={bmTopic}`. Module hub trail label for 5.1 may stay "Jenis Kata" or be renamed "Golongan Kata" to reflect the broader scope (cosmetic — confirm with user when building).
-- **Unlocks:** R4's "5.2 reviews 5.1" sub-item (needs 5.1 to have a `BM_QUESTIONS` bank first).
+- **Delivered:** Topic `'1-5-1-morfologi-kata'` (T1 M5, 5.1, displayed "Golongan Kata") converted from Pattern 2 (`ProgressWrapper` reusing `MorfologiGolonganKata.jsx`, 8 fixed items, no gate) to Pattern 1: new `Tahun1/Module5_Tatabahasa/JenisKataLesson.jsx` (learn page with 8 expandable word-class category cards — Kata Nama Am/Khas, Kerja, Adjektif, Hubung, Sendi Nama, Tanya, Ganti Nama Diri) + a 21-item `BM_QUESTIONS['1-5-1-morfologi-kata']` bank (the 4 existing categories ported as `+emoji` items, plus new Kata Hubung/Sendi Nama/Tanya/Ganti Nama Diri items) via `BMLessonQuizLayout`/`useBMQuiz`, gated at `pct >= 70`.
+- **Storage:** Same topic ID `'1-5-1-morfologi-kata'` — no progress migration needed. `App.jsx` wiring switched from the `ProgressWrapper` block to a direct block mirroring `'1-5-2-sintaksis-ayat'` (`topicComplete`/`onNextTopic`/`key={bmTopic}`). Module hub trail label renamed to "Golongan Kata".
+- **Preserved:** `MorfologiGolonganKata.jsx` (= old `JenisKata`) kept unchanged — still used standalone by the AgeGroup-7 game card (`App.jsx` `currentAgeGame` path).
+- **Unlocks:** R5's "5.2 reviews 5.1" sub-item — 5.1 now has a `BM_QUESTIONS` bank.
 
-### R2 — M4 4.1 "Keindahan Bahasa": add pantun dua kerat + fix garbled pantun #2 (P2)
+### R2 — M4 4.1 "Keindahan Bahasa": add pantun dua kerat + fix garbled pantun #2 ✅ DONE (2026-06-12)
 
 - **Closes:** T1_COVERAGE_REPORT M4 A2, C5
-- **Topic:** `'1-4-1-keindahan-bahasa'` (T1 M4, the module's only topic, num 4.1) — Pattern 1, existing `BM_QUESTIONS['1-4-1-keindahan-bahasa']` bank.
-- **Target:** (a) Add 2-3 new "pantun dua kerat" (2-line pantun) items, text-only or `+audioText` variant per §15.1; (b) locate and rewrite the existing garbled "pantun #2" item in the same array (read the current array first to identify which entry is garbled).
-- **Data/Storage:** Edits land directly in `BM_QUESTIONS['1-4-1-keindahan-bahasa']` in `_shared/ModuleData.js`. No new topic ID, no UI changes — pure content edit.
-- **UI/UX:** None — existing Pattern-1 quiz renders new items automatically.
+- **Delivered:** Topic `'1-4-1-keindahan-bahasa'` (T1 M4, 4.1) `PANTUNS` array in `KeindahanBahasa.jsx` grew from 3 to 6 entries — 3 new "Pantun Dua Kerat" prepended (Banyak udang banyak garam.../Banyak orang banyak ragam.; Gendang gendut tali kecapi.../Kenyang perut suka hati.; Emas, perak, tembaga, suasa.../Malas bergerak tidak merasa.), sourced from the classic-pantun set in `AgeGroup-8/PantunBacaan.jsx`. The garbled pantun #2 ("Pokok kelura...berpesan-pesann") was replaced with an authentic 4-kerat pantun ("Tingkap papan kayu bersegi, Sampan sakat di Pulau Angsa, Indah tampan kerana budi, Tinggi bangsa kerana bahasa") — thematically apt for "Keindahan Bahasa".
+- **Quiz:** `BM_QUESTIONS['1-4-1-keindahan-bahasa']` grew from 15 to 19 items — added a "Pantun Dua Kerat = 2 baris" concept question plus one comprehension question per new dua-kerat pantun.
+- **Storage:** Same topic ID `'1-4-1-keindahan-bahasa'`, no new topic, no UI changes — pure content edit in `_shared/ModuleData.js` and `KeindahanBahasa.jsx`.
 
-### R3 — M2 2.2 "Membaca secara Mekanis": add ayat majmuk items (P2)
+### R3 — M2 2.3 "Baca dengan Lancar": add ayat majmuk items ✅ DONE (2026-06-12)
 
-> ⚠️ **SUPERSEDED (2026-06-12).** Topic `'1-2-2-membaca-mekanis'` (now displayed as **2.3 "Baca dengan Lancar"**) is **Pattern-2 speech read-aloud** (`MembacaMekanis.jsx`, own in-file `ITEMS` array — child reads the sentence aloud via mic, not a multiple-choice audio quiz). The old `BM_QUESTIONS['1-2-2-membaca-mekanis']` MCQ bank was **removed** (never imported). To add ayat majmuk practice, append to `ITEMS` in `MembacaMekanis.jsx`, not `BM_QUESTIONS`.
-
-- **Closes:** T1_COVERAGE_REPORT M2 A8, A10
-- **Topic:** `'1-2-2-membaca-mekanis'` (T1 M2, displayed 2.3) — speech read-aloud, in-file `ITEMS` array.
-- **Target:** Add new `+audioText` items using **ayat majmuk** (compound sentences joined by dan/tetapi/atau/kerana), e.g. `audioText: 'Ali makan nasi dan Ahmad minum air.'`, `answer` = same sentence, `options` = 3 plausible near-miss compound sentences.
-- **Data/Storage:** Append to `BM_QUESTIONS['1-2-2-membaca-mekanis']` in `_shared/ModuleData.js`. No new topic ID.
-- **UI/UX:** None — existing Pattern-1 quiz renders new items automatically.
+- **Closes:** T1_COVERAGE_REPORT M2 A8
+- **Delivered:** Topic `'1-2-2-membaca-mekanis'` (T1 M2, displayed 2.3 "Baca dengan Lancar") is Pattern-2 speech read-aloud (`MembacaMekanis.jsx`, own in-file `ITEMS` array). Added 4 new `ITEMS` entries (s16-s19), one per conjunction — dan ("Abang makan nasi dan kakak minum air"), tetapi ("Hujan turun tetapi kami pergi sekolah"), atau ("Kita boleh main bola atau kita boleh berenang"), kerana ("Adik menangis kerana dia jatuh") — each pairing two full clauses (unlike the existing compound-subject items, which were ayat tunggal in disguise).
+- **Storage:** Same topic ID `'1-2-2-membaca-mekanis'`, `ITEMS` grew from 15 → 19 (still shuffled to `ITEMS_PER_ROUND = 10` per round). No `BM_QUESTIONS` bank involved — the old `'1-2-2-membaca-mekanis'` MCQ bank was removed in the M2 rebuild (never imported).
 
 ### R4 — M2 idea-utama (main idea) questions ✅ DONE (2026-06-12)
 
@@ -1554,42 +1544,38 @@ Do not duplicate this table elsewhere — link back to §8 if more detail is nee
 - **Storage:** `KefahamanBacaan.jsx` migrated off `ProgressWrapper` to direct wiring with `BMHeader` + `topicComplete` + `onNextTopic` (matching the rest of M2). `markTopicCompleted('1-2-3-membaca-menaakul')` fires on finishing the round.
 - **Remaining:** *idea sampingan* (supporting-detail identification) is still only implicit via distractors — a minor nuance, not separately tracked.
 
-### R5 — Spaced repetition: populate `reviewQs` for M2-M5 (P2)
+### R5 — Spaced repetition: populate `reviewQs` for M2-M5 ✅ DONE (2026-06-12)
 
-- **Closes:** T1_COVERAGE_REPORT B2 across M2-M5
-- **Target topics + review sources:**
-  | Topic (current) | `reviewQuestions` source | Notes |
+- **Closes:** T1_COVERAGE_REPORT B2 in M2, M3, M5 (M4's B2 remains a known gap — single-topic module, out of scope for this item)
+- **Delivered:** Wired `reviewQuestions` into 3 Pattern-1 quiz hosts via `useBMQuiz(currentQuestions, reviewQuestions, 15)`:
+  - `'1-2-5-fahami-cerita'` (2.4, `FahamiCerita.jsx`) now reviews M1's `BM_QUESTIONS['1-1-6-dengar-teka']` (10-item vocabulary bank) — chosen as the M2 review host since 2.3 (`MembacaMekanis.jsx`) is Pattern-2 (no `BM_QUESTIONS` bank).
+  - `'1-3-3-mencatat-maklumat'` (3.3, `MencatatMaklumat.jsx`) now reviews M2's `BM_QUESTIONS['1-2-5-fahami-cerita']` (10-item idea-utama bank) — redirected from the original "review 2.3" idea since 2.3 has no bank; keeps the reading-comprehension chain M1→M2→M3 conceptually continuous with zero new authoring.
+  - `'1-5-2-sintaksis-ayat'` (5.2, `SintaksisAyat.jsx`) now reviews 5.1's `BM_QUESTIONS['1-5-1-morfologi-kata']` (21-item Golongan Kata bank, built by R1) — exactly as originally specified.
+- **totalRounds tuning:** `FahamiCerita.jsx` passes `15` (not `10`) to `useBMQuiz` so all 10 of its own items can still surface — `useBMQuiz` reserves ~30% of `totalRounds` for review questions, so a value equal to the bank size would starve ~3 current items.
+- **Storage:** Pure quiz-wiring edits (3 lines each) in `FahamiCerita.jsx`, `MencatatMaklumat.jsx`, `SintaksisAyat.jsx` — no new topic IDs, no `ModuleData.js` changes (all 3 review sources already existed as `BM_QUESTIONS` banks).
+
+### R6 — Gate Pattern-2 reuse games + grow banks to ≥12 items (P2) ✅ DONE (2026-06-12)
+
+- **Closes:** T1_COVERAGE_REPORT B6/B7 in M1, M2, M3
+- **Delivered:** Added a `PASS_PCT = 70` mastery gate to 5 Pattern-2 games — each now computes a `pct` from its score on finishing and only calls `topicComplete(topicId)` when `pct >= PASS_PCT`; result/complete screens rewritten with pass/fail branches (🎉/💪 emoji, "Tahniah!"/"Cuba Lagi!" heading, fail message when `!passed`, and buttons: passed → "Main Semula" + "Topik Seterusnya →"/"Kembali"; failed → "🔄 Cuba Lagi" + "Kembali"). All 5 migrated off `ProgressWrapper` to direct wiring (`topicComplete={(id) => markTopicCompleted(id)}`, `onNextTopic={bmNextTopic}`, `key={bmTopic}`) in `App.jsx`:
+  | Topic | Component | What changed |
   |---|---|---|
-  | `'1-2-2-membaca-mekanis'` (displayed 2.3) | n/a | ⚠️ 2026-06-12: this topic is speech read-aloud (no `useBMQuiz` / `BM_QUESTIONS`), so spaced-repetition via `reviewQuestions` does not apply. Use `'1-2-5-fahami-cerita'` (Pattern-1 quiz) as the M2 review host instead. |
-  | `'1-3-3-mencatat-maklumat'` (3.3) | review of 2.3 ("Membaca & Menaakul") content | **2.3 is Pattern 2 with no `BM_QUESTIONS` entry.** Either (a) write NEW review-style comprehension items inspired by 2.3's passages directly into `BM_QUESTIONS['1-3-3-mencatat-maklumat']` as additional "current" items, or (b) create a new key e.g. `BM_QUESTIONS['1-2-3-review']` and pass it as `reviewQuestions` to 3.3's `useBMQuiz`. Decide approach when building. |
-  | `'1-5-2-sintaksis-ayat'` (5.2) | `BM_QUESTIONS['1-5-1-morfologi-kata']` (5.1) | **Blocked on R1** — 5.1 has no `BM_QUESTIONS` bank until R1 lands. |
-- **Data/Storage:** Pure `_shared/ModuleData.js` edits — change each affected topic's `useBMQuiz(currentQuestions, reviewQuestions, ...)` call site (in that topic's quiz page component) from `[]` to the new review array reference, plus add the review content itself if it doesn't exist yet.
-- **UI/UX:** None — `useBMQuiz` already mixes review questions into the round automatically (~30% when pool exceeds `totalRounds`).
+  | `'1-2-1-asas-membaca'` (2.1) | `AsasMembaca.jsx` | `QUESTIONS` grown 8 → 12 (4 new KV+KV items: gula/roti/jari/lori); gate + result screen added. |
+  | `'1-2-4-baca-perkataan'` (2.2) | `BacaPerkataan.jsx` | Already 15 items (≥12); gate + result screen added. |
+  | `'1-2-3-membaca-menaakul'` (2.5) | `MembacaMenaakul.jsx` (KefahamanBacaan) | Already 12 questions (≥12); gate + result screen added. |
+  | `'1-3-2-bina-ayat'` (3.2) | `BinaAyat.jsx` (SentenceBuilder) | `QUESTIONS` grown 6 → 12 (6 new ayat-penyata items); header migrated `BackButton` → `BMHeader`, root container `height: '100%'` → `'100dvh'`; gate + result screen added; component now accepts `topicComplete`/`onNextTopic` props. |
+  | `'1-1-2-bertutur-maklumat'` (1.7) | `BacaFrasaBergambar.jsx` (SebutFrasaBergambar) | Two-tier game (8 ayat-tunggal + 8 frasa); on reaching `PHASE_COMPLETE`, `pct = (scoreSent+score)/16`, gated via new `scoreRef`/`scoreSentRef` (synced from state via `useEffect`, read inside `advanceItem` to avoid stale-closure issues since `advanceItem`'s deps don't include `score`). Also fixed a pre-existing display bug where `totalItems` was `(scoreSent > 0 ? ITEMS_PER_ROUND : 0) + items.length` (undercounted when `scoreSent === 0` is a legitimate score) — now always `ITEMS_PER_ROUND + items.length`. |
+  - *(`'1-5-1-morfologi-kata'` (5.1) was already converted to Pattern 1 by R1 — Pattern 1 has a built-in mastery gate, so it was never part of this list.)*
+- **Out of scope:** 2.3 "Baca dengan Lancar" (`MembacaMekanis.jsx`, STT read-aloud, Pattern 2) remains ungated — not part of R6's 5-topic target table.
+- **Storage:** All 5 topic IDs unchanged — no progress migration needed.
 
-### R6 — Gate Pattern-2 reuse games + grow banks to ≥12 items (P2)
-
-- **Closes:** T1_COVERAGE_REPORT B6/B7 across modules
-- **Affected topics** (Pattern 2 games NOT yet gated, per §16.2's caveat):
-  | Topic | Component | Action |
-  |---|---|---|
-  | `'1-2-1-asas-membaca'` (shows 2.1) | `AsasMembaca.jsx` (SukuKataBinaPerkataan) | Already direct-wired + fires `topicComplete` on finish (2026-06-12); 8 items. Remaining: grow to ≥12 + add a pass-% gate before `topicComplete`. |
-  | `'1-2-3-membaca-menaakul'` (shows 2.5) | `MembacaMenaakul.jsx` (KefahamanBacaan) | Already direct-wired + fires `topicComplete` on finish (2026-06-12); 12 questions. Remaining: add a pass-% gate. |
-  | `'1-2-4-baca-perkataan'` (shows 2.2) | `BacaPerkataan.jsx` | New 2026-06-12; 15 items, direct-wired, fires `topicComplete` on finish. Remaining: add a pass-% gate. |
-  | `'1-3-2-bina-ayat'` (3.2) | `SentenceBuilder.jsx` | Same — audit + gate. |
-  | `'1-1-2-bertutur-maklumat'` (1.7) | `BacaFrasaBergambar.jsx` | Already has internal scoring + `PHASE_COMPLETE` (§16.4) — just needs to call `topicComplete`/`onNextTopic` itself (e.g. on reaching `PHASE_COMPLETE` with combined score ≥ some threshold) and be removed from the `ProgressWrapper` list in `App.jsx`, mirroring how `'1-1-8-dengar-buat'` and `'1-5-2-sintaksis-ayat'` are wired directly. |
-  - *(`'1-5-1-morfologi-kata'` (5.1) drops off this list once R1 converts it to Pattern 1 — Pattern 1 already has a built-in mastery gate.)*
-- **Data:** Per-game in-file item arrays (§15.2 shapes or whatever each game already uses) — grow to ≥12 entries.
-- **Storage:** Switch from `ProgressWrapper`'s unconditional `markTopicCompleted` to the game itself receiving `topicComplete`/`onNextTopic`/`onNextModule` props and calling them on a real completion condition (score ≥ X% or all items attempted, per Pattern 3's model in §16.3).
-- **UI/UX:** Add a real "result/complete" screen to any of these games that currently lacks one (needed as the place to call `topicComplete` and offer "Topik Seterusnya"/"Main Semula").
-
-### R7 — "Ajuk Saya" mic + M4 4.1 dialog role-play STT (P2)
+### R7 — "Ajuk Saya" mic + M4 4.1 dialog role-play STT (P2) ✅ DONE (2026-06-12)
 
 - **Closes:** T1_COVERAGE_REPORT M1 A5, M4 A1
-- **Part A — "Ajuk Saya" (repeat-after-me) mic on letter/word cards:** Topics `'1-1-1-mendengar-menyebut'` through `'1-1-5-konsonan-sz'` (1.1-1.4, all served by `MengenalHuruf.jsx` via its `group` prop). Add an optional mic button per letter/word card: child taps 🎤, `SpeechManager.listen()` captures speech, compare against the letter/word using a `checkMatch`-style helper (§15.2). Self-contained per-card feedback (✓/✗), does not need to gate `topicComplete`.
-- **Part B — Dialog role-play STT:** Topic `'1-4-1-keindahan-bahasa'` (M4 4.1). Add a new activity segment where the child reads one side of a short dialog aloud; STT checks against `keywords` slot-arrays (§15.2 shape). Could be a new tier appended after the existing quiz (multi-tier pattern, §16.4) or a separate Pattern-3 sub-activity.
-- **Data:** New in-file item arrays in `MengenalHuruf.jsx` (per-letter STT targets) and `Tahun1/Module4_.../...` (dialog lines + keyword slots).
-- **Storage:** No new topic IDs needed for Part A (cosmetic addition to existing topics). Part B may extend 4.1's existing completion flow.
-- **UI/UX:** Mic button + listening/feedback states, following the STT visual language already established in `BacaFrasaBergambar.jsx` (🎧 "Dengarkan...", ✓/✗ card states).
+- **Delivered — Part A ("Ajuk Saya" repeat-after-me mic):** Every letter/word card across 1.1–1.4 (`MengenalHuruf.jsx`, all 4 groups served via the `group` prop — `vokal`, `konsonan-bj`, `konsonan-kr`, `konsonan-sz`, 26 cards total) now has a small circular 🎤 mic button in the top-right corner (gated on `SpeechManager.isSupported()`). Tap → `SpeechManager.listen('ms-MY', ...)` captures speech (called synchronously from the click handler, iOS-safe); `checkLetterMatch()` compares the transcript against the letter/word (includes-target-word OR token-matches-letter-name). On match: ✅ icon, `playSound('correct')`, small confetti burst, card border flashes green; on no match: ❌ icon, card border flashes red; either way the card resets after 1.4s. Cards were converted from `<button className="mh-card">` to `<div role="button" tabIndex={0}>` (with Enter/Space keyboard support) so the nested mic `<button>` stays HTML-valid. Fully self-contained per-card ✓/✗ feedback — does **not** gate `topicComplete`.
+- **Delivered — Part B (dialog role-play STT):** New "Main Watak" secondary CTA on 4.1's learn page (`KeindahanBahasa.jsx`) opens a third `page` state, `DialogRoleplayPage`. 5 dialog lines selected from the existing `DIALOGUES` (all student-character lines: Ali×3, Ani×1, Adam×1), each paired with a `cue` — the preceding teacher line, auto-played via TTS (`SpeechManager.speak(cue.text, 'ms', ...)`) — for a turn-taking role-play feel. Child taps 🎤 and reads their line; `checkRoleplayMatch()` reuses the §15.2 `keywords` slot-array pattern (≥60% of 3-5 keyword slots per line must match the transcript). Full phase-machine (`READY → LISTENING → CORRECT/WRONG → advance`, `MAX_ATTEMPTS = 3`, refs to avoid stale closures in async STT callbacks) modeled directly on `BacaFrasaBergambar.jsx`'s pattern, including confetti/streak tracking, replay/skip controls, an unsupported-STT fallback screen, and a completion summary with "Main Semula"/"Kembali". Fully self-contained — does **not** gate `topicComplete` (4.1's existing Pattern-1 quiz via `BMLessonQuizLayout` already handles that).
+- **Out of scope:** Neither Part A nor Part B changes `topicComplete` wiring or `ModuleData.js` — both are additive bonus activities on top of existing topics.
+- **Storage:** No new topic IDs for either part — Part A is a cosmetic addition to 1.1-1.4's existing cards; Part B is a new `page` state (`'roleplay'`) inside 4.1's existing component, reached from its learn page and returning to it.
 
 ### R8 — "Kenalkan Diri" guided speaking + polite-request picker (P2, ⚠️ template-gradeable only)
 
@@ -1603,18 +1589,18 @@ Do not duplicate this table elsewhere — link back to §8 if more detail is nee
 - **Storage:** New topic ID (e.g. `'1-1-9-kenalkan-diri'`) if (a); existing topic ID if (b).
 - **UI/UX:** If Pattern 3 — follow §16.3's phase machine (DengarBuat reference). If folded into existing topic — follow that topic's existing pattern.
 
-### R9 — KV/KVK word swaps for Anggur/Singa (P3, low effort)
+### R9 — KV/KVK word swaps for Anggur/Singa (P3, low effort) ✅ DONE (2026-06-12)
 
-- **Closes:** T1_COVERAGE_REPORT C1 across modules
-- **Target:** Find all `BM_QUESTIONS` items (and in-file item arrays) using `'Anggur'` (🍇) and `'Singa'` as answers/options — these don't follow the KV/KVK word-shape rule (§ KV/KVK rule, see `project_bm_kssr_status` memory). Swap for KV/KVK-clean words in the same vocabulary category (animals/fruits) — e.g. `Singa` → `Kuda`/`Lembu`, `Anggur` → `Epal`/`Limau`.
-- **Also from this report row:** "decide the KV/KVK rule scope for passages (2.3/3.3/3.2 texts use meN-/ber- words) — either simplify or document the exception." This is a POLICY decision, not a code change — surface it to the user when this item is picked up; the outcome should be documented in §2 Decisions table once made.
-- **Data/Storage:** Pure content edits in `_shared/ModuleData.js` (and any affected in-file arrays). No new topic IDs, no UI changes.
+- **Closes:** T1_COVERAGE_REPORT C1 across M1/M2/M3
+- **Delivered — Part A (word swaps):** `_shared/ModuleData.js` — swapped `Anggur` 🍇 → `Alat` 🔧 in the `'1-1-1-mendengar-menyebut'` bank (vowel A section, answer on line 277 + 3 distractor references on lines 284/286/292, plus the Epal distractor line 279). Swapped `Singa` 🦁 → `Siput` 🐌 in the `'1-1-5-konsonan-sz'` bank (answer on line 330 + 3 distractor references on lines 331/335/339), plus the `'1-1-6-dengar-teka'` zirafah distractor (line 360). All 9 affected item entries updated.
+- **Delivered — Part B (KV/KVK rule scope decision):** Guided-reading exception adopted and documented across M2/M3. **Rule:** The strict KV/KVK-only requirement applies to **decoding activities** (1.1/1.4 letter quizzes, 1.5 suku kata, 2.1 asas membaca, 2.2 baca perkataan KVK). **Exception:** Reading comprehension passages (2.3, 2.5, 3.3) and sentence-building (3.2) may use affixed words (meN-/ber-) as they involve whole-sentence guided reading with parent/teacher support, not isolated word decoding. M5 grammar examples are a separate documented exception (inherent to teaching Kata Kerja).
 
-### R10 — Tahun 2 silibus coverage audit (pending, not started)
+### R10 — Tahun 2 silibus coverage audit ✅ DONE (2026-06-11)
 
-- **Goal:** Produce `reports/T2_COVERAGE_REPORT.md`, modeled on `reports/T1_COVERAGE_REPORT.md`, using `reports/_CHECKLIST_TEMPLATE.md` (sections A-E: Silibus Coverage, Pedagogy Standards, Content Rules, Technical/UX Standards, Improvement Actions) for each of T2's 5 modules (13 topics total: M1=2, M2=3, M3=3, M4=2, M5=3).
-- **Output:** A "Consolidated Improvement Actions" table (P1/P2/P3) for T2, in the same format as T1's — these become new R-items appended to this roadmap.
-- **Data/Storage/UI-UX:** N/A at this stage — audit-only, produces a markdown report, no code changes.
+- **Status:** Already complete — `reports/T2_COVERAGE_REPORT.md` (249 lines) was produced in the initial 2026-06-11 audit pass.
+- **Key findings:** T2 sits at **7✅ · 7⚠️ · 24❌ · 1➖ (39 rows)**. 7 of 13 topics are Pattern-2 reuses of components built for different silibus objectives. M2 Membaca is the only strong module (5✅·1❌). M1 and M5 5.1 need near-total rebuilds. 13 new improvement actions defined (R12–R24).
+- **Output:** `reports/T2_COVERAGE_REPORT.md` — per-module A-row coverage tables, B/C/D standards deltas, ranked new-content roadmap (top 10 items by build effort), and consolidated R12-R24 action plan.
+- **Update needed:** §17 BAHASA_MELAYU.md status table updated 2026-06-12 to reflect T2 audit completion and current stats.
 
 ### R11 — Tahun 3 silibus coverage audit (pending, not started)
 

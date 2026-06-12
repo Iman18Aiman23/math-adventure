@@ -4,6 +4,8 @@ import BMHeader from '../../_shared/BMHeader';
 import BMLessonQuizLayout from '../../_shared/BMLessonQuizLayout';
 import { BM_QUESTIONS } from '../../_shared/ModuleData';
 import SpeechManager from '../../../../services/SpeechManager';
+import confetti from 'canvas-confetti';
+import { playSound } from '../../../../utils/soundManager';
 
 const ACCENT = '#E8821A';
 
@@ -89,10 +91,19 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language }) {
   const [playing, setPlaying] = useState(null);
   const playTimer = useRef(null);
 
+  // "Ajuk Saya" (repeat-after-me) mic — self-contained per-card ✓/✗ feedback,
+  // does not gate topicComplete.
+  const [mic, setMic] = useState({ letter: null, status: null }); // status: 'listening' | 'correct' | 'wrong'
+  const micTimer = useRef(null);
+  const listenActiveRef = useRef(false);
+  const sttSupported = SpeechManager.isSupported();
+
   useEffect(() => {
     return () => {
       SpeechManager.stopSpeaking();
+      SpeechManager.stop();
       clearTimeout(playTimer.current);
+      clearTimeout(micTimer.current);
     };
   }, []);
 
@@ -102,6 +113,53 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language }) {
     setPlaying(v.letter);
     SpeechManager.speak(v.speak || v.word, 'ms-MY', { rate: 0.7, pitch: 1.2 });
     playTimer.current = setTimeout(() => setPlaying(null), 1600);
+  };
+
+  const normalizeMic = (s) => s.toLowerCase().replace(/[.,!?]/g, '').replace(/\s+/g, ' ').trim();
+  const checkLetterMatch = (transcript, v) => {
+    const t = normalizeMic(transcript);
+    const target = (v.speak || v.word).toLowerCase();
+    if (t.includes(target)) return true;
+    const tokens = t.split(' ');
+    return tokens.includes(v.lower.toLowerCase()) || tokens.includes(v.letter.toLowerCase());
+  };
+
+  // MUST be called directly from onClick on iOS (no async chain before it)
+  const handleMicTap = (v, e) => {
+    e.stopPropagation();
+    if (!sttSupported || listenActiveRef.current) return;
+    listenActiveRef.current = true;
+    SpeechManager.stop();
+    SpeechManager.stopSpeaking();
+    clearTimeout(playTimer.current);
+    clearTimeout(micTimer.current);
+    setPlaying(null);
+    setMic({ letter: v.letter, status: 'listening' });
+
+    SpeechManager.listen(
+      'ms-MY',
+      (transcript, _conf, alts) => {
+        listenActiveRef.current = false;
+        let matched = checkLetterMatch(transcript, v);
+        if (!matched && alts?.length > 1) matched = alts.some(a => checkLetterMatch(a.transcript, v));
+        if (matched) {
+          playSound('correct');
+          confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 }, scalar: 0.7 });
+        }
+        setMic({ letter: v.letter, status: matched ? 'correct' : 'wrong' });
+        micTimer.current = setTimeout(() => setMic({ letter: null, status: null }), 1400);
+      },
+      (err) => {
+        listenActiveRef.current = false;
+        if (err === 'not-allowed' || err === 'service-not-allowed') {
+          setMic({ letter: null, status: null });
+          return;
+        }
+        setMic({ letter: v.letter, status: 'wrong' });
+        micTimer.current = setTimeout(() => setMic({ letter: null, status: null }), 1400);
+      },
+      { retries: SpeechManager.isMobile() ? 2 : 1, grammarWords: [v.speak || v.word, v.lower, v.letter] }
+    );
   };
 
   // ── Deterministic centered grid, generalized from the vowel page ──
@@ -197,6 +255,7 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language }) {
           height: 100%; max-height: 520px;
         }
         .mh-card {
+          position: relative;
           grid-column: span 2;
           min-width: 0; min-height: 0;
           display: flex; flex-direction: column;
@@ -212,6 +271,21 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language }) {
           transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
           -webkit-tap-highlight-color: transparent;
         }
+        .mh-mic-btn {
+          position: absolute; top: clamp(2px, 0.6vh, 6px); right: clamp(2px, 0.6vh, 6px);
+          width: clamp(20px, 3.8vh, 28px); height: clamp(20px, 3.8vh, 28px);
+          border-radius: 50%; border: none;
+          background: #FFFFFFE6;
+          display: flex; align-items: center; justify-content: center;
+          font-size: clamp(10px, 1.8vh, 14px);
+          cursor: pointer;
+          box-shadow: 0 1px 3px rgba(0,0,0,.15);
+          z-index: 2;
+          -webkit-tap-highlight-color: transparent;
+        }
+        .mh-card.mic-listening { border-color: ${ACCENT}; box-shadow: 0 clamp(3px, 0.6vh, 5px) 0 var(--vc-under), 0 0 0 5px ${ACCENT}33; }
+        .mh-card.mic-correct   { border-color: #10B981; box-shadow: 0 clamp(3px, 0.6vh, 5px) 0 #10B98144, 0 0 0 5px #10B98126; }
+        .mh-card.mic-wrong     { border-color: #EF4444; box-shadow: 0 clamp(3px, 0.6vh, 5px) 0 #EF444444, 0 0 0 5px #EF444426; }
         ${offsetRules}
         @media (hover: hover) {
           .mh-card:hover { border-color: var(--vc); transform: translateY(-2px); }
@@ -320,28 +394,44 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language }) {
 
           <div className="mh-cards-zone">
             <div className="mh-cards">
-              {cfg.letters.map((v) => (
-                <button
-                  key={v.letter}
-                  className={`mh-card${playing === v.letter ? ' playing' : ''}`}
-                  style={{
-                    '--vc': v.color,
-                    '--vt': v.tint,
-                    '--vc-border': v.color + '33',
-                    '--vc-under': v.color + '2e',
-                    '--vc-ring': v.color + '26',
-                  }}
-                  onClick={() => handleListen(v)}
-                  aria-label={`${language === 'bm' ? 'Dengar bunyi' : 'Hear the sound'} ${v.letter}`}
-                >
-                  <span className="mh-card-hero">
-                    {v.letter}{v.lower && <small>{v.lower}</small>}
-                  </span>
-                  <span className="mh-card-word">{v.emoji} {v.word}</span>
-                  <span className="mh-card-en">{v.en}</span>
-                  <span className="mh-card-jawi">{v.jawi}</span>
-                </button>
-              ))}
+              {cfg.letters.map((v) => {
+                const micStatus = mic.letter === v.letter ? mic.status : null;
+                return (
+                  <div
+                    key={v.letter}
+                    className={`mh-card${playing === v.letter ? ' playing' : ''}${micStatus ? ' mic-' + micStatus : ''}`}
+                    style={{
+                      '--vc': v.color,
+                      '--vt': v.tint,
+                      '--vc-border': v.color + '33',
+                      '--vc-under': v.color + '2e',
+                      '--vc-ring': v.color + '26',
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => handleListen(v)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleListen(v); } }}
+                    aria-label={`${language === 'bm' ? 'Dengar bunyi' : 'Hear the sound'} ${v.letter}`}
+                  >
+                    <span className="mh-card-hero">
+                      {v.letter}{v.lower && <small>{v.lower}</small>}
+                    </span>
+                    <span className="mh-card-word">{v.emoji} {v.word}</span>
+                    <span className="mh-card-en">{v.en}</span>
+                    <span className="mh-card-jawi">{v.jawi}</span>
+                    {sttSupported && (
+                      <button
+                        type="button"
+                        className="mh-mic-btn"
+                        onClick={(e) => handleMicTap(v, e)}
+                        aria-label={`${language === 'bm' ? 'Ajuk Saya' : 'Repeat after me'}: ${v.word}`}
+                      >
+                        {micStatus === 'listening' ? '🔴' : micStatus === 'correct' ? '✅' : micStatus === 'wrong' ? '❌' : '🎤'}
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
 

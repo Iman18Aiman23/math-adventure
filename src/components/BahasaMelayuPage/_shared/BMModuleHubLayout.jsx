@@ -2,6 +2,8 @@ import React, { useCallback, useMemo } from 'react';
 import { getModulesForYear } from './ModuleData';
 import { TrophyIcon } from './BMJourneySvgs';
 import { isTopicCompleted } from './useModuleProgress';
+import useGamification from '../../../hooks/useGamification';
+import CrownDisplay from '../../_shared/CrownDisplay';
 
 function stripPrefix(id) {
   return id ? id.replace(/^\d-/, '') : '';
@@ -13,6 +15,7 @@ const SERPENTINE = [0, 1, 0, -1];
 
 export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, language }) {
   const modules = useMemo(() => getModulesForYear(year), [year]);
+  const { loading, getTopicLevel } = useGamification('bm');
 
   const activeIdx = useMemo(() => {
     const stripped = stripPrefix(activeModule);
@@ -26,19 +29,19 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
   const renderTopic = (topic, index) => {
     const isFirst = index === 0;
     const IconComp = topic.icon;
-    const completed = isTopicCompleted(topic.id);
+    const level = loading ? 0 : getTopicLevel(topic.id);
+    const hasCrown = level >= 1;
 
     return (
       <div key={topic.id} className="step" style={{ '--dir': SERPENTINE[index % 4] }}>
         {isFirst && <div className="start-bubble">MULA<i></i></div>}
         <button
           type="button"
-          className={`node-btn${topic.disabled ? ' node-disabled' : ''}${completed ? ' node-done' : ''}`}
+          className={`node-btn${topic.disabled ? ' node-disabled' : ''}${hasCrown && !topic.disabled ? ' node-done' : ''}`}
           aria-label={`TOPIK ${topic.num}`}
           onClick={() => !topic.disabled && handleTopicClick(topic.id)}
           disabled={topic.disabled}
         >
-          {completed && <span className="completed-badge">✓</span>}
           <span className="node-ico">
             {IconComp ? <IconComp /> : null}
           </span>
@@ -46,6 +49,9 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
         <div className="node-meta">
           <div className="node-topic">TOPIK {topic.num}</div>
           <div className="node-label">{topic.label}</div>
+          <div className="node-crown">
+            <CrownDisplay level={level} size="sm" loading={loading} />
+          </div>
         </div>
       </div>
     );
@@ -157,10 +163,6 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
         .node-goal:active{transform:translateY(2px);box-shadow:0 2px 0 #B45309,0 4px 12px -8px rgba(120,80,4,.25)}
         .node-goal .node-ico svg{width:62px;height:62px}
         .node-done .node-ico svg{opacity:.7}
-        .completed-badge{position:absolute;z-index:2;top:-2px;right:-2px;width:26px;height:26px;border-radius:50%;
-          background:#16A34A;color:#fff;border:2px solid #fff;font-family:'Baloo 2',sans-serif;font-weight:800;
-          font-size:13px;display:flex;align-items:center;justify-content:center;
-          box-shadow:0 3px 8px rgba(22,163,74,.4)}
         .trophy-wrap{position:relative;display:flex;flex-direction:column;align-items:center}
         .trophy-count{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:13px;
           color:#A9740A;margin-top:-4px;background:rgba(255,255,255,.7);
@@ -173,6 +175,10 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
         .node-label{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:15px;line-height:1.15;
           color:var(--cd);margin-top:2px;text-wrap:balance}
         .node-label-goal{color:#A9740A}
+
+        .node-crown{margin-top:4px;min-height:14px;display:flex;align-items:center;justify-content:center}
+        /* crown sits in .node-meta, the sibling AFTER the disabled button — not inside it */
+        .node-disabled + .node-meta .node-crown{opacity:.45}
 
         .start-bubble{position:relative;margin-bottom:14px;background:#fff;color:var(--cd);
           font-family:'Baloo 2',sans-serif;font-weight:800;font-size:12px;letter-spacing:.12em;

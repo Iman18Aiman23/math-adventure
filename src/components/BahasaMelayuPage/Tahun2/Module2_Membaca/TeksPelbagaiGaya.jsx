@@ -2,15 +2,186 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { RefreshCw } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { playSound, playHoverSound } from '../../../../utils/soundManager';
-import BackButton from '../../../BackButton';
+import BMHeader from '../../_shared/BMHeader';
 
-// Shuffle array while keeping track of correct answer
-function shuffleOptions(options, answer) {
-  const shuffled = [...options].sort(() => Math.random() - 0.5);
-  return shuffled;
+function shuffleOptions(options) {
+  return [...options].sort(() => Math.random() - 0.5);
 }
 
-// KSSR BM Tahun 2 — Obj 3 & 4 (membaca pemahaman petikan lebih panjang)
+const ACCENT = '#1CB0F6';
+const ACCENT_DARK = '#0B8DC0';
+
+const STYLE = `
+  .tp-root {
+    height: 100dvh; overflow: hidden;
+    background:
+      radial-gradient(ellipse 70% 50% at 18% 0%, #D6F0FF 0%, transparent 60%),
+      radial-gradient(ellipse 60% 45% at 88% 100%, #B0E0FF 0%, transparent 65%),
+      linear-gradient(180deg, #EBF8FF 0%, #D0F0FF 55%, #B5E5FF 100%);
+    font-family: 'Fredoka', system-ui, sans-serif;
+    display: flex; flex-direction: column;
+  }
+
+  .tp-body {
+    flex: 1; min-height: 0;
+    display: flex; flex-direction: column; align-items: center;
+    width: 100%; max-width: 560px;
+    margin: 0 auto;
+    padding: clamp(8px, 1.6vh, 12px) clamp(14px, 3.5vw, 28px);
+  }
+
+  .tp-stats {
+    flex-shrink: 0; width: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px; margin-bottom: clamp(10px, 1.6vh, 14px);
+  }
+
+  .tp-pill {
+    font-family: 'Baloo 2', sans-serif; font-weight: 800;
+    font-size: clamp(11px, 2vh, 13px);
+    border-radius: 999px;
+    padding: clamp(3px, 0.7vh, 5px) clamp(10px, 2.4vw, 14px);
+    white-space: nowrap;
+    background: #FFFFFFCC; color: #1B6B99; border: 1.5px solid ${ACCENT}44;
+  }
+
+  .tp-bar-wrap {
+    flex-shrink: 0; width: 100%;
+    background: #90D4FF; border-radius: 999px;
+    height: clamp(6px, 1.2vh, 9px); overflow: hidden;
+    margin-bottom: clamp(12px, 2vh, 18px);
+  }
+
+  .tp-bar-fill {
+    background: linear-gradient(90deg, ${ACCENT}, #4EC5FF);
+    height: 100%; border-radius: 999px;
+    transition: width 0.3s;
+  }
+
+  .tp-scroll {
+    flex: 1; min-height: 0;
+    overflow-y: auto;
+    width: 100%;
+    padding-bottom: clamp(12px, 2vh, 16px);
+  }
+
+  .tp-card {
+    background: #FFF; border-radius: 14px;
+    border: 2px solid ${ACCENT};
+    padding: clamp(14px, 2.4vh, 20px) clamp(14px, 3vw, 24px);
+    margin-bottom: 1rem;
+  }
+
+  .tp-card-header {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .tp-card-title {
+    font-weight: 800; font-size: clamp(13px, 2.4vh, 16px);
+    color: ${ACCENT};
+  }
+
+  .tp-passage-text {
+    font-size: clamp(13px, 2.2vh, 15px);
+    color: #333; line-height: 1.75;
+    margin: 0; white-space: pre-line;
+  }
+
+  .tp-q-card {
+    background: #FFF; border-radius: 14px;
+    border: 2px solid ${ACCENT}66;
+    padding: clamp(12px, 2vh, 18px) clamp(12px, 2.5vw, 20px);
+    margin-bottom: 1rem;
+  }
+
+  .tp-q-header {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .tp-q-num {
+    background: ${ACCENT}; color: #fff;
+    border-radius: 50%; width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 0.8rem; flex-shrink: 0;
+  }
+
+  .tp-q-text {
+    margin: 0; font-weight: 700;
+    font-size: clamp(13px, 2.2vh, 15px);
+    color: #333; line-height: 1.4;
+  }
+
+  .tp-options {
+    display: flex; flex-direction: column; gap: 0.55rem;
+  }
+
+  .tp-opt {
+    padding: clamp(10px, 1.6vh, 14px) clamp(12px, 2vw, 16px);
+    background: #FFF; color: #333;
+    border: 2px solid ${ACCENT}; border-radius: 12px;
+    cursor: pointer; font-weight: 700;
+    font-size: clamp(13px, 2.2vh, 15px);
+    text-align: left; transition: all 0.2s;
+    font-family: 'Fredoka', system-ui, sans-serif;
+  }
+
+  .tp-opt:disabled { cursor: default; }
+
+  .tp-opt.correct { background: #4CAF50; border-color: #388E3C; color: #fff; }
+  .tp-opt.wrong { background: #FF6B6B; border-color: #D32F2F; color: #fff; }
+  .tp-opt.reveal { background: #F5F5F5; border-color: #DDD; color: #AAA; }
+
+  .tp-feedback {
+    padding: clamp(10px, 1.6vh, 14px) clamp(14px, 2.4vw, 18px);
+    border-radius: 10px; font-weight: 700;
+    font-size: clamp(12px, 2vh, 14px);
+    margin-bottom: 1rem;
+  }
+
+  .tp-feedback.correct { background: #D4EDDA; color: #155724; }
+  .tp-feedback.wrong { background: #F8D7DA; color: #721C24; }
+
+  .tp-footer {
+    flex-shrink: 0;
+    display: flex; gap: clamp(8px, 2vw, 12px);
+    width: 100%; max-width: 560px;
+    margin: 0 auto;
+    padding: clamp(10px, 1.6vh, 14px) clamp(14px, 3.5vw, 28px) clamp(8px, 1.6vh, 12px);
+    border-top: 2px solid ${ACCENT}33;
+  }
+
+  .tp-btn {
+    flex: 1; min-width: 0;
+    font-family: 'Baloo 2', sans-serif; font-weight: 800;
+    font-size: clamp(13px, 2.4vh, 16px);
+    border: none; border-radius: 14px; cursor: pointer;
+    padding: clamp(10px, 2vh, 14px) 12px;
+    transition: transform .12s ease;
+  }
+
+  .tp-btn:active { transform: translateY(2px); }
+  .tp-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  .tp-btn.primary {
+    color: #fff;
+    background: linear-gradient(180deg, ${ACCENT}cc, ${ACCENT});
+    box-shadow: 0 4px 0 ${ACCENT_DARK};
+  }
+
+  .tp-btn.secondary {
+    color: #64748B; background: #F1F5F9;
+    box-shadow: 0 4px 0 #CBD5E1;
+  }
+
+  .tp-center {
+    flex: 1; min-height: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: clamp(16px, 2.4vh, 20px); padding: 16px; text-align: center;
+  }
+`;
+
 const PASSAGES = [
   {
     id: 1,
@@ -134,22 +305,23 @@ Ibu Siti memberitahu kepada anaknya untuk membawa payung apabila pergi ke sekola
 const TOTAL_QUESTIONS = PASSAGES.reduce((sum, p) => sum + p.questions.length, 0);
 
 export default function BacaanPemahaman({ onBack, language = 'bm' }) {
-  const [passageIdx, setPassageIdx]     = useState(0);
-  const [qIdx, setQIdx]                 = useState(0);
+  const [passageIdx, setPassageIdx]         = useState(0);
+  const [qIdx, setQIdx]                     = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [isAnswered, setIsAnswered]     = useState(false);
-  const [score, setScore]               = useState(0);
-  const [isDone, setIsDone]             = useState(false);
+  const [isAnswered, setIsAnswered]         = useState(false);
+  const [score, setScore]                   = useState(0);
+  const [isDone, setIsDone]                 = useState(false);
 
   const passage   = PASSAGES[passageIdx];
   const question  = passage.questions[qIdx];
   const isCorrect = selectedAnswer === question.answer;
 
   const globalQNum = PASSAGES.slice(0, passageIdx).reduce((sum, p) => sum + p.questions.length, 0) + qIdx + 1;
+  const allQTotal = PASSAGES.slice(0, passageIdx).reduce((sum, p) => sum + p.questions.length, 0) + qIdx;
+  const progressPct = (allQTotal / TOTAL_QUESTIONS) * 100;
 
-  // Shuffle options for this question
   const shuffledOptions = useMemo(() => {
-    return shuffleOptions(question.options, question.answer);
+    return shuffleOptions(question.options);
   }, [passageIdx, qIdx, question]);
 
   const handleSelect = useCallback((option) => {
@@ -184,13 +356,11 @@ export default function BacaanPemahaman({ onBack, language = 'bm' }) {
     }
   }, [isAnswered, qIdx, passageIdx, passage.questions.length]);
 
-  // Reset current question only
   const handleResetQuestion = useCallback(() => {
     setSelectedAnswer(null);
     setIsAnswered(false);
   }, []);
 
-  // Reset entire game (used on done screen)
   const handleResetGame = useCallback(() => {
     setPassageIdx(0);
     setQIdx(0);
@@ -200,136 +370,131 @@ export default function BacaanPemahaman({ onBack, language = 'bm' }) {
     setIsDone(false);
   }, []);
 
-  const getOptionStyle = (option) => {
-    if (!isAnswered) return { bg: '#FFF', border: '#1CB0F6', color: '#333' };
-    if (option === question.answer)  return { bg: '#4CAF50', border: '#388E3C', color: 'white' };
-    if (option === selectedAnswer)    return { bg: '#FF6B6B', border: '#D32F2F', color: 'white' };
-    return { bg: '#F5F5F5', border: '#DDD', color: '#AAA' };
+  const getOptionClass = (option) => {
+    if (!isAnswered) return '';
+    if (option === question.answer) return 'correct';
+    if (option === selectedAnswer) return 'wrong';
+    return 'reveal';
   };
+
+  const topicTitle = language === 'bm' ? 'Bacaan Pemahaman' : 'Reading Comprehension';
 
   if (isDone) {
     return (
-      <div style={{ minHeight: '100%', background: '#D0F0FF', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
-        <BackButton onClick={onBack} />
-        <div style={{ fontSize: '5rem', marginBottom: '1rem' }}>📚</div>
-        <h2 style={{ color: '#1CB0F6', fontSize: '2rem', marginBottom: '0.5rem' }}>
-          {language === 'bm' ? 'Tahniah!' : 'Well Done!'}
-        </h2>
-        <p style={{ fontSize: '1.4rem', color: '#555', marginBottom: '2rem' }}>
-          {language === 'bm' ? 'Markah: ' : 'Score: '}<strong>{score}</strong>/{TOTAL_QUESTIONS * 10}
-        </p>
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <button onClick={handleResetGame} style={{ padding: '0.75rem 1.5rem', background: '#E0E0E0', color: '#333', border: 'none', borderRadius: '10px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold' }}>
-            {language === 'bm' ? 'Main Semula' : 'Play Again'}
-          </button>
-          <button onClick={onBack} style={{ padding: '0.75rem 1.5rem', background: '#1CB0F6', color: 'white', border: 'none', borderRadius: '10px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold' }}>
-            {language === 'bm' ? 'Kembali' : 'Back'}
-          </button>
+      <>
+        <style>{STYLE}</style>
+        <div className="tp-root">
+          <BMHeader onBack={onBack} language={language} title={topicTitle} />
+          <div className="tp-center">
+            <div style={{ fontSize: 'clamp(56px, 12vh, 90px)', lineHeight: 1 }}>📚</div>
+            <h2 style={{ fontFamily: "'Baloo 2', sans-serif", color: ACCENT, fontSize: 'clamp(24px, 5vh, 36px)', fontWeight: 800, margin: 0 }}>
+              {language === 'bm' ? 'Tahniah!' : 'Well Done!'}
+            </h2>
+            <p style={{ fontSize: 'clamp(16px, 3vh, 21px)', color: '#555', fontWeight: 600, margin: '0.6rem 0 1rem' }}>
+              {language === 'bm' ? 'Markah: ' : 'Score: '}<strong>{score}</strong>/{TOTAL_QUESTIONS * 10}
+            </p>
+            <div style={{ display: 'flex', gap: '0.8rem' }}>
+              <button onClick={handleResetGame} style={{ fontFamily: "'Baloo 2', sans-serif", padding: '0.8rem 1.5rem', background: '#fff', color: '#475569', border: '2px solid #E2E8F0', borderRadius: 999, fontSize: '1rem', cursor: 'pointer', fontWeight: 800 }}>
+                🔄 {language === 'bm' ? 'Main Semula' : 'Play Again'}
+              </button>
+              <button onClick={onBack} style={{ fontFamily: "'Baloo 2', sans-serif", padding: '0.8rem 1.5rem', background: `linear-gradient(180deg, ${ACCENT}cc, ${ACCENT})`, color: '#fff', border: 'none', borderRadius: 999, fontSize: '1rem', cursor: 'pointer', fontWeight: 800, boxShadow: `0 4px 0 ${ACCENT_DARK}` }}>
+                ← {language === 'bm' ? 'Kembali' : 'Back'}
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: '#D0F0FF', overflow: 'hidden' }}>
-      <BackButton onClick={onBack} />
+    <>
+      <style>{STYLE}</style>
+      <div className="tp-root">
+        <BMHeader onBack={onBack} language={language} title={topicTitle} />
 
-      {/* Header */}
-      <div style={{ flexShrink: 0, padding: '3.5rem 1rem 0.75rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
-        <div style={{ textAlign: 'center', marginBottom: '0.85rem' }}>
-          <h1 style={{ color: '#1CB0F6', marginBottom: '0.25rem', fontSize: '1.6rem' }}>
-            {language === 'bm' ? 'Bacaan Pemahaman' : 'Reading Comprehension'}
-          </h1>
-          <p style={{ color: '#888', fontSize: '0.9rem' }}>
-            {language === 'bm' ? 'Baca petikan dan jawab soalan' : 'Read the passage and answer questions'}
-          </p>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.65rem 1rem', background: 'rgba(28,176,246,0.12)', borderRadius: '10px' }}>
-          <span style={{ color: '#666', fontSize: '0.9rem' }}>
-            {language === 'bm'
-              ? `Petikan ${passageIdx + 1}/${PASSAGES.length} — Soalan ${qIdx + 1}/${passage.questions.length}`
-              : `Passage ${passageIdx + 1}/${PASSAGES.length} — Q${qIdx + 1}/${passage.questions.length}`}
-          </span>
-          <span style={{ fontWeight: 'bold', color: '#1CB0F6' }}>⭐ {score}</span>
-        </div>
-      </div>
-
-      {/* Body */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '0.75rem 1rem 1rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
-
-        {/* Passage card */}
-        <div style={{ background: '#FFF', borderRadius: '12px', border: '2px solid #1CB0F6', padding: '1.1rem 1.25rem', marginBottom: '1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.65rem' }}>
-            <span style={{ fontSize: '1.4rem' }}>{passage.emoji}</span>
-            <span style={{ fontWeight: 800, color: '#1CB0F6', fontSize: '1rem' }}>
-              {language === 'bm' ? passage.title.bm : passage.title.eng}
+        <div className="tp-body">
+          {/* Stats */}
+          <div className="tp-stats">
+            <span className="tp-pill">
+              {language === 'bm'
+                ? `Petikan ${passageIdx + 1}/${PASSAGES.length} — S${qIdx + 1}/${passage.questions.length}`
+                : `P${passageIdx + 1}/${PASSAGES.length} — Q${qIdx + 1}/${passage.questions.length}`}
             </span>
-            <span style={{ marginLeft: 'auto', fontSize: '0.72rem', background: 'rgba(28,176,246,0.12)', color: '#1CB0F6', padding: '0.15rem 0.5rem', borderRadius: '6px', fontWeight: 700, whiteSpace: 'nowrap' }}>
-              {language === 'bm' ? 'Baca Petikan' : 'Read Passage'}
-            </span>
-          </div>
-          <p style={{ fontSize: '0.95rem', color: '#333', lineHeight: 1.75, margin: '0 0 0.5rem', whiteSpace: 'pre-line' }}>
-            {passage.text_bm}
-          </p>
-          <p style={{ fontSize: '0.8rem', color: '#999', fontStyle: 'italic', margin: 0, lineHeight: 1.6, display: 'none' }}>
-            {passage.translation}
-          </p>
-        </div>
-
-        {/* Question card */}
-        <div style={{ background: '#FFF', borderRadius: '12px', border: '2px solid rgba(28,176,246,0.4)', padding: '1rem 1.1rem', marginBottom: '1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-            <span style={{ background: '#1CB0F6', color: 'white', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.8rem', flexShrink: 0 }}>
-              {globalQNum}
-            </span>
-            <p style={{ margin: 0, fontWeight: 700, color: '#333', fontSize: '0.95rem', lineHeight: 1.4 }}>
-              {language === 'bm' ? question.question_bm : question.question_eng}
-            </p>
+            <span className="tp-pill" style={{ background: '#E8F4FD', color: ACCENT_DARK, borderColor: `${ACCENT}66` }}>⭐ {score}</span>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
-            {shuffledOptions.map((option, idx) => {
-              const { bg, border, color } = getOptionStyle(option);
-              return (
-                <button key={idx} onClick={() => handleSelect(option)} disabled={isAnswered}
-                  style={{ padding: '0.8rem 1rem', background: bg, color, border: `2px solid ${border}`, borderRadius: '10px', cursor: isAnswered ? 'default' : 'pointer', fontWeight: 'bold', fontSize: '0.95rem', textAlign: 'left', transition: 'all 0.2s' }}>
-                  {option}
-                </button>
-              );
-            })}
+          {/* Progress bar */}
+          <div className="tp-bar-wrap">
+            <div className="tp-bar-fill" style={{ width: `${progressPct}%` }} />
           </div>
-        </div>
 
-        {/* Feedback */}
-        {isAnswered && (
-          <div style={{ padding: '0.85rem 1rem', background: isCorrect ? '#D4EDDA' : '#F8D7DA', color: isCorrect ? '#155724' : '#721C24', borderRadius: '8px', fontWeight: 'bold' }}>
-            <div style={{ marginBottom: '0.4rem' }}>
-              {isCorrect
-                ? (language === 'bm' ? '✅ Betul!' : '✅ Correct!')
-                : (language === 'bm' ? `❌ Tidak betul. Jawapan: ${question.answer}` : `❌ Wrong. Answer: ${question.answer}`)}
+          {/* Scrollable content */}
+          <div className="tp-scroll">
+            {/* Passage card */}
+            <div className="tp-card">
+              <div className="tp-card-header">
+                <span style={{ fontSize: '1.3rem' }}>{passage.emoji}</span>
+                <span className="tp-card-title">
+                  {language === 'bm' ? passage.title.bm : passage.title.eng}
+                </span>
+                <span style={{ marginLeft: 'auto', fontSize: '0.72rem', background: `${ACCENT}1e`, color: ACCENT, padding: '0.15rem 0.5rem', borderRadius: '6px', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                  {language === 'bm' ? 'Baca Petikan' : 'Read Passage'}
+                </span>
+              </div>
+              <p className="tp-passage-text">{passage.text_bm}</p>
             </div>
-            <div style={{ fontSize: '0.85rem', fontWeight: 'normal', opacity: 0.9 }}>
-              {question.explanation_bm}
-            </div>
-          </div>
-        )}
-      </div>
 
-      {/* Footer */}
-      <div style={{ flexShrink: 0, background: '#D0F0FF', borderTop: '2px solid rgba(28,176,246,0.25)', padding: '0.75rem 1rem', display: 'flex', gap: '0.75rem' }}>
-        <button onClick={handleResetQuestion} style={{ flex: 1, padding: '0.75rem', background: '#E0E0E0', color: '#555', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
-          <RefreshCw size={16} />
-          {language === 'bm' ? 'Semula' : 'Reset'}
-        </button>
-        <button onClick={handleNext} disabled={!isAnswered}
-          style={{ flex: 1, padding: '0.75rem', background: isAnswered ? '#1CB0F6' : '#7FD4FF', color: 'white', border: 'none', borderRadius: '10px', cursor: isAnswered ? 'pointer' : 'not-allowed', fontWeight: 'bold', fontSize: '1rem', boxShadow: isAnswered ? '0 4px 0 #0B8DC0' : 'none', transition: 'background 0.2s' }}>
-          {qIdx < passage.questions.length - 1
-            ? (language === 'bm' ? 'Soalan Seterusnya →' : 'Next Question →')
-            : passageIdx < PASSAGES.length - 1
-            ? (language === 'bm' ? 'Petikan Seterusnya →' : 'Next Passage →')
-            : (language === 'bm' ? 'Selesai ✓' : 'Finish ✓')}
-        </button>
+            {/* Question card */}
+            <div className="tp-q-card">
+              <div className="tp-q-header">
+                <span className="tp-q-num">{globalQNum}</span>
+                <p className="tp-q-text">
+                  {language === 'bm' ? question.question_bm : question.question_eng}
+                </p>
+              </div>
+
+              <div className="tp-options">
+                {shuffledOptions.map((option, idx) => (
+                  <button key={idx} onClick={() => handleSelect(option)} disabled={isAnswered}
+                    className={`tp-opt ${getOptionClass(option)}`}>
+                    {option}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Feedback */}
+            {isAnswered && (
+              <div className={`tp-feedback ${isCorrect ? 'correct' : 'wrong'}`}>
+                <div style={{ marginBottom: '0.4rem' }}>
+                  {isCorrect
+                    ? (language === 'bm' ? '✅ Betul!' : '✅ Correct!')
+                    : (language === 'bm' ? `❌ Tidak betul. Jawapan: ${question.answer}` : `❌ Wrong. Answer: ${question.answer}`)}
+                </div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 'normal', opacity: 0.9 }}>
+                  {question.explanation_bm}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="tp-footer">
+          <button onClick={handleResetQuestion} className="tp-btn secondary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
+            <RefreshCw size={16} />
+            {language === 'bm' ? 'Semula' : 'Reset'}
+          </button>
+          <button onClick={handleNext} disabled={!isAnswered} className="tp-btn primary">
+            {qIdx < passage.questions.length - 1
+              ? (language === 'bm' ? 'Soalan Seterusnya →' : 'Next Question →')
+              : passageIdx < PASSAGES.length - 1
+              ? (language === 'bm' ? 'Petikan Seterusnya →' : 'Next Passage →')
+              : (language === 'bm' ? 'Selesai ✓' : 'Finish ✓')}
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
