@@ -153,9 +153,11 @@ const T2_MODULES = [
     'Aspek Tatabahasa',
     'Grammar',
     M5Badge, M5_THEME, 2, [
-      { id: '2-5-1-morfologi-perluasan',  num: '5.1', label: 'Morfologi (Perluasan Golongan Kata)', icon: M2_M5T1, disabled: false },
-      { id: '2-5-2-pembentukan-perkataan', num: '5.2', label: 'Pembentukan Perkataan',             icon: M2_M5T2, disabled: false },
-      { id: '2-5-3-sintaksis-ayat-majmuk', num: '5.3', label: 'Sintaksis (Ayat Majmuk)',           icon: M2_M5T3, disabled: false },
+      { id: '2-5-1a-kata-bilangan-arah',   num: '5.1a', label: 'Kata Bilangan & Kata Arah',          icon: M2_M5T1, disabled: false },
+      { id: '2-5-1b-kerja-pasif-adjektif', num: '5.1b', label: 'Kata Kerja Pasif & Kata Adjektif',   icon: M2_M5T1, disabled: true  },
+      { id: '2-5-1c-kata-tugas',           num: '5.1c', label: 'Kata Tugas',                          icon: M2_M5T1, disabled: true  },
+      { id: '2-5-2-pembentukan-perkataan', num: '5.2', label: 'Pembentukan Perkataan',              icon: M2_M5T2, disabled: false },
+      { id: '2-5-3-sintaksis-ayat-majmuk', num: '5.3', label: 'Sintaksis (Ayat Majmuk)',            icon: M2_M5T3, disabled: false },
     ]),
 ];
 
@@ -608,6 +610,28 @@ export const BM_QUESTIONS = {
     { question: 'Gabungkan: "Ayah duduk. Ayah minum kopi."', answer: 'Ayah duduk sambil minum kopi.', options: ['Ayah duduk sambil minum kopi.', 'Ayah duduk dan minum kopi.', 'Ayah duduk lalu minum kopi.', 'Ayah minum kopi sambil duduk.'] },
     { question: 'Kata hubung "dan" digunakan untuk...?', answer: 'Menggabungkan ayat yang sama penting', options: ['Menggabungkan ayat yang sama penting', 'Perbuatan serentak', 'Urutan perbuatan', 'Menunjukkan sebab'] },
     { question: 'Ayat manakah yang PALING BETUL?', answer: 'Kucing itu comel dan manja.', options: ['Kucing itu comel dan manja.', 'Kucing itu dan comel manja.', 'Dan kucing itu comel manja.', 'Kucing itu comel manja dan.'] },
+  ],
+  // ── T2 M5 T5.1a: Kata Bilangan & Kata Arah ───────────────────
+  // Kata Bilangan = number/quantity words. Kata Arah = direction/position words.
+  '2-5-1a-kata-bilangan-arah': [
+    // ---- Kata Bilangan (quantity) ----
+    { question: 'Pilih kata bilangan: "Saya ada ___ biji epal." (2)', emoji: '🍎', answer: 'dua', options: ['dua', 'atas', 'sangat', 'tidak'] },
+    { question: 'Pilih kata bilangan: "Ada ___ ekor kucing di situ." (3)', emoji: '🐱', answer: 'tiga', options: ['tiga', 'bawah', 'amat', 'bukan'] },
+    { question: 'Pilih kata bilangan yang bermaksud "tidak banyak".', emoji: '🤏', answer: 'sedikit', options: ['sedikit', 'kanan', 'belakang', 'jangan'] },
+    { question: 'Pilih kata bilangan: "___ murid hadir ke sekolah hari ini." (semua orang)', emoji: '🧒', answer: 'semua', options: ['semua', 'dalam', 'hadapan', 'kiri'] },
+    { question: 'Pilih kata bilangan: "Beri saya ___ buku itu." (jumlah besar)', emoji: '📚', answer: 'banyak', options: ['banyak', 'tepi', 'luar', 'atas'] },
+    { question: 'Pilih kata bilangan: "___ orang pelajar perlu beratur." (tiap-tiap)', emoji: '🚶', answer: 'setiap', options: ['setiap', 'bawah', 'kanan', 'dalam'] },
+    { question: 'Pilih kata bilangan: "Ada ___ ekor ikan di dalam kolam." (tidak pasti bilangannya)', emoji: '🐟', answer: 'beberapa', options: ['beberapa', 'hadapan', 'belakang', 'kiri'] },
+    { question: 'Pilih kata bilangan: "Dia membeli ___ kereta baharu." (1)', emoji: '🚗', answer: 'sebuah', options: ['sebuah', 'atas', 'tepi', 'luar'] },
+    // ---- Kata Arah (direction / position) ----
+    { question: 'Pilih kata arah: "Buku itu ada di ___ meja." (di permukaan)', emoji: '📖', answer: 'atas', options: ['atas', 'dua', 'semua', 'setiap'] },
+    { question: 'Pilih kata arah: "Kucing tidur di ___ kerusi." (di tempat rendah)', emoji: '🐈', answer: 'bawah', options: ['bawah', 'tiga', 'banyak', 'sedikit'] },
+    { question: 'Pilih kata arah yang bertentangan dengan "kanan".', emoji: '👈', answer: 'kiri', options: ['kiri', 'sebuah', 'beberapa', 'semua'] },
+    { question: 'Pilih kata arah yang bertentangan dengan "kiri".', emoji: '👉', answer: 'kanan', options: ['kanan', 'dua', 'banyak', 'setiap'] },
+    { question: 'Pilih kata arah: "Guru berdiri di ___ kelas." (di bahagian depan)', emoji: '🧑‍🏫', answer: 'hadapan', options: ['hadapan', 'tiga', 'sedikit', 'sebuah'] },
+    { question: 'Pilih kata arah yang bertentangan dengan "hadapan".', emoji: '🔙', answer: 'belakang', options: ['belakang', 'dua', 'semua', 'beberapa'] },
+    { question: 'Pilih kata arah: "Bola itu ada di ___ kotak." (di sebelah)', emoji: '⚽', answer: 'tepi', options: ['tepi', 'banyak', 'setiap', 'tiga'] },
+    { question: 'Pilih kata arah: "Ikan berenang di ___ akuarium." (di bahagian dalam)', emoji: '🐠', answer: 'dalam', options: ['dalam', 'dua', 'sedikit', 'semua'] },
   ],
   // ── T3 M1 T1.1: Mendengar & Mengulas ─────────────────────────
   // Understanding dialogues and providing appropriate responses.

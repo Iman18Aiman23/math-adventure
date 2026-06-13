@@ -30,7 +30,7 @@ Setiap tugas (R-item) dibina oleh **satu agen pada satu masa**, kemudian disahka
 | Tugas | Spec | Status | Disahkan |
 |-------|------|--------|----------|
 | Slice 1 — Distractor fixes (R24a) | — | ✅ Completed | 2026-06-13 |
-| R15 / 5.1a — Kata Bilangan & Kata Arah | `BUILD_SPEC_R15_5.1a.md` | ⏳ Pending | — |
+| R15 / 5.1a — Kata Bilangan & Kata Arah | `BUILD_SPEC_R15_5.1a.md` | 🔍 Pending verification | — |
 | R15 / 5.1b — Kata Kerja Pasif & Adjektif | _(spec TBD)_ | ⏳ Pending | — |
 | R15 / 5.1c — Kata Tugas | _(spec TBD)_ | ⏳ Pending | — |
 | R13 / 1.2 — Bercerita (baca kuat) & Berbincang | _(spec TBD)_ | ⏳ Pending | — |
@@ -38,6 +38,7 @@ Setiap tugas (R-item) dibina oleh **satu agen pada satu masa**, kemudian disahka
 
 ### Progress (slice log)
 
+- **2026-06-13 — R15 / 5.1a — Kata Bilangan & Kata Arah 🔍 Pending verification.** Fail diubah: (1) `KataBilanganArah.jsx` — komponen Pattern-1 baru (learn page 2 kategori expandable + kuiz 12 soalan via `BMLessonQuizLayout`); (2) `ModuleData.js` — tambah bank soalan 16 item (8 Kata Bilangan + 8 Kata Arah) & gantikan 3 node trail M5 dengan 5 node (5.1a aktif + 5.1b/5.1c disabled placeholder); (3) `App.jsx` — tambah lazy import `KataBilanganArah` + route Pattern-1 (tiada `ProgressWrapper`). Diuji: `npm run dev` → dev server HTTP 200 tanpa ralat.
 - **2026-06-13 — Slice 1: Pembaikan duplikasi distractor ✅ SELESAI (R24a).** Imbasan automatik seluruh bank `ModuleData.js` (396 array `options`) jumpa **21 item** dengan nilai berulang dalam pilihan (audit asal hanya kesan 5). Terburuk: `kerusi` (line 508) jawapan muncul **3×** → cuma 1 distractor benar (peluang teka betul 75%). Semua 21 dibaiki — distractor berulang diganti salah-eja munasabah; jawapan kekal unik, 4 pilihan berbeza. Imbasan ulang: **CLEAN** seluruh `BahasaMelayuPage`. Bank terjejas: `2-2-1-perkataan-sukar` (3), `2-3-1-menulis-mekanis` (17), `2-5-3-sintaksis-ayat-majmuk` (1). _Baki R24: (b) lumba-lari, (c) "serta" tak diajar, (d) typo sh→sy masih pending._
 
 ### Keputusan reka bentuk (2026-06-13)
