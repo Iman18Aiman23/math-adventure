@@ -34,7 +34,7 @@ Setiap tugas (R-item) dibina oleh **satu agen pada satu masa**, kemudian disahka
 | R15 / 5.1b — Kata Kerja Pasif & Adjektif | `BUILD_SPEC_R15_5.1b.md` | ✅ Completed | 2026-06-13 |
 | R15 / 5.1c — Kata Tugas | `BUILD_SPEC_R15_5.1c.md` | ✅ Completed | 2026-06-13 |
 | **R15 — Morfologi 5.1 split (5.1a+b+c)** | — | **✅ COMPLETE (3/3)** | 2026-06-13 |
-| R13 / 1.2 — Bercerita (baca kuat) & Berbincang | _(spec TBD)_ | ⏳ Pending | — |
+| R13 / 1.2 — Bercerita (baca kuat) & Berbincang | `BUILD_SPEC_R13_1.2.md` | ⏳ Pending (build besar — custom STT) | — |
 | R12, R14, R16–R24 | _(see action table below)_ | ⏳ Pending | — |
 
 ### Progress (slice log)
