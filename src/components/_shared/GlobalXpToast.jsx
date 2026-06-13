@@ -2,10 +2,12 @@ import React, { useEffect, useState, useCallback } from 'react';
 import XpToast from './XpToast';
 
 /**
- * App-level "+XP" toast. Mounted once near the app root; listens for window
+ * App-level "+XP" toast. Mounted once inside .app-container; listens for window
  * 'xp-toast' CustomEvents (dispatched by useTopicGamification.awardCorrect) and
- * shows the reward animation fixed at top-center, over any topic UI. This lets
- * every standardized topic get the toast with zero per-topic JSX.
+ * shows the reward animation centered within the play area, over any topic UI.
+ * This lets every standardized topic get the toast with zero per-topic JSX.
+ * (.app-container is position:relative, so the absolute overlay below centers to
+ * it — automatically offset from the desktop sidebar.)
  *
  * Note: BMLessonQuizLayout has its OWN inline XpToast and does not use the event,
  * so there is no double-toast.
@@ -27,11 +29,10 @@ export default function GlobalXpToast() {
   return (
     <div
       style={{
-        position: 'fixed',
-        top: '12px',
-        left: 0,
-        right: 0,
+        position: 'absolute',
+        inset: 0,
         display: 'flex',
+        alignItems: 'center',
         justifyContent: 'center',
         zIndex: 3000,
         pointerEvents: 'none',

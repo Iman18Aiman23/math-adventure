@@ -1,8 +1,9 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { RefreshCw } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { playSound, playHoverSound } from '../../../../utils/soundManager';
 import BMHeader from '../../_shared/BMHeader';
+import useTopicGamification from '../../../../hooks/useTopicGamification';
 
 function shuffleOptions(options) {
   return [...options].sort(() => Math.random() - 0.5);
@@ -303,6 +304,8 @@ Ibu Siti memberitahu kepada anaknya untuk membawa payung apabila pergi ke sekola
 ];
 
 const TOTAL_QUESTIONS = PASSAGES.reduce((sum, p) => sum + p.questions.length, 0);
+const TOPIC_ID = '2-2-2-teks-pelbagai';
+const PASS_PCT = 70;
 
 export default function BacaanPemahaman({ onBack, language = 'bm' }) {
   const [passageIdx, setPassageIdx]         = useState(0);
@@ -311,6 +314,15 @@ export default function BacaanPemahaman({ onBack, language = 'bm' }) {
   const [isAnswered, setIsAnswered]         = useState(false);
   const [score, setScore]                   = useState(0);
   const [isDone, setIsDone]                 = useState(false);
+
+  const { awardCorrect, awardWrong, completeTopic } = useTopicGamification(TOPIC_ID);
+  const completedRef = useRef(false);
+  useEffect(() => {
+    if (isDone && !completedRef.current) {
+      completedRef.current = true;
+      completeTopic(score / 10, TOTAL_QUESTIONS, PASS_PCT); // score is ×10 per correct
+    }
+  }, [isDone, score, completeTopic]);
 
   const passage   = PASSAGES[passageIdx];
   const question  = passage.questions[qIdx];
@@ -330,13 +342,15 @@ export default function BacaanPemahaman({ onBack, language = 'bm' }) {
     setSelectedAnswer(option);
     if (option === question.answer) {
       playSound('correct');
+      awardCorrect();
       setScore(s => s + 10);
       confetti({ particleCount: 40, spread: 55 });
     } else {
       playSound('incorrect');
+      awardWrong();
     }
     setIsAnswered(true);
-  }, [isAnswered, question.answer]);
+  }, [isAnswered, question.answer, awardCorrect, awardWrong]);
 
   const handleNext = useCallback(() => {
     if (!isAnswered) return;

@@ -5,6 +5,7 @@ import SpeechManager from '../../../../services/SpeechManager';
 import TraceCanvas from '../../../AgeGroup-4-6/TraceCanvas';
 import { LETTERS_UPPER, LETTERS_LOWER } from '../../../../data/letterPaths';
 import Celebration from '../../../PendidikanIslamPage/_shared/Celebration';
+import useTopicGamification from '../../../../hooks/useTopicGamification';
 
 function getLetterPair(char) {
   const upper = LETTERS_UPPER.find(l => l.char === char);
@@ -27,6 +28,18 @@ export default function LetterTraceLesson({
   const upperRef = useRef(null);
   const lowerRef = useRef(null);
   const advanceTimerRef = useRef(null);
+
+  // Tracing is a finishable ACTIVITY (no scored answers) → completion crown +
+  // flat completion bonus, once. Two finish paths (auto on last letter / Finish
+  // button) both set `finished`, so award from a single once-guarded effect.
+  const { completeActivity } = useTopicGamification(topicId);
+  const completedRef = useRef(false);
+  useEffect(() => {
+    if (finished && !completedRef.current) {
+      completedRef.current = true;
+      completeActivity();
+    }
+  }, [finished, completeActivity]);
 
   const letterPairs = letters.map(getLetterPair).filter(p => p.upper);
   const current = letterPairs[idx];

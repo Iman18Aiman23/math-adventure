@@ -1,5 +1,6 @@
 import React from 'react';
 import BMHeader from './BMHeader';
+import useGamification from '../../../hooks/useGamification';
 
 export default function BMStdShell({
   onBack,
@@ -12,7 +13,9 @@ export default function BMStdShell({
   children,
   footer,
   hideProgress = false,
+  subject = 'bm',
 }) {
+  const { hearts, gems } = useGamification(subject);
   return (
     <>
       <style>{`
@@ -50,6 +53,10 @@ export default function BMStdShell({
         }
         .bm-shell-pill.prog { background: #fff; color: ${accentColor}; border: 1.5px solid ${accentColor}44; box-shadow: 0 2px 6px -2px ${accentColor}33; }
         .bm-shell-pill.star { background: #FFF6D6; color: #B58800; border: 1.5px solid #FFE08A; }
+        .bm-shell-pill.life { background: #FFE9EC; color: #E11D48; border: 1.5px solid #FCA5B4; }
+        .bm-shell-pill.gem  { background: #E0F2FE; color: #0369A1; border: 1.5px solid #7DD3FC; }
+        .bm-shell-pill-group { display: flex; align-items: center; gap: 6px; }
+        @media (max-width: 380px) { .bm-shell-stats { gap: 4px; } .bm-shell-pill { padding: 3px 8px; } }
         .bm-shell-bar-wrap {
           flex-shrink: 0; width: 100%;
           background: ${accentColor}22; border-radius: 999px;
@@ -90,7 +97,11 @@ export default function BMStdShell({
             <>
               <div className="bm-shell-stats">
                 <span className="bm-shell-pill prog">{current + 1} / {total}</span>
-                {score !== null && <span className="bm-shell-pill star">⭐ {score}</span>}
+                <span className="bm-shell-pill-group">
+                  <span className="bm-shell-pill life">❤️ {hearts}</span>
+                  <span className="bm-shell-pill gem">💎 {gems}</span>
+                  {score !== null && <span className="bm-shell-pill star">⭐ {score}</span>}
+                </span>
               </div>
               <div className="bm-shell-bar-wrap">
                 <div className="bm-shell-bar-fill" style={{ width: `${(current / total) * 100}%` }} />

@@ -1,8 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { RefreshCw } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { playSound, playHoverSound } from '../../../../utils/soundManager';
 import BMHeader from '../../_shared/BMHeader';
+import useTopicGamification from '../../../../hooks/useTopicGamification';
 
 const ACCENT = '#1CB0F6';
 const ACCENT_DARK = '#0B8DC0';
@@ -381,12 +382,24 @@ const VOCABULARY_ITEMS = [
 
 const TOTAL_ITEMS = VOCABULARY_ITEMS.length;
 
+const TOPIC_ID = '2-2-3-mentafsir-menaakul';
+const PASS_PCT = 70;
+
 export default function KosaKataKontekstual({ onBack, language = 'bm' }) {
   const [itemIdx, setItemIdx]               = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isAnswered, setIsAnswered]         = useState(false);
   const [score, setScore]                   = useState(0);
   const [isDone, setIsDone]                 = useState(false);
+
+  const { awardCorrect, awardWrong, completeTopic } = useTopicGamification(TOPIC_ID);
+  const completedRef = useRef(false);
+  useEffect(() => {
+    if (isDone && !completedRef.current) {
+      completedRef.current = true;
+      completeTopic(score / 10, TOTAL_ITEMS, PASS_PCT); // score is ×10 per correct
+    }
+  }, [isDone, score, completeTopic]);
 
   const item      = VOCABULARY_ITEMS[itemIdx];
   const isCorrect = selectedAnswer === item.answer;
@@ -398,13 +411,15 @@ export default function KosaKataKontekstual({ onBack, language = 'bm' }) {
     setSelectedAnswer(option);
     if (option === item.answer) {
       playSound('correct');
+      awardCorrect();
       setScore(s => s + 10);
       confetti({ particleCount: 40, spread: 55 });
     } else {
       playSound('incorrect');
+      awardWrong();
     }
     setIsAnswered(true);
-  }, [isAnswered, item.answer]);
+  }, [isAnswered, item.answer, awardCorrect, awardWrong]);
 
   const handleNext = useCallback(() => {
     if (!isAnswered) return;

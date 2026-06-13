@@ -3,10 +3,11 @@
  * Mirrors BMLessonQuizLayout behaviour so every topic feels identical — live XP,
  * streak bonus, and the "+10 XP" toast, with no per-topic toast JSX required.
  *
- *  - awardCorrect()  — call on EACH correct answer. +10 'quiz' XP LIVE, +5 streak
- *    bonus on every 5th consecutive correct (streak tracked inside the hook), and
- *    fires the global "+XP" toast (see GlobalXpToast, mounted once at app root).
- *  - awardWrong()    — call on each wrong answer. Resets the streak counter.
+ *  - awardCorrect()  — call on EACH correct answer. +10 'quiz' XP + 1 gem LIVE,
+ *    +5 streak bonus on every 5th consecutive correct (streak tracked inside the
+ *    hook), and fires the global "+XP" toast (see GlobalXpToast, mounted at root).
+ *  - awardWrong()    — call on each wrong answer. Resets the streak counter and
+ *    loses one heart (gentle: floors at 0, hearts regenerate over time).
  *  - completeTopic(correctCount, total, passPct=70) — at completion: crown +
  *    completion bonus via completeTopicAttempt (first-completion-only).
  *  - completeActivity() — finishable non-quiz (speaking/tracing/read-aloud).
@@ -24,7 +25,7 @@ import useGamification from './useGamification';
 import { XP_PER_CORRECT, XP_PER_STREAK_BONUS } from '../services/gamificationConstants';
 
 export default function useTopicGamification(topicId, subject = 'bm') {
-  const { awardXP, completeTopicAttempt, markActivityComplete } = useGamification(subject);
+  const { awardXP, completeTopicAttempt, markActivityComplete, loseHeart, hearts, gems, maxHearts } = useGamification(subject);
   const streakRef = useRef(0);
 
   const awardCorrect = useCallback(async () => {
@@ -43,7 +44,8 @@ export default function useTopicGamification(topicId, subject = 'bm') {
 
   const awardWrong = useCallback(() => {
     streakRef.current = 0;
-  }, []);
+    loseHeart(); // gentle: floors at 0, regenerates over time
+  }, [loseHeart]);
 
   const completeTopic = useCallback(
     async (correctCount, questionCount, passPct = 70) => {
@@ -59,5 +61,6 @@ export default function useTopicGamification(topicId, subject = 'bm') {
     await markActivityComplete(topicId);
   }, [topicId, markActivityComplete]);
 
-  return { awardCorrect, awardWrong, completeTopic, completeActivity };
+  // Live HUD values for in-topic display (❤️/💎).
+  return { awardCorrect, awardWrong, completeTopic, completeActivity, hearts, gems, maxHearts };
 }

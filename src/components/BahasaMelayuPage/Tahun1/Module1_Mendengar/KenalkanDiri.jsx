@@ -4,7 +4,7 @@ import BMHeader from '../../_shared/BMHeader';
 import SpeechManager from '../../../../services/SpeechManager';
 import confetti from 'canvas-confetti';
 import { playSound } from '../../../../utils/soundManager';
-import useGamification from '../../../../hooks/useGamification';
+import useTopicGamification from '../../../../hooks/useTopicGamification';
 
 const TOPIC_ID = '1-1-9-kenalkan-diri';
 
@@ -155,6 +155,9 @@ const KD_STYLE = `
   .kd-pill.prog { background: #fff; color: ${C.primaryDark}; border: 1.5px solid ${C.primary}44; }
   .kd-pill.star { background: #FFF6D6; color: #B58800; border: 1.5px solid #FFE08A; }
   .kd-pill.fire { background: #FFEAD0; color: #D9610B; border: 1.5px solid #FFC081; }
+  .kd-pill.life { background: #FFE9EC; color: #E11D48; border: 1.5px solid #FCA5B4; }
+  .kd-pill.gem  { background: #E0F2FE; color: #0369A1; border: 1.5px solid #7DD3FC; }
+  @media (max-width: 380px) { .kd-stats { gap: 4px; } .kd-pill { padding: 3px 8px; } }
   .kd-bar-wrap {
     flex-shrink: 0; width: 100%;
     background: #A5F3FC; border-radius: 999px;
@@ -318,7 +321,7 @@ export default function KenalkanDiri({ onBack, language = 'bm', topicComplete, o
   const [micError, setMicError] = useState(null);
   const [selectedOpt, setSelectedOpt] = useState(null);
 
-  const { markActivityComplete } = useGamification('bm');
+  const { awardCorrect, awardWrong, completeActivity, hearts, gems } = useTopicGamification(TOPIC_ID);
 
   const indexRef = useRef(0);
   const attRef = useRef(0);
@@ -345,7 +348,7 @@ export default function KenalkanDiri({ onBack, language = 'bm', topicComplete, o
       setPhase(PHASE_COMPLETE);
       confetti({ particleCount: 200, spread: 160, origin: { y: 0.4 } });
       topicComplete?.(TOPIC_ID);
-      markActivityComplete(TOPIC_ID); // non-quiz activity → completion crown
+      completeActivity(); // non-quiz activity → completion crown
       return;
     }
     setIndex(ni);
@@ -353,9 +356,10 @@ export default function KenalkanDiri({ onBack, language = 'bm', topicComplete, o
     setMicError(null);
     setSelectedOpt(null);
     setPhase(PHASE_READY);
-  }, [items.length, topicComplete, markActivityComplete]);
+  }, [items.length, topicComplete, completeActivity]);
 
   const handleCorrect = () => {
+    awardCorrect();           // live +10 XP (+ streak bonus + toast) per correct
     setScore(s => s + 1);
     setStreak(s => {
       const next = s + 1;
@@ -374,6 +378,7 @@ export default function KenalkanDiri({ onBack, language = 'bm', topicComplete, o
   };
 
   const handleWrong = () => {
+    awardWrong();             // resets the streak counter
     setStreak(0);
     setAttempts(a => a + 1);
     const over = attRef.current + 1 >= MAX_ATTEMPTS;
@@ -391,6 +396,7 @@ export default function KenalkanDiri({ onBack, language = 'bm', topicComplete, o
     if (opt.correct) {
       handleCorrect();
     } else {
+      awardWrong();           // resets the streak counter
       setStreak(0);
       setPhase(PHASE_WRONG);
       setTimeout(() => advanceItem(), 2600);
@@ -520,6 +526,8 @@ export default function KenalkanDiri({ onBack, language = 'bm', topicComplete, o
           <div className="kd-stats">
             <span className="kd-pill prog">{index + 1} / {items.length}</span>
             <span style={{ display: 'flex', gap: 6 }}>
+              <span className="kd-pill life">❤️ {hearts}</span>
+              <span className="kd-pill gem">💎 {gems}</span>
               <span className="kd-pill star">⭐ {score}</span>
               <span className="kd-pill fire">🔥 {streak}</span>
             </span>

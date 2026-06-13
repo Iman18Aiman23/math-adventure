@@ -4,6 +4,7 @@ import confetti from 'canvas-confetti';
 import { playSound, playHoverSound } from '../../../../utils/soundManager';
 import BMStdShell from '../../_shared/BMStdShell';
 import BMStdComplete from '../../_shared/BMStdComplete';
+import useTopicGamification from '../../../../hooks/useTopicGamification';
 
 const TOPIC_ID = '1-5-1-morfologi-kata';
 const PASS_PCT = 70;
@@ -66,6 +67,8 @@ export default function GolonganNamaLesson({ onBack, language = 'bm', topicCompl
     }
   }, [isDone, passed, completed, topicComplete]);
 
+  const { awardCorrect, awardWrong } = useTopicGamification(TOPIC_ID);
+
   const handleSelect = useCallback((option) => {
     if (isAnswered) return;
     playHoverSound();
@@ -73,12 +76,14 @@ export default function GolonganNamaLesson({ onBack, language = 'bm', topicCompl
     if (option === q.answer) {
       playSound('correct');
       setScore(s => s + 1);
+      awardCorrect();           // live +10 XP (+ streak bonus + toast), like 1.1
       confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 }, scalar: 0.8 });
     } else {
       playSound('wrong');
+      awardWrong();             // resets the streak counter
     }
     setIsAnswered(true);
-  }, [isAnswered, q.answer]);
+  }, [isAnswered, q.answer, awardCorrect, awardWrong]);
 
   const handleNext = useCallback(() => {
     if (currentIndex < QUESTIONS.length - 1) {

@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
 import SpeechManager from '../../../services/SpeechManager';
 import BMHeader from './BMHeader';
 
 import StatsBar from '../../_shared/StatsBar';
-import XpToast from '../../_shared/XpToast';
 import useGamification from '../../../hooks/useGamification';
 
 // Mastery gate: minimum % required to pass a topic quiz. Below this the
@@ -26,10 +25,9 @@ export default function BMLessonQuizLayout({
   resultExtra,
 }) {
   const quizRef = useRef(null);
-  const [xpToast, setXpToast] = useState({ show: false, xp: 0, streakBonus: 0, qIdx: -1 });
   // Destructure only the stable callbacks — the hook's return object gets a new
   // identity on every render, so depending on it in effects causes infinite loops.
-  const { awardXP, completeTopicAttempt } = useGamification('bm');
+  const { awardXP, completeTopicAttempt, loseHeart, hearts, gems } = useGamification('bm');
   const streakRef = useRef(0);
   const awardedIdxRef = useRef(-1);
   const completionHandledRef = useRef(false);
@@ -65,8 +63,9 @@ export default function BMLessonQuizLayout({
     if (finished && passed && topicId && !completionHandledRef.current) {
       completionHandledRef.current = true;
       topicComplete?.(topicId);
-      // Award XP for topic completion + update crown level
-      completeTopicAttempt(topicId, score, totalRounds);
+      (async () => {
+        await completeTopicAttempt(topicId, score, totalRounds);
+      })();
     }
   }, [finished, passed, topicId, topicComplete, completeTopicAttempt, score, totalRounds]);
 
@@ -103,17 +102,19 @@ export default function BMLessonQuizLayout({
           isMilestone ? awardXP(5, 'streak_bonus', topicId) : Promise.resolve(0),
         ]).then(([base, bonus]) => {
           if (base > 0 || bonus > 0) {
-            setXpToast({ show: true, xp: base, streakBonus: bonus, qIdx: idx });
+            // Fire the shared top-center toast (GlobalXpToast, mounted at app
+            // root) so every BM topic shows the reward in the same place.
+            window.dispatchEvent(new CustomEvent('xp-toast', { detail: { xp: base, streakBonus: bonus } }));
           }
         });
       }
-    } else {
-      // Reset streak on wrong answer
+    } else if (awardedIdxRef.current !== idx) {
+      // Once per question: reset streak + lose a heart (gentle, floors at 0)
+      awardedIdxRef.current = idx;
       streakRef.current = 0;
+      loseHeart();
     }
-  }, [answered, selected, correctIdx, idx, awardXP, topicId]);
-
-  const handleToastDone = useCallback(() => setXpToast(t => ({ ...t, show: false })), []);
+  }, [answered, selected, correctIdx, idx, awardXP, topicId, loseHeart]);
 
   const handleReplay = () => {
     if (currentQ?.audioText) {
@@ -171,6 +172,10 @@ export default function BMLessonQuizLayout({
         }
         .bm-pill.prog { background: #fff; color: ${accentColor}; border: 1.5px solid ${accentColor}44; box-shadow: 0 2px 6px -2px ${accentColor}33; }
         .bm-pill.star { background: #FFF6D6; color: #B58800; border: 1.5px solid #FFE08A; }
+        .bm-pill.life { background: #FFE9EC; color: #E11D48; border: 1.5px solid #FCA5B4; }
+        .bm-pill.gem  { background: #E0F2FE; color: #0369A1; border: 1.5px solid #7DD3FC; }
+        .bm-pill-group { display: flex; align-items: center; gap: 6px; min-width: 0; }
+        @media (max-width: 360px) { .bm-pill-group { gap: 4px; } .bm-pill { padding: 3px 8px; } }
 
         .bm-quiz-bar-wrap {
           width: 100%; height: clamp(6px, 1.2vh, 9px); border-radius: 999px;
@@ -181,21 +186,6 @@ export default function BMLessonQuizLayout({
           height: 100%;
           background: linear-gradient(90deg, ${accentColor}, ${accentColor}99);
           border-radius: 999px; transition: width .35s ease;
-        }
-
-        .bm-quiz-toast-area {
-          position: relative;
-          z-index: 5;
-          height: 0; /* toast overlays the card instead of pushing it down */
-        }
-        .bm-quiz-toast-area .xp-toast {
-          position: absolute;
-          top: 2px;
-          left: 0;
-          right: 0;
-          margin: 0 auto;
-          width: max-content;
-          max-width: 90%;
         }
 
         .bm-quiz-card {
@@ -601,14 +591,14 @@ export default function BMLessonQuizLayout({
                 <span className="bm-pill prog">
                   {language === 'bm' ? 'Soalan' : 'Question'} {idx + 1} / {totalRounds}
                 </span>
-                <span className="bm-pill star">⭐ {score}</span>
+                <span className="bm-pill-group">
+                  <span className="bm-pill life">❤️ {hearts}</span>
+                  <span className="bm-pill gem">💎 {gems}</span>
+                  <span className="bm-pill star">⭐ {score}</span>
+                </span>
               </div>
               <div className="bm-quiz-bar-wrap">
                 <div className="bm-quiz-bar-fill" style={{ width: `${((idx + 1) / totalRounds) * 100}%` }} />
-              </div>
-
-              <div className="bm-quiz-toast-area">
-                <XpToast key={xpToast.qIdx} xp={xpToast.xp} streakBonus={xpToast.streakBonus} visible={xpToast.show} onDone={handleToastDone} />
               </div>
 
               <div className="bm-quiz-card">

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import useGamification from '../../hooks/useGamification';
 
 export default function StatsBar({ subject = 'bm' }) {
-  const { xp, coins, level, streak } = useGamification(subject);
+  const { loading, xp, gems, level, streak, hearts, maxHearts } = useGamification(subject);
   const prevXpRef = useRef(xp);
   const pulseRef = useRef(null);
 
@@ -14,6 +14,27 @@ export default function StatsBar({ subject = 'bm' }) {
     }
     prevXpRef.current = xp;
   }, [xp]);
+
+  if (loading) {
+    return (
+      <div
+        className="sb-root"
+        role="region"
+        aria-label="Loading stats"
+        style={{ opacity: 0.5, pointerEvents: 'none' }}
+      >
+        <div className="sb-item"><span className="sb-value">—</span></div>
+        <div className="sb-sep" aria-hidden="true" />
+        <div className="sb-item"><span className="sb-value">—</span></div>
+        <div className="sb-sep" aria-hidden="true" />
+        <div className="sb-item"><span className="sb-value">—</span></div>
+        <div className="sb-sep" aria-hidden="true" />
+        <div className="sb-item"><span className="sb-value">—</span></div>
+        <div className="sb-sep" aria-hidden="true" />
+        <div className="sb-item"><span className="sb-value">—</span></div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -134,11 +155,20 @@ export default function StatsBar({ subject = 'bm' }) {
         className="sb-root"
         ref={pulseRef}
         role="region"
-        aria-label={`Streak ${streak} days, ${xp} experience points, level ${level}, ${coins} coins`}
+        aria-label={`${hearts} of ${maxHearts} hearts, ${gems} gems, ${xp} experience points, streak ${streak} days, level ${level}`}
       >
-        <div className="sb-item" aria-label={`Streak: ${streak} days`}>
-          <span className="sb-emoji sb-streak-emoji" aria-hidden="true">🔥</span>
-          <span className="sb-value">{streak}</span>
+        <div className="sb-item" aria-label={`Hearts: ${hearts} of ${maxHearts}`}>
+          <span className="sb-emoji" aria-hidden="true">❤️</span>
+          <span className="sb-value" aria-live="polite">{hearts}</span>
+        </div>
+
+        <div className="sb-sep" aria-hidden="true" />
+
+        <div className="sb-item" aria-label={`${gems} gems`}>
+          {/* 💎 gem — the single spendable currency (earned +1 per correct) */}
+          <span className="sb-emoji" aria-hidden="true">💎</span>
+          <span className="sb-value" aria-live="polite">{gems}</span>
+          <span className="sb-label">Gems</span>
         </div>
 
         <div className="sb-sep" aria-hidden="true" />
@@ -151,18 +181,16 @@ export default function StatsBar({ subject = 'bm' }) {
 
         <div className="sb-sep" aria-hidden="true" />
 
-        <div className="sb-item" aria-label={`Level ${level}`}>
-          <span className="sb-value">{level}</span>
-          <span className="sb-label">Lv</span>
+        <div className="sb-item" aria-label={`Streak: ${streak} days`}>
+          <span className="sb-emoji sb-streak-emoji" aria-hidden="true">🔥</span>
+          <span className="sb-value">{streak}</span>
         </div>
 
         <div className="sb-sep" aria-hidden="true" />
 
-        <div className="sb-item" aria-label={`${coins} coins`}>
-          {/* 💰 not 🪙 — U+1FA99 has no glyph on Windows 10 (renders as □) */}
-          <span className="sb-emoji" aria-hidden="true">💰</span>
-          <span className="sb-value" aria-live="polite">{coins}</span>
-          <span className="sb-label">Coins</span>
+        <div className="sb-item" aria-label={`Level ${level}`}>
+          <span className="sb-value">{level}</span>
+          <span className="sb-label">Lv</span>
         </div>
       </div>
     </>

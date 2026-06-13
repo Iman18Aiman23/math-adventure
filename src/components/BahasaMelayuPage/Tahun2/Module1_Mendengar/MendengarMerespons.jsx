@@ -4,6 +4,9 @@ import SpeechManager from '../../../../services/SpeechManager';
 import { playSound } from '../../../../utils/soundManager';
 import BMHeader from '../../_shared/BMHeader';
 import confetti from 'canvas-confetti';
+import useTopicGamification from '../../../../hooks/useTopicGamification';
+
+const TOPIC_ID = '2-1-1-mendengar-merespons';
 
 // KSSR BM Tahun 2 — 2.1.1 (mendengar, memahami & merespons).
 // TTS asks a simple question; the child answers aloud. STT passes when the
@@ -242,6 +245,7 @@ function grammarFor(item) {
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function JawabSoalan({ onBack, language = 'bm' }) {
   const isMobile = SpeechManager.isMobile();
+  const { awardCorrect, awardWrong, completeActivity } = useTopicGamification(TOPIC_ID);
 
   const [items,     setItems]     = useState(() => buildItems());
   const [index,     setIndex]     = useState(0);
@@ -273,6 +277,7 @@ export default function JawabSoalan({ onBack, language = 'bm' }) {
     if (ni >= itemsRef.current.length) {
       setPhase(PHASE_COMPLETE);
       confetti({ particleCount: 200, spread: 160, origin: { y: 0.4 } });
+      completeActivity(); // finishable speaking activity → completion crown
       return;
     }
     setIndex(ni);
@@ -280,7 +285,7 @@ export default function JawabSoalan({ onBack, language = 'bm' }) {
     setLastHeard('');
     setMicError(null);
     setPhase(PHASE_SPEAKING);
-  }, []);
+  }, [completeActivity]);
 
   // Ask the question aloud when entering SPEAKING phase
   useEffect(() => {
@@ -303,6 +308,7 @@ export default function JawabSoalan({ onBack, language = 'bm' }) {
 
   const handleCorrect = () => {
     playSound('correct');
+    awardCorrect();           // live +10 XP + gem (+ streak bonus + toast)
     confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 }, scalar: 0.8 });
     setScore(s => s + 1);
     setStreak(s => {
@@ -321,6 +327,7 @@ export default function JawabSoalan({ onBack, language = 'bm' }) {
   };
 
   const handleWrong = () => {
+    awardWrong();             // resets streak + loses a heart
     setStreak(0);
     setAttempts(a => a + 1);
     const over = attRef.current + 1 >= MAX_ATTEMPTS;

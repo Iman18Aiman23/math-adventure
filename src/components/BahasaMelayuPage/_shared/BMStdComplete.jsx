@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import BMHeader from './BMHeader';
 import Celebration from '../../PendidikanIslamPage/_shared/Celebration';
 import useGamification from '../../../hooks/useGamification';
-import { XP_PER_CORRECT } from '../../../services/gamificationConstants';
 
 // Shared "result" screen for BMStdShell-based topics (Modul 5 Tatabahasa).
 // Mirrors the modern result card from BMLessonQuizLayout.
@@ -24,28 +23,21 @@ export default function BMStdComplete({
   const passed = pct >= passPct;
   const [showCelebration, setShowCelebration] = useState(false);
 
-  // Gamification: this screen is the single shared completion point for all
-  // BMStdShell-based topics, so award XP + crown here (one place → all topics).
-  // Destructure only the stable callbacks (hook return object changes identity
+  // Gamification: per-answer XP is now awarded LIVE in each lesson via
+  // useTopicGamification.awardCorrect() (so the StatsBar climbs and the toast
+  // fires during play, exactly like BMLessonQuizLayout topics). This shared
+  // result screen only records the crown + first-completion bonus.
+  // Destructure only the stable callback (hook return object changes identity
   // every render — see lesson 1).
-  const { awardXP, completeTopicAttempt } = useGamification(subject);
+  const { completeTopicAttempt } = useGamification(subject);
   const gamifiedRef = useRef(false);
 
   useEffect(() => {
-    if (!topicId || gamifiedRef.current) return;
+    // Mounts fresh on each completion, unmounts on restart → simple once-guard.
+    if (!topicId || gamifiedRef.current || !passed) return;
     gamifiedRef.current = true;
-    // This screen mounts fresh on each completion and unmounts on restart, so a
-    // simple once-guard is enough. No live per-answer toast in std-shell topics,
-    // so per-answer XP is batched here from the final score.
-    (async () => {
-      // Award per-answer XP BEFORE completeTopicAttempt: anti-farming reads the
-      // topic's crownLevel, which completeTopicAttempt bumps to 1 on first pass.
-      // Awarding first keeps the first completion at full rate; repeats get
-      // practice-rate automatically.
-      if (score > 0) await awardXP(score * XP_PER_CORRECT, 'quiz', topicId);
-      if (passed) await completeTopicAttempt(topicId, score, total);
-    })();
-  }, [topicId, subject, score, total, passed, awardXP, completeTopicAttempt]);
+    completeTopicAttempt(topicId, score, total);
+  }, [topicId, score, total, passed, completeTopicAttempt]);
 
   useEffect(() => {
     if (passed) {

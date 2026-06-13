@@ -14,6 +14,8 @@ import {
   STORAGE_QUOTA_BYTES,
   QUOTA_WARNING_THRESHOLD,
   DEFAULT_DAILY_GOAL_XP,
+  START_HEARTS,
+  MAX_HEARTS,
 } from './gamificationConstants';
 
 export class LocalGamificationRepo extends GamificationRepository {
@@ -34,6 +36,9 @@ export class LocalGamificationRepo extends GamificationRepository {
         xp: 0,
         coins: 0,
         level: 1,
+        hearts: START_HEARTS,
+        maxHearts: MAX_HEARTS,
+        heartsUpdatedAt: new Date().toISOString(),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         _version: 0,
@@ -53,6 +58,11 @@ export class LocalGamificationRepo extends GamificationRepository {
         xp: Math.max(data.xp, current.xp),
         coins: Math.max(data.coins, current.coins),
         level: Math.max(data.level, current.level),
+        // Hearts change rarely (single-tab) — take the writer's intent rather
+        // than max, so spending a heart isn't undone by a stale merge.
+        hearts: data.hearts != null ? data.hearts : current.hearts,
+        maxHearts: data.maxHearts != null ? data.maxHearts : current.maxHearts,
+        heartsUpdatedAt: data.heartsUpdatedAt || current.heartsUpdatedAt,
         createdAt: current.createdAt || data.createdAt,
         updatedAt: new Date().toISOString(),
         _version: (current._version || 0) + 1,
@@ -335,6 +345,9 @@ export class LocalGamificationRepo extends GamificationRepository {
       xp: 0,
       coins: 0,
       level: 1,
+      hearts: START_HEARTS,
+      maxHearts: MAX_HEARTS,
+      heartsUpdatedAt: new Date().toISOString(),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       _version: 0,

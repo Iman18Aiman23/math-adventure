@@ -476,9 +476,9 @@ export const BM_QUESTIONS = {
     { question: 'Perkataan manakah yang kamu dengar?', audioText: 'banyak', answer: 'banyak', options: ['banyak', 'banyan', 'banak', 'banyat'] },
     { question: 'Perkataan manakah yang kamu dengar?', audioText: 'punya', answer: 'punya', options: ['punya', 'puna', 'puyak', 'pungya'] },
     // ── Digraf kh ──
-    { question: 'Perkataan manakah yang kamu dengar?', audioText: 'khas', answer: 'khas', options: ['khas', 'kas', 'khas', 'khaz'] },
+    { question: 'Perkataan manakah yang kamu dengar?', audioText: 'khas', answer: 'khas', options: ['khas', 'kas', 'khes', 'khaz'] },
     { question: 'Perkataan manakah yang kamu dengar?', audioText: 'akhir', answer: 'akhir', options: ['akhir', 'akir', 'akher', 'akhil'] },
-    { question: 'Perkataan manakah yang kamu dengar?', audioText: 'khabar', answer: 'khabar', options: ['khabar', 'kabar', 'khabar', 'khapar'] },
+    { question: 'Perkataan manakah yang kamu dengar?', audioText: 'khabar', answer: 'khabar', options: ['khabar', 'kabar', 'khabor', 'khapar'] },
     // ── Digraf sy ──
     { question: 'Perkataan manakah yang kamu dengar?', audioText: 'syukur', answer: 'syukur', options: ['syukur', 'sukur', 'syukor', 'syuksyur'] },
     { question: 'Perkataan manakah yang kamu dengar?', audioText: 'syarat', answer: 'syarat', options: ['syarat', 'sarat', 'syarak', 'syarah'] },
@@ -491,7 +491,7 @@ export const BM_QUESTIONS = {
     { question: 'Perkataan manakah yang kamu dengar?', audioText: 'harimau', answer: 'harimau', options: ['harimau', 'harimo', 'harimu', 'kerimau'] },
     { question: 'Perkataan manakah yang kamu dengar?', audioText: 'kerbau', answer: 'kerbau', options: ['kerbau', 'kerbo', 'karbau', 'kerbaw'] },
     // ── Diftong oi ──
-    { question: 'Perkataan manakah yang kamu dengar?', audioText: 'baloi', answer: 'baloi', options: ['baloi', 'balo', 'baloy', 'baloi'] },
+    { question: 'Perkataan manakah yang kamu dengar?', audioText: 'baloi', answer: 'baloi', options: ['baloi', 'balo', 'baloy', 'baluy'] },
     { question: 'Perkataan manakah yang kamu dengar?', audioText: 'amboi', answer: 'amboi', options: ['amboi', 'ambo', 'amboy', 'ambai'] },
     // ── Concept checks ──
     { question: 'Yang manakah perkataan yang mengandungi digraf "ng"?', answer: 'bangku', options: ['bangku', 'bola', 'buku', 'batu'] },
@@ -504,31 +504,31 @@ export const BM_QUESTIONS = {
   // Also tests spelling awareness (correct vs incorrect).
   '2-3-1-menulis-mekanis': [
     // ── Perkataan KV+KV ──
-    { question: 'Perkataan manakah yang kamu dengar?', audioText: 'bapa', answer: 'bapa', options: ['bapa', 'papa', 'baba', 'bapa'] },
-    { question: 'Perkataan manakah yang kamu dengar?', audioText: 'kerusi', answer: 'kerusi', options: ['kerusi', 'kerusi', 'kirusi', 'kerusi'] },
+    { question: 'Perkataan manakah yang kamu dengar?', audioText: 'bapa', answer: 'bapa', options: ['bapa', 'papa', 'baba', 'bafa'] },
+    { question: 'Perkataan manakah yang kamu dengar?', audioText: 'kerusi', answer: 'kerusi', options: ['kerusi', 'kirusi', 'kerosi', 'kerusy'] },
     { question: 'Perkataan manakah yang betul?', answer: 'meja', options: ['meja', 'mija', 'maja', 'meje'] },
     // ── Perkataan KV+KVK ──
-    { question: 'Perkataan manakah yang kamu dengar?', audioText: 'pensel', answer: 'pensel', options: ['pensel', 'pensil', 'pensal', 'pensel'] },
-    { question: 'Perkataan manakah yang betul?', answer: 'botol', options: ['botol', 'botel', 'boto', 'botol'] },
-    { question: 'Perkataan manakah yang kamu dengar?', audioText: 'makan', answer: 'makan', options: ['makan', 'maken', 'makam', 'makan'] },
+    { question: 'Perkataan manakah yang kamu dengar?', audioText: 'pensel', answer: 'pensel', options: ['pensel', 'pensil', 'pensal', 'pensol'] },
+    { question: 'Perkataan manakah yang betul?', answer: 'botol', options: ['botol', 'botel', 'boto', 'butol'] },
+    { question: 'Perkataan manakah yang kamu dengar?', audioText: 'makan', answer: 'makan', options: ['makan', 'maken', 'makam', 'makal'] },
     // ── Perkataan dengan digraf ──
-    { question: 'Perkataan manakah yang kamu dengar?', audioText: 'bangku', answer: 'bangku', options: ['bangku', 'banku', 'bangku', 'banggu'] },
-    { question: 'Perkataan manakah yang betul?', answer: 'banyak', options: ['banyak', 'banyak', 'banak', 'banyat'] },
-    { question: 'Perkataan manakah yang betul?', answer: 'langit', options: ['langit', 'langit', 'lanit', 'langik'] },
+    { question: 'Perkataan manakah yang kamu dengar?', audioText: 'bangku', answer: 'bangku', options: ['bangku', 'banku', 'bangkuk', 'banggu'] },
+    { question: 'Perkataan manakah yang betul?', answer: 'banyak', options: ['banyak', 'banyok', 'banak', 'banyat'] },
+    { question: 'Perkataan manakah yang betul?', answer: 'langit', options: ['langit', 'langgit', 'lanit', 'langik'] },
     // ── Frasa ──
-    { question: 'Frasa manakah yang kamu dengar?', audioText: 'baju biru', answer: 'baju biru', options: ['baju biru', 'baju baru', 'baju biru', 'baju buru'] },
-    { question: 'Frasa manakah yang betul?', answer: 'makan nasi', options: ['makan nasi', 'makan nasi', 'maken nasi', 'makan nasi'] },
-    { question: 'Frasa manakah yang kamu dengar?', audioText: 'rumah besar', answer: 'rumah besar', options: ['rumah besar', 'rumah bisar', 'rumah basar', 'rumah besar'] },
+    { question: 'Frasa manakah yang kamu dengar?', audioText: 'baju biru', answer: 'baju biru', options: ['baju biru', 'baju baru', 'baju biro', 'baju buru'] },
+    { question: 'Frasa manakah yang betul?', answer: 'makan nasi', options: ['makan nasi', 'maken nasi', 'makan nesi', 'makam nasi'] },
+    { question: 'Frasa manakah yang kamu dengar?', audioText: 'rumah besar', answer: 'rumah besar', options: ['rumah besar', 'rumah bisar', 'rumah basar', 'rumah besor'] },
     // ── Ayat tunggal ──
-    { question: 'Ayat manakah yang kamu dengar?', audioText: 'Saya membaca buku.', answer: 'Saya membaca buku.', options: ['Saya membaca buku.', 'Saya membaca buku.', 'Saya membaca buku.', 'Saya membawa buku.'] },
-    { question: 'Ayat manakah yang betul?', answer: 'Emak memasak nasi.', options: ['Emak memasak nasi.', 'Emak memasak nasi', 'Emak memasak nasi.', 'Emak memasak nasi'] },
+    { question: 'Ayat manakah yang kamu dengar?', audioText: 'Saya membaca buku.', answer: 'Saya membaca buku.', options: ['Saya membaca buku.', 'Saya membawa buku.', 'Saya membeca buku.', 'Saya membaca baku.'] },
+    { question: 'Ayat manakah yang betul?', answer: 'Emak memasak nasi.', options: ['Emak memasak nasi.', 'Emak memasak nasi', 'emak memasak nasi.', 'Emak Memasak nasi.'] },
     { question: 'Ayat manakah yang betul ejaannya?', answer: 'Ayah pergi kerja.', options: ['Ayah pergi kerja.', 'Ayah pergi kerja', 'Ayah pergik kerja.', 'Ayah pergi karja.'] },
     // ── Ejaan umum ──
     { question: 'Perkataan manakah yang TEPAT ejaannya?', answer: 'gambar', options: ['gambar', 'gamber', 'gambir', 'gambor'] },
-    { question: 'Perkataan manakah yang TEPAT ejaannya?', answer: 'kakak', options: ['kakak', 'kakak', 'kakek', 'kakaks'] },
-    { question: 'Perkataan manakah yang TEPAT ejaannya?', answer: 'sekolah', options: ['sekolah', 'sekolah', 'sakolah', 'sekola'] },
-    { question: 'Perkataan manakah yang TEPAT ejaannya?', answer: 'tulis', options: ['tulis', 'tulis', 'tulih', 'tules'] },
-    { question: 'Perkataan manakah yang TEPAT ejaannya?', answer: 'cantik', options: ['cantik', 'cantek', 'cantik', 'cantek'] },
+    { question: 'Perkataan manakah yang TEPAT ejaannya?', answer: 'kakak', options: ['kakak', 'kakaq', 'kakek', 'kakaks'] },
+    { question: 'Perkataan manakah yang TEPAT ejaannya?', answer: 'sekolah', options: ['sekolah', 'sekoleh', 'sakolah', 'sekola'] },
+    { question: 'Perkataan manakah yang TEPAT ejaannya?', answer: 'tulis', options: ['tulis', 'telis', 'tulih', 'tules'] },
+    { question: 'Perkataan manakah yang TEPAT ejaannya?', answer: 'cantik', options: ['cantik', 'cantek', 'cantix', 'centik'] },
     // ── Huruf besar dan noktah ──
     { question: 'Ayat manakah yang ditulis dengan BETUL?', answer: 'Saya suka bola.', options: ['Saya suka bola.', 'saya suka bola.', 'Saya suka bola', 'saya suka bola'] },
     { question: 'Ayat manakah yang ditulis dengan BETUL?', answer: 'Dia pergi ke sekolah.', options: ['Dia pergi ke sekolah.', 'dia pergi ke sekolah.', 'Dia pergi ke sekolah', 'Dia pergi ke Sekolah.'] },
@@ -602,7 +602,7 @@ export const BM_QUESTIONS = {
     { question: 'Ayat majmuk ialah...?', answer: 'Gabungan dua ayat tunggal', options: ['Gabungan dua ayat tunggal', 'Ayat yang ada subjek', 'Ayat yang ada predikat', 'Ayat yang panjang'] },
     { question: '"Murid membaca serta menulis." — kata hubung "serta" memberi maksud...?', answer: 'menggabungkan dua ayat yang sama taraf', options: ['menggabungkan dua ayat yang sama taraf', 'perbuatan serentak', 'urutan perbuatan', 'sebab dan akibat'] },
     { question: 'Pilih ayat yang menggunakan kata hubung "kerana" dengan BETUL.', answer: 'Dia menangis kerana jatuh basikal.', options: ['Dia menangis kerana jatuh basikal.', 'Kerana dia menangis jatuh basikal.', 'Dia kerana menangis jatuh basikal.', 'Jatuh basikal kerana dia menangis.'] },
-    { question: 'Pilih ayat yang menggunakan kata hubung "lalu" dengan BETUL.', answer: 'Amin mandi lalu memakai baju.', options: ['Amin mandi lalu memakai baju.', 'Amin lalu mandi memakai baju.', 'Lalu Amin mandi memakai baju.', 'Amin mandi lalu memakai baju.'] },
+    { question: 'Pilih ayat yang menggunakan kata hubung "lalu" dengan BETUL.', answer: 'Amin mandi lalu memakai baju.', options: ['Amin mandi lalu memakai baju.', 'Amin lalu mandi memakai baju.', 'Lalu Amin mandi memakai baju.', 'Amin mandi memakai baju lalu.'] },
     { question: 'Apakah perbezaan "dan" dan "serta"?', answer: '"Serta" lebih formal', options: ['"Serta" lebih formal', '"Dan" lebih panjang', '"Serta" untuk perbuatan serentak', 'Tiada perbezaan'] },
     { question: 'Gabungkan: "Kakak menyanyi. Kakak menari."', answer: 'Kakak menyanyi sambil menari.', options: ['Kakak menyanyi sambil menari.', 'Kakak menyanyi dan menari.', 'Kakak menyanyi lalu menari.', 'Kakak menari sambil menyanyi.'] },
     { question: 'Gabungkan: "Ayah duduk. Ayah minum kopi."', answer: 'Ayah duduk sambil minum kopi.', options: ['Ayah duduk sambil minum kopi.', 'Ayah duduk dan minum kopi.', 'Ayah duduk lalu minum kopi.', 'Ayah minum kopi sambil duduk.'] },

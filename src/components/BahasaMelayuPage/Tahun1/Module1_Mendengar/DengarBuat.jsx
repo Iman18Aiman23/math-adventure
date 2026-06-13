@@ -3,7 +3,7 @@ import confetti from 'canvas-confetti';
 import { playSound } from '../../../../utils/soundManager';
 import SpeechManager from '../../../../services/SpeechManager';
 import BMHeader from '../../_shared/BMHeader';
-import useGamification from '../../../../hooks/useGamification';
+import useTopicGamification from '../../../../hooks/useTopicGamification';
 
 const TOPIC_ID = '1-1-8-dengar-buat';
 const ACCENT = '#E8821A';
@@ -174,14 +174,14 @@ const STYLE = `
   }
 `;
 
-export default function DengarBuat({ onBack, language = 'bm', topicComplete, onNextModule }) {
+export default function DengarBuat({ onBack, language = 'bm', topicComplete, onNextTopic, onNextModule }) {
   const [items, setItems] = useState(() => buildItems());
   const [index, setIndex] = useState(0);
   const [phase, setPhase] = useState(PHASE_READY);
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
 
-  const { markActivityComplete } = useGamification('bm');
+  const { awardCorrect, completeActivity, hearts, gems } = useTopicGamification(TOPIC_ID);
 
   const indexRef = useRef(0);
   const itemsRef = useRef(items);
@@ -217,16 +217,17 @@ export default function DengarBuat({ onBack, language = 'bm', topicComplete, onN
       setPhase(PHASE_COMPLETE);
       confetti({ particleCount: 200, spread: 160, origin: { y: 0.4 } });
       topicComplete?.(TOPIC_ID);
-      markActivityComplete(TOPIC_ID); // non-quiz activity → completion crown
+      completeActivity(); // non-quiz activity → completion crown
       return;
     }
     setIndex(ni);
     setPhase(PHASE_READY);
-  }, [topicComplete, markActivityComplete]);
+  }, [topicComplete, completeActivity]);
 
   const handleDone = () => {
     if (phase === PHASE_DONE) return; // already advancing — guard double-tap
     playSound('correct');
+    awardCorrect();           // live +10 XP (+ streak bonus + toast) per completed item
     confetti({ particleCount: 60, spread: 70, origin: { y: 0.5 }, scalar: 0.8 });
     setScore(s => s + 1);
     setStreak(s => {
@@ -308,8 +309,10 @@ export default function DengarBuat({ onBack, language = 'bm', topicComplete, onN
               <button onClick={handleReset} style={{ fontFamily: "'Baloo 2', sans-serif", padding: '0.8rem 1.5rem', background: '#fff', color: '#475569', border: '2px solid #E2E8F0', borderRadius: 999, fontSize: '1rem', cursor: 'pointer', fontWeight: 800 }}>
                 🔄 {language === 'bm' ? 'Main Semula' : 'Play Again'}
               </button>
-              <button onClick={onNextModule || onBack} style={{ fontFamily: "'Baloo 2', sans-serif", padding: '0.8rem 1.5rem', background: `linear-gradient(180deg, ${C.primary}cc, ${C.primary})`, color: '#fff', border: 'none', borderRadius: 999, fontSize: '1rem', cursor: 'pointer', fontWeight: 800, boxShadow: `0 4px 0 ${C.primaryDark}` }}>
-                {language === 'bm' ? 'Modul Seterusnya →' : 'Next Module →'}
+              <button onClick={onNextTopic || onNextModule || onBack} style={{ fontFamily: "'Baloo 2', sans-serif", padding: '0.8rem 1.5rem', background: `linear-gradient(180deg, ${C.primary}cc, ${C.primary})`, color: '#fff', border: 'none', borderRadius: 999, fontSize: '1rem', cursor: 'pointer', fontWeight: 800, boxShadow: `0 4px 0 ${C.primaryDark}` }}>
+                {onNextTopic
+                  ? (language === 'bm' ? 'Topik Seterusnya →' : 'Next Topic →')
+                  : (language === 'bm' ? 'Modul Seterusnya →' : 'Next Module →')}
               </button>
             </div>
           </div>
@@ -328,6 +331,8 @@ export default function DengarBuat({ onBack, language = 'bm', topicComplete, onN
           <div className="db-stats">
             <span className="db-pill">{index + 1} / {items.length}</span>
             <span style={{ display: 'flex', gap: 6 }}>
+              <span className="db-pill" style={{ background: '#FFE9EC', color: '#E11D48', borderColor: '#FCA5B4' }}>❤️ {hearts}</span>
+              <span className="db-pill" style={{ background: '#E0F2FE', color: '#0369A1', borderColor: '#7DD3FC' }}>💎 {gems}</span>
               <span className="db-pill" style={{ background: '#FFEAD0', color: '#D9610B', borderColor: '#FFC081' }}>⭐ {score}</span>
               <span className="db-pill" style={{ background: '#FFF6D6', color: '#B58800', borderColor: '#FFE08A' }}>🔥 {streak}</span>
             </span>

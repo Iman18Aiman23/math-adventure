@@ -18,13 +18,32 @@ import {
   XP_PER_CORRECT,
   XP_PER_STREAK_BONUS,
   XP_PER_COMPLETION_BONUS,
-  COINS_PER_10_XP,
+  GEMS_PER_CORRECT,
   LEVEL_THRESHOLDS,
   MAX_LEVEL,
   MAX_CROWN_LEVEL,
   AWARD_COOLDOWN_MS,
   PRACTICE_XP_MULTIPLIER,
+  MAX_HEARTS,
+  START_HEARTS,
+  HEART_REGEN_MS,
 } from '../services/gamificationConstants';
+
+/**
+ * Current heart count after time-based regeneration (display value).
+ * Hearts regenerate +1 every HEART_REGEN_MS up to maxHearts. The stored
+ * `hearts` is the value as of `heartsUpdatedAt`; this adds elapsed regen.
+ * @param {object} player
+ * @returns {number}
+ */
+export function heartsNow(player) {
+  const max = player?.maxHearts ?? MAX_HEARTS;
+  const stored = player?.hearts ?? START_HEARTS;
+  if (stored >= max) return max;
+  const ts = player?.heartsUpdatedAt ? new Date(player.heartsUpdatedAt).getTime() : Date.now();
+  const regened = Math.floor((Date.now() - ts) / HEART_REGEN_MS);
+  return Math.min(max, stored + Math.max(0, regened));
+}
 
 /**
  * Compute player level from total XP.
@@ -133,8 +152,10 @@ export default function useGamification(subject) {
 
         const p = await repo.getPlayerData(uid);
         const newXP = p.xp + effectiveAmount;
-        // 1 coin per full 10 XP earned
-        const newCoins = p.coins + Math.floor(effectiveAmount / 10) * COINS_PER_10_XP;
+        // Gems (stored in `coins`): +1 per correct answer. Only the per-answer
+        // 'quiz' source earns gems — streak/completion bonuses do not.
+        const gemGain = source === 'quiz' && effectiveAmount > 0 ? GEMS_PER_CORRECT : 0;
+        const newCoins = (p.coins || 0) + gemGain;
         const newLevel = levelForXp(newXP);
 
         const updated = {
@@ -299,6 +320,29 @@ export default function useGamification(subject) {
     [repo, uid, subject, awardXP]
   );
 
+  /**
+   * Lose one heart (on a wrong answer). Gentle: floors at 0, never locks the
+   * lesson — hearts regenerate over time (see heartsNow / HEART_REGEN_MS).
+   * Realizes any pending regen first, then subtracts 1 and resets the clock.
+   */
+  const loseHeart = useCallback(async () => {
+    try {
+      const p = await repo.getPlayerData(uid);
+      const current = heartsNow(p); // includes regen accrued so far
+      const newHearts = Math.max(0, current - 1);
+      const updated = {
+        ...p,
+        hearts: newHearts,
+        maxHearts: p.maxHearts ?? MAX_HEARTS,
+        heartsUpdatedAt: new Date().toISOString(),
+      };
+      await repo.savePlayerData(uid, updated);
+      setPlayer(updated);
+    } catch (e) {
+      console.error('[useGamification] loseHeart error:', e);
+    }
+  }, [repo, uid]);
+
   // =========================================================================
   // Query Methods
   // =========================================================================
@@ -347,15 +391,19 @@ export default function useGamification(subject) {
     // State
     loading,
     xp: player?.xp || 0,
-    coins: player?.coins || 0,
+    gems: player?.coins || 0,        // gems = spendable currency (stored in `coins`)
+    coins: player?.coins || 0,       // alias kept for backward-compat
     level: player?.level || 1,
     streak: streak?.count || 0,
+    hearts: heartsNow(player),
+    maxHearts: player?.maxHearts ?? MAX_HEARTS,
     completedTopics: topics,
 
     // Actions
     awardXP,
     completeTopicAttempt,
     markActivityComplete,
+    loseHeart,
 
     // Queries
     getTopicLevel,

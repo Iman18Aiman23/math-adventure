@@ -1344,7 +1344,6 @@ export default function App() {
 
   return (
     <GamificationProvider>
-      <GlobalXpToast />
       <GameStateContext.Provider value={gameState}>
         {/* Desktop Sidebar — rendered outside .app-container, inside #root row */}
         {isDesktop && !shouldHideSidebar && (
@@ -1373,6 +1372,9 @@ export default function App() {
         >
           {!playerName && <Suspense fallback={null}><WelcomeModal onSave={handleSaveName} /></Suspense>}
           <Suspense fallback={null}><LevelUpToast level={levelUpInfo?.newLevel} onDismiss={clearLevelUp} /></Suspense>
+          {/* XP reward toast — centered within .app-container (offset from the
+              desktop sidebar automatically since this is inside the container). */}
+          <GlobalXpToast />
 
           {/* Loading veil — sits on top of the current page (kept visible by the
               useTransition above) while the next page's lazy chunk loads. */}

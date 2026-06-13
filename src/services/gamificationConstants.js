@@ -20,10 +20,22 @@ export const XP_PER_STREAK_7_DAYS = 100;
 export const XP_PER_STREAK_30_DAYS = 500;
 
 // ============================================================================
-// Coin Economy
+// Currency: Gems (replaces the old coin economy)
 // ============================================================================
 
-export const COINS_PER_10_XP = 1; // 1 coin per 10 XP earned
+// Gems are the single spendable currency, earned +1 per correct answer
+// (MathOperationsGame model). Stored in the player's `coins` field for
+// backward-compat with existing saves/consumers; surfaced as "gems" in the UI.
+export const GEMS_PER_CORRECT = 1;
+export const COINS_PER_10_XP = 1; // deprecated — kept for legacy imports
+
+// ============================================================================
+// Hearts / Lives  (gentle: regenerate over time, never hard-lock learning)
+// ============================================================================
+
+export const MAX_HEARTS = 5;
+export const START_HEARTS = 5;
+export const HEART_REGEN_MS = 5 * 60 * 1000; // regenerate 1 heart every 5 minutes
 
 // ============================================================================
 // Level Thresholds

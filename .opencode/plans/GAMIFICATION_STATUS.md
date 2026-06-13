@@ -185,9 +185,137 @@ repeats auto-drop to practice-rate. The 4 topics now pass `topicId={TOPIC_ID}`:
 All 4 IDs verified against `ModuleData.js` → crowns show on the BM trail. With SintaksisAyat (5.5,
 already on BMLessonQuizLayout), **Module 5 Tatabahasa is fully covered.**
 
-⚠️ Tradeoff (acceptable): std-shell topics have no live XpToast, so per-answer XP is batched at
-completion (totals match BMLessonQuizLayout: score×10 + completion bonus). The consecutive-streak
-bonus (+5 every 5th) is NOT awarded for these — batch can't know consecutiveness. Flag if wanted.
+⚠️ ~~Tradeoff: std-shell topics batch per-answer XP at completion, no live toast/streak.~~
+**SUPERSEDED 2026-06-13** — see "Std-shell → live per-answer XP" below.
+
+### ✅ Std-shell → live per-answer XP + streak + toast (2026-06-13) — awaiting user verify
+
+User report: StatsBar XP didn't reflect during play for Modul 5 topics (+ activities 1.8/1.9),
+and the toast looked different from 1.1. Root cause: BMStdComplete BATCHED per-answer XP at the
+result screen (no live StatsBar movement, no toast, no consecutive-streak bonus) — unlike 1.1's
+live BMLessonQuizLayout. Fix (this slice): moved per-answer XP to LIVE in each Modul 5 lesson via
+`useTopicGamification(TOPIC_ID)` → `awardCorrect()` on the correct branch of `handleSelect`,
+`awardWrong()` on the wrong branch (both added to the callback deps). This gives +10 live XP,
+the +5 every-5th streak bonus, and the GlobalXpToast — identical to 1.1. `BMStdComplete` no longer
+calls `awardXP` (removed the `score×XP_PER_CORRECT` batch + the `XP_PER_CORRECT` import); it now
+ONLY records the crown + first-completion bonus via `completeTopicAttempt`, gated on `passed`.
+Files: BMStdComplete.jsx + GolonganNamaLesson / KerjaAdjektifLesson / HubungSendiLesson /
+TanyaGantiLesson (4 lessons). SintaksisAyat (5.5) already live via BMLessonQuizLayout.
+### ✅ Toast position unified (2026-06-13) — awaiting user verify
+
+`BMLessonQuizLayout` (the 1.1-style quiz layout) now fires the SHARED `GlobalXpToast` instead of its
+own inline toast: in the per-answer award effect it dispatches `window 'xp-toast'` (detail `{xp,
+streakBonus}`) instead of `setXpToast`. Removed the inline `<XpToast>` render, the `.bm-quiz-toast-area`
+CSS, the `xpToast` state, `handleToastDone`, the `XpToast` import, and the now-unused `useState`
+import. Net: EVERY BM topic now shows the identical toast in the identical place via the single
+GlobalXpToast. **Position (2026-06-13, user request):** GlobalXpToast is mounted INSIDE
+`.app-container` (not app root) and uses `position:absolute; inset:0; flex center both axes` so the
+toast appears dead-center of the play area — `.app-container` is position:relative, so on desktop it
+auto-offsets from the sidebar (was previously fixed top-center of the viewport).
+
+### ✅ T1 finish-up — Menulis tracing (M3) + Dialog (M4) (2026-06-13) — awaiting user verify
+
+Wired the remaining Tahun 1 activities:
+- **Tracing (T1 M3 Menulis)** — wired the SHARED `LetterTraceLesson` ONCE (it already receives
+  `topicId` from each wrapper): added `useTopicGamification(topicId)` + a once-guarded effect on
+  `finished` → `completeActivity()`. Covers all 4 wrappers: MenulisVokal `1-3-1`, KonsonanBJ `1-3-2`,
+  KonsonanKR `1-3-3`, KonsonanSZ `1-3-4` (IDs verified vs ModuleData). Two finish paths (auto on last
+  letter / Finish button) both set `finished`; the single effect awards once. No per-stroke XP (pure
+  tracing, no scored answers) — completion crown + flat bonus only.
+- **Dialog (T1 M4)** `1-4-1-dialog` — roleplay HAS real right/wrong line-picks, so full treatment in
+  `DialogRoleplayPage`: `awardCorrect()`/`awardWrong()` in `handlePick`, `completeActivity()` in
+  `advance()` when the scene ends (RP_COMPLETE). Added `TOPIC_ID` const (was missing). Lagu `1-4-3`
+  stays EXEMPT (creative/song — no scoring).
+
+**BM coverage now ~39/54.** T1 modules 1–5 effectively complete (every scored/finishable topic
+gamified; only creative Lagu exempt). Remaining: T2 header-quiz (6) + T3 quiz stragglers + a couple
+of T3 creative-exempt. Then freeze BM and start MT (TASK 3).
+
+### ✅ Hearts (life) + Gems added to v2 (2026-06-13) — awaiting user verify
+
+User asked for the fuller HUD that the OLD `gameStatsManager` games (e.g. MathOperationsGame) have:
+XP + Life + Gems. Decisions: **gems REPLACE coins** (+1 per correct answer), **hearts are gentle**
+(regenerate over time, NEVER lock the lesson). Built into the v2 data layer + the single
+`useTopicGamification` choke point, so every already-wired topic inherits them for free.
+- `gamificationConstants.js`: `GEMS_PER_CORRECT=1`; `MAX_HEARTS=5`, `START_HEARTS=5`,
+  `HEART_REGEN_MS=5min`. `COINS_PER_10_XP` kept but deprecated/unused.
+- Player schema (`LocalGamificationRepo`): added `hearts`, `maxHearts`, `heartsUpdatedAt` to both
+  defaults + `_defaultPlayer` + the optimistic-lock merge branch (hearts take writer's value, not max).
+  **Gems are stored in the existing `coins` field** (no migration; legacy consumers unaffected).
+- `useGamification`: `heartsNow(player)` computes display hearts incl. time regen (stored value is
+  as-of `heartsUpdatedAt`); `awardXP` now grants +1 gem only on `source==='quiz'` (per correct) instead
+  of deriving coins from XP; new `loseHeart()` (realizes regen, −1 floor 0, resets clock); returns
+  `hearts`, `maxHearts`, `gems` (+ `coins` alias), `loseHeart`.
+- `useTopicGamification`: `awardWrong()` now also calls `loseHeart()`. `awardCorrect()` already routes
+  through `awardXP('quiz')` → +1 gem automatically.
+- `StatsBar`: now shows ❤️ hearts · 💎 Gems · ⭐ XP · 🔥 streak · Lv (was 🔥/⭐/Lv/💰). 5 items.
+- Build verified clean (1m31s).
+⚠️ NOT YET DONE (future slices if wanted): a SHOP to spend gems (earn→spend loop still open); hearts
+have no live ticking timer (refresh on navigate/answer/sync — fine for gentle); the OLD
+`gameStatsManager` games (MathOperationsGame, PI/Reading) still use their own separate `gameData`
+hearts/gems — not unified with v2 yet. Hearts/gems are GLOBAL (on player), shared across subjects.
+
+### ✅ In-quiz HUD: ❤️/💎 on the progress bar — BMLessonQuizLayout (2026-06-13) — awaiting user verify
+
+During play the quizzes only showed a local `⭐ score` pill; hearts/gems lived only on the hub
+StatsBar. Added live ❤️ hearts + 💎 gems pills to the in-quiz stats row of `BMLessonQuizLayout`
+(right group: ❤️ · 💎 · ⭐), reading `hearts`/`gems` from `useGamification`.
+**Also fixed a real gap:** BMLessonQuizLayout uses its OWN inline `awardXP` path (not
+useTopicGamification), so its wrong branch never lost a heart — only reset the streak. Now the wrong
+branch calls `loseHeart()` (guarded by the same `awardedIdxRef !== idx` once-per-question check that
+gates the award). Gems already worked there (awardXP('quiz') → +1 gem). New pill CSS: `.bm-pill.life`
+(rose) + `.bm-pill.gem` (sky) + `.bm-pill-group`.
+### ✅ In-quiz HUD ❤️/💎 extended to ALL T1 (2026-06-13) — awaiting user verify
+
+Added live ❤️/💎 pills to the remaining in-play headers so every T1 Kuiz/activity HUD is consistent:
+- `useTopicGamification` now ALSO returns `hearts`, `gems`, `maxHearts` (for display) — so any topic
+  using the hook can render the HUD with no extra wiring.
+- **BMStdShell** (Modul 5, shared): added `useGamification(subject)` (new `subject='bm'` prop) →
+  ❤️ · 💎 · ⭐ group. Covers all 4 Modul 5 lessons.
+- **DengarBuat / KenalkanDiri / Dialog**: destructure `hearts`/`gems` from their existing
+  `useTopicGamification` call; added ❤️/💎 pills to each bespoke stats row (inline styles for
+  DengarBuat; `.kd-pill.life/.gem`, `.drp-pill.life/.gem` for the others). Note DengarBuat has no
+  wrong path so its hearts don't drop there (display only) — by design.
+- Pill palette is consistent everywhere: life = rose (#FFE9EC/#E11D48/#FCA5B4), gem = sky
+  (#E0F2FE/#0369A1/#7DD3FC). Build verified clean (44s).
+
+**All of T1 now shows ❤️/💎 live in-play.** Open items unchanged: gem SHOP (earn→spend) not built;
+old gameStatsManager games not unified.
+
+### ✅ T2 coverage — all 6 remaining quizzes wired (2026-06-13) — awaiting user verify
+
+Wired the 6 not-yet-gamified Tahun 2 topics via `useTopicGamification` (none had a TOPIC_ID before —
+added each, verified vs ModuleData). Two patterns:
+- **Pattern A (MCQ `handleSelect`, score+=10, `isDone`)** → `completeTopic(correct, total, 70)` via a
+  once-guarded `useEffect` on `isDone`; `awardCorrect`/`awardWrong` in handleSelect:
+  PembentukanPerkataan `2-5-2` + MorfologiPerluasan `2-5-1` (both track `totalCorrect` → pass that),
+  MentafsirMenaakul `2-2-3` + TeksPelbagaiGaya `2-2-2` (no totalCorrect → pass `score/10`,
+  totals `TOTAL_ITEMS`/`TOTAL_QUESTIONS`).
+- **Pattern B (speak/listen `handleCorrect`/`handleWrong`, score+=1, `PHASE_COMPLETE`)** → like
+  KenalkanDiri: `awardCorrect`/`awardWrong` + `completeActivity()` in advanceItem's end branch:
+  MendengarMerespons `2-1-1`, BerceritaBerbincang `2-1-2`.
+All get +10 XP + gem on correct, heart loss on wrong, streak bonus + toast, crown on completion.
+ApresiasiSastera `2-4-1` stays EXEMPT (creative). Already-gamified T2 (PerkataanSukar,
+HasilkanPenulisan, JawapanPemahaman, MenulisMekanis, PersembahanKarya, SintaksisAyatMajmuk) untouched.
+Build verified clean (43s). **BM coverage now ~45/54 — T1+T2 effectively complete.**
+⚠️ These T2 headers still show their own ⭐ (and 🔥) pills only — in-quiz ❤️/💎 DISPLAY not added to
+T2 yet (logic works; display is the same follow-up as before). Remaining: T3 quiz stragglers. The award/streak logic (awardedIdxRef once-
+guard, streakRef, Promise.all for actual amounts) is unchanged. `XpToast.jsx` is still used (by
+GlobalXpToast) — not orphaned.
+
+### ✅ Activities 1.8 / 1.9 → live per-item XP + streak + toast (2026-06-13) — awaiting user verify
+
+Modul 5 verified by user. Then converted the two listen/speak ACTIVITIES from flat +15-once
+(markActivityComplete) to LIVE per-item XP via `useTopicGamification(TOPIC_ID)`:
+- **DengarBuat** `1-1-8-dengar-buat` (listen-and-do): `awardCorrect()` in `handleDone` (every "Sudah!"
+  tap → +10 live + streak + toast); end of activity → `completeActivity()` (crown). No wrong path.
+- **KenalkanDiri** `1-1-9-kenalkan-diri` (speaking + polite-MCQ): single `handleCorrect()`/`handleWrong()`
+  funnel — `awardCorrect()` in handleCorrect, `awardWrong()` in handleWrong AND the polite-tap wrong
+  branch (keeps hook streak in sync with local streak). End → `completeActivity()`. No-speech timeout
+  path left as-is (not a wrong answer; local streak isn't reset there either).
+Both replaced `useGamification('bm')` import with `useTopicGamification`. crownLevel still gates
+first-completion (completeActivity → markActivityComplete is first-completion-capped). On replays,
+awardCorrect drops to practice-rate (×0.2) like every other topic.
 
 ⚠️ `MorfologiGolonganKata.jsx` was mis-counted as std-shell. It uses `BMStdShell` for the question
 screen but has its OWN inline result screen (not `BMStdComplete`), no `TOPIC_ID`, and `score += 10`

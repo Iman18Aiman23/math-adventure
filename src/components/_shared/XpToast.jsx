@@ -134,10 +134,11 @@ export default function XpToast({ xp = 0, streakBonus = 0, visible = false, onDo
           z-index: -1;
           animation: xp-streak-glow .8s ease-in-out infinite;
         }
-        .xp-toast-fire {
+        .xp-toast-streak-icon {
           font-size: 1.15em;
           line-height: 1;
-          animation: xp-fire-wobble .5s ease-in-out .3s 3 alternate;
+          animation: xp-rocket-thrust .4s ease-in-out .2s 4 alternate;
+          transform-origin: center 55%;
         }
 
         /* ---- keyframes ---- */
@@ -166,9 +167,10 @@ export default function XpToast({ xp = 0, streakBonus = 0, visible = false, onDo
           55%  { transform: scale(1.28) rotate(10deg); opacity: 1; }
           100% { transform: scale(1) rotate(0deg); opacity: 1; }
         }
-        @keyframes xp-fire-wobble {
-          0%   { transform: rotate(-4deg) scale(1); }
-          100% { transform: rotate(4deg) scale(1.08); }
+        @keyframes xp-rocket-thrust {
+          0%   { transform: scale(1) translateY(0); }
+          50%  { transform: scale(1.18) translateY(-2px); }
+          100% { transform: scale(0.92) translateY(1px); }
         }
         @keyframes xp-float-out {
           to { opacity: 0; transform: translateY(-22px) scale(.82); }
@@ -208,7 +210,7 @@ export default function XpToast({ xp = 0, streakBonus = 0, visible = false, onDo
           .xp-toast-emoji,
           .xp-toast-main,
           .xp-toast-streak,
-          .xp-toast-fire {
+          .xp-toast-streak-icon {
             animation: none !important;
           }
           .xp-toast::before { display: none; }
@@ -222,14 +224,14 @@ export default function XpToast({ xp = 0, streakBonus = 0, visible = false, onDo
         aria-atomic="true"
       >
         <span className="xp-toast-emoji" aria-hidden="true">
-          {streakBonus > 0 ? '🔥' : '✨'}
+          {streakBonus > 0 ? '🚀' : '✨'}
         </span>
         <span className="xp-toast-main">
           +{xp} <span className="xp-toast-unit">XP</span>
         </span>
         {streakBonus > 0 && (
           <span className="xp-toast-streak">
-            <span className="xp-toast-fire" aria-hidden="true">🔥</span>
+            <span className="xp-toast-streak-icon" aria-hidden="true">🚀</span>
             +{streakBonus}
           </span>
         )}

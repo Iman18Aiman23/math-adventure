@@ -1,9 +1,10 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Volume2, RefreshCw } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { playSound, playHoverSound } from '../../../../utils/soundManager';
 import SpeechManager from '../../../../services/SpeechManager';
 import BMHeader from '../../_shared/BMHeader';
+import useTopicGamification from '../../../../hooks/useTopicGamification';
 
 const QUESTIONS = [
   {
@@ -114,6 +115,8 @@ const TYPE_BADGE = {
 const ACCENT = '#FF9600';
 const DARK = '#CC7A00';
 const TOTAL = QUESTIONS.length;
+const TOPIC_ID = '2-5-1-morfologi-perluasan';
+const PASS_PCT = 70;
 
 export default function KataHubungSendi({ onBack, language = 'bm' }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -125,6 +128,15 @@ export default function KataHubungSendi({ onBack, language = 'bm' }) {
   const [totalCorrect, setTotalCorrect] = useState(0);
   const scoreRef = useRef(0);
 
+  const { awardCorrect, awardWrong, completeTopic } = useTopicGamification(TOPIC_ID);
+  const completedRef = useRef(false);
+  useEffect(() => {
+    if (isDone && !completedRef.current) {
+      completedRef.current = true;
+      completeTopic(totalCorrect, TOTAL, PASS_PCT); // crown if ≥70% correct
+    }
+  }, [isDone, totalCorrect, completeTopic]);
+
   const q = QUESTIONS[currentIndex];
   const isCorrect = selectedAnswer === q.answer;
 
@@ -134,6 +146,7 @@ export default function KataHubungSendi({ onBack, language = 'bm' }) {
     setSelectedAnswer(option);
     if (option === q.answer) {
       playSound('correct');
+      awardCorrect();
       const newStreak = correctStreak + 1;
       setCorrectStreak(newStreak);
       setScore(s => s + 10);
@@ -146,10 +159,11 @@ export default function KataHubungSendi({ onBack, language = 'bm' }) {
       }
     } else {
       playSound('wrong');
+      awardWrong();
       setCorrectStreak(0);
     }
     setIsAnswered(true);
-  }, [isAnswered, q.answer, correctStreak]);
+  }, [isAnswered, q.answer, correctStreak, awardCorrect, awardWrong]);
 
   const handleNext = useCallback(() => {
     if (currentIndex < TOTAL - 1) {

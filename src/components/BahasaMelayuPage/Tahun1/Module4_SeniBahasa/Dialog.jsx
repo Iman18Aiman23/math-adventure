@@ -2,8 +2,10 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import BMHeader from '../../_shared/BMHeader';
 import confetti from 'canvas-confetti';
 import { playSound } from '../../../../utils/soundManager';
+import useTopicGamification from '../../../../hooks/useTopicGamification';
 
 const ACCENT = '#EC4899';
+const TOPIC_ID = '1-4-1-dialog';
 
 const DIALOGUES = [
   {
@@ -137,6 +139,8 @@ const ROLEPLAY_STYLE = `
   .drp-pill.prog { background: #fff; color: ${RP_C.primaryDark}; border: 1.5px solid ${RP_C.primary}44; }
   .drp-pill.star { background: #FFF6D6; color: #B58800; border: 1.5px solid #FFE08A; }
   .drp-pill.fire { background: #FFEAD0; color: #D9610B; border: 1.5px solid #FFC081; }
+  .drp-pill.life { background: #FFE9EC; color: #E11D48; border: 1.5px solid #FCA5B4; }
+  .drp-pill.gem  { background: #E0F2FE; color: #0369A1; border: 1.5px solid #7DD3FC; }
   .drp-bar-wrap {
     flex-shrink: 0; width: 100%;
     background: #FBCFE8; border-radius: 999px;
@@ -611,6 +615,10 @@ function DialogRoleplayPage({ onBack, language, scene, onNextScene }) {
   const userRole = userRoleFor(d);
   const playerName = getPlayerName();
 
+  // Roleplay = finishable activity with real right/wrong picks → live XP per
+  // correct line (+ streak + toast) and a completion crown when the scene ends.
+  const { awardCorrect, awardWrong, completeActivity, hearts, gems } = useTopicGamification(TOPIC_ID);
+
   const [lineIdx, setLineIdx] = useState(0);
   const [phase,   setPhase]   = useState(() => (d.lines[0].speaker === userRole ? RP_READY : RP_TYPING));
   const [typingShown, setTypingShown] = useState(false);
@@ -660,11 +668,12 @@ function DialogRoleplayPage({ onBack, language, scene, onNextScene }) {
     if (ni >= d.lines.length) {
       setPhase(RP_COMPLETE);
       confetti({ particleCount: 200, spread: 160, origin: { y: 0.4 } });
+      completeActivity(); // finishable activity → completion crown
       return;
     }
     setLineIdx(ni);
     setPhase(d.lines[ni].speaker === userRole ? RP_READY : RP_TYPING);
-  }, [d, userRole]);
+  }, [d, userRole, completeActivity]);
 
   // Computer lines appear like a chat: a short "typing…" pause, then the text
   // stays on screen long enough to be read before the conversation moves on.
@@ -686,6 +695,7 @@ function DialogRoleplayPage({ onBack, language, scene, onNextScene }) {
     const correct = opt === line.text;
     setMarks(m => ({ ...m, [lineIdxRef.current]: correct }));
     if (correct) {
+      awardCorrect();           // live +10 XP (+ streak bonus + toast)
       const next = streakRef.current + 1;
       setStreak(next);
       setBestStreak(b => Math.max(b, next));
@@ -699,6 +709,7 @@ function DialogRoleplayPage({ onBack, language, scene, onNextScene }) {
       setPhase(RP_CORRECT);
       setTimeout(() => advance(), 1300);
     } else {
+      awardWrong();             // resets the streak counter
       setStreak(0);
       setPhase(RP_WRONG);
       setTimeout(() => advance(), 2400);
@@ -772,6 +783,8 @@ function DialogRoleplayPage({ onBack, language, scene, onNextScene }) {
           <div className="drp-stats">
             <span className="drp-pill prog">{SCENES[scene].emoji} {SCENES[scene].label}</span>
             <span style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+              <span className="drp-pill life">❤️ {hearts}</span>
+              <span className="drp-pill gem">💎 {gems}</span>
               <span className="drp-pill star">⭐ {score}</span>
               <span className="drp-pill fire">🔥 {streak}</span>
             </span>
