@@ -21,7 +21,14 @@
       "PowerShell(New-Item -ItemType Directory -Path \"src\\\\components\\\\MathematicsPage\" -Force)",
       "Bash(curl -s http://localhost:3000)",
       "Bash(npx eslint *)",
-      "WebFetch(domain:localhost)"
+      "WebFetch(domain:localhost)",
+      "Bash(npm run *)",
+      "Bash(git *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(node *)",
+      "Read",
+      "Write"
     ]
   }
 }

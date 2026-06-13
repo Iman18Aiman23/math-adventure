@@ -154,7 +154,7 @@ const T2_MODULES = [
     'Grammar',
     M5Badge, M5_THEME, 2, [
       { id: '2-5-1a-kata-bilangan-arah',   num: '5.1a', label: 'Kata Bilangan & Kata Arah',          icon: M2_M5T1, disabled: false },
-      { id: '2-5-1b-kerja-pasif-adjektif', num: '5.1b', label: 'Kata Kerja Pasif & Kata Adjektif',   icon: M2_M5T1, disabled: true  },
+      { id: '2-5-1b-kerja-pasif-adjektif', num: '5.1b', label: 'Kata Kerja Pasif & Kata Adjektif',   icon: M2_M5T1, disabled: false },
       { id: '2-5-1c-kata-tugas',           num: '5.1c', label: 'Kata Tugas',                          icon: M2_M5T1, disabled: true  },
       { id: '2-5-2-pembentukan-perkataan', num: '5.2', label: 'Pembentukan Perkataan',              icon: M2_M5T2, disabled: false },
       { id: '2-5-3-sintaksis-ayat-majmuk', num: '5.3', label: 'Sintaksis (Ayat Majmuk)',            icon: M2_M5T3, disabled: false },
@@ -632,6 +632,32 @@ export const BM_QUESTIONS = {
     { question: 'Pilih kata arah yang bertentangan dengan "hadapan".', emoji: '🔙', answer: 'belakang', options: ['belakang', 'dua', 'semua', 'beberapa'] },
     { question: 'Pilih kata arah: "Bola itu ada di ___ kotak." (di sebelah)', emoji: '⚽', answer: 'tepi', options: ['tepi', 'banyak', 'setiap', 'tiga'] },
     { question: 'Pilih kata arah: "Ikan berenang di ___ akuarium." (di bahagian dalam)', emoji: '🐠', answer: 'dalam', options: ['dalam', 'dua', 'sedikit', 'semua'] },
+  ],
+  // ── T2 M5 T5.1b: Kata Kerja Pasif & Kata Adjektif ────────────
+  // Kata Kerja Pasif = di- passive verbs (recognise/use in a sentence).
+  // Kata Adjektif = describing words: waktu, jarak, cara, pancaindera.
+  '2-5-1b-kerja-pasif-adjektif': [
+    // ---- Kata Kerja Pasif (di- passive) ----
+    { question: 'Pilih kata kerja pasif: "Buku itu ___ oleh Ali."', emoji: '📖', answer: 'dibaca', options: ['dibaca', 'membaca', 'baca', 'pembaca'] },
+    { question: 'Pilih kata kerja pasif: "Nasi itu ___ oleh kucing."', emoji: '🍚', answer: 'dimakan', options: ['dimakan', 'makan', 'memakan', 'pemakan'] },
+    { question: 'Pilih kata kerja pasif: "Surat itu ___ oleh guru."', emoji: '✉️', answer: 'ditulis', options: ['ditulis', 'menulis', 'tulis', 'penulis'] },
+    { question: 'Pilih kata kerja pasif: "Pintu itu ___ oleh adik."', emoji: '🚪', answer: 'dibuka', options: ['dibuka', 'membuka', 'buka', 'pembuka'] },
+    { question: 'Pilih kata kerja pasif: "Baju itu ___ oleh emak."', emoji: '👕', answer: 'dibasuh', options: ['dibasuh', 'membasuh', 'basuh', 'pembasuh'] },
+    { question: 'Pilih kata kerja pasif: "Bola itu ___ oleh Amin."', emoji: '⚽', answer: 'ditendang', options: ['ditendang', 'menendang', 'tendang', 'penendang'] },
+    { question: 'Kata kerja pasif biasanya bermula dengan imbuhan...?', emoji: '🔤', answer: 'di-', options: ['di-', 'me-', 'pe-', 'ber-'] },
+    { question: 'Yang manakah kata kerja pasif?', emoji: '✅', answer: 'diambil', options: ['diambil', 'mengambil', 'ambil', 'pengambil'] },
+    // ---- Kata Adjektif: Waktu ----
+    { question: 'Pilih kata adjektif waktu: "Ali bangun ___ pagi untuk ke sekolah."', emoji: '⏰', answer: 'awal', options: ['awal', 'jauh', 'harum', 'dibaca'] },
+    { question: 'Pilih kata adjektif waktu: "Kura-kura bergerak ___."', emoji: '🐢', answer: 'lambat', options: ['lambat', 'dekat', 'manis', 'ditulis'] },
+    // ---- Kata Adjektif: Jarak ----
+    { question: 'Pilih kata adjektif jarak: "Rumah Ali ___ dari sekolah, jadi dia berjalan kaki."', emoji: '🏠', answer: 'dekat', options: ['dekat', 'awal', 'busuk', 'dimakan'] },
+    { question: 'Pilih kata adjektif jarak: "Bandar itu sangat ___ dari kampung kami."', emoji: '🛣️', answer: 'jauh', options: ['jauh', 'cepat', 'kasar', 'dibuka'] },
+    // ---- Kata Adjektif: Cara ----
+    { question: 'Pilih kata adjektif cara: "Dia berjalan ___ supaya tidak jatuh."', emoji: '🚶', answer: 'perlahan-lahan', options: ['perlahan-lahan', 'jauh', 'manis', 'ditulis'] },
+    { question: 'Pilih kata adjektif cara: "Ibu bercakap dengan ___ kepada bayi."', emoji: '🤱', answer: 'lemah-lembut', options: ['lemah-lembut', 'dekat', 'awal', 'dibaca'] },
+    // ---- Kata Adjektif: Pancaindera ----
+    { question: 'Pilih kata adjektif pancaindera: "Bunga mawar itu ___ baunya."', emoji: '🌹', answer: 'harum', options: ['harum', 'jauh', 'lambat', 'dimakan'] },
+    { question: 'Pilih kata adjektif pancaindera: "Ubat itu rasanya ___."', emoji: '💊', answer: 'pahit', options: ['pahit', 'dekat', 'awal', 'ditulis'] },
   ],
   // ── T3 M1 T1.1: Mendengar & Mengulas ─────────────────────────
   // Understanding dialogues and providing appropriate responses.
