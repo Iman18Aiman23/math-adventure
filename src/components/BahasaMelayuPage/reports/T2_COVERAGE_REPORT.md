@@ -12,6 +12,30 @@
 
 ## 🟢 Keputusan & Progress (living section — kemas kini di sini)
 
+### Alur kerja & pengesahan (build → verify loop)
+
+Setiap tugas (R-item) dibina oleh **satu agen pada satu masa**, kemudian disahkan sebelum ditanda siap:
+
+1. **Agen bina SATU tugas sahaja**, ikut spec berkaitan (cth. `BUILD_SPEC_R15_5.1a.md`).
+2. Bila siap, agen set status tugas itu ke **🔍 PENDING VERIFICATION** dalam papan status di bawah, dan tinggalkan **Nota serah-tangan** dalam slice log: (a) fail yang diubah, (b) ringkasan perubahan, (c) cara ia diuji.
+3. Agen **JANGAN** tanda ✅ sendiri. Pemilik akan minta pengesahan bebas; hanya selepas itu status jadi **✅ COMPLETED**.
+4. Ulang untuk tugas seterusnya.
+
+**Status legend:** ⏳ Pending · 🔨 Building · 🔍 Pending verification · 🟡 Partial · ✅ Completed
+
+**Apa "verified" bermakna** (semakan bebas terhadap Definition of Done dalam spec): fail betul-betul wujud & ikut Pattern 1 · bank ≥ minima & setiap `options` bebas-duplikat & `answer` ∈ `options` · node trail + routing App.jsx betul (Pattern-1, bukan `ProgressWrapper`) · gate 70% + ganjaran (XP/hearts/gems) berfungsi tanpa wiring manual · tiada ralat konsol. Pengesah baca kod sebenar (tidak hanya percaya dakwaan agen); jika perlu, jalankan app (`run-math-adventure`) untuk semakan tingkah laku — **tiada skrip ujian Python**.
+
+### Papan status tugas (task board)
+
+| Tugas | Spec | Status | Disahkan |
+|-------|------|--------|----------|
+| Slice 1 — Distractor fixes (R24a) | — | ✅ Completed | 2026-06-13 |
+| R15 / 5.1a — Kata Bilangan & Kata Arah | `BUILD_SPEC_R15_5.1a.md` | ⏳ Pending | — |
+| R15 / 5.1b — Kata Kerja Pasif & Adjektif | _(spec TBD)_ | ⏳ Pending | — |
+| R15 / 5.1c — Kata Tugas | _(spec TBD)_ | ⏳ Pending | — |
+| R13 / 1.2 — Bercerita (baca kuat) & Berbincang | _(spec TBD)_ | ⏳ Pending | — |
+| R12, R14, R16–R24 | _(see action table below)_ | ⏳ Pending | — |
+
 ### Progress (slice log)
 
 - **2026-06-13 — Slice 1: Pembaikan duplikasi distractor ✅ SELESAI (R24a).** Imbasan automatik seluruh bank `ModuleData.js` (396 array `options`) jumpa **21 item** dengan nilai berulang dalam pilihan (audit asal hanya kesan 5). Terburuk: `kerusi` (line 508) jawapan muncul **3×** → cuma 1 distractor benar (peluang teka betul 75%). Semua 21 dibaiki — distractor berulang diganti salah-eja munasabah; jawapan kekal unik, 4 pilihan berbeza. Imbasan ulang: **CLEAN** seluruh `BahasaMelayuPage`. Bank terjejas: `2-2-1-perkataan-sukar` (3), `2-3-1-menulis-mekanis` (17), `2-5-3-sintaksis-ayat-majmuk` (1). _Baki R24: (b) lumba-lari, (c) "serta" tak diajar, (d) typo sh→sy masih pending._
