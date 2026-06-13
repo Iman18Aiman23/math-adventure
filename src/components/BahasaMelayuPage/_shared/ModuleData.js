@@ -155,7 +155,7 @@ const T2_MODULES = [
     M5Badge, M5_THEME, 2, [
       { id: '2-5-1a-kata-bilangan-arah',   num: '5.1a', label: 'Kata Bilangan & Kata Arah',          icon: M2_M5T1, disabled: false },
       { id: '2-5-1b-kerja-pasif-adjektif', num: '5.1b', label: 'Kata Kerja Pasif & Kata Adjektif',   icon: M2_M5T1, disabled: false },
-      { id: '2-5-1c-kata-tugas',           num: '5.1c', label: 'Kata Tugas',                          icon: M2_M5T1, disabled: true  },
+      { id: '2-5-1c-kata-tugas',           num: '5.1c', label: 'Kata Tugas',                          icon: M2_M5T1, disabled: false },
       { id: '2-5-2-pembentukan-perkataan', num: '5.2', label: 'Pembentukan Perkataan',              icon: M2_M5T2, disabled: false },
       { id: '2-5-3-sintaksis-ayat-majmuk', num: '5.3', label: 'Sintaksis (Ayat Majmuk)',            icon: M2_M5T3, disabled: false },
     ]),
@@ -658,6 +658,30 @@ export const BM_QUESTIONS = {
     // ---- Kata Adjektif: Pancaindera ----
     { question: 'Pilih kata adjektif pancaindera: "Bunga mawar itu ___ baunya."', emoji: '🌹', answer: 'harum', options: ['harum', 'jauh', 'lambat', 'dimakan'] },
     { question: 'Pilih kata adjektif pancaindera: "Ubat itu rasanya ___."', emoji: '💊', answer: 'pahit', options: ['pahit', 'dekat', 'awal', 'ditulis'] },
+  ],
+  // ── T2 M5 T5.1c: Kata Tugas ──────────────────────────────────
+  // Kata Tugas: Kata Seru, Kata Perintah, Kata Penguat, Kata Nafi.
+  '2-5-1c-kata-tugas': [
+    // ---- Kata Seru (interjections) ----
+    { question: 'Pilih kata seru: "___! Sakitnya kaki saya!"', emoji: '😣', answer: 'Aduh', options: ['Aduh', 'sangat', 'jangan', 'Sila'] },
+    { question: 'Pilih kata seru kekaguman: "___! Besarnya rumah itu!"', emoji: '😮', answer: 'Wah', options: ['Wah', 'tidak', 'Duduk', 'amat'] },
+    { question: 'Pilih kata seru: "___! Comelnya kucing itu!"', emoji: '😍', answer: 'Amboi', options: ['Amboi', 'belum', 'sangat', 'Berhenti'] },
+    { question: 'Yang manakah kata seru?', emoji: '❗', answer: 'Oh', options: ['Oh', 'Duduk', 'sangat', 'tidak'] },
+    // ---- Kata Perintah (imperatives) ----
+    { question: 'Pilih kata perintah: "___ di kerusi itu." (arahan supaya duduk)', emoji: '🪑', answer: 'Duduk', options: ['Duduk', 'Wah', 'sangat', 'tidak'] },
+    { question: 'Pilih ayat perintah yang betul.', emoji: '🚪', answer: 'Tolong tutup pintu itu.', options: ['Tolong tutup pintu itu.', 'Pintu itu cantik.', 'Saya tutup pintu.', 'Pintu sangat besar.'] },
+    { question: 'Pilih kata perintah yang sopan: "___ duduk di sini."', emoji: '🙏', answer: 'Sila', options: ['Sila', 'Amboi', 'amat', 'bukan'] },
+    { question: 'Yang manakah ayat perintah?', emoji: '🤫', answer: 'Jangan bising di dalam kelas!', options: ['Jangan bising di dalam kelas!', 'Kelas itu bising.', 'Saya suka kelas.', 'Kelas sangat besar.'] },
+    // ---- Kata Penguat (intensifiers) ----
+    { question: 'Pilih kata penguat: "Budak itu ___ pandai."', emoji: '🧠', answer: 'sangat', options: ['sangat', 'Duduk', 'tidak', 'Wah'] },
+    { question: 'Pilih kata penguat: "Cuaca hari ini ___ panas."', emoji: '☀️', answer: 'amat', options: ['amat', 'jangan', 'Sila', 'Aduh'] },
+    { question: 'Pilih kata penguat: "Dia ___ rajin dalam kelas." (paling tinggi)', emoji: '🏆', answer: 'paling', options: ['paling', 'bukan', 'Duduk', 'Amboi'] },
+    { question: 'Pilih kata penguat: "Air ini ___ sejuk sehingga menggigil."', emoji: '🥶', answer: 'terlalu', options: ['terlalu', 'belum', 'Sila', 'Wah'] },
+    // ---- Kata Nafi (negators) ----
+    { question: 'Pilih kata nafi: "Saya ___ suka makanan pedas."', emoji: '🌶️', answer: 'tidak', options: ['tidak', 'sangat', 'Duduk', 'Wah'] },
+    { question: 'Pilih kata nafi: "Itu ___ buku saya." (menafikan benda)', emoji: '📕', answer: 'bukan', options: ['bukan', 'amat', 'Sila', 'Aduh'] },
+    { question: 'Pilih kata nafi (larangan): "___ buang sampah di sini!"', emoji: '🚮', answer: 'Jangan', options: ['Jangan', 'paling', 'Amboi', 'sangat'] },
+    { question: 'Pilih kata nafi: "Dia ___ habis membaca buku itu." (not yet)', emoji: '⏳', answer: 'belum', options: ['belum', 'terlalu', 'Wah', 'Duduk'] },
   ],
   // ── T3 M1 T1.1: Mendengar & Mengulas ─────────────────────────
   // Understanding dialogues and providing appropriate responses.

@@ -145,6 +145,7 @@ const PersembahanKarya = React.lazy(() => import('./components/BahasaMelayuPage/
 const SintaksisAyatMajmuk = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module5_Tatabahasa/SintaksisAyatMajmuk'));
 const KataBilanganArah = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module5_Tatabahasa/KataBilanganArah'));
 const KataPasifAdjektif = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module5_Tatabahasa/KataPasifAdjektif'));
+const KataTugas = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module5_Tatabahasa/KataTugas'));
 const MendengarMengulas = React.lazy(() => import('./components/BahasaMelayuPage/Tahun3/Module1_Mendengar/MendengarMengulas'));
 const KomunikasiBertatasusila = React.lazy(() => import('./components/BahasaMelayuPage/Tahun3/Module1_Mendengar/KomunikasiBertatasusila'));
 const KelancaranMembaca = React.lazy(() => import('./components/BahasaMelayuPage/Tahun3/Module2_Membaca/KelancaranMembaca'));
@@ -930,6 +931,12 @@ export default function App() {
           if (bmTopic === '2-5-1b-kerja-pasif-adjektif')
             return <Suspense fallback={<LoadingSpinner />}>
               <KataPasifAdjektif onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '2-5-1c-kata-tugas')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <KataTugas onBack={topicOnBack} language={language}
                 topicComplete={(id) => markTopicCompleted(id)}
                 onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
