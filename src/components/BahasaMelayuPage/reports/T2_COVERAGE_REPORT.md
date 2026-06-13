@@ -5,6 +5,26 @@
 > See also: [`T1_COVERAGE_REPORT.md`](./T1_COVERAGE_REPORT.md) (Tahun 1, audited 2026-06-11).
 >
 > **Status key:** ✅ PASS · ⚠️ PARTIAL · ❌ GAP · ➖ N/A (not feasible digitally)
+>
+> **📄 Nota:** Dokumen ini ialah **satu-satunya sumber kebenaran** untuk status & rancangan T2 (digabungkan daripada bekas `T2_IMPROVEMENT_PLAN.md` pada 2026-06-13). Kemas kini bahagian **🟢 Keputusan & Progress** di bawah sahaja — jangan cipta dokumen plan berasingan lagi.
+
+---
+
+## 🟢 Keputusan & Progress (living section — kemas kini di sini)
+
+### Progress (slice log)
+
+- **2026-06-13 — Slice 1: Pembaikan duplikasi distractor ✅ SELESAI (R24a).** Imbasan automatik seluruh bank `ModuleData.js` (396 array `options`) jumpa **21 item** dengan nilai berulang dalam pilihan (audit asal hanya kesan 5). Terburuk: `kerusi` (line 508) jawapan muncul **3×** → cuma 1 distractor benar (peluang teka betul 75%). Semua 21 dibaiki — distractor berulang diganti salah-eja munasabah; jawapan kekal unik, 4 pilihan berbeza. Imbasan ulang: **CLEAN** seluruh `BahasaMelayuPage`. Bank terjejas: `2-2-1-perkataan-sukar` (3), `2-3-1-menulis-mekanis` (17), `2-5-3-sintaksis-ayat-majmuk` (1). _Baki R24: (b) lumba-lari, (c) "serta" tak diajar, (d) typo sh→sy masih pending._
+
+### Keputusan reka bentuk (2026-06-13)
+
+- **Soalan 1 — Quantity vs quality → KEDUA-DUANYA.** Sasaran 13 → 18+ topik, tetapi setiap topik baru/dikembang mesti penuhi minima Pattern 1 (bank ≥ 12 item, gate 70%, learn card + contoh). Jangan tambah topik nipis semata-mata untuk angka.
+- **Soalan 2 — M5 5.1 satu komponen vs pecah → PECAH.** Pecah **R15** jadi 3 topik/node berasingan (murid boleh berhenti & sambung ikut level): **5.1a** Kata Bilangan & Kata Arah · **5.1b** Kata Kerja Pasif & Kata Adjektif (waktu/jarak/cara/pancaindera) · **5.1c** Kata Tugas (Seru/Perintah/Penguat/Nafi). Setiap satu bank Pattern 1 sendiri + gate 70%. M5 jadi 5 topik.
+- **Soalan 3 — M1 1.2 Bercerita via STT → BACA KUAT, bukan cerita bebas.** Tolak free-form (grading keyword = sia-sia). **R13** Tier Bercerita = anak baca kuat 6-8 cerita disediakan; STT semak sebutan terhadap **teks yang diketahui** (boleh dinilai tepat). Tier Berbincang = MCQ terbimbing, tiada pergantungan grading STT terbuka.
+
+**Cadangan turutan slice seterusnya:** R15→5.1a (bersih, tiada STT, tetapkan corak split) → R13 1.2 (besar, perlu plumbing baca-kuat STT).
+
+---
 
 ## Overall Verdict
 
@@ -213,9 +233,9 @@
 | Status | Priority | Action | Closes | Effort | Feasible? |
 |---|---|---|---|---|---|
 | ⏳ Pending → **R12** | P1 | **M1 1.1 — extend `JawabSoalan`'s bank**: add bercapah (open-ended/opinion) Q&A items, AND add a NEW "Arahan, Pesanan & Permintaan dengan info tambahan" multi-step activity (TTS speaks a 2-3-part instruction; child performs/relays + self-reports, à la T1's "Dengar & Buat" but with compound instructions). | M1 A2, A3, A4, A5 | Medium | ✅ |
-| ⏳ Pending → **R13** | P1 | **M1 1.2 — full rebuild**: replace `BertuturBertatasusila` with a NEW "Bercerita & Berbincang" component — (a) Bercerita: child retells/narrates a short picture-sequence story aloud (STT, template-gradeable for keywords/sequence words); (b) Berbincang: guided discussion — TTS poses a scenario, child picks/voices an idea or opinion from a small set of guided options. | M1 A6, A7, B6 (1.2), B7 (1.2) | High — biggest net-new build in T2 | ✅ (Bercerita: template-gradeable only) |
+| ⏳ Pending → **R13** | P1 | **M1 1.2 — full rebuild**: replace `BertuturBertatasusila` with a NEW "Bercerita & Berbincang" component. **(Keputusan Soalan 3: BACA KUAT, bukan cerita bebas — free-form ditolak.)** (a) Bercerita: child **reads aloud** one of 6-8 short provided stories; STT checks pronunciation against the **known text** (reliably gradeable). (b) Berbincang: guided discussion — TTS poses a scenario, child picks an idea/opinion from a small set of MCQ options + reasoning. No open-ended STT grading. | M1 A6, A7, B6 (1.2), B7 (1.2) | High — biggest net-new build in T2 | ✅ (read-aloud vs known text) |
 | ⏳ Pending → **R14** | P1 | **M2 — bahan sastera → mesej/nilai murni**: add 2-3 short cerpen and/or pantun passages (could live in 2.3 alongside `KosaKataKontekstual`, or as a new sub-tier) with "Apakah mesej/pengajaran cerita/pantun ini?" and "Apakah nilai murni yang ditunjukkan?" MCQ items. | M2 A6 | Medium | ✅ |
-| ⏳ Pending → **R15** | P1 | **M5 5.1 — full rebuild as a Pattern-1 bank** (≥15 items, mirroring T1 R1's approach for 5.1 "Jenis Kata"): cover Kata Bilangan (dua/beberapa/semua/setiap...), Kata Arah (atas/bawah/kiri/kanan/hadapan/belakang...), Kata Kerja Pasif (dibaca/dimakan/ditulis...), Kata Adjektif Waktu/Jarak/Cara/Pancaindera (lambat-cepat/jauh-dekat/perlahan-lahan/harum-pahit), and 4× Kata Tugas (Kata Seru: Wah!/Aduh!; Kata Perintah: Duduk!/Jangan bising!; Kata Penguat: sangat/amat; Kata Nafi: tidak/bukan/jangan). New learn page + `BMLessonQuizLayout`. **Do not break the AgeGroup-7 standalone `KataHubungSendi` usage.** | M5 A1-A8, B6 (5.1), B7 (5.1) | High — second-biggest net-new build | ✅ |
+| ⏳ Pending → **R15** | P1 | **M5 5.1 — full rebuild, SPLIT into 3 topics/nodes** (Keputusan Soalan 2 — murid boleh berhenti & sambung ikut level). Each its own Pattern-1 bank (≥12 items) + learn page + `BMLessonQuizLayout` gate 70%: **5.1a** Kata Bilangan (dua/beberapa/semua/setiap) & Kata Arah (atas/bawah/kiri/kanan/hadapan/belakang) · **5.1b** Kata Kerja Pasif (dibaca/dimakan/ditulis) & Kata Adjektif Waktu/Jarak/Cara/Pancaindera (lambat-cepat/jauh-dekat/perlahan-lahan/harum-pahit) · **5.1c** Kata Tugas — Kata Seru (Wah!/Aduh!), Kata Perintah (Duduk!/Jangan bising!), Kata Penguat (sangat/amat), Kata Nafi (tidak/bukan/jangan). **Do not break the AgeGroup-7 standalone `KataHubungSendi` usage.** | M5 A1-A8, B6 (5.1), B7 (5.1) | High — second-biggest net-new build (3 nodes) | ✅ |
 | ⏳ Pending → **R16** | P1 | **M5 5.2 — extend `KataImbuhan`'s bank**: add **di-** prefix items (passive: ditulis/dibaca/dimakan) and **-an/-kan/-i** suffix items (e.g. makanan, minuman / bersihkan, naikkan / jauhi, sertai). Convert to Pattern 1 (`BM_QUESTIONS['2-5-2-pembentukan-perkataan']`, ≥12 items) for a real mastery gate. **Do not break the AgeGroup-7 standalone `KataImbuhan` usage.** | M5 A9 (upgrade), A10, B6 (5.2), B7 (5.2) | Medium | ✅ |
 | ⏳ Pending → **R17** | P2 | **M4 4.1 — add a gated quiz layer to `PantunBacaan`**: (a) add TTS recitation playback per pantun (closes A1 "melafazkan"); (b) add a "apa maksud pantun ini?" production quiz instead of just showing huraian (upgrades A2); (c) add NEW simpulan bahasa (e.g. "ringan tulang" = rajin) and bandingan semacam (e.g. "secantik bidadari") content categories with their own items. Wrap in `BMLessonQuizLayout`, gate at 70%. | M4 A1, A2 (upgrade), A3, A4, B7 (4.1) | High | ✅ |
 | ⏳ Pending → **R18** | P2 | **M4 4.2 — add dialog/teater-bercerita activity** to `PersembahanKarya`: a new tier where short dialog lines from a "teater bercerita" scene are read aloud by the child (STT, keyword-slot matching — same engine as T1 R7 Part B). | M4 A6 | Medium | ✅ |
@@ -224,7 +244,7 @@
 | ⏳ Pending → **R21** | P2 | **M3 3.3 — add bercapah (critical/inferential) questions** to `JawapanPemahaman`'s bank ("Patutkah Rani...? Mengapa?", "Apa yang akan berlaku jika...?") with MCQ-based reasoning options; closes the A8 gap and brings 3.3 to a balanced bertumpu+bercapah mix. | M3 A8 | Medium | ✅ |
 | ⏳ Pending → **R22** | P2 | **Spaced repetition (B2) for all 6 gated T2 topics** (2.1, 3.1, 3.2, 3.3, 4.2, 5.3) — populate `reviewQuestions` (currently `[]` for all 6), e.g. 3.1 reviews 2.1's digraf/diftong items, 5.3 reviews 3.2's kata-hubung items, etc. — same approach as T1 R5. | B2 across M2-M5 | Low | ✅ |
 | ⏳ Pending → **R23** | P2 | **Gate the remaining Pattern-2 topics**: 2.2 (`BacaanPemahaman`) and 2.3 (`KosaKataKontekstual`) already have ≥12-item banks with right/wrong scoring — add an internal pass threshold + `topicComplete`/`onNextTopic` call (same as T1 R6's approach), removing them from `App.jsx`'s `ProgressWrapper` list. (1.1/1.2/5.1/5.2 are covered by R12/R13/R15/R16's rebuilds; 4.1 has no scoreable content until R17.) | B7 (2.2, 2.3) | Medium | ✅ |
-| ⏳ Pending → **R24** | P3 | **T2 content/doc quality fixes**: (a) duplicate-correct-answer-as-distractor bugs in `BM_QUESTIONS['2-2-1-perkataan-sukar']` (khas/khabar/baloi items) and `['2-3-1-menulis-mekanis']` (bapa/papa/baba/bapa items); (b) `2-2-2-teks-pelbagai` passage/question wording mismatch ("lumba lari" vs "berlari"); (c) `2-3-2-hasilkan-penulisan` quizzes "serta" (item near line 529) which is never taught beforehand — either teach it first or swap the item; (d) `BAHASA_MELAYU.md` silibus typo "digraf (ng, ny, kh, **sh**)" → "**sy**" (M2 2.1, doc-only). | C5 across M2/M3; doc accuracy | Low | ✅ |
+| 🟡 Partial → **R24** | P3 | **T2 content/doc quality fixes**: (a) ✅ **DONE 2026-06-13** — duplicate-correct-answer-as-distractor bugs: full-bank scan found **21** affected items (not just khas/khabar/baloi/bapa), all fixed; re-scan CLEAN (see Progress log); (b) ⏳ `2-2-2-teks-pelbagai` passage/question wording mismatch ("lumba lari" vs "berlari"); (c) ⏳ `2-3-2-hasilkan-penulisan` quizzes "serta" (item near line 529) which is never taught beforehand — either teach it first or swap the item; (d) ⏳ `BAHASA_MELAYU.md` silibus typo "digraf (ng, ny, kh, **sh**)" → "**sy**" (M2 2.1, doc-only). | C5 across M2/M3; doc accuracy | Low | ✅ |
 | ➖ Out of scope | ➖ | Documented: menyanyikan lagu sambil aksi (M4 A5, same as T1 M4 A4 precedent — singing/rhythm capture not feasible digitally). Lyric+TTS exposure already mitigates. Keep wording "Berdasarkan KSSR". | — | — | ❌ |
 
 ---
@@ -233,8 +253,8 @@
 
 The user asked specifically what **new topics/content** must be added for T2 to be "completely perfect". Ranked by how much net-new build work each represents:
 
-1. **M1 1.2 "Bercerita & Berbincang"** (R13) — **entirely new component**. The current `BertuturBertatasusila` reuse covers 0 of 2 required skills. Needs: a storytelling/retelling STT activity + a guided-discussion/opinion-picker activity. Largest single build in T2.
-2. **M5 5.1 "Golongan Kata Lanjutan"** (R15) — **entirely new content bank** (≥15 items across 8 brand-new grammar categories: Kata Bilangan, Kata Arah, Kata Kerja Pasif, Kata Adjektif ×4 sub-types, Kata Seru, Kata Perintah, Kata Penguat, Kata Nafi). Current `KataHubungSendi` reuse covers 0 of 8.
+1. **M1 1.2 "Bercerita & Berbincang"** (R13) — **entirely new component**. The current `BertuturBertatasusila` reuse covers 0 of 2 required skills. Needs: a **read-aloud** story activity (STT vs known text — _not_ free-form storytelling, per Keputusan Soalan 3) + a guided-discussion/opinion-picker (MCQ) activity. Largest single build in T2.
+2. **M5 5.1 "Golongan Kata Lanjutan"** (R15) — **3 new topic nodes** (split per Keputusan Soalan 2): 5.1a Kata Bilangan & Kata Arah · 5.1b Kata Kerja Pasif & Kata Adjektif (4 sub-types) · 5.1c Kata Tugas (Seru/Perintah/Penguat/Nafi). Each its own ≥12-item Pattern-1 bank. Current `KataHubungSendi` reuse covers 0 of 8 categories.
 3. **M1 1.1 "Arahan, Pesanan & Permintaan"** (R12) — new multi-step instruction/relay/request activity (extends T1's "Dengar & Buat" pattern with 2-3-part compound instructions), plus bercapah items added to the existing `JawabSoalan` bank.
 4. **M2 "Cerpen/Pantun → Mesej & Nilai Murni"** (R14) — new short cerpen/pantun passages with message/value-identification questions, likely as a 2.3 sub-tier alongside `KosaKataKontekstual`.
 5. **M4 4.1 "Simpulan Bahasa & Bandingan Semacam"** (R17) — two brand-new content categories, plus a recitation (TTS) tier and a "maksud pantun" production quiz layered onto the existing `PantunBacaan` browse.
