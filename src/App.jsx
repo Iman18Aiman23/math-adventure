@@ -59,6 +59,7 @@ const CountingMoney = React.lazy(() => import('./components/MatematikPage/Tahun1
 const SubtractionStory = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/SubtractionStory'));
 const BacaAyatKuat = React.lazy(() => import('./components/AgeGroup-7/BacaAyatKuat'));
 const BertuturBertatasusila = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/BerceritaBerbincang'));
+const BerceritaBincang = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/BerceritaBincang'));
 const JawabSoalan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/MendengarMerespons'));
 const SebutLawanKata = React.lazy(() => import('./components/AgeGroup-7/SebutLawanKata'));
 const SebutFrasaBergambar = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/BacaFrasaBergambar'));
@@ -950,9 +951,9 @@ export default function App() {
             </Suspense>;
           if (bmTopic === '2-1-2-bercerita')
             return <Suspense fallback={<LoadingSpinner />}>
-              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
-                <BertuturBertatasusila language={language} />
-              </ProgressWrapper>
+              <BerceritaBincang onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
           if (bmTopic === '2-2-2-teks-pelbagai')
             return <Suspense fallback={<LoadingSpinner />}>
