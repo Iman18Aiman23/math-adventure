@@ -325,6 +325,7 @@ export default function BerceritaBincang({ onBack, language = 'bm', topicComplet
   const discRef = useRef(0);
   const attRef = useRef(0);
   const listenActiveRef = useRef(false);
+  const completedRef = useRef(false);
 
   useEffect(() => { storyRef.current = storyIdx; }, [storyIdx]);
   useEffect(() => { sentRef.current = sentIdx;   }, [sentIdx]);
@@ -332,6 +333,17 @@ export default function BerceritaBincang({ onBack, language = 'bm', topicComplet
   useEffect(() => { attRef.current = attempts;   }, [attempts]);
 
   useEffect(() => () => { SpeechManager.stop(); SpeechManager.stopSpeaking(); }, []);
+
+  // Persist completion ONCE when the result screen is reached. Mirrors
+  // BMLessonQuizLayout: guard with a ref + run in an effect (never during render),
+  // so the parent setState (topicComplete) and async XP write fire exactly once.
+  useEffect(() => {
+    if (phase === PHASE_RESULT && !completedRef.current) {
+      completedRef.current = true;
+      completeTopic(score, TOTAL_ITEMS, 70);
+      if ((score / TOTAL_ITEMS) * 100 >= 70) topicComplete?.(TOPIC_ID);
+    }
+  }, [phase, score, completeTopic, topicComplete]);
 
   const topicTitle = language === 'bm' ? 'Bercerita & Berbincang' : 'Read & Discuss';
 
@@ -530,6 +542,7 @@ export default function BerceritaBincang({ onBack, language = 'bm', topicComplet
     SpeechManager.stop();
     SpeechManager.stopSpeaking();
     listenActiveRef.current = false;
+    completedRef.current = false;
     setTier('story');
     setStoryIdx(0);
     setSentIdx(0);
@@ -549,11 +562,7 @@ export default function BerceritaBincang({ onBack, language = 'bm', topicComplet
     const totalCorrect = score;
     const pct = (totalCorrect / TOTAL_ITEMS) * 100;
     const passed = pct >= 70;
-
-    React.startTransition(() => {
-      completeTopic(totalCorrect, TOTAL_ITEMS, 70);
-      if (passed) topicComplete?.(TOPIC_ID);
-    });
+    // NOTE: completion is persisted in the useEffect above (once, off-render).
 
     return (
       <>
@@ -614,6 +623,8 @@ export default function BerceritaBincang({ onBack, language = 'bm', topicComplet
             <div className="bb-stats">
               <span className="bb-pill">{currentItemNum + 1} / {TOTAL_ITEMS}</span>
               <span style={{ display: 'flex', gap: 6 }}>
+                <span className="bb-pill" style={{ background: '#FFE9EC', color: '#E11D48', borderColor: '#FCA5B4' }}>❤️ {hearts}</span>
+                <span className="bb-pill" style={{ background: '#E0F2FE', color: '#0369A1', borderColor: '#7DD3FC' }}>💎 {gems}</span>
                 <span className="bb-pill" style={{ background: '#FFEAD0', color: '#D9610B', borderColor: '#FFC081' }}>⭐ {score}</span>
               </span>
             </div>
@@ -675,6 +686,8 @@ export default function BerceritaBincang({ onBack, language = 'bm', topicComplet
           <div className="bb-stats">
             <span className="bb-pill">{currentItemNum + 1} / {TOTAL_ITEMS}</span>
             <span style={{ display: 'flex', gap: 6 }}>
+              <span className="bb-pill" style={{ background: '#FFE9EC', color: '#E11D48', borderColor: '#FCA5B4' }}>❤️ {hearts}</span>
+              <span className="bb-pill" style={{ background: '#E0F2FE', color: '#0369A1', borderColor: '#7DD3FC' }}>💎 {gems}</span>
               <span className="bb-pill" style={{ background: '#FFEAD0', color: '#D9610B', borderColor: '#FFC081' }}>⭐ {score}</span>
               {streak > 0 && (
                 <span className="bb-pill" style={{ background: '#FFF6D6', color: '#B58800', borderColor: '#FFE08A' }}>🔥 {streak}</span>
@@ -723,11 +736,6 @@ export default function BerceritaBincang({ onBack, language = 'bm', topicComplet
                 <p className="bb-status">
                   {language === 'bm' ? 'Baca ayat di atas, kemudian tekan 🎤' : 'Read the sentence, then tap 🎤'}
                   {attempts > 0 && ` · ${language === 'bm' ? 'Cuba' : 'Try'} ${attempts + 1}/${MAX_ATTEMPTS}`}
-                </p>
-              )}
-              {phase === T1_READY && !showFallback && micError === 'nospeech' && (
-                <p className="bb-status">
-                  {language === 'bm' ? `Cuba ${attempts + 1}/${MAX_ATTEMPTS}` : `Try ${attempts + 1}/${MAX_ATTEMPTS}`}
                 </p>
               )}
 
