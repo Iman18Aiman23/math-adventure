@@ -59,6 +59,9 @@ const CountingMoney = React.lazy(() => import('./components/MatematikPage/Tahun1
 const SubtractionStory = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/SubtractionStory'));
 const BacaAyatKuat = React.lazy(() => import('./components/AgeGroup-7/BacaAyatKuat'));
 const BertuturBertatasusila = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/BerceritaBerbincang'));
+const MeresponsSoalan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/MeresponsSoalan'));
+const MelaksanakanArahan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/MelaksanakanArahan'));
+const PesananPermintaan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/PesananPermintaan'));
 const Bercerita = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/Bercerita'));
 const Berbincang = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/Berbincang'));
 const JawabSoalan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/MendengarMerespons'));
@@ -944,11 +947,23 @@ export default function App() {
             </Suspense>;
 
           // ── Tahun 2 reuse ──
-          if (bmTopic === '2-1-1-mendengar-merespons')
+          if (bmTopic === '2-1-1a-merespons-soalan')
             return <Suspense fallback={<LoadingSpinner />}>
-              <ProgressWrapper topicId={bmTopic} onBack={topicOnBack}>
-                <JawabSoalan language={language} />
-              </ProgressWrapper>
+              <MeresponsSoalan onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '2-1-1b-arahan')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <MelaksanakanArahan onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '2-1-1c-pesanan-permintaan')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <PesananPermintaan onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
           if (bmTopic === '2-1-2a-bercerita')
             return <Suspense fallback={<LoadingSpinner />}>

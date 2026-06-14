@@ -123,7 +123,9 @@ const T2_MODULES = [
     'Kemahiran Mendengar & Bertutur',
     'Listening and Speaking',
     M1Badge, M1_THEME, 2, [
-      { id: '2-1-1-mendengar-merespons',  num: '1.1', label: 'Mendengar, Memahami & Merespons',     icon: M2_M1T1, disabled: false },
+      { id: '2-1-1a-merespons-soalan',     num: '1.1a', label: 'Merespons Soalan',      icon: M2_M1T1, disabled: false },
+      { id: '2-1-1b-arahan',               num: '1.1b', label: 'Melaksanakan Arahan',    icon: M2_M1T1, disabled: false },
+      { id: '2-1-1c-pesanan-permintaan',   num: '1.1c', label: 'Pesanan & Permintaan',   icon: M2_M1T1, disabled: false },
       { id: '2-1-2a-bercerita',  num: '1.2a', label: 'Bercerita (Baca Kuat)', icon: M2_M1T2, disabled: false },
       { id: '2-1-2b-berbincang', num: '1.2b', label: 'Berbincang',            icon: M2_M1T2, disabled: false },
     ]),
@@ -464,6 +466,36 @@ export const BM_QUESTIONS = {
     // ── Susunan ayat ──
     { question: 'Pilih susunan ayat yang BETUL.', answer: 'Ali membaca buku.', options: ['Ali membaca buku.', 'Buku Ali membaca.', 'Membaca Ali buku.', 'Buku membaca Ali.'] },
     { question: 'Pilih susunan ayat yang BETUL.', answer: 'Emak menjahit baju.', options: ['Emak menjahit baju.', 'Baju menjahit emak.', 'Menjahit emak baju.', 'Baju emak menjahit.'] },
+  ],
+  // ── T2 M1 T1.1b: Melaksanakan Arahan (dengar arahan berbilang langkah → faham) ──
+  '2-1-1b-arahan': [
+    { audioText: 'Ambil pensel merah, lukis sebuah bulatan, kemudian warnakan ia kuning.', question: 'Apakah langkah PERTAMA?', answer: 'Ambil pensel merah', options: ['Ambil pensel merah', 'Lukis bulatan', 'Warnakan kuning', 'Padam bulatan'], topic: 'arahan', difficulty: 'mudah' },
+    { audioText: 'Buka buku, cari muka surat lima, dan baca ayat pertama.', question: 'Muka surat yang mana perlu dicari?', answer: 'Lima', options: ['Lima', 'Tiga', 'Sepuluh', 'Lapan'], topic: 'arahan', difficulty: 'mudah' },
+    { audioText: 'Berdiri, pusing ke kiri, kemudian duduk semula.', question: 'Pusing ke arah mana?', answer: 'Kiri', options: ['Kiri', 'Kanan', 'Belakang', 'Hadapan'], topic: 'arahan', difficulty: 'mudah' },
+    { audioText: 'Ambil buku biru, letak di atas meja, dan tutup pintu.', question: 'Apakah langkah TERAKHIR?', answer: 'Tutup pintu', options: ['Tutup pintu', 'Ambil buku biru', 'Buka tingkap', 'Letak di lantai'], topic: 'arahan', difficulty: 'mudah' },
+    { audioText: 'Susun kerusi, kutip sampah, dan padamkan papan tulis.', question: 'Berapa tugas yang diberi?', answer: 'Tiga', options: ['Tiga', 'Dua', 'Empat', 'Satu'], topic: 'arahan', difficulty: 'mudah' },
+    { audioText: 'Ambil bakul, masukkan tiga biji epal, dan bawa ke dapur.', question: 'Berapa biji epal perlu dimasukkan?', answer: 'Tiga', options: ['Tiga', 'Dua', 'Lima', 'Empat'], topic: 'arahan', difficulty: 'mudah' },
+    { audioText: 'Pakai kasut, ambil beg, dan tunggu di pintu.', question: 'Di mana perlu tunggu?', answer: 'Di pintu', options: ['Di pintu', 'Di dapur', 'Di bilik', 'Di taman'], topic: 'arahan', difficulty: 'mudah' },
+    { audioText: 'Lukis matahari, warnakan ia kuning, kemudian lukis awan.', question: 'Apakah warna matahari?', answer: 'Kuning', options: ['Kuning', 'Biru', 'Merah', 'Hijau'], topic: 'arahan', difficulty: 'mudah' },
+    { audioText: 'Ambil air, siram pokok bunga, dan simpan baldi.', question: 'Apa yang perlu disiram?', answer: 'Pokok bunga', options: ['Pokok bunga', 'Lantai', 'Kereta', 'Baju'], topic: 'arahan', difficulty: 'mudah' },
+    { audioText: 'Lipat baju, masukkan ke dalam almari, dan kemas katil.', question: 'Apakah langkah PERTAMA?', answer: 'Lipat baju', options: ['Lipat baju', 'Kemas katil', 'Basuh baju', 'Sapu lantai'], topic: 'arahan', difficulty: 'mudah' },
+    { audioText: 'Basuh tangan, lap hingga kering, kemudian mula makan.', question: 'Apa dibuat sebelum makan?', answer: 'Lap tangan kering', options: ['Lap tangan kering', 'Tidur', 'Bermain', 'Menyanyi'], topic: 'arahan', difficulty: 'mudah' },
+    { audioText: 'Buka tingkap, sapu lantai, dan buang sampah ke tong.', question: 'Ke mana sampah dibuang?', answer: 'Ke tong sampah', options: ['Ke tong sampah', 'Ke luar tingkap', 'Ke meja', 'Ke beg'], topic: 'arahan', difficulty: 'mudah' },
+  ],
+  // ── T2 M1 T1.1c: Pesanan & Permintaan (dengar mesej/permintaan berbilang maklumat) ──
+  '2-1-1c-pesanan-permintaan': [
+    { audioText: 'Sampaikan kepada emak: kelas tambahan pada hari Sabtu pukul lapan pagi.', question: 'Bila kelas tambahan diadakan?', answer: 'Sabtu pukul lapan pagi', options: ['Sabtu pukul lapan pagi', 'Ahad pukul lapan pagi', 'Sabtu pukul dua petang', 'Isnin pagi'], topic: 'pesanan-permintaan', difficulty: 'mudah' },
+    { audioText: 'Beritahu abang: jemput adik di tadika pada pukul satu petang.', question: 'Pukul berapa adik dijemput?', answer: 'Satu petang', options: ['Satu petang', 'Dua petang', 'Satu pagi', 'Tiga petang'], topic: 'pesanan-permintaan', difficulty: 'mudah' },
+    { audioText: 'Minta tolong kawan ambil beg biru di atas meja.', question: 'Apakah warna beg yang diminta?', answer: 'Biru', options: ['Biru', 'Merah', 'Hijau', 'Kuning'], topic: 'pesanan-permintaan', difficulty: 'mudah' },
+    { audioText: 'Beritahu cikgu: Ali sakit dan tidak dapat hadir hari ini.', question: 'Mengapa Ali tidak hadir?', answer: 'Ali sakit', options: ['Ali sakit', 'Ali malas', 'Ali bercuti', 'Ali lewat'], topic: 'pesanan-permintaan', difficulty: 'mudah' },
+    { audioText: 'Sampaikan kepada ayah: mesyuarat diadakan di sekolah pukul lima petang.', question: 'Di mana mesyuarat diadakan?', answer: 'Di sekolah', options: ['Di sekolah', 'Di rumah', 'Di pejabat', 'Di kedai'], topic: 'pesanan-permintaan', difficulty: 'mudah' },
+    { audioText: 'Minta kebenaran cikgu untuk ke tandas dan ambil air.', question: 'Apa diminta selepas ke tandas?', answer: 'Ambil air', options: ['Ambil air', 'Makan', 'Balik rumah', 'Tidur'], topic: 'pesanan-permintaan', difficulty: 'mudah' },
+    { audioText: 'Beritahu nenek: kami akan datang melawat pada hari Ahad.', question: 'Bila kami akan melawat?', answer: 'Hari Ahad', options: ['Hari Ahad', 'Hari Sabtu', 'Hari Isnin', 'Hari Jumaat'], topic: 'pesanan-permintaan', difficulty: 'mudah' },
+    { audioText: 'Sampaikan kepada kakak: tolong beli roti dan susu di kedai.', question: 'Apa yang perlu dibeli?', answer: 'Roti dan susu', options: ['Roti dan susu', 'Nasi dan ayam', 'Buah dan air', 'Gula dan garam'], topic: 'pesanan-permintaan', difficulty: 'mudah' },
+    { audioText: 'Minta tolong abang baiki basikal merah di garaj.', question: 'Di mana basikal itu?', answer: 'Di garaj', options: ['Di garaj', 'Di bilik', 'Di dapur', 'Di taman'], topic: 'pesanan-permintaan', difficulty: 'mudah' },
+    { audioText: 'Beritahu kawan: perjumpaan kelab pada hari Khamis di dewan.', question: 'Di mana perjumpaan kelab?', answer: 'Di dewan', options: ['Di dewan', 'Di padang', 'Di kelas', 'Di kantin'], topic: 'pesanan-permintaan', difficulty: 'mudah' },
+    { audioText: 'Sampaikan kepada emak: cikgu minta bayaran buku esok.', question: 'Bila bayaran buku diperlukan?', answer: 'Esok', options: ['Esok', 'Hari ini', 'Minggu depan', 'Lusa'], topic: 'pesanan-permintaan', difficulty: 'mudah' },
+    { audioText: 'Minta tolong kawan pinjamkan pemadam dan pembaris.', question: 'Apa yang diminta untuk dipinjam?', answer: 'Pemadam dan pembaris', options: ['Pemadam dan pembaris', 'Pensel dan buku', 'Gunting dan gam', 'Warna dan kertas'], topic: 'pesanan-permintaan', difficulty: 'mudah' },
   ],
   // ── T2 M1 T1.2b: Berbincang (guided discussion — pick the good response) ──
   // Pool of 20; quiz picks 10 per round via useBMQuiz shuffle.
