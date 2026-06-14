@@ -124,7 +124,8 @@ const T2_MODULES = [
     'Listening and Speaking',
     M1Badge, M1_THEME, 2, [
       { id: '2-1-1-mendengar-merespons',  num: '1.1', label: 'Mendengar, Memahami & Merespons',     icon: M2_M1T1, disabled: false },
-      { id: '2-1-2-bercerita',            num: '1.2', label: 'Bercerita & Berbincang',              icon: M2_M1T2, disabled: false },
+      { id: '2-1-2a-bercerita',  num: '1.2a', label: 'Bercerita (Baca Kuat)', icon: M2_M1T2, disabled: false },
+      { id: '2-1-2b-berbincang', num: '1.2b', label: 'Berbincang',            icon: M2_M1T2, disabled: false },
     ]),
   buildModule(2,
     'Kemahiran Membaca',
@@ -463,6 +464,22 @@ export const BM_QUESTIONS = {
     // ── Susunan ayat ──
     { question: 'Pilih susunan ayat yang BETUL.', answer: 'Ali membaca buku.', options: ['Ali membaca buku.', 'Buku Ali membaca.', 'Membaca Ali buku.', 'Buku membaca Ali.'] },
     { question: 'Pilih susunan ayat yang BETUL.', answer: 'Emak menjahit baju.', options: ['Emak menjahit baju.', 'Baju menjahit emak.', 'Menjahit emak baju.', 'Baju emak menjahit.'] },
+  ],
+  // ── T2 M1 T1.2b: Berbincang (guided discussion — pick the good response) ──
+  '2-1-2b-berbincang': [
+    { question: 'Rani nampak kawan jatuh basikal. Apa patut Rani buat?', emoji: '🚲', answer: 'Tolong kawan itu bangun.', options: ['Tolong kawan itu bangun.', 'Ketawakan dia.', 'Lari pergi.', 'Buat tak nampak.'] },
+    { question: 'Kamu jumpa dompet di sekolah. Apa patut kamu buat?', emoji: '👛', answer: 'Beri kepada guru.', options: ['Beri kepada guru.', 'Simpan duitnya.', 'Buang dompet itu.', 'Biarkan sahaja.'] },
+    { question: 'Kawan kamu nampak sedih hari ini. Apa kamu boleh buat?', emoji: '😢', answer: 'Tanya dan pujuk dia.', options: ['Tanya dan pujuk dia.', 'Abaikan dia.', 'Ketawakan dia.', 'Marah dia.'] },
+    { question: 'Bilik darjah kotor selepas rehat. Apa patut murid buat?', emoji: '🧹', answer: 'Bersihkan bersama-sama.', options: ['Bersihkan bersama-sama.', 'Tunggu orang lain.', 'Tinggalkan begitu.', 'Tambah lagi sampah.'] },
+    { question: 'Kamu tidak faham soalan cikgu. Apa patut kamu buat?', emoji: '🙋', answer: 'Angkat tangan dan bertanya.', options: ['Angkat tangan dan bertanya.', 'Diam sahaja.', 'Tiru kawan.', 'Tinggalkan kosong.'] },
+    { question: 'Adik kamu mahu bermain alat permainan kamu. Apa elok kamu buat?', emoji: '🧸', answer: 'Berkongsi dengan adik.', options: ['Berkongsi dengan adik.', 'Rebut balik.', 'Marah adik.', 'Sorok alat itu.'] },
+    { question: 'Kamu nampak murid baharu duduk seorang diri. Apa elok kamu buat?', emoji: '🧑‍🤝‍🧑', answer: 'Ajak dia bermain bersama.', options: ['Ajak dia bermain bersama.', 'Biarkan dia.', 'Ketawakan dia.', 'Buat bising.'] },
+    { question: 'Hujan turun semasa waktu rehat. Apa patut kamu buat?', emoji: '🌧️', answer: 'Berteduh di dalam kelas.', options: ['Berteduh di dalam kelas.', 'Bermain dalam hujan.', 'Berlari jauh.', 'Basahkan kawan.'] },
+    { question: 'Kamu terpijak kaki kawan tidak sengaja. Apa patut kamu kata?', emoji: '🙇', answer: 'Minta maaf kepadanya.', options: ['Minta maaf kepadanya.', 'Diam sahaja.', 'Marah dia.', 'Lari pergi.'] },
+    { question: 'Cikgu sedang bercakap di hadapan kelas. Apa patut kamu buat?', emoji: '👂', answer: 'Dengar dengan teliti.', options: ['Dengar dengan teliti.', 'Bercakap dengan kawan.', 'Tidur di meja.', 'Main di belakang.'] },
+    { question: 'Kamu dapat markah rendah dalam ujian. Apa elok kamu buat?', emoji: '📝', answer: 'Belajar lebih rajin lain kali.', options: ['Belajar lebih rajin lain kali.', 'Putus asa.', 'Salahkan cikgu.', 'Sembunyikan kertas.'] },
+    { question: 'Kawan kamu lupa membawa pensel. Apa elok kamu buat?', emoji: '✏️', answer: 'Pinjamkan pensel kamu.', options: ['Pinjamkan pensel kamu.', 'Biarkan dia.', 'Ejek dia.', 'Sorok pensel.'] },
+    { question: 'Kamu nampak sampah di lantai kelas. Apa patut kamu buat?', emoji: '🗑️', answer: 'Pungut dan buang ke tong sampah.', options: ['Pungut dan buang ke tong sampah.', 'Tendang ke tepi.', 'Biarkan sahaja.', 'Pijak sampah itu.'] },
   ],
   // ── T2 M2 T2.1: Perkataan Sukar (Digraf & Diftong) ─────────────
   // Audio-driven: child hears a word with digraph/diphthong,

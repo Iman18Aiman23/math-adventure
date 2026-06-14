@@ -59,7 +59,8 @@ const CountingMoney = React.lazy(() => import('./components/MatematikPage/Tahun1
 const SubtractionStory = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/SubtractionStory'));
 const BacaAyatKuat = React.lazy(() => import('./components/AgeGroup-7/BacaAyatKuat'));
 const BertuturBertatasusila = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/BerceritaBerbincang'));
-const BerceritaBincang = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/BerceritaBincang'));
+const Bercerita = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/Bercerita'));
+const Berbincang = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/Berbincang'));
 const JawabSoalan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/MendengarMerespons'));
 const SebutLawanKata = React.lazy(() => import('./components/AgeGroup-7/SebutLawanKata'));
 const SebutFrasaBergambar = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/BacaFrasaBergambar'));
@@ -949,9 +950,15 @@ export default function App() {
                 <JawabSoalan language={language} />
               </ProgressWrapper>
             </Suspense>;
-          if (bmTopic === '2-1-2-bercerita')
+          if (bmTopic === '2-1-2a-bercerita')
             return <Suspense fallback={<LoadingSpinner />}>
-              <BerceritaBincang onBack={topicOnBack} language={language}
+              <Bercerita onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '2-1-2b-berbincang')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <Berbincang onBack={topicOnBack} language={language}
                 topicComplete={(id) => markTopicCompleted(id)}
                 onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
