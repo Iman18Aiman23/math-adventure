@@ -130,6 +130,7 @@ export default function PesananPermintaan({ onBack, language = 'bm', topicComple
       language={language}
       accentColor={ACCENT}
       onShowLearn={() => setPage('learn')}
+      instructionMode
     />
   );
 }

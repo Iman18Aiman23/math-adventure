@@ -23,6 +23,11 @@ export default function BMLessonQuizLayout({
   passPct = PASS_PCT,
   subtitle,
   resultExtra,
+  // When true, `audioText` is shown as on-screen INSTRUCTION text (no speaker
+  // icon, no auto-TTS, no "Dengar Semula" replay) — for read-the-instruction
+  // topics (1.1b/1.1c). Default false keeps the audio-dictation behaviour
+  // (auto-play + replay, text hidden) that 2.1/3.1 rely on.
+  instructionMode = false,
 }) {
   const quizRef = useRef(null);
   // Destructure only the stable callbacks — the hook's return object gets a new
@@ -76,14 +81,14 @@ export default function BMLessonQuizLayout({
   }, [finished, passed]);
 
   useEffect(() => {
-    if (currentQ?.audioText && !finished) {
+    if (currentQ?.audioText && !finished && !instructionMode) {
       const t = setTimeout(() => {
         SpeechManager.stopSpeaking();
         SpeechManager.speak(currentQ.audioText, 'ms-MY', { rate: 0.7, pitch: 1.2 });
       }, 300);
       return () => { clearTimeout(t); SpeechManager.stopSpeaking(); };
     }
-  }, [idx, currentQ?.audioText, finished]);
+  }, [idx, currentQ?.audioText, finished, instructionMode]);
 
   useEffect(() => {
     if (!answered) return;
@@ -219,6 +224,18 @@ export default function BMLessonQuizLayout({
         @keyframes bm-speaker-pulse {
           0%, 100% { transform: scale(1); }
           50% { transform: scale(1.08); }
+        }
+        .bm-quiz-instruction {
+          text-align: center;
+          font-family: 'Fredoka', system-ui, sans-serif;
+          font-size: clamp(15px, 2.8vh, 19px);
+          font-weight: 600; line-height: 1.5;
+          color: #334155;
+          background: ${accentColor}10;
+          border: 1.5px solid ${accentColor}33;
+          border-radius: 14px;
+          padding: clamp(10px, 1.8vh, 14px) clamp(12px, 3vw, 18px);
+          margin-bottom: var(--sp-1);
         }
 
         .bm-quiz-subtitle {
@@ -602,18 +619,24 @@ export default function BMLessonQuizLayout({
               </div>
 
               <div className="bm-quiz-card">
-                <div className="bm-quiz-media">
-                  {currentQ.emoji ? (
-                    <span className="bm-quiz-emoji">{currentQ.emoji}</span>
-                  ) : (
-                    <span className="bm-quiz-speaker-icon">🔊</span>
-                  )}
-                </div>
+                {instructionMode ? (
+                  currentQ.audioText && (
+                    <div className="bm-quiz-instruction">{currentQ.audioText}</div>
+                  )
+                ) : (
+                  <div className="bm-quiz-media">
+                    {currentQ.emoji ? (
+                      <span className="bm-quiz-emoji">{currentQ.emoji}</span>
+                    ) : (
+                      <span className="bm-quiz-speaker-icon">🔊</span>
+                    )}
+                  </div>
+                )}
                 {subtitle && <div className="bm-quiz-subtitle">{subtitle}</div>}
                 <p className="bm-quiz-question">
                   {currentQ.question || (language === 'bm' ? 'Apakah bunyi ini?' : 'What sound is this?')}
                 </p>
-                {currentQ.audioText && (
+                {!instructionMode && currentQ.audioText && (
                   <button className="bm-quiz-replay-btn" onClick={handleReplay}>
                     🔊 {language === 'bm' ? 'Dengar Semula' : 'Replay'}
                   </button>

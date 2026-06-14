@@ -130,6 +130,7 @@ export default function MelaksanakanArahan({ onBack, language = 'bm', topicCompl
       language={language}
       accentColor={ACCENT}
       onShowLearn={() => setPage('learn')}
+      instructionMode
     />
   );
 }
