@@ -9,7 +9,7 @@ function preparePool(allQuestions, totalRounds) {
     const opts = shuffle(q.options);
     const uid = q.question + '|' + (q.audioText || q.emoji || q.question);
     answers[uid] = { answer: q.answer, correctIndex: opts.indexOf(q.answer) };
-    return { _uid: uid, question: q.question, options: opts, audioText: q.audioText || '', emoji: q.emoji || '' };
+    return { _uid: uid, question: q.question, options: opts, audioText: q.audioText || '', emoji: q.emoji || '', penerangan: q.penerangan || '' };
   });
   return { pool, answers };
 }

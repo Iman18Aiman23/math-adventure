@@ -135,10 +135,10 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
           background:linear-gradient(135deg,color-mix(in srgb,var(--c) 86%,white),var(--c));
           border:5px solid var(--cd);
           border-radius:28px;padding:18px 22px;margin:6px 0 34px;
-          box-shadow:0 12px 0 var(--cd),0 15px 25px rgba(0,0,0,.1)}
+          box-shadow:0 15px 25px rgba(0,0,0,.1)}
         .unit-text{flex:1;min-width:0}
-        .unit-kicker{font-family:'Fredoka',sans-serif;font-weight:600;font-size:11px;letter-spacing:.14em;
-          text-transform:uppercase;color:#FFD25A;text-shadow:1px 1px 0 var(--cd);margin-bottom:4px}
+        .unit-kicker{font-family:'Fredoka',sans-serif;font-weight:700;font-size:11px;letter-spacing:.14em;
+          text-transform:uppercase;color:#fff;text-shadow:2px 3px 0 var(--cd);margin-bottom:4px}
         .unit-name{font-family:'Fredoka',sans-serif;font-weight:700;font-size:21px;line-height:1.1;letter-spacing:-.01em;
           text-shadow:2px 3px 0 var(--cd)}
         .unit-badge{width:46px;height:46px;flex:0 0 auto;border-radius:14px;background:rgba(255,255,255,.18);
@@ -166,28 +166,23 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
             box-shadow:0 12px 0 rgba(0,0,0,.16),0 22px 26px -8px rgba(0,0,0,.34)}
           .node-btn.node-disabled:hover{transform:none;box-shadow:0 8px 0 rgba(0,0,0,.14),0 15px 20px -8px rgba(0,0,0,.22)}
           .node-goal:hover{transform:translateY(-4px) scale(1.04);
-            box-shadow:0 12px 0 #B45309,0 20px 25px -6px rgba(120,80,4,.4)}
+            box-shadow:0 20px 25px -6px rgba(120,80,4,.4)}
         }
         .node-btn:active{transform:translateY(8px) scale(.97);box-shadow:0 0 0 rgba(0,0,0,.16),0 4px 10px -6px rgba(0,0,0,.25)}
         /* robot-head nodes are rounded-squares, so the 3D ledge follows that shape */
         .node-btn.node-robot{border-radius:26px}
         .node-btn.node-disabled{cursor:default;filter:grayscale(1);
           box-shadow:0 8px 0 rgba(0,0,0,.14),0 15px 20px -8px rgba(0,0,0,.22)}
-        /* locked node → padlock badge so the gated state is unmistakable */
-        .node-disabled::after{content:"🔒";position:absolute;right:-4px;bottom:-4px;
-          width:34px;height:34px;border-radius:50%;background:#fff;border:2px solid #7A7A7A;
-          display:flex;align-items:center;justify-content:center;font-size:16px;
-          box-shadow:0 2px 0 #b9b9b9,0 4px 8px rgba(0,0,0,.25);z-index:3}
         .node-ico{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
         .node-ico svg{width:100%;height:100%;display:block}
 
         /* The "End Module" trophy is a flat node (not an illustration), so it keeps
            a solid gold fill + matching ledge + a glossy spot. */
         .node-goal{background:radial-gradient(circle at 42% 32%,#FFFBEB 0%,#FBBF24 75%,#D97706 100%);
-          border:5px solid #B45309;box-shadow:0 8px 0 #B45309,0 15px 20px -4px rgba(120,80,4,.4)}
+          border:5px solid #B45309;box-shadow:0 15px 20px -4px rgba(120,80,4,.4)}
         .node-goal::before{content:"";position:absolute;top:9px;left:14px;width:28px;height:14px;
           border-radius:50%;transform:rotate(-15deg);background:rgba(255,255,255,.42);pointer-events:none;z-index:2}
-        .node-goal:active{transform:translateY(8px);box-shadow:0 0 0 #B45309,0 4px 12px -8px rgba(120,80,4,.25)}
+        .node-goal:active{transform:translateY(2px);box-shadow:0 4px 12px -8px rgba(120,80,4,.25)}
         .node-goal .node-ico svg{width:62px;height:62px}
         .node-done .node-ico svg{opacity:.7}
         .trophy-wrap{position:relative;display:flex;flex-direction:column;align-items:center}

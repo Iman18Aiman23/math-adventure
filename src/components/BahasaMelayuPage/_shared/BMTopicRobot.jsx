@@ -52,8 +52,8 @@ export default function BMTopicRobot({ mod = 1, children }) {
       {/* Ears */}
       <ellipse cx="4" cy="58" rx="5" ry="12" fill={`url(#${headId})`} stroke={f.edge} strokeWidth="1.5" />
       <ellipse cx="96" cy="58" rx="5" ry="12" fill={`url(#${headId})`} stroke={f.edge} strokeWidth="1.5" />
-      {/* Head */}
-      <rect x="6" y="14" width="88" height="82" rx="24" ry="24" fill={`url(#${headId})`} stroke={f.stroke} strokeWidth="2.5" />
+      {/* Head — neutral gray frame matching the .bm-mnav tab buttons (4px #E0E0E0) */}
+      <rect x="6" y="14" width="88" height="82" rx="24" ry="24" fill={`url(#${headId})`} stroke="#E0E0E0" strokeWidth="4" />
       {/* Glossy top highlight */}
       <ellipse cx="34" cy="28" rx="18" ry="8" fill="rgba(255,255,255,.5)" />
       {/* Face screen */}

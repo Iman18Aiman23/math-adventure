@@ -135,26 +135,23 @@ export default function BahasaMelayuModuleNavBar({ year, activeModule, onModuleC
           transition: transform .1s ease, border-color .15s ease, color .15s ease, box-shadow .1s ease, background .15s ease;
           min-width: 64px;
           flex: 1;
-          box-shadow: 0 8px 0 #D0D0D0;
+          box-shadow: none;
           -webkit-tap-highlight-color: transparent;
         }
         .bm-mnav-tab:not(.active):hover {
           transform: translateY(-2px);
-          box-shadow: 0 10px 0 #D0D0D0;
         }
-        /* press → sink down onto the ledge for tactile feedback */
-        .bm-mnav-tab:active { transform: translateY(8px); box-shadow: 0 0 0 #D0D0D0; }
+        /* press → slight sink for tactile feedback */
+        .bm-mnav-tab:active { transform: translateY(2px); }
         .bm-mnav-tab.active {
-          /* Active: vibrant module surface (--tc) + deep module ledge (--tcd),
-             e.g. Module 1 = #FF8F3D face with #FF6F00 border + bottom shadow. */
+          /* Active: vibrant module surface (--tc) + module border (--tcd),
+             e.g. Module 1 = #FF8F3D face with #FF6F00 border. */
           background: var(--tc);
           border-color: var(--tcd);
           color: #fff;
-          box-shadow: 0 8px 0 var(--tcd);
         }
         .bm-mnav-tab.active:active {
-          transform: translateY(8px);
-          box-shadow: 0 0 0 var(--tcd);
+          transform: translateY(2px);
         }
         .bm-mnav-tab b { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 20px; color: #A0A0A0; }
         .bm-mnav-tab span { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 900; white-space: nowrap; }

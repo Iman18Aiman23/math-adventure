@@ -65,7 +65,8 @@ const IkutSusunan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun
 const Pesanan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/Pesanan'));
 const Permintaan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/Permintaan'));
 const Bercerita = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/Bercerita'));
-const Berbincang = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/Berbincang'));
+const BeriPendapatBaik = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/BeriPendapatBaik'));
+const NilaiMurni = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/NilaiMurni'));
 const JawabSoalan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module1_Mendengar/MendengarMerespons'));
 const SebutLawanKata = React.lazy(() => import('./components/AgeGroup-7/SebutLawanKata'));
 const SebutFrasaBergambar = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module1_Mendengar/BacaFrasaBergambar'));
@@ -985,9 +986,15 @@ export default function App() {
                 topicComplete={(id) => markTopicCompleted(id)}
                 onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
-          if (bmTopic === '2-1-2b-berbincang')
+          if (bmTopic === '2-1-2b-beri-pendapat-baik')
             return <Suspense fallback={<LoadingSpinner />}>
-              <Berbincang onBack={topicOnBack} language={language}
+              <BeriPendapatBaik onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
+          if (bmTopic === '2-1-2c-nilai-murni')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <NilaiMurni onBack={topicOnBack} language={language}
                 topicComplete={(id) => markTopicCompleted(id)}
                 onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;

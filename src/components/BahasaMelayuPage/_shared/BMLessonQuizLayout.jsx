@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import confetti from 'canvas-confetti';
 import SpeechManager from '../../../services/SpeechManager';
 import BMHeader from './BMHeader';
@@ -28,8 +28,14 @@ export default function BMLessonQuizLayout({
   // topics (1.1b/1.1c). Default false keeps the audio-dictation behaviour
   // (auto-play + replay, text hidden) that 2.1/3.1 rely on.
   instructionMode = false,
+  // When true, hides the emoji/speaker media section above the question.
+  hideEmoji = false,
+  // When true, a feedback dialog with `penerangan` text appears after each
+  // answer (correct or wrong) so the child reads why the action matters.
+  showFeedback = false,
 }) {
   const quizRef = useRef(null);
+  const [peneranganDismissed, setPeneranganDismissed] = useState(false);
   // Destructure only the stable callbacks — the hook's return object gets a new
   // identity on every render, so depending on it in effects causes infinite loops.
   const { awardXP, completeTopicAttempt, loseHeart, hearts, gems } = useGamification('bm');
@@ -62,6 +68,11 @@ export default function BMLessonQuizLayout({
       streakRef.current = 0;
     }
   }, [finished]);
+
+  // Reset penerangan dismissal when advancing to a new question
+  useEffect(() => {
+    if (!answered) setPeneranganDismissed(false);
+  }, [answered]);
 
   // Completion is only persisted when the mastery gate is met.
   useEffect(() => {
@@ -182,6 +193,24 @@ export default function BMLessonQuizLayout({
         .bm-pill.life { background: #FF4B4B; }
         .bm-pill.gem  { background: #1CC8EE; }
         .bm-pill.star { background: #A560FF; }
+        /* emoji glyph styled to match StatsBar: soft cast shadow + thin white
+           glow so it reads crisply on the candy chip, and a springy pop that
+           replays whenever the pill's value changes (keyed remount in JSX) */
+        .bm-pill-emoji {
+          display: inline-block;
+          filter:
+            drop-shadow(0 1px 1px rgba(0,0,0,.28))
+            drop-shadow(0 0 1px rgba(255,255,255,.55));
+          animation: bm-pill-pop .35s cubic-bezier(.34,1.56,.64,1);
+        }
+        @keyframes bm-pill-pop {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.18); }
+          100% { transform: scale(1); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .bm-pill-emoji { animation: none; }
+        }
         .bm-pill-group { display: flex; align-items: center; gap: 6px; min-width: 0; }
         @media (max-width: 360px) { .bm-pill-group { gap: 4px; } .bm-pill { padding: 3px 8px; } }
 
@@ -253,7 +282,7 @@ export default function BMLessonQuizLayout({
           align-self: center;
           margin-top: var(--sp-1);
         }
-        .bm-quiz-question {
+          .bm-quiz-question {
           text-align: center;
           font-family: 'Baloo 2', sans-serif;
           font-size: clamp(16px, 3vh, 22px);
@@ -261,6 +290,23 @@ export default function BMLessonQuizLayout({
           line-height: 1.35;
           margin: var(--sp-1) 0 0;
           color: #1E293B;
+        }
+        .bm-situasi {
+          text-align: center;
+          font-family: 'Baloo 2', sans-serif;
+          font-size: 1.4rem;
+          font-weight: 800;
+          color: #64748B;
+          margin: 0 0 10px;
+          line-height: 1.4;
+        }
+        .bm-soalan {
+          text-align: center;
+          font-family: 'Fredoka', sans-serif;
+          font-size: 1.2rem;
+          font-weight: 700;
+          color: #D97706;
+          margin: 0;
         }
         .bm-quiz-replay-btn {
           align-self: center;
@@ -373,6 +419,48 @@ export default function BMLessonQuizLayout({
         }
         .bm-quiz-next-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 ${accentColor}99; }
         .bm-quiz-next-btn.hidden-state { visibility: hidden; }
+
+        .bm-feedback-overlay {
+          position: absolute; inset: 0;
+          background: rgba(30,41,59,.45);
+          backdrop-filter: blur(3px);
+          display: flex; align-items: center; justify-content: center;
+          z-index: 50;
+          border-radius: inherit;
+          animation: bm-fade-in .2s ease;
+        }
+        .bm-feedback-dialog {
+          background: #fff;
+          border-radius: 20px;
+          padding: clamp(18px, 3vh, 28px) clamp(16px, 4vw, 24px);
+          max-width: 400px; width: 90%;
+          text-align: center;
+          box-shadow: 0 20px 50px -12px rgba(0,0,0,.35);
+          animation: bm-pop-in .25s cubic-bezier(.34,1.56,.64,1);
+        }
+        .bm-feedback-icon {
+          font-size: clamp(36px, 6vh, 48px);
+          margin-bottom: clamp(8px, 1.2vh, 12px);
+          line-height: 1;
+        }
+        .bm-feedback-text {
+          font-size: clamp(14px, 2.6vh, 18px);
+          font-weight: 600; line-height: 1.5;
+          color: #334155; margin: 0 0 clamp(14px, 2.4vh, 20px);
+        }
+        .bm-feedback-btn {
+          font-family: 'Baloo 2', sans-serif; font-weight: 800;
+          font-size: clamp(14px, 2.6vh, 17px);
+          cursor: pointer; border: none; border-radius: 999px;
+          padding: clamp(9px, 1.6vh, 12px) clamp(28px, 6vw, 40px);
+          color: #fff;
+          background: linear-gradient(180deg, ${accentColor}cc, ${accentColor});
+          box-shadow: 0 4px 0 ${accentColor}99;
+          transition: transform .12s ease;
+        }
+        .bm-feedback-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 ${accentColor}99; }
+        @keyframes bm-fade-in { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes bm-pop-in { from { transform: scale(.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         .bm-quiz-start-card,
         .bm-quiz-result-card {
@@ -612,9 +700,9 @@ export default function BMLessonQuizLayout({
                   {language === 'bm' ? 'Soalan' : 'Question'} {idx + 1} / {totalRounds}
                 </span>
                 <span className="bm-pill-group">
-                  <span className="bm-pill life">❤️ {hearts}</span>
-                  <span className="bm-pill gem">💎 {gems}</span>
-                  <span className="bm-pill star">⭐ {score}</span>
+                  <span className="bm-pill life"><span className="bm-pill-emoji" key={hearts}>❤️</span> {hearts}</span>
+                  <span className="bm-pill gem"><span className="bm-pill-emoji" key={gems}>💎</span> {gems}</span>
+                  <span className="bm-pill star"><span className="bm-pill-emoji" key={score}>⭐</span> {score}</span>
                 </span>
               </div>
               <div className="bm-quiz-bar-wrap">
@@ -626,7 +714,7 @@ export default function BMLessonQuizLayout({
                   currentQ.audioText && (
                     <div className="bm-quiz-instruction">{currentQ.audioText}</div>
                   )
-                ) : (
+                ) : hideEmoji ? null : (
                   <div className="bm-quiz-media">
                     {currentQ.emoji ? (
                       <span className="bm-quiz-emoji">{currentQ.emoji}</span>
@@ -636,9 +724,22 @@ export default function BMLessonQuizLayout({
                   </div>
                 )}
                 {subtitle && <div className="bm-quiz-subtitle">{subtitle}</div>}
-                <p className="bm-quiz-question">
-                  {currentQ.question || (language === 'bm' ? 'Apakah bunyi ini?' : 'What sound is this?')}
-                </p>
+                {hideEmoji && currentQ.question ? (
+                  (() => {
+                    const parts = currentQ.question.split('\n');
+                    return (
+                      <div className="bm-quiz-split-wrap">
+                        {parts.map((part, i) => (
+                          <p key={i} className={i === 0 ? 'bm-situasi' : 'bm-soalan'}>{part}</p>
+                        ))}
+                      </div>
+                    );
+                  })()
+                ) : (
+                  <p className="bm-quiz-question">
+                    {currentQ.question || (language === 'bm' ? 'Apakah bunyi ini?' : 'What sound is this?')}
+                  </p>
+                )}
                 {!instructionMode && currentQ.audioText && (
                   <button className="bm-quiz-replay-btn" onClick={handleReplay}>
                     🔊 {language === 'bm' ? 'Dengar Semula' : 'Replay'}
@@ -675,12 +776,26 @@ export default function BMLessonQuizLayout({
                   )}
                 </div>
 
+                {showFeedback && answered && currentQ?.penerangan && !peneranganDismissed && (
+                  <div className="bm-feedback-overlay">
+                    <div className="bm-feedback-dialog">
+                      <div className="bm-feedback-icon">{selected === correctIdx ? '✅' : '❌'}</div>
+                      <p className="bm-feedback-text">{currentQ.penerangan}</p>
+                      <button className="bm-feedback-btn" onClick={() => setPeneranganDismissed(true)}>
+                        {language === 'bm' ? 'Teruskan →' : 'Continue →'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 <div className="bm-quiz-next-wrap">
-                  <button className={'bm-quiz-next-btn' + (answered ? '' : ' hidden-state')} onClick={handleNext}>
-                    {idx + 1 >= totalRounds
-                      ? (language === 'bm' ? 'Lihat Keputusan →' : 'See Results →')
-                      : (language === 'bm' ? 'Seterusnya →' : 'Next →')}
-                  </button>
+                  {showFeedback && answered && currentQ?.penerangan && !peneranganDismissed ? null : (
+                    <button className={'bm-quiz-next-btn' + (answered ? '' : ' hidden-state')} onClick={handleNext}>
+                      {idx + 1 >= totalRounds
+                        ? (language === 'bm' ? 'Lihat Keputusan →' : 'See Results →')
+                        : (language === 'bm' ? 'Seterusnya →' : 'Next →')}
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

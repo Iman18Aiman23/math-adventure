@@ -1,7 +1,7 @@
 # 📋 Coverage Report — Tahun 2 (Modul 1–5)
 
 > Template: `_CHECKLIST_TEMPLATE.md` · Silibus source: `BAHASA_MELAYU.md` §MODUL PEMBELAJARAN TAHUN 2.
-> KSSR BM Tahun 2 has **5 modul** (Mendengar & Bertutur, Membaca, Menulis, Seni Bahasa, Tatabahasa), **13 topik** total (M1=2→7, M2=3, M3=3, M4=2, M5=3) — same shape as Tahun 1.
+> KSSR BM Tahun 2 has **5 modul** (Mendengar & Bertutur, Membaca, Menulis, Seni Bahasa, Tatabahasa), **13 topik** total (M1=2→8, M2=3, M3=3, M4=2, M5=3) — same shape as Tahun 1.
 > See also: [`T1_COVERAGE_REPORT.md`](./T1_COVERAGE_REPORT.md) (Tahun 1, audited 2026-06-11).
 >
 > **Status key:** ✅ PASS · ⚠️ PARTIAL · ❌ GAP · ➖ N/A (not feasible digitally)
@@ -36,19 +36,21 @@ Setiap tugas (R-item) dibina oleh **satu agen pada satu masa**, kemudian disahka
 | **R15 — Morfologi 5.1 split (5.1a+b+c)** | — | **✅ COMPLETE (3/3)** | 2026-06-13 |
 | R13 / 1.2 (gabungan) — Bercerita & Berbincang | `BUILD_SPEC_R13_1.2.md` | 🔁 Superseded → pecah 1.2a + 1.2b | 2026-06-14 |
 | ~~R12 / 1.1 (gabungan)~~ | `BUILD_SPEC_R12_1.1.md` | 🔁 Superseded → pecah 1.1a + 1.1b + 1.1c | 2026-06-14 |
-| **M1 split (2→7 topik) — Keputusan 2026-06-14** | — | **✅ COMPLETE (7/7)** | 2026-06-14 |
+| **M1 split (2→8 topik) — Keputusan 2026-06-14** | — | **✅ COMPLETE (8/8)** | 2026-06-14 |
 | · 1.1a — Merespons Soalan (20, pilih 10) + Nota intro | `BUILD_SPEC_M1_1.1abc.md` | ✅ Completed | 2026-06-14 |
 | · 1.1b — Mendengar Arahan (20, pilih 10) + Nota intro | — | ✅ Completed | 2026-06-14 |
 | · 1.1c — Ikut Susunan (20, pilih 10) | — | ✅ Completed | 2026-06-14 |
 | · 1.1d — Pesanan (20, pilih 10) | `BUILD_SPEC_M1_1.1abc.md` | ✅ Completed | 2026-06-14 |
 | · 1.1e — Permintaan (20, pilih 10) | — | ✅ Completed | 2026-06-14 |
 | · 1.2a — Bercerita (baca kuat) | `BUILD_SPEC_M1_1.2a_1.2b.md` | ✅ Completed | 2026-06-14 |
-| · 1.2b — Berbincang | `BUILD_SPEC_M1_1.2a_1.2b.md` | ✅ Completed | 2026-06-14 |
+| · 1.2b — Beri Pendapat Baik (20, pilih 10) + Nota intro | `BUILD_SPEC_M1_1.2a_1.2b.md` | ✅ Completed | 2026-06-14 |
+| · 1.2c — Nilai Murni (20, pilih 10) + Nota intro | — | ✅ Completed | 2026-06-14 |
 | R14, R16–R24 | _(see action table below)_ | ⏳ Pending | — |
 
 ### Progress (slice log)
 
 - **2026-06-14 — M1 1.1 pecah lanjut (3→5) + Nota Penting ✅ DISAHKAN.** Agen pecah lagi topik 1.1: kini **1.1a Merespons Soalan · 1.1b Mendengar Arahan · 1.1c Ikut Susunan · 1.1d Pesanan · 1.1e Permintaan** (M1 = 7 topik). Semakan bebas: 1.1b–1.1e semua Pattern-1 (`BMLessonQuizLayout`, `instructionMode` → arahan dipapar sebagai teks, bukan audio), bank **20 item setiap satu, pilih 10** — semua bebas-duplikat & `answer` ∈ `options` ✓; 1.1a kekal STT (teks/suara). Wiring (7 node + 7 route) betul, `npm run build` hijau. **Tambah `BMNotaCard.jsx`** (kotak nota gaya "Bijak Bahasa" — badge 📝 Nota Penting, definisi, Contoh, ➜ rumusan) sebagai skrin masuk untuk **1.1a & 1.1b** (papar setiap kali masuk → "Mula Kuiz"). Komponen kongsi: hanya tweak kosmetik `isWordOpt` 3→2 (tiada regresi). _Nota belum ditambah pada 1.1c/1.1d/1.1e (boleh ditambah jika perlu)._
+- **2026-06-14 — SPLIT 1.2b Berbincang → 1.2b Beri Pendapat Baik + 1.2c Nilai Murni.** 1.2b "Berbincang" (dulu satu topik dengan learn page 2 kategori expandable) dipecah: **1.2b Beri Pendapat Baik** — fokus tindakan baik/sopan dalam situasi sosial (15 asal + 5 baharu = 20 item); **1.2c Nilai Murni** — fokus nilai seperti jujur, bertanggungjawab, hormat (5 asal + 15 baharu = 20 item). Kedua-dua guna `BMNotaCard` sebagai skrin masuk (Nota Penting) sebelum kuiz. `Berbincang.jsx` dipadam. Laluan App.jsx dikemaskini. M1 kini **8 topik**._
 
 - **2026-06-14 — RESTRUCTURE M1: 1.1b pecah → 1.1b + 1.1c (Mendengar Arahan & Ikut Susunan).** 1.1b "Melaksanakan Arahan" (dulu satu topik dengan 2 sub-topik dalam learn page) dipecah: (a) **1.1b Mendengar Arahan** — fokus dengar arahan dengan teliti (bank 20 item detail-recall); (b) **1.1c Ikut Susunan** — topik baharu fokus urutan langkah (bank 20 item sequence/order). 1.1c "Pesanan & Permintaan" → **1.1d**. Fail: `MendengarArahan.jsx` (ganti `MelaksanakanArahan.jsx`), `IkutSusunan.jsx` (baharu), `PesananPermintaan.jsx` (TOPIC_ID dikemaskini), `ModuleData.js` (topik + bank disusun semula), `App.jsx` (laluan dikemaskini). M1 kini 6 topik.
 - **2026-06-14 — SPLIT 1.1d "Pesanan & Permintaan" → 1.1d Pesanan + 1.1e Permintaan.** Bank 20 asal dipecah mengikut semantik: **1.1d Pesanan** — mesej ("Sampaikan", "Beritahu") — 12 asal + 8 baharu = 20; **1.1e Permintaan** — permintaan tolong/kebenaran ("Minta tolong", "Minta kebenaran") — 8 asal + 12 baharu = 20. Komponen: `Pesanan.jsx` + `Permintaan.jsx` (direct-to-quiz, tiada learn page). `PesananPermintaan.jsx` dipadam. Laluan App.jsx dikemaskini. M1 kini **7 topik**. Tiada learn page — terus ke kuiz (sama pola 1.1b/1.1c).

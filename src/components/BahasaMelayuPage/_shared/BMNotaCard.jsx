@@ -41,34 +41,40 @@ export default function BMNotaCard({
         .nota-body {
           flex: 1; min-height: 0;
           max-width: 540px; width: 100%; margin: 0 auto;
-          padding: clamp(18px, 3.4vh, 30px) clamp(16px, 4vw, 30px);
-          display: flex; flex-direction: column; justify-content: center;
+          /* generous top padding guarantees clearance for the rocket/tape
+             overhang so they never collide with the sticky header */
+          padding: clamp(26px, 4.4vh, 38px) clamp(16px, 4vw, 30px) clamp(18px, 3vh, 28px);
+          display: flex; flex-direction: column;
           overflow-y: auto;
         }
         /* ── Sticky note (post-it paper, tilted) ── */
         .nota-card {
           position: relative;
+          /* margin:auto centres the note vertically when there is room, but
+             lets it top-align and scroll cleanly when the screen is short
+             (avoids the flex justify-content:center + overflow clip bug) */
+          margin: auto;
           background:
-            radial-gradient(ellipse 120% 90% at 12% 0%, #FFFADB 0%, transparent 55%),
+            radial-gradient(ellipse 120% 90% at 12% 0%, #FFFFFF 0%, transparent 55%),
             repeating-linear-gradient(0deg, rgba(0,0,0,.014) 0 1px, transparent 1px 3px),
-            linear-gradient(165deg, #FFF4A8 0%, #FFEA72 55%, #FBDF55 100%);
+            linear-gradient(165deg, #FFFFFF 0%, #FAFBFC 55%, #F1F3F6 100%);
           border: none;
           border-radius: 4px 4px 18px 4px;
           padding: clamp(28px, 4.2vh, 40px) clamp(20px, 5vw, 30px) clamp(20px, 3vh, 28px);
           box-shadow:
-            0 1px 1px rgba(124, 96, 0, .18),
-            0 10px 20px -10px rgba(124, 96, 0, .35),
-            14px 22px 34px -18px rgba(80, 62, 0, .45),
-            inset 0 1px 0 rgba(255,255,255,.55);
+            0 1px 1px rgba(30, 41, 59, .12),
+            0 10px 20px -10px rgba(30, 41, 59, .22),
+            14px 22px 34px -18px rgba(15, 23, 42, .30),
+            inset 0 1px 0 rgba(255,255,255,.7);
           transform: rotate(-1.6deg);
         }
         /* peeling / curled bottom-right corner */
         .nota-fold {
           position: absolute; right: -1px; bottom: -1px;
           width: clamp(34px, 8vw, 46px); height: clamp(34px, 8vw, 46px);
-          background: linear-gradient(135deg, #F4D94E 0%, #EFCF3A 48%, #E4C12B 100%);
+          background: linear-gradient(135deg, #F1F3F6 0%, #E5E9EF 48%, #D6DBE3 100%);
           border-bottom-right-radius: 18px;
-          box-shadow: -3px -3px 8px -2px rgba(90, 70, 0, .30);
+          box-shadow: -3px -3px 8px -2px rgba(30, 41, 59, .22);
           clip-path: polygon(100% 0, 0 100%, 100% 100%);
         }
         /* washi tape across the top */
@@ -85,10 +91,10 @@ export default function BMNotaCard({
         }
         /* rocket sticker, peeking off the top-right corner */
         .nota-rocket {
-          position: absolute; top: clamp(-18px, -2.6vh, -14px); right: clamp(-10px, -2vw, -6px);
-          width: clamp(44px, 8vh, 56px); height: clamp(44px, 8vh, 56px);
+          position: absolute; top: clamp(-15px, -2.1vh, -11px); right: clamp(-8px, -2vw, -5px);
+          width: clamp(40px, 11vw, 54px); height: clamp(40px, 11vw, 54px);
           display: flex; align-items: center; justify-content: center;
-          font-size: clamp(24px, 4.4vh, 32px); line-height: 1;
+          font-size: clamp(22px, 6vw, 30px); line-height: 1;
           background: linear-gradient(160deg, #FFFFFF, #F3E8FF);
           border: 2.5px solid #C4B5FD;
           border-radius: 50%;

@@ -1,17 +1,5 @@
 import React from 'react';
 
-/**
- * Per-topic artwork shown INSIDE the robot face screen (see BMTopicRobot.jsx).
- * Authored in the screen space x19..81 / y36..80 (centre ≈ 50,58). Flat, static,
- * no <filter>; white / bright fills for contrast on the coloured face.
- *
- * Keyed by topic id (ModuleData). Prototype scope: Tahun 2 · Module 1
- * ("Mendengar & Bertutur") — its 7 topics share only 2 icons today, so each now
- * gets its own context inside one shared orange robot head.
- *
- * Data-only export (react-refresh): no component is exported from this file.
- */
-
 const FONT = "'Baloo 2','Comic Sans MS',sans-serif";
 
 /* 1.1a Merespons Soalan — a question bubble + a green "reply" check */
@@ -25,12 +13,16 @@ const SMerespons = (
   </g>
 );
 
-/* 1.1b Mendengar Arahan — an ear + sound waves */
+/* 1.1b Mendengar Arahan — ear + clipboard checklist */
 const SArahan = (
   <g>
-    <path d="M44 40 q-13 0 -13 13 q0 8 6 12 l0 7 q0 3 4 3 l6 0 l0 -10 q9 -4 9 -13 q0 -10 -5 -13 q-4 -2 -7 -2z" fill="#fff" />
-    <path d="M60 48 q5 7 0 14" stroke="#FFE0B0" strokeWidth="3" fill="none" strokeLinecap="round" />
-    <path d="M66 44 q9 11 0 22" stroke="#fff" strokeWidth="3" fill="none" strokeLinecap="round" />
+    <path d="M34 45 c-8 0 -13 6 -13 12 c0 5 3 9 7 11 l0 5 c0 2 2 3 4 3 l5 0 l0 -7 c5 -2 9 -7 9 -13 c0 -7 -5 -11 -12 -11z" fill="#fff" />
+    <path d="M46 49 q4 5 0 11" stroke="#FFE0B0" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+    <rect x="52" y="43" width="22" height="27" rx="4" fill="#fff" />
+    <rect x="57" y="41" width="12" height="5" rx="2" fill="#FFD25A" />
+    <path d="M55 52 l2 2 l4 -4" stroke="#58CC02" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M55 59 l2 2 l4 -4" stroke="#58CC02" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    <line x1="55" y1="64" x2="67" y2="64" stroke="#FFE0B0" strokeWidth="2" strokeLinecap="round" />
   </g>
 );
 
@@ -55,18 +47,12 @@ const SPesanan = (
   </g>
 );
 
-/* 1.1e Permintaan — a raised hand + sparkle (a polite request) */
+/* 1.1e Permintaan — speech bubble with a star (make a wish / request) */
 const SPermintaan = (
   <g>
-    <g transform="translate(46 60)">
-      <rect x="-12" y="-2" width="24" height="19" rx="9" fill="#fff" />
-      <rect x="-11.5" y="-15" width="4.6" height="15" rx="2.3" fill="#fff" />
-      <rect x="-6" y="-18" width="4.6" height="18" rx="2.3" fill="#fff" />
-      <rect x="-0.3" y="-18" width="4.6" height="18" rx="2.3" fill="#fff" />
-      <rect x="5.3" y="-15" width="4.6" height="15" rx="2.3" fill="#fff" />
-      <rect x="-15" y="-1" width="6" height="11" rx="3" fill="#fff" transform="rotate(-28 -15 -1)" />
-    </g>
-    <path d="M70 42 l1.6 3.4 3.4 1.6 -3.4 1.6 -1.6 3.4 -1.6 -3.4 -3.4 -1.6 3.4 -1.6z" fill="#FFD25A" />
+    <rect x="26" y="40" width="44" height="30" rx="8" fill="#fff" />
+    <path d="M38 68 l4 8 l6 -8 z" fill="#fff" />
+    <path d="M48 47 l2.5 5 5.5 0.8 -4 3.8 1.2 5.4 -4.2 -2.8 -4.2 2.8 1.2 -5.4 -4 -3.8 5.5 -0.8z" fill="#FFD25A" />
   </g>
 );
 
@@ -82,19 +68,22 @@ const SBercerita = (
   </g>
 );
 
-/* 1.2b Berbincang — two chat bubbles (a discussion) */
-const SBerbincang = (
+/* 1.2b Beri Pendapat Baik — speech bubble + thumbs up */
+const SPendapatBaik = (
   <g>
-    <rect x="22" y="40" width="32" height="22" rx="7" fill="#fff" />
-    <path d="M28 60 l0 7 l8 -7 z" fill="#fff" />
-    <circle cx="31" cy="51" r="2.3" fill="#FF6F00" />
-    <circle cx="38" cy="51" r="2.3" fill="#FF6F00" />
-    <circle cx="45" cy="51" r="2.3" fill="#FF6F00" />
-    <rect x="50" y="54" width="28" height="19" rx="7" fill="#FFD25A" />
-    <path d="M72 71 l0 6 l-7 -6 z" fill="#FFD25A" />
-    <circle cx="58" cy="63.5" r="2" fill="#7A3E00" />
-    <circle cx="64" cy="63.5" r="2" fill="#7A3E00" />
-    <circle cx="70" cy="63.5" r="2" fill="#7A3E00" />
+    <rect x="26" y="40" width="44" height="28" rx="8" fill="#fff" />
+    <path d="M40 66 l4 8 l6 -8 z" fill="#fff" />
+    <rect x="44" y="49" width="18" height="16" rx="5" fill="#FFD25A" />
+    <rect x="57" y="40" width="6" height="16" rx="3" fill="#FFD25A" />
+    <path d="M34 44 l1.5 2 2.5 1 -2.5 1 -1.5 2 -1.5 -2 -2.5 -1 2.5 -1z" fill="#FFD25A" />
+  </g>
+);
+
+/* 1.2c Nilai Murni — heart with a star (love & virtue) */
+const SNilaiMurni = (
+  <g>
+    <path d="M50 46 c-3 -5 -9 -7 -13 -4 c-4 3 -4 9 -1 13 l14 14 l14 -14 c3 -4 3 -10 -1 -13 c-4 -3 -10 -1 -13 4z" fill="#FF6B6B" />
+    <path d="M50 52 l1.5 3 3.5 0.5 -2.5 2.5 0.8 3.5 -2.8 -1.8 -2.8 1.8 0.8 -3.5 -2.5 -2.5 3.5 -0.5z" fill="#fff" />
   </g>
 );
 
@@ -105,5 +94,6 @@ export const BM_TOPIC_SCREENS = {
   '2-1-1d-pesanan': SPesanan,
   '2-1-1e-permintaan': SPermintaan,
   '2-1-2a-bercerita': SBercerita,
-  '2-1-2b-berbincang': SBerbincang,
+  '2-1-2b-beri-pendapat-baik': SPendapatBaik,
+  '2-1-2c-nilai-murni': SNilaiMurni,
 };

@@ -64,12 +64,6 @@ export default function StatsBar({ subject = 'bm' }) {
             min-height: 44px;
           }
         }
-        @media (prefers-color-scheme: dark) {
-          .sb-root {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-          }
-        }
-
         .sb-item {
           flex: 1 1 0; /* equal-width columns, each centers its own content */
           min-width: 0;
@@ -80,7 +74,7 @@ export default function StatsBar({ subject = 'bm' }) {
           justify-content: center;
           /* solid candy chip per stat — bright reward color on the white bar,
              with a slight bottom ledge for depth (white numerals stay readable) */
-          padding: 4px 9px;
+          padding: 9px 9px;
           border-radius: 11px;
           background: var(--chip, #94a3b8);
           box-shadow: 0 2px 0 rgba(0,0,0,.12), 0 1px 0 rgba(255,255,255,.30) inset;
@@ -95,6 +89,11 @@ export default function StatsBar({ subject = 'bm' }) {
         .sb-emoji {
           font-size: 16px;
           line-height: 1;
+          /* lift the glyph off the colored chip: soft cast shadow + a thin
+             white outline glow so the emoji reads crisply on any chip color */
+          filter:
+            drop-shadow(0 1px 1px rgba(0,0,0,.28))
+            drop-shadow(0 0 1px rgba(255,255,255,.55));
         }
         @media (max-width: 480px) {
           .sb-emoji { font-size: 14px; }
@@ -158,11 +157,13 @@ export default function StatsBar({ subject = 'bm' }) {
           50% { transform: scale(1.18); }
           100% { transform: scale(1); }
         }
-        .sb-pulse .sb-value {
+        .sb-pulse .sb-value,
+        .sb-pulse .sb-emoji {
           animation: sb-pop .35s cubic-bezier(.34,1.56,.64,1);
         }
         @media (prefers-reduced-motion: reduce) {
-          .sb-pulse .sb-value { animation: none; }
+          .sb-pulse .sb-value,
+          .sb-pulse .sb-emoji { animation: none; }
         }
       `}</style>
 
@@ -183,7 +184,6 @@ export default function StatsBar({ subject = 'bm' }) {
           {/* 💎 gem — the single spendable currency (earned +1 per correct) */}
           <span className="sb-emoji" aria-hidden="true">💎</span>
           <span className="sb-value" aria-live="polite">{gems}</span>
-          <span className="sb-label">Gems</span>
         </div>
 
         <div className="sb-sep" aria-hidden="true" />
@@ -191,7 +191,6 @@ export default function StatsBar({ subject = 'bm' }) {
         <div className="sb-item" aria-label={`${xp} experience points`}>
           <span className="sb-emoji" aria-hidden="true">⭐</span>
           <span className="sb-value" aria-live="polite">{xp}</span>
-          <span className="sb-label">XP</span>
         </div>
 
         <div className="sb-sep" aria-hidden="true" />

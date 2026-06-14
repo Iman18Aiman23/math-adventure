@@ -4,15 +4,16 @@ import BMLessonQuizLayout from '../../_shared/BMLessonQuizLayout';
 import BMNotaCard from '../../_shared/BMNotaCard';
 import { BM_QUESTIONS } from '../../_shared/ModuleData';
 
-const TOPIC_ID = '2-1-1e-permintaan';
+const TOPIC_ID = '2-1-2c-nilai-murni';
 const ACCENT = '#E8821A';
 
-export default function Permintaan({ onBack, language = 'bm', topicComplete, onNextTopic }) {
-  const [showNote, setShowNote] = useState(true);  // Nota Penting intro on every entry
+export default function NilaiMurni({ onBack, language = 'bm', topicComplete, onNextTopic }) {
+  const [showNote, setShowNote] = useState(true);
   const currentQs = BM_QUESTIONS[TOPIC_ID] || [];
   const reviewQs = [];
   const quiz = useBMQuiz(currentQs, reviewQs, 10);
-  const topicTitle = language === 'bm' ? 'Permintaan' : 'Requests';
+
+  const topicTitle = language === 'bm' ? 'Nilai Murni' : 'Moral Values';
 
   if (showNote) {
     return (
@@ -21,12 +22,12 @@ export default function Permintaan({ onBack, language = 'bm', topicComplete, onN
         accentColor={ACCENT}
         topicTitle={topicTitle}
         definition={language === 'bm'
-          ? 'Permintaan ialah cara kita meminta tolong atau meminta kebenaran dengan sopan. Gunakan perkataan seperti "tolong" dan "boleh".'
-          : 'A request is how we politely ask for help or permission. Use polite words like "please" and "may I".'}
+          ? 'Jawapan yang baik menunjukkan nilai seperti tolong-menolong, hormat, dan jujur.'
+          : 'Good answers show values like helpfulness, respect, and honesty.'}
         examples={language === 'bm'
-          ? ['"Tolong ambilkan beg biru saya di atas meja."', '"Cikgu, boleh saya keluar sebentar?"']
-          : ['"Please pass me my blue bag on the table."', '"Teacher, may I go out for a moment?"']}
-        conclusion={language === 'bm' ? '➜ Murid membuat permintaan dengan sopan.' : '➜ The pupil makes requests politely.'}
+          ? ['Jumpa dompet → beri kepada guru (jujur)', 'Bilik kotor → bersihkan (bertanggungjawab)']
+          : ['Find a wallet → give to teacher (honest)', 'Dirty room → clean it (responsible)']}
+        conclusion={language === 'bm' ? '➜ Tanya: "Apa yang baik untuk semua orang?"' : '➜ Ask: "What is good for everyone?"'}
         onStart={() => setShowNote(false)}
         onBack={onBack}
       />
@@ -40,7 +41,6 @@ export default function Permintaan({ onBack, language = 'bm', topicComplete, onN
       quiz={quiz}
       language={language}
       accentColor={ACCENT}
-      instructionMode
     />
   );
 }

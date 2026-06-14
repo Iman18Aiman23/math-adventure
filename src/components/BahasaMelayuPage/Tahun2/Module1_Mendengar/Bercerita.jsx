@@ -5,6 +5,7 @@ import { playSound } from '../../../../utils/soundManager';
 import BMHeader from '../../_shared/BMHeader';
 import confetti from 'canvas-confetti';
 import useTopicGamification from '../../../../hooks/useTopicGamification';
+import BMNotaCard from '../../_shared/BMNotaCard';
 
 const TOPIC_ID = '2-1-2a-bercerita';
 
@@ -270,6 +271,7 @@ export default function Bercerita({ onBack, language = 'bm', topicComplete, onNe
   const [lastHeard, setLastHeard] = useState('');
   const [micError, setMicError] = useState(null);
   const [tempFallback, setTempFallback] = useState(false);
+  const [showNote, setShowNote] = useState(true);  // Nota Penting intro on every entry
 
   const storyRef = useRef(0);
   const sentRef = useRef(0);
@@ -449,6 +451,25 @@ export default function Bercerita({ onBack, language = 'bm', topicComplete, onNe
     setMicError(null);
     setTempFallback(false);
   };
+
+  if (showNote) {
+    return (
+      <BMNotaCard
+        language={language}
+        accentColor={C.primary}
+        topicTitle={topicTitle}
+        definition={language === 'bm'
+          ? 'Bercerita bermaksud membaca atau menyampaikan cerita dengan kuat dan jelas. Baca ayat demi ayat mengikut susunan cerita.'
+          : 'Storytelling means reading or telling a story aloud, clearly. Read sentence by sentence, following the story order.'}
+        examples={language === 'bm'
+          ? ['"Ali bangun awal pagi."', '"Dia gosok gigi dan mandi."']
+          : ['"Ali woke up early in the morning."', '"He brushed his teeth and showered."']}
+        conclusion={language === 'bm' ? '➜ Murid bercerita dengan kuat dan jelas.' : '➜ The pupil tells the story aloud and clearly.'}
+        onStart={() => setShowNote(false)}
+        onBack={onBack}
+      />
+    );
+  }
 
   if (phase === PHASE_RESULT) {
     const totalCorrect = score;
