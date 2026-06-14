@@ -1,5 +1,8 @@
 # 🛠️ Build Spec — R13 / Topik 1.2: Bercerita (Baca Kuat) & Berbincang (BM Tahun 2)
 
+> ## 🔁 SUPERSEDED (2026-06-14) — already BUILT, now being SPLIT
+> This combined topic was built & verified (`BerceritaBincang.jsx`), but per the owner's decision 1.2 is **split into 2 separate topics**: **1.2a Bercerita** (Tier A) · **1.2b Berbincang** (Tier B). The built component is the **content/code source** for the split (reuse its stories, discussion MCQs, lenient-STT helper, self-report fallback, and the `completedRef`-guarded completion). Build from the dedicated `BUILD_SPEC_*_1.2a/1.2b.md` specs once written. See the task board in [`T2_COVERAGE_REPORT.md`](./T2_COVERAGE_REPORT.md).
+
 > **Audience:** an agent/developer with **no prior context**. Read this whole file first.
 > **Goal:** replace the wrong-syllabus reuse at T2 topic **1.2** with a real **two-tier** component: **Bercerita (read-aloud, STT)** + **Berbincang (guided-discussion MCQ)**.
 > ⚠️ **This is the biggest build in T2 — NOT a copy-template job** (unlike 5.1a/b/c). Budget accordingly. It reuses the existing STT engine and an existing component's phase-machine scaffolding.

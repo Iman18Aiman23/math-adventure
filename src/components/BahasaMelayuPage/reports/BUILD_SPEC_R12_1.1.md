@@ -1,5 +1,8 @@
 # 🛠️ Build Spec — R12 / Topik 1.1: Mendengar, Memahami & Merespons (BM Tahun 2)
 
+> ## 🔁 SUPERSEDED (2026-06-14) — DO NOT BUILD AS-IS
+> Per the owner's decision, topic 1.1 is **split into 3 separate topics** (not one two-tier topic): **1.1a Merespons Soalan** (bertumpu + bercapah, STT) · **1.1b Melaksanakan Arahan** · **1.1c Pesanan & Permintaan**. This file is kept only as a **content/pattern source** (the Q&A bank, instruction bank, bercapah grading helper, and the "copy BerceritaBincang.jsx + completedRef gate" guidance still apply per-topic). Build from the dedicated `BUILD_SPEC_*_1.1a/1.1b/1.1c.md` specs once written. See the task board in [`T2_COVERAGE_REPORT.md`](./T2_COVERAGE_REPORT.md).
+
 > **Audience:** an agent/developer with **no prior context**. Read the whole file first.
 > **Goal:** rebuild T2 topic **1.1** into a **two-tier** component: **Tier A — Soalan (bertumpu + bercapah, STT)** + **Tier B — Arahan/Pesanan/Permintaan berbilang maklumat (multi-step, self-report)**, with a 70% gate.
 > **This is a medium-large custom build** (like 1.2). Your best template is the **already-built, already-verified [`BerceritaBincang.jsx`](../Tahun2/Module1_Mendengar/BerceritaBincang.jsx)** (topic 1.2) — it's a two-tier STT + self-report component with the *correct* completion pattern. Copy its structure.
