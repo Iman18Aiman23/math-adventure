@@ -18,27 +18,27 @@ import {
 /* ─── Module colour themes ──────────────────────────────────── */
 
 const M1_THEME = {
-  c: '#E8821A', cd: '#A34F0A',
+  c: '#FF8F3D', cd: '#FF6F00',
   stage: 'radial-gradient(ellipse at 50% 34%,#FEE9C8 0%,#F5B76A 55%,#E8821A 100%)',
   background: 'radial-gradient(ellipse at top,#FEF4E6,#FAE0BB)',
 };
 const M2_THEME = {
-  c: '#1E7AC9', cd: '#0E4A7E',
+  c: '#36A9F0', cd: '#1A78C7',
   stage: 'radial-gradient(ellipse at 50% 34%,#D5E9FA 0%,#7DB8ED 55%,#1E7AC9 100%)',
   background: 'radial-gradient(ellipse at top,#E6F1FB,#C8DCF6)',
 };
 const M3_THEME = {
-  c: '#7A4FD0', cd: '#3F2A86',
+  c: '#A368F0', cd: '#7038D6',
   stage: 'radial-gradient(ellipse at 50% 34%,#EBE2FB 0%,#B49EEE 55%,#7A4FD0 100%)',
   background: 'radial-gradient(ellipse at top,#F0EBFB,#DCD2F4)',
 };
 const M4_THEME = {
-  c: '#E8568A', cd: '#A81E59',
+  c: '#FF6FA8', cd: '#DB3E7F',
   stage: 'radial-gradient(ellipse at 50% 34%,#FCDCEA 0%,#F39BC0 55%,#E8568A 100%)',
   background: 'radial-gradient(ellipse at top,#FDEBF3,#F8D4E4)',
 };
 const M5_THEME = {
-  c: '#159E96', cd: '#0B5E5A',
+  c: '#1EC9B7', cd: '#0E9488',
   stage: 'radial-gradient(ellipse at 50% 32%,#D6F4F0 0%,#7CD6CE 55%,#159E96 100%)',
   background: 'radial-gradient(ellipse at top,#E6F6F4,#C6E9E5)',
 };

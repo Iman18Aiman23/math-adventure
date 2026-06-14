@@ -46,12 +46,14 @@ export default function StatsBar({ subject = 'bm' }) {
           gap: 4px;
           padding: 8px 10px;
           min-height: 48px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: #ffffff;
           color: #fff;
           font-family: 'Fredoka', system-ui, sans-serif;
           user-select: none;
           -webkit-user-select: none;
-          border-radius: 12px;
+          border-radius: 14px;
+          border: 1px solid rgba(20,40,70,.06);
+          box-shadow: 0 4px 12px rgba(20,40,70,.12);
           margin-bottom: 12px;
         }
         @media (max-width: 480px) {
@@ -76,7 +78,20 @@ export default function StatsBar({ subject = 'bm' }) {
           gap: 4px;
           white-space: nowrap;
           justify-content: center;
+          /* solid candy chip per stat — bright reward color on the white bar,
+             with a slight bottom ledge for depth (white numerals stay readable) */
+          padding: 4px 9px;
+          border-radius: 11px;
+          background: var(--chip, #94a3b8);
+          box-shadow: 0 2px 0 rgba(0,0,0,.12), 0 1px 0 rgba(255,255,255,.30) inset;
         }
+        /* reward colors: ❤️ red · 💎 cyan · ⭐ purple · 🔥 orange · Lv green
+           (children are item,sep,item,sep,… so stats are at odd nth-child) */
+        .sb-item:nth-child(1) { --chip: #FF4B4B; }
+        .sb-item:nth-child(3) { --chip: #1CC8EE; }
+        .sb-item:nth-child(5) { --chip: #A560FF; }
+        .sb-item:nth-child(7) { --chip: #FF9600; }
+        .sb-item:nth-child(9) { --chip: #58CC02; }
         .sb-emoji {
           font-size: 16px;
           line-height: 1;

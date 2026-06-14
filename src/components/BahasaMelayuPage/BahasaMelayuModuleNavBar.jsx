@@ -53,38 +53,26 @@ export default function BahasaMelayuModuleNavBar({ year, activeModule, onModuleC
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 40px;
-          height: 40px;
+          width: 44px;
+          height: 44px;
           border-radius: 50%;
-          border: none;
-          /* 3D beveled "game button" — accent-tinted with a raised highlight */
-          background:
-            linear-gradient(180deg, #ffffff 0%, #eef1f6 100%);
-          color: var(--accent-d);
+          /* Solid white "game button" with a chunky brown 3D ledge (palette) */
+          border: 3px solid #5C3D2E;
+          background: #ffffff;
+          color: #5C3D2E;
           cursor: pointer;
           flex-shrink: 0;
           padding: 0;
-          box-shadow: 0 3px 0 #c7ccd6, 0 5px 10px rgba(20,40,70,.18);
-          box-shadow:
-            0 3px 0 color-mix(in srgb, var(--accent) 45%, #c7ccd6),
-            0 5px 10px rgba(20,40,70,.18),
-            0 1px 0 rgba(255,255,255,.9) inset;
-          transition: transform .12s ease, box-shadow .12s ease, color .35s ease;
+          box-shadow: 0 5px 0 #5C3D2E;
+          transition: transform .1s ease, box-shadow .1s ease;
         }
         .bm-top-back:hover {
           transform: translateY(-1px);
-          color: var(--accent);
-          box-shadow:
-            0 4px 0 color-mix(in srgb, var(--accent) 55%, #c7ccd6),
-            0 7px 14px rgba(20,40,70,.22),
-            0 1px 0 rgba(255,255,255,.9) inset;
+          box-shadow: 0 6px 0 #5C3D2E;
         }
         .bm-top-back:active {
-          transform: translateY(2px);
-          box-shadow:
-            0 1px 0 color-mix(in srgb, var(--accent) 45%, #c7ccd6),
-            0 2px 5px rgba(20,40,70,.18),
-            0 1px 0 rgba(255,255,255,.9) inset;
+          transform: translateY(5px);
+          box-shadow: 0 0 0 #5C3D2E;
         }
         /* Phone: fill the remaining row so stats stay readable */
         .bm-top-stats {
@@ -114,21 +102,11 @@ export default function BahasaMelayuModuleNavBar({ year, activeModule, onModuleC
           padding: 8px 14px;
           margin: 0 12px 14px;
           border-radius: 18px;
-          /* Recessed "slot" tray, tinted with the active module accent so it sits
-             on the colored page background instead of clashing as flat gray.
-             Solid fallback first for browsers without color-mix support. */
-          background: rgba(255,255,255,.55);
-          background: color-mix(in srgb, var(--accent) 14%, rgba(255,255,255,.72));
-          /* Accent glow lifts the tray off the page + a beveled inset edge. */
-          box-shadow:
-            0 1px 2px rgba(255,255,255,.7),
-            0 8px 22px rgba(20,40,70,.16),
-            0 2px 6px rgba(20,40,70,.08) inset;
-          box-shadow:
-            0 1px 2px rgba(255,255,255,.7),
-            0 8px 26px color-mix(in srgb, var(--accent) 38%, transparent),
-            0 2px 6px rgba(20,40,70,.08) inset;
-          border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+          /* No tray fill — tabs float directly over the page background, each
+             carrying its own 3D bubble depth. */
+          background: transparent;
+          box-shadow: none;
+          border: none;
           transition: background .35s ease, box-shadow .35s ease, border-color .35s ease;
           font-family: 'Fredoka', system-ui, sans-serif;
           position: relative;
@@ -139,58 +117,58 @@ export default function BahasaMelayuModuleNavBar({ year, activeModule, onModuleC
           flex: 1;
         }
         .bm-mnav-tab {
-          font-family: 'Baloo 2', sans-serif;
-          font-weight: 700;
+          font-family: 'Nunito', sans-serif;
+          font-weight: 900;
           cursor: pointer;
-          border: 2px solid #E6E9F0;
-          background: linear-gradient(180deg, #ffffff 0%, #f4f6fa 100%);
-          border-radius: 14px;
-          padding: 7px 12px;
+          /* Resting: white card, gray border + gray 3D ledge (palette) */
+          border: 4px solid #E0E0E0;
+          background: #ffffff;
+          border-radius: 20px;
+          padding: 10px 10px;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
           line-height: 1.15;
-          gap: 1px;
-          color: #5B6F86;
-          transition: transform .15s ease, border-color .15s ease, color .15s ease, box-shadow .15s ease, background .15s ease;
+          gap: 2px;
+          color: #707070;
+          transition: transform .1s ease, border-color .15s ease, color .15s ease, box-shadow .1s ease, background .15s ease;
           min-width: 64px;
           flex: 1;
-          box-shadow: 0 1px 0 rgba(255,255,255,.8) inset, 0 2px 4px rgba(20,40,70,.06);
+          box-shadow: 0 8px 0 #D0D0D0;
           -webkit-tap-highlight-color: transparent;
         }
-        .bm-mnav-tab:hover {
+        .bm-mnav-tab:not(.active):hover {
           transform: translateY(-2px);
-          border-color: var(--tc);
-          color: var(--tc);
-          box-shadow: 0 1px 0 rgba(255,255,255,.8) inset, 0 6px 12px color-mix(in srgb, var(--tc) 22%, transparent);
+          box-shadow: 0 10px 0 #D0D0D0;
         }
-        .bm-mnav-tab:active { transform: scale(.95); }
+        /* press → sink down onto the ledge for tactile feedback */
+        .bm-mnav-tab:active { transform: translateY(8px); box-shadow: 0 0 0 #D0D0D0; }
         .bm-mnav-tab.active {
-          /* Lit-up active state: filled gradient + accent glow ring.
-             Solid fallbacks first for browsers without color-mix support. */
+          /* Active: vibrant module surface (--tc) + deep module ledge (--tcd),
+             e.g. Module 1 = #FF8F3D face with #FF6F00 border + bottom shadow. */
           background: var(--tc);
-          background: linear-gradient(180deg,
-            color-mix(in srgb, var(--tc) 88%, white) 0%, var(--tc) 100%);
-          border-color: var(--tc);
-          border-color: color-mix(in srgb, var(--tc) 70%, white);
+          border-color: var(--tcd);
           color: #fff;
-          box-shadow: 0 4px 12px rgba(0,0,0,.15);
-          box-shadow:
-            0 0 0 3px color-mix(in srgb, var(--tc) 28%, transparent),
-            0 4px 14px color-mix(in srgb, var(--tc) 45%, transparent),
-            0 1px 0 rgba(255,255,255,.4) inset;
+          box-shadow: 0 8px 0 var(--tcd);
         }
-        .bm-mnav-tab b { font-size: 16px; }
-        .bm-mnav-tab span { font-size: 11px; font-weight: 700; opacity: .78; white-space: nowrap; }
-        .bm-mnav-tab.active span { opacity: .92; }
+        .bm-mnav-tab.active:active {
+          transform: translateY(8px);
+          box-shadow: 0 0 0 var(--tcd);
+        }
+        .bm-mnav-tab b { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 20px; color: #A0A0A0; }
+        .bm-mnav-tab span { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 900; white-space: nowrap; }
+        .bm-mnav-tab.active b,
+        .bm-mnav-tab.active span { color: #fff; text-shadow: 1px 2px 0 rgba(0,0,0,.15); }
 
         @media (max-width: 1024px) {
           .bm-mnav { padding: 10px 16px; gap: 8px; }
           .bm-mnav-tab-wrap {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            /* extra row-gap so each tab's 8px bottom ledge clears the next row */
+            column-gap: 8px;
+            row-gap: 18px;
             width: 100%;
             flex: none;
           }
@@ -207,7 +185,7 @@ export default function BahasaMelayuModuleNavBar({ year, activeModule, onModuleC
         }
         @media (max-width: 380px) {
           .bm-mnav { padding: 8px 12px; gap: 6px; }
-          .bm-mnav-tab-wrap { gap: 6px; }
+          .bm-mnav-tab-wrap { column-gap: 6px; row-gap: 16px; }
           .bm-mnav-tab { padding: 10px 5px; border-radius: 10px; }
           .bm-mnav-tab b { font-size: 14px; }
           .bm-mnav-tab span { font-size: 9px; }
@@ -233,7 +211,7 @@ export default function BahasaMelayuModuleNavBar({ year, activeModule, onModuleC
               <button
                 key={m.id}
                 className={`bm-mnav-tab${isActive ? ' active' : ''}`}
-                style={{ '--tc': m.theme.c }}
+                style={{ '--tc': m.theme.c, '--tcd': m.theme.cd }}
                 onClick={() => {
                   if (!isActive) {
                     playHoverSound();
