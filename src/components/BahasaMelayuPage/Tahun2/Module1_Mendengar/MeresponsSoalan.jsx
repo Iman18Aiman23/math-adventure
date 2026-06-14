@@ -5,6 +5,7 @@ import { playSound } from '../../../../utils/soundManager';
 import BMHeader from '../../_shared/BMHeader';
 import confetti from 'canvas-confetti';
 import useTopicGamification from '../../../../hooks/useTopicGamification';
+import { shuffle } from '../../../PendidikanIslamPage/_shared/utils';
 
 const TOPIC_ID = '2-1-1a-merespons-soalan';
 
@@ -16,7 +17,7 @@ const PHASE_WRONG     = 'wrong';
 const PHASE_RESULT    = 'result';
 
 const MAX_ATTEMPTS = 3;
-const TOTAL_ITEMS = 13;
+const TOTAL_ITEMS = 10;
 
 const C = {
   primary: '#FF9600', primaryDark: '#D47A00',
@@ -159,6 +160,12 @@ const STYLE = `
     box-shadow: 0 4px 0 ${C.primaryDark};
   }
 
+  .ms-btn.success {
+    color: #fff;
+    background: linear-gradient(180deg, #66BB6A, #4CAF50);
+    box-shadow: 0 4px 0 #388E3C;
+  }
+
   .ms-btn.secondary {
     color: #64748B; background: #F1F5F9;
     box-shadow: 0 4px 0 #CBD5E1;
@@ -208,26 +215,63 @@ const STYLE = `
   }
 
   .ms-icon-btn:active { transform: translateY(2px); }
+
+  .ms-type-input {
+    width: 100%; max-width: 360px;
+    padding: clamp(10px, 1.8vh, 14px) clamp(14px, 2.8vw, 20px);
+    border: 2.5px solid #FFCF80;
+    border-radius: 16px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(18px, 3.4vh, 26px);
+    font-weight: 600;
+    text-align: center;
+    outline: none;
+    background: #fff;
+    color: #1E293B;
+    transition: border-color .2s;
+  }
+  .ms-type-input:focus { border-color: ${C.primary}; box-shadow: 0 0 0 3px ${C.primary}22; }
+  .ms-type-input:disabled { opacity: 0.6; }
+
+  .ms-mode-toggle {
+    font-family: 'Baloo 2', sans-serif; font-weight: 800;
+    font-size: clamp(11px, 2vh, 13px);
+    border: 2px solid ${C.primary}44;
+    border-radius: 999px;
+    background: #fff;
+    color: #9A5B10;
+    padding: clamp(3px, 0.6vh, 5px) clamp(10px, 2vw, 14px);
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+  .ms-mode-toggle:hover { border-color: ${C.primary}; background: ${C.primary}0d; }
+  .ms-mode-toggle:active { transform: translateY(1px); }
 `;
 
 const QUESTIONS = [
-  { id: 'q1', emoji: '☁️', type: 'bertumpu', question: 'Apakah warna langit?', answer: 'Biru', accept: ['biru','blue'] },
-  { id: 'q2', emoji: '🌱', type: 'bertumpu', question: 'Apakah warna rumput?', answer: 'Hijau', accept: ['hijau','green'] },
-  { id: 'q3', emoji: '🐱', type: 'bertumpu', question: 'Berapa kaki seekor kucing?', answer: 'Empat', accept: ['empat','4','four'] },
-  { id: 'q4', emoji: '🍌', type: 'bertumpu', question: 'Apakah warna pisang yang masak?', answer: 'Kuning', accept: ['kuning','yellow'] },
-  { id: 'q5', emoji: '🐔', type: 'bertumpu', question: 'Haiwan apakah yang berkokok pada waktu pagi?', answer: 'Ayam', accept: ['ayam','ayam jantan','rooster','chicken'] },
-  { id: 'q6', emoji: '📅', type: 'bertumpu', question: 'Berapa hari dalam seminggu?', answer: 'Tujuh', accept: ['tujuh','7','seven'] },
-  { id: 'q7', emoji: '🍎', type: 'bertumpu', question: 'Apakah warna epal yang merah?', answer: 'Merah', accept: ['merah','red'] },
-  { id: 'q8', emoji: '🐟', type: 'bertumpu', question: 'Di manakah ikan hidup?', answer: 'Di dalam air', accept: ['air','dalam air','laut','kolam','sungai','water'] },
-  { id: 'q9', emoji: '👀', type: 'bertumpu', question: 'Apakah yang kita guna untuk melihat?', answer: 'Mata', accept: ['mata','eyes','eye'] },
-  { id: 'q10', emoji: '🤔', type: 'bercapah', question: 'Pada pendapat kamu, apakah haiwan yang paling comel? Mengapa?' },
-  { id: 'q11', emoji: '💭', type: 'bercapah', question: 'Mengapa kita perlu rajin belajar di sekolah?' },
-  { id: 'q12', emoji: '🍽️', type: 'bercapah', question: 'Apakah makanan kegemaran kamu?' },
-  { id: 'q13', emoji: '🎈', type: 'bercapah', question: 'Apakah yang kamu suka buat pada hujung minggu?' },
+  { id: 'q1', emoji: '☁️', type: 'bertumpu', question: 'Apakah warna langit?', answer: 'Biru', accept: ['biru'] },
+  { id: 'q2', emoji: '🌱', type: 'bertumpu', question: 'Apakah warna rumput?', answer: 'Hijau', accept: ['hijau'] },
+  { id: 'q3', emoji: '🐱', type: 'bertumpu', question: 'Berapa kaki seekor kucing?', answer: 'Empat', accept: ['empat','4'] },
+  { id: 'q4', emoji: '🍌', type: 'bertumpu', question: 'Apakah warna pisang masak?', answer: 'Kuning', accept: ['kuning'] },
+  { id: 'q5', emoji: '🐔', type: 'bertumpu', question: 'Haiwan apakah yang berkokok pada waktu pagi?', answer: 'Ayam', accept: ['ayam'] },
+  { id: 'q6', emoji: '📅', type: 'bertumpu', question: 'Berapa hari dalam seminggu?', answer: 'Tujuh', accept: ['tujuh','7'] },
+  { id: 'q7', emoji: '🍎', type: 'bertumpu', question: 'Apakah warna epal merah?', answer: 'Merah', accept: ['merah'] },
+  { id: 'q8', emoji: '🐟', type: 'bertumpu', question: 'Di manakah ikan hidup?', answer: 'Air', accept: ['air','di air'] },
+  { id: 'q9', emoji: '👀', type: 'bertumpu', question: 'Apakah yang kita guna untuk melihat?', answer: 'Mata', accept: ['mata'] },
+  { id: 'q10', emoji: '🌙', type: 'bertumpu', question: 'Bilakah bulan kelihatan di langit?', answer: 'Malam', accept: ['malam','waktu malam'] },
+  { id: 'q11', emoji: '☀️', type: 'bertumpu', question: 'Apakah yang bersinar pada waktu siang?', answer: 'Matahari', accept: ['matahari'] },
+  { id: 'q12', emoji: '🐄', type: 'bertumpu', question: 'Haiwan apakah yang menghasilkan susu?', answer: 'Lembu', accept: ['lembu'] },
+  { id: 'q13', emoji: '🐦', type: 'bertumpu', question: 'Haiwan apakah yang boleh terbang?', answer: 'Burung', accept: ['burung'] },
+  { id: 'q14', emoji: '🦷', type: 'bertumpu', question: 'Apakah yang kita guna untuk mengunyah makanan?', answer: 'Gigi', accept: ['gigi'] },
+  { id: 'q15', emoji: '🚗', type: 'bertumpu', question: 'Apakah kenderaan yang bergerak di jalan raya?', answer: 'Kereta', accept: ['kereta'] },
+  { id: 'q16', emoji: '🏫', type: 'bertumpu', question: 'Di manakah murid belajar?', answer: 'Sekolah', accept: ['sekolah','di sekolah'] },
+  { id: 'q17', emoji: '📖', type: 'bertumpu', question: 'Apakah yang kita baca?', answer: 'Buku', accept: ['buku'] },
+  { id: 'q18', emoji: '✏️', type: 'bertumpu', question: 'Apakah yang kita guna untuk menulis?', answer: 'Pensel', accept: ['pensel'] },
+  { id: 'q19', emoji: '🌧️', type: 'bertumpu', question: 'Apakah yang turun dari langit ketika hujan?', answer: 'Air', accept: ['air','air hujan'] },
+  { id: 'q20', emoji: '🖐️', type: 'bertumpu', question: 'Berapa jari pada satu tangan?', answer: 'Lima', accept: ['lima','5'] },
 ];
 
 const normalize = (s) => s.toLowerCase().replace(/[.,!?]/g, '').replace(/\s+/g, ' ').trim();
-const wordCount = (t) => normalize(t).split(' ').filter(Boolean).length;
 
 function checkMatch(transcript, item) {
   const t = normalize(transcript);
@@ -246,14 +290,19 @@ export default function MeresponsSoalan({ onBack, language = 'bm', topicComplete
 
   const permanentFallback = useRef(!!unsupportedReason);
 
+  const [pool, setPool] = useState(() => shuffle(QUESTIONS).slice(0, TOTAL_ITEMS));
+  const poolRef = useRef(pool);
+  useEffect(() => { poolRef.current = pool; }, [pool]);
+
   const [idx, setIdx] = useState(0);
-  const [phase, setPhase] = useState(PHASE_SPEAKING);
+  const [phase, setPhase] = useState(PHASE_READY);
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
   const [attempts, setAttempts] = useState(0);
   const [lastHeard, setLastHeard] = useState('');
   const [micError, setMicError] = useState(null);
   const [tempFallback, setTempFallback] = useState(false);
+  const [typedAnswer, setTypedAnswer] = useState('');
 
   const idxRef = useRef(0);
   const attRef = useRef(0);
@@ -273,35 +322,17 @@ export default function MeresponsSoalan({ onBack, language = 'bm', topicComplete
     }
   }, [phase, score, completeTopic, topicComplete]);
 
-  const item = QUESTIONS[idx] ?? null;
+  const item = pool[idx] ?? null;
   const speak = useCallback((text) => SpeechManager.speak(text, 'ms'), []);
 
   const topicTitle = language === 'bm' ? 'Merespons Soalan' : 'Answer the Question';
 
   const showFallback = permanentFallback.current || tempFallback;
 
-  // Auto-speak the question when entering SPEAKING phase
-  useEffect(() => {
-    if (phase !== PHASE_SPEAKING || !item) return;
-    let cancelled = false;
-    (async () => {
-      await speak(item.question);
-      if (cancelled) return;
-      setPhase(isMobile ? PHASE_READY : PHASE_LISTENING);
-    })();
-    return () => { cancelled = true; SpeechManager.stopSpeaking(); };
-  }, [phase, item, isMobile, speak]);
-
-  // Desktop: auto-open mic after TTS
-  useEffect(() => {
-    if (phase !== PHASE_LISTENING || isMobile) return;
-    startListening();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, isMobile]);
 
   const advanceItem = useCallback(() => {
     const ni = idxRef.current + 1;
-    if (ni >= QUESTIONS.length) {
+    if (ni >= poolRef.current.length) {
       setPhase(PHASE_RESULT);
       return;
     }
@@ -310,7 +341,8 @@ export default function MeresponsSoalan({ onBack, language = 'bm', topicComplete
     setLastHeard('');
     setMicError(null);
     setTempFallback(false);
-    setPhase(PHASE_SPEAKING);
+    setTypedAnswer('');
+    setPhase(PHASE_READY);
   }, []);
 
   const handleCorrect = () => {
@@ -345,7 +377,7 @@ export default function MeresponsSoalan({ onBack, language = 'bm', topicComplete
     } else {
       setPhase(PHASE_WRONG);
       setLastHeard('');
-      setTimeout(() => setPhase(isMobile ? PHASE_READY : PHASE_LISTENING), 1700);
+      setTimeout(() => setPhase(PHASE_READY), 1700);
     }
   };
 
@@ -357,21 +389,16 @@ export default function MeresponsSoalan({ onBack, language = 'bm', topicComplete
     setLastHeard('');
     setPhase(PHASE_LISTENING);
 
-    const cur = QUESTIONS[idxRef.current];
+    const cur = pool[idxRef.current];
     if (!cur) return;
 
     SpeechManager.listen(
       'ms-MY',
       (transcript, _conf, alts) => {
         listenActiveRef.current = false;
-        let matched;
-        if (cur.type === 'bercapah') {
-          matched = wordCount(transcript) >= 2;
-        } else {
-          matched = checkMatch(transcript, cur);
-          if (!matched && alts?.length > 1) {
-            matched = alts.some(a => checkMatch(a.transcript, cur));
-          }
+        let matched = checkMatch(transcript, cur);
+        if (!matched && alts?.length > 1) {
+          matched = alts.some(a => checkMatch(a.transcript, cur));
         }
         setLastHeard(transcript);
         matched ? handleCorrect() : handleWrong();
@@ -404,6 +431,15 @@ export default function MeresponsSoalan({ onBack, language = 'bm', topicComplete
     );
   };
 
+  const handleTypeSubmit = () => {
+    const cur = pool[idxRef.current];
+    if (!cur || !typedAnswer.trim()) return;
+    let matched = checkMatch(typedAnswer, cur);
+    setLastHeard(typedAnswer);
+    setTypedAnswer('');
+    matched ? handleCorrect() : handleWrong();
+  };
+
   const handleSelfReport = () => {
     awardCorrect();
     setScore(s => s + 1);
@@ -419,15 +455,15 @@ export default function MeresponsSoalan({ onBack, language = 'bm', topicComplete
     SpeechManager.stop();
     SpeechManager.stopSpeaking();
     listenActiveRef.current = false;
-    speak(item.question).then(() => setPhase(isMobile ? PHASE_READY : PHASE_LISTENING));
+    speak(item.question).then(() => setPhase(PHASE_READY));
   };
 
   const handleHint = () => {
-    if (!item || item.type === 'bercapah') return;
+    if (!item) return;
     SpeechManager.stop();
     SpeechManager.stopSpeaking();
     listenActiveRef.current = false;
-    speak(item.answer).then(() => setPhase(isMobile ? PHASE_READY : PHASE_LISTENING));
+    speak(item.answer).then(() => setPhase(PHASE_READY));
   };
 
   const handleSkip = () => {
@@ -442,14 +478,16 @@ export default function MeresponsSoalan({ onBack, language = 'bm', topicComplete
     SpeechManager.stopSpeaking();
     listenActiveRef.current = false;
     completedRef.current = false;
+    setPool(shuffle(QUESTIONS).slice(0, TOTAL_ITEMS));
     setIdx(0);
-    setPhase(PHASE_SPEAKING);
+    setPhase(PHASE_READY);
     setScore(0);
     setStreak(0);
     setAttempts(0);
     setLastHeard('');
     setMicError(null);
     setTempFallback(false);
+    setTypedAnswer('');
   };
 
   if (phase === PHASE_RESULT) {
@@ -534,11 +572,7 @@ export default function MeresponsSoalan({ onBack, language = 'bm', topicComplete
                 <>
                   <div className="ms-emoji">{item.emoji}</div>
                   <div className="ms-question">{item.question}</div>
-                  {item.type === 'bercapah' && (
-                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#9A5B10', background: '#FFF6D6', borderRadius: 999, padding: '2px 12px', display: 'inline-block' }}>
-                      {language === 'bm' ? 'Tiada jawapan salah — beri pendapat!' : 'No wrong answer — share your opinion!'}
-                    </div>
-                  )}
+
                   {revealAnswer && (
                     <div className="ms-answer">
                       <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#B58800' }}>
@@ -565,13 +599,6 @@ export default function MeresponsSoalan({ onBack, language = 'bm', topicComplete
                 </>
               )}
 
-              {phase === PHASE_SPEAKING && (
-                <div className="ms-status">
-                  <span style={{ fontSize: '1.4rem', display: 'inline-block', animation: 'msSpeakBounce 1s ease-in-out infinite' }}>🔊</span>
-                  <span>{language === 'bm' ? 'Dengar soalan...' : 'Listen to the question...'}</span>
-                </div>
-              )}
-
               {phase === PHASE_READY && showFallback && (
                 <p className="ms-status" style={{ color: '#D9610B', maxWidth: 340 }}>
                   {micError === 'perm'
@@ -589,10 +616,19 @@ export default function MeresponsSoalan({ onBack, language = 'bm', topicComplete
               )}
 
               {phase === PHASE_READY && !showFallback && !micError && (
-                <p className="ms-status">
-                  {language === 'bm' ? 'Tekan 🎤 untuk menjawab' : 'Tap 🎤 to answer'}
-                  {attempts > 0 && ` · ${language === 'bm' ? 'Cuba' : 'Try'} ${attempts + 1}/${MAX_ATTEMPTS}`}
-                </p>
+                <div style={{ width: '100%', maxWidth: 400, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                  {attempts > 0 && (
+                    <p className="ms-status" style={{ color: '#D9610B', fontSize: '0.8rem' }}>
+                      {language === 'bm' ? `Cuba ${attempts + 1}/${MAX_ATTEMPTS}` : `Try ${attempts + 1}/${MAX_ATTEMPTS}`}
+                    </p>
+                  )}
+                  <input className="ms-type-input"
+                    value={typedAnswer} disabled={isCorrect || isWrong}
+                    onChange={(e) => setTypedAnswer(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') handleTypeSubmit(); }}
+                    placeholder={language === 'bm' ? 'Taip jawapan kamu di sini...' : 'Type your answer here...'}
+                    autoFocus />
+                </div>
               )}
 
               {isWrong && (
@@ -635,18 +671,18 @@ export default function MeresponsSoalan({ onBack, language = 'bm', topicComplete
             </button>
           )}
           {phase === PHASE_READY && !showFallback && (
-            <button className="ms-btn primary" onClick={() => startListening()}>
-              🎤 {language === 'bm' ? 'Jawab Sekarang' : 'Answer Now'}
-            </button>
+            <>
+              <button className="ms-btn primary" onClick={() => startListening()} style={{ flex: '0 1 auto' }}>
+                🎤 {language === 'bm' ? 'Bercakap' : 'Speak'}
+              </button>
+              <button className="ms-btn success" onClick={handleTypeSubmit} disabled={!typedAnswer.trim()} style={{ flex: 1 }}>
+                ⌨️ {language === 'bm' ? 'Hantar' : 'Submit'}
+              </button>
+            </>
           )}
           {phase === PHASE_LISTENING && (
             <button className="ms-btn secondary" onClick={() => { SpeechManager.stop(); listenActiveRef.current = false; setPhase(PHASE_READY); }}>
               ⏸ {language === 'bm' ? 'Berhenti' : 'Stop'}
-            </button>
-          )}
-          {phase === PHASE_SPEAKING && (
-            <button className="ms-btn primary" disabled>
-              🔊 {language === 'bm' ? 'Mendengar soalan...' : 'Playing question...'}
             </button>
           )}
           {(isCorrect || isWrong) && (
@@ -659,10 +695,6 @@ export default function MeresponsSoalan({ onBack, language = 'bm', topicComplete
           @keyframes msPulseRing {
             0%   { transform: scale(0.8); opacity: 0.8; }
             100% { transform: scale(1.6); opacity: 0; }
-          }
-          @keyframes msSpeakBounce {
-            0%, 100% { transform: translateY(0);  }
-            50%       { transform: translateY(-6px); }
           }
         `}</style>
       </div>

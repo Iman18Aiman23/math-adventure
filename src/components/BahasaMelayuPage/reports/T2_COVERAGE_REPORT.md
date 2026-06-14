@@ -36,15 +36,17 @@ Setiap tugas (R-item) dibina oleh **satu agen pada satu masa**, kemudian disahka
 | **R15 — Morfologi 5.1 split (5.1a+b+c)** | — | **✅ COMPLETE (3/3)** | 2026-06-13 |
 | R13 / 1.2 (gabungan) — Bercerita & Berbincang | `BUILD_SPEC_R13_1.2.md` | 🔁 Superseded → pecah 1.2a + 1.2b | 2026-06-14 |
 | ~~R12 / 1.1 (gabungan)~~ | `BUILD_SPEC_R12_1.1.md` | 🔁 Superseded → pecah 1.1a + 1.1b + 1.1c | 2026-06-14 |
-| **M1 split (2→5 topik) — Keputusan 2026-06-14** | — | **🔍 Pending verification (5/5)** | — |
-| · 1.1a — Merespons Soalan (bertumpu + bercapah) | `BUILD_SPEC_M1_1.1abc.md` | 🔍 Pending verification | — |
-| · 1.1b — Melaksanakan Arahan | `BUILD_SPEC_M1_1.1abc.md` | 🔍 Pending verification | — |
-| · 1.1c — Pesanan & Permintaan | `BUILD_SPEC_M1_1.1abc.md` | 🔍 Pending verification | — |
+| **M1 split (2→5 topik) — Keputusan 2026-06-14** | — | **✅ COMPLETE (5/5)** | 2026-06-14 |
+| · 1.1a — Merespons Soalan (20 bertumpu, pilih 10) | `BUILD_SPEC_M1_1.1abc.md` | ✅ Completed | 2026-06-14 |
+| · 1.1b — Melaksanakan Arahan (20, pilih 10) | `BUILD_SPEC_M1_1.1abc.md` | ✅ Completed | 2026-06-14 |
+| · 1.1c — Pesanan & Permintaan (20, pilih 10) | `BUILD_SPEC_M1_1.1abc.md` | ✅ Completed | 2026-06-14 |
 | · 1.2a — Bercerita (baca kuat) | `BUILD_SPEC_M1_1.2a_1.2b.md` | ✅ Completed | 2026-06-14 |
 | · 1.2b — Berbincang | `BUILD_SPEC_M1_1.2a_1.2b.md` | ✅ Completed | 2026-06-14 |
 | R14, R16–R24 | _(see action table below)_ | ⏳ Pending | — |
 
 ### Progress (slice log)
+
+- **2026-06-14 — M1 1.1a + 1.1b + 1.1c ✅ VERIFIED & COMPLETED → M1 SELESAI (5/5).** Keperluan baru pemilik: **setiap topik = kolam 20 soalan, pilih 10 rawak setiap kuiz, reshuffle (tak sama tiap kali)**. Semakan: **1.1a** Merespons Soalan — 20 item STT (semua `bertumpu` boleh-dinilai), `shuffle(QUESTIONS).slice(0,10)` + reshuffle masa restart, completedRef gate ✓. **Keputusan pemilik: kekal 20 bertumpu (boleh-dinilai), bercapah TIDAK dijadikan jenis item berasingan** — selaras model 20/10/gate; skil bercapah/pendapat terbuka bertindih dengan 1.2b Berbincang. (Label trail = "Merespons Soalan" sahaja, jadi tiada dakwaan lebih.) **1.1b** Arahan — bank 20, useBMQuiz pilih 10 ✓. **1.1c** Pesanan & Permintaan — asalnya 12, **pengesah tambah 8 → 20** (semua bebas-duplikat, `answer` ∈ `options`) ✓. Wiring Pattern-1, node lama 2-1-1 diganti 3 node, AG7 standalone tak tersentuh, `npm run build` hijau. **STANDARD baharu: 20-kolam / pilih-10 / reshuffle untuk topik baharu.** M1 kini 5/5 lengkap.
 
 - **2026-06-13 — R15 / 5.1a ✅ VERIFIED & COMPLETED.** Semakan bebas: komponen ikut Pattern-1 (`SintaksisAyatMajmuk`) tanpa wiring gamification manual ✓ · bank 16 item disahkan secara automatik (semua `options` bebas-duplikat, `answer` ∈ `options`) ✓ · node trail 5.1a aktif + 5.1b/5.1c disabled ✓ · App.jsx route Pattern-1 (tiada `ProgressWrapper`, hantar `topicComplete`/`onNextTopic`) ✓ · `npm run build` hijau (tiada ralat kompil/import) ✓. Gate 70% + ganjaran disahkan secara code-equivalence dengan layout kongsi yang tidak berubah (bukan playthrough langsung). R15 kini 1/3 (5.1b, 5.1c belum).
 - **2026-06-13 — R15 / 5.1a — Kata Bilangan & Kata Arah (handoff agen).** Fail diubah: (1) `KataBilanganArah.jsx` — komponen Pattern-1 baru (learn page 2 kategori expandable + kuiz 12 soalan via `BMLessonQuizLayout`); (2) `ModuleData.js` — tambah bank soalan 16 item (8 Kata Bilangan + 8 Kata Arah) & gantikan 3 node trail M5 dengan 5 node (5.1a aktif + 5.1b/5.1c disabled placeholder); (3) `App.jsx` — tambah lazy import `KataBilanganArah` + route Pattern-1 (tiada `ProgressWrapper`). Diuji: `npm run dev` → dev server HTTP 200 tanpa ralat.
