@@ -18,9 +18,13 @@ export default function useBMQuiz(currentQuestions, reviewQuestions, totalRounds
   const allQuestions = useMemo(() => {
     const ratio = 0.7;
     const maxCurrent = Math.ceil(totalRounds * ratio);
-    const maxReview = totalRounds - maxCurrent;
-    const currentCount = Math.min(currentQuestions.length, maxCurrent);
+    const maxReview = totalRounds - maxCurrent;            // review cap (~30% of a round)
+    // Take up to the review cap, then BACKFILL the rest from current questions so
+    // the quiz always reaches `totalRounds`. (Review banks are empty for now —
+    // without backfill the round would only be 70% full, e.g. 7/10. When review
+    // questions exist later, they still take their ~30% share first.)
     const reviewCount = Math.min(reviewQuestions.length, maxReview);
+    const currentCount = Math.min(currentQuestions.length, totalRounds - reviewCount);
     const picked = [
       ...shuffle(currentQuestions).slice(0, currentCount),
       ...shuffle(reviewQuestions).slice(0, reviewCount),
