@@ -107,7 +107,7 @@ export default function Berbincang({ onBack, language = 'bm', topicComplete, onN
 
   const currentQs = BM_QUESTIONS[TOPIC_ID] || [];
   const reviewQs = [];
-  const quiz = useBMQuiz(currentQs, reviewQs, 12);
+  const quiz = useBMQuiz(currentQs, reviewQs, 10);
 
   const topicTitle = language === 'bm' ? 'Berbincang' : 'Discuss';
 
