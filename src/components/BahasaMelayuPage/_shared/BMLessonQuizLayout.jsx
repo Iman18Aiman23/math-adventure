@@ -76,6 +76,16 @@ export default function BMLessonQuizLayout({
   }, [finished, passed]);
 
   useEffect(() => {
+    if (currentQ?.audioText && !finished) {
+      const t = setTimeout(() => {
+        SpeechManager.stopSpeaking();
+        SpeechManager.speak(currentQ.audioText, 'ms-MY', { rate: 0.7, pitch: 1.2 });
+      }, 300);
+      return () => { clearTimeout(t); SpeechManager.stopSpeaking(); };
+    }
+  }, [idx, currentQ?.audioText, finished]);
+
+  useEffect(() => {
     if (!answered) return;
     if (selected === correctIdx) {
       confetti({ particleCount: 90, spread: 75, origin: { y: 0.6 }, zIndex: 2000 });
@@ -105,6 +115,13 @@ export default function BMLessonQuizLayout({
       loseHeart();
     }
   }, [answered, selected, correctIdx, idx, awardXP, topicId, loseHeart]);
+
+  const handleReplay = () => {
+    if (currentQ?.audioText) {
+      SpeechManager.stopSpeaking();
+      SpeechManager.speak(currentQ.audioText, 'ms-MY', { rate: 0.7, pitch: 1.2 });
+    }
+  };
 
   return (
     <>
@@ -181,19 +198,29 @@ export default function BMLessonQuizLayout({
           position: relative;
         }
 
-        .bm-quiz-instruction {
-          text-align: center;
-          font-family: 'Fredoka', system-ui, sans-serif;
-          font-size: clamp(14px, 2.6vh, 18px);
-          font-weight: 600;
-          color: #475569;
-          line-height: 1.5;
-          margin-bottom: var(--sp-1);
-          background: ${accentColor}0a;
-          padding: clamp(10px, 1.6vh, 14px) clamp(14px, 2vw, 20px);
-          border-radius: 14px;
-          border: 1.5px solid ${accentColor}18;
+        .bm-quiz-media {
+          width: clamp(52px, 9vh, 72px); height: clamp(52px, 9vh, 72px);
+          margin: 0 auto;
+          border-radius: 24px;
+          background: linear-gradient(135deg, ${accentColor}1f, ${accentColor}0d);
+          border: 1.5px solid ${accentColor}2a;
+          display: flex; align-items: center; justify-content: center;
         }
+        .bm-quiz-emoji {
+          font-size: clamp(28px, 5.4vh, 42px);
+          line-height: 1;
+          user-select: none;
+        }
+        .bm-quiz-speaker-icon {
+          font-size: clamp(26px, 5vh, 38px);
+          line-height: 1;
+          animation: bm-speaker-pulse 2s ease-in-out infinite;
+        }
+        @keyframes bm-speaker-pulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.08); }
+        }
+
         .bm-quiz-subtitle {
           font-family: 'Baloo 2', sans-serif; font-weight: 800;
           font-size: clamp(9px, 1.7vh, 11px);
@@ -215,6 +242,19 @@ export default function BMLessonQuizLayout({
           margin: var(--sp-1) 0 0;
           color: #1E293B;
         }
+        .bm-quiz-replay-btn {
+          align-self: center;
+          margin-top: var(--sp-1);
+          font-family: 'Baloo 2', sans-serif; font-weight: 800;
+          font-size: clamp(11px, 2.1vh, 13px); color: #fff;
+          background: linear-gradient(180deg, ${accentColor}cc, ${accentColor});
+          border: none; border-radius: 999px;
+          padding: clamp(4px, 0.9vh, 6px) clamp(14px, 3vw, 18px);
+          box-shadow: 0 3px 0 ${accentColor}88;
+          cursor: pointer; transition: transform .12s;
+        }
+        .bm-quiz-replay-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 ${accentColor}88; }
+
         .bm-quiz-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
@@ -436,8 +476,10 @@ export default function BMLessonQuizLayout({
           .bm-quiz-card { padding: min(32px, 3.2vh) 40px min(26px, 2.6vh); border-radius: 32px; }
           .bm-quiz-media { width: min(88px, 11vh); height: min(88px, 11vh); border-radius: min(28px, 3.6vh); }
           .bm-quiz-emoji { font-size: min(50px, 6.2vh); }
+          .bm-quiz-speaker-icon { font-size: min(46px, 5.8vh); }
           .bm-quiz-subtitle { font-size: min(12px, 2vh); padding: min(4px, 0.7vh) 18px; margin-top: min(12px, 1.4vh); }
           .bm-quiz-question { font-size: min(27px, 3.6vh); margin-top: min(12px, 1.4vh); }
+          .bm-quiz-replay-btn { font-size: min(14px, 2.2vh); padding: min(7px, 1vh) 22px; margin-top: min(12px, 1.4vh); }
           .bm-quiz-grid { gap: min(14px, 1.8vh); margin-top: min(20px, 2.2vh); }
           .bm-quiz-grid.long { grid-template-columns: 1fr 1fr; }
           .bm-quiz-opt { font-size: min(32px, 4.4vh); min-height: min(76px, 9.4vh); border-radius: 18px; }
@@ -560,13 +602,23 @@ export default function BMLessonQuizLayout({
               </div>
 
               <div className="bm-quiz-card">
-              {currentQ.audioText && (
-                <div className="bm-quiz-instruction">{currentQ.audioText}</div>
-              )}
+                <div className="bm-quiz-media">
+                  {currentQ.emoji ? (
+                    <span className="bm-quiz-emoji">{currentQ.emoji}</span>
+                  ) : (
+                    <span className="bm-quiz-speaker-icon">🔊</span>
+                  )}
+                </div>
                 {subtitle && <div className="bm-quiz-subtitle">{subtitle}</div>}
                 <p className="bm-quiz-question">
                   {currentQ.question || (language === 'bm' ? 'Apakah bunyi ini?' : 'What sound is this?')}
                 </p>
+                {currentQ.audioText && (
+                  <button className="bm-quiz-replay-btn" onClick={handleReplay}>
+                    🔊 {language === 'bm' ? 'Dengar Semula' : 'Replay'}
+                  </button>
+                )}
+
                 <div className={'bm-quiz-grid' + (currentQ.options.some(o => o.length > 20) ? ' long' : '')}>
                   {currentQ.options.map((opt, i) => {
                     const isSelected = selected === i;
@@ -574,7 +626,7 @@ export default function BMLessonQuizLayout({
                     const isWrongChoice = answered && isSelected && i !== correctIdx;
                     // Letters/syllables (≤3 chars) display uppercase at large size;
                     // words/sentences keep natural casing at the smaller word-opt size.
-                    const isWordOpt = !!currentQ.emoji || opt.length > 2;
+                    const isWordOpt = !!currentQ.emoji || opt.length > 3;
                     let cls = 'bm-quiz-opt';
                     if (isSelected && !answered) cls += ' selected';
                     if (isCorrectChoice) cls += ' correct';
