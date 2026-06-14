@@ -649,7 +649,7 @@ export default function BMLessonQuizLayout({
                     const isWrongChoice = answered && isSelected && i !== correctIdx;
                     // Letters/syllables (≤3 chars) display uppercase at large size;
                     // words/sentences keep natural casing at the smaller word-opt size.
-                    const isWordOpt = !!currentQ.emoji || opt.length > 3;
+                    const isWordOpt = !!currentQ.emoji || opt.length > 2;
                     let cls = 'bm-quiz-opt';
                     if (isSelected && !answered) cls += ' selected';
                     if (isCorrectChoice) cls += ' correct';

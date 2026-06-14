@@ -6,6 +6,7 @@ import BMHeader from '../../_shared/BMHeader';
 import confetti from 'canvas-confetti';
 import useTopicGamification from '../../../../hooks/useTopicGamification';
 import { shuffle } from '../../../PendidikanIslamPage/_shared/utils';
+import BMNotaCard from '../../_shared/BMNotaCard';
 
 const TOPIC_ID = '2-1-1a-merespons-soalan';
 
@@ -303,6 +304,7 @@ export default function MeresponsSoalan({ onBack, language = 'bm', topicComplete
   const [micError, setMicError] = useState(null);
   const [tempFallback, setTempFallback] = useState(false);
   const [typedAnswer, setTypedAnswer] = useState('');
+  const [showNote, setShowNote] = useState(true);  // Nota Penting intro on every entry
 
   const idxRef = useRef(0);
   const attRef = useRef(0);
@@ -489,6 +491,25 @@ export default function MeresponsSoalan({ onBack, language = 'bm', topicComplete
     setTempFallback(false);
     setTypedAnswer('');
   };
+
+  if (showNote) {
+    return (
+      <BMNotaCard
+        language={language}
+        accentColor={C.primary}
+        topicTitle={language === 'bm' ? 'Merespons Soalan' : 'Responding to Questions'}
+        definition={language === 'bm'
+          ? 'Respons bermaksud memberi tindak balas atau menjawab sesuatu yang didengar, dilihat, atau dibaca.'
+          : 'A response means reacting to or answering something you hear, see, or read.'}
+        examples={language === 'bm'
+          ? ['Cikgu bertanya, "Siapa suka membaca?"', 'Murid mengangkat tangan.']
+          : ['Teacher asks, "Who likes reading?"', 'A pupil raises their hand.']}
+        conclusion={language === 'bm' ? '➜ Murid merespons soalan cikgu.' : '➜ The pupil responds to the teacher\'s question.'}
+        onStart={() => setShowNote(false)}
+        onBack={onBack}
+      />
+    );
+  }
 
   if (phase === PHASE_RESULT) {
     const totalCorrect = score;
