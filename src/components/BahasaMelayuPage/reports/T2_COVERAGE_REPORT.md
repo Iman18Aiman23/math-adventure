@@ -40,8 +40,8 @@ Setiap tugas (R-item) dibina oleh **satu agen pada satu masa**, kemudian disahka
 | · 1.1a — Merespons Soalan (bertumpu + bercapah) | _(spec TBD)_ | ⏳ Pending | — |
 | · 1.1b — Melaksanakan Arahan | _(spec TBD)_ | ⏳ Pending | — |
 | · 1.1c — Pesanan & Permintaan | _(spec TBD)_ | ⏳ Pending | — |
-| · 1.2a — Bercerita (baca kuat) | _(spec TBD)_ | ⏳ Pending | — |
-| · 1.2b — Berbincang | _(spec TBD)_ | ⏳ Pending | — |
+| · 1.2a — Bercerita (baca kuat) | `BUILD_SPEC_M1_1.2a_1.2b.md` | ⏳ Pending | — |
+| · 1.2b — Berbincang | `BUILD_SPEC_M1_1.2a_1.2b.md` | ⏳ Pending | — |
 | R14, R16–R24 | _(see action table below)_ | ⏳ Pending | — |
 
 ### Progress (slice log)
