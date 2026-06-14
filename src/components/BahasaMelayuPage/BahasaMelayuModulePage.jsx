@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import BahasaMelayuModuleNavBar from './BahasaMelayuModuleNavBar';
-import { getModulesForYear } from './_shared/ModuleData';
 
 export default function BahasaMelayuModulePage({ year, activeModule, onModuleChange, onBack, onSelectTopic, children, language }) {
   const contentRef = useRef(null);
@@ -8,11 +7,6 @@ export default function BahasaMelayuModulePage({ year, activeModule, onModuleCha
   useEffect(() => {
     if (contentRef.current) contentRef.current.scrollTop = 0;
   }, [activeModule]);
-
-  const modules = getModulesForYear(year);
-  const stripped = activeModule.replace(/^\d-/, '');
-  const activeMod = modules.find(m => m.id === stripped);
-  const pageBg = activeMod?.theme?.background || '#fff';
 
   return (
     <div className="bm-module-page">
@@ -34,7 +28,9 @@ export default function BahasaMelayuModulePage({ year, activeModule, onModuleCha
           flex-direction: column;
           height: 100%;
           min-height: 0;
-          background: ${pageBg};
+          /* Single, uniform page background — nav bar + content share one color
+             (no per-module theme tint vs. hub gradient seam). */
+          background: #FFF9E6;
         }
         .bm-module-content {
           flex: 1;

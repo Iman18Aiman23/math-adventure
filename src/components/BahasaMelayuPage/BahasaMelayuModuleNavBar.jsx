@@ -56,23 +56,21 @@ export default function BahasaMelayuModuleNavBar({ year, activeModule, onModuleC
           width: 44px;
           height: 44px;
           border-radius: 50%;
-          /* Solid white "game button" with a chunky brown 3D ledge (palette) */
-          border: 3px solid #5C3D2E;
+          /* Solid white "game button" — flat, no border or 3D shadow ledge */
+          border: none;
           background: #ffffff;
           color: #5C3D2E;
           cursor: pointer;
           flex-shrink: 0;
           padding: 0;
-          box-shadow: 0 5px 0 #5C3D2E;
-          transition: transform .1s ease, box-shadow .1s ease;
+          box-shadow: none;
+          transition: transform .1s ease;
         }
         .bm-top-back:hover {
           transform: translateY(-1px);
-          box-shadow: 0 6px 0 #5C3D2E;
         }
         .bm-top-back:active {
-          transform: translateY(5px);
-          box-shadow: 0 0 0 #5C3D2E;
+          transform: translateY(1px);
         }
         /* Phone: fill the remaining row so stats stay readable */
         .bm-top-stats {

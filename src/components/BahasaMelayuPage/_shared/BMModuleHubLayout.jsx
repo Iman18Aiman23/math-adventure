@@ -125,9 +125,10 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
         .mod-3{--c:#A368F0;--cd:#7038D6;}
         .mod-4{--c:#FF6FA8;--cd:#DB3E7F;}
         .mod-5{--c:#1EC9B7;--cd:#0E9488;}
-        /* Warm yellow "sunburst" page background (palette) — unifies every module;
-           per-module color identity lives in the banner / nodes / tabs accents. */
-        .bm-hub-layout .module{background:linear-gradient(135deg,#FFF9E6 0%,#FFEAA7 100%)}
+        /* Single flat page background — matches .bm-module-page so the nav bar
+           and the hub content read as one uniform color (no gradient seam).
+           Per-module color identity lives in the banner / nodes / tabs accents. */
+        .bm-hub-layout .module{background:#FFF9E6}
 
         .journey-inner{max-width:460px;margin:0 auto}
 
