@@ -136,10 +136,8 @@ export default function BMLessonQuizLayout({
           --sp-2: clamp(8px, 1.6vh, 14px);
           --sp-3: clamp(12px, 2.4vh, 22px);
           height: 100dvh; overflow: hidden;
-          background:
-            radial-gradient(ellipse 75% 55% at 14% 0%, ${accentColor}21 0%, transparent 58%),
-            radial-gradient(ellipse 65% 48% at 90% 100%, ${accentColor}1a 0%, transparent 62%),
-            linear-gradient(180deg, #FDFEFF 0%, #F3F6FB 100%);
+          /* Plain white shell so kids focus on the Q&A (matches MathOperationsGame) */
+          background: #FFFFFF;
           font-family: 'Fredoka', system-ui, sans-serif;
           color: #1E293B;
           display: flex;
@@ -176,9 +174,14 @@ export default function BMLessonQuizLayout({
           white-space: nowrap;
         }
         .bm-pill.prog { background: #fff; color: ${accentColor}; border: 1.5px solid ${accentColor}44; box-shadow: 0 2px 6px -2px ${accentColor}33; }
-        .bm-pill.star { background: #FFF6D6; color: #B58800; border: 1.5px solid #FFE08A; }
-        .bm-pill.life { background: #FFE9EC; color: #E11D48; border: 1.5px solid #FCA5B4; }
-        .bm-pill.gem  { background: #E0F2FE; color: #0369A1; border: 1.5px solid #7DD3FC; }
+        /* Reward chips — standardized to match StatsBar (solid candy chip, white text) */
+        .bm-pill.life, .bm-pill.gem, .bm-pill.star {
+          color: #fff; border: none;
+          box-shadow: 0 2px 0 rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.30);
+        }
+        .bm-pill.life { background: #FF4B4B; }
+        .bm-pill.gem  { background: #1CC8EE; }
+        .bm-pill.star { background: #A560FF; }
         .bm-pill-group { display: flex; align-items: center; gap: 6px; min-width: 0; }
         @media (max-width: 360px) { .bm-pill-group { gap: 4px; } .bm-pill { padding: 3px 8px; } }
 

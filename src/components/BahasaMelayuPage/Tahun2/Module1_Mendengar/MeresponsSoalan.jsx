@@ -29,10 +29,8 @@ const C = {
 const STYLE = `
   .ms-root {
     height: 100dvh; overflow: hidden;
-    background:
-      radial-gradient(ellipse 70% 50% at 18% 0%, #FFE4C2 0%, transparent 60%),
-      radial-gradient(ellipse 60% 45% at 88% 100%, #FFD9A8 0%, transparent 65%),
-      linear-gradient(180deg, #FFF7ED 0%, #FFEDD5 55%, #FED7AA 100%);
+    /* Plain white shell so kids focus on the Q&A (matches MathOperationsGame) */
+    background: #FFFFFF;
     font-family: 'Fredoka', system-ui, sans-serif;
     display: flex; flex-direction: column;
   }
@@ -59,6 +57,15 @@ const STYLE = `
     white-space: nowrap;
     background: #FFFFFFCC; color: #9A5B10; border: 1.5px solid ${C.primary}44;
   }
+  /* Reward chips — standardized to match StatsBar (solid candy chip, white text) */
+  .ms-pill.chip {
+    color: #fff; border: none;
+    box-shadow: 0 2px 0 rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.30);
+  }
+  .ms-pill.chip.heart { background: #FF4B4B; }
+  .ms-pill.chip.gem   { background: #1CC8EE; }
+  .ms-pill.chip.star  { background: #A560FF; }
+  .ms-pill.chip.fire  { background: #FF9600; }
 
   .ms-bar-wrap {
     flex-shrink: 0; width: 100%;
@@ -85,7 +92,7 @@ const STYLE = `
     gap: clamp(12px, 2vh, 18px);
     text-align: center;
     background: #fff;
-    border: 3px solid #FFCF80;
+    border: 2.5px solid ${C.primary}33;
     border-radius: clamp(20px, 3.5vh, 28px);
     padding: clamp(20px, 3.5vh, 30px) clamp(16px, 4vw, 28px);
     box-shadow: 0 4px 0 ${C.primary}2e, 0 12px 26px -16px rgba(0,0,0,.2);
@@ -172,6 +179,20 @@ const STYLE = `
     box-shadow: 0 4px 0 #CBD5E1;
   }
 
+  /* Round mic button — sits beside the full-width submit in the footer */
+  .ms-mic-btn {
+    flex: 0 0 auto;
+    width: clamp(48px, 8vh, 56px); height: clamp(48px, 8vh, 56px);
+    border: none; border-radius: 50%; cursor: pointer;
+    font-size: clamp(20px, 3.6vh, 26px); line-height: 1;
+    color: #fff;
+    background: linear-gradient(180deg, ${C.primary}cc, ${C.primary});
+    box-shadow: 0 4px 0 ${C.primaryDark};
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .12s ease, box-shadow .12s;
+  }
+  .ms-mic-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 ${C.primaryDark}; }
+
   .ms-center {
     flex: 1; min-height: 0;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -212,7 +233,7 @@ const STYLE = `
     border-radius: 14px; background: #fff; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: transform .12s ease;
-    border: 2px solid #FFCF80;
+    border: 2px solid ${C.primary}33;
   }
 
   .ms-icon-btn:active { transform: translateY(2px); }
@@ -220,7 +241,7 @@ const STYLE = `
   .ms-type-input {
     width: 100%; max-width: 360px;
     padding: clamp(10px, 1.8vh, 14px) clamp(14px, 2.8vw, 20px);
-    border: 2.5px solid #FFCF80;
+    border: 2.5px solid ${C.primary}33;
     border-radius: 16px;
     font-family: 'Fredoka', sans-serif;
     font-size: clamp(18px, 3.4vh, 26px);
@@ -576,11 +597,11 @@ export default function MeresponsSoalan({ onBack, language = 'bm', topicComplete
           <div className="ms-stats">
             <span className="ms-pill">{idx + 1} / {TOTAL_ITEMS}</span>
             <span style={{ display: 'flex', gap: 6 }}>
-              <span className="ms-pill" style={{ background: '#FFE9EC', color: '#E11D48', borderColor: '#FCA5B4' }}>❤️ {hearts}</span>
-              <span className="ms-pill" style={{ background: '#E0F2FE', color: '#0369A1', borderColor: '#7DD3FC' }}>💎 {gems}</span>
-              <span className="ms-pill" style={{ background: '#FFEAD0', color: '#D9610B', borderColor: '#FFC081' }}>⭐ {score}</span>
+              <span className="ms-pill chip heart">❤️ {hearts}</span>
+              <span className="ms-pill chip gem">💎 {gems}</span>
+              <span className="ms-pill chip star">⭐ {score}</span>
               {streak > 0 && (
-                <span className="ms-pill" style={{ background: '#FFF6D6', color: '#B58800', borderColor: '#FFE08A' }}>🔥 {streak}</span>
+                <span className="ms-pill chip fire">🔥 {streak}</span>
               )}
             </span>
           </div>
@@ -693,10 +714,12 @@ export default function MeresponsSoalan({ onBack, language = 'bm', topicComplete
           )}
           {phase === PHASE_READY && !showFallback && (
             <>
-              <button className="ms-btn primary" onClick={() => startListening()} style={{ flex: '0 1 auto' }}>
-                🎤 {language === 'bm' ? 'Bercakap' : 'Speak'}
+              <button className="ms-mic-btn" onClick={() => startListening()}
+                title={language === 'bm' ? 'Bercakap' : 'Speak'}
+                aria-label={language === 'bm' ? 'Bercakap' : 'Speak'}>
+                🎤
               </button>
-              <button className="ms-btn success" onClick={handleTypeSubmit} disabled={!typedAnswer.trim()} style={{ flex: 1 }}>
+              <button className="ms-btn primary" onClick={handleTypeSubmit} disabled={!typedAnswer.trim()} style={{ flex: 1 }}>
                 ⌨️ {language === 'bm' ? 'Hantar' : 'Submit'}
               </button>
             </>
