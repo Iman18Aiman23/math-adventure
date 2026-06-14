@@ -37,9 +37,9 @@ Setiap tugas (R-item) dibina oleh **satu agen pada satu masa**, kemudian disahka
 | R13 / 1.2 (gabungan) — Bercerita & Berbincang | `BUILD_SPEC_R13_1.2.md` | 🔁 Superseded → pecah 1.2a + 1.2b | 2026-06-14 |
 | ~~R12 / 1.1 (gabungan)~~ | `BUILD_SPEC_R12_1.1.md` | 🔁 Superseded → pecah 1.1a + 1.1b + 1.1c | 2026-06-14 |
 | **M1 split (2→5 topik) — Keputusan 2026-06-14** | — | **⏳ 2/5** | — |
-| · 1.1a — Merespons Soalan (bertumpu + bercapah) | _(spec TBD)_ | ⏳ Pending | — |
-| · 1.1b — Melaksanakan Arahan | _(spec TBD)_ | ⏳ Pending | — |
-| · 1.1c — Pesanan & Permintaan | _(spec TBD)_ | ⏳ Pending | — |
+| · 1.1a — Merespons Soalan (bertumpu + bercapah) | `BUILD_SPEC_M1_1.1abc.md` | ⏳ Pending | — |
+| · 1.1b — Melaksanakan Arahan | `BUILD_SPEC_M1_1.1abc.md` | ⏳ Pending | — |
+| · 1.1c — Pesanan & Permintaan | `BUILD_SPEC_M1_1.1abc.md` | ⏳ Pending | — |
 | · 1.2a — Bercerita (baca kuat) | `BUILD_SPEC_M1_1.2a_1.2b.md` | ✅ Completed | 2026-06-14 |
 | · 1.2b — Berbincang | `BUILD_SPEC_M1_1.2a_1.2b.md` | ✅ Completed | 2026-06-14 |
 | R14, R16–R24 | _(see action table below)_ | ⏳ Pending | — |
