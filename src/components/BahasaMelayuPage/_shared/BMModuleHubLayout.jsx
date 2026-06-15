@@ -5,6 +5,7 @@ import { isTopicCompleted } from './useModuleProgress';
 import useGamification from '../../../hooks/useGamification';
 import CrownDisplay from '../../_shared/CrownDisplay';
 import BMTopicRobot from './BMTopicRobot';
+import BMUnifiedRobotM2 from './BMUnifiedRobotM2';
 import { BM_TOPIC_SCREENS } from './BMTopicScreens';
 
 function stripPrefix(id) {
@@ -32,6 +33,8 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
     const isFirst = index === 0;
     const IconComp = topic.icon;
     const screen = BM_TOPIC_SCREENS[topic.id];
+    // Tahun 2: every module uses the same standalone guardian robot head (no box).
+    const useStandaloneRobot = year === 2;
     const level = loading ? 0 : getTopicLevel(topic.id);
     const hasCrown = level >= 1;
 
@@ -40,13 +43,15 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
         {isFirst && <div className="start-bubble">MULA<i></i></div>}
         <button
           type="button"
-          className={`node-btn${screen ? ' node-robot' : ''}${topic.disabled ? ' node-disabled' : ''}${hasCrown && !topic.disabled ? ' node-done' : ''}`}
+          className={`node-btn${useStandaloneRobot ? ' node-unified' : screen ? ' node-robot' : ''}${topic.disabled ? ' node-disabled' : ''}${hasCrown && !topic.disabled ? ' node-done' : ''}`}
           aria-label={`TOPIK ${topic.num}`}
           onClick={() => !topic.disabled && handleTopicClick(topic.id)}
           disabled={topic.disabled}
         >
           <span className="node-ico">
-            {screen ? <BMTopicRobot mod={modNum}>{screen}</BMTopicRobot> : (IconComp ? <IconComp /> : null)}
+            {useStandaloneRobot
+              ? <BMUnifiedRobotM2 />
+              : screen ? <BMTopicRobot mod={modNum}>{screen}</BMTopicRobot> : (IconComp ? <IconComp /> : null)}
           </span>
         </button>
         <div className="node-meta">
@@ -115,7 +120,10 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
 
   return (
     <div className="bm-hub-layout">
-      {modules.map((mod, idx) => renderModule(mod, idx === activeIdx))}
+      {/* Render ONLY the active module (not all 5 hidden) — fewer robot SVGs in
+         the DOM, lower memory, faster paint. Switching tabs remounts the new
+         module (distinct key), which is cheap at this node count. */}
+      {modules[activeIdx] && renderModule(modules[activeIdx], true)}
 
       <style>{`
         .module[hidden]{display:none}
@@ -172,6 +180,13 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
         .node-btn:active{transform:translateY(8px) scale(.97);box-shadow:0 0 0 rgba(0,0,0,.16),0 4px 10px -6px rgba(0,0,0,.25)}
         /* robot-head nodes are rounded-squares, so the 3D ledge follows that shape */
         .node-btn.node-robot{border-radius:26px}
+        /* unified robot stands alone — no card box/ledge (the SVG carries its own
+           drop shadow), so strip the base node-btn background + box-shadow */
+        .node-btn.node-unified,
+        .node-btn.node-unified:active{background:transparent;border-radius:0;box-shadow:none}
+        @media (hover:hover){
+          .node-btn.node-unified:hover{box-shadow:none}
+        }
         .node-btn.node-disabled{cursor:default;filter:grayscale(1);
           box-shadow:0 8px 0 rgba(0,0,0,.14),0 15px 20px -8px rgba(0,0,0,.22)}
         .node-ico{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
@@ -192,7 +207,10 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
           padding:2px 12px;border-radius:99px;border:1px solid #E0A01244;position:relative;z-index:1}
         .trophy-all-done .trophy-count{background:#16A34A;color:#fff;border-color:#16A34A44}
 
-        .node-meta{margin-top:12px;text-align:center;max-width:180px}
+        /* stack each child on its own line (badge / label / crown) — flex column
+           so a short label like "Pesanan" never floats inline beside the badge */
+        .node-meta{margin-top:12px;text-align:center;max-width:180px;
+          display:flex;flex-direction:column;align-items:center}
         /* "TOPIK n" → solid module-color badge with white text (echoes the robot head) */
         .node-topic{display:inline-block;font-family:'Fredoka',sans-serif;font-weight:700;font-size:10px;letter-spacing:.1em;
           text-transform:uppercase;color:#fff;background:var(--cd);
@@ -206,6 +224,11 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
         .node-crown{margin-top:4px;min-height:14px;display:flex;align-items:center;justify-content:center}
         /* crown sits in .node-meta, the sibling AFTER the disabled button — not inside it */
         .node-disabled + .node-meta .node-crown{opacity:.45}
+
+        /* Standalone robots (T2 M1 headset, M2 guardian): pull the label group up
+           snug under the head (no card box, so the default 12px gap looks loose).
+           Layout stays stacked (TOPIK above label). */
+        .node-btn.node-unified + .node-meta{margin-top:-2px}
 
         .start-bubble{position:relative;margin-bottom:18px;
           background:#FF4A6B;color:#fff;
