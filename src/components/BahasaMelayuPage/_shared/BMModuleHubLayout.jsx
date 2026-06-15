@@ -4,9 +4,8 @@ import { TrophyIcon } from './BMJourneySvgs';
 import { isTopicCompleted } from './useModuleProgress';
 import useGamification from '../../../hooks/useGamification';
 import CrownDisplay from '../../_shared/CrownDisplay';
-import BMTopicRobot from './BMTopicRobot';
 import BMUnifiedRobotM2 from './BMUnifiedRobotM2';
-import { BM_TOPIC_SCREENS } from './BMTopicScreens';
+import BMGalaxyRobot from './BMGalaxyRobot';
 
 function stripPrefix(id) {
   return id ? id.replace(/^\d-/, '') : '';
@@ -29,12 +28,12 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
     if (onSelectTopic) onSelectTopic(topicId);
   }, [onSelectTopic]);
 
-  const renderTopic = (topic, index, modNum) => {
+  const renderTopic = (topic, index) => {
     const isFirst = index === 0;
     const IconComp = topic.icon;
-    const screen = BM_TOPIC_SCREENS[topic.id];
-    // Tahun 2: every module uses the same standalone guardian robot head (no box).
-    const useStandaloneRobot = year === 2;
+    // Standalone (boxless) shared robot heads: Tahun 1 → galaxy robot,
+    // Tahun 2 → guardian robot. Both carry their own shadow, so no node card.
+    const useStandaloneRobot = year === 1 || year === 2;
     const level = loading ? 0 : getTopicLevel(topic.id);
     const hasCrown = level >= 1;
 
@@ -43,15 +42,15 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
         {isFirst && <div className="start-bubble">MULA<i></i></div>}
         <button
           type="button"
-          className={`node-btn${useStandaloneRobot ? ' node-unified' : screen ? ' node-robot' : ''}${topic.disabled ? ' node-disabled' : ''}${hasCrown && !topic.disabled ? ' node-done' : ''}`}
+          className={`node-btn${useStandaloneRobot ? ' node-unified' : ''}${topic.disabled ? ' node-disabled' : ''}${hasCrown && !topic.disabled ? ' node-done' : ''}`}
           aria-label={`TOPIK ${topic.num}`}
           onClick={() => !topic.disabled && handleTopicClick(topic.id)}
           disabled={topic.disabled}
         >
           <span className="node-ico">
             {useStandaloneRobot
-              ? <BMUnifiedRobotM2 />
-              : screen ? <BMTopicRobot mod={modNum}>{screen}</BMTopicRobot> : (IconComp ? <IconComp /> : null)}
+              ? (year === 1 ? <BMGalaxyRobot /> : <BMUnifiedRobotM2 />)
+              : (IconComp ? <IconComp /> : null)}
           </span>
         </button>
         <div className="node-meta">
@@ -95,7 +94,7 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
           </div>
 
           <div className="trail">
-            {mod.topics.map((topic, i) => renderTopic(topic, i, mod.num))}
+            {mod.topics.map((topic, i) => renderTopic(topic, i))}
 
             <div className="step is-goal">
               <div className={`trophy-wrap${doneCount === totalTopics && totalTopics > 0 ? ' trophy-all-done' : ''}`}>
@@ -178,8 +177,6 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
             box-shadow:0 20px 25px -6px rgba(120,80,4,.4)}
         }
         .node-btn:active{transform:translateY(8px) scale(.97);box-shadow:0 0 0 rgba(0,0,0,.16),0 4px 10px -6px rgba(0,0,0,.25)}
-        /* robot-head nodes are rounded-squares, so the 3D ledge follows that shape */
-        .node-btn.node-robot{border-radius:26px}
         /* unified robot stands alone — no card box/ledge (the SVG carries its own
            drop shadow), so strip the base node-btn background + box-shadow */
         .node-btn.node-unified,
