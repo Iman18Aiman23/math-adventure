@@ -78,6 +78,7 @@ export const CURRICULUM = {
       { id: 'phonics-pop',         name: 'Phonics Pop',         emoji: '🎈', cardColor: '#FF3D8B', cardDark: '#E52E7A', status: 'complete' },
       { id: 'sound-matching',      name: 'Sound Matching',      emoji: '🎵', cardColor: '#00BCD4', cardDark: '#0097A7', status: 'complete' },
       { id: 'letter-sound-puzzle', name: 'Letter-Sound Puzzle', emoji: '🧩', cardColor: '#FF9800', cardDark: '#E68900', status: 'complete' },
+      { id: 'alphabet-express',    name: 'Alphabet Express',    emoji: '🚂', cardColor: '#0EA5E9', cardDark: '#0284C7', status: 'complete' },
     ],
     speaking: [
       { id: 'sebut-huruf',     name: 'Sebut Huruf',     emoji: '🔤', cardColor: '#FF6B35', cardDark: '#E55A25', status: 'complete' },

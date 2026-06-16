@@ -41,7 +41,7 @@ const PILLAR_ROBOT = {
 const QNA = [
   {
     q:    { bm: 'Apa yang dipelajari dalam pillar Membaca?', eng: 'What does the Reading pillar cover?' },
-    intro:{ bm: '7 permainan mengenal huruf, bunyi fonik dan suku kata:', eng: '7 games for letters, phonics sounds and syllables:' },
+    intro:{ bm: '7 permainan mengenal huruf, bunyi fonik dan susunan abjad:', eng: '7 games for letters, phonics sounds and alphabet order:' },
     items:[
       { bm: 'Belajar A–Z — Mengenal dan menyebut huruf A hingga Z',        eng: 'Learn A–Z — Recognise and say letters A to Z' },
       { bm: 'Alphabet Safari — Mengecam huruf melalui permainan mencari',   eng: 'Alphabet Safari — Spot letters through a finding game' },
@@ -49,7 +49,7 @@ const QNA = [
       { bm: 'Phonics Pop — Mengenal bunyi fonik setiap huruf',              eng: 'Phonics Pop — Learn the phonics sound of each letter' },
       { bm: 'Sound Matching — Memadankan bunyi dengan huruf',               eng: 'Sound Matching — Match sounds to letters' },
       { bm: 'Letter-Sound Puzzle — Menyambung huruf dengan bunyinya',       eng: 'Letter-Sound Puzzle — Connect letters with their sounds' },
-      { bm: 'Phonics Sprint — Latihan pantas mengecam bunyi huruf',         eng: 'Phonics Sprint — Quick-fire letter-sound practice' },
+      { bm: 'Alphabet Express — Menyusun huruf mengikut urutan abjad',      eng: 'Alphabet Express — Arrange letters in alphabet order' },
     ],
   },
   {

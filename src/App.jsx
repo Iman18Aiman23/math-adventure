@@ -38,6 +38,7 @@ const LetterTrace = React.lazy(() => import('./components/AgeGroup-4-6/LetterTra
 const PhoneticsPop = React.lazy(() => import('./components/AgeGroup-4-6/PhoneticsPop'));
 const SoundMatching = React.lazy(() => import('./components/AgeGroup-4-6/SoundMatching'));
 const LetterSoundPuzzle = React.lazy(() => import('./components/AgeGroup-4-6/LetterSoundPuzzle'));
+const AlphabetExpress = React.lazy(() => import('./components/AgeGroup-4-6/AlphabetExpress'));
 const SentenceBuilder = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module3_Menulis/BinaAyat'));
 const SukuKataBinaPerkataan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module2_Membaca/AsasMembaca'));
 const JenisKata = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module5_Tatabahasa/MorfologiGolonganKata'));
@@ -1153,6 +1154,9 @@ export default function App() {
         }
         if (currentAgeGame === 'letter-sound-puzzle') {
           return <LetterSoundPuzzle onBack={() => setCurrentAgeGame(null)} language={language} theme={THEMES[currentTheme]} />;
+        }
+        if (currentAgeGame === 'alphabet-express') {
+          return <AlphabetExpress onBack={() => setCurrentAgeGame(null)} language={language} theme={THEMES[currentTheme]} />;
         }
         if (currentAgeGame === 'alphabet-cards') {
           return <KVLearningPage46 onBack={() => setCurrentAgeGame(null)} language={language} />;

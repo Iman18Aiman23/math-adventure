@@ -193,6 +193,40 @@ const ScreenLetterSoundPuzzle = (
   </g>
 );
 
+/* Alphabet Express — little steam train with a letter coach + balloon. */
+const ScreenAlphabetExpress = (
+  <g transform="translate(0 6)">
+    <defs>
+      <linearGradient id="eeTrainBody" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stopColor="#FB7185" /><stop offset="100%" stopColor="#E11D48" /></linearGradient>
+      <linearGradient id="eeTrainCoach" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stopColor="#38BDF8" /><stop offset="100%" stopColor="#0284C7" /></linearGradient>
+      <radialGradient id="eeTrainBalloon" cx="32%" cy="30%" r="72%"><stop offset="0%" stopColor="#FFD740" /><stop offset="100%" stopColor="#FB923C" /></radialGradient>
+    </defs>
+    {/* steam puffs */}
+    <circle cx="124" cy="64" r="4" fill="#FFFFFF" opacity="0.7" />
+    <circle cx="130" cy="56" r="5.5" fill="#FFFFFF" opacity="0.5" />
+    {/* balloon over the coach */}
+    <ellipse cx="62" cy="62" rx="11" ry="13" fill="url(#eeTrainBalloon)" />
+    <path d="M62 75 Q60 86 64 96" fill="none" stroke="#B45309" strokeWidth="1.5" opacity="0.7" />
+    <text x="62" y="67" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="13" fill="#7c2d12">A</text>
+    {/* coach */}
+    <rect x="46" y="92" width="36" height="26" rx="6" fill="url(#eeTrainCoach)" stroke="#075985" strokeWidth="2" />
+    <text x="64" y="111" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="16" fill="#FFFFFF">A</text>
+    {/* locomotive */}
+    <rect x="90" y="98" width="22" height="20" rx="4" fill="url(#eeTrainBody)" stroke="#9F1239" strokeWidth="2" />
+    <rect x="110" y="86" width="26" height="32" rx="5" fill="url(#eeTrainBody)" stroke="#9F1239" strokeWidth="2" />
+    <rect x="120" y="70" width="7" height="18" rx="2" fill="#1E293B" />
+    <rect x="94" y="102" width="12" height="11" rx="2" fill="#CFFAFE" stroke="#FBBF24" strokeWidth="2" />
+    {/* wheels */}
+    <circle cx="56" cy="120" r="6" fill="#1E293B" stroke="#FBBF24" strokeWidth="2.5" />
+    <circle cx="74" cy="120" r="6" fill="#1E293B" stroke="#FBBF24" strokeWidth="2.5" />
+    <circle cx="100" cy="120" r="6" fill="#1E293B" stroke="#FBBF24" strokeWidth="2.5" />
+    <circle cx="124" cy="120" r="6" fill="#1E293B" stroke="#FBBF24" strokeWidth="2.5" />
+    {/* track */}
+    <line x1="42" y1="129" x2="140" y2="129" stroke="#64748B" strokeWidth="3" strokeLinecap="round" />
+    {spark}
+  </g>
+);
+
 
 /* ════════════════════════ SPEAKING (Bertutur) ════════════════════════ */
 
@@ -326,6 +360,7 @@ export const GAME_INNER = {
   'phonics-pop':         ScreenPhonicsPop,
   'sound-matching':      ScreenSoundMatching,
   'letter-sound-puzzle': ScreenLetterSoundPuzzle,
+  'alphabet-express':    ScreenAlphabetExpress,
   // Bertutur
   'sebut-huruf':         ScreenSebutHuruf,
   'sebut-perkataan':     ScreenSebutPerkataan,
