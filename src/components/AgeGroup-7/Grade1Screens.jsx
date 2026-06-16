@@ -405,11 +405,35 @@ const SIsiPadu = (
   </g>
 );
 
+/* Suku Kata KV — consonant balloon + vowel balloon blending into a KV syllable. */
+const SSukuKataKV = (
+  <g transform="translate(0 6)">
+    <defs>
+      <radialGradient id="g1KvCons" cx="32%" cy="30%" r="72%"><stop offset="0%" stopColor="#A5B4FC" /><stop offset="100%" stopColor="#4338CA" /></radialGradient>
+      <radialGradient id="g1KvVow" cx="32%" cy="30%" r="72%"><stop offset="0%" stopColor="#FDA4AF" /><stop offset="100%" stopColor="#BE123C" /></radialGradient>
+    </defs>
+    {/* consonant balloon */}
+    <circle cx="70" cy="80" r="19" fill="url(#g1KvCons)" stroke="rgba(255,255,255,0.6)" strokeWidth="2" />
+    <ellipse cx="63" cy="73" rx="5" ry="7" fill="#FFF" opacity="0.35" transform="rotate(-25 63 73)" />
+    <text x="70" y="88" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="22" fill="#fff">B</text>
+    {/* plus */}
+    <text x="100" y="88" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="22" fill="#FBBF24">+</text>
+    {/* vowel balloon */}
+    <circle cx="130" cy="80" r="19" fill="url(#g1KvVow)" stroke="rgba(255,255,255,0.6)" strokeWidth="2" />
+    <ellipse cx="123" cy="73" rx="5" ry="7" fill="#FFF" opacity="0.35" transform="rotate(-25 123 73)" />
+    <text x="130" y="88" textAnchor="middle" fontFamily="'Baloo 2','Comic Sans MS',sans-serif" fontWeight="800" fontSize="22" fill="#fff">A</text>
+    {/* blended result */}
+    <text x="100" y="128" textAnchor="middle" fontFamily="'Baloo 2',sans-serif" fontWeight="800" fontSize="17" fill="#FFFFFF">BA</text>
+    {spark}
+  </g>
+);
+
 /* ── Map: age-7 game id → screen artwork. ── */
 export const GRADE1_GAME_INNER = {
   // Membaca
   'sentence-builder':         SBinaAyat,
   'suku-kata-bina-perkataan': SSukuKata,
+  'suku-kata-kv':             SSukuKataKV,
   'jenis-kata':               SJenisKata,
   'kata-tanya':               SKataTanya,
   'kata-hubung-sendi':        SKataHubung,

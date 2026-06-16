@@ -23,11 +23,12 @@ const PILLAR_META = {
 const QNA = [
   {
     q:    { bm: 'Apa yang dipelajari dalam pillar Membaca?',    eng: 'What topics are covered in the Reading pillar?'    },
-    intro:{ bm: '9 permainan merangkumi kemahiran tatabahasa Bahasa Melayu Tahun 1 KSSR (18 daripada 21 objektif BM):',
-            eng: '9 games covering Year 1 Bahasa Melayu grammar skills (18 of 21 BM objectives):' },
+    intro:{ bm: '10 permainan merangkumi kemahiran tatabahasa Bahasa Melayu Tahun 1 KSSR (18 daripada 21 objektif BM):',
+            eng: '10 games covering Year 1 Bahasa Melayu grammar skills (18 of 21 BM objectives):' },
     items:[
       { bm: 'Bina Ayat — Membina ayat penyata dan ayat tanya yang mudah (Obj. 8, 21)',             eng: 'Sentence Builder — Build simple statements and question sentences (Obj. 8, 21)'        },
       { bm: 'Suku Kata — Membaca dan membina perkataan menggunakan suku kata (Obj. 1, 4, 7)',       eng: 'Syllable Builder — Read and form words from syllables (Obj. 1, 4, 7)'                  },
+      { bm: 'Suku Kata KV — Menggabung konsonan dan vokal membentuk suku kata KV (Obj. 1, 4, 7)',   eng: 'KV Syllables — Blend a consonant and vowel into a KV syllable (Obj. 1, 4, 7)'          },
       { bm: 'Jenis Kata — Mengenal kata nama, kata kerja dan kata adjektif (Obj. 16, 17)',          eng: 'Word Types — Identify nouns, verbs and adjectives (Obj. 16, 17)'                       },
       { bm: 'Kata Tanya — Menggunakan kata tanya: siapa, apa, di mana, bila, mengapa (Obj. 2)',     eng: 'Question Words — Use who, what, where, when and why (Obj. 2)'                          },
       { bm: 'Kata Hubung & Sendi — Menggunakan kata hubung dan kata sendi nama (Obj. 18)',          eng: 'Connectors & Prepositions — Use conjunctions and prepositions correctly (Obj. 18)'     },

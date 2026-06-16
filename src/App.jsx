@@ -41,6 +41,7 @@ const LetterSoundPuzzle = React.lazy(() => import('./components/AgeGroup-4-6/Let
 const AlphabetExpress = React.lazy(() => import('./components/AgeGroup-4-6/AlphabetExpress'));
 const SentenceBuilder = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module3_Menulis/BinaAyat'));
 const SukuKataBinaPerkataan = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module2_Membaca/AsasMembaca'));
+const SukuKataKV = React.lazy(() => import('./components/AgeGroup-7/SukuKataKV'));
 const JenisKata = React.lazy(() => import('./components/BahasaMelayuPage/Tahun1/Module5_Tatabahasa/MorfologiGolonganKata'));
 const KataTanya = React.lazy(() => import('./components/AgeGroup-7/KataTanya'));
 const KataHubungSendi = React.lazy(() => import('./components/BahasaMelayuPage/Tahun2/Module5_Tatabahasa/MorfologiPerluasan'));
@@ -1199,6 +1200,9 @@ export default function App() {
         }
         if (currentAgeGame === 'suku-kata-bina-perkataan') {
           return <SukuKataBinaPerkataan onBack={() => setCurrentAgeGame(null)} language={language} />;
+        }
+        if (currentAgeGame === 'suku-kata-kv') {
+          return <SukuKataKV onBack={() => setCurrentAgeGame(null)} language={language} theme={THEMES[currentTheme]} />;
         }
         if (currentAgeGame === 'jenis-kata') {
           return <JenisKata onBack={() => setCurrentAgeGame(null)} language={language} />;

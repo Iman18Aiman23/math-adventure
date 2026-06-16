@@ -102,6 +102,7 @@ export const CURRICULUM = {
     reading: [
       { id: 'sentence-builder',         name: 'Bina Ayat',              emoji: '📝', cardColor: '#FF6B35', cardDark: '#E55A25', status: 'complete' },
       { id: 'suku-kata-bina-perkataan', name: 'Suku Kata',              emoji: '🔤', cardColor: '#7C4DFF', cardDark: '#6B3EE6', status: 'complete' },
+      { id: 'suku-kata-kv',             name: 'Suku Kata KV',           emoji: '🌸', cardColor: '#10B981', cardDark: '#059669', status: 'complete' },
       { id: 'jenis-kata',               name: 'Jenis Kata',             emoji: '🔍', cardColor: '#00BCD4', cardDark: '#0097A7', status: 'complete' },
       { id: 'kata-tanya',               name: 'Kata Tanya',             emoji: '❓', cardColor: '#E91E8C', cardDark: '#C2177A', status: 'complete' },
       { id: 'kata-hubung-sendi',        name: 'Kata Hubung & Sendi',    emoji: '🔗', cardColor: '#009688', cardDark: '#00796B', status: 'complete' },
