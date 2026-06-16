@@ -6,9 +6,22 @@ import useGamification from '../../../hooks/useGamification';
 import CrownDisplay from '../../_shared/CrownDisplay';
 import BMUnifiedRobotM2 from './BMUnifiedRobotM2';
 import BMGalaxyRobot from './BMGalaxyRobot';
+import BMVoyagerRobotM3 from './BMVoyagerRobotM3';
 
 function stripPrefix(id) {
   return id ? id.replace(/^\d-/, '') : '';
+}
+
+// Small padlock badge for topics still locked behind earlier ones.
+function LockIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="4" y="10" width="16" height="11" rx="2.5" fill="#fff" />
+      <path d="M8 10V7.5a4 4 0 0 1 8 0V10" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" />
+      <circle cx="12" cy="15" r="1.7" fill="#64748B" />
+      <rect x="11.2" y="15.5" width="1.6" height="3.4" rx=".8" fill="#64748B" />
+    </svg>
+  );
 }
 
 // Serpentine path: centre → right → centre → left, so every consecutive
@@ -28,30 +41,43 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
     if (onSelectTopic) onSelectTopic(topicId);
   }, [onSelectTopic]);
 
-  const renderTopic = (topic, index) => {
+  const renderTopic = (topic, index, prevDone) => {
     const isFirst = index === 0;
     const IconComp = topic.icon;
     // Standalone (boxless) shared robot heads: Tahun 1 → galaxy robot,
-    // Tahun 2 → guardian robot. Both carry their own shadow, so no node card.
-    const useStandaloneRobot = year === 1 || year === 2;
+    // Tahun 2 → guardian robot, Tahun 3 → voyager robot. Each carries its own
+    // shadow, so no node card.
+    const useStandaloneRobot = year === 1 || year === 2 || year === 3;
     const level = loading ? 0 : getTopicLevel(topic.id);
     const hasCrown = level >= 1;
+    // Progression lock (Tahun 1 & 2 only): the first topic of every module is
+    // always open; every later topic stays greyed + padlocked (and untappable)
+    // until the topic before it earns a crown. Never lock while gamification is
+    // still loading, so we don't flash an all-locked trail on first paint.
+    const lockEnabled = year === 1 || year === 2;
+    const locked = lockEnabled && !loading && !isFirst && !prevDone;
+    const blocked = topic.disabled || locked;
 
     return (
       <div key={topic.id} className="step" style={{ '--dir': SERPENTINE[index % 4] }}>
         {isFirst && <div className="start-bubble">MULA<i></i></div>}
         <button
           type="button"
-          className={`node-btn${useStandaloneRobot ? ' node-unified' : ''}${topic.disabled ? ' node-disabled' : ''}${hasCrown && !topic.disabled ? ' node-done' : ''}`}
-          aria-label={`TOPIK ${topic.num}`}
-          onClick={() => !topic.disabled && handleTopicClick(topic.id)}
-          disabled={topic.disabled}
+          className={`node-btn${useStandaloneRobot ? ' node-unified' : ''}${blocked ? ' node-disabled' : ''}${locked ? ' node-locked' : ''}${hasCrown && !blocked ? ' node-done' : ''}`}
+          aria-label={locked ? `TOPIK ${topic.num} — terkunci` : `TOPIK ${topic.num}`}
+          onClick={() => !blocked && handleTopicClick(topic.id)}
+          disabled={blocked}
         >
           <span className="node-ico">
             {useStandaloneRobot
-              ? (year === 1 ? <BMGalaxyRobot /> : <BMUnifiedRobotM2 />)
+              ? (year === 1
+                  ? <BMGalaxyRobot />
+                  : year === 2
+                    ? <BMUnifiedRobotM2 />
+                    : <BMVoyagerRobotM3 />)
               : (IconComp ? <IconComp /> : null)}
           </span>
+          {locked && <span className="node-lock"><LockIcon /></span>}
         </button>
         <div className="node-meta">
           <div className="node-topic">TOPIK {topic.num}</div>
@@ -94,7 +120,9 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
           </div>
 
           <div className="trail">
-            {mod.topics.map((topic, i) => renderTopic(topic, i))}
+            {mod.topics.map((topic, i) =>
+              renderTopic(topic, i, i === 0 ? true : !loading && getTopicLevel(mod.topics[i - 1].id) >= 1)
+            )}
 
             <div className="step is-goal">
               <div className={`trophy-wrap${doneCount === totalTopics && totalTopics > 0 ? ' trophy-all-done' : ''}`}>
@@ -135,7 +163,7 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
         /* Single flat page background — matches .bm-module-page so the nav bar
            and the hub content read as one uniform color (no gradient seam).
            Per-module color identity lives in the banner / nodes / tabs accents. */
-        .bm-hub-layout .module{background:#FFF9E6}
+        .bm-hub-layout .module{background:#F7F8FA}
 
         .journey-inner{max-width:460px;margin:0 auto}
 
@@ -186,6 +214,28 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
         }
         .node-btn.node-disabled{cursor:default;filter:grayscale(1);
           box-shadow:0 8px 0 rgba(0,0,0,.14),0 15px 20px -8px rgba(0,0,0,.22)}
+        /* Locked (not yet unlocked) — desaturate AND dim ONLY the robot art so it
+           reads as "asleep". The grayscale/opacity lives on .node-ico (not the
+           whole button) so the padlock badge beside it stays crisp & legible
+           (a child can't escape a parent's filter). */
+        .node-btn.node-locked{filter:none}
+        .node-btn.node-locked .node-ico{filter:grayscale(1) opacity(.55)}
+        /* A unified robot carries its own drop shadow and has no card box, so the
+           ledge box-shadow that .node-disabled re-adds renders as a square block
+           behind the head (and a black line on hover). Higher-specificity reset
+           keeps locked unified robots boxless in every state. */
+        .node-btn.node-unified.node-disabled,
+        .node-btn.node-unified.node-disabled:active{box-shadow:none}
+        @media (hover:hover){
+          .node-btn.node-unified.node-disabled:hover{box-shadow:none;transform:none}
+        }
+        .node-lock{position:absolute;right:-2px;bottom:-2px;width:30px;height:30px;border-radius:50%;
+          background:#94A3B8;border:3px solid #fff;display:flex;align-items:center;justify-content:center;
+          box-shadow:0 3px 6px rgba(0,0,0,.28);z-index:3}
+        .node-lock svg{width:16px;height:16px;display:block}
+        /* a locked node's label group reads muted too */
+        .node-locked + .node-meta .node-topic{background:#94A3B8}
+        .node-locked + .node-meta .node-label{color:#94A3B8;border-color:#CBD5E1;box-shadow:0 4px 0 #CBD5E1}
         .node-ico{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
         .node-ico svg{width:100%;height:100%;display:block}
 

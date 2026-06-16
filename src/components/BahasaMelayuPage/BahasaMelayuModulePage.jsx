@@ -30,7 +30,7 @@ export default function BahasaMelayuModulePage({ year, activeModule, onModuleCha
           min-height: 0;
           /* Single, uniform page background — nav bar + content share one color
              (no per-module theme tint vs. hub gradient seam). */
-          background: #FFF9E6;
+          background: #F7F8FA;
         }
         .bm-module-content {
           flex: 1;
