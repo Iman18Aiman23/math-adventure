@@ -50,11 +50,12 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, l
     const useStandaloneRobot = year === 1 || year === 2 || year === 3;
     const level = loading ? 0 : getTopicLevel(topic.id);
     const hasCrown = level >= 1;
-    // Progression lock (Tahun 1 & 2 only): the first topic of every module is
+    // Progression lock (Tahun 1 only): the first topic of every module is
     // always open; every later topic stays greyed + padlocked (and untappable)
     // until the topic before it earns a crown. Never lock while gamification is
     // still loading, so we don't flash an all-locked trail on first paint.
-    const lockEnabled = year === 1 || year === 2;
+    // Tahun 2 is fully unlocked — every topic is open from the start.
+    const lockEnabled = year === 1;
     const locked = lockEnabled && !loading && !isFirst && !prevDone;
     const blocked = topic.disabled || locked;
 

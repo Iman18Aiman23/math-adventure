@@ -15,6 +15,24 @@
 
 ---
 
+## 🔖 ACTIVE / PENDING TASKS
+
+> **Ask "what's pending in BM?" and start here.** This is one of two synced backups — the other is Claude's MEMORY (`project_perkataan_sukar_status`). Keep both in sync. Detailed build specs live in `.opencode/plans/`.
+
+### 🔄 Perkataan Sukar (T2 M2 · TOPIK 2.1) — trilingual Digraf/Diftong flashcard rebuild
+- **Spec & live status board:** `.opencode/plans/PERKATAAN_SUKAR_T2_M2_PLAN.md` (§8 Status Board is source of truth).
+- **Data:** `src/data/curriculum/bm_perkataan_sukar.js` · **Component:** `Tahun2/Module2_Membaca/PerkataanSukarLearningPage.jsx` (generic — slices are data-only).
+- **Workflow:** one slice at a time → agent builds → 🔍 pending → Claude verifies vs DoD → ✅.
+- **Progress (2026-06-17):**
+  - ✅ Slice 1 Digraf **ng** (72 words / 14 letters)
+  - ✅ Slice 2 Digraf **ny** (23 words / 10 letters)
+  - ⏳ Slice 3 Digraf **kh** ← **NEXT**
+  - ⏳ Slice 4 Digraf **sy** · ⏳ 5 Diftong **ai** · ⏳ 6 Diftong **au** · ⏳ 7 Diftong **oi**
+- **Resume:** say *"continue Perkataan Sukar — Slice 3 (Digraf kh)"*.
+- **Outstanding for whole task:** final human Jawi-literate review of all spellings (slices 1–7) before production; optional `ny` adds (minyak/monyet/kunyit). Jawi convention: final `-a` → alif ا.
+
+---
+
 ## Table of Contents
 
 1. [Silibus BM KSSR (Tahap 1)](#-silibus-bahasa-melayu-kssr-tahap-1)
@@ -902,7 +920,7 @@ HomePage
 |------|-----------|----------|--------|
 | `Module1_Mendengar/MendengarMerespons.jsx` | M1: Mendengar | 1.1 Mendengar & Merespons | ✅ Reuse (migrated from AgeGroup-7) |
 | `Module1_Mendengar/BerceritaBerbincang.jsx` | M1: Mendengar | 1.2 Bercerita & Berbincang | ✅ Reuse (migrated from AgeGroup-7) |
-| `Module2_Membaca/PerkataanSukar.jsx` | M2: Membaca | 2.1 Perkataan Sukar | ✅ New |
+| `Module2_Membaca/PerkataanSukar.jsx` | M2: Membaca | 2.1 Perkataan Sukar | ✅ Rebuilt — trilingual (RUMI/ENG/JAWI) digraf & diftong flashcard module, KV-style 3-level nav; quiz retained for crown. |
 | `Module2_Membaca/TeksPelbagaiGaya.jsx` | M2: Membaca | 2.2 Teks Pelbagai Gaya | ✅ Reuse (migrated from AgeGroup-8) |
 | `Module2_Membaca/MentafsirMenaakul.jsx` | M2: Membaca | 2.3 Mentafsir & Menaakul | ✅ Reuse (migrated from AgeGroup-8) |
 | `Module3_Menulis/MenulisMekanis.jsx` | M3: Menulis | 3.1 Menulis Mekanis | ✅ New |
