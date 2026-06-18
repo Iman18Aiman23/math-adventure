@@ -130,8 +130,8 @@ export default function Tahun1ModuleHubLayout({
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-5px); }
         }
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-5px); }
+        @media (prefers-reduced-motion: reduce) {
+          .pi-mhub-stage svg { animation: none; }
         }
         .floatA{animation:floatA 3.6s ease-in-out infinite;transform-origin:center}
         .floatA.d1{animation-delay:.4s}.floatA.d2{animation-delay:.8s}.floatA.d3{animation-delay:1.2s}
