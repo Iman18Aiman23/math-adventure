@@ -3,11 +3,12 @@ import Tahun1ModuleHubLayout from '../../../PendidikanIslamPage/Tahun1/Tahun1Mod
 import MatematikTopicRobotT2 from '../../MatematikTopicRobotT2';
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#E0E7FF 0%,#A5B4FC 50%,#4338CA 100%)',
-  dark: '#4338CA',
-  accent: '#6366F1',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#E0E7FF 0%,#A5B4FC 55%,#4338CA 100%)',
-  pillGradient: 'linear-gradient(180deg,#6366F1,#4338CA)',
+  pageGradient: 'linear-gradient(180deg,#E6F1FB 0%,#9FC9F2 50%,#1E7AC9 100%)',
+  dark: '#1A5A96',
+  cd: '#1A78C7',
+  accent: '#36A9F0',
+  stageGradient: 'radial-gradient(ellipse at 50% 34%,#D5E9FA 0%,#7DB8ED 55%,#1E7AC9 100%)',
+  pillGradient: 'linear-gradient(180deg,#36A9F0,#1A78C7)',
 };
 
 // Shared robot icon — recolours from THEME so every topic in this module matches.
@@ -51,6 +52,7 @@ export default function SukatanModule({ onSelectTopic, language = 'bm' }) {
       moduleName="Sukatan dan Geometri"
       moduleNameEn="Measurement and Geometry"
       theme={THEME}
+      headerVariant="banner"
       topics={TOPICS}
       onSelectTopic={onSelectTopic}
       language={language}

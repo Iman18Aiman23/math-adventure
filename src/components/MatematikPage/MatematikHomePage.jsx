@@ -58,10 +58,10 @@ export default function MatematikHomePage({ onBack, onSelectYear, language = 'bm
                 <span className="mt-brand-dot">
                   <svg viewBox="0 0 24 24" fill="none">
                     <rect x="4" y="4" width="16" height="16" rx="3" fill="#fff"/>
-                    <text x="12" y="15" textAnchor="middle" fontFamily="Baloo 2,sans-serif" fontWeight="800" fontSize="12" fill="#0F766E">+</text>
+                    <text x="12" y="15" textAnchor="middle" fontFamily="Fredoka,sans-serif" fontWeight="700" fontSize="13" fill="#7A4FD0">+</text>
                   </svg>
                 </span>
-                <b className="mt-brand-text">Math<span>Adventure</span></b>
+                <b className="mt-brand-text">Mate<span>matik</span></b>
               </div>
 
               <p className="mt-tagline">

@@ -1,11 +1,11 @@
 .mt-body {
     flex: 1; display: flex; flex-direction: column;
-    background: linear-gradient(180deg, #F0FDFA 0%, #CCFBF1 40%, #F5F3FF 100%);
+    background: #F7F8FA;
 }
 
 .mt-home-root {
     display: flex; flex-direction: column; flex: 1; width: 100%; overflow: hidden;
-    background: #F0FDFA;
+    background: #F7F8FA;
 }
 
 .mt-home-scroll {
@@ -43,16 +43,16 @@
 }
 .mt-brand-dot {
     width: 30px; height: 30px; border-radius: 9px;
-    background: linear-gradient(180deg, #5EEAD4, #0F766E);
-    box-shadow: 0 3px 0 #0B5E7E;
+    background: linear-gradient(135deg, #9A6BE8, #7A4FD0);
+    box-shadow: 0 3px 0 #3F2A86;
     display: grid; place-items: center;
 }
 .mt-brand-dot svg { width: 18px; height: 18px; }
 .mt-brand-text {
-    font-family: 'Baloo 2', sans-serif; font-weight: 800;
-    font-size: 20px; letter-spacing: -.01em; color: #0E5E7E;
+    font-family: 'Fredoka', system-ui, sans-serif; font-weight: 700;
+    font-size: 20px; letter-spacing: -.01em; color: #3F2A86;
 }
-.mt-brand-text span { color: #14B8A6; }
+.mt-brand-text span { color: #7A4FD0; }
 
 .mt-tagline {
     font-family: 'Fredoka', sans-serif; font-weight: 600;
@@ -61,9 +61,9 @@
 }
 
 .mt-home-h1 {
-    font-family: 'Baloo 2', sans-serif; font-weight: 800;
+    font-family: 'Fredoka', system-ui, sans-serif; font-weight: 700;
     font-size: 34px; line-height: 1.1; letter-spacing: -.015em;
-    color: #123A5E; margin: 0 0 6px; text-align: center;
+    color: #3F2A86; margin: 0 0 6px; text-align: center;
     text-shadow: 0 2px 0 #fff; white-space: nowrap;
 }
 
@@ -122,7 +122,7 @@
 @keyframes mt-year-pulse { 0%,100% { opacity: .55; transform: scale(.96); } 50% { opacity: 1; transform: scale(1.04); } }
 
 .mt-ribbon {
-    margin-top: 6px; z-index: 2; font-family: 'Baloo 2', sans-serif;
+    margin-top: 6px; z-index: 2; font-family: 'Nunito', sans-serif;
     font-weight: 800; font-size: 17px; color: #fff; white-space: nowrap;
     padding: 6px 22px; border-radius: 999px; position: relative;
     background: linear-gradient(180deg, var(--r1), var(--r2));
@@ -138,31 +138,32 @@
 .mt-meta b { color: var(--accent); font-weight: 700; }
 
 .mt-go {
-    margin-top: 6px; font-family: 'Baloo 2', sans-serif;
-    font-weight: 700; font-size: 13px; letter-spacing: .04em;
+    margin-top: 6px; font-family: 'Nunito', sans-serif;
+    font-weight: 800; font-size: 13px; letter-spacing: .04em;
     white-space: nowrap; color: #fff; background: var(--accent);
     padding: 5px 14px; border-radius: 999px; display: inline-flex;
     align-items: center; gap: 7px; box-shadow: 0 3px 0 var(--r3);
 }
 
-/* ── Year theme colours ── */
+/* ── Year theme colours — standardized to the module palette
+   (Tahun 1 orange · Tahun 2 blue · Tahun 3 purple) ── */
 .mt-year.t1 {
-    --soft: #E6FCF5; --ring: #99F6E4; --sh: rgba(15,118,110,.32);
-    --d1: #CCFBF1;   --d2: #5EEAD4;  --d3: #14B8A6;
-    --r1: #2DD4BF;   --r2: #14B8A6;  --r3: #0F766E;
-    --accent: #14B8A6;
+    --soft: #FFF1E0; --ring: #FFD3A8; --sh: rgba(232,130,26,.32);
+    --d1: #FEE9C8;   --d2: #F5B76A;  --d3: #FF8F3D;
+    --r1: #FFA45C;   --r2: #FF8F3D;  --r3: #FF6F00;
+    --accent: #E8821A;
 }
 .mt-year.t2 {
-    --soft: #EEF2FF; --ring: #C7D2FE; --sh: rgba(67,56,202,.32);
-    --d1: #E0E7FF;   --d2: #A5B4FC;  --d3: #6366F1;
-    --r1: #818CF8;   --r2: #6366F1;  --r3: #4338CA;
-    --accent: #6366F1;
+    --soft: #E6F1FB; --ring: #A8D0F5; --sh: rgba(30,122,201,.32);
+    --d1: #D5E9FA;   --d2: #7DB8ED;  --d3: #36A9F0;
+    --r1: #5BB8F2;   --r2: #36A9F0;  --r3: #1A78C7;
+    --accent: #1A78C7;
 }
 .mt-year.t3 {
-    --soft: #F5F3FF; --ring: #E9D5FF; --sh: rgba(126,34,206,.32);
-    --d1: #F3E8FF;   --d2: #D8B4FE;  --d3: #A855F7;
-    --r1: #C084FC;   --r2: #A855F7;  --r3: #7E22CE;
-    --accent: #A855F7;
+    --soft: #F0EBFB; --ring: #D6C4F5; --sh: rgba(112,56,214,.32);
+    --d1: #EBE2FB;   --d2: #B49EEE;  --d3: #A368F0;
+    --r1: #B98AF2;   --r2: #A368F0;  --r3: #7038D6;
+    --accent: #7038D6;
 }
 
 @media (max-width: 560px) {

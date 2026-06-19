@@ -3,11 +3,12 @@ import Tahun1ModuleHubLayout from '../../../PendidikanIslamPage/Tahun1/Tahun1Mod
 
 const CARD_BG = '#F3FDFA';
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#CCFBF1 0%,#5EEAD4 50%,#0F766E 100%)',
-  dark: '#0F766E',
-  accent: '#14B8A6',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#CCFBF1 0%,#5EEAD4 55%,#0F766E 100%)',
-  pillGradient: 'linear-gradient(180deg,#14B8A6,#0F766E)',
+  pageGradient: 'linear-gradient(180deg,#FFF4E6 0%,#FACD94 50%,#E8821A 100%)',
+  dark: '#C2410C',
+  cd: '#FF6F00',
+  accent: '#FF8F3D',
+  stageGradient: 'radial-gradient(ellipse at 50% 32%,#FEE9C8 0%,#F5B76A 55%,#E8821A 100%)',
+  pillGradient: 'linear-gradient(180deg,#FF8F3D,#FF6F00)',
 };
 
 const TOPICS = [
@@ -236,6 +237,7 @@ export default function NomborModule({ onSelectTopic, language = 'bm' }) {
       moduleName="Nombor dan Operasi"
       moduleNameEn="Numbers and Operations"
       theme={THEME}
+      headerVariant="banner"
       topics={TOPICS}
       onSelectTopic={onSelectTopic}
       language={language}

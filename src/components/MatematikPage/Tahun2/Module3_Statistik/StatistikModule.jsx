@@ -3,11 +3,12 @@ import Tahun1ModuleHubLayout from '../../../PendidikanIslamPage/Tahun1/Tahun1Mod
 import MatematikTopicRobotT2 from '../../MatematikTopicRobotT2';
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#F3E8FF 0%,#D8B4FE 50%,#7E22CE 100%)',
-  dark: '#7E22CE',
-  accent: '#A855F7',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#F3E8FF 0%,#D8B4FE 55%,#7E22CE 100%)',
-  pillGradient: 'linear-gradient(180deg,#A855F7,#7E22CE)',
+  pageGradient: 'linear-gradient(180deg,#F0EBFB 0%,#C3ABF0 50%,#7A4FD0 100%)',
+  dark: '#6D28D9',
+  cd: '#7038D6',
+  accent: '#A368F0',
+  stageGradient: 'radial-gradient(ellipse at 50% 34%,#EBE2FB 0%,#B49EEE 55%,#7A4FD0 100%)',
+  pillGradient: 'linear-gradient(180deg,#A368F0,#7038D6)',
 };
 
 // Shared robot icon — recolours from THEME so every topic in this module matches.
@@ -30,6 +31,7 @@ export default function StatistikModule({ onSelectTopic, language = 'bm' }) {
       moduleName="Statistik"
       moduleNameEn="Statistics"
       theme={THEME}
+      headerVariant="banner"
       topics={TOPICS}
       onSelectTopic={onSelectTopic}
       language={language}

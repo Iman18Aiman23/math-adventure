@@ -53,7 +53,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
     if (id === 'age-4-6') {
       return (
         <svg viewBox="0 0 100 100" width="60" height="60" className="age-icon-bounce">
-          <circle cx="50" cy="50" r="50" fill="rgba(255,255,255,0.2)" />
+          <circle cx="50" cy="50" r="50" fill="rgba(255,255,255,0.25)" />
           <path d="M50 15 L60 40 L85 40 L65 55 L75 80 L50 65 L25 80 L35 55 L15 40 L40 40 Z" fill="#FFFFFF" />
           <path d="M50 25 L56 42 L74 42 L60 52 L66 68 L50 58 L34 68 L40 52 L26 42 L44 42 Z" fill="#FFD93D" />
         </svg>
@@ -61,7 +61,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
     } else if (id === 'age-7') {
       return (
         <svg viewBox="0 0 100 100" width="60" height="60" className="age-icon-bounce">
-          <circle cx="50" cy="50" r="50" fill="rgba(255,255,255,0.2)" />
+          <circle cx="50" cy="50" r="50" fill="rgba(255,255,255,0.25)" />
           <path d="M50 15 L80 35 L80 65 L50 85 L20 65 L20 35 Z" fill="#FFFFFF" />
           <path d="M50 25 L70 40 L70 60 L50 75 L30 60 L30 40 Z" fill="#4ECDC4" />
           <circle cx="50" cy="50" r="8" fill="#FFFFFF" />
@@ -70,7 +70,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
     } else if (id === 'age-8') {
       return (
         <svg viewBox="0 0 100 100" width="60" height="60" className="age-icon-bounce">
-          <circle cx="50" cy="50" r="50" fill="rgba(255,255,255,0.2)" />
+          <circle cx="50" cy="50" r="50" fill="rgba(255,255,255,0.25)" />
           <path d="M20 30 L80 30 L75 70 Q50 90 25 70 Z" fill="#FFFFFF" />
           <path d="M30 35 L70 35 L66 65 Q50 78 34 65 Z" fill="#FFB347" />
           <rect x="40" y="15" width="20" height="15" fill="#FFFFFF" />
@@ -81,7 +81,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
       // age-9 and any fallback
       return (
         <svg viewBox="0 0 100 100" width="60" height="60" className="age-icon-bounce">
-          <circle cx="50" cy="50" r="50" fill="rgba(255,255,255,0.2)" />
+          <circle cx="50" cy="50" r="50" fill="rgba(255,255,255,0.25)" />
           <path d="M50 20 L65 45 L90 45 L70 60 L80 85 L50 70 L20 85 L30 60 L10 45 L35 45 Z" fill="#FFFFFF" />
           <path d="M50 30 L60 50 L80 50 L65 63 L73 83 L50 68 L27 83 L35 63 L20 50 L40 50 Z" fill="#E5A4FF" />
         </svg>
@@ -89,148 +89,108 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
     }
   };
 
+  // Age cards as vibrant "active-style" game buttons (face / darker border)
+  const AGE_COLORS = [
+    { main: '#FF6B6B', dark: '#E03131', glow: 'rgba(255,107,107,0.35)'  },  // age-4-6
+    { main: '#FFB020', dark: '#F08C00', glow: 'rgba(255,176,32,0.35)'   },  // age-7
+    { main: '#4FC3F7', dark: '#0288D1', glow: 'rgba(79,195,247,0.35)'   },  // age-8
+    { main: '#AB7DF0', dark: '#7A4FD0', glow: 'rgba(171,125,240,0.35)'  },  // age-9
+  ];
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#130B1E', color: '#F1F5F9', fontFamily: 'Inter, sans-serif' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#F7F8FA', color: '#4A4A4A', fontFamily: "'Nunito', sans-serif" }}>
       <RobotDefs />
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&family=Fredoka:wght@500;600;700&family=Baloo+2:wght@600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Fredoka:wght@500;600;700&display=swap');
 
-        :root {
-            --primary: #7C3AED;
-            --secondary: #F97316;
-            --surface: #FFFFFF;
-            --text-main: #1F1F2E;
-
-            /* Teal (Reading) */
-            --coral: #0D9488;
-            --coral-light: #E0F9F8;
-            --coral-mid: #06B6D4;
-
-            /* Coral (Speaking) */
-            --teal: #F97316;
-            --teal-light: #FFF1E6;
-            --teal-mid: #FB923C;
-
-            /* Gold (Jawi) */
-            --gold: #FACC15;
-            --gold-light: #FFFBEB;
-            --gold-mid: #F59E0B;
-
-            /* Emerald (Math) */
-            --green: #10B981;
-            --green-light: #ECFDF5;
-            --green-mid: #6EE7B7;
-        }
-
-        /* ─── Subject Cards (Subject.html design) ─── */
+        /* ─── Subject Cards — white "game-button" cards matching the sidebar ─── */
         .subject-card {
-            border-radius: 24px;
+            --accent: #7A4FD0;
+            --accent-soft: #EDE5FF;
+            border-radius: 20px;
             padding: 16px 12px 20px;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 12px;
-            transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .35s, border-color .35s;
+            transition: transform .12s ease, border-color .15s ease;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
             width: 100%;
             min-height: 220px;
             justify-content: flex-start;
-            border: 2.5px solid rgba(255,255,255,0.4);
-            box-shadow:
-              0 2.5px 0 rgba(255,255,255,0.4) inset,
-              0 10px 24px -8px rgba(0,0,0,0.12),
-              0 2px 4px rgba(0,0,0,0.04);
+            background: #ffffff;
+            border: 3px solid #E6E6E6;
+            box-shadow: none;
         }
-        .subject-card.card-reading {
-            background: radial-gradient(ellipse at 50% 38%, #FFF4DF 0%, #FFDFB4 60%, #FFB86E 100%);
-            border-color: rgba(255, 176, 96, 0.4);
-        }
-        .subject-card.card-speak {
-            background: radial-gradient(ellipse at 50% 38%, #FFE9F3 0%, #FFBFDD 60%, #FF8CBF 100%);
-            border-color: rgba(255, 128, 187, 0.4);
-        }
-        .subject-card.card-arabic {
-            background: radial-gradient(ellipse at 50% 38%, #D6F5DD 0%, #8AD9A8 55%, #2A9A6C 100%);
-            border-color: rgba(42, 154, 108, 0.4);
-        }
-        .subject-card.card-math {
-            background: radial-gradient(ellipse at 50% 38%, #E7D9FF 0%, #B79CFF 55%, #7A55E0 100%);
-            border-color: rgba(122, 85, 224, 0.4);
-        }
-        .subject-card.card-matematik-kssr {
-            background: radial-gradient(ellipse at 50% 38%, #CCFBF1 0%, #5EEAD4 55%, #0F766E 100%);
-            border-color: rgba(20, 184, 166, 0.4);
-        }
-        .subject-card.card-bm-kssr {
-            background: radial-gradient(ellipse at 50% 38%, #E0F2FE 0%, #7DD3FC 55%, #0284C7 100%);
-            border-color: rgba(2, 132, 199, 0.4);
-        }
+        .subject-card.card-reading        { --accent: #FF8F3D; --accent-soft: #FFEAD6; }
+        .subject-card.card-speak          { --accent: #FF6FA5; --accent-soft: #FFE3EF; }
+        .subject-card.card-math           { --accent: #7A4FD0; --accent-soft: #ECE3FF; }
+        .subject-card.card-arabic         { --accent: #2A9A6C; --accent-soft: #D8F3E4; }
+        .subject-card.card-matematik-kssr { --accent: #0F9488; --accent-soft: #D2F4EF; }
+        .subject-card.card-bm-kssr        { --accent: #0284C7; --accent-soft: #DCF0FB; }
+        .subject-card.card-robot          { --accent: #F97316; --accent-soft: #FFE6D2; }
 
+        /* Hover: lift like a bubble + border lights up in the card's accent */
         .subject-card:hover {
-            transform: translateY(-6px) scale(1.02);
-            filter: brightness(1.03);
-            box-shadow:
-              0 2.5px 0 rgba(255,255,255,0.5) inset,
-              0 16px 36px -8px rgba(0,0,0,0.2),
-              0 4px 10px rgba(0,0,0,0.06);
+            transform: translateY(-3px);
+            border-color: var(--accent);
         }
         .subject-card:active {
-            transform: translateY(2px) scale(0.98);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transform: translateY(2px);
         }
 
-        /* Coloured robot stage */
+        /* Coloured robot stage — soft tint of the card accent */
         .rb-stage {
             width: 100%;
             max-width: 110px;
             aspect-ratio: 1 / 1;
-            border-radius: 20px;
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             overflow: hidden;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.35);
-            box-shadow: inset 0 -4px 12px rgba(0,0,0,0.06), inset 0 1.5px 0 rgba(255,255,255,0.4);
+            background: var(--accent-soft);
+            box-shadow: inset 0 -4px 12px rgba(0,0,0,0.05), inset 0 1.5px 0 rgba(255,255,255,0.5);
         }
         .rb-stage > svg { width: 96%; height: 96%; display: block; overflow: visible; }
 
         /* Floating deco dots inside each stage */
         .rb-deco-dot { position: absolute; border-radius: 50%; pointer-events: none; }
-        .rb-d1 { width: 10px; height: 10px; background: rgba(255,255,255,.7);  top: 14%; left: 12%;  animation: rb-drift1 6s ease-in-out infinite; }
-        .rb-d2 { width:  6px; height:  6px; background: rgba(255,255,255,.6);  top: 78%; right: 14%; animation: rb-drift2 7s ease-in-out infinite; }
-        .rb-d3 { width: 14px; height: 14px; background: rgba(255,255,255,.4);  top: 62%; left:  9%;  animation: rb-drift1 8s ease-in-out infinite; }
-        .rb-d4 { width:  8px; height:  8px; background: rgba(255,255,255,.55); top: 22%; right: 18%; animation: rb-drift2 9s ease-in-out infinite; }
+        .rb-d1 { width: 10px; height: 10px; background: rgba(255,255,255,.8);  top: 14%; left: 12%;  animation: rb-drift1 6s ease-in-out infinite; }
+        .rb-d2 { width:  6px; height:  6px; background: rgba(255,255,255,.7);  top: 78%; right: 14%; animation: rb-drift2 7s ease-in-out infinite; }
+        .rb-d3 { width: 14px; height: 14px; background: rgba(255,255,255,.55); top: 62%; left:  9%;  animation: rb-drift1 8s ease-in-out infinite; }
+        .rb-d4 { width:  8px; height:  8px; background: rgba(255,255,255,.65); top: 22%; right: 18%; animation: rb-drift2 9s ease-in-out infinite; }
         @keyframes rb-drift1 { 50% { transform: translate(10px, -8px); } }
         @keyframes rb-drift2 { 50% { transform: translate(-10px, 8px); } }
 
-        /* Pill label */
+        /* Pill label — solid accent chip, Fredoka */
         .rb-pill {
-            font-family: 'Baloo 2', sans-serif;
+            font-family: 'Fredoka', system-ui, sans-serif;
             font-weight: 700;
-            font-size: 10.5px;
-            letter-spacing: 0.1em;
+            font-size: 11px;
+            letter-spacing: 0.06em;
             text-transform: uppercase;
             color: #fff;
-            padding: 4px 14px;
+            padding: 5px 16px;
             border-radius: 999px;
-            background: linear-gradient(180deg, #7BE7FF 0%, #46D8FF 60%, #0F9CC8 100%);
-            box-shadow: 0 1.5px 0 #0B7CA8, 0 4px 8px -2px rgba(11,124,168,.4);
-            text-shadow: 0 1px 0 rgba(11,124,168,.4);
+            background: var(--accent);
+            box-shadow: 0 3px 8px -2px rgba(0,0,0,0.25);
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.12);
             white-space: nowrap;
             text-align: center;
         }
 
         /* Card description */
         .rb-desc {
-            font-family: 'Fredoka', system-ui, sans-serif;
-            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
             font-size: 12px;
-            color: #2D3748;
+            color: #707070;
             margin: 0;
             text-align: center;
             line-height: 1.45;
@@ -241,36 +201,33 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
         .hero-star-particle { animation: heroStarTwinkle var(--dur, 2s) ease-in-out infinite alternate; }
 
         @keyframes jello { 0% { transform: scale(1); } 20% { transform: scale(0.94, 1.06); } 40% { transform: scale(1.04, 0.96); } 60% { transform: scale(0.98, 1.02); } 80% { transform: scale(1.01, 0.99); } 100% { transform: scale(1); } }
-        
-        /* Age Group Buttons — Colorful gradient buttons on white */
+
+        /* Age Group Buttons — vibrant "active-style" game cards */
         .age-group-card {
             border-radius: 20px;
-            transition: all 0.25s ease;
-            border: 1.5px solid rgba(255,255,255,0.4);
-            box-shadow: 0 4px 0 rgba(17,24,39,0.12), 0 6px 18px rgba(17,24,39,0.08), inset 0 2px 4px rgba(255,255,255,0.25);
-            margin-bottom: 8px;
+            transition: transform 0.12s ease, box-shadow 0.2s ease;
         }
         .age-group-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 0 rgba(17,24,39,0.1), 0 16px 32px var(--age-glow, rgba(124,58,237,0.35)), inset 0 2px 4px rgba(255,255,255,0.25);
+            transform: translateY(-3px);
         }
         .age-group-card:active {
             transform: translateY(2px) !important;
-            box-shadow: 0 2px 0 rgba(17,24,39,0.12) !important;
         }
         .age-group-card:hover .age-icon-bounce {
             animation: jello 0.6s ease;
         }
 
         .section-header {
-            font-size: 0.95rem;
-            font-weight: 900;
-            color: #1F2937;
-            letter-spacing: 0.15em;
+            font-family: 'Fredoka', system-ui, sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #3F2A86;
+            letter-spacing: 0.08em;
             margin-bottom: 1.2rem;
             text-transform: uppercase;
             padding-left: 14px;
-            border-left: 4px solid var(--theme-hero-border, #A78BFA);
+            border-left: 5px solid #7A4FD0;
+            border-radius: 2px;
             line-height: 1;
         }
 
@@ -280,7 +237,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             gap: 1.25rem;
             padding-bottom: 2.5rem;
         }
-        
+
         .age-group-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -356,16 +313,16 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             .subject-card {
                 padding: 12px 8px 14px !important;
                 gap: 10px !important;
-                border-radius: 20px !important;
+                border-radius: 18px !important;
                 min-height: 190px !important;
             }
             .rb-stage {
                 max-width: 85px !important;
-                border-radius: 16px !important;
+                border-radius: 14px !important;
             }
             .rb-pill {
                 font-size: 9px !important;
-                padding: 3px 10px !important;
+                padding: 4px 12px !important;
             }
             .rb-desc {
                 font-size: 10.5px !important;
@@ -381,21 +338,21 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
       {/* Main Content Area */}
       <div className="page-shell main-content-area" style={{ paddingTop: '1.5rem', paddingLeft: '2.5rem', paddingRight: '2.5rem', paddingBottom: 0 }}>
 
-        {/* HERO SECTION - Matching the image */}
+        {/* HERO SECTION — purple brand gradient (matches sidebar logo badge) */}
         <div className="hero-section" style={{
-          background: 'var(--theme-hero-bg, linear-gradient(175deg, #0F0B1E 0%, #1A1040 35%, #2D1B69 65%, #1A1040 100%))',
+          background: 'linear-gradient(135deg, #9A6BE8 0%, #7A4FD0 48%, #3F2A86 100%)',
           borderRadius: '24px',
           padding: '2.5rem 2rem 1.5rem 2rem',
           marginBottom: '3rem',
-          border: '2px solid var(--theme-hero-border, #A78BFA)',
-          boxShadow: '0 20px 60px rgba(15,11,30,0.6), 0 0 28px rgba(167,139,250,0.4)',
+          border: '4px solid #6A45C0',
+          boxShadow: '0 14px 30px -10px rgba(95,58,196,0.5)',
           color: '#FFFFFF',
           position: 'relative',
           overflow: 'hidden'
         }}>
           {/* Radial glow accents */}
-          <div style={{ position: 'absolute', top: '-60px', left: '50%', transform: 'translateX(-50%)', width: '340px', height: '340px', background: 'radial-gradient(circle, rgba(124,58,237,0.45) 0%, transparent 70%)', filter: 'blur(40px)', pointerEvents: 'none' }} />
-          <div style={{ position: 'absolute', bottom: '-20px', right: '8%', width: '180px', height: '180px', background: 'radial-gradient(circle, rgba(13,148,136,0.3) 0%, transparent 70%)', filter: 'blur(30px)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', top: '-60px', left: '50%', transform: 'translateX(-50%)', width: '340px', height: '340px', background: 'radial-gradient(circle, rgba(255,255,255,0.25) 0%, transparent 70%)', filter: 'blur(40px)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', bottom: '-20px', right: '8%', width: '180px', height: '180px', background: 'radial-gradient(circle, rgba(255,214,107,0.3) 0%, transparent 70%)', filter: 'blur(30px)', pointerEvents: 'none' }} />
 
           {/* 28 animated star particles */}
           {HERO_STARS.map(s => (
@@ -411,26 +368,24 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             }} />
           ))}
 
-          {/* Planet — colorpalette.html style: body + ring, fully % based */}
+          {/* Planet — body + ring, fully % based */}
           <div className="planet-svg-container" style={{ position: 'absolute', top: '50%', right: '12%', transform: 'translateY(-50%)', width: '160px', height: '160px', pointerEvents: 'none' }}>
             <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-              {/* Planet body — 75% of container, centered */}
               <div style={{
                 width: '75%',
                 height: '75%',
                 borderRadius: '50%',
-                background: 'var(--theme-planet-body, radial-gradient(circle at 30% 30%, #C084FC, #6B21A8))',
+                background: 'radial-gradient(circle at 30% 30%, #FFD66B, #E8920B)',
                 position: 'absolute',
                 top: '12.5%',
                 left: '12.5%',
-                boxShadow: '0 0 40px rgba(168,85,247,0.45), inset 0 0 20px rgba(255,255,255,0.08)',
+                boxShadow: '0 0 40px rgba(255,214,107,0.45), inset 0 0 20px rgba(255,255,255,0.12)',
               }} />
-              {/* Planet ring — 120% wide × 35% tall, anchored to center */}
               <div style={{
                 position: 'absolute',
                 width: '120%',
                 height: '35%',
-                border: '2.5px solid var(--theme-planet-ring, #A78BFA)',
+                border: '2.5px solid rgba(255,255,255,0.7)',
                 borderRadius: '50%',
                 top: '50%',
                 left: '50%',
@@ -443,22 +398,24 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
           <div className="hero-header" style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2.5rem' }}>
             <div>
               <p style={{
+                fontFamily: "'Nunito', sans-serif",
                 fontSize: '0.8rem',
-                fontWeight: 700,
+                fontWeight: 900,
                 color: 'rgba(255,255,255,0.85)',
                 textTransform: 'uppercase',
-                letterSpacing: '0.05em',
+                letterSpacing: '0.1em',
                 marginBottom: '0.2rem',
               }}>
                 {language === 'bm' ? 'SELAMAT DATANG' : "WELCOME"}
               </p>
               <h1 className="hero-title" style={{
+                fontFamily: "'Fredoka', system-ui, sans-serif",
                 fontSize: '2.25rem',
-                fontWeight: 900,
+                fontWeight: 700,
                 lineHeight: 1.2,
                 margin: '0 0 0.75rem 0',
-                letterSpacing: '-0.02em',
-                textShadow: '0 2px 10px rgba(0,0,0,0.1)'
+                letterSpacing: '-0.01em',
+                textShadow: '0 2px 6px rgba(0,0,0,0.18)'
               }}>
                 {playerName ? `Hei, ${playerName}! 🚀` : (language === 'bm' ? 'Hei, Iman! 🚀' : 'Hey, Iman! 🚀')}
               </h1>
@@ -467,13 +424,14 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.4rem',
-                background: 'rgba(255,255,255,0.15)',
+                background: 'rgba(255,255,255,0.18)',
                 color: '#FFF',
                 padding: '6px 16px',
-                borderRadius: '16px',
-                fontWeight: 800,
+                borderRadius: '14px',
+                fontFamily: "'Nunito', sans-serif",
+                fontWeight: 900,
                 fontSize: '0.9rem',
-                border: '1px solid rgba(255,255,255,0.2)'
+                border: '2px solid rgba(255,255,255,0.25)'
               }}>
                 ⭐ LEVEL {currentLevel}
               </div>
@@ -482,30 +440,34 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             {/* Fire icon for streak pill */}
             <div style={{
               background: '#FFFFFF',
-              borderRadius: '20px',
+              borderRadius: '16px',
               padding: '8px 16px',
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              boxShadow: '0 8px 16px rgba(0,0,0,0.15)'
+              border: '3px solid #EDEDED',
+              boxShadow: '0 6px 14px rgba(0,0,0,0.12)'
             }}>
               <span style={{ fontSize: '1.2rem' }}>🔥</span>
-              <span style={{ color: '#111827', fontWeight: 900, fontSize: '1rem' }}>{streak || 1}</span>
+              <span style={{ color: '#3F2A86', fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 700, fontSize: '1.05rem' }}>{streak || 1}</span>
             </div>
           </div>
 
           {/* Unified Mon-Sun Interactive Streak Bar */}
           <div className="streak-bar-container" style={{
             background: 'rgba(255,255,255,0.15)',
-            borderRadius: '24px',
+            borderRadius: '20px',
             padding: '0.8rem 1.5rem',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            border: '1px solid rgba(255,255,255,0.2)',
+            gap: '0.5rem',
+            border: '2px solid rgba(255,255,255,0.2)',
             backdropFilter: 'blur(12px)',
             position: 'relative',
-            zIndex: 1
+            zIndex: 1,
+            maxWidth: '600px',
+            marginRight: 'auto'
           }}>
             {days.map((day, idx) => {
               const isActive = idx === activeDayIndex;
@@ -515,13 +477,14 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
                     borderRadius: '50%',
                     background: isActive ? '#FFFFFF' : 'rgba(255,255,255,0.2)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    boxShadow: isActive ? '0 4px 12px rgba(0,0,0,0.1)' : 'none',
+                    boxShadow: isActive ? '0 4px 12px rgba(0,0,0,0.12)' : 'none',
                   }}>
                     {isActive ? '🔥' : ''}
                   </div>
                   <span style={{
+                    fontFamily: "'Nunito', sans-serif",
                     fontSize: '0.85rem',
-                    fontWeight: isActive ? 800 : 600,
+                    fontWeight: isActive ? 900 : 700,
                     color: isActive ? '#FFFFFF' : 'rgba(255,255,255,0.7)'
                   }}>
                     {day.label[language] || day.label.bm}
@@ -602,18 +565,18 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
               <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
               <RobotSpeaking />
             </div>
-            <span className="rb-pill" style={{ background: 'linear-gradient(180deg, #38BDF8 0%, #0284C7 100%)', boxShadow: '0 2px 0 #0369A1' }}>{language === 'bm' ? 'B. MELAYU KSSR' : 'MALAY KSSR'}</span>
+            <span className="rb-pill">{language === 'bm' ? 'B. MELAYU KSSR' : 'MALAY KSSR'}</span>
             <p className="rb-desc">{language === 'bm' ? 'Ikut silibus BM KSSR Tahun 1–3!' : 'Follow the Malay KSSR syllabus!'}</p>
           </div>
 
           {/* 7. Robot & Kod */}
-          <div className="subject-card card-robot" style={{ background: 'radial-gradient(ellipse at 50% 38%, #FFF1E6 0%, #FFD4A8 60%, #F97316 100%)', borderColor: 'rgba(249, 115, 22, 0.4)' }} onClick={() => setShowRobotInterface(true)} role="button" tabIndex="0" aria-label="Robot & Kod">
+          <div className="subject-card card-robot" onClick={() => setShowRobotInterface(true)} role="button" tabIndex="0" aria-label="Robot & Kod">
             <div className="rb-stage">
               <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
               <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
               <RobotMath />
             </div>
-            <span className="rb-pill" style={{ background: 'linear-gradient(180deg, #F97316 0%, #EA580C 100%)', boxShadow: '0 2px 0 #C2410C' }}>{language === 'bm' ? 'ROBOT & KÓD' : 'ROBOT & CODE'}</span>
+            <span className="rb-pill">{language === 'bm' ? 'ROBOT & KÓD' : 'ROBOT & CODE'}</span>
             <p className="rb-desc">{language === 'bm' ? 'Belajar robotik dan kod dengan mudah!' : 'Learn robotics and coding the fun way!'}</p>
           </div>
         </div>
@@ -623,36 +586,18 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
           {language === 'bm' ? 'KUMPULAN UMUR' : 'AGE GROUPS'}
         </h2>
 
-        {/* Rainbow color palette for age groups */}
-        <style>{`
-          @keyframes rainbowShift {
-            0% { filter: brightness(1); }
-            50% { filter: brightness(1.1); }
-            100% { filter: brightness(1); }
-          }
-          .rainbow-age-group:hover {
-            animation: rainbowShift 0.6s ease-in-out;
-          }
-        `}</style>
-
-        {/* AGE GROUPS List - Rainbow Colors */}
+        {/* AGE GROUPS List — vibrant game buttons */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingBottom: 'calc(140px + var(--safe-bottom))' }}>
           {AGE_GROUPS.map((group, i) => {
-            const nebulaColors = [
-              { main: '#FF4757', dark: '#991B1B', glow: 'rgba(255,71,87,0.55)'   },  // Red nebula (age-4-6)
-              { main: '#FCD34D', dark: '#92400E', glow: 'rgba(252,211,77,0.55)'  },  // Gold nebula (age-7)
-              { main: '#22D3EE', dark: '#0E4D6E', glow: 'rgba(34,211,238,0.55)'  },  // Cyan nebula (age-8)
-              { main: '#A78BFA', dark: '#4C1D95', glow: 'rgba(167,139,250,0.55)' },  // Violet nebula (age-9)
-            ];
-            const colors = nebulaColors[i % nebulaColors.length];
+            const colors = AGE_COLORS[i % AGE_COLORS.length];
             return (
               <button
                 key={group.id}
-                className="age-group-card rainbow-age-group"
+                className="age-group-card"
                 onClick={() => onSelectAgeGroup && onSelectAgeGroup(group.id)}
                 onMouseEnter={playHoverSound}
                 style={{
-                  background: `linear-gradient(135deg, ${colors.main} 0%, ${colors.dark} 100%)`,
+                  background: colors.main,
                   padding: '1.25rem 1.5rem',
                   display: 'flex',
                   alignItems: 'center',
@@ -661,44 +606,44 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
                   textAlign: 'left',
                   width: '100%',
                   outline: 'none',
-                  color: '#F1F5F9',
-                  '--age-glow': colors.glow,
-                  boxShadow: `0 4px 0 ${colors.dark}, 0 8px 20px ${colors.glow}, inset 0 1px 2px rgba(255,255,255,0.2)`,
-                  border: '1.5px solid rgba(255,255,255,0.3)',
+                  color: '#FFFFFF',
+                  boxShadow: `0 6px 16px -6px ${colors.glow}`,
+                  border: `3px solid ${colors.dark}`,
                   borderRadius: '20px',
-                  transition: 'all 0.25s ease',
                   position: 'relative',
-                  overflow: 'hidden'
+                  overflow: 'hidden',
+                  textShadow: '1px 2px 0 rgba(0,0,0,0.12)',
                 }}
               >
-                {/* Rainbow background shimmer */}
                 <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  background: `linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%)`,
-                  pointerEvents: 'none',
-                  opacity: 0.3
-                }}></div>
-
-                <div style={{ flexShrink: 0, position: 'relative', zIndex: 1 }}>
+                  flexShrink: 0,
+                  position: 'relative',
+                  zIndex: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '64px',
+                  height: '64px',
+                  borderRadius: '16px',
+                  background: 'rgba(255,255,255,0.18)',
+                  border: '2px solid rgba(255,255,255,0.25)',
+                }}>
                   {renderAgeIcon(group.id)}
                 </div>
 
                 <div style={{ flex: 1, position: 'relative', zIndex: 1 }}>
                   <div style={{
-                    fontWeight: 900,
-                    fontSize: '1.2rem',
+                    fontFamily: "'Fredoka', system-ui, sans-serif",
+                    fontWeight: 700,
+                    fontSize: '1.25rem',
                     lineHeight: 1.2,
-                    letterSpacing: '-0.02em',
                   }}>
                     {group.title[language] || group.title.bm}
                   </div>
                   <div style={{
+                    fontFamily: "'Nunito', sans-serif",
                     fontSize: '0.9rem',
-                    fontWeight: 600,
+                    fontWeight: 800,
                     opacity: 0.95,
                     marginTop: '6px',
                   }}>
@@ -707,7 +652,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
                 </div>
 
                 <div style={{
-                  background: 'rgba(255,255,255,0.3)',
+                  background: 'rgba(255,255,255,0.25)',
                   width: '40px',
                   height: '40px',
                   borderRadius: '50%',
@@ -716,10 +661,9 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
                   justifyContent: 'center',
                   fontWeight: 900,
                   fontSize: '1.2rem',
-                  transition: 'transform 0.2s, background 0.3s',
+                  border: '2px solid rgba(255,255,255,0.3)',
                   position: 'relative',
                   zIndex: 1,
-                  backdropFilter: 'blur(4px)'
                 }}>
                   →
                 </div>

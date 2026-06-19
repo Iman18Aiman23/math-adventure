@@ -10,6 +10,9 @@ export default function Tahun1ModuleHubLayout({
   onSelectTopic,
   language = 'bm',
   footer,
+  // 'default' = centered title + subtitle; 'banner' = Bahasa Melayu-style
+  // coloured unit banner (kicker + module name + badge).
+  headerVariant = 'default',
 }) {
   return (
     <>
@@ -20,7 +23,7 @@ export default function Tahun1ModuleHubLayout({
           width: 100%;
           max-width: 100%;
           background: ${theme.pageGradient};
-          min-height: 100vh;
+          min-height: 100dvh;
           font-family: 'Fredoka', system-ui, sans-serif;
           color: #10243A;
           position: relative;
@@ -42,6 +45,55 @@ export default function Tahun1ModuleHubLayout({
           letter-spacing: .14em;
           text-transform: uppercase;
           margin: 0 0 48px;
+        }
+        /* Bahasa Melayu-style coloured unit banner (--c face / --cd border).
+           Width mirrors BM's .journey-inner (460px), centered. */
+        .pi-mhub-banner {
+          max-width: 460px;
+          margin: 6px auto 34px;
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          color: #fff;
+          background: linear-gradient(135deg, color-mix(in srgb, var(--c) 86%, white), var(--c));
+          border: 5px solid var(--cd);
+          border-radius: 28px;
+          padding: 18px 22px;
+          box-shadow: 0 15px 25px rgba(0,0,0,.1);
+        }
+        .pi-mhub-banner-text { flex: 1; min-width: 0; }
+        .pi-mhub-banner-kicker {
+          font-family: 'Fredoka', system-ui, sans-serif;
+          font-weight: 700;
+          font-size: 11px;
+          letter-spacing: .14em;
+          text-transform: uppercase;
+          color: #fff;
+          text-shadow: 2px 3px 0 var(--cd);
+          margin-bottom: 4px;
+        }
+        .pi-mhub-banner-name {
+          font-family: 'Fredoka', system-ui, sans-serif;
+          font-weight: 700;
+          font-size: 21px;
+          line-height: 1.1;
+          letter-spacing: -.01em;
+          text-shadow: 2px 3px 0 var(--cd);
+          text-wrap: balance;
+        }
+        .pi-mhub-banner-badge {
+          width: 46px;
+          height: 46px;
+          flex: 0 0 auto;
+          border-radius: 14px;
+          background: rgba(255,255,255,.22);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-family: 'Fredoka', system-ui, sans-serif;
+          font-weight: 700;
+          font-size: 22px;
+          color: #fff;
         }
         .pi-mhub-grid {
           max-width: 1080px;
@@ -67,6 +119,10 @@ export default function Tahun1ModuleHubLayout({
         .pi-mhub-card:hover {
           transform: translateY(-8px) scale(1.02);
           box-shadow: 0 22px 48px -14px ${theme.dark}52;
+        }
+        .pi-mhub-card:focus-visible {
+          outline: 3px solid ${theme.accent};
+          outline-offset: 3px;
         }
         .pi-mhub-stage {
           width: min(170px, 65vw);
@@ -126,6 +182,61 @@ export default function Tahun1ModuleHubLayout({
           transform: none;
           box-shadow: 0 12px 32px -12px ${theme.dark}38, 0 2px 6px ${theme.accent}1A;
         }
+
+        /* ── "v2" topic card (Matematik) — cleaner white game-style surface
+           with a TOPIK pill, readable copy, and a "Mula ▸" button cue ── */
+        .pi-mhub-card--v2 {
+          background: #ffffff;
+          border: 2px solid ${theme.accent}33;
+          border-radius: 24px;
+          padding: 20px 18px 22px;
+          gap: 11px;
+          box-shadow: 0 10px 26px -14px ${theme.dark}40, 0 2px 4px ${theme.accent}14;
+        }
+        .pi-mhub-card--v2:hover {
+          transform: translateY(-6px) scale(1.015);
+          border-color: ${theme.accent}66;
+          box-shadow: 0 20px 40px -16px ${theme.dark}5C;
+        }
+        .pi-mhub-card--v2:active { transform: translateY(2px) scale(.99); }
+        .pi-mhub-card--v2 .pi-mhub-stage {
+          width: min(150px, 58vw);
+          height: min(150px, 58vw);
+        }
+        .pi-mhub-card--v2 .pi-mhub-pill {
+          font-size: 10px;
+          padding: 5px 14px;
+          box-shadow: 0 2px 0 ${theme.cd || theme.dark};
+        }
+        .pi-mhub-card--v2 .pi-mhub-card-title {
+          font-size: 17px;
+          line-height: 1.25;
+          color: ${theme.dark};
+          text-wrap: balance;
+        }
+        .pi-mhub-card--v2 .pi-mhub-card-desc {
+          color: #5B6B7B;
+          opacity: 1;
+          font-size: 12.5px;
+          line-height: 1.55;
+          max-width: 26ch;
+          margin: 0 auto;
+          text-wrap: pretty;
+        }
+        .pi-mhub-card--v2 .pi-mhub-cta {
+          margin-top: 4px;
+          font-family: 'Fredoka', system-ui, sans-serif;
+          font-weight: 700;
+          font-size: 12px;
+          letter-spacing: .02em;
+          color: #fff;
+          background: ${theme.accent};
+          padding: 6px 18px;
+          border-radius: 999px;
+          box-shadow: 0 3px 0 ${theme.cd || theme.dark};
+          transition: transform .12s ease;
+        }
+        .pi-mhub-card--v2:hover .pi-mhub-cta { transform: translateY(-1px); }
         @keyframes pi-mhub-float {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-5px); }
@@ -155,29 +266,62 @@ export default function Tahun1ModuleHubLayout({
       `}</style>
 
       <div className="pi-mhub-page">
-        <h1>
-          {language === 'bm'
-            ? `MODUL ${moduleNum} : ${moduleName}`
-            : `MODULE ${moduleNum} : ${moduleNameEn}`}
-        </h1>
-        <p className="pi-mhub-subtitle">
-          {language === 'bm'
-            ? 'PILIH TOPIK UNTUK MEMULAKAN PEMBELAJARAN'
-            : 'SELECT A TOPIC TO START LEARNING'}
-        </p>
+        {headerVariant === 'banner' ? (
+          <div className="pi-mhub-banner" style={{ '--c': theme.accent, '--cd': theme.cd || theme.dark }}>
+            <div className="pi-mhub-banner-text">
+              <div className="pi-mhub-banner-kicker">
+                {language === 'bm'
+                  ? `Modul ${moduleNum} · Unit Pembelajaran`
+                  : `Module ${moduleNum} · Learning Unit`}
+              </div>
+              <div className="pi-mhub-banner-name">
+                {language === 'bm' ? moduleName : moduleNameEn}
+              </div>
+            </div>
+            <div className="pi-mhub-banner-badge">{moduleNum}</div>
+          </div>
+        ) : (
+          <>
+            <h1>
+              {language === 'bm'
+                ? `MODUL ${moduleNum} : ${moduleName}`
+                : `MODULE ${moduleNum} : ${moduleNameEn}`}
+            </h1>
+            <p className="pi-mhub-subtitle">
+              {language === 'bm'
+                ? 'PILIH TOPIK UNTUK MEMULAKAN PEMBELAJARAN'
+                : 'SELECT A TOPIC TO START LEARNING'}
+            </p>
+          </>
+        )}
 
         <div className="pi-mhub-grid">
           {topics.map((t) => (
             <div
               key={t.id}
-              className={`pi-mhub-card${t.disabled ? ' pi-mhub-card-disabled' : ''}`}
+              className={`pi-mhub-card${headerVariant === 'banner' ? ' pi-mhub-card--v2' : ''}${t.disabled ? ' pi-mhub-card-disabled' : ''}`}
+              role="button"
+              tabIndex={t.disabled ? -1 : 0}
+              aria-disabled={t.disabled || undefined}
               onClick={() => { if (!t.disabled) onSelectTopic?.(t.id); }}
+              onKeyDown={(e) => {
+                if (!t.disabled && (e.key === 'Enter' || e.key === ' ')) {
+                  e.preventDefault();
+                  onSelectTopic?.(t.id);
+                }
+              }}
             >
               <div className="pi-mhub-stage">
                 {t.visual}
               </div>
+              {headerVariant === 'banner' && t.pill && (
+                <span className="pi-mhub-pill">{t.pill}</span>
+              )}
               <h3 className="pi-mhub-card-title">{t.title}</h3>
               <p className="pi-mhub-card-desc">{t.desc}</p>
+              {headerVariant === 'banner' && !t.disabled && (
+                <span className="pi-mhub-cta">{language === 'bm' ? 'Mula ▸' : 'Start ▸'}</span>
+              )}
             </div>
           ))}
         </div>
