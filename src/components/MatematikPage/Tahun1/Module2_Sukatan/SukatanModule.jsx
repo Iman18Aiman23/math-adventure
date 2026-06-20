@@ -3,12 +3,12 @@ import Tahun1ModuleHubLayout from '../../../PendidikanIslamPage/Tahun1/Tahun1Mod
 import MatematikTopicRobot from '../../MatematikTopicRobot';
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#E6F1FB 0%,#9FC9F2 50%,#1E7AC9 100%)',
-  dark: '#1A5A96',
-  cd: '#1A78C7',
-  accent: '#36A9F0',
-  stageGradient: 'radial-gradient(ellipse at 50% 34%,#D5E9FA 0%,#7DB8ED 55%,#1E7AC9 100%)',
-  pillGradient: 'linear-gradient(180deg,#36A9F0,#1A78C7)',
+  pageGradient: 'linear-gradient(180deg,#E6FAF6 0%,#7FE0D3 50%,#0F9488 100%)',
+  dark: '#0F766E',
+  cd: '#0F9488',
+  accent: '#14B8A6',
+  stageGradient: 'radial-gradient(ellipse at 50% 32%,#CCFBF1 0%,#5EEAD4 55%,#0F9488 100%)',
+  pillGradient: 'linear-gradient(180deg,#14B8A6,#0F766E)',
 };
 
 // Shared robot icon — recolours from THEME so every topic in this module matches.
@@ -46,7 +46,7 @@ const TOPICS = [
   {
     id: 'ruang-t1',
     pill: 'TOPIK 2.3',
-    title: 'Ruang (Bentuk 3D)',
+    title: 'Bentuk 3D',
     desc: 'Kenali bentuk 3D seperti kubus, silinder dan kon.',
     visual: ROBOT,
   },

@@ -7,7 +7,7 @@ const YEARS = [
   {
     id: 1, labelBM: 'Tahun 1', labelEN: 'Year 1',
     theme: 't1', emoji: '📗',
-    metaBM: '3 Modul · Mula belajar', metaEN: '3 Modules · Start learning',
+    metaBM: '5 Modul · Mula belajar', metaEN: '5 Modules · Start learning',
     locked: false,
   },
   {
@@ -58,7 +58,7 @@ export default function MatematikHomePage({ onBack, onSelectYear, language = 'bm
                 <span className="mt-brand-dot">
                   <svg viewBox="0 0 24 24" fill="none">
                     <rect x="4" y="4" width="16" height="16" rx="3" fill="#fff"/>
-                    <text x="12" y="15" textAnchor="middle" fontFamily="Fredoka,sans-serif" fontWeight="700" fontSize="13" fill="#7A4FD0">+</text>
+                    <text x="12" y="15" textAnchor="middle" fontFamily="Fredoka,sans-serif" fontWeight="700" fontSize="13" fill="#0F9488">+</text>
                   </svg>
                 </span>
                 <b className="mt-brand-text">Mate<span>matik</span></b>

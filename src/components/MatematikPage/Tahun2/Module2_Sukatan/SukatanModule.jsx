@@ -32,14 +32,14 @@ const TOPICS = [
   {
     id: '2-ukuran-jisim-cecair',
     pill: 'TOPIK 2.2',
-    title: 'Jisim & Isi Padu Cecair',
+    title: 'Jisim & Cecair',
     desc: 'Timbang jisim dalam kg dan g, sukat isi padu cecair dalam l dan ml.',
     visual: ROBOT,
   },
   {
     id: '2-geometri',
     pill: 'TOPIK 2.3',
-    title: 'Ruang (Geometri)',
+    title: 'Geometri',
     desc: 'Kenali bentuk 2D dan 3D serta ciri-ciri seperti sisi, sudut dan bucu.',
     visual: ROBOT,
   },

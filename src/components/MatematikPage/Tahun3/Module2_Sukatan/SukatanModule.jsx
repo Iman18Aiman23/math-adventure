@@ -3,12 +3,12 @@ import Tahun1ModuleHubLayout from '../../../PendidikanIslamPage/Tahun1/Tahun1Mod
 import MatematikTopicRobotT3 from '../../MatematikTopicRobotT3';
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#E6F1FB 0%,#9FC9F2 50%,#1E7AC9 100%)',
-  dark: '#1A5A96',
-  cd: '#1A78C7',
-  accent: '#36A9F0',
-  stageGradient: 'radial-gradient(ellipse at 50% 34%,#D5E9FA 0%,#7DB8ED 55%,#1E7AC9 100%)',
-  pillGradient: 'linear-gradient(180deg,#36A9F0,#1A78C7)',
+  pageGradient: 'linear-gradient(180deg,#F0EBFB 0%,#C3ABF0 50%,#7A4FD0 100%)',
+  dark: '#6D28D9',
+  cd: '#7038D6',
+  accent: '#A368F0',
+  stageGradient: 'radial-gradient(ellipse at 50% 34%,#EBE2FB 0%,#B49EEE 55%,#7A4FD0 100%)',
+  pillGradient: 'linear-gradient(180deg,#A368F0,#7038D6)',
 };
 
 // Shared graduate robot-head icon — recolours from THEME so every topic matches.
@@ -25,7 +25,7 @@ const TOPICS = [
   {
     id: '3-ukuran',
     pill: 'TOPIK 2.2',
-    title: 'Ukuran (Panjang, Jisim & Cecair)',
+    title: 'Ukuran',
     desc: 'Tukar unit panjang, jisim dan isi padu cecair antara unit metrik.',
     visual: ROBOT,
   },

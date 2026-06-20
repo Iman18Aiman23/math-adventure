@@ -3,12 +3,12 @@ import Tahun1ModuleHubLayout from '../../../PendidikanIslamPage/Tahun1/Tahun1Mod
 import MatematikTopicRobot from '../../MatematikTopicRobot';
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#F0EBFB 0%,#C3ABF0 50%,#7A4FD0 100%)',
-  dark: '#6D28D9',
-  cd: '#7038D6',
-  accent: '#A368F0',
-  stageGradient: 'radial-gradient(ellipse at 50% 34%,#EBE2FB 0%,#B49EEE 55%,#7A4FD0 100%)',
-  pillGradient: 'linear-gradient(180deg,#A368F0,#7038D6)',
+  pageGradient: 'linear-gradient(180deg,#E6FAF6 0%,#7FE0D3 50%,#0F9488 100%)',
+  dark: '#0F766E',
+  cd: '#0F9488',
+  accent: '#14B8A6',
+  stageGradient: 'radial-gradient(ellipse at 50% 32%,#CCFBF1 0%,#5EEAD4 55%,#0F9488 100%)',
+  pillGradient: 'linear-gradient(180deg,#14B8A6,#0F766E)',
 };
 
 // Shared robot icon — recolours from THEME so every topic in this module matches.

@@ -3,12 +3,12 @@ import Tahun1ModuleHubLayout from '../../../PendidikanIslamPage/Tahun1/Tahun1Mod
 import MatematikTopicRobotT2 from '../../MatematikTopicRobotT2';
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#FFF4E6 0%,#FACD94 50%,#E8821A 100%)',
-  dark: '#C2410C',
-  cd: '#FF6F00',
-  accent: '#FF8F3D',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#FEE9C8 0%,#F5B76A 55%,#E8821A 100%)',
-  pillGradient: 'linear-gradient(180deg,#FF8F3D,#FF6F00)',
+  pageGradient: 'linear-gradient(180deg,#E6F1FB 0%,#9FC9F2 50%,#1E7AC9 100%)',
+  dark: '#1A5A96',
+  cd: '#1A78C7',
+  accent: '#36A9F0',
+  stageGradient: 'radial-gradient(ellipse at 50% 34%,#D5E9FA 0%,#7DB8ED 55%,#1E7AC9 100%)',
+  pillGradient: 'linear-gradient(180deg,#36A9F0,#1A78C7)',
 };
 
 // Shared robot icon — recolours from THEME so every topic in this module matches.
@@ -18,7 +18,7 @@ const TOPICS = [
   {
     id: '2-nombor-1000',
     pill: 'TOPIK 1.1',
-    title: 'Nombor Bulat hingga 1,000',
+    title: 'Belajar 1-1,000',
     desc: 'Kenali nombor 1 hingga 1,000 dengan nilai tempat dan bundaran.',
     visual: ROBOT,
   },
@@ -67,7 +67,7 @@ const TOPICS = [
   {
     id: '2-wang',
     pill: 'TOPIK 1.5',
-    title: 'Wang hingga RM100',
+    title: 'Wang',
     desc: 'Kira wang dan lakukan operasi tambah tolak dalam lingkungan RM100.',
     visual: ROBOT,
   },

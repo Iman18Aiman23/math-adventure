@@ -166,6 +166,15 @@ const MatematikModulePage = React.lazy(() => import('./components/MatematikPage/
 const NomborModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/NomborModule'));
 const SukatanModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_Sukatan/SukatanModule'));
 const StatistikModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module3_Statistik/StatistikModule'));
+const NomborHingga100Module = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_NomborHingga100/NomborHingga100Module'));
+const BandingBanyakSedikit = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_NomborHingga100/BandingBanyakSedikit'));
+const Kenali0Hingga10 = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_NomborHingga100/Kenali0Hingga10'));
+const Kenali11Hingga20 = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_NomborHingga100/Kenali11Hingga20'));
+const Tulis0Hingga20 = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_NomborHingga100/Tulis0Hingga20'));
+const TambahDanTolakModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_TambahDanTolak/TambahDanTolakModule'));
+const PecahanModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module3_Pecahan/PecahanModule'));
+const WangModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module4_Wang/WangModule'));
+const MasaDanWaktuModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module5_MasaDanWaktu/MasaDanWaktuModule'));
 const NomborModuleT2 = React.lazy(() => import('./components/MatematikPage/Tahun2/Module1_Nombor/NomborModule'));
 const SukatanModuleT2 = React.lazy(() => import('./components/MatematikPage/Tahun2/Module2_Sukatan/SukatanModule'));
 const StatistikModuleT2 = React.lazy(() => import('./components/MatematikPage/Tahun2/Module3_Statistik/StatistikModule'));
@@ -535,16 +544,16 @@ export default function App() {
         return <BMPage onBack={handleBackToHome} onHome={handleBackToHome} language={language} />;
       case 'matematik-kssr':
         // ── Topic games ──
+        if (matematikTopic === 'banding-banyak-sedikit') return <BandingBanyakSedikit onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'kenali-0-10')          return <Kenali0Hingga10       onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'kenali-11-20')         return <Kenali11Hingga20      onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'tulis-0-20')          return <Tulis0Hingga20         onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'nombor-100')        return <Nombor100       onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'tambah-tolak')      return <Tambah100       onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'tambah-cerita')     return <SubtractionStory onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'wang-t1')           return <CountingMoney   onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'masa-t1')           return <TimeTeller      onBack={() => setMatematikTopic(null)} language={language} />;
-        if (matematikTopic === 'ukuran-t1-panjang') return <UkurPanjang     onBack={() => setMatematikTopic(null)} language={language} />;
-        if (matematikTopic === 'ukuran-t1-jisim')   return <Jisim           onBack={() => setMatematikTopic(null)} language={language} />;
-        if (matematikTopic === 'ukuran-t1-cecair')  return <IsiPaduCecair  onBack={() => setMatematikTopic(null)} language={language} />;
-        if (matematikTopic === 'ruang-t1')          return <Bentuk3D        onBack={() => setMatematikTopic(null)} language={language} />;
-        if (matematikTopic === 'data-t1')           return <BacaPictograph  onBack={() => setMatematikTopic(null)} language={language} />;
+
         if (matematikTopic === '2-nombor-1000')     return <Nombor1000         onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === '2-tambah')          return <TambahTahun2       onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === '2-tolak')           return <TolakTahun2        onBack={() => setMatematikTopic(null)} language={language} />;
@@ -579,9 +588,17 @@ export default function App() {
           let hubComponent;
           const strip = (id) => id.replace(/^\d-/, '');
           const mod = strip(matematikModule);
-          if (mod === 'nombor')    hubComponent = matematikYear === 1 ? <NomborModule /> : matematikYear === 2 ? <NomborModuleT2 /> : <NomborModuleT3 />;
-          if (mod === 'sukatan')   hubComponent = matematikYear === 1 ? <SukatanModule /> : matematikYear === 2 ? <SukatanModuleT2 /> : <SukatanModuleT3 />;
-          if (mod === 'statistik') hubComponent = matematikYear === 1 ? <StatistikModule /> : matematikYear === 2 ? <StatistikModuleT2 /> : <StatistikModuleT3 />;
+          if (matematikYear === 1) {
+            if (mod === 'nombor-hingga-100') hubComponent = <NomborHingga100Module />;
+            if (mod === 'tambah-dan-tolak')  hubComponent = <TambahDanTolakModule />;
+            if (mod === 'pecahan')           hubComponent = <PecahanModule />;
+            if (mod === 'wang')              hubComponent = <WangModule />;
+            if (mod === 'masa-dan-waktu')    hubComponent = <MasaDanWaktuModule />;
+          } else {
+            if (mod === 'nombor')    hubComponent = matematikYear === 2 ? <NomborModuleT2 /> : <NomborModuleT3 />;
+            if (mod === 'sukatan')   hubComponent = matematikYear === 2 ? <SukatanModuleT2 /> : <SukatanModuleT3 />;
+            if (mod === 'statistik') hubComponent = matematikYear === 2 ? <StatistikModuleT2 /> : <StatistikModuleT3 />;
+          }
           return (
             <Suspense fallback={<LoadingSpinner />}>
               <MatematikModulePage year={matematikYear} activeModule={matematikModule} language={language}
@@ -598,7 +615,7 @@ export default function App() {
         return (
           <Suspense fallback={<LoadingSpinner />}>
             <MatematikHomePage onBack={handleBackToHome} language={language}
-              onSelectYear={(y) => navigate(() => { setMatematikYear(y); setMatematikModule(y === 1 ? 'nombor' : y === 2 ? '2-nombor' : '3-nombor'); })} />
+              onSelectYear={(y) => navigate(() => { setMatematikYear(y); setMatematikModule(y === 1 ? 'nombor-hingga-100' : y === 2 ? '2-nombor' : '3-nombor'); })} />
           </Suspense>
         );
       case 'pendidikan-islam-v1':

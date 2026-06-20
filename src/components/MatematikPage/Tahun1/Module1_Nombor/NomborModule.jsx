@@ -3,12 +3,12 @@ import Tahun1ModuleHubLayout from '../../../PendidikanIslamPage/Tahun1/Tahun1Mod
 import MatematikTopicRobot from '../../MatematikTopicRobot';
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#FFF4E6 0%,#FACD94 50%,#E8821A 100%)',
-  dark: '#C2410C',
-  cd: '#FF6F00',
-  accent: '#FF8F3D',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#FEE9C8 0%,#F5B76A 55%,#E8821A 100%)',
-  pillGradient: 'linear-gradient(180deg,#FF8F3D,#FF6F00)',
+  pageGradient: 'linear-gradient(180deg,#E6FAF6 0%,#7FE0D3 50%,#0F9488 100%)',
+  dark: '#0F766E',
+  cd: '#0F9488',
+  accent: '#14B8A6',
+  stageGradient: 'radial-gradient(ellipse at 50% 32%,#CCFBF1 0%,#5EEAD4 55%,#0F9488 100%)',
+  pillGradient: 'linear-gradient(180deg,#14B8A6,#0F766E)',
 };
 
 // Shared robot icon — recolours from THEME so every topic in this module matches.
@@ -18,7 +18,7 @@ const TOPICS = [
   {
     id: 'nombor-100',
     pill: 'TOPIK 1.1',
-    title: 'Nombor Bulat hingga 100',
+    title: 'Belajar 1-100',
     desc: 'Kenali nombor 1 hingga 100, nilai tempat, dan pola nombor.',
     visual: ROBOT,
   },
@@ -46,7 +46,7 @@ const TOPICS = [
   {
     id: 'wang-t1',
     pill: 'TOPIK 1.4',
-    title: 'Wang (Ringgit & Sen)',
+    title: 'Wang',
     desc: 'Kenali wang Malaysia dan kira nilai ringgit dan sen.',
     visual: ROBOT,
   },

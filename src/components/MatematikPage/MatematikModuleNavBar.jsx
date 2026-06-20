@@ -2,42 +2,58 @@ import React from 'react';
 import { playHoverSound } from '../../utils/soundManager';
 import StatsBar from '../_shared/StatsBar';
 
-// Each module carries a face colour (c), darker border colour (cd), and the
-// full page gradient (pg) — mirroring the Bahasa Melayu module tab themes
-// (M1 orange, M2 blue, M3 purple). The page wrapper paints `pg` as the single
-// shared background so the nav bar and hub body read as one continuous colour.
-export const MT_MODULES = [
+// Tahun 1 — 5 new modules
+export const MT_MODULES_T1 = [
+  { id: 'nombor-hingga-100', num: 1, labelBM: 'Nombor Hingga 100', labelEN: 'Numbers to 100',      c: '#F59E0B', cd: '#D97706', pg: 'linear-gradient(180deg,#FFFBEB 0%,#FDE68A 50%,#D97706 100%)' },
+  { id: 'tambah-dan-tolak',  num: 2, labelBM: 'Tambah dan Tolak',  labelEN: 'Addition & Subtraction',c: '#3B82F6', cd: '#1D4ED8', pg: 'linear-gradient(180deg,#EFF6FF 0%,#93C5FD 50%,#1D4ED8 100%)' },
+  { id: 'pecahan',           num: 3, labelBM: 'Pecahan',           labelEN: 'Fractions',            c: '#8B5CF6', cd: '#6D28D9', pg: 'linear-gradient(180deg,#F5F3FF 0%,#C4B5FD 50%,#6D28D9 100%)' },
+  { id: 'wang',              num: 4, labelBM: 'Wang',              labelEN: 'Money',                c: '#10B981', cd: '#047857', pg: 'linear-gradient(180deg,#D1FAE5 0%,#6EE7B7 50%,#047857 100%)' },
+  { id: 'masa-dan-waktu',    num: 5, labelBM: 'Masa dan Waktu',    labelEN: 'Time',                 c: '#EC4899', cd: '#BE185D', pg: 'linear-gradient(180deg,#FDF2F8 0%,#F9A8D4 50%,#BE185D 100%)' },
+];
+
+// Tahun 2 & 3 — keep the old 3-module structure
+const MT_MODULES_T2T3 = [
   { id: 'nombor',    num: 1, labelBM: 'Nombor & Operasi',  labelEN: 'Numbers & Operations',   c: '#FF8F3D', cd: '#FF6F00', pg: 'linear-gradient(180deg,#FFF4E6 0%,#FACD94 50%,#E8821A 100%)' },
   { id: 'sukatan',   num: 2, labelBM: 'Sukatan & Geometri', labelEN: 'Measurement & Geometry', c: '#36A9F0', cd: '#1A78C7', pg: 'linear-gradient(180deg,#E6F1FB 0%,#9FC9F2 50%,#1E7AC9 100%)' },
   { id: 'statistik', num: 3, labelBM: 'Statistik',          labelEN: 'Statistics',             c: '#A368F0', cd: '#7038D6', pg: 'linear-gradient(180deg,#F0EBFB 0%,#C3ABF0 50%,#7A4FD0 100%)' },
 ];
 
-// Theme for the active module — shared with the page wrapper so it can paint
-// the same background as the selected tab.
 export function getMtModuleTheme(activeModule) {
-  const current = (activeModule || '').replace(/^\d-/, '');
-  const m = MT_MODULES.find(x => x.id === current);
+  const strip = (id) => (id || '').replace(/^\d-/, '');
+  const current = strip(activeModule);
+  const all = [...MT_MODULES_T1, ...MT_MODULES_T2T3];
+  const m = all.find(x => x.id === current);
   return {
-    c: m?.c || '#FF8F3D',
-    cd: m?.cd || '#FF6F00',
-    pageGradient: m?.pg || MT_MODULES[0].pg,
+    c: m?.c || '#F59E0B',
+    cd: m?.cd || '#D97706',
+    pageGradient: m?.pg || MT_MODULES_T1[0].pg,
   };
 }
 
 export default function MatematikModuleNavBar({ year, activeModule, onModuleChange, onBack, language = 'bm' }) {
+  const isT1 = year === 1;
+  const modules = isT1 ? MT_MODULES_T1 : MT_MODULES_T2T3;
   const stripPrefix = (id) => id.replace(/^\d-/, '');
   const current = stripPrefix(activeModule);
-  const activeMod = MT_MODULES.find(m => m.id === current);
-  const accent = activeMod?.c || '#FF8F3D';
-  const accentD = activeMod?.cd || '#FF6F00';
+  const activeMod = modules.find(m => m.id === current);
+
+  // Per-year tab palette override for T2/T3
+  const MT_YEAR_TAB_THEME = {
+    2: { c: '#36A9F0', cd: '#1A78C7' },
+    3: { c: '#A368F0', cd: '#7038D6' },
+  };
+
+  const yearTheme = MT_YEAR_TAB_THEME[year];
+  const accent = yearTheme?.c || activeMod?.c || '#F59E0B';
+  const accentD = yearTheme?.cd || activeMod?.cd || '#D97706';
+
+  const tabCount = modules.length;
 
   return (
     <header className="mt-module-header" style={{ '--accent': accent, '--accent-d': accentD }}>
       <style>{`
         .mt-module-header {
           flex-shrink: 0;
-          /* No panel fill — top bar + nav float as HUD elements over the
-             module's own page background. */
           background: transparent;
           position: relative;
           z-index: 2;
@@ -60,7 +76,6 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           width: 44px;
           height: 44px;
           border-radius: 50%;
-          /* Solid white "game button" — flat, no border or 3D shadow ledge */
           border: none;
           background: #ffffff;
           color: #10243A;
@@ -76,7 +91,6 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           outline: 3px solid var(--accent);
           outline-offset: 2px;
         }
-        /* Phone: fill the remaining row so stats stay readable */
         .mt-top-stats {
           flex: 1 1 auto;
           min-width: 0;
@@ -85,7 +99,6 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           justify-content: flex-end;
         }
         .mt-top-stats .sb-root { margin-bottom: 0; width: 100%; }
-        /* Tablet & up: compact HUD pill anchored to the top-right, not full-bleed. */
         @media (min-width: 768px) {
           .mt-top-stats { flex: 0 0 auto; }
           .mt-top-stats .sb-root {
@@ -102,8 +115,6 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           padding: 8px 14px;
           margin: 0 12px 14px;
           border-radius: 18px;
-          /* No tray fill — tabs float directly over the page background, each
-             carrying its own 3D bubble depth. */
           background: transparent;
           box-shadow: none;
           border: none;
@@ -120,7 +131,6 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           font-family: 'Nunito', sans-serif;
           font-weight: 900;
           cursor: pointer;
-          /* Resting: white card, gray border + gray 3D ledge */
           border: 4px solid #E0E0E0;
           background: #ffffff;
           border-radius: 20px;
@@ -145,7 +155,6 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           outline-offset: 2px;
         }
         .mt-mnav-tab.active {
-          /* Active: vibrant module surface (--tc) + module border (--tcd) */
           background: var(--tc);
           border-color: var(--tcd);
           color: #fff;
@@ -160,8 +169,7 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           .mt-mnav { padding: 10px 16px; gap: 8px; }
           .mt-mnav-tab-wrap {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            /* extra row-gap so each tab's bottom ledge clears the next row */
+            grid-template-columns: repeat(${tabCount === 5 ? 3 : 3}, 1fr);
             column-gap: 8px;
             row-gap: 18px;
             width: 100%;
@@ -199,13 +207,13 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
       </div>
       <nav className="mt-mnav">
         <div className="mt-mnav-tab-wrap">
-          {MT_MODULES.map(m => {
+          {modules.map(m => {
             const isActive = current === m.id;
             return (
               <button
                 key={m.id}
                 className={`mt-mnav-tab${isActive ? ' active' : ''}`}
-                style={{ '--tc': m.c, '--tcd': m.cd }}
+                style={{ '--tc': yearTheme?.c || m.c, '--tcd': yearTheme?.cd || m.cd }}
                 onClick={() => {
                   if (!isActive) {
                     playHoverSound();
