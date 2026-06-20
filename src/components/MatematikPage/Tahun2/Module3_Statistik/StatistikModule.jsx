@@ -32,6 +32,7 @@ export default function StatistikModule({ onSelectTopic, language = 'bm' }) {
       moduleNameEn="Statistics"
       theme={THEME}
       headerVariant="banner"
+      bareStage
       topics={TOPICS}
       onSelectTopic={onSelectTopic}
       language={language}

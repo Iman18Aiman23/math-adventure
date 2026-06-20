@@ -30,8 +30,9 @@ export default function MatematikTopicRobot({
   const a = accent || theme?.accent || '#14B8A6';
   const d = dark || theme?.dark || '#0F766E';
   const cGlow = glow || a;
-  const cEarTop = earTop || a;
-  const cEarBottom = earBottom || d;
+  // Ears share the eyes' neon colour so they read as the same orange/teal/etc.
+  const cEarTop = earTop || cGlow;
+  const cEarBottom = earBottom || cGlow;
 
   const raw = useId();
   const uid = raw.replace(/[^a-zA-Z0-9]/g, '');
@@ -83,11 +84,11 @@ export default function MatematikTopicRobot({
 
       {/* ===== EAR / SIDE PIECES ===== */}
       <rect x="30" y="110" width="30" height="60" rx="12" ry="12"
-            fill={`url(#${id('ear')})`} stroke={cEarBottom} strokeWidth="1.5" />
+            fill={`url(#${id('ear')})`} stroke={d} strokeWidth="1.5" />
       <rect x="36" y="120" width="18" height="40" rx="7" ry="7" fill="#e0f4f8" opacity="0.6" />
 
       <rect x="240" y="110" width="30" height="60" rx="12" ry="12"
-            fill={`url(#${id('ear')})`} stroke={cEarBottom} strokeWidth="1.5" />
+            fill={`url(#${id('ear')})`} stroke={d} strokeWidth="1.5" />
       <rect x="246" y="120" width="18" height="40" rx="7" ry="7" fill="#e0f4f8" opacity="0.6" />
 
       {/* ===== FACE SCREEN ===== */}
@@ -109,7 +110,7 @@ export default function MatematikTopicRobot({
             fill="none" stroke={cGlow} strokeWidth="4" strokeLinecap="round" filter={`url(#${id('glow')})`} />
 
       {/* ===== BOTTOM CHIN LINE (decorative) ===== */}
-      <rect x="120" y="218" width="60" height="6" rx="3" ry="3" fill={cEarBottom} opacity="0.5" />
+      <rect x="120" y="218" width="60" height="6" rx="3" ry="3" fill={d} opacity="0.5" />
 
       {/* ===== MATH SYMBOL BADGE ===== */}
       <circle cx="230" cy="210" r="18" fill={badge} stroke="#ffffff" strokeWidth="2" />

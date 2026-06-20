@@ -81,6 +81,7 @@ export default function NomborModule({ onSelectTopic, language = 'bm' }) {
       moduleNameEn="Numbers and Operations"
       theme={THEME}
       headerVariant="banner"
+      bareStage
       topics={TOPICS}
       onSelectTopic={onSelectTopic}
       language={language}

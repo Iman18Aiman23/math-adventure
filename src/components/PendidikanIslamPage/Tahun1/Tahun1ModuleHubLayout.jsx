@@ -13,6 +13,9 @@ export default function Tahun1ModuleHubLayout({
   // 'default' = centered title + subtitle; 'banner' = Bahasa Melayu-style
   // coloured unit banner (kicker + module name + badge).
   headerVariant = 'default',
+  // when true, the topic stage has no background/shadow — the visual (e.g. a
+  // robot head) floats directly on the card.
+  bareStage = false,
 }) {
   return (
     <>
@@ -135,23 +138,32 @@ export default function Tahun1ModuleHubLayout({
           background: ${theme.stageGradient};
           box-shadow: inset 0 -8px 24px ${theme.dark}33, inset 0 2px 0 rgba(255,255,255,.5);
         }
+        /* Bare stage — no disc behind the visual (robot head floats on the card). */
+        .pi-mhub-stage--bare {
+          background: none;
+          box-shadow: none;
+          border-radius: 0;
+        }
         .pi-mhub-stage svg {
           width: 90%;
           height: 90%;
           overflow: visible;
           animation: pi-mhub-float 3.4s ease-in-out infinite;
         }
+        /* Title chip — holds the topic title in the coloured box. */
         .pi-mhub-pill {
           font-family: 'Baloo 2', sans-serif;
-          font-weight: 700;
-          font-size: 10px;
-          letter-spacing: .1em;
-          text-transform: uppercase;
+          font-weight: 800;
+          font-size: 18px;
+          letter-spacing: .01em;
           color: #fff;
-          padding: 5px 14px;
-          border-radius: 999px;
-          background: ${theme.pillGradient};
-          box-shadow: 0 2px 0 ${theme.dark};
+          padding: 8px 16px;
+          border-radius: 16px;
+          background: ${theme.accent};
+          box-shadow: 0 3px 0 ${theme.cd || theme.dark};
+          text-align: center;
+          line-height: 1.25;
+          max-width: 92%;
         }
         .pi-mhub-card-title {
           font-family: 'Baloo 2', sans-serif;
@@ -204,9 +216,7 @@ export default function Tahun1ModuleHubLayout({
           height: min(150px, 58vw);
         }
         .pi-mhub-card--v2 .pi-mhub-pill {
-          font-size: 10px;
-          padding: 5px 14px;
-          box-shadow: 0 2px 0 ${theme.cd || theme.dark};
+          font-size: 18px;
         }
         .pi-mhub-card--v2 .pi-mhub-card-title {
           font-size: 17px;
@@ -311,13 +321,14 @@ export default function Tahun1ModuleHubLayout({
                 }
               }}
             >
-              <div className="pi-mhub-stage">
+              <div className={`pi-mhub-stage${bareStage ? ' pi-mhub-stage--bare' : ''}`}>
                 {t.visual}
               </div>
-              {headerVariant === 'banner' && t.pill && (
-                <span className="pi-mhub-pill">{t.pill}</span>
+              {headerVariant === 'banner' ? (
+                <span className="pi-mhub-pill">{t.title}</span>
+              ) : (
+                <h3 className="pi-mhub-card-title">{t.title}</h3>
               )}
-              <h3 className="pi-mhub-card-title">{t.title}</h3>
               <p className="pi-mhub-card-desc">{t.desc}</p>
               {headerVariant === 'banner' && !t.disabled && (
                 <span className="pi-mhub-cta">{language === 'bm' ? 'Mula ▸' : 'Start ▸'}</span>

@@ -53,6 +53,7 @@ export default function SukatanModule({ onSelectTopic, language = 'bm' }) {
       moduleNameEn="Measurement and Geometry"
       theme={THEME}
       headerVariant="banner"
+      bareStage
       topics={TOPICS}
       onSelectTopic={onSelectTopic}
       language={language}
