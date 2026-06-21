@@ -241,14 +241,14 @@ Within every slice: build, run `npm run build`, set the §6 row to **🔍**, sum
 | 1.1 | Banyak, Sedikit, Lebih atau Kurang | Compare (tick-box Q) | ✅ | **Reworked per owner 2026-06-20 (code+build, §8.2 revised):** Belajar = tick-the-correct-group questions (5 types incl sama-banyak reference form); prompt card + 🔊; ✓/✗ feedback; "Seterusnya →" (enabled after answering); removed ⚖️ emoji + subtitle + mode chips + Ready CTA; Malay only; shared ROBOT card + chip BANYAK DAN SEDIKIT; build exit 0. Decisions to confirm: (a) sama-banyak uses a reference group (vs Ya/Tidak); (b) Seterusnya gated on answering; (c) shell Back-from-Kuiz → hub not Belajar (toggle works). |
 | 1.2 | Kenali 0 hingga 10 | Bilang+KenalNombor+Sifar | ✅ | **Verified 2026-06-20 (code+build) vs §10.5:** shared `MatematikActivityFrame` extracted (good); round 4 Bilang + 3 Kenal Nombor + 3 Kenali Sifar; Bilang options numeral/word; Kenali Sifar "Yang manakah sifar?" + empty dashed tray; zero = dashed tray (no 🍽️); §9 chrome; build exit 0; 1.1 not regressed. Count-reveal fixed: KenalNombor & Sifar boxes are empty until answered (child must count), then flip ✓/✗. |
 | 1.3 | Kenali 11 hingga 20 | Bilang+KenalNombor | ✅ | **Verified 2026-06-20 (code+build):** config refactor `{min,max,bilang,kenal,sifar}`; 1.2 explicit `{0,10,4,3,3}` = unchanged; 1.3 `{11,20,5,5,0}` (5 Bilang + 5 Kenal Nombor, no Sifar); range 11–20 in all gens; ten-frame (rows of 5 + gap after 10) for >10; BM words 0–20; word options 2-across no-clip; boxes empty until answered; topic page §9; route + live hub card; build exit 0; 1.1/1.2 not regressed. |
-| 1.4 | Tulis 0 hingga 20 | Trace/Write | 🔍 | **Built 2026-06-20 per §9.9:** numberPaths.js (digits 0–9 hand-crafted, same shape as letterPaths); NumberTraceLesson.jsx mirrors LetterTraceLesson with amber theme (accent #F59E0B); 0–20, single-digit=one canvas, two-digit=tens/ones Digit 1/Digit 2 pills; per-glyph confetti; numToBM spoken via SpeechManager ms-MY; completion screen with Cuba Lagi / Kembali / Topik Seterusnya →; Tulis0Hingga20.jsx wrapper; App.jsx lazy+route; placeholder→live hub card; build exit 0. §9 chrome (no tick-quiz frame, no Betul/Salah footer). |
-| 1.5 | Kombinasi Nombor | BuildAdd | ⬜ | number bonds |
-| 1.6 | Kenali 21 hingga 100 | NumberGrid | ⬜ | |
-| 1.7 | Nilai Tempat & Nilai Digit | PlaceValue | ⬜ | |
-| 1.8 | Susunan Nombor | Order | ⬜ | |
-| 1.9 | Pola Nombor | Pattern | ⬜ | |
-| 1.10 | Anggar & Bundar | Estimate/Round | ⬜ | |
-| 1.F | Footer: Selesaikan · Latih Diri · Cabar Minda | reuse `Nombor100` + drill + challenge | ⬜ | may split into 3 |
+| 1.4 | Tulis 0 hingga 20 | Trace/Write | ✅ | **Verified 2026-06-20 (code+build, §9.9):** numberPaths.js digits 0–9 authored + visually fixed via headless-Edge render (2/3/5/6/8/9 reworked; owner refined 3/5) — all render clean, no clip; NumberTraceLesson mirrors LetterTraceLesson (amber); 0–20 each traced on a SINGLE card (owner 2026-06-21: two-digit numbers like 10/14/20 show both digits side by side via `getNumberGlyph`, not split into Digit1/Digit2); numToBM TTS ms-MY; per-glyph confetti + "Tahniah!" completion (Cuba Lagi/Kembali/Topik Seterusnya); reuses TraceCanvas; topic page + route + live hub card; build exit 0. Trace card = no tick-quiz frame/footer (correct). |
+| 1.5 | Kombinasi Nombor | Kombinasi (bonds) | ✅ | **Verified 2026-06-20 (code+build) vs §11.4:** round 4 Jumlah + 3 Lengkapkan + 3 Jadikan 10; whole ≤10; Jumlah=two groups+dan, Lengkapkan="A dan ? ialah C"+chip, Jadikan10=2×5 ten-frame; 4 numeral options ✓/✗ + confetti; §9 chrome via frame; topic page §9; live hub card; build exit 0; 1.1–1.4 not regressed. |
+| 1.6 | Kenali 21 hingga 100 | Bilang+Word↔Num | ✅ | **Verified 2026-06-21 (code+build) vs §12.5:** Kenali21Hingga100Explore on frame; round (owner 2026-06-21) 2 Susun Perkataan (word-ordering builder, Aktiviti 5) + 3 Tulis Angka (KEYPAD+keyboard, Aktiviti 4) + 2 Bilang (wide spaced tens-box) + 3 Angka→Perkataan; tick options capped at 3; numToBM 21–100 + seratus; distractors digit-swap/±10/±1; word options stacked 1-col nowrap (no clip); **Bilang tens+ones visual fixed by me** (was loose pile → now rows-of-ten box + ones, countable, responsive, verified at 360px); topic page §9 + route + live hub card; build exit 0; 1.1–1.5 not regressed. Abacus (Aktiviti 6) deferred to 1.7. |
+| 1.7 | Nilai Tempat & Nilai Digit | PlaceValue (keyin + pick place) | ✅ | **Verified 2026-06-21 (code+build) vs §13.4:** round 5 Bilang&Tulis + 5 Nilai Tempat; BilangTulis = TensOnesGrid + PULUH/SA boxes (active highlight) + keypad **+ keyboard**, auto-advance + auto-submit, wrong shows decomposition (n 10–99); NilaiTempat = up-to-3-digit, underlined digit bold-red-bigger-underline, 3 opts Ratus/Puluh/Sa mapped by pos-from-right; topic page §9 + route + live hub card; build exit 0; 1.1–1.6 not regressed. |
+| 1.8 | Susunan Nombor | Order | ✅ | **Verified 2026-06-21 (Claude):** 4 types (3 Susun+2 Jiran+3 Lengkapkan+2 Sambung Titik = round 10); Susun tap-to-order (asc/desc) + undo + auto-check; Jiran/Lengkapkan keypad+keyboard (submit only ✓/Enter, no auto-submit confirmed); Sambung Titik SVG dot-to-dot (advances only on next-expected dot, `[done]` effect transition-safe); generators bounded 1–100; live hub card pill `SUSUNAN NOMBOR` desc 6 words; §9 chrome (showToggle/showReadyCta false); lazy-routed; build exit 0. |
+| 1.9 | Pola Nombor | Pattern | ✅ | **Built + verified 2026-06-21 (Claude):** PolaNomborExplore, 4 types (3 Berulang-seterusnya + 2 Berulang-lengkap via NumOptionsGrid; 3 Bilang-lengkap via keypad reuse; 2 Bilang-terang rule-pick via WordOptionsGrid = round 10). New PolaSeqTiles read-only sequence row. Generators bounded 1–100, invariants asserted over 20k iters (cyclic answers, internal gaps, exactly-one-correct, 4 unique rule options). Wired: PolaNombor.jsx (§9), App.jsx lazy route, MatematikExplore case, hub card pill `POLA NOMBOR` desc 6 words. Build exit 0; visual confirmed via headless-Edge. |
+| 1.10 | Anggar & Bundar | Estimate/Round | ✅ | **Built + verified 2026-06-21 (Claude), image-grounded p59–62:** AnggarBundarExplore, 4 types — 3 Anggar lebih/kurang daripada (WordOptions) + 2 Anggar lebih-kurang nearest-ten (NumOptions) + 2 Bundar garis nombor (new SVG NumberLine + 2 tens) + 3 Bundar pilih (big number + 4 tens) = round 10 (Anggar 5 / Bundar 5). Rounding = nearest ten, 5→UP (Math.round). Invariants + workbook spot-checks (25→30, 55→60, 95→100, 24→20…) asserted over 30k iters. Wired: AnggarBundar.jsx (§9), App.jsx lazy route, MatematikExplore case, hub pill `ANGGAR & BUNDAR`. Build exit 0; visuals confirmed via headless-Edge. **Module 1 COMPLETE (10/10 Belajar cards).** |
+| 1.F | Footer: Selesaikan · Latih Diri · Cabar Minda | image-grounded p63–68; split into 3 | ✅ | **(a) Selesaikan ✅ built+verified 2026-06-21 (Claude), p63–66:** SelesaikanExplore, round 10 = 3 Banding (paling kecil/besar, 4 cards) + 2 Bina (2-digit terkecil/terbesar from 2 digit cards, keypad) + 3 Cerita (+/− word problems: beli lagi / diberi / lebih daripada, keypad) + 2 Bundar (which of 4 cards rounds to T). Invariants over 30k iters (compare target, bina min/max, story results 1–100, exactly-one-rounds-to-T). FooterTrio now clickable per-item (`is-enabled`); Selesaikan.jsx (§9), App route, MatematikExplore case wired; build exit 0; long story+keypad fits single page (headless-Edge). **(b) Latih Diri ✅ built+verified 2026-06-21 (Claude), p67 station path:** LatihDiriExplore, round 10 = 2 each — Perkataan→Angka (numToBM word, digit-reversed distractor) · Berapa (count objects) · Lebih besar daripada N (exactly one option >N) · Lengkapkan pola (skip-count MC, reuses PolaTilesContent) · Bundar (reuses BundarPilihContent). All multiple-choice (fast drill). Invariants over 30k iters. Footer card enabled; LatihDiri.jsx (§9), App route, MatematikExplore case wired; build exit 0. **(c) Cabar Minda ✅ built+verified 2026-06-21 (Claude), p68:** CabarMindaExplore, round 10 = 2 each — Di antara (exactly one option strictly inside L..H) · Nilai digit/place value (exactly one option with digit in tens place) · Bundar forward · Reverse-round (which→T) · Lengkapkan (steps 2/3/5/10). Invariants over 40k iters. Footer card enabled; CabarMinda.jsx (§9), App route, MatematikExplore case wired; build exit 0. **Slice 1.F COMPLETE — all 3 footer items live. MODULE 1 FULLY COMPLETE (10 Belajar + 3 footer trio).** |
 
 **Modules 2–5 (expand into card-by-card slices when reached)**
 
@@ -449,7 +449,9 @@ hub). They keep all cards consistent and cheap to build:
 
 ### 9.3 Heading & question (plain, borderless)
 - **Dynamic header per question category**, gray `#64748B`, borderless plain text, format
-  `Pembelajaran <Kategori>` (e.g. `Pembelajaran Banyak atau Sedikit`).
+  `Pembelajaran <Kategori>` (e.g. `Pembelajaran Banyak atau Sedikit`). **It is a TITLE
+  pinned near the top** of the page (just under the top bar), kept clear of the body — the
+  body (question + card + Seterusnya) is centred in the space below it.
 - **Question** near-black `#1E293B`, bold, **borderless** (no card/box/shadow).
 - **No 🔊 speaker icon. No `x / N` progress counter.**
 - **Malay only** — never Indonesian text. (TTS, if used, prefers `ms-MY`; the `id-*` voice
@@ -467,15 +469,20 @@ hub). They keep all cards consistent and cheap to build:
   `sepuluh`) overflow a 4-across grid → render word options **2-across** with a smaller font
   + `white-space: nowrap`; keep **numeral** options 4-across.
 - Feedback line: **`Betul! 🎉`** / **`Cuba lagi`**.
+- **Sound:** `playSound('correct')` / `playSound('wrong')` on each answer (alongside confetti).
 - **Confetti:** small burst on **each correct** answer.
-- **After 10 → completion screen** (full confetti): **`Tahniah!`** + **Betul / Salah**
-  totals + two buttons: **`↻ Main Semula`** (fresh random round) and
+- **Seterusnya → button:** accent-coloured when active; **neutral gray when disabled**
+  (`#E5E7EB` bg / `#9CA3AF` text — not the bluish slate).
+- **After 10 → completion screen** (full confetti **+ `playSound('streak')` cheer**):
+  **`Tahniah!`** + **Betul / Salah** totals + two buttons: **`↻ Main Semula`** (fresh round) and
   **`Topik Seterusnya →`** (`onExit`; re-point to the real next topic once it exists).
 
 ### 9.5 Footer — IDENTICAL on every topic
 Mirror of `PendidikanIslamPage/.../Jawi100WordsGame.jsx`, pinned to the bottom, frosted
 white (`rgba(255,255,255,.85)` + blur, top border):
-- **Left:** `Jawapan :  ✅ <n> Betul   ❌ <n> salah`
+- **Left:** `Jawapan :` + the two stats **grouped as one nowrap unit** with a divider:
+  `✅ <n> Betul | ❌ <n> salah`. On small screens "Jawapan :" sits on its own line and the
+  grouped stats wrap together below it (never split mid-pair).
 - **Right:** 🏆 streak progress bar = `streak % 10` out of `/10`.
 - Drives a **light session counter** (correct / wrong / streak) only — **no global XP**.
 
@@ -554,3 +561,284 @@ First 1.2 build = 5 Bilang + 5 Kenal Nombor, numerals-only options, 🍽️ plat
 **Gaps to fix:** add **Kenali Sifar** type; **numeral-OR-word** Bilang options; **empty
 dashed tray** for zero (drop 🍽️); rebalance to **4 / 3 / 3**. Frame + Kenal Nombor are good
 — keep them.
+
+---
+
+## 11. Card spec — Slice 1.5 "Kombinasi Nombor" (image-grounded)
+
+> Number bonds / part–part–whole (combine numbers to a whole ≤ 10). Grounded in the KSSR
+> Tahun 1 workbook (Kombinasi Nombor, Aktiviti 1–3). Build on the §9 standard spec (frame,
+> confetti, completion, Jawi footer, vmin single-page, ROBOT card, **Malay only**) — this
+> is a tick-the-answer card like 1.2/1.3, a NEW primitive on `MatematikActivityFrame`.
+
+### 11.1 Activity formats (from the workbook) — THREE types
+- **Jumlah (combine → whole)** — *"Padankan supaya jadi 6"*, *"… dan … ialah …"*: show two
+  object groups (A and B emoji, with "dan" / "+" between) → prompt **"Berapa jumlahnya?"**
+  (header `Pembelajaran Kombinasi`). 4 NUMBER options; answer = A + B. Whole ≤ 10.
+- **Lengkapkan (missing part)** — *"Isi tempat kosong"*, *"kombinasi 7 dan 9"*: a part–part–
+  whole bond — show part A + the whole C, second part shown as **"?"**; prompt
+  **"[A] dan ? ialah [C]"** (header `Pembelajaran Lengkapkan`). 4 number options; answer =
+  C − A.
+- **Jadikan 10 (ten-frame complement)** — *"Jadikan 10"*: a 2×5 **ten-frame** with A cells
+  filled (coloured emoji) + (10−A) empty (outline); prompt **"Berapa lagi untuk jadi 10?"**
+  (header `Pembelajaran Jadikan 10`). 4 number options; answer = 10 − A.
+
+### 11.2 Round composition (10 questions, randomised order)
+- **4 × Jumlah** (A + B → whole; A,B ≥1, A+B ≤ 10)
+- **3 × Lengkapkan** (A and ? → C; whole C ≤ 10)
+- **3 × Jadikan 10** (ten-frame complement to 10)
+
+### 11.3 Notes
+- Number options: 4 choices, the correct answer + 3 near distractors (in range). Tick →
+  ✓/✗ + confetti (frame). 4-wide emoji groups; ten-frame = 2 rows × 5.
+- BM: Jumlah · dan · ialah · "Berapa jumlahnya?" · "Berapa lagi untuk jadi 10?".
+- Whole stays ≤ 10 (KSSR T1 bonds). Objects = kid-friendly emoji.
+
+### 11.4 DoD (card-level) — in addition to §9
+- [ ] Round of 10 = 4 Jumlah + 3 Lengkapkan + 3 Jadikan 10, shuffled; numbers random in range.
+- [ ] Jumlah: two groups shown, pick the total; Lengkapkan: "A dan ? ialah C", pick missing
+      part; Jadikan 10: ten-frame, pick how many more to reach 10.
+- [ ] Number options (4), correct → ✓ + confetti; Malay only; whole ≤ 10.
+- [ ] Everything from §9 (frame, footer, completion, vmin single-page, ROBOT card, §8.5).
+
+---
+
+## 12. Card spec — Slice 1.6 "Kenali 21 hingga 100" (image-grounded)
+
+> Recognise numbers 21–100. Grounded in the KSSR Tahun 1 workbook (Kenali 21 hingga 100,
+> Aktiviti 1–6). **New question types** (NOT just a `min/max` config bump — you cannot show
+> 87 loose objects). Build a new generator set on `MatematikActivityFrame` (copy the
+> KenaliNombor pattern), reuse `NumOptionsGrid` + a `numToBM`-style word helper. Apply §9.
+
+### 12.1 Activity formats (cover ALL six workbook activities) — THREE types
+- **Bilang puluh & sa (count tens + ones → numeral)** — *Aktiviti 1 "Padankan"* (groups→number)
+  + *Aktiviti 2 "Bilang dan warnakan"*: show the number as **T groups of ten + O ones**
+    (rows-of-ten box + ones below — countable by 10s; responsive). Header `Pembelajaran
+    Mengira`, prompt **"Berapakah bilangannya?"** → **3** numeral options (tick).
+- **Tulis Angka (word → TYPE the numeral, keypad)** — *Aktiviti 3②* + *Aktiviti 4 "Tulis
+  nombor dalam angka"*: show the BM **word** (e.g. `empat puluh tujuh`) + a number display +
+  a **0–9 keypad** (⌫ / ✓). Header `Pembelajaran Tulis`, prompt **"Tulis nombor dalam
+  angka"**. Submit → `handlePick(typed)` checked vs `String(n)`; wrong shows `Jawapan: <n>`.
+  *(Replaced the earlier pick-numeral version — typing is the authentic Aktiviti 4 skill.)*
+- **Angka → Perkataan (numeral → word)** — *Aktiviti 3①* + *Aktiviti 5 "Tulis dalam perkataan"*:
+  show the **numeral** (e.g. 57) → header `Pembelajaran Perkataan`, prompt
+  **"Apakah nama nombor ini?"** → **3** **word** options (stacked, no clip).
+
+### 12.2 Round composition (10 questions, randomised order) — owner 2026-06-21
+- **2 × Susun Perkataan** (numeral → arrange scrambled word-parts in order — *Aktiviti 5
+  "Tulis nombor dalam perkataan"*; word-ordering builder like AgeGroup-7 `SentenceBuilder`,
+  e.g. 53 → tap `lima` `puluh` `tiga`; parts carry stable ids so duplicates like
+  `lima puluh lima` work; assembled string auto-submits when all placed)
+- **3 × Tulis Angka** (word → type numeral, keypad + external keyboard)
+- **2 × Bilang** (tens + ones → numeral, tick; 3 options)
+- **3 × Angka → Perkataan** (numeral → tick word; "Apakah nama nombor ini?")
+
+> **Options capped at 3** (answer + 2 distractors) for tick types — owner: "max 3 options".
+
+### 12.3 Numbers & words
+- Range **21–100** (include 100 = `seratus`). Distractors are near/plausible (digit-swap like
+  57↔75, ±1 ten, ±1 sa) — mirror the workbook's choices.
+- BM words via a `numToBM` helper (port from `Nombor100.jsx`/`NumberTraceLesson`): tens
+  `dua puluh … sembilan puluh`, + sa, `seratus`.
+- **Word options are LONG** (e.g. `tujuh puluh lima`, `lapan puluh tiga`). They MUST NOT clip
+  (§9.4): render word options **1-across (stacked) or 2-across with a smaller font** +
+  `white-space: nowrap`; numeral options stay 4-across.
+
+### 12.4 Deferred
+The **abacus** activity (*Aktiviti 6* — "padankan dengan abakus") is **place value** → build
+it in **1.7 Nilai Tempat & Nilai Digit**, not here.
+
+### 12.5 DoD (card-level) — in addition to §9
+- [ ] Round of 10 = 4 Bilang + 3 Tulis Angka (keypad) + 3 Angka→Perkataan, shuffled; numbers
+      random in 21–100 (incl. some round tens + 100).
+- [ ] Bilang shows **tens groups + ones** (not loose 87 objects), responsive (no overflow);
+      **3** tick options.
+- [ ] **Tulis Angka:** word + number display + 0–9 keypad (⌫/✓); typed = correct → ✓ +
+      confetti/sound; wrong shows `Jawapan: <n>`; input resets between questions.
+- [ ] Angka→Perkataan: **3** word options, **never clip** (stacked, nowrap).
+- [ ] Tick options **max 3** (answer + 2 distractors); Malay only.
+- [ ] Everything from §9 (frame, footer, completion, vmin single-page, ROBOT card, §8.5).
+
+---
+
+## 13. Card spec — Slice 1.7 "Nilai Tempat & Nilai Digit" (image-grounded)
+
+> Place value & digit value. Grounded in the KSSR Tahun 1 workbook (Kenali Nilai Tempat dan
+> Nilai Digit, Aktiviti 1–2) the owner supplied. **New primitive on `MatematikActivityFrame`**
+> (copy the Kenali21 pattern; reuse `TensOnesGrid` + the keypad). Apply §9. Round = **5 + 5**.
+
+### 13.1 Activity formats — TWO types
+- **Bilang & Tulis (count → keyin puluh + sa)** — *Aktiviti 1 "Bilang dan tulis nombor"*:
+  show the number as **tens groups + ones** (reuse the wide, spaced `TensOnesGrid`). Below it,
+  **two labelled boxes — `PULUH` and `SA`** — the child **types** the tens digit and the ones
+  digit (keypad **+** external keyboard, like Tulis Angka). Active box auto-advances
+  (puluh → sa); tap a box to refocus; **auto-submit when both filled** → `handlePick(puluh+sa)`
+  checked vs `String(n)`. Numbers **10–99**. Header `Pembelajaran Nilai Tempat`, prompt
+  **"Bilang dan tulis nombor"**. Wrong → show `Jawapan: <p> puluh <s> sa`.
+- **Nilai Tempat (underlined digit → pick the place)** — *Aktiviti 2 "Tulis nilai tempat bagi
+  digit yang bergaris"*: show a number (**up to 3 digits / ratus**, e.g. `323`) with **one digit
+  underlined & styled — bold, RED, slightly bigger, underlined** (others plain black). 3 tick
+  options **`Ratus` / `Puluh` / `Sa`**; answer = the place of the underlined digit. Header
+  `Pembelajaran Nilai Tempat`, prompt **"Tulis nilai tempat bagi nombor bergaris"**.
+
+### 13.2 Round composition (10 questions, randomised order)
+- **5 × Bilang & Tulis** (keyin puluh + sa; n 10–99, random)
+- **5 × Nilai Tempat** (underlined digit → Ratus/Puluh/Sa; number up to 3 digits, random digit
+  underlined)
+
+### 13.3 Notes
+- Reuse `MatematikActivityFrame` chrome (header title, sound, confetti, completion, Jawi
+  footer) + `TensOnesGrid` (wide/spaced) + the keypad styling/keyboard handler from Tulis Angka.
+- **Place-value styling** (type B): the underlined digit is the only red/bold/bigger/underlined
+  glyph; the rest of the number is plain `#1E293B`.
+- Malay only; responsive (no overflow); tap targets ≥44px.
+- *(Abacus from 1.6 Aktiviti 6 / this Aktiviti 1 is NOT required — owner wants emoji objects.)*
+
+### 13.4 DoD (card-level) — in addition to §9
+- [ ] Round of 10 = 5 Bilang & Tulis + 5 Nilai Tempat, shuffled; numbers random.
+- [ ] Bilang & Tulis: tens+ones objects + **PULUH/SA boxes**, keypad + keyboard, auto-advance,
+      auto-submit; correct → ✓ + confetti/sound; wrong shows the decomposition.
+- [ ] Nilai Tempat: number up to 3 digits, one digit **bold-red-bigger-underlined**; 3 options
+      Ratus/Puluh/Sa; correct place = answer.
+- [ ] Topic page §9 (no toggle/banner/CTA, onExit); route + **live hub card** (pill
+      `NILAI TEMPAT & NILAI DIGIT`, ROBOT, desc ≤10 words); build exit 0; no regression to 1.1–1.6.
+
+---
+
+## 14. Card spec — Slice 1.8 "Susunan Nombor" (image-grounded)
+
+> Ordering / sequencing. Grounded in the KSSR Tahun 1 workbook (Susunan Nombor, Aktiviti 1–7).
+> **Bigger card — FOUR question types**, on `MatematikActivityFrame` (copy the Kenali21 /
+> NilaiTempat patterns; reuse the keypad + keyboard handler + the Susun-Perkataan tap-to-order
+> pattern). One type uses an **SVG/canvas** (dot-to-dot). Apply §9. Numbers ≤ 100.
+
+### 14.1 Activity formats — cover ALL workbook activities, FOUR types
+- **Susun (order ascending/descending)** — *Aktiviti 1② "tertib menaik" + Aktiviti 3 "tertib
+  menurun"*: show 4–5 **scrambled number tiles**; child taps them into the correct order
+  (reuse the Susun-Perkataan tap-to-build pattern, number tiles). Header `Pembelajaran Susunan`,
+  prompt **"Susun mengikut tertib menaik"** / **"… menurun"** (randomly). Auto-checks when all
+  placed; tap a placed tile to undo.
+- **Jiran (sebelum / selepas / di antara)** — *Aktiviti 4*: show a short run with ONE gap —
+  `__ , 31` (sebelum), `71 , __` (selepas), `47 , __ , 49` (di antara) — child **types** the
+  missing number (keypad + keyboard, ✓/Enter to submit; NO auto-submit). Header
+  `Pembelajaran Susunan`, prompt **"Tulis nombor sebelum / selepas / di antara"** (match case).
+- **Lengkapkan Urutan (missing number / skip-count)** — *Aktiviti 3 + 4 (2s) + 5 (5s) + 6 (10s)
+  + 7 (4s)*: show a stepped sequence with ONE missing slot, step ∈ {1,2,4,5,10}, menaik OR
+  menurun, e.g. `2 4 6 __ 10`, `100 90 __ 70`. Child **types** the missing number (keypad +
+  keyboard). Header `Pembelajaran Susunan`, prompt **"Bilang menaik/menurun <N>-<N>"** (or
+  "Lengkapkan urutan"). All numbers ≤ 100, no negatives.
+- **Sambung Titik (connect-the-dots, SVG/canvas)** — *Aktiviti 2*: numbered dots (≈8–14) laid
+  out to form a **simple shape** (e.g. star/fish/house); child taps dots **in number order**;
+  a line draws between correctly-connected dots; tapping the wrong dot is ignored. Completing
+  the sequence → correct (`handlePick('done')`). Header `Pembelajaran Susunan`, prompt
+  **"Sambung titik ikut urutan nombor"**. Use SVG (or canvas) so it looks like the worksheet.
+
+### 14.2 Round composition (10 questions, randomised order)
+- **3 × Susun** (ascending/descending, random scrambled set)
+- **2 × Jiran** (sebelum / selepas / di antara, random)
+- **3 × Lengkapkan Urutan** (random step 1/2/4/5/10, menaik/menurun, random gap position)
+- **2 × Sambung Titik** (random shape from a small predefined set)
+
+### 14.3 Notes
+- Reuse `MatematikActivityFrame` chrome + the keypad (Jiran/Lengkapkan) + Susun-Perkataan
+  tap-to-order (Susun). Sambung Titik is bespoke SVG inside `renderQuestion`.
+- Keypad types: **no auto-submit** — ✓ / Enter only (per owner). Editable (overwrite box).
+- Wrong → show the correct answer (the number / the ordered list).
+- Malay only; responsive (no overflow); tap targets ≥ 44px; all numbers 1–100.
+
+### 14.4 DoD (card-level) — in addition to §9
+- [ ] Round of 10 = 3 Susun + 2 Jiran + 3 Lengkapkan + 2 Sambung Titik, shuffled; random.
+- [ ] Susun: tap scrambled tiles into ascending/descending order; undo; auto-check on complete.
+- [ ] Jiran: before/after/between gap; keypad + keyboard; ✓/Enter submit (no auto-submit).
+- [ ] Lengkapkan: step 1/2/4/5/10 up/down, one gap; keypad + keyboard; numbers ≤ 100.
+- [ ] Sambung Titik: SVG dots in order → lines connect → completing = correct; looks worksheet-like.
+- [ ] Topic page §9; route; **live hub card** (pill `SUSUNAN NOMBOR`, ROBOT, desc ≤10 words);
+      build exit 0; no regression to 1.1–1.7.
+
+---
+
+## 15. Card spec — Slice 1.9 "Pola Nombor" (image-grounded)
+
+> Number patterns. Grounded in the KSSR Tahun 1 workbook (Pola Nombor, Aktiviti 1–2, pp.57–58).
+> Two distinct concepts: **pola berulang** (repeating/cyclic patterns) + **pola bilang**
+> (skip-counting arithmetic sequences, incl. naming the rule). New file
+> `PolaNomborExplore` in `explorePrimitives.jsx`; primitive key `'pola-nombor'`. Reuse the
+> §9 `MatematikActivityFrame`, the number-options grid (1.6 `NumOptionsGrid`), the keypad
+> (1.8 `SusunanKeypadContent` pattern — keypad + external keyboard, submit ONLY via ✓/Enter,
+> NO auto-submit), and the stacked word-options grid (1.6 `WordOptionsGrid`). Header on every
+> question = `Pembelajaran Pola`.
+
+### 15.1 Type A — Pola Berulang: nombor seterusnya (Aktiviti 1①)
+- Cyclic pattern, period P ∈ {2,3}, values 0–9 (e.g. `[2,5]`→ `2 5 2 5 2 5 ?`; `[6,6,3]`→ `6 6 3 6 6 3 ?`).
+- Render ~6–7 tiles ending in a highlighted `?`; **answer = next value in the cycle**.
+- Input = `NumOptionsGrid` (distinct pattern values + 1–2 distractors from 0–9, capped 3–4, shuffled).
+- prompt **"Tulis nombor seterusnya"** (match case).
+
+### 15.2 Type B — Pola Berulang: lengkapkan (Aktiviti 1②, rocket columns)
+- Same cyclic pattern but the `?` is an **internal** cell (not the last). answer = `pattern[gapIdx % P]`.
+- Input = `NumOptionsGrid` (same option rule). prompt **"Lengkapkan pola"**.
+
+### 15.3 Type C — Pola Bilang: lengkapkan (Aktiviti 2, fill gap)
+- Arithmetic sequence: step ∈ {1,2,3,4,5,10}, dir asc/desc; **6 terms**, all 1–100; ONE internal gap.
+- answer = missing term. Input = keypad + external keyboard (submit ONLY ✓/Enter, NO auto-submit).
+- prompt **"Lengkapkan pola nombor"**.
+
+### 15.4 Type D — Pola Bilang: terangkan pola (Aktiviti 2 "Terangkan polanya")
+- Show a full skip-count sequence (5–6 terms); ask for the **rule**.
+- answer = rule string `Menaik|Menurun <step-word>-<step-word>` where step-word: 1 satu, 2 dua,
+  3 tiga, 4 empat, 5 lima, 10 sepuluh (e.g. `"Menaik dua-dua"`, `"Menurun empat-empat"`).
+- Input = `WordOptionsGrid` (4 options: correct + 3 distractors that vary dir and/or step), stacked 1-col.
+- prompt **"Terangkan pola nombor"**.
+
+### 15.5 DoD (card-level) — in addition to §9
+- [ ] Round of 10 = 3 Type A + 2 Type B + 3 Type C + 2 Type D, shuffled; all random-generated.
+- [ ] Repeating patterns are truly cyclic (period 2–3); gap answer = correct cyclic value.
+- [ ] Skip-count sequences stay within 1–100; single internal gap; one unambiguous answer.
+- [ ] Terangkan: 4 rule options, exactly one correct; distractors differ in direction and/or step.
+- [ ] Keypad type: keypad + external keyboard; submit ONLY ✓/Enter (NO auto-submit) — match 1.8.
+- [ ] New primitive `'pola-nombor'` wired: topic page `PolaNombor.jsx` (§9, showToggle/showReadyCta
+      false, onExit), App.jsx lazy route, `MatematikExplore` case, hub card (pill `POLA NOMBOR`,
+      ROBOT, desc ≤10 words); build exit 0; no regression to 1.1–1.8.
+
+---
+
+## 16. Card spec — Slice 1.10 "Anggar & Bundar" (image-grounded)
+
+> Estimate & round. Grounded in the KSSR Tahun 1 workbook (Kenali Anggaran p59 + Kenali
+> Bundar p60–62). Two concepts, 5 + 5 split. New `AnggarBundarExplore` in
+> `explorePrimitives.jsx`; primitive key `'anggar-bundar'`. Reuse §9 `MatematikActivityFrame`,
+> `RenderObjects` (object clusters), `NumOptionsGrid` (number tiles), `WordOptionsGrid`
+> (lebih/kurang). ONE new visual: an SVG `NumberLine`. Rounding rule = nearest ten, **5 rounds
+> UP** (`Math.round(n/10)*10` — matches workbook: 25→30, 55→60, 95→100). Header = `Pembelajaran
+> Anggaran` (Anggar types) / `Pembelajaran Bundar` (Bundar types).
+
+### 16.1 Type A — Anggar: lebih / kurang daripada (p59 Aktiviti 1)
+- Reference `R` ∈ {10,20,30}; show a cluster of `C` objects (`C = R ± randInt(3,9)`, clamp ≥1).
+- prompt **"Lebih atau kurang daripada {R}?"**; answer = `Lebih daripada` or `Kurang daripada`.
+- Input = `WordOptionsGrid` (2 options). Visual = `RenderObjects(icon, C)`.
+
+### 16.2 Type B — Bundar kepada puluh terdekat: garis nombor (p60)
+- `lowTen` = randInt(1,9)×10, `highTen = lowTen+10`; `n` in (lowTen, highTen), not a multiple of 10.
+- prompt **"Bundarkan {n} kepada puluh terdekat"**; answer = nearest ten.
+- Visual = SVG `NumberLine(low, high, n)` (ticks each 1, two tens labelled, marker+label at n).
+- Input = `NumOptionsGrid` with the **two bracketing tens** only.
+
+### 16.3 Type C — Bundar kepada puluh terdekat: pilih (p61–62)
+- `n` = randInt(11,96), not a multiple of 10; answer = nearest ten (can be 100).
+- prompt **"Bundarkan {n} kepada puluh terdekat"**; big `{n}` display (no line).
+- Input = `NumOptionsGrid`: nearest ten + 3 distractor tens (from n±10/±20, valid 10–100), shuffled.
+
+### 16.4 Type D — Anggar: lebih kurang / anggaran terbaik (p59 Aktiviti 2)
+- Cluster of `C` objects (`C = randInt(11,38)`); answer = nearest ten to `C`.
+- prompt **"Lebih kurang berapa?"**; Visual = `RenderObjects(icon, C)`.
+- Input = `NumOptionsGrid` of tens (nearest + neighbouring tens), shuffled.
+
+### 16.5 DoD (card-level) — in addition to §9
+- [ ] Round of 10 = 3 Type A + 2 Type D (Anggar=5) + 2 Type B + 3 Type C (Bundar=5), shuffled, random.
+- [ ] Rounding uses nearest ten with 5→UP; every Bundar answer matches the workbook rule.
+- [ ] Type B number line: ticks per unit, two tens labelled, marker+label at n; options = the 2 tens.
+- [ ] Type C/D: NumOptionsGrid, exactly one correct, distractors are distinct valid tens (10–100).
+- [ ] Type A: 2 word options (Lebih/Kurang daripada), correct per C vs R.
+- [ ] New primitive `'anggar-bundar'` wired: topic page `AnggarBundar.jsx` (§9, showToggle/
+      showReadyCta false, onExit), App.jsx lazy route, `MatematikExplore` case, hub card (pill
+      `ANGGAR & BUNDAR`, ROBOT, desc ≤10 words); build exit 0; no regression to 1.1–1.9.

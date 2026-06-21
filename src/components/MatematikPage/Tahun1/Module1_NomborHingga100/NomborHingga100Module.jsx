@@ -13,12 +13,12 @@ const THEME = {
 
 const ROBOT = <MatematikTopicRobot theme={THEME} />;
 
-function FooterTrio({ language, theme }) {
+function FooterTrio({ language, theme, onSelectTopic }) {
   const isBM = language === 'bm';
   const items = [
-    { id: 'selesaikan',  icon: '🧩', title: isBM ? 'Selesaikan' : 'Solve',        desc: isBM ? 'Penyelesaian masalah' : 'Problem solving' },
-    { id: 'latih-diri',  icon: '⚡', title: isBM ? 'Latih Diri' : 'Self Drill',   desc: isBM ? 'Latih tubi bertahap' : 'Timed leveled drill' },
-    { id: 'cabar-minda', icon: '🧠', title: isBM ? 'Cabar Minda' : 'Challenge',   desc: isBM ? 'Cabaran lebih sukar' : 'Harder challenge' },
+    { id: 'selesaikan',  icon: '🧩', title: isBM ? 'Selesaikan' : 'Solve',        desc: isBM ? 'Penyelesaian masalah' : 'Problem solving', enabled: true },
+    { id: 'latih-diri',  icon: '⚡', title: isBM ? 'Latih Diri' : 'Self Drill',   desc: isBM ? 'Latih tubi bertahap' : 'Timed leveled drill', enabled: true },
+    { id: 'cabar-minda', icon: '🧠', title: isBM ? 'Cabar Minda' : 'Challenge',   desc: isBM ? 'Cabaran lebih sukar' : 'Harder challenge', enabled: true },
   ];
   return (
     <div className="mt-footer-trio">
@@ -46,6 +46,19 @@ function FooterTrio({ language, theme }) {
           pointer-events: none;
           text-align: center;
         }
+        .mt-footer-trio-card.is-enabled {
+          opacity: 1;
+          filter: none;
+          cursor: pointer;
+          pointer-events: auto;
+          transition: transform .12s ease, box-shadow .12s ease;
+          -webkit-tap-highlight-color: transparent;
+        }
+        .mt-footer-trio-card.is-enabled:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 10px 26px -10px ${theme.dark}55;
+        }
+        .mt-footer-trio-card.is-enabled:active { transform: translateY(0); }
         .mt-footer-trio-icon { font-size: 28px; }
         .mt-footer-trio-title {
           font-family: 'Baloo 2', sans-serif;
@@ -66,7 +79,14 @@ function FooterTrio({ language, theme }) {
         }
       `}</style>
       {items.map(item => (
-        <div key={item.id} className="mt-footer-trio-card">
+        <div
+          key={item.id}
+          className={`mt-footer-trio-card${item.enabled ? ' is-enabled' : ''}`}
+          role={item.enabled ? 'button' : undefined}
+          tabIndex={item.enabled ? 0 : undefined}
+          onClick={item.enabled ? () => onSelectTopic?.(item.id) : undefined}
+          onKeyDown={item.enabled ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectTopic?.(item.id); } } : undefined}
+        >
           <span className="mt-footer-trio-icon">{item.icon}</span>
           <div className="mt-footer-trio-title">{item.title}</div>
           <div className="mt-footer-trio-desc">{item.desc}</div>
@@ -106,12 +126,46 @@ const TOPICS = [
     visual: ROBOT,
   },
   {
-    id: 'placeholder-kombinasi-nombor',
-    pill: 'SEGERA HADIR',
+    id: 'kombinasi-nombor',
+    pill: 'KOMBINASI NOMBOR',
     title: 'Kombinasi Nombor',
-    desc: 'Kad pembelajaran akan ditambah dalam kemas kini akan datang.',
+    desc: 'Gabungkan nombor untuk jadi 10.',
     visual: ROBOT,
-    disabled: true,
+  },
+  {
+    id: 'kenali-21-100',
+    pill: 'KENALI 21 HINGGA 100',
+    title: 'Kenali 21 hingga 100',
+    desc: 'Kenali nombor 21 hingga 100.',
+    visual: ROBOT,
+  },
+  {
+    id: 'nilai-tempat',
+    pill: 'NILAI TEMPAT & NILAI DIGIT',
+    title: 'Nilai Tempat & Nilai Digit',
+    desc: 'Kenali nilai tempat dan nilai digit.',
+    visual: ROBOT,
+  },
+  {
+    id: 'susunan-nombor',
+    pill: 'SUSUNAN NOMBOR',
+    title: 'Susunan Nombor',
+    desc: 'Susun dan lengkapkan urutan nombor.',
+    visual: ROBOT,
+  },
+  {
+    id: 'pola-nombor',
+    pill: 'POLA NOMBOR',
+    title: 'Pola Nombor',
+    desc: 'Kenal pasti dan sambung pola nombor.',
+    visual: ROBOT,
+  },
+  {
+    id: 'anggar-bundar',
+    pill: 'ANGGAR & BUNDAR',
+    title: 'Anggar & Bundar',
+    desc: 'Anggar bilangan dan bundarkan kepada puluh.',
+    visual: ROBOT,
   },
 ];
 
@@ -127,7 +181,7 @@ export default function NomborHingga100Module({ onSelectTopic, language = 'bm' }
       topics={TOPICS}
       onSelectTopic={onSelectTopic}
       language={language}
-      footer={<FooterTrio language={language} theme={THEME} />}
+      footer={<FooterTrio language={language} theme={THEME} onSelectTopic={onSelectTopic} />}
     />
   );
 }

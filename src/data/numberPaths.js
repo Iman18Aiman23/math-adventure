@@ -93,11 +93,17 @@ const RAW = {
   '3': {
     char: '3',
     segments: [
-      { type: 'C', points: [{ x: 33, y: 27 }, { x: 36, y: 14 }, { x: 57, y: 13 }, { x: 67, y: 25 }] },
-      { type: 'C', points: [{ x: 67, y: 25 }, { x: 76, y: 34 }, { x: 72, y: 46 }, { x: 49, y: 49 }] },
-      { type: 'C', points: [{ x: 49, y: 49 }, { x: 62, y: 49 }, { x: 71, y: 57 }, { x: 71, y: 68 }] },
-      { type: 'C', points: [{ x: 71, y: 68 }, { x: 71, y: 80 }, { x: 60, y: 87 }, { x: 48, y: 87 }] },
-      { type: 'C', points: [{ x: 48, y: 87 }, { x: 40, y: 87 }, { x: 35, y: 82 }, { x: 33, y: 73 }] },
+      // 1. Top bump (mirrored bottom tail, smooth curve from top left to top right)
+      { type: 'C', points: [{ x: 35, y: 16 }, { x: 50, y: 4 }, { x: 69, y: 7 }, { x: 72, y: 24 }] },
+      
+      // 2. Top bump to middle pinch (mirrored bottom right, smooth transition to sharp pinch)
+      { type: 'C', points: [{ x: 72, y: 24 }, { x: 75, y: 41 }, { x: 58, y: 48 }, { x: 48, y: 48 }] },
+      
+      // 3. Middle pinch to bottom right (sharp horizontal start, large round drop)
+      { type: 'C', points: [{ x: 48, y: 48 }, { x: 58, y: 48 }, { x: 75, y: 55 }, { x: 72, y: 72 }] },
+      
+      // 4. Bottom right to bottom left tail (perfectly smooth round bottom, curling tail)
+      { type: 'C', points: [{ x: 72, y: 72 }, { x: 69, y: 89 }, { x: 50, y: 92 }, { x: 35, y: 80 }] },
     ],
   },
   // 4 — diagonal + crossbar (one stroke), then the right vertical (second stroke)
@@ -113,10 +119,17 @@ const RAW = {
   '5': {
     char: '5',
     segments: [
-      { type: 'L', points: [{ x: 66, y: 16 }, { x: 32, y: 16 }] },
-      { type: 'L', points: [{ x: 32, y: 16 }, { x: 32, y: 52 }] },
-      { type: 'C', points: [{ x: 32, y: 52 }, { x: 56, y: 47 }, { x: 76, y: 57 }, { x: 76, y: 71 }] },
-      { type: 'C', points: [{ x: 76, y: 71 }, { x: 76, y: 85 }, { x: 52, y: 88 }, { x: 34, y: 79 }] },
+      // 1. Top bar (drawn right-to-left to maintain a continuous single stroke)
+      { type: 'L', points: [{ x: 68, y: 16 }, { x: 32, y: 16 }] },
+      
+      // 2. Vertical stem (top to bottom)
+      { type: 'L', points: [{ x: 32, y: 16 }, { x: 32, y: 42 }] },
+      
+      // 3. Top half of the belly (your improved version)
+      { type: 'C', points: [{ x: 32, y: 42 }, { x: 80, y: 30 }, { x: 82, y: 58 }, { x: 72, y: 72 }] },
+      
+      // 4. Bottom half of the belly (FIXED: flawless transition, rounder bowl, elegant tail)
+      { type: 'C', points: [{ x: 72, y: 72 }, { x: 65, y: 82 }, { x: 50, y: 88 }, { x: 34, y: 78 }] },
     ],
   },
   // 6 — descending curve from top-right, then a clean bottom "o" loop
@@ -166,5 +179,38 @@ const RAW = {
 };
 
 export const DIGIT_PATHS = Object.keys(RAW).sort().map(k => compile(RAW[k]));
+
+const digitByChar = (ch) => DIGIT_PATHS.find(d => d.char === ch);
+
+// Scale a digit's points around the box centre (50,50) and re-centre on cx.
+const placeDigit = (segments, cx, s) =>
+  segments.map(seg => ({
+    type: seg.type,
+    points: seg.points.map(p => ({ x: cx + (p.x - 50) * s, y: 50 + (p.y - 50) * s })),
+  }));
+
+// A single traceable glyph for a whole number. Single digits (0–9) render full
+// size; multi-digit numbers (e.g. 10–20) place each digit side by side inside
+// the same 100×100 box and are traced left→right on ONE card.
+export function getNumberGlyph(n) {
+  const str = String(n);
+  if (str.length === 1) return digitByChar(str);
+
+  // two digits → centres at 27 (left) and 73 (right), scaled to fit side by side
+  const s = 0.68;
+  const centres = [27, 73];
+  let segments = [];
+  for (let i = 0; i < str.length; i++) {
+    const dg = digitByChar(str[i]);
+    if (dg) segments = segments.concat(placeDigit(dg.segments, centres[i], s));
+  }
+  return {
+    char: str,
+    start: segments[0].points[0],
+    end: segments[segments.length - 1].points.at(-1),
+    segments,
+    ...sampleLetter(segments),
+  };
+}
 
 export const VIEW_BOX = 100;

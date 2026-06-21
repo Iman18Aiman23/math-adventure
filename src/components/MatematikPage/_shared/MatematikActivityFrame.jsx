@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
+import { playSound } from '../../../utils/soundManager';
 
 export default function MatematikActivityFrame({
   buildRound,
@@ -36,16 +37,19 @@ export default function MatematikActivityFrame({
     if (value === q.answer) {
       setCorrect(c => c + 1);
       setStreak(s => s + 1);
+      playSound('correct');
       confetti({ particleCount: 45, spread: 60, startVelocity: 32, origin: { y: 0.7 }, scalar: 0.85 });
     } else {
       setWrong(w => w + 1);
       setStreak(0);
+      playSound('wrong');
     }
   };
 
   const handleNext = () => {
     if (isLast) {
       setComplete(true);
+      playSound('streak');
       confetti({ particleCount: 200, spread: 160, origin: { y: 0.4 } });
       setTimeout(() => confetti({ particleCount: 140, spread: 120, startVelocity: 45, origin: { y: 0.55 } }), 250);
       return;
@@ -66,7 +70,7 @@ export default function MatematikActivityFrame({
 
   const progressInGroup = streak > 0 && streak % 10 === 0 ? 10 : streak % 10;
 
-  const ctx = { answered, selected, answer: q.answer, isCorrect, handlePick, streak, correct, wrong, theme: C };
+  const ctx = { answered, selected, answer: q.answer, isCorrect, handlePick, handleNext, streak, correct, wrong, theme: C };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%' }}>
@@ -85,6 +89,14 @@ export default function MatematikActivityFrame({
         .maf-head {
           font-family: 'Fredoka', sans-serif; font-weight: 700;
           font-size: clamp(14px, 2.4vmin, 24px); color: #64748B; text-align: center; letter-spacing: .01em;
+        }
+        /* Header sits as a TITLE near the top; body centred in the space below. */
+        .maf-scroll-q { display: flex; flex-direction: column; }
+        .maf-head-title { flex-shrink: 0; padding: clamp(10px, 2.4vmin, 22px) 16px clamp(2px, 0.6vmin, 8px); }
+        .maf-body {
+          flex: 1 0 auto; box-sizing: border-box;
+          display: flex; flex-direction: column; justify-content: center; align-items: center;
+          padding: clamp(8px, 2vmin, 22px) clamp(14px, 3vmin, 40px) clamp(14px, 3vmin, 40px);
         }
         .maf-question {
           font-family: 'Baloo 2', sans-serif; font-weight: 800;
@@ -106,7 +118,7 @@ export default function MatematikActivityFrame({
         }
         .maf-next:hover:not(:disabled) { transform: translateY(-2px); }
         .maf-next:active:not(:disabled) { transform: translateY(2px); }
-        .maf-next:disabled { background: #CBD5E1; box-shadow: 0 4px 0 #94A3B8; cursor: not-allowed; }
+        .maf-next:disabled { background: #E5E7EB; color: #9CA3AF; box-shadow: 0 4px 0 #D1D5DB; cursor: not-allowed; }
         .maf-footer {
           flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
           gap: 10px; padding: clamp(8px, 1.2vmin, 15px) clamp(16px, 2.4vmin, 34px);
@@ -114,9 +126,12 @@ export default function MatematikActivityFrame({
           border-top: 1px solid #E2E8F0;
         }
         .maf-footer-tally {
-          display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+          display: flex; align-items: center; gap: 6px 10px; flex-wrap: wrap;
           font-family: 'Fredoka', sans-serif; font-size: clamp(13px, 1.7vmin, 18px); font-weight: 600; color: #64748B;
         }
+        .maf-stats { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+        .maf-stats .maf-stat { display: inline-flex; align-items: center; gap: 3px; }
+        .maf-stats .maf-divider { color: #CBD5E1; font-weight: 400; }
         .maf-done-emoji { font-size: clamp(52px, 14vmin, 120px); line-height: 1; }
         .maf-summary { display: flex; flex-direction: column; gap: clamp(8px, 1.4vmin, 14px); width: 100%; max-width: 340px; }
         .maf-summary-row {
@@ -136,6 +151,15 @@ export default function MatematikActivityFrame({
           cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform .1s ease;
         }
         .maf-btn-secondary:active { transform: translateY(1px); }
+        @keyframes snkBounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-20px); }
+        }
+        @keyframes snkShake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-10px); }
+          75% { transform: translateX(10px); }
+        }
       `}</style>
 
       {complete ? (
@@ -158,10 +182,10 @@ export default function MatematikActivityFrame({
         </div>
       ) : (
         <>
-          <div className="maf-scroll">
-            <div className="maf-center">
+          <div className="maf-scroll maf-scroll-q">
+            <div className="maf-head maf-head-title">{q.header}</div>
+            <div className="maf-body">
               <div className="maf-content">
-                <div className="maf-head">{q.header}</div>
                 <div className="maf-question">{q.prompt}</div>
                 {renderQuestion(q, ctx)}
                 <div className={`maf-feedback ${answered ? (isCorrect ? 'ok' : 'no') : ''}`}>
@@ -176,11 +200,14 @@ export default function MatematikActivityFrame({
           <div className="maf-footer">
             <div className="maf-footer-tally">
               <span>Jawapan :</span>
-              <span style={{ color: '#1E293B', display: 'flex', alignItems: 'center', gap: 3 }}>
-                <span>✅</span><span>{correct}</span><span style={{ color: '#94A3B8', fontWeight: 500 }}>Betul</span>
-              </span>
-              <span style={{ color: '#EF4444', display: 'flex', alignItems: 'center', gap: 3 }}>
-                <span>❌</span><span>{wrong}</span><span style={{ color: '#94A3B8', fontWeight: 500 }}>salah</span>
+              <span className="maf-stats">
+                <span className="maf-stat" style={{ color: '#1E293B' }}>
+                  <span>✅</span><span>{correct}</span><span style={{ color: '#94A3B8', fontWeight: 500 }}>Betul</span>
+                </span>
+                <span className="maf-divider">|</span>
+                <span className="maf-stat" style={{ color: '#EF4444' }}>
+                  <span>❌</span><span>{wrong}</span><span style={{ color: '#94A3B8', fontWeight: 500 }}>salah</span>
+                </span>
               </span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>

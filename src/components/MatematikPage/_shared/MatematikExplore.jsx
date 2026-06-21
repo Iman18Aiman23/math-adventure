@@ -1,5 +1,5 @@
 import React from 'react';
-import { CompareExplore, KenaliNomborExplore } from './explorePrimitives';
+import { CompareExplore, KenaliNomborExplore, KombinasiExplore, Kenali21Hingga100Explore, NilaiTempatExplore, SusunanNomborExplore, PolaNomborExplore, AnggarBundarExplore, SelesaikanExplore, LatihDiriExplore, CabarMindaExplore } from './explorePrimitives';
 import useMtTts from './useMtTts';
 
 /**
@@ -40,6 +40,87 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'kenali-nombor':
       return (
         <KenaliNomborExplore
+          data={data}
+          language={language}
+          theme={theme}
+          onExit={onExit}
+        />
+      );
+    case 'kombinasi':
+      return (
+        <KombinasiExplore
+          data={data}
+          language={language}
+          theme={theme}
+          onExit={onExit}
+        />
+      );
+    case 'kenali-21-100':
+      return (
+        <Kenali21Hingga100Explore
+          data={data}
+          language={language}
+          theme={theme}
+          onExit={onExit}
+        />
+      );
+    case 'nilai-tempat':
+      return (
+        <NilaiTempatExplore
+          data={data}
+          language={language}
+          theme={theme}
+          onExit={onExit}
+        />
+      );
+    case 'susunan-nombor':
+      return (
+        <SusunanNomborExplore
+          data={data}
+          language={language}
+          theme={theme}
+          onExit={onExit}
+        />
+      );
+    case 'pola-nombor':
+      return (
+        <PolaNomborExplore
+          data={data}
+          language={language}
+          theme={theme}
+          onExit={onExit}
+        />
+      );
+    case 'anggar-bundar':
+      return (
+        <AnggarBundarExplore
+          data={data}
+          language={language}
+          theme={theme}
+          onExit={onExit}
+        />
+      );
+    case 'selesaikan':
+      return (
+        <SelesaikanExplore
+          data={data}
+          language={language}
+          theme={theme}
+          onExit={onExit}
+        />
+      );
+    case 'latih-diri':
+      return (
+        <LatihDiriExplore
+          data={data}
+          language={language}
+          theme={theme}
+          onExit={onExit}
+        />
+      );
+    case 'cabar-minda':
+      return (
+        <CabarMindaExplore
           data={data}
           language={language}
           theme={theme}

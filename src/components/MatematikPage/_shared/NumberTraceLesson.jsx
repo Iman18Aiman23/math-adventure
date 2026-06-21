@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import confetti from 'canvas-confetti';
 import { playSound } from '../../../utils/soundManager';
 import SpeechManager from '../../../services/SpeechManager';
 import TraceCanvas from '../../AgeGroup-4-6/TraceCanvas';
-import { DIGIT_PATHS } from '../../../data/numberPaths';
+import { getNumberGlyph } from '../../../data/numberPaths';
 import Celebration from '../../PendidikanIslamPage/_shared/Celebration';
 import useTopicGamification from '../../../hooks/useTopicGamification';
 
@@ -20,10 +20,6 @@ function numToBM(n) {
   return o === 0 ? TENS[t] : `${TENS[t]} ${ONES[o]}`;
 }
 
-function getDigitPath(char) {
-  return DIGIT_PATHS.find(d => d.char === char);
-}
-
 const NUMBERS = Array.from({ length: 21 }, (_, i) => i);
 
 export default function NumberTraceLesson({
@@ -31,16 +27,12 @@ export default function NumberTraceLesson({
   topicId, topicLabel, accentColor = '#F59E0B',
 }) {
   const [idx, setIdx] = useState(0);
-  const [digit1Done, setDigit1Done] = useState(false);
-  const [digit2Done, setDigit2Done] = useState(false);
+  const [done, setDone] = useState(false);
   const [finished, setFinished] = useState(false);
   const [resetSignal, setResetSignal] = useState(0);
   const [showCelebration, setShowCelebration] = useState(false);
-  const [digitStep, setDigitStep] = useState('first');
 
-  const digit1Ref = useRef(null);
-  const digit2Ref = useRef(null);
-  const singleRef = useRef(null);
+  const canvasRef = useRef(null);
   const advanceTimerRef = useRef(null);
 
   const { completeActivity } = useTopicGamification(topicId);
@@ -56,13 +48,11 @@ export default function NumberTraceLesson({
   const current = NUMBERS[idx];
   const isLast = idx >= NUMBERS.length - 1;
   const isFirst = idx <= 0;
-  const isTwoDigit = current >= 10;
 
-  const tensPath = isTwoDigit ? getDigitPath(String(Math.floor(current / 10))) : null;
-  const onesPath = isTwoDigit ? getDigitPath(String(current % 10)) : null;
-  const singlePath = !isTwoDigit ? getDigitPath(String(current)) : null;
-
-  const bothDone = digit1Done && (!isTwoDigit || digit2Done);
+  // Whole number on ONE card — single digit full size, two digits side by side.
+  // Memoised so the glyph keeps a STABLE reference per number; otherwise a new
+  // object each render makes TraceCanvas reset the stroke (→ forces a re-trace).
+  const glyph = useMemo(() => getNumberGlyph(current), [current]);
 
   useEffect(() => {
     return () => {
@@ -80,7 +70,7 @@ export default function NumberTraceLesson({
   }, [idx, current]);
 
   useEffect(() => {
-    if (!bothDone) return;
+    if (!done) return;
     playSound('correct');
     confetti({ particleCount: 80, spread: 70, origin: { y: 0.5 }, scalar: 0.8 });
     if (isLast) {
@@ -91,30 +81,18 @@ export default function NumberTraceLesson({
       }, 700);
       return () => clearTimeout(t);
     }
-  }, [bothDone, isLast, topicId, topicComplete]);
+  }, [done, isLast, topicId, topicComplete]);
 
-  const handleDigit1Complete = useCallback(() => {
-    setDigit1Done(true);
+  const handleComplete = useCallback(() => {
+    setDone(true);
     playSound('correct');
-    confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 }, scalar: 0.7 });
-    if (isTwoDigit && !digit2Done) {
-      clearTimeout(advanceTimerRef.current);
-      advanceTimerRef.current = setTimeout(() => setDigitStep('second'), 900);
-    }
-  }, [isTwoDigit, digit2Done]);
-
-  const handleDigit2Complete = useCallback(() => {
-    setDigit2Done(true);
-    playSound('correct');
-    confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 }, scalar: 0.7 });
+    confetti({ particleCount: 50, spread: 65, origin: { y: 0.6 }, scalar: 0.75 });
   }, []);
 
   const goToNumber = useCallback((i) => {
     clearTimeout(advanceTimerRef.current);
     setIdx(i);
-    setDigit1Done(false);
-    setDigit2Done(false);
-    setDigitStep('first');
+    setDone(false);
     setResetSignal(s => s + 1);
   }, []);
 
@@ -128,11 +106,6 @@ export default function NumberTraceLesson({
     goToNumber(idx + 1);
   }, [isLast, idx, goToNumber, topicId, topicComplete]);
 
-  const showDigit = useCallback((step) => {
-    clearTimeout(advanceTimerRef.current);
-    setDigitStep(step);
-  }, []);
-
   const handleReplay = useCallback(() => {
     SpeechManager.stopSpeaking();
     SpeechManager.speak(numToBM(current), 'ms-MY', { rate: 0.6, pitch: 1.1 });
@@ -143,9 +116,7 @@ export default function NumberTraceLesson({
   const handleRestart = () => {
     clearTimeout(advanceTimerRef.current);
     setIdx(0);
-    setDigit1Done(false);
-    setDigit2Done(false);
-    setDigitStep('first');
+    setDone(false);
     setFinished(false);
     setResetSignal(s => s + 1);
     setShowCelebration(false);
@@ -405,7 +376,7 @@ export default function NumberTraceLesson({
               onChange={e => goToNumber(Number(e.target.value))}
             >
               {NUMBERS.map((n, i) => {
-                const isDone = i < idx || (i === idx && bothDone);
+                const isDone = i < idx || (i === idx && done);
                 return (
                   <option key={n} value={i}
                     style={{ color: isDone ? '#16A34A' : '#1E293B' }}
@@ -415,75 +386,19 @@ export default function NumberTraceLesson({
             </select>
           </div>
 
-          {isTwoDigit && (
-            <div className="ntl-digit-pills">
-              <button
-                className={`ntl-digit-pill${digitStep === 'first' ? ' active' : ''}${digit1Done ? ' done' : ''}`}
-                onClick={() => showDigit('first')}
-              >
-                <span className="pill-digit">{tensPath.char}</span>
-                {language === 'bm' ? 'Digit 1' : 'Digit 1'}{digit1Done ? ' ✓' : ''}
-              </button>
-              <button
-                className={`ntl-digit-pill${digitStep === 'second' ? ' active' : ''}${digit2Done ? ' done' : ''}`}
-                onClick={() => showDigit('second')}
-              >
-                <span className="pill-digit">{onesPath.char}</span>
-                {language === 'bm' ? 'Digit 2' : 'Digit 2'}{digit2Done ? ' ✓' : ''}
-              </button>
-            </div>
-          )}
-
           <div className="ntl-canvas-area">
-            {isTwoDigit ? (
-              <>
-                <div
-                  className={`ntl-card${digit1Done ? ' done' : ''}`}
-                  style={{ display: digitStep === 'first' ? undefined : 'none' }}
-                >
-                  <div className="ntl-card-canvas">
-                    <TraceCanvas
-                      ref={digit1Ref}
-                      letter={tensPath}
-                      strokeColor={accentColor}
-                      strokeWidth={3}
-                      onComplete={handleDigit1Complete}
-                      resetSignal={resetSignal}
-                    />
-                  </div>
-                </div>
-                <div
-                  className={`ntl-card${digit2Done ? ' done' : ''}`}
-                  style={{ display: digitStep === 'second' ? undefined : 'none' }}
-                >
-                  <div className="ntl-card-canvas">
-                    <TraceCanvas
-                      ref={digit2Ref}
-                      letter={onesPath}
-                      strokeColor={accentColor}
-                      strokeWidth={3}
-                      onComplete={handleDigit2Complete}
-                      resetSignal={resetSignal}
-                    />
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div
-                className={`ntl-card${digit1Done ? ' done' : ''}`}
-              >
-                <div className="ntl-card-canvas">
-                  <TraceCanvas
-                    ref={singleRef}
-                    letter={singlePath}
-                    strokeColor={accentColor}
-                    strokeWidth={3}
-                    onComplete={handleDigit1Complete}
-                    resetSignal={resetSignal}
-                  />
-                </div>
+            <div className={`ntl-card${done ? ' done' : ''}`}>
+              <div className="ntl-card-canvas">
+                <TraceCanvas
+                  ref={canvasRef}
+                  letter={glyph}
+                  strokeColor={accentColor}
+                  strokeWidth={3}
+                  onComplete={handleComplete}
+                  resetSignal={resetSignal}
+                />
               </div>
-            )}
+            </div>
           </div>
 
           <div className="ntl-controls">
@@ -493,7 +408,7 @@ export default function NumberTraceLesson({
             <button className="ntl-btn ghost" onClick={handleReplay}>
               🔊 {language === 'bm' ? 'Dengar' : 'Listen'}
             </button>
-            <button className="ntl-btn primary" disabled={!bothDone} onClick={handleNext}>
+            <button className="ntl-btn primary" disabled={!done} onClick={handleNext}>
               {isLast
                 ? (language === 'bm' ? 'Selesai ✓' : 'Finish ✓')
                 : (language === 'bm' ? 'Seterusnya →' : 'Next →')}
