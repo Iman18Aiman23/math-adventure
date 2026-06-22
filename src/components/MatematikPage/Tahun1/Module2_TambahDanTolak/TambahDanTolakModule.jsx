@@ -78,12 +78,18 @@ function FooterTrio({ language, theme }) {
 
 const TOPICS = [
   {
-    id: 'placeholder-1',
-    pill: 'SEGERA HADIR',
-    title: 'Kandungan Baharu',
-    desc: 'Kad pembelajaran akan ditambah dalam kemas kini akan datang.',
+    id: 'kenali-tambah',
+    pill: 'KENALI TAMBAH',
+    title: 'Kenali Tambah',
+    desc: 'Kenali konsep tambah dan jumlah.',
     visual: ROBOT,
-    disabled: true,
+  },
+  {
+    id: 'latihan-tambah',
+    pill: 'LATIHAN TAMBAH',
+    title: 'Latihan Tambah',
+    desc: 'Latih tambah tiga aras: mudah, sederhana, sukar.',
+    visual: ROBOT,
   },
 ];
 

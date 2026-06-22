@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, createContext, useContext, Suspense, useTransition } from 'react';
 import HomePage from './components/HomePage';
 import LoadingSpinner from './components/LoadingSpinner';
+import { MatematikNavContext } from './components/MatematikPage/_shared/MatematikNavContext';
 const BMPage = React.lazy(() => import('./components/SpeakingPage/BMPage'));
 const MathHome = React.lazy(() => import('./components/MathematicsPage/MathHome'));
 const OpsLandingPage = React.lazy(() => import('./components/MathematicsPage/OpsLandingPage'));
@@ -181,6 +182,8 @@ const Selesaikan = React.lazy(() => import('./components/MatematikPage/Tahun1/Mo
 const LatihDiri = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_NomborHingga100/LatihDiri'));
 const CabarMinda = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_NomborHingga100/CabarMinda'));
 const TambahDanTolakModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_TambahDanTolak/TambahDanTolakModule'));
+const KenaliTambah = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_TambahDanTolak/KenaliTambah'));
+const LatihanTambah = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_TambahDanTolak/LatihanTambah'));
 const PecahanModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module3_Pecahan/PecahanModule'));
 const WangModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module4_Wang/WangModule'));
 const MasaDanWaktuModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module5_MasaDanWaktu/MasaDanWaktuModule'));
@@ -392,6 +395,18 @@ function ProgressWrapper({ topicId, onBack, children }) {
   });
 }
 
+// Ordered Matematik T1 Module-1 topics (10 Belajar cards + footer trio). Drives the
+// "Topik Seterusnya →" advance on each activity completion screen.
+const MT_MODULE1_ORDER = [
+  'banding-banyak-sedikit', 'kenali-0-10', 'kenali-11-20', 'tulis-0-20',
+  'kombinasi-nombor', 'kenali-21-100', 'nilai-tempat', 'susunan-nombor',
+  'pola-nombor', 'anggar-bundar', 'selesaikan', 'latih-diri', 'cabar-minda',
+];
+
+// Ordered Matematik T1 Module-2 topics. New arrays are added per module; the nav
+// lookup below finds whichever array contains the current matematikTopic.
+const MT_MODULE2_ORDER = ['kenali-tambah', 'latihan-tambah'];
+
 export default function App() {
   const isDesktop = useIsDesktop();
   const [playerName,     setPlayerName]     = useState(() => loadPlayerName());
@@ -566,6 +581,8 @@ export default function App() {
         if (matematikTopic === 'selesaikan')        return <Selesaikan             onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'latih-diri')        return <LatihDiri              onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'cabar-minda')       return <CabarMinda             onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'kenali-tambah')     return <KenaliTambah           onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'latihan-tambah')   return <LatihanTambah          onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'nombor-100')        return <Nombor100       onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'tambah-tolak')      return <Tambah100       onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'tambah-cerita')     return <SubtractionStory onBack={() => setMatematikTopic(null)} language={language} />;
@@ -1450,9 +1467,18 @@ export default function App() {
     }
   };
 
+  const MT_ORDERS = [MT_MODULE1_ORDER, MT_MODULE2_ORDER];
+  const mtOrder = MT_ORDERS.find(o => o.includes(matematikTopic)) || [];
+  const mtIdx = mtOrder.indexOf(matematikTopic);
+  const matematikNav = {
+    hasNext: mtIdx >= 0 && mtIdx + 1 < mtOrder.length,
+    goNext: () => setMatematikTopic(mtIdx >= 0 && mtIdx + 1 < mtOrder.length ? mtOrder[mtIdx + 1] : null),
+  };
+
   return (
     <GamificationProvider>
       <GameStateContext.Provider value={gameState}>
+       <MatematikNavContext.Provider value={matematikNav}>
         {/* Desktop Sidebar — rendered outside .app-container, inside #root row */}
         {isDesktop && !shouldHideSidebar && (
           <DesktopSidebar
@@ -1516,6 +1542,7 @@ export default function App() {
             />
           )}
         </div>
+       </MatematikNavContext.Provider>
       </GameStateContext.Provider>
     </GamificationProvider>
   );

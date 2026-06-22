@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import BackButton from '../../BackButton';
 import StatsBar from '../../_shared/StatsBar';
+import MatematikSceneBackground from './MatematikSceneBackground';
 
 /**
  * Shared shell for every Matematik topic page.
@@ -45,8 +46,14 @@ export default function MatematikTopicShell({
           flex-direction: column;
           height: 100%;
           min-height: 0;
+          position: relative;
           background: #F7F8FA;
         }
+        /* keep all content above the decorative landscape scene */
+        .mt-topic-shell > .mt-shell-top,
+        .mt-topic-shell > .mt-shell-toggle,
+        .mt-topic-shell > .mt-shell-body,
+        .mt-topic-shell > .mt-shell-body-plain { position: relative; z-index: 1; }
         .mt-shell-top {
           display: flex;
           align-items: center;
@@ -187,6 +194,8 @@ export default function MatematikTopicShell({
           outline-offset: 3px;
         }
       `}</style>
+
+      <MatematikSceneBackground />
 
       <div className="mt-shell-top">
         <button type="button" className="mt-top-back" onClick={onBack}>

@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import confetti from 'canvas-confetti';
 import { playSound } from '../../../utils/soundManager';
+import { MatematikNavContext } from './MatematikNavContext';
+
+const PASS_RATIO = 0.8; // 80% needed to unlock "Topik Seterusnya →"
 
 export default function MatematikActivityFrame({
   buildRound,
@@ -8,6 +11,7 @@ export default function MatematikActivityFrame({
   theme,
   onExit,
 }) {
+  const nav = useContext(MatematikNavContext);
   const [questions, setQuestions] = useState(() => buildRound());
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState(null);
@@ -22,6 +26,11 @@ export default function MatematikActivityFrame({
   const answered = selected !== null;
   const isCorrect = answered && selected === q.answer;
   const isLast = idx + 1 >= questions.length;
+
+  const total = questions.length;
+  const scorePct = total > 0 ? Math.round((correct / total) * 100) : 0;
+  const passMark = Math.ceil(total * PASS_RATIO);
+  const passed = correct >= passMark;
 
   const C = {
     accent: theme.accent || '#F59E0B',
@@ -84,7 +93,7 @@ export default function MatematikActivityFrame({
         .maf-content {
           width: 100%; max-width: min(94vw, 860px);
           display: flex; flex-direction: column; align-items: center;
-          gap: clamp(12px, 2.4vmin, 30px);
+          gap: clamp(8px, 1.6vmin, 18px);
         }
         .maf-head {
           font-family: 'Fredoka', sans-serif; font-weight: 700;
@@ -96,7 +105,7 @@ export default function MatematikActivityFrame({
         .maf-body {
           flex: 1 0 auto; box-sizing: border-box;
           display: flex; flex-direction: column; justify-content: center; align-items: center;
-          padding: clamp(8px, 2vmin, 22px) clamp(14px, 3vmin, 40px) clamp(14px, 3vmin, 40px);
+          padding: clamp(6px, 1.4vmin, 14px) clamp(14px, 3vmin, 40px) clamp(8px, 1.6vmin, 16px);
         }
         .maf-question {
           font-family: 'Baloo 2', sans-serif; font-weight: 800;
@@ -166,16 +175,24 @@ export default function MatematikActivityFrame({
         <div className="maf-scroll">
           <div className="maf-center">
             <div className="maf-content" style={{ textAlign: 'center' }}>
-              <div className="maf-done-emoji">🎉</div>
-              <div className="maf-question">Tahniah!</div>
-              <div className="maf-head">Kamu telah selesai 10 soalan</div>
+              <div className="maf-done-emoji">{passed ? '🎉' : '💪'}</div>
+              <div className="maf-question">{passed ? 'Tahniah!' : 'Cuba lagi!'}</div>
+              <div className="maf-head">Skor kamu: {correct}/{questions.length} ({scorePct}%)</div>
               <div className="maf-summary">
                 <div className="maf-summary-row ok"><span>✅ Betul</span><b>{correct}</b></div>
                 <div className="maf-summary-row no"><span>❌ Salah</span><b>{wrong}</b></div>
               </div>
+              {!passed && (
+                <div className="maf-head" style={{ color: '#B45309' }}>
+                  Dapat {passMark}/{questions.length} (80%) untuk buka topik seterusnya
+                </div>
+              )}
               <div className="maf-complete-actions">
                 <button className="maf-btn-secondary" type="button" onClick={handleRedo}>↻ Main Semula</button>
-                <button className="maf-next" type="button" onClick={() => onExit?.()}>Topik Seterusnya →</button>
+                <button className="maf-next" type="button" disabled={!passed}
+                  onClick={() => (nav?.goNext ? nav.goNext() : onExit?.())}>
+                  {nav?.hasNext === false ? 'Selesai ✓' : 'Topik Seterusnya →'}
+                </button>
               </div>
             </div>
           </div>
@@ -186,14 +203,17 @@ export default function MatematikActivityFrame({
             <div className="maf-head maf-head-title">{q.header}</div>
             <div className="maf-body">
               <div className="maf-content">
-                <div className="maf-question">{q.prompt}</div>
+                {q.prompt && <div className="maf-question">{q.prompt}</div>}
                 {renderQuestion(q, ctx)}
                 <div className={`maf-feedback ${answered ? (isCorrect ? 'ok' : 'no') : ''}`}>
                   {answered ? (isCorrect ? 'Betul! 🎉' : 'Cuba lagi') : ''}
                 </div>
-                <button className="maf-next" type="button" onClick={handleNext} disabled={!answered}>
-                  {isLast ? 'Tamat 🎉' : 'Seterusnya →'}
-                </button>
+                {/* Advance button appears only AFTER answering (keypad uses Semak to submit) */}
+                {answered && (
+                  <button className="maf-next" type="button" onClick={handleNext}>
+                    {isLast ? 'Tamat 🎉' : 'Seterusnya →'}
+                  </button>
+                )}
               </div>
             </div>
           </div>

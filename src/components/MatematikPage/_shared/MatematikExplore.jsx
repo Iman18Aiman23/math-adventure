@@ -1,5 +1,5 @@
 import React from 'react';
-import { CompareExplore, KenaliNomborExplore, KombinasiExplore, Kenali21Hingga100Explore, NilaiTempatExplore, SusunanNomborExplore, PolaNomborExplore, AnggarBundarExplore, SelesaikanExplore, LatihDiriExplore, CabarMindaExplore } from './explorePrimitives';
+import { CompareExplore, KenaliNomborExplore, KombinasiExplore, Kenali21Hingga100Explore, NilaiTempatExplore, SusunanNomborExplore, PolaNomborExplore, AnggarBundarExplore, SelesaikanExplore, LatihDiriExplore, CabarMindaExplore, KenaliTambahExplore, LatihanTambahExplore } from './explorePrimitives';
 import useMtTts from './useMtTts';
 
 /**
@@ -121,6 +121,24 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'cabar-minda':
       return (
         <CabarMindaExplore
+          data={data}
+          language={language}
+          theme={theme}
+          onExit={onExit}
+        />
+      );
+    case 'kenali-tambah':
+      return (
+        <KenaliTambahExplore
+          data={data}
+          language={language}
+          theme={theme}
+          onExit={onExit}
+        />
+      );
+    case 'latihan-tambah':
+      return (
+        <LatihanTambahExplore
           data={data}
           language={language}
           theme={theme}

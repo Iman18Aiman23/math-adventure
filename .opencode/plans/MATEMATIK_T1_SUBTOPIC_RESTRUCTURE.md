@@ -254,7 +254,7 @@ Within every slice: build, run `npm run build`, set the §6 row to **🔍**, sum
 
 | Module | Belajar cards | Status | Note |
 |--------|---------------|--------|------|
-| 2 · Tambah dan Tolak | 6 (incl. leveled Latihan Tambah/Tolak) | ⬜ | + footer |
+| 2 · Tambah dan Tolak | 6 (incl. leveled Latihan Tambah/Tolak) | 🔨 2/6 | **2.1 Kenali Tambah ✅ verified 2026-06-22 (Claude), §17, p69–74:** KenaliTambahExplore, round 10 = 3 Gabung Kumpulan (objects + KeypadInput) + 2 Garis Nombor (new SVG NumberTrackAdd count-on jumps) + 2 Pilih Perkataan (add-word vs sub-word, WordOptionsGrid) + 3 Lengkapkan Ayat (a+b=? / a+?=c, keypad). Addends 0–9, sums ≤18; invariants over 40k iters. New shared **KeypadInput** extracted (submit only ✓/Enter, no auto-submit). Blue Module-2 theme; KenaliTambah.jsx (§9), App route + **MT_MODULE2_ORDER + nav lookup picks the module array holding current topic** (80% gate + advance work), MatematikExplore case, hub placeholder replaced (pill `KENALI TAMBAH`). Scene bg inherits. Build exit 0. **2.2 Latihan Tambah ✅ verified 2026-06-22 (Claude), §18, p75–87:** LatihanTambahExplore — level picker (Mudah/Sederhana/Sukar, `Tukar Aras ⟲` strip) → per-level round of 10. Mudah 6 `a+b=?`(≤18)+4 which-equals-target (WordOptionsGrid, exactly 1 correct); Sederhana 6 column add (new `VerticalSum`)+4 missing-addend, ALL no-carry; Sukar 6 column+4 missing-addend, ALL need-carry; sums ≤99; KeypadInput. Invariants 40k iters × 6 gens all pass; level picker + VerticalSum + chips visually verified (headless-Edge). Wired: LatihanTambah.jsx (§9), App route + MT_MODULE2_ORDER append, MatematikExplore case, hub card `LATIHAN TAMBAH`. Cepat/timed deferred to Latih Tubi. Build exit 0; no regression. **VARIETY RETROFIT 2026-06-23 (owner: cards too samey/keypad-heavy): each level now uses 4 distinct formats — 4 new widgets Warnai (tap-all multi-select), Padankan (tap-two-sum), Bina Blok (base-ten puluh/sa builder), Ikatan Nombor (number-bond). Keypad ≤2/10. New gens invariants 40k iters pass; widgets visually verified; build exit 0.** Next = 2.3 Kenali Tolak. + footer |
 | 3 · Pecahan | 1 | ⬜ | + footer |
 | 4 · Wang | 3 | ⬜ | + footer |
 | 5 · Masa dan Waktu | 3 | ⬜ | + footer |
@@ -842,3 +842,109 @@ it in **1.7 Nilai Tempat & Nilai Digit**, not here.
 - [ ] New primitive `'anggar-bundar'` wired: topic page `AnggarBundar.jsx` (§9, showToggle/
       showReadyCta false, onExit), App.jsx lazy route, `MatematikExplore` case, hub card (pill
       `ANGGAR & BUNDAR`, ROBOT, desc ≤10 words); build exit 0; no regression to 1.1–1.9.
+
+---
+
+## 17. Card spec — Slice 2.1 "Kenali Tambah" (Module 2, image-grounded)
+
+> Intro to addition. KSSR T1 Module 2 "Tambah dan Tolak" → Kenali Tambah (Aktiviti 1–6,
+> pp.69–74). Module-2 theme = **BLUE** (accent #3B82F6, dark #1E3A8A — copy from
+> `TambahDanTolakModule`). New `KenaliTambahExplore` in `explorePrimitives.jsx`; primitive
+> key `'kenali-tambah'`. Reuse §9 `MatematikActivityFrame`, `WordOptionsGrid`, `ObjectsGrid`/
+> `RenderObjects`, the keypad pattern (extract a shared `KeypadInput` from
+> `SusunanKeypadContent`: display slot + 3×3 keypad + ⌫/✓ + keyboard; submit ONLY ✓/Enter, NO
+> auto-submit). Addends 0–9, **sums ≤ 18**. Header = `Pembelajaran Tambah`.
+
+### 17.1 Type A — Gabung Kumpulan (3) [Akt 1,4,5]
+- Two object groups (`a`, `b`) shown with a `+` between; keypad → sum `a+b`.
+- Prompt randomly one of: `{a} dan {b} jadi?` · `{a} tambah {b} sama dengan?` · `Jumlah {a} dan {b} ialah?`.
+
+### 17.2 Type B — Garis Nombor (2) [Akt 6]
+- Number track boxes 1..N (N=a+b, ≤18) with count-on jump arcs from `a` over `b` steps; keypad → `a+b`.
+- prompt **"{a} + {b} = ?"**. New small SVG `NumberTrackAdd` (boxes + arcs, landing box emphasised).
+
+### 17.3 Type C — Pilih Perkataan (2) [Akt 2]
+- Short scenario → choose the correct addition word. Answer ∈ {Jumlah, Semua, Tambah, Masukkan};
+  distractor ∈ {Baki, Beza, Tinggal, Asingkan}. `WordOptionsGrid` (2 options).
+
+### 17.4 Type D — Lengkapkan Ayat Matematik (3) [Akt 3,4,5]
+- Abstract number sentence via keypad: either `a + b = ?` (sum) or `a + ? = c` (missing addend = c−a).
+- Reuse the keypad with a `display` string (e.g. `"3 + 5 = ?"` / `"3 + ? = 8"`); answer = the number.
+
+### 17.5 DoD (card-level) — in addition to §9
+- [ ] Round of 10 = 3 Gabung + 2 Garis Nombor + 2 Pilih Perkataan + 3 Lengkapkan, shuffled, random.
+- [ ] Addends 0–9, sums ≤ 18; every answer correct; keypad submit ONLY ✓/Enter (no auto-submit).
+- [ ] Pilih Perkataan: exactly one correct word; distractor is a subtraction/other term.
+- [ ] Garis Nombor shows count-on jumps landing on the sum.
+- [ ] Module-2 BLUE theme; new primitive `'kenali-tambah'` wired: topic page `KenaliTambah.jsx`
+      (§9, showToggle/showReadyCta false, onExit), App.jsx lazy route + **topic-advance order
+      (new `MT_MODULE2_ORDER`; nav lookup picks whichever module array holds the current topic)**,
+      `MatematikExplore` case, hub card in `TambahDanTolakModule` (pill `KENALI TAMBAH`, ROBOT,
+      desc ≤10 words; replace the placeholder). Build exit 0; scene background + 80% gate inherit
+      automatically; no regression to Module 1.
+
+## 18. Card spec — Slice 2.2 "Latihan Tambah" (Module 2, image-grounded)
+
+> Tiered **addition practice** (the C1 combine: *Tambah Cepat + Tambah Mudah + Tambah Lagi*).
+> KSSR T1 Module 2, pp.75–87. Module-2 theme = **BLUE** (copy `TambahDanTolakModule` THEME).
+> New `LatihanTambahExplore` in `explorePrimitives.jsx`; primitive key `'latihan-tambah'`.
+> Reuse §9 `MatematikActivityFrame`, the shared `KeypadInput` (from 2.1), `WordOptionsGrid`.
+> Header = `Latihan Tambah`. **No regression to 2.1.**
+>
+> **Three difficulty levels** (worksheet sub-units map 1:1):
+> - **Mudah** ← *Tambah Cepat* (p75–77): single-digit facts, **sums ≤ 18**.
+> - **Sederhana** ← *Tambah Mudah* (p78–82): 2-digit add, **NO regrouping** (no carry).
+> - **Sukar** ← *Tambah Lagi* (p83–87): 2-digit add **WITH regrouping** (ones carry), sum ≤ 99.
+
+### 18.1 Level select (intro screen — the one allowed §9 deviation)
+- `LatihanTambahExplore` holds `level` state (`null` initially). When `null`, render a **level
+  picker**: title `Pilih aras latihan`, three stacked tappable cards — **Mudah** (🟢, `●○○`,
+  desc `Fakta asas hingga 18`) · **Sederhana** (🟡, `●●○`, `Tambah 2 digit tanpa mengumpul`) ·
+  **Sukar** (🔴, `●●●`, `Tambah 2 digit dengan mengumpul`). Tap → set level → render
+  `MatematikActivityFrame` keyed by level with `buildRound={() => buildLatihanTambahRound(level)}`.
+- The frame fills the remaining height; render a thin top strip above it: `Aras: {label}` + a
+  small `Tukar Aras ⟲` button that resets `level` to `null`. Keep the strip ≤ ~40px so the
+  keypad round still fits one page. `Main Semula` (frame completion) rebuilds the **same** level.
+
+**VARIETY RETROFIT (owner 2026-06-23):** original draft was keypad-heavy (5/6 types). Reworked
+so each level uses **4 distinct interaction formats**, keypad kept only for light fluency. Four
+new reusable widgets: **Warnai** ("which a+b = target?", p75) and **Padankan** ("which number
+pairs with {given} to make {target}?", p76–77) are **single-select 4-option MC** — exactly 1
+correct, tap auto-submits & flips colour via `WordOptionsGrid`/`NumOptionsGrid` (owner 2026-06-23,
+simpler than the original multi-select/pair versions); **Bina Blok** (base-ten puluh/sa builder
++/−, p79/p85) and **Ikatan Nombor** (bond diagram + pick missing part, p84/p86). Bina Blok
+self-judges → `handlePick('ok'|'no')` via shared `SemakButton`; the other three use the options
+grids (answer = correct option id). `BondDiagram` SVG. Round compositions (10 each):
+
+### 18.2 Mudah
+- **2 M1** keypad `a+b=?` (`a,b∈1..9`, sum ≤18) · **3 Warnai** (4 expr options, target 11–16,
+  exactly 1 == target) · **3 Padankan** (`{given}+?={target}`, 4 number options 1–9, exactly 1
+  correct) · **2 Bond** (whole 8–18).
+
+### 18.3 Sederhana — NO regrouping
+- **2 S1** keypad column (`VerticalSum`, no-carry) · **3 Bina Blok** (no-carry sum) ·
+  **3 Padankan** · **2 Bond**.
+
+### 18.4 Sukar — WITH regrouping
+- **2 K1** keypad column (`VerticalSum`, needs-carry) · **3 Bina Blok** (carry sum) ·
+  **3 Bond** · **2 Padankan**.
+
+`VerticalSum` (column add) reused by S1+K1; `genSederhanaS1`/`genSukarK1` also feed Bina Blok.
+Removed the old keypad-only M2/S2/K2 generators + content comps.
+
+### 18.5 DoD (card-level) — in addition to §9
+- [ ] Level picker (Mudah/Sederhana/Sukar) → per-level round of 10; `Tukar Aras` resets to picker.
+- [ ] Each level uses ≥4 distinct interaction formats; keypad ≤2 of 10.
+- [ ] Warnai: 4 expr options, exactly 1 == target, all distinct, answer id maps to it.
+- [ ] Padankan: 4 number options (1–9), exactly 1 completes `{given}+?={target}`, answer maps to it.
+- [ ] Bond: 3 distinct options incl. the missing part; answer id maps to it; part+missing=whole.
+- [ ] Bina Blok: total = a+b, **buildable** (tens ≤9, ones ≤9, sum ≤99); Sederhana no-carry,
+      Sukar needs-carry. Self-judges built === total.
+- [ ] All self-judged widgets reset internal state on `qid`; submit ONLY via Semak (no auto).
+- [ ] `VerticalSum`, `BondDiagram`, Bina-Blok blocks all self-contained (iOS-safe).
+- [ ] Module-2 BLUE theme; primitive `'latihan-tambah'` wired: topic page `LatihanTambah.jsx`
+      (§9, showToggle/showReadyCta false, onExit), App.jsx lazy route + **append to
+      `MT_MODULE2_ORDER` after `kenali-tambah`**, `MatematikExplore` case, hub card in
+      `TambahDanTolakModule` TOPICS (pill `LATIHAN TAMBAH`, ROBOT, desc ≤10 words). Build exit 0;
+      scene bg + 80% gate inherit; no regression to 2.1 or Module 1.
+- [ ] *Cepat* timed-mode toggle is **deferred** to the Latih Tubi track (do NOT build here).

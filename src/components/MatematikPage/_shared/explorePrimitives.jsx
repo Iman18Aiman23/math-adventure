@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import confetti from 'canvas-confetti';
 import { playSound } from '../../../utils/soundManager';
 import MatematikActivityFrame from './MatematikActivityFrame';
+import { MatematikNavContext } from './MatematikNavContext';
 
 const BOX_COLORS = [
   { bg: '#F87171', border: '#DC2626' },
@@ -161,6 +162,7 @@ function ObjectsGrid({ icon, count }) {
 }
 
 export function CompareExplore({ data, language, theme, onExit }) {
+  const nav = useContext(MatematikNavContext);
   const [questions, setQuestions] = useState(() => data?.questions || buildRound());
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState(null);
@@ -174,6 +176,11 @@ export function CompareExplore({ data, language, theme, onExit }) {
   const answered = selected !== null;
   const isCorrect = answered && selected === answer;
   const isLast = idx + 1 >= questions.length;
+
+  const total = questions.length;
+  const scorePct = total > 0 ? Math.round((correct / total) * 100) : 0;
+  const passMark = Math.ceil(total * 0.8);
+  const passed = correct >= passMark;
 
   const C = {
     accent: theme.accent || '#F59E0B',
@@ -236,7 +243,7 @@ export function CompareExplore({ data, language, theme, onExit }) {
       if (picked) return <div className="cmp-box no" aria-hidden="true">✗</div>;
       return <div className="cmp-box num dim" aria-hidden="true">{q[side]}</div>;
     }
-    return <div className="cmp-box num" aria-hidden="true" style={{ background: c.bg, color: '#fff', border: 'none', borderBottom: `4px solid ${c.border}` }}>{q[side]}</div>;
+    return <div className="cmp-box num" aria-hidden="true" style={{ background: c.bg, color: '#fff', textShadow: '0 1px 2px rgba(0,0,0,.34)', border: 'none', borderBottom: `4px solid ${c.border}` }}>{q[side]}</div>;
   };
 
   const Panel = ({ side }) => {
@@ -251,10 +258,10 @@ export function CompareExplore({ data, language, theme, onExit }) {
         aria-label={side === 'a' ? 'Kumpulan pertama' : 'Kumpulan kedua'}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handlePick(side); } }}
         style={{
-          background: c.bg,
-          border: answered ? `2px solid ${selected === side && selected !== answer ? C.red : C.green}` : 'none',
-          borderBottom: answered ? `4px solid ${selected === side && selected !== answer ? C.red : C.green}` : `4px solid ${c.border}`,
-          color: '#fff',
+          background: '#fff',
+          border: answered ? `2px solid ${selected === side && selected !== answer ? C.red : C.green}` : '2px solid #E2E8F0',
+          borderBottom: `4px solid ${answered ? (selected === side && selected !== answer ? C.red : C.green) : c.border}`,
+          color: '#334155',
         }}
       >
         <div className="cmp-objects"><ObjectsGrid icon={q.icon} count={q[side]} /></div>
@@ -401,21 +408,28 @@ export function CompareExplore({ data, language, theme, onExit }) {
         <div className="cmp-scroll">
           <div className="cmp-center">
             <div className="cmp-content" style={{ textAlign: 'center' }}>
-              <div className="cmp-done-emoji">🎉</div>
-              <div className="cmp-question">Tahniah!</div>
-              <div className="cmp-head">Kamu telah selesai 10 soalan</div>
+              <div className="cmp-done-emoji">{passed ? '🎉' : '💪'}</div>
+              <div className="cmp-question">{passed ? 'Tahniah!' : 'Cuba lagi!'}</div>
+              <div className="cmp-head">Skor kamu: {correct}/{total} ({scorePct}%)</div>
 
               <div className="cmp-summary">
                 <div className="cmp-summary-row ok"><span>✅ Betul</span><b>{correct}</b></div>
                 <div className="cmp-summary-row no"><span>❌ Salah</span><b>{wrong}</b></div>
               </div>
 
+              {!passed && (
+                <div className="cmp-head" style={{ color: '#B45309' }}>
+                  Dapat {passMark}/{total} (80%) untuk buka topik seterusnya
+                </div>
+              )}
+
               <div className="cmp-complete-actions">
                 <button className="cmp-btn-secondary" type="button" onClick={handleRedo}>
                   ↻ Main Semula
                 </button>
-                <button className="cmp-next" type="button" onClick={() => onExit?.()}>
-                  Topik Seterusnya →
+                <button className="cmp-next" type="button" disabled={!passed}
+                  onClick={() => (nav?.goNext ? nav.goNext() : onExit?.())}>
+                  {nav?.hasNext === false ? 'Selesai ✓' : 'Topik Seterusnya →'}
                 </button>
               </div>
             </div>
@@ -446,9 +460,11 @@ export function CompareExplore({ data, language, theme, onExit }) {
                   {answered ? (isCorrect ? 'Betul! 🎉' : 'Cuba lagi') : ''}
                 </div>
 
-                <button className="cmp-next" type="button" onClick={handleNext} disabled={!answered}>
-                  {isLast ? 'Tamat 🎉' : 'Seterusnya →'}
-                </button>
+                {answered && (
+                  <button className="cmp-next" type="button" onClick={handleNext}>
+                    {isLast ? 'Tamat 🎉' : 'Seterusnya →'}
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -767,9 +783,9 @@ function KenalContent({ q, ctx }) {
               flex: 1, minWidth: 0, overflow: 'hidden',
               display: 'flex', flexDirection: 'column', alignItems: 'center',
               gap: 'clamp(8px, 1.4vmin, 16px)',
-              background: bg,
-              border: answered && (isAns || picked) ? `2px solid ${bd}` : 'none',
-              borderBottom: answered && (isAns || picked) ? `4px solid ${bd}` : `4px solid ${bd}`,
+              background: '#fff',
+              border: '2px solid #E2E8F0',
+              borderBottom: `4px solid ${bd}`,
               borderRadius: 'clamp(18px, 2vmin, 26px)',
               padding: 'clamp(10px, 1.6vmin, 22px) clamp(12px, 2.2vmin, 22px)',
               cursor: answered ? 'default' : 'pointer',
@@ -782,16 +798,13 @@ function KenalContent({ q, ctx }) {
             <div className="kog-cell">
               <KenalObjectsGrid icon={q.icon} count={group.count} cols={q.groups.length} />
             </div>
+            {/* No tick box — card shows only the emoji; ✓/✗ appears as feedback after answering */}
             <div style={{
-              width: 'clamp(30px, 4vmin, 46px)', height: 'clamp(30px, 4vmin, 46px)',
-              borderRadius: 'clamp(8px, 1vmin, 12px)',
-              border: '2px solid rgba(255,255,255,0.5)',
-              background: 'rgba(255,255,255,0.25)',
+              height: 'clamp(26px, 4.6vmin, 42px)', flexShrink: 0,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
-              fontSize: 'clamp(18px, 2.8vmin, 28px)',
-              color: '#fff',
-              transition: 'all .15s ease',
+              fontSize: 'clamp(26px, 4.6vmin, 42px)', lineHeight: 1,
+              color: answered ? (isAns ? C.green : C.red) : 'transparent',
             }}>
               {answered ? (isAns ? '✓' : picked ? '✗' : '') : ''}
             </div>
@@ -825,9 +838,9 @@ function SifarContent({ q, ctx }) {
               flex: 1, minWidth: 0, overflow: 'hidden',
               display: 'flex', flexDirection: 'column', alignItems: 'center',
               gap: 'clamp(8px, 1.4vmin, 16px)',
-              background: bg,
-              border: answered && (isAns || picked) ? `2px solid ${bd}` : 'none',
-              borderBottom: answered && (isAns || picked) ? `4px solid ${bd}` : `4px solid ${bd}`,
+              background: '#fff',
+              border: '2px solid #E2E8F0',
+              borderBottom: `4px solid ${bd}`,
               borderRadius: 'clamp(18px, 2vmin, 26px)',
               padding: 'clamp(10px, 1.6vmin, 22px) clamp(12px, 2.2vmin, 22px)',
               cursor: answered ? 'default' : 'pointer',
@@ -843,15 +856,16 @@ function SifarContent({ q, ctx }) {
             <div style={{
               width: 'clamp(30px, 4vmin, 46px)', height: 'clamp(30px, 4vmin, 46px)',
               borderRadius: 'clamp(8px, 1vmin, 12px)',
-              border: '2px solid rgba(255,255,255,0.5)',
-              background: 'rgba(255,255,255,0.25)',
+              border: 'none',
+              borderBottom: `4px solid ${bd}`,
+              background: bg,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
               fontSize: 'clamp(18px, 2.8vmin, 28px)',
-              color: '#fff',
+              color: '#fff', textShadow: '0 1px 2px rgba(0,0,0,.34)',
               transition: 'all .15s ease',
             }}>
-              {answered ? (isAns ? '✓' : picked ? '✗' : '') : ''}
+              {answered ? (isAns ? '✓' : picked ? '✗' : '') : group.count}
             </div>
           </div>
         );
@@ -1379,11 +1393,11 @@ function TulisAngkaContent({ q, ctx }) {
         </div>
       )}
       {!answered && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(6px, 1.2vmin, 12px)', width: '100%', maxWidth: 300 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(5px, 1vmin, 9px)', width: '100%', maxWidth: 300 }}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
             <button key={d} type="button" className="tak-kp-btn" onClick={() => press(String(d))}
               style={{
-                minHeight: 'clamp(44px, 8vmin, 64px)', border: 'none',
+                minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
                 borderBottom: '4px solid #2563EB', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
                 background: '#3B82F6', color: '#fff', cursor: 'pointer',
                 fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
@@ -1392,7 +1406,7 @@ function TulisAngkaContent({ q, ctx }) {
           ))}
           <button type="button" className="tak-kp-btn" onClick={back}
             style={{
-              minHeight: 'clamp(44px, 8vmin, 64px)', border: 'none',
+              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
               borderBottom: '4px solid #DC2626', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: '#EF4444', color: '#fff', cursor: 'pointer',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
@@ -1400,7 +1414,7 @@ function TulisAngkaContent({ q, ctx }) {
             }}>Padam</button>
           <button type="button" className="tak-kp-btn" onClick={() => press('0')}
             style={{
-              minHeight: 'clamp(44px, 8vmin, 64px)', border: 'none',
+              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
               borderBottom: '4px solid #2563EB', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: '#3B82F6', color: '#fff', cursor: 'pointer',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
@@ -1408,7 +1422,7 @@ function TulisAngkaContent({ q, ctx }) {
             }}>0</button>
           <button type="button" className="tak-kp-btn" onClick={submit} disabled={input === ''}
             style={{
-              minHeight: 'clamp(44px, 8vmin, 64px)', border: 'none',
+              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
               borderBottom: input === '' ? '4px solid #D1D5DB' : '4px solid #16A34A',
               borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: input === '' ? '#E5E7EB' : '#22C55E',
@@ -1616,12 +1630,12 @@ function BilangTulisContent({ q, ctx }) {
     borderBottom: `4px solid ${
       answered
         ? (isCorrect ? C.green : C.red)
-        : (activeBox === which ? C.dark : BOX_COLORS[0].border)
+        : (activeBox === which ? C.dark : '#CBD5E1')
     }`,
     borderRadius: 'clamp(12px, 1.6vmin, 18px)',
     background: answered
       ? (isCorrect ? C.green : C.red)
-      : (activeBox === which ? BOX_COLORS[0].bg : '#F3F4F6'),
+      : (activeBox === which ? '#FFF7ED' : '#F3F4F6'),
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
     fontSize: 'clamp(28px, 6vmin, 48px)',
@@ -1663,11 +1677,11 @@ function BilangTulisContent({ q, ctx }) {
         </div>
       )}
       {!answered && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(6px, 1.2vmin, 12px)', width: '100%', maxWidth: 300 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(5px, 1vmin, 9px)', width: '100%', maxWidth: 300 }}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
             <button key={d} type="button" className="btk-kp-btn" onClick={() => pressDigit(String(d))}
               style={{
-                minHeight: 'clamp(44px, 8vmin, 64px)', border: 'none',
+                minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
                 borderBottom: '4px solid #2563EB', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
                 background: '#3B82F6', color: '#fff', cursor: 'pointer',
                 fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
@@ -1676,7 +1690,7 @@ function BilangTulisContent({ q, ctx }) {
           ))}
           <button type="button" className="btk-kp-btn" onClick={pressBack}
             style={{
-              minHeight: 'clamp(44px, 8vmin, 64px)', border: 'none',
+              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
               borderBottom: '4px solid #DC2626', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: '#EF4444', color: '#fff', cursor: 'pointer',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
@@ -1684,7 +1698,7 @@ function BilangTulisContent({ q, ctx }) {
             }}>Padam</button>
           <button type="button" className="btk-kp-btn" onClick={() => pressDigit('0')}
             style={{
-              minHeight: 'clamp(44px, 8vmin, 64px)', border: 'none',
+              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
               borderBottom: '4px solid #2563EB', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: '#3B82F6', color: '#fff', cursor: 'pointer',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
@@ -1693,7 +1707,7 @@ function BilangTulisContent({ q, ctx }) {
           <button type="button" className="btk-kp-btn" onClick={() => { if (puluhVal !== '' && saVal !== '') handlePick(puluhVal + saVal); }}
             disabled={puluhVal === '' || saVal === ''}
             style={{
-              minHeight: 'clamp(44px, 8vmin, 64px)', border: 'none',
+              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
               borderBottom: (puluhVal && saVal) ? '4px solid #16A34A' : '4px solid #D1D5DB',
               borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: (puluhVal && saVal) ? '#22C55E' : '#E5E7EB',
@@ -2145,11 +2159,11 @@ function SusunanKeypadContent({ q, ctx }) {
         </div>
       )}
       {!answered && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(6px, 1.2vmin, 12px)', width: '100%', maxWidth: 300 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(5px, 1vmin, 9px)', width: '100%', maxWidth: 300 }}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
             <button key={d} type="button" className="snk-kp-btn" onClick={() => press(String(d))}
               style={{
-                minHeight: 'clamp(44px, 8vmin, 64px)', border: 'none',
+                minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
                 borderBottom: '4px solid #2563EB', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
                 background: '#3B82F6', color: '#fff', cursor: 'pointer',
                 fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
@@ -2158,7 +2172,7 @@ function SusunanKeypadContent({ q, ctx }) {
           ))}
           <button type="button" className="snk-kp-btn" onClick={back}
             style={{
-              minHeight: 'clamp(44px, 8vmin, 64px)', border: 'none',
+              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
               borderBottom: '4px solid #DC2626', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: '#EF4444', color: '#fff', cursor: 'pointer',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
@@ -2166,7 +2180,7 @@ function SusunanKeypadContent({ q, ctx }) {
             }}>Padam</button>
           <button type="button" className="snk-kp-btn" onClick={() => press('0')}
             style={{
-              minHeight: 'clamp(44px, 8vmin, 64px)', border: 'none',
+              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
               borderBottom: '4px solid #2563EB', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: '#3B82F6', color: '#fff', cursor: 'pointer',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
@@ -2174,7 +2188,7 @@ function SusunanKeypadContent({ q, ctx }) {
             }}>0</button>
           <button type="button" className="snk-kp-btn" onClick={submit} disabled={input === ''}
             style={{
-              minHeight: 'clamp(44px, 8vmin, 64px)', border: 'none',
+              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
               borderBottom: input === '' ? '4px solid #D1D5DB' : '4px solid #16A34A',
               borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: input === '' ? '#E5E7EB' : '#22C55E',
@@ -2991,5 +3005,845 @@ export function CabarMindaExplore({ data, language, theme, onExit }) {
       theme={theme}
       onExit={onExit}
     />
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+ * Shared KeypadInput — extracted from SusunanKeypadContent.
+ * Display slot + 3×3 keypad (1–9, 0, ⌫, ✓) + external‑keyboard listener.
+ * Submit ONLY via ✓ or Enter (NO auto‑submit). Resets on qid change.
+ * ════════════════════════════════════════════════════════════════════════ */
+export function KeypadInput({ answered, isCorrect, handlePick, answer, theme: C, qid, maxLength = 2 }) {
+  const [input, setInput] = useState('');
+  useEffect(() => { setInput(''); }, [qid]);
+
+  const press = (d) => { if (!answered && input.length < maxLength) setInput(input + d); };
+  const back = () => { if (!answered) setInput(input.slice(0, -1)); };
+  const submit = () => { if (!answered && input !== '') handlePick(input); };
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (answered) return;
+      if (/^[0-9]$/.test(e.key)) { e.preventDefault(); press(e.key); }
+      else if (e.key === 'Backspace') { e.preventDefault(); back(); }
+      else if (e.key === 'Enter') { e.preventDefault(); if (input !== '') handlePick(input); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [answered, input, handlePick]);
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(8px, 1.3vmin, 14px)', width: '100%' }}>
+      <style>{`
+        .kp-btn { transition: all 0.08s ease; -webkit-tap-highlight-color: transparent; }
+        .kp-btn:active { transform: translateY(4px); border-bottom-width: 0 !important; }
+      `}</style>
+      <div style={{
+        minWidth: 'clamp(96px, 20vmin, 150px)', minHeight: 'clamp(46px, 6.5vmin, 60px)',
+        border: `3px solid ${answered ? (isCorrect ? C.green : C.red) : '#CBD5E1'}`,
+        borderRadius: 'clamp(12px, 1.6vmin, 18px)', background: '#F9FAFB',
+        boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.06)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(28px, 5vmin, 44px)',
+        color: answered ? (isCorrect ? C.green : C.red) : (input ? '#334155' : '#CBD5E1'), padding: '0 18px',
+      }}>
+        {input || '?'}
+      </div>
+      {answered && !isCorrect && (
+        <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(14px, 2.2vmin, 20px)', color: '#64748B' }}>
+          Jawapan: <b style={{ color: C.green }}>{answer}</b>
+        </div>
+      )}
+      {!answered && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(5px, 1vmin, 9px)', width: '100%', maxWidth: 300 }}>
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
+            <button key={d} type="button" className="kp-btn" onClick={() => press(String(d))}
+              style={{
+                minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
+                borderBottom: '4px solid #2563EB', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
+                background: '#3B82F6', color: '#fff', cursor: 'pointer',
+                fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
+                fontSize: 'clamp(20px, 3.4vmin, 30px)',
+              }}>{d}</button>
+          ))}
+          <button type="button" className="kp-btn" onClick={back}
+            style={{
+              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
+              borderBottom: '4px solid #DC2626', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
+              background: '#EF4444', color: '#fff', cursor: 'pointer',
+              fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
+              fontSize: 'clamp(16px, 2.6vmin, 22px)',
+            }}>Padam</button>
+          <button type="button" className="kp-btn" onClick={() => press('0')}
+            style={{
+              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
+              borderBottom: '4px solid #2563EB', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
+              background: '#3B82F6', color: '#fff', cursor: 'pointer',
+              fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
+              fontSize: 'clamp(20px, 3.4vmin, 30px)',
+            }}>0</button>
+          <button type="button" className="kp-btn" onClick={submit} disabled={input === ''}
+            style={{
+              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
+              borderBottom: input === '' ? '4px solid #D1D5DB' : '4px solid #16A34A',
+              borderRadius: 'clamp(12px, 1.6vmin, 16px)',
+              background: input === '' ? '#E5E7EB' : '#22C55E',
+              color: input === '' ? '#9CA3AF' : '#fff', cursor: input === '' ? 'not-allowed' : 'pointer',
+              fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
+              fontSize: 'clamp(16px, 2.6vmin, 22px)',
+            }}>Semak</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+ * Slice 2.1 — "Kenali Tambah" (addition concept). KSSR T1 Modul 2 Tambah dan
+ * Tolak, Kenali Tambah Aktiviti 1–6 (pp.69–74). Round of 10 = 3 Gabung
+ * Kumpulan (A) + 2 Garis Nombor (B) + 2 Pilih Perkataan (C) + 3 Lengkapkan
+ * Ayat Matematik (D). Addends 0–9, sums ≤ 18. All prompts "Pembelajaran
+ * Tambah". Uses KeypadInput (Types A, B, D) and WordOptionsGrid (Type C).
+ * ════════════════════════════════════════════════════════════════════════ */
+
+const KT_ICONS = ['🍎', '⭐', '🍦', '🐱', '🚗', '🎈', '🍬', '🐟', '🍌', '🐒', '🌟', '🍇', '🐘', '🦒', '🎁', '🐰', '🦋', '🐝', '🌺', '🍕'];
+
+// Type A — Gabung Kumpulan (Aktiviti 1,4,5): two object groups + "+" → keypad sum.
+function genGabungKumpulan() {
+  const a = randInt(0, 9);
+  const bMax = Math.min(9, 18 - a);
+  const b = randInt(0, bMax);
+  const total = a + b;
+  const icon = pick(KT_ICONS);
+  return {
+    type: 'kt-gabung',
+    header: 'Pembelajaran Tambah',
+    prompt: '', // objects + keypad convey the question (no redundant heading)
+    a, b, total, icon,
+    answer: String(total),
+  };
+}
+
+// Type B — Garis Nombor (Aktiviti 6): start at a, b count‑on hops → sum.
+function genGarisNombor() {
+  const a = randInt(1, 9);
+  const bMax = Math.min(9, 18 - a);
+  const b = randInt(1, bMax);
+  const total = a + b;
+  return {
+    type: 'kt-garis',
+    header: 'Pembelajaran Tambah',
+    prompt: '', // number track conveys the equation (no redundant heading)
+    a, b, total,
+    answer: String(total),
+  };
+}
+
+// Real number line: start marked "Mula" at a, then b labelled "+1" count‑on
+// jumps to the landing tick. Landing shows "?" until answered (no spoiler).
+function NumberTrackAdd({ a, b, total, correct, answered }) {
+  const lo = Math.max(0, a - 1);
+  const hi = Math.min(20, total + 1);
+  const steps = hi - lo;                 // number of gaps on the axis
+  const STEP = 56, P = 30, AX = 96;      // px per unit, side padding, axis y
+  const w = steps * STEP + P * 2;
+  const x = (n) => P + (n - lo) * STEP;  // value → x coordinate
+  return (
+    <svg viewBox={`0 0 ${w} 150`} style={{ width: '100%', maxWidth: 700, height: 'auto', display: 'block' }}>
+      <defs>
+        <marker id="ktaArr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+          <path d="M0 0 L10 5 L0 10 z" fill="#3B82F6" />
+        </marker>
+      </defs>
+      {/* axis line */}
+      <line x1={P - 8} y1={AX} x2={w - P + 8} y2={AX} stroke="#94A3B8" strokeWidth="3" strokeLinecap="round" />
+      {/* count‑on jump arcs, each labelled +1 */}
+      {Array.from({ length: b }).map((_, i) => {
+        const from = a + i, to = a + i + 1;
+        const x1 = x(from), x2 = x(to), mx = (x1 + x2) / 2, my = AX - 46;
+        return (
+          <g key={`j${i}`}>
+            <path d={`M${x1} ${AX - 6} Q${mx} ${my} ${x2} ${AX - 6}`} fill="none" stroke="#3B82F6" strokeWidth="3" markerEnd="url(#ktaArr)" />
+            <text x={mx} y={my + 4} fontFamily="'Baloo 2', sans-serif" fontWeight={800} fontSize="15" fill="#2563EB" textAnchor="middle">+1</text>
+          </g>
+        );
+      })}
+      {/* ticks + numbers; start and landing emphasised */}
+      {Array.from({ length: steps + 1 }).map((_, i) => {
+        const n = lo + i, px = x(n);
+        const isStart = n === a, isLanding = n === total;
+        const big = isStart || isLanding;
+        let dot = '#CBD5E1', txt = '#475569';
+        if (isStart) { dot = '#3B82F6'; txt = '#1E3A8A'; }
+        if (isLanding) {
+          if (correct) { dot = '#16A34A'; txt = '#166534'; }
+          else if (answered) { dot = '#1D4ED8'; txt = '#1E3A8A'; }
+          else { dot = '#F59E0B'; txt = '#B45309'; }
+        }
+        const showQ = isLanding && !answered;
+        return (
+          <g key={`t${i}`}>
+            <circle cx={px} cy={AX} r={big ? 8 : 5} fill={dot} />
+            <text x={px} y={AX + 26} fontFamily="'Baloo 2', sans-serif" fontWeight={big ? 900 : 600} fontSize={big ? 20 : 15} fill={txt} textAnchor="middle">
+              {showQ ? '?' : n}
+            </text>
+            {isStart && (
+              <text x={px} y={AX + 46} fontFamily="'Fredoka', sans-serif" fontWeight={700} fontSize="13" fill="#3B82F6" textAnchor="middle">Mula</text>
+            )}
+          </g>
+        );
+      })}
+      {/* equation — never reveals the total before answering */}
+      <text x={w / 2} y={22} fontFamily="'Baloo 2', sans-serif" fontWeight={900} fontSize="22" fill="#1E3A8A" textAnchor="middle">
+        {a} + {b} = {answered ? total : '?'}
+      </text>
+    </svg>
+  );
+}
+
+// Type C — Pilih Perkataan (Aktiviti 2): short scenario → correct addition word.
+function genPilihPerkataan() {
+  const scenarios = [
+    { correct: 'Jumlah', distractor: 'Baki', context: '"___" bermaksud cantumkan semuanya.' },
+    { correct: 'Jumlah', distractor: 'Beza', context: '"___" ialah hasil tambah dua nombor.' },
+    { correct: 'Semua', distractor: 'Tinggal', context: '"___" bererti mengira kesemuanya.' },
+    { correct: 'Semua', distractor: 'Beza', context: '"___" membawa maksud jumlah keseluruhan.' },
+    { correct: 'Tambah', distractor: 'Asingkan', context: 'Operasi "___" menggabungkan nombor.' },
+    { correct: 'Tambah', distractor: 'Tinggal', context: 'Kita "___" untuk dapatkan jumlah.' },
+    { correct: 'Masukkan', distractor: 'Asingkan', context: '"___" maksudnya cantumkan dalam kumpulan.' },
+    { correct: 'Masukkan', distractor: 'Baki', context: 'Cantumkan dengan "___" semua benda.' },
+  ];
+  const pair = pick(scenarios);
+  const contextBlank = pair.context.replace(pair.correct, '___');
+  const options = shuffle([
+    { id: 'ktc', value: pair.correct },
+    { id: 'ktd', value: pair.distractor },
+  ]);
+  return {
+    type: 'kt-perkataan',
+    header: 'Pembelajaran Tambah',
+    prompt: 'Pilih perkataan yang sesuai.',
+    context: contextBlank,
+    options,
+    answer: 'ktc',
+  };
+}
+
+// Type D — Lengkapkan Ayat Matematik (Aktiviti 3,4,5): "a + b = ?" or "a + ? = c".
+function genLengkapkanAyat() {
+  const fillTotal = Math.random() < 0.5;
+  const a = randInt(0, 9);
+  if (fillTotal) {
+    const b = randInt(0, Math.min(9, 18 - a));
+    const total = a + b;
+    return {
+      type: 'kt-ayat',
+      header: 'Pembelajaran Tambah',
+      prompt: '', // blue equation box (display) shows the question — no duplicate heading
+      display: `${a} + ${b} = ?`,
+      answer: String(total),
+    };
+  }
+  const b = randInt(1, Math.min(9, 18 - a));
+  const total = a + b;
+  return {
+    type: 'kt-ayat',
+    header: 'Pembelajaran Tambah',
+    prompt: '', // blue equation box (display) shows the question — no duplicate heading
+    display: `${a} + ? = ${total}`,
+    answer: String(b),
+  };
+}
+
+function buildKenaliTambahRound() {
+  const qs = [];
+  for (let i = 0; i < 3; i++) qs.push(genGabungKumpulan());
+  for (let i = 0; i < 2; i++) qs.push(genGarisNombor());
+  for (let i = 0; i < 2; i++) qs.push(genPilihPerkataan());
+  for (let i = 0; i < 3; i++) qs.push(genLengkapkanAyat());
+  return shuffle(qs).map((q, i) => ({ ...q, qid: i }));
+}
+
+function GabungKumpulanContent({ q, ctx }) {
+  const { answered, isCorrect, handlePick, theme: C } = ctx;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 24px)', width: '100%' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(12px, 2.2vmin, 26px)' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(4px, 0.8vmin, 10px)' }}>
+          {q.a === 0 ? <EmptyTray compact /> : <ObjectsGrid icon={q.icon} count={q.a} />}
+        </div>
+        <span style={{ fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 'clamp(22px, 4vmin, 38px)', color: '#3B82F6' }}>+</span>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(4px, 0.8vmin, 10px)' }}>
+          {q.b === 0 ? <EmptyTray compact /> : <ObjectsGrid icon={q.icon} count={q.b} />}
+        </div>
+      </div>
+      <KeypadInput answered={answered} isCorrect={isCorrect} handlePick={handlePick} answer={q.answer} theme={C} qid={q.qid} />
+    </div>
+  );
+}
+
+function GarisNomborContent({ q, ctx }) {
+  const { answered, isCorrect, handlePick, theme: C } = ctx;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 24px)', width: '100%' }}>
+      <NumberTrackAdd a={q.a} b={q.b} total={q.total} correct={answered && isCorrect} answered={answered} />
+      <KeypadInput answered={answered} isCorrect={isCorrect} handlePick={handlePick} answer={q.answer} theme={C} qid={q.qid} />
+    </div>
+  );
+}
+
+function PerkataanContent({ q, ctx }) {
+  const { answered, selected, answer, handlePick, theme: C } = ctx;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 24px)', width: '100%' }}>
+      <div style={{
+        fontFamily: "'Fredoka', sans-serif", fontWeight: 600,
+        fontSize: 'clamp(17px, 2.8vmin, 28px)', color: '#334155',
+        textAlign: 'center', lineHeight: 1.4, padding: 'clamp(10px, 1.6vmin, 20px)',
+        background: '#F8FAFC', borderRadius: 'clamp(12px, 1.6vmin, 18px)',
+        border: '2px solid #E2E8F0', maxWidth: 440, width: '100%',
+      }}>
+        {q.context}
+      </div>
+      <WordOptionsGrid options={q.options} answered={answered} selected={selected} answer={answer} handlePick={handlePick} theme={C} />
+    </div>
+  );
+}
+
+function AyatContent({ q, ctx }) {
+  const { answered, isCorrect, handlePick, theme: C } = ctx;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 24px)', width: '100%' }}>
+      <div style={{
+        minWidth: 'clamp(80px, 16vmin, 130px)', padding: 'clamp(8px, 1.4vmin, 14px) clamp(18px, 3.4vmin, 32px)',
+        borderRadius: 'clamp(16px, 2vmin, 24px)', background: '#EFF6FF',
+        border: '3px solid #93C5FD',
+        fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
+        fontSize: 'clamp(28px, 5vmin, 44px)', color: '#1E3A8A', lineHeight: 1, textAlign: 'center',
+      }}>
+        {q.display}
+      </div>
+      <KeypadInput answered={answered} isCorrect={isCorrect} handlePick={handlePick} answer={q.answer} theme={C} qid={q.qid} />
+    </div>
+  );
+}
+
+export function KenaliTambahExplore({ data, language, theme, onExit }) {
+  return (
+    <MatematikActivityFrame
+      buildRound={buildKenaliTambahRound}
+      renderQuestion={(q, ctx) => {
+        if (q.type === 'kt-gabung') return <GabungKumpulanContent q={q} ctx={ctx} />;
+        if (q.type === 'kt-garis') return <GarisNomborContent q={q} ctx={ctx} />;
+        if (q.type === 'kt-perkataan') return <PerkataanContent q={q} ctx={ctx} />;
+        return <AyatContent q={q} ctx={ctx} />;
+      }}
+      theme={theme}
+      onExit={onExit}
+    />
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+ * Slice 2.2 — "Latihan Tambah" (tiered addition practice). KSSR T1 Modul 2
+ * Tambah dan Tolak, pp.75–87. Three difficulty levels:
+ *   Mudah (Tambah Cepat p75–77): single-digit facts, sums ≤ 18.
+ *   Sederhana (Tambah Mudah p78–82): 2-digit add, NO regrouping.
+ *   Sukar (Tambah Lagi p83–87): 2-digit add WITH regrouping, sum ≤ 99.
+ * Each round = 10 questions (6 type-1 + 4 type-2 per level).
+ * ──────────────────────────────────────────────────────────────────────── */
+
+const LT_LEVELS = [
+  { id: 'mudah',      label: 'Mudah',     dots: '●○○', emoji: '🟢', desc: 'Fakta asas hingga 18' },
+  { id: 'sederhana',  label: 'Sederhana', dots: '●●○', emoji: '🟡', desc: 'Tambah 2 digit tanpa mengumpul' },
+  { id: 'sukar',      label: 'Sukar',     dots: '●●●', emoji: '🔴', desc: 'Tambah 2 digit dengan mengumpul' },
+];
+
+// All a+b expressions (a,b ∈ 1..9) that sum to s.
+function allExprsForSum(s) {
+  const out = [];
+  for (let a = Math.max(1, s - 9); a <= Math.min(9, s - 1); a++) out.push(`${a}+${s - a}`);
+  return out;
+}
+
+/* ── Mudah M1: a + b = ? (horizontal equation, sums ≤ 18) ── */
+function genMudahM1() {
+  const a = randInt(1, 9);
+  const b = randInt(1, Math.min(9, 18 - a));
+  const total = a + b;
+  return {
+    type: 'lt-mudah-m1',
+    header: 'Latihan Tambah',
+    prompt: '',
+    display: `${a} + ${b} = ?`,
+    answer: String(total),
+  };
+}
+
+/* ── Warnai (Mudah): which a+b equals the target? 4 options, exactly 1 correct [p75] ── */
+function genWarnai() {
+  const target = randInt(11, 16);
+  const correct = pick(allExprsForSum(target));
+  const opts = new Set([correct]);
+  let guard = 0;
+  while (opts.size < 4 && guard++ < 100) {
+    const s = randInt(3, 17);
+    if (s === target) continue; // distractor sums ≠ target → never equal target
+    const exprs = allExprsForSum(s).filter(e => !opts.has(e));
+    if (!exprs.length) continue;
+    opts.add(pick(exprs));
+  }
+  const options = shuffle([...opts]).map((v, i) => ({ id: `w${i}`, value: v }));
+  return {
+    type: 'lt-warnai', header: 'Latihan Tambah',
+    prompt: `Yang manakah jumlahnya ${target}?`,
+    options, answer: options.find(o => o.value === correct).id,
+  };
+}
+
+/* ── Padankan: which number pairs with {given} to make {target}? 4 opts, 1 correct [p76–77] ── */
+function genPadankan() {
+  const target = randInt(6, 15);
+  const given = randInt(Math.max(1, target - 9), Math.min(9, target - 1));
+  const correct = target - given; // 1..9, the only number that completes the sum
+  const opts = new Set([correct]);
+  let guard = 0;
+  while (opts.size < 4 && guard++ < 100) {
+    const d = randInt(1, 9);
+    if (d !== correct) opts.add(d); // distractor ≠ correct → never reaches target
+  }
+  const options = shuffle([...opts]).map((v, i) => ({ id: `p${i}`, value: String(v) }));
+  return {
+    type: 'lt-padankan', header: 'Latihan Tambah',
+    prompt: `Cari pasangan yang jumlahnya ${target}.`,
+    given, target, options, answer: options.find(o => o.value === String(correct)).id,
+  };
+}
+
+/* ── Ikatan Nombor: whole = part + ? ; pick the missing part [p84,p86] ── */
+function genBond() {
+  const whole = randInt(8, 18);
+  const part = randInt(1, whole - 1);
+  const missing = whole - part;
+  const opts = new Set([missing]);
+  let guard = 0;
+  while (opts.size < 3 && guard++ < 60) {
+    const d = missing + randInt(-3, 3);
+    if (d >= 0 && d <= whole && d !== missing) opts.add(d);
+  }
+  let f = 0;
+  while (opts.size < 3) { if (f !== missing && f <= whole) opts.add(f); f++; }
+  const options = shuffle([...opts]).map((v, i) => ({ id: `b${i}`, value: String(v) }));
+  return {
+    type: 'lt-bond', header: 'Latihan Tambah',
+    prompt: 'Lengkapkan ikatan nombor.',
+    whole, part, options,
+    answer: options.find(o => o.value === String(missing)).id,
+  };
+}
+
+/* ── Bina blok: build the sum with puluh + sa blocks [p79,p85] ── */
+function genAbacusBuild(level) {
+  const { a, b, total } = level === 'sukar' ? genSukarK1() : genSederhanaS1();
+  return {
+    type: 'lt-abacus', header: 'Latihan Tambah',
+    prompt: 'Bina nombor dengan blok puluh & sa.',
+    a, b, total, answer: 'ok',
+  };
+}
+
+/* ── Sederhana S1: VerticalSum, NO regrouping ── */
+function genSederhanaS1() {
+  const aTens = randInt(1, 8);
+  const aOnes = randInt(0, 9);
+  const a = aTens * 10 + aOnes;
+  let b;
+  if (aOnes < 9 && Math.random() < 0.5) {
+    b = randInt(1, 9 - aOnes);
+  } else {
+    const bTens = randInt(1, 9 - aTens);
+    b = bTens * 10 + randInt(0, 9 - aOnes);
+  }
+  const total = a + b;
+  return {
+    type: 'lt-sederhana-s1',
+    header: 'Latihan Tambah',
+    prompt: '',
+    a, b, total,
+    answer: String(total),
+  };
+}
+
+/* ── Sukar K1: VerticalSum, WITH regrouping ── */
+function genSukarK1() {
+  let a, b;
+  if (Math.random() < 0.4) {
+    const aTens = randInt(1, 8);
+    const aOnes = randInt(1, 9);
+    a = aTens * 10 + aOnes;
+    b = randInt(10 - aOnes, 9);
+  } else {
+    const aTens = randInt(1, 7);
+    const aOnes = randInt(1, 9);
+    a = aTens * 10 + aOnes;
+    const maxBTens = 9 - aTens - 1;
+    const bTens = randInt(1, Math.max(1, maxBTens));
+    const minBOnes = Math.max(1, 10 - aOnes);
+    b = bTens * 10 + randInt(minBOnes, 9);
+  }
+  const total = a + b;
+  return {
+    type: 'lt-sukar-k1',
+    header: 'Latihan Tambah',
+    prompt: '',
+    a, b, total,
+    answer: String(total),
+  };
+}
+
+function buildLatihanTambahRound(level) {
+  const qs = [];
+  if (level === 'mudah') {
+    for (let i = 0; i < 2; i++) qs.push(genMudahM1());     // keypad fluency
+    for (let i = 0; i < 3; i++) qs.push(genWarnai());       // tap-all-correct
+    for (let i = 0; i < 3; i++) qs.push(genPadankan());     // pair-match
+    for (let i = 0; i < 2; i++) qs.push(genBond());         // number-bond
+  } else if (level === 'sederhana') {
+    for (let i = 0; i < 2; i++) qs.push(genSederhanaS1());  // keypad column
+    for (let i = 0; i < 3; i++) qs.push(genAbacusBuild('sederhana')); // base-ten build
+    for (let i = 0; i < 3; i++) qs.push(genPadankan());     // pair-match
+    for (let i = 0; i < 2; i++) qs.push(genBond());         // number-bond
+  } else {
+    for (let i = 0; i < 2; i++) qs.push(genSukarK1());      // keypad column
+    for (let i = 0; i < 3; i++) qs.push(genAbacusBuild('sukar')); // base-ten build
+    for (let i = 0; i < 3; i++) qs.push(genBond());         // number-bond
+    for (let i = 0; i < 2; i++) qs.push(genPadankan());     // pair-match
+  }
+  return shuffle(qs).map((q, i) => ({ ...q, qid: i }));
+}
+
+function VerticalSum({ a, b, total, answered, isCorrect, theme: C }) {
+  return (
+    <div style={{
+      display: 'inline-flex', flexDirection: 'column', alignItems: 'flex-end',
+      fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
+      fontSize: 'clamp(28px, 6vmin, 50px)', color: '#1E293B',
+      padding: 'clamp(12px, 2vmin, 24px) clamp(18px, 3.4vmin, 36px)',
+      background: '#F8FAFC', borderRadius: 'clamp(16px, 2vmin, 24px)',
+      border: '3px solid #93C5FD',
+    }}>
+      <div style={{ padding: '2px 0', lineHeight: 1.1 }}>{a}</div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '2px 0', lineHeight: 1.1 }}>
+        <span style={{ fontSize: 'clamp(20px, 4vmin, 36px)', color: '#3B82F6', alignSelf: 'flex-start', lineHeight: 0.85 }}>+</span>
+        <span>{b}</span>
+      </div>
+      <div style={{ width: '100%', height: '3px', background: '#1E293B', margin: '2px 0', borderRadius: 2 }} />
+      <div style={{ padding: '2px 0', lineHeight: 1.1, color: answered ? (isCorrect ? '#16A34A' : '#DC2626') : '#94A3B8' }}>
+        {answered ? String(total) : '?'}
+      </div>
+    </div>
+  );
+}
+
+/* ── Content components ── */
+
+function MudahM1Content({ q, ctx }) {
+  const { answered, isCorrect, handlePick, theme: C } = ctx;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 24px)', width: '100%' }}>
+      <div style={{
+        minWidth: 'clamp(80px, 16vmin, 130px)', padding: 'clamp(8px, 1.4vmin, 14px) clamp(18px, 3.4vmin, 32px)',
+        borderRadius: 'clamp(16px, 2vmin, 24px)', background: '#EFF6FF',
+        border: '3px solid #93C5FD',
+        fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
+        fontSize: 'clamp(28px, 5vmin, 44px)', color: '#1E3A8A', lineHeight: 1, textAlign: 'center',
+      }}>
+        {q.display}
+      </div>
+      <KeypadInput answered={answered} isCorrect={isCorrect} handlePick={handlePick} answer={q.answer} theme={C} qid={q.qid} />
+    </div>
+  );
+}
+
+// Shared green "Semak" submit for the self-judged widgets.
+function SemakButton({ disabled, onClick }) {
+  return (
+    <button type="button" onClick={onClick} disabled={disabled}
+      style={{
+        minHeight: 'clamp(44px, 6vmin, 52px)', padding: '0 clamp(28px, 5vmin, 48px)', border: 'none',
+        borderBottom: disabled ? '4px solid #D1D5DB' : '4px solid #16A34A',
+        borderRadius: 'clamp(12px, 1.6vmin, 16px)',
+        background: disabled ? '#E5E7EB' : '#22C55E',
+        color: disabled ? '#9CA3AF' : '#fff', cursor: disabled ? 'not-allowed' : 'pointer',
+        fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.6vmin, 22px)',
+        WebkitTapHighlightColor: 'transparent', transition: 'transform .08s ease',
+      }}>Semak</button>
+  );
+}
+
+const abBtn = (bg) => ({
+  width: 'clamp(36px, 7vmin, 46px)', height: 'clamp(36px, 7vmin, 46px)', border: 'none', borderRadius: 10,
+  background: bg, color: '#fff', fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
+  fontSize: 'clamp(20px, 3.6vmin, 28px)', cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
+  lineHeight: 1,
+});
+
+// Number-bond diagram: whole on top → given part + ? (self-contained SVG).
+function BondDiagram({ whole, part }) {
+  return (
+    <svg viewBox="0 0 220 150" style={{ width: 'clamp(150px, 36vmin, 230px)', height: 'auto', display: 'block' }}>
+      <line x1="110" y1="46" x2="60" y2="104" stroke="#93C5FD" strokeWidth="4" />
+      <line x1="110" y1="46" x2="160" y2="104" stroke="#93C5FD" strokeWidth="4" />
+      <circle cx="110" cy="34" r="30" fill="#EFF6FF" stroke="#3B82F6" strokeWidth="3" />
+      <text x="110" y="34" fontFamily="'Baloo 2', sans-serif" fontWeight="900" fontSize="26" fill="#1E3A8A" textAnchor="middle" dominantBaseline="central">{whole}</text>
+      <circle cx="60" cy="116" r="26" fill="#DBEAFE" stroke="#3B82F6" strokeWidth="3" />
+      <text x="60" y="116" fontFamily="'Baloo 2', sans-serif" fontWeight="900" fontSize="24" fill="#1E3A8A" textAnchor="middle" dominantBaseline="central">{part}</text>
+      <circle cx="160" cy="116" r="26" fill="#FEF3C7" stroke="#F59E0B" strokeWidth="3" />
+      <text x="160" y="116" fontFamily="'Baloo 2', sans-serif" fontWeight="900" fontSize="24" fill="#B45309" textAnchor="middle" dominantBaseline="central">?</text>
+    </svg>
+  );
+}
+
+// Warnai — single-select: tap the expression that equals the target (auto-submits, colour flips).
+function WarnaiContent({ q, ctx }) {
+  const { answered, selected, answer, handlePick, theme: C } = ctx;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 24px)', width: '100%' }}>
+      <WordOptionsGrid options={q.options} answered={answered} selected={selected} answer={answer} handlePick={handlePick} theme={C} />
+    </div>
+  );
+}
+
+// Padankan — single-select: pick the number that pairs with {given} to reach {target}.
+function PadankanContent({ q, ctx }) {
+  const { answered, selected, answer, handlePick, theme: C } = ctx;
+  const circle = (val, kind) => (
+    <div style={{
+      width: 'clamp(52px, 9.5vmin, 70px)', height: 'clamp(52px, 9.5vmin, 70px)', borderRadius: '50%',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      background: kind === 'q' ? '#FEF3C7' : '#DBEAFE',
+      border: `3px solid ${kind === 'q' ? '#F59E0B' : '#3B82F6'}`,
+      color: kind === 'q' ? '#B45309' : '#1E3A8A',
+      fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(22px, 4vmin, 32px)',
+    }}>{val}</div>
+  );
+  const sym = (s) => (
+    <span style={{ fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 'clamp(20px, 3.6vmin, 30px)', color: '#64748B' }}>{s}</span>
+  );
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(14px, 2.2vmin, 26px)', width: '100%' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 1.6vmin, 16px)' }}>
+        {circle(q.given, 'n')}
+        {sym('+')}
+        {circle('?', 'q')}
+        {sym('=')}
+        <div style={{
+          padding: 'clamp(8px, 1.4vmin, 14px) clamp(14px, 2.6vmin, 22px)', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
+          background: '#EFF6FF', border: '3px solid #93C5FD', color: '#1E3A8A',
+          fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(22px, 4vmin, 32px)',
+        }}>{q.target}</div>
+      </div>
+      <NumOptionsGrid options={q.options} answered={answered} selected={selected} answer={answer} handlePick={handlePick} theme={C} />
+    </div>
+  );
+}
+
+// Abacus / base-ten build — tap +/− to make the sum with puluh & sa blocks.
+function AbacusBuildContent({ q, ctx }) {
+  const { answered, handlePick } = ctx;
+  const [tens, setTens] = useState(0);
+  const [ones, setOnes] = useState(0);
+  useEffect(() => { setTens(0); setOnes(0); }, [q.qid]);
+  const built = tens * 10 + ones;
+  const submit = () => { if (!answered) handlePick(built === q.total ? 'ok' : 'no'); };
+  const col = (label, val, set, color, isTen) => (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+      <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 2vmin, 18px)', color: '#64748B' }}>{label}</div>
+      <div style={{
+        minHeight: 'clamp(84px, 15vmin, 140px)', width: 'clamp(78px, 15vmin, 124px)',
+        display: 'flex', flexWrap: 'wrap', alignContent: 'flex-end', justifyContent: 'center', gap: 4,
+        padding: 8, background: '#F8FAFC', border: '2px solid #E2E8F0', borderRadius: 12,
+      }}>
+        {Array.from({ length: val }).map((_, i) => (
+          <div key={i} style={isTen
+            ? { width: 10, height: 'clamp(38px, 7.5vmin, 66px)', background: color, borderRadius: 3 }
+            : { width: 'clamp(14px, 3vmin, 22px)', height: 'clamp(14px, 3vmin, 22px)', background: color, borderRadius: 4 }} />
+        ))}
+      </div>
+      {!answered && (
+        <div style={{ display: 'flex', gap: 6 }}>
+          <button type="button" onClick={() => set(Math.max(0, val - 1))} style={abBtn('#EF4444')}>−</button>
+          <button type="button" onClick={() => set(Math.min(9, val + 1))} style={abBtn('#3B82F6')}>+</button>
+        </div>
+      )}
+    </div>
+  );
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px, 1.8vmin, 20px)', width: '100%' }}>
+      <div style={{ display: 'flex', gap: 'clamp(16px, 3vmin, 40px)' }}>
+        {col('Puluh', tens, setTens, '#3B82F6', true)}
+        {col('Sa', ones, setOnes, '#F59E0B', false)}
+      </div>
+      <div style={{
+        fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(20px, 3.4vmin, 30px)',
+        color: answered ? (built === q.total ? '#16A34A' : '#DC2626') : '#1E3A8A',
+      }}>{q.a} + {q.b} = {built}</div>
+      {answered && built !== q.total && (
+        <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, color: '#64748B', fontSize: 'clamp(13px, 2vmin, 18px)' }}>
+          Jawapan: <b style={{ color: '#16A34A' }}>{q.total}</b>
+        </div>
+      )}
+      {!answered && <SemakButton disabled={false} onClick={submit} />}
+    </div>
+  );
+}
+
+// Number-bond — pick the missing part from options.
+function BondContent({ q, ctx }) {
+  const { answered, selected, answer, handlePick, theme: C } = ctx;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 22px)', width: '100%' }}>
+      <BondDiagram whole={q.whole} part={q.part} />
+      <NumOptionsGrid options={q.options} answered={answered} selected={selected} answer={answer} handlePick={handlePick} theme={C} />
+    </div>
+  );
+}
+
+function SederhanaS1Content({ q, ctx }) {
+  const { answered, isCorrect, handlePick, theme: C } = ctx;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 24px)', width: '100%' }}>
+      <VerticalSum a={q.a} b={q.b} total={q.total} answered={answered} isCorrect={isCorrect} theme={C} />
+      <KeypadInput answered={answered} isCorrect={isCorrect} handlePick={handlePick} answer={q.answer} theme={C} qid={q.qid} />
+    </div>
+  );
+}
+
+function SukarK1Content({ q, ctx }) {
+  const { answered, isCorrect, handlePick, theme: C } = ctx;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 24px)', width: '100%' }}>
+      <VerticalSum a={q.a} b={q.b} total={q.total} answered={answered} isCorrect={isCorrect} theme={C} />
+      <KeypadInput answered={answered} isCorrect={isCorrect} handlePick={handlePick} answer={q.answer} theme={C} qid={q.qid} />
+    </div>
+  );
+}
+
+// Level picker overlay
+function LevelPicker({ onSelect, language, theme }) {
+  const C = {
+    accent: theme.accent || '#3B82F6',
+    dark: theme.dark || '#1E3A8A',
+    cd: theme.cd || '#1D4ED8',
+  };
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+      height: '100%', minHeight: 0, gap: 'clamp(12px, 2vmin, 24px)',
+      padding: 'clamp(20px, 4vmin, 40px)',
+      fontFamily: "'Baloo 2', sans-serif",
+    }}>
+      <style>{`
+        .lt-card {
+          width: 100%; max-width: 380px; cursor: pointer;
+          transition: all 0.15s ease; -webkit-tap-highlight-color: transparent;
+          user-select: none;
+        }
+        .lt-card:active { transform: scale(0.97); }
+      `}</style>
+      <div style={{
+        fontSize: 'clamp(22px, 4vmin, 36px)', fontWeight: 800, color: '#1E293B',
+        textAlign: 'center',
+      }}>
+        Pilih aras latihan
+      </div>
+      {LT_LEVELS.map(lv => (
+        <div key={lv.id} className="lt-card" onClick={() => onSelect(lv.id)}
+          role="button" tabIndex={0}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(lv.id); } }}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 'clamp(12px, 2vmin, 20px)',
+            padding: 'clamp(14px, 2.4vmin, 22px) clamp(16px, 3vmin, 28px)',
+            background: '#fff', borderRadius: 'clamp(18px, 2.4vmin, 26px)',
+            border: '2px solid #E2E8F0', borderBottom: `5px solid ${C.cd}`,
+            boxShadow: '0 6px 20px -10px rgba(0,0,0,0.15)',
+          }}>
+          <div style={{
+            fontSize: 'clamp(32px, 5vmin, 48px)', lineHeight: 1, flexShrink: 0,
+          }}>{lv.emoji}</div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{
+              fontSize: 'clamp(18px, 3vmin, 28px)', fontWeight: 800, color: '#1E293B',
+              lineHeight: 1.2,
+            }}>{lv.label}</div>
+            <div style={{
+              fontFamily: "'Fredoka', sans-serif", fontWeight: 600,
+              fontSize: 'clamp(13px, 2vmin, 18px)', color: '#64748B',
+            }}>{lv.dots} · {lv.desc}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function LatihanTambahExplore({ data, language, theme, onExit }) {
+  const [level, setLevel] = useState(null);
+
+  const LEVEL_LABELS = { mudah: 'Mudah', sederhana: 'Sederhana', sukar: 'Sukar' };
+
+  if (!level) {
+    return <LevelPicker onSelect={setLevel} language={language} theme={theme} />;
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
+      {/* Level strip — ≤ ~40px */}
+      <div style={{
+        flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: 'clamp(4px, 0.8vmin, 8px) clamp(16px, 2.4vmin, 34px)',
+        background: 'rgba(255,255,255,.7)', backdropFilter: 'blur(8px)',
+        borderBottom: '1px solid #E2E8F0',
+        fontFamily: "'Fredoka', sans-serif", fontWeight: 600,
+        fontSize: 'clamp(13px, 1.8vmin, 18px)', color: '#64748B',
+      }}>
+        <span>Aras: <b style={{ color: '#1E293B' }}>{LEVEL_LABELS[level]}</b></span>
+        <button type="button" onClick={() => setLevel(null)}
+          style={{
+            border: 'none', background: 'transparent', cursor: 'pointer',
+            fontFamily: "'Fredoka', sans-serif", fontWeight: 600,
+            fontSize: 'clamp(12px, 1.6vmin, 16px)', color: '#3B82F6',
+            padding: '4px 8px', borderRadius: 8,
+            transition: 'background 0.15s',
+            WebkitTapHighlightColor: 'transparent',
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.background = '#EFF6FF'}
+          onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+        >
+          Tukar Aras ⟲
+        </button>
+      </div>
+      {/* Activity frame takes remaining space */}
+      <div style={{ flex: 1, minHeight: 0 }}>
+        <MatematikActivityFrame
+          key={level}
+          buildRound={() => buildLatihanTambahRound(level)}
+          renderQuestion={(q, ctx) => {
+            switch (q.type) {
+              case 'lt-mudah-m1': return <MudahM1Content q={q} ctx={ctx} />;
+              case 'lt-warnai': return <WarnaiContent q={q} ctx={ctx} />;
+              case 'lt-padankan': return <PadankanContent q={q} ctx={ctx} />;
+              case 'lt-bond': return <BondContent q={q} ctx={ctx} />;
+              case 'lt-abacus': return <AbacusBuildContent q={q} ctx={ctx} />;
+              case 'lt-sederhana-s1': return <SederhanaS1Content q={q} ctx={ctx} />;
+              case 'lt-sukar-k1': return <SukarK1Content q={q} ctx={ctx} />;
+              default: return null;
+            }
+          }}
+          theme={theme}
+          onExit={onExit}
+        />
+      </div>
+    </div>
   );
 }
