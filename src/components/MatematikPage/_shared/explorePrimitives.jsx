@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import confetti from 'canvas-confetti';
 import { playSound } from '../../../utils/soundManager';
 import MatematikActivityFrame from './MatematikActivityFrame';
@@ -1265,10 +1265,13 @@ function TensOnesGrid({ icon, count }) {
   );
 }
 
-function WordOptionsGrid({ options, answered, selected, answer, handlePick, theme: C }) {
+function WordOptionsGrid({ options, answered, selected, answer, handlePick, theme: C, columns = 1, plain = false }) {
   return (
     <div style={{
-      display: 'flex', flexDirection: 'column',
+      display: columns > 1 ? 'grid' : 'flex',
+      ...(columns > 1
+        ? { gridTemplateColumns: `repeat(${columns}, 1fr)` }
+        : { flexDirection: 'column' }),
       gap: 'clamp(8px, 1.2vmin, 14px)',
       width: '100%', maxWidth: 400,
     }}>
@@ -1279,6 +1282,7 @@ function WordOptionsGrid({ options, answered, selected, answer, handlePick, them
         let bg, bd, clr, txt, anim;
         if (answered && isAns) { bg = C.green; bd = C.green; clr = '#fff'; txt = '✓'; anim = 'snkBounce .5s ease'; }
         else if (answered && picked) { bg = C.red; bd = C.red; clr = '#fff'; txt = '✗'; anim = 'shakeError .35s ease'; }
+        else if (plain) { bg = 'transparent'; bd = c.border; clr = '#1E293B'; txt = opt.value; anim = 'none'; }
         else { bg = c.bg; bd = c.border; clr = '#fff'; txt = opt.value; anim = 'none'; }
         return (
           <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={answered}
@@ -3149,7 +3153,7 @@ function NumberTrackAdd({ a, b, total, correct, answered }) {
   const w = steps * STEP + P * 2;
   const x = (n) => P + (n - lo) * STEP;  // value → x coordinate
   return (
-    <svg viewBox={`0 0 ${w} 150`} style={{ width: '100%', maxWidth: 700, height: 'auto', display: 'block' }}>
+    <svg viewBox={`0 0 ${w} 150`} style={{ width: '100%', maxWidth: w, height: 'auto', display: 'block' }}>
       <defs>
         <marker id="ktaArr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
           <path d="M0 0 L10 5 L0 10 z" fill="#3B82F6" />
@@ -3345,6 +3349,268 @@ export function KenaliTambahExplore({ data, language, theme, onExit }) {
 }
 
 /* ════════════════════════════════════════════════════════════════════════
+ * Slice 2.3 — "Kenali Tolak" (subtraction concept). KSSR T1 Modul 2 Tambah
+ * dan Tolak, Kenali Tolak Aktiviti 1–6. Round of 10 = 3 Buang Kumpulan
+ * (A) + 2 Garis Nombor (B) + 2 Pilih Perkataan (C) + 3 Lengkapkan Ayat
+ * Matematik (D). Minuend ≤ 18, subtrahend 0–9, a ≥ b, answer a−b ≥ 0.
+ * Uses KeypadInput (Types A, B, D) and WordOptionsGrid (Type C).
+ * ════════════════════════════════════════════════════════════════════════ */
+
+// Type A — Buang Kumpulan (Aktiviti 1,4,5): group of a with b crossed-out → baki.
+function genBuangKumpulan() {
+  // a ≥ 2 and 1 ≤ b ≤ a−1 → always remove something, baki never 0.
+  const a = randInt(2, 9);
+  const b = randInt(1, a - 1);
+  const baki = a - b;
+  const icon = pick(KT_ICONS);
+  const prompt = pick([
+    `${a} tolak ${b} jadi?`,
+    `${a} buang ${b} sama dengan?`,
+    `Baki ${a} tolak ${b} ialah?`,
+  ]);
+  return {
+    type: 'kt-buang',
+    header: 'Pembelajaran Tolak',
+    prompt,
+    a, b, baki, icon,
+    answer: String(baki),
+  };
+}
+
+// Type B — Garis Nombor (Aktiviti 6): start at a, count‑back b steps → a−b.
+function genGarisNomborSub() {
+  const a = randInt(2, 9);
+  const b = randInt(1, a - 1); // baki never 0 (a − a excluded)
+  const baki = a - b;
+  return {
+    type: 'kt-garis-sub',
+    header: 'Pembelajaran Tolak',
+    prompt: '', // SVG already draws the equation — no duplicate heading
+    a, b, baki,
+    answer: String(baki),
+  };
+}
+
+// Number track with count‑back (subtraction) jumps. Start at a, b steps left.
+function NumberTrackSub({ a, b, baki, correct, answered }) {
+  const lo = Math.max(0, a - b - 1);
+  const hi = Math.min(20, a + 1);
+  const steps = hi - lo;
+  const STEP = 56, P = 30, AX = 96;
+  const w = steps * STEP + P * 2;
+  const x = (n) => P + (n - lo) * STEP;
+  return (
+    <svg viewBox={`0 0 ${w} 150`} style={{ width: '100%', maxWidth: w, height: 'auto', display: 'block' }}>
+      <defs>
+        <marker id="ktsArr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+          <path d="M0 0 L10 5 L0 10 z" fill="#3B82F6" />
+        </marker>
+      </defs>
+      <line x1={P - 8} y1={AX} x2={w - P + 8} y2={AX} stroke="#94A3B8" strokeWidth="3" strokeLinecap="round" />
+      {Array.from({ length: b }).map((_, i) => {
+        const from = a - i, to = a - i - 1;
+        const x1 = x(from), x2 = x(to), mx = (x1 + x2) / 2, my = AX - 46;
+        return (
+          <g key={`j${i}`}>
+            <path d={`M${x1} ${AX - 6} Q${mx} ${my} ${x2} ${AX - 6}`} fill="none" stroke="#3B82F6" strokeWidth="3" markerEnd="url(#ktsArr)" />
+            <text x={mx} y={my + 4} fontFamily="'Baloo 2', sans-serif" fontWeight={800} fontSize="15" fill="#2563EB" textAnchor="middle">-1</text>
+          </g>
+        );
+      })}
+      {Array.from({ length: steps + 1 }).map((_, i) => {
+        const n = lo + i, px = x(n);
+        const isStart = n === a, isLanding = n === baki;
+        const big = isStart || isLanding;
+        let dot = '#CBD5E1', txt = '#475569';
+        if (isStart) { dot = '#3B82F6'; txt = '#1E3A8A'; }
+        if (isLanding) {
+          if (correct) { dot = '#16A34A'; txt = '#166534'; }
+          else if (answered) { dot = '#1D4ED8'; txt = '#1E3A8A'; }
+          else { dot = '#F59E0B'; txt = '#B45309'; }
+        }
+        const showQ = isLanding && !answered;
+        return (
+          <g key={`t${i}`}>
+            <circle cx={px} cy={AX} r={big ? 8 : 5} fill={dot} />
+            <text x={px} y={AX + 26} fontFamily="'Baloo 2', sans-serif" fontWeight={big ? 900 : 600} fontSize={big ? 20 : 15} fill={txt} textAnchor="middle">
+              {showQ ? '?' : n}
+            </text>
+            {isStart && (
+              <text x={px} y={AX + 46} fontFamily="'Fredoka', sans-serif" fontWeight={700} fontSize="13" fill="#3B82F6" textAnchor="middle">Mula</text>
+            )}
+          </g>
+        );
+      })}
+      <text x={w / 2} y={22} fontFamily="'Baloo 2', sans-serif" fontWeight={900} fontSize="22" fill="#1E3A8A" textAnchor="middle">
+        {a} − {b} = {answered ? baki : '?'}
+      </text>
+    </svg>
+  );
+}
+
+// Type C — Pilih Perkataan (Aktiviti 2): scenario → correct subtraction word.
+function genPilihPerkataanTolak() {
+  const scenarios = [
+    { correct: 'Baki', distractor: 'Jumlah', context: '"___" bermaksud yang tinggal selepas tolak.' },
+    { correct: 'Baki', distractor: 'Semua', context: '"___" ialah hasil tolak dua nombor.' },
+    { correct: 'Beza', distractor: 'Jumlah', context: '"___" ialah perbezaan antara dua nombor.' },
+    { correct: 'Beza', distractor: 'Tambah', context: '"___" menunjukkan nilai yang tinggal.' },
+    { correct: 'Tinggal', distractor: 'Semua', context: '"___" bermaksud apa yang masih ada.' },
+    { correct: 'Tinggal', distractor: 'Masukkan', context: 'Selepas tolak, kita lihat apa yang "___".' },
+    { correct: 'Tolak', distractor: 'Tambah', context: 'Operasi "___" mengasingkan kumpulan.' },
+    { correct: 'Tolak', distractor: 'Jumlah', context: '"___" mengurangkan bilangan sesuatu.' },
+  ];
+  const pair = pick(scenarios);
+  const contextBlank = pair.context.replace(pair.correct, '___');
+  const options = shuffle([
+    { id: 'ktc', value: pair.correct },
+    { id: 'ktd', value: pair.distractor },
+  ]);
+  return {
+    type: 'kt-perkataan-tolak',
+    header: 'Pembelajaran Tolak',
+    prompt: 'Pilih perkataan yang sesuai.',
+    context: contextBlank,
+    options,
+    answer: 'ktc',
+  };
+}
+
+// Type D — Lengkapkan Ayat Matematik (Aktiviti 3,4,5): "a − b = ?" or "a − ? = c".
+function genLengkapkanAyatTolak() {
+  const fillBaki = Math.random() < 0.5;
+  const a = randInt(2, 9);
+  if (fillBaki) {
+    const b = randInt(1, a - 1); // baki ∈ [1, a−1] → never 0, never a no-op
+    const baki = a - b;
+    return {
+      type: 'kt-ayat-tolak',
+      header: 'Pembelajaran Tolak',
+      prompt: '',
+      display: `${a} − ${b} = ?`,
+      answer: String(baki),
+    };
+  }
+  const baki = randInt(1, a - 1); // shown result ≥ 1; missing subtrahend b ∈ [1, a−1]
+  const b = a - baki;
+  return {
+    type: 'kt-ayat-tolak',
+    header: 'Pembelajaran Tolak',
+    prompt: '',
+    display: `${a} − ? = ${baki}`,
+    answer: String(b),
+  };
+}
+
+function buildKenaliTolakRound() {
+  const qs = [];
+  for (let i = 0; i < 3; i++) qs.push(genBuangKumpulan());
+  for (let i = 0; i < 2; i++) qs.push(genGarisNomborSub());
+  for (let i = 0; i < 2; i++) qs.push(genPilihPerkataanTolak());
+  for (let i = 0; i < 3; i++) qs.push(genLengkapkanAyatTolak());
+  return shuffle(qs).map((q, i) => ({ ...q, qid: i }));
+}
+
+function BuangKumpulanContent({ q, ctx }) {
+  const { answered, isCorrect, handlePick, theme: C } = ctx;
+  const perRow = 4;
+  const totalRows = Math.ceil(q.a / perRow);
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 24px)', width: '100%' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(4px, 0.8vmin, 10px)' }}>
+        {Array.from({ length: totalRows }).map((_, r) => {
+          const start = r * perRow;
+          const end = Math.min(start + perRow, q.a);
+          return (
+            <div key={r} style={{ display: 'flex', justifyContent: 'center', gap: 'clamp(2px, 0.5vw, 6px)' }}>
+              {Array.from({ length: end - start }).map((_, c) => {
+                const idx = start + c;
+                const crossed = idx < q.b;
+                return (
+                  <div key={c} style={{ position: 'relative', fontSize: 'clamp(22px, 5vmin, 48px)', lineHeight: 1.15 }}>
+                    <span>{q.icon}</span>
+                    {crossed && (
+                      <span style={{
+                        position: 'absolute', left: 0, top: '50%', width: '100%', height: '3px',
+                        background: '#EF4444', transform: 'translateY(-50%) rotate(-15deg)',
+                        borderRadius: 2,
+                      }} />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+      <KeypadInput answered={answered} isCorrect={isCorrect} handlePick={handlePick} answer={q.answer} theme={C} qid={q.qid} />
+    </div>
+  );
+}
+
+function GarisNomborSubContent({ q, ctx }) {
+  const { answered, isCorrect, handlePick, theme: C } = ctx;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 24px)', width: '100%' }}>
+      <NumberTrackSub a={q.a} b={q.b} baki={q.baki} correct={answered && isCorrect} answered={answered} />
+      <KeypadInput answered={answered} isCorrect={isCorrect} handlePick={handlePick} answer={q.answer} theme={C} qid={q.qid} />
+    </div>
+  );
+}
+
+function PerkataanTolakContent({ q, ctx }) {
+  const { answered, selected, answer, handlePick, theme: C } = ctx;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 24px)', width: '100%' }}>
+      <div style={{
+        fontFamily: "'Fredoka', sans-serif", fontWeight: 600,
+        fontSize: 'clamp(17px, 2.8vmin, 28px)', color: '#334155',
+        textAlign: 'center', lineHeight: 1.4, padding: 'clamp(10px, 1.6vmin, 20px)',
+        background: '#F8FAFC', borderRadius: 'clamp(12px, 1.6vmin, 18px)',
+        border: '2px solid #E2E8F0', maxWidth: 440, width: '100%',
+      }}>
+        {q.context}
+      </div>
+      <WordOptionsGrid options={q.options} answered={answered} selected={selected} answer={answer} handlePick={handlePick} theme={C} />
+    </div>
+  );
+}
+
+function AyatTolakContent({ q, ctx }) {
+  const { answered, isCorrect, handlePick, theme: C } = ctx;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 24px)', width: '100%' }}>
+      <div style={{
+        minWidth: 'clamp(80px, 16vmin, 130px)', padding: 'clamp(8px, 1.4vmin, 14px) clamp(18px, 3.4vmin, 32px)',
+        borderRadius: 'clamp(16px, 2vmin, 24px)', background: '#EFF6FF',
+        border: '3px solid #93C5FD',
+        fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
+        fontSize: 'clamp(28px, 5vmin, 44px)', color: '#1E3A8A', lineHeight: 1, textAlign: 'center',
+      }}>
+        {q.display}
+      </div>
+      <KeypadInput answered={answered} isCorrect={isCorrect} handlePick={handlePick} answer={q.answer} theme={C} qid={q.qid} />
+    </div>
+  );
+}
+
+export function KenaliTolakExplore({ data, language, theme, onExit }) {
+  return (
+    <MatematikActivityFrame
+      buildRound={buildKenaliTolakRound}
+      renderQuestion={(q, ctx) => {
+        if (q.type === 'kt-buang') return <BuangKumpulanContent q={q} ctx={ctx} />;
+        if (q.type === 'kt-garis-sub') return <GarisNomborSubContent q={q} ctx={ctx} />;
+        if (q.type === 'kt-perkataan-tolak') return <PerkataanTolakContent q={q} ctx={ctx} />;
+        return <AyatTolakContent q={q} ctx={ctx} />;
+      }}
+      theme={theme}
+      onExit={onExit}
+    />
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════════
  * Slice 2.2 — "Latihan Tambah" (tiered addition practice). KSSR T1 Modul 2
  * Tambah dan Tolak, pp.75–87. Three difficulty levels:
  *   Mudah (Tambah Cepat p75–77): single-digit facts, sums ≤ 18.
@@ -3354,10 +3620,32 @@ export function KenaliTambahExplore({ data, language, theme, onExit }) {
  * ──────────────────────────────────────────────────────────────────────── */
 
 const LT_LEVELS = [
-  { id: 'mudah',      label: 'Mudah',     dots: '●○○', emoji: '🟢', desc: 'Fakta asas hingga 18' },
-  { id: 'sederhana',  label: 'Sederhana', dots: '●●○', emoji: '🟡', desc: 'Tambah 2 digit tanpa mengumpul' },
-  { id: 'sukar',      label: 'Sukar',     dots: '●●●', emoji: '🔴', desc: 'Tambah 2 digit dengan mengumpul' },
+  { id: 'mudah',      label: 'Mudah',     bars: 1, desc: 'Fakta asas hingga 18',
+    color: '#22C55E', tint: '#DCFCE7' },
+  { id: 'sederhana',  label: 'Sederhana', bars: 2, desc: 'Tambah 2 digit tanpa mengumpul',
+    color: '#F59E0B', tint: '#FEF3C7' },
+  { id: 'sukar',      label: 'Sukar',     bars: 3, desc: 'Tambah 2 digit dengan mengumpul',
+    color: '#EF4444', tint: '#FEE2E2' },
 ];
+
+/* Simple "climbing bars" shape — 3 rounded bars of growing height; the first
+ * `bars` are filled in the level colour, the rest stay soft grey. A friendly,
+ * flat way to show difficulty without looking like a busy control. */
+function LevelBars({ bars, color }) {
+  const cols = [
+    { x: 6,  y: 30, h: 18 },
+    { x: 21, y: 19, h: 29 },
+    { x: 36, y: 8,  h: 40 },
+  ];
+  return (
+    <svg width="56" height="56" viewBox="0 0 56 56" style={{ height: 'auto', display: 'block' }} aria-hidden="true">
+      {cols.map((c, i) => (
+        <rect key={i} x={c.x} y={c.y} width="14" height={c.h} rx="4"
+          fill={i < bars ? color : '#E2E8F0'} />
+      ))}
+    </svg>
+  );
+}
 
 // All a+b expressions (a,b ∈ 1..9) that sum to s.
 function allExprsForSum(s) {
@@ -3522,25 +3810,126 @@ function buildLatihanTambahRound(level) {
   return shuffle(qs).map((q, i) => ({ ...q, qid: i }));
 }
 
-function VerticalSum({ a, b, total, answered, isCorrect, theme: C }) {
+/* ── ColumnAddContent ────────────────────────────────────────────────────────
+ * Column ("lajur") addition with per-digit answer boxes, modelled on
+ * ColumnMathGame's Senang + ➕ layout: an optional carry row on top, the two
+ * addends, a rule, then one editable box per place value. The user types each
+ * column (auto-advancing right→left) and submits with Semak; the assembled
+ * digits are judged against q.answer by the activity frame.
+ * ──────────────────────────────────────────────────────────────────────────── */
+function ColumnAddContent({ q, ctx }) {
+  const { answered, isCorrect, handlePick, theme: C } = ctx;
+  const aStr = String(q.a), bStr = String(q.b), ansStr = String(q.total);
+  const maxLen = Math.max(aStr.length, bStr.length, ansStr.length);
+  const pa = aStr.padStart(maxLen, ' ').split('');
+  const pb = bStr.padStart(maxLen, ' ').split('');
+  const target = ansStr.padStart(maxLen, '0').split('');
+
+  // Remounted per question (key={q.qid} at the call site), so these initialise
+  // fresh for every new sum — no reset effect needed.
+  const [ans, setAns] = useState(() => Array(maxLen).fill(''));
+  const [carry, setCarry] = useState(() => Array(maxLen).fill(''));
+  const [activeIdx, setActiveIdx] = useState(maxLen - 1);
+  const ansRefs = useRef([]);
+
+  const filled = ans.every(d => d !== '');
+
+  // Move focus only during active typing (keyboard already open) — never auto-
+  // open the keyboard on load or on a new question.
+  const focusIdx = (k) => { setActiveIdx(k); ansRefs.current[k]?.focus(); };
+
+  const onAns = (k, v) => {
+    if (answered) return;
+    const d = v.replace(/[^0-9]/g, '').slice(-1);
+    setAns(prev => { const n = [...prev]; n[k] = d; return n; });
+    if (d && k > 0) focusIdx(k - 1);
+  };
+  const onAnsKey = (k, e) => {
+    if (e.key === 'Enter') { e.preventDefault(); if (filled) submit(); return; }
+    if (e.key === 'ArrowLeft' && k > 0) { e.preventDefault(); focusIdx(k - 1); }
+    else if (e.key === 'ArrowRight' && k < maxLen - 1) { e.preventDefault(); focusIdx(k + 1); }
+    else if (e.key === 'Backspace' && !ans[k] && k < maxLen - 1) { e.preventDefault(); focusIdx(k + 1); }
+  };
+  const onCarry = (k, v) => {
+    if (answered) return;
+    const d = v.replace(/[^0-9]/g, '').slice(-1);
+    setCarry(prev => { const n = [...prev]; n[k] = d; return n; });
+  };
+  const submit = () => { if (!answered && filled) handlePick(ans.join('')); };
+
+  const CW = 'clamp(54px, 11vmin, 78px)';     // column width
+  const FS = 'clamp(34px, 6.8vmin, 58px)';    // digit font size
+
+  const boxStyle = (k) => {
+    const active = !answered && activeIdx === k;
+    let borderColor = active ? '#3B82F6' : '#93C5FD';
+    let color = '#1E293B';
+    let bg = '#fff';
+    if (answered) {
+      const ok = ans[k] === target[k];
+      borderColor = ok ? C.green : C.red;
+      color = ok ? C.green : C.red;
+      bg = ok ? '#ECFDF5' : '#FEF2F2';
+    }
+    return {
+      width: '80%', height: 'clamp(54px, 11vmin, 78px)', textAlign: 'center', padding: 0,
+      border: `3px solid ${borderColor}`, borderRadius: 'clamp(10px, 1.6vmin, 16px)',
+      background: bg, color,
+      fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(30px, 6vmin, 52px)',
+      outline: 'none', transition: 'all .12s ease', WebkitTapHighlightColor: 'transparent',
+      boxShadow: active ? '0 0 0 4px rgba(59,130,246,0.2)' : 'none',
+    };
+  };
+
   return (
-    <div style={{
-      display: 'inline-flex', flexDirection: 'column', alignItems: 'flex-end',
-      fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
-      fontSize: 'clamp(28px, 6vmin, 50px)', color: '#1E293B',
-      padding: 'clamp(12px, 2vmin, 24px) clamp(18px, 3.4vmin, 36px)',
-      background: '#F8FAFC', borderRadius: 'clamp(16px, 2vmin, 24px)',
-      border: '3px solid #93C5FD',
-    }}>
-      <div style={{ padding: '2px 0', lineHeight: 1.1 }}>{a}</div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '2px 0', lineHeight: 1.1 }}>
-        <span style={{ fontSize: 'clamp(20px, 4vmin, 36px)', color: '#3B82F6', alignSelf: 'flex-start', lineHeight: 0.85 }}>+</span>
-        <span>{b}</span>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 22px)', width: '100%' }}>
+      <div style={{
+        display: 'grid', gridTemplateColumns: `repeat(${maxLen + 1}, ${CW})`,
+        alignItems: 'center', justifyItems: 'center', rowGap: 'clamp(4px, 0.9vmin, 9px)',
+        padding: 'clamp(16px, 2.8vmin, 32px) clamp(14px, 2.2vmin, 26px)',
+        background: '#F8FAFC', border: '3px solid #BFDBFE', borderRadius: 'clamp(18px, 2.4vmin, 28px)',
+        fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
+      }}>
+        {/* Carry row — optional scaffold (a carry can land in any column but the ones) */}
+        <span />
+        {target.map((_, k) => (k <= maxLen - 2 ? (
+          <input key={`c${k}`} type="text" inputMode="numeric" maxLength={1} value={carry[k]} disabled={answered}
+            onChange={e => onCarry(k, e.target.value)} aria-label="bawa"
+            style={{
+              width: '58%', height: 'clamp(26px, 5.2vmin, 40px)', textAlign: 'center', padding: 0,
+              border: '2px dashed #CBD5E1', borderRadius: 10, background: '#fff',
+              fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 3.4vmin, 26px)',
+              color: '#F59E0B', outline: 'none', WebkitTapHighlightColor: 'transparent',
+            }} />
+        ) : <span key={`c${k}`} />))}
+
+        {/* Top addend */}
+        <span />
+        {pa.map((d, k) => <span key={`a${k}`} style={{ fontSize: FS, color: '#1E293B', lineHeight: 1.1 }}>{d === ' ' ? '' : d}</span>)}
+
+        {/* Plus sign + bottom addend */}
+        <span style={{ fontSize: FS, color: C.accent, lineHeight: 1.1 }}>+</span>
+        {pb.map((d, k) => <span key={`b${k}`} style={{ fontSize: FS, color: '#1E293B', lineHeight: 1.1 }}>{d === ' ' ? '' : d}</span>)}
+
+        {/* Rule under the sum */}
+        <div style={{ gridColumn: '1 / -1', width: '100%', height: 3, background: '#1E293B', borderRadius: 2, margin: 'clamp(2px, 0.6vmin, 5px) 0' }} />
+
+        {/* Answer row */}
+        <span />
+        {target.map((_, k) => (
+          <input key={`ans${k}`} ref={el => { ansRefs.current[k] = el; }}
+            type="text" inputMode="numeric" maxLength={1} value={ans[k]} disabled={answered}
+            onChange={e => onAns(k, e.target.value)} onKeyDown={e => onAnsKey(k, e)} onFocus={() => setActiveIdx(k)}
+            aria-label="jawapan" style={boxStyle(k)} />
+        ))}
       </div>
-      <div style={{ width: '100%', height: '3px', background: '#1E293B', margin: '2px 0', borderRadius: 2 }} />
-      <div style={{ padding: '2px 0', lineHeight: 1.1, color: answered ? (isCorrect ? '#16A34A' : '#DC2626') : '#94A3B8' }}>
-        {answered ? String(total) : '?'}
-      </div>
+
+      {!answered && <SemakButton disabled={!filled} onClick={submit} />}
+      {answered && !isCorrect && (
+        <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, color: '#64748B', fontSize: 'clamp(13px, 2vmin, 18px)' }}>
+          Jawapan: <b style={{ color: C.green }}>{q.total}</b>
+        </div>
+      )}
     </div>
   );
 }
@@ -3609,7 +3998,7 @@ function WarnaiContent({ q, ctx }) {
   const { answered, selected, answer, handlePick, theme: C } = ctx;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 24px)', width: '100%' }}>
-      <WordOptionsGrid options={q.options} answered={answered} selected={selected} answer={answer} handlePick={handlePick} theme={C} />
+      <WordOptionsGrid options={q.options} answered={answered} selected={selected} answer={answer} handlePick={handlePick} theme={C} columns={2} plain />
     </div>
   );
 }
@@ -3659,8 +4048,10 @@ function AbacusBuildContent({ q, ctx }) {
   const col = (label, val, set, color, isTen) => (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
       <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 2vmin, 18px)', color: '#64748B' }}>{label}</div>
+      {/* flex:1 lets the tray absorb the extra height so both columns' +/-
+         buttons stay on the same line no matter how many blocks are inside. */}
       <div style={{
-        minHeight: 'clamp(84px, 15vmin, 140px)', width: 'clamp(78px, 15vmin, 124px)',
+        flex: 1, minHeight: 'clamp(84px, 15vmin, 140px)', width: 'clamp(78px, 15vmin, 124px)',
         display: 'flex', flexWrap: 'wrap', alignContent: 'flex-end', justifyContent: 'center', gap: 4,
         padding: 8, background: '#F8FAFC', border: '2px solid #E2E8F0', borderRadius: 12,
       }}>
@@ -3680,7 +4071,7 @@ function AbacusBuildContent({ q, ctx }) {
   );
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px, 1.8vmin, 20px)', width: '100%' }}>
-      <div style={{ display: 'flex', gap: 'clamp(16px, 3vmin, 40px)' }}>
+      <div style={{ display: 'flex', alignItems: 'stretch', gap: 'clamp(16px, 3vmin, 40px)' }}>
         {col('Puluh', tens, setTens, '#3B82F6', true)}
         {col('Sa', ones, setOnes, '#F59E0B', false)}
       </div>
@@ -3709,77 +4100,62 @@ function BondContent({ q, ctx }) {
   );
 }
 
-function SederhanaS1Content({ q, ctx }) {
-  const { answered, isCorrect, handlePick, theme: C } = ctx;
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 24px)', width: '100%' }}>
-      <VerticalSum a={q.a} b={q.b} total={q.total} answered={answered} isCorrect={isCorrect} theme={C} />
-      <KeypadInput answered={answered} isCorrect={isCorrect} handlePick={handlePick} answer={q.answer} theme={C} qid={q.qid} />
-    </div>
-  );
-}
-
-function SukarK1Content({ q, ctx }) {
-  const { answered, isCorrect, handlePick, theme: C } = ctx;
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 24px)', width: '100%' }}>
-      <VerticalSum a={q.a} b={q.b} total={q.total} answered={answered} isCorrect={isCorrect} theme={C} />
-      <KeypadInput answered={answered} isCorrect={isCorrect} handlePick={handlePick} answer={q.answer} theme={C} qid={q.qid} />
-    </div>
-  );
-}
 
 // Level picker overlay
-function LevelPicker({ onSelect, language, theme }) {
-  const C = {
-    accent: theme.accent || '#3B82F6',
-    dark: theme.dark || '#1E3A8A',
-    cd: theme.cd || '#1D4ED8',
-  };
+function LevelPicker({ onSelect, items = LT_LEVELS }) {
   return (
     <div style={{
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-      height: '100%', minHeight: 0, gap: 'clamp(12px, 2vmin, 24px)',
+      height: '100%', minHeight: 0, gap: 'clamp(14px, 2.6vmin, 26px)',
       padding: 'clamp(20px, 4vmin, 40px)',
       fontFamily: "'Baloo 2', sans-serif",
     }}>
       <style>{`
         .lt-card {
-          width: 100%; max-width: 380px; cursor: pointer;
-          transition: all 0.15s ease; -webkit-tap-highlight-color: transparent;
-          user-select: none;
+          width: 100%; max-width: 400px; cursor: pointer;
+          transition: transform 0.15s ease, border-color 0.15s ease;
+          -webkit-tap-highlight-color: transparent; user-select: none;
         }
-        .lt-card:active { transform: scale(0.97); }
+        .lt-card:active { transform: scale(0.98); }
+        @media (hover: hover) {
+          .lt-card:hover { transform: translateY(-2px); }
+        }
       `}</style>
+
       <div style={{
-        fontSize: 'clamp(22px, 4vmin, 36px)', fontWeight: 800, color: '#1E293B',
+        fontSize: 'clamp(22px, 4vmin, 34px)', fontWeight: 800, color: '#1E293B',
         textAlign: 'center',
       }}>
         Pilih aras latihan
       </div>
-      {LT_LEVELS.map(lv => (
+
+      {items.map(lv => (
         <div key={lv.id} className="lt-card" onClick={() => onSelect(lv.id)}
           role="button" tabIndex={0}
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(lv.id); } }}
           style={{
-            display: 'flex', alignItems: 'center', gap: 'clamp(12px, 2vmin, 20px)',
-            padding: 'clamp(14px, 2.4vmin, 22px) clamp(16px, 3vmin, 28px)',
-            background: '#fff', borderRadius: 'clamp(18px, 2.4vmin, 26px)',
-            border: '2px solid #E2E8F0', borderBottom: `5px solid ${C.cd}`,
-            boxShadow: '0 6px 20px -10px rgba(0,0,0,0.15)',
+            display: 'flex', alignItems: 'center', gap: 'clamp(14px, 2.4vmin, 22px)',
+            padding: 'clamp(14px, 2.4vmin, 20px) clamp(16px, 3vmin, 26px)',
+            background: '#fff', borderRadius: 'clamp(20px, 2.6vmin, 28px)',
+            border: `2px solid ${lv.tint}`,
           }}>
+          {/* soft tinted tile holding the simple climbing-bars shape */}
           <div style={{
-            fontSize: 'clamp(32px, 5vmin, 48px)', lineHeight: 1, flexShrink: 0,
-          }}>{lv.emoji}</div>
+            flexShrink: 0, width: 'clamp(52px, 9vmin, 68px)', height: 'clamp(52px, 9vmin, 68px)',
+            borderRadius: 'clamp(14px, 1.8vmin, 20px)', background: lv.tint,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <LevelBars bars={lv.bars} color={lv.color} />
+          </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{
-              fontSize: 'clamp(18px, 3vmin, 28px)', fontWeight: 800, color: '#1E293B',
+              fontSize: 'clamp(18px, 3vmin, 26px)', fontWeight: 800, color: '#1E293B',
               lineHeight: 1.2,
             }}>{lv.label}</div>
             <div style={{
               fontFamily: "'Fredoka', sans-serif", fontWeight: 600,
-              fontSize: 'clamp(13px, 2vmin, 18px)', color: '#64748B',
-            }}>{lv.dots} · {lv.desc}</div>
+              fontSize: 'clamp(13px, 2vmin, 17px)', color: '#64748B',
+            }}>{lv.desc}</div>
           </div>
         </div>
       ))}
@@ -3793,7 +4169,7 @@ export function LatihanTambahExplore({ data, language, theme, onExit }) {
   const LEVEL_LABELS = { mudah: 'Mudah', sederhana: 'Sederhana', sukar: 'Sukar' };
 
   if (!level) {
-    return <LevelPicker onSelect={setLevel} language={language} theme={theme} />;
+    return <LevelPicker onSelect={setLevel} />;
   }
 
   return (
@@ -3835,8 +4211,8 @@ export function LatihanTambahExplore({ data, language, theme, onExit }) {
               case 'lt-padankan': return <PadankanContent q={q} ctx={ctx} />;
               case 'lt-bond': return <BondContent q={q} ctx={ctx} />;
               case 'lt-abacus': return <AbacusBuildContent q={q} ctx={ctx} />;
-              case 'lt-sederhana-s1': return <SederhanaS1Content q={q} ctx={ctx} />;
-              case 'lt-sukar-k1': return <SukarK1Content q={q} ctx={ctx} />;
+              case 'lt-sederhana-s1': return <ColumnAddContent key={q.qid} q={q} ctx={ctx} />;
+              case 'lt-sukar-k1': return <ColumnAddContent key={q.qid} q={q} ctx={ctx} />;
               default: return null;
             }
           }}
@@ -3845,5 +4221,836 @@ export function LatihanTambahExplore({ data, language, theme, onExit }) {
         />
       </div>
     </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+ * Slice 2.4 — "Latihan Tolak" (tiered subtraction practice). KSSR T1 Modul 2
+ * Tambah dan Tolak. Three difficulty levels:
+ *   Mudah (Tolak Cepat):  single-digit facts, minuend ≤ 18, subtrahend 0–9.
+ *   Sederhana (Tolak Mudah):  2-digit subtract, NO regrouping.
+ *   Sukar (Tolak Lagi): 2-digit subtract WITH regrouping, minuend ≤ 99.
+ * Each round = 10 questions, ≥4 distinct formats, keypad ≤2 of 10.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+const LT_TOLAK_LEVELS = [
+  { id: 'mudah',      label: 'Mudah',     bars: 1, desc: 'Fakta asas hingga 18',
+    color: '#22C55E', tint: '#DCFCE7' },
+  { id: 'sederhana',  label: 'Sederhana', bars: 2, desc: 'Tolak 2 digit tanpa mengumpul semula',
+    color: '#F59E0B', tint: '#FEF3C7' },
+  { id: 'sukar',      label: 'Sukar',     bars: 3, desc: 'Tolak 2 digit dengan mengumpul semula',
+    color: '#EF4444', tint: '#FEE2E2' },
+];
+
+// All a-b expressions (a ≤ 18, b ≤ 9, a ≥ b) that result in `target`.
+function allExprsForDiff(target) {
+  const out = [];
+  for (let a = target; a <= Math.min(18, target + 9); a++) {
+    const b = a - target;
+    if (b >= 0 && b <= 9) out.push(`${a}−${b}`);
+  }
+  return out;
+}
+
+/* ── Mudah M1: a − b = ? (horizontal equation, a≤18, b 0–9) ── */
+function genMudahTolakM1() {
+  const a = randInt(1, 18);
+  const b = randInt(0, Math.min(9, a));
+  const diff = a - b;
+  return {
+    type: 'lt-tolak-mudah-m1',
+    header: 'Latihan Tolak',
+    prompt: '',
+    display: `${a} − ${b} = ?`,
+    answer: String(diff),
+  };
+}
+
+/* ── Warnai: which a−b equals the target? 4 expr options, 1 correct ── */
+function genWarnaiTolak() {
+  const target = randInt(2, 9);
+  const correct = pick(allExprsForDiff(target));
+  const opts = new Set([correct]);
+  let guard = 0;
+  while (opts.size < 4 && guard++ < 100) {
+    const d = randInt(1, 15);
+    if (d === target) continue;
+    const exprs = allExprsForDiff(d).filter(e => !opts.has(e));
+    if (!exprs.length) continue;
+    opts.add(pick(exprs));
+  }
+  let n = 0;
+  while (opts.size < 4 && n < 50) {
+    const a = randInt(1, 18);
+    const b = randInt(0, Math.min(9, a));
+    const e = `${a}−${b}`;
+    if (!opts.has(e)) opts.add(e);
+    n++;
+  }
+  const options = shuffle([...opts]).map((v, i) => ({ id: `w${i}`, value: v }));
+  return {
+    type: 'lt-tolak-warnai', header: 'Latihan Tolak',
+    prompt: `Yang manakah beza ${target}?`,
+    options, answer: options.find(o => o.value === correct).id,
+  };
+}
+
+/* ── Padankan: {given} − ? = {target} — 4 number opts, 1 correct ── */
+function genPadankanTolak() {
+  const target = randInt(1, 9);
+  const given = randInt(target + 1, Math.min(18, target + 9));
+  const correct = given - target;
+  const opts = new Set([correct]);
+  let guard = 0;
+  while (opts.size < 4 && guard++ < 100) {
+    const d = randInt(0, 9);
+    if (d !== correct) opts.add(d);
+  }
+  const options = shuffle([...opts]).map((v, i) => ({ id: `p${i}`, value: String(v) }));
+  return {
+    type: 'lt-tolak-padankan', header: 'Latihan Tolak',
+    prompt: `${given} − ? = ${target}`,
+    given, target, options, answer: options.find(o => o.value === String(correct)).id,
+  };
+}
+
+/* ── Ikatan Nombor: whole − part = missing ── */
+function genBondTolak() {
+  const whole = randInt(8, 18);
+  const part = randInt(1, whole - 1);
+  const missing = whole - part;
+  const opts = new Set([missing]);
+  let guard = 0;
+  while (opts.size < 3 && guard++ < 60) {
+    const d = missing + randInt(-3, 3);
+    if (d >= 0 && d <= whole && d !== missing) opts.add(d);
+  }
+  let f = 0;
+  while (opts.size < 3) { if (f !== missing && f <= whole) opts.add(f); f++; }
+  const options = shuffle([...opts]).map((v, i) => ({ id: `b${i}`, value: String(v) }));
+  return {
+    type: 'lt-tolak-bond', header: 'Latihan Tolak',
+    prompt: 'Lengkapkan ikatan nombor.',
+    whole, part, options,
+    answer: options.find(o => o.value === String(missing)).id,
+  };
+}
+
+/* ── Bina Blok: build the difference with puluh + sa blocks ── */
+function genAbacusBuildTolak(level) {
+  const { a, b, diff } = level === 'sukar' ? genSukarTolakK1() : genSederhanaTolakS1();
+  return {
+    type: 'lt-tolak-blok', header: 'Latihan Tolak',
+    prompt: 'Bina nombor dengan blok puluh & sa.',
+    a, b, diff, answer: 'ok',
+  };
+}
+
+/* ── Sederhana S1: VerticalDiff, NO regrouping ── */
+function genSederhanaTolakS1() {
+  const aTens = randInt(2, 9);
+  const aOnes = randInt(0, 9);
+  const a = aTens * 10 + aOnes;
+  // Subtrahend: bTens ≤ aTens, bOnes ≤ aOnes → NO borrow. Exclude b === a so
+  // the difference is never 0 (no "65 − 65" / "a − a" trivial questions).
+  let bTens, bOnes;
+  do {
+    bTens = randInt(1, aTens);
+    bOnes = randInt(0, aOnes);
+  } while (bTens === aTens && bOnes === aOnes);
+  const bFinal = bTens * 10 + bOnes;
+  const diff = a - bFinal;
+  return {
+    type: 'lt-tolak-sederhana-s1',
+    header: 'Latihan Tolak',
+    prompt: '', a, b: bFinal, diff,
+    answer: String(diff),
+  };
+}
+
+/* ── Sukar K1: VerticalDiff, WITH regrouping (ones borrow) ── */
+function genSukarTolakK1() {
+  const aTens = randInt(2, 9);
+  const aOnes = randInt(0, 8);
+  const a = aTens * 10 + aOnes;
+  const bTens = randInt(1, aTens - 1);
+  const bOnes = randInt(aOnes + 1, 9);
+  const b = bTens * 10 + bOnes;
+  const diff = a - b;
+  return {
+    type: 'lt-tolak-sukar-k1',
+    header: 'Latihan Tolak',
+    prompt: '', a, b, diff,
+    answer: String(diff),
+  };
+}
+
+function buildLatihanTolakRound(level) {
+  const qs = [];
+  if (level === 'mudah') {
+    for (let i = 0; i < 2; i++) qs.push(genMudahTolakM1());       // keypad fluency
+    for (let i = 0; i < 3; i++) qs.push(genWarnaiTolak());          // tap-all-correct
+    for (let i = 0; i < 3; i++) qs.push(genPadankanTolak());        // pair-match
+    for (let i = 0; i < 2; i++) qs.push(genBondTolak());            // number-bond
+  } else if (level === 'sederhana') {
+    for (let i = 0; i < 2; i++) qs.push(genSederhanaTolakS1());     // keypad column
+    for (let i = 0; i < 3; i++) qs.push(genAbacusBuildTolak('sederhana')); // base-ten build
+    for (let i = 0; i < 3; i++) qs.push(genPadankanTolak());        // pair-match
+    for (let i = 0; i < 2; i++) qs.push(genBondTolak());            // number-bond
+  } else {
+    for (let i = 0; i < 2; i++) qs.push(genSukarTolakK1());         // keypad column
+    for (let i = 0; i < 3; i++) qs.push(genAbacusBuildTolak('sukar')); // base-ten build
+    for (let i = 0; i < 3; i++) qs.push(genBondTolak());            // number-bond
+    for (let i = 0; i < 2; i++) qs.push(genPadankanTolak());        // pair-match
+  }
+  return shuffle(qs).map((q, i) => ({ ...q, qid: i }));
+}
+
+/* ── VerticalDiff: column subtraction (no carry row) ── */
+function VerticalDiffContent({ q, ctx }) {
+  const { answered, isCorrect, handlePick, theme: C } = ctx;
+  const aStr = String(q.a), bStr = String(q.b), ansStr = String(q.diff);
+  const maxLen = Math.max(aStr.length, bStr.length, ansStr.length);
+  const pa = aStr.padStart(maxLen, ' ').split('');
+  const pb = bStr.padStart(maxLen, ' ').split('');
+  const target = ansStr.padStart(maxLen, '0').split('');
+
+  // Ones/tens of the minuend & subtrahend (2-digit T1 column subtraction).
+  const tensAval = pa[0] === ' ' ? 0 : parseInt(pa[0], 10);
+  const onesAval = pa[maxLen - 1] === ' ' ? 0 : parseInt(pa[maxLen - 1], 10);
+  const onesBval = pb[maxLen - 1] === ' ' ? 0 : parseInt(pb[maxLen - 1], 10);
+  // A borrow is needed when the ones digit on top is smaller than the bottom.
+  const borrowProblem = maxLen === 2 && pa[0] !== ' ' && onesAval < onesBval;
+
+  const [ans, setAns] = useState(() => Array(maxLen).fill(''));
+  const [activeIdx, setActiveIdx] = useState(maxLen - 1);
+  const [borrowed, setBorrowed] = useState(false);
+  const [borrowOpen, setBorrowOpen] = useState(false);
+  const [borrowInput, setBorrowInput] = useState('');
+  const [borrowWrong, setBorrowWrong] = useState(false);
+  const [lockMsg, setLockMsg] = useState('');
+  const ansRefs = useRef([]);
+  const filled = ans.every(d => d !== '');
+  const needsBorrow = borrowProblem && !borrowed; // must regroup before submitting
+
+  // Reset everything when the question changes (component instance is reused
+  // for consecutive same-type questions — useState initialisers don't re-run).
+  useEffect(() => {
+    setAns(Array(maxLen).fill(''));
+    setActiveIdx(maxLen - 1);
+    setBorrowed(false);
+    setBorrowOpen(false);
+    setBorrowInput('');
+    setBorrowWrong(false);
+    setLockMsg('');
+  }, [q.qid]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const focusIdx = (k) => { setActiveIdx(k); ansRefs.current[k]?.focus(); };
+
+  const onAns = (k, v) => {
+    if (answered) return;
+    const d = v.replace(/[^0-9]/g, '').slice(-1);
+    setAns(prev => { const n = [...prev]; n[k] = d; return n; });
+    if (d && k > 0) focusIdx(k - 1);
+  };
+
+  const onAnsKey = (k, e) => {
+    if (e.key === 'Enter') { e.preventDefault(); if (filled) submit(); return; }
+    if (e.key === 'ArrowLeft' && k > 0) { e.preventDefault(); focusIdx(k - 1); }
+    else if (e.key === 'ArrowRight' && k < maxLen - 1) { e.preventDefault(); focusIdx(k + 1); }
+    else if (e.key === 'Backspace' && !ans[k] && k < maxLen - 1) { e.preventDefault(); focusIdx(k + 1); }
+  };
+
+  // Strip leading zero(s) so a single-digit diff entered as "02" still matches
+  // q.answer ("2"). Gate on the borrow first: you can't subtract a column whose
+  // top digit is too small until you've regrouped (borrowed) — like ColumnMathGame.
+  const submit = () => {
+    if (answered || !filled) return;
+    if (needsBorrow) {
+      setLockMsg(`${onesAval} terlalu kecil untuk tolak ${onesBval}. Pinjam dari rumah sebelah dahulu!`);
+      return;
+    }
+    handlePick(String(parseInt(ans.join(''), 10)));
+  };
+
+  const checkBorrow = () => {
+    if (parseInt(borrowInput, 10) === tensAval - 1) {
+      setBorrowed(true);
+      setBorrowOpen(false);
+      setBorrowInput('');
+      setBorrowWrong(false);
+      setLockMsg('');
+    } else {
+      setBorrowWrong(true);
+    }
+  };
+
+  const CW = 'clamp(54px, 11vmin, 78px)';
+  const FS = 'clamp(34px, 6.8vmin, 58px)';
+
+  const boxStyle = (k) => {
+    const active = !answered && activeIdx === k;
+    let borderColor = active ? '#3B82F6' : '#93C5FD';
+    let color = '#1E293B';
+    let bg = '#fff';
+    if (answered) {
+      const ok = ans[k] === target[k];
+      borderColor = ok ? C.green : C.red;
+      color = ok ? C.green : C.red;
+      bg = ok ? '#ECFDF5' : '#FEF2F2';
+    }
+    return {
+      width: '80%', height: 'clamp(54px, 11vmin, 78px)', textAlign: 'center', padding: 0,
+      border: `3px solid ${borderColor}`, borderRadius: 'clamp(10px, 1.6vmin, 16px)',
+      background: bg, color,
+      fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(30px, 6vmin, 52px)',
+      outline: 'none', transition: 'all .12s ease', WebkitTapHighlightColor: 'transparent',
+      boxShadow: active ? '0 0 0 4px rgba(59,130,246,0.2)' : 'none',
+    };
+  };
+
+  // Render one minuend digit, applying the regroup visuals once borrowed and
+  // making the tens digit tappable when a borrow is still required.
+  const minuendCell = (d, k) => {
+    if (borrowProblem && borrowed && k === 0) {
+      // Lender (tens): cross it out, write the reduced value above it.
+      return (
+        <span key={`a${k}`} style={{ position: 'relative', fontSize: FS, lineHeight: 1.1, display: 'inline-block' }}>
+          <span style={{ textDecoration: 'line-through', color: '#94A3B8' }}>{d}</span>
+          <span style={{ position: 'absolute', top: '-0.55em', left: '50%', transform: 'translateX(-50%)', fontSize: '0.5em', color: '#EF4444', fontWeight: 900 }}>{tensAval - 1}</span>
+        </span>
+      );
+    }
+    if (borrowProblem && borrowed && k === maxLen - 1) {
+      // Borrower (ones): now worth ten more.
+      return <span key={`a${k}`} style={{ fontSize: FS, color: '#2563EB', lineHeight: 1.1, fontWeight: 900 }}>{onesAval + 10}</span>;
+    }
+    if (needsBorrow && !answered && k === 0) {
+      return (
+        <span key={`a${k}`} role="button" tabIndex={0}
+          onClick={() => { setBorrowOpen(true); setLockMsg(''); }}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setBorrowOpen(true); setLockMsg(''); } }}
+          title="Ketik untuk pinjam"
+          style={{ fontSize: FS, color: '#1E293B', lineHeight: 1.1, cursor: 'pointer', borderRadius: 10, padding: '0 clamp(4px,1vmin,8px)', background: 'rgba(245,158,11,0.16)', boxShadow: '0 0 0 2px rgba(245,158,11,0.55)' }}>
+          {d === ' ' ? '' : d}
+        </span>
+      );
+    }
+    return <span key={`a${k}`} style={{ fontSize: FS, color: '#1E293B', lineHeight: 1.1 }}>{d === ' ' ? '' : d}</span>;
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 22px)', width: '100%' }}>
+      <div style={{
+        display: 'grid', gridTemplateColumns: `repeat(${maxLen + 1}, ${CW})`,
+        alignItems: 'center', justifyItems: 'center', rowGap: 'clamp(4px, 0.9vmin, 9px)',
+        padding: 'clamp(16px, 2.8vmin, 32px) clamp(14px, 2.2vmin, 26px)',
+        background: '#F8FAFC', border: '3px solid #BFDBFE', borderRadius: 'clamp(18px, 2.4vmin, 28px)',
+        fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
+      }}>
+        {/* Top addend (minuend) */}
+        <span />
+        {pa.map((d, k) => minuendCell(d, k))}
+        {/* Minus sign + bottom addend (subtrahend) */}
+        <span style={{ fontSize: FS, color: C.accent, lineHeight: 1.1 }}>−</span>
+        {pb.map((d, k) => <span key={`b${k}`} style={{ fontSize: FS, color: '#1E293B', lineHeight: 1.1 }}>{d === ' ' ? '' : d}</span>)}
+        {/* Rule under the subtraction */}
+        <div style={{ gridColumn: '1 / -1', width: '100%', height: 3, background: '#1E293B', borderRadius: 2, margin: 'clamp(2px, 0.6vmin, 5px) 0' }} />
+        {/* Answer row */}
+        <span />
+        {target.map((_, k) => (
+          <input key={`ans${k}`} ref={el => { ansRefs.current[k] = el; }}
+            type="text" inputMode="numeric" maxLength={1} value={ans[k]} disabled={answered}
+            onChange={e => onAns(k, e.target.value)} onKeyDown={e => onAnsKey(k, e)} onFocus={() => setActiveIdx(k)}
+            aria-label="jawapan" style={boxStyle(k)} />
+        ))}
+      </div>
+
+      {/* Borrow ("Pinjam dari rumah sebelah") mini-step — only for borrow problems. */}
+      {borrowOpen && !answered && (
+        <div style={{
+          background: '#FFF7ED', border: '2px solid #FED7AA', borderRadius: 'clamp(14px, 2vmin, 20px)',
+          padding: 'clamp(12px, 2vmin, 18px)', display: 'flex', flexDirection: 'column', alignItems: 'center',
+          gap: 'clamp(8px, 1.2vmin, 12px)', maxWidth: 360, width: '100%',
+        }}>
+          <div style={{ fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, color: '#B45309', fontSize: 'clamp(15px, 2.4vmin, 20px)' }}>
+            🏠 Pinjam dari rumah sebelah
+          </div>
+          <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, color: '#7C2D12', fontSize: 'clamp(14px, 2.2vmin, 18px)' }}>
+            Berapa {tensAval} − 1 = ?
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <input type="text" inputMode="numeric" maxLength={1} value={borrowInput} autoFocus
+              onChange={e => { setBorrowInput(e.target.value.replace(/[^0-9]/g, '').slice(-1)); setBorrowWrong(false); }}
+              onKeyDown={e => { if (e.key === 'Enter' && borrowInput !== '') { e.preventDefault(); checkBorrow(); } }}
+              aria-label="hasil pinjam"
+              style={{
+                width: 'clamp(48px, 9vmin, 64px)', height: 'clamp(48px, 9vmin, 64px)', textAlign: 'center',
+                border: `3px solid ${borrowWrong ? C.red : '#FB923C'}`, borderRadius: 12, background: '#fff',
+                fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(26px, 5vmin, 40px)',
+                color: '#1E293B', outline: 'none',
+              }} />
+            <SemakButton disabled={borrowInput === ''} onClick={checkBorrow} />
+          </div>
+          {borrowWrong && (
+            <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, color: C.red, fontSize: 'clamp(12px, 1.9vmin, 16px)' }}>
+              Cuba lagi
+            </div>
+          )}
+        </div>
+      )}
+
+      {!answered && <SemakButton disabled={!filled} onClick={submit} />}
+
+      {lockMsg && !answered && (
+        <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, color: '#B45309', textAlign: 'center', fontSize: 'clamp(12px, 2vmin, 17px)', maxWidth: 360 }}>
+          {lockMsg}
+        </div>
+      )}
+
+      {answered && !isCorrect && (
+        <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, color: '#64748B', fontSize: 'clamp(13px, 2vmin, 18px)' }}>
+          Jawapan: <b style={{ color: C.green }}>{q.diff}</b>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── Tolak Blok: build difference with base-ten blocks ── */
+function TolakBlokContent({ q, ctx }) {
+  const { answered, handlePick } = ctx;
+  const [tens, setTens] = useState(0);
+  const [ones, setOnes] = useState(0);
+  useEffect(() => { setTens(0); setOnes(0); }, [q.qid]);
+  const built = tens * 10 + ones;
+  const submit = () => { if (!answered) handlePick(built === q.diff ? 'ok' : 'no'); };
+  const col = (label, val, set, color, isTen) => (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+      <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 2vmin, 18px)', color: '#64748B' }}>{label}</div>
+      <div style={{
+        flex: 1, minHeight: 'clamp(84px, 15vmin, 140px)', width: 'clamp(78px, 15vmin, 124px)',
+        display: 'flex', flexWrap: 'wrap', alignContent: 'flex-end', justifyContent: 'center', gap: 4,
+        padding: 8, background: '#F8FAFC', border: '2px solid #E2E8F0', borderRadius: 12,
+      }}>
+        {Array.from({ length: val }).map((_, i) => (
+          <div key={i} style={isTen
+            ? { width: 10, height: 'clamp(38px, 7.5vmin, 66px)', background: color, borderRadius: 3 }
+            : { width: 'clamp(14px, 3vmin, 22px)', height: 'clamp(14px, 3vmin, 22px)', background: color, borderRadius: 4 }} />
+        ))}
+      </div>
+      {!answered && (
+        <div style={{ display: 'flex', gap: 6 }}>
+          <button type="button" onClick={() => set(Math.max(0, val - 1))} style={abBtn('#EF4444')}>−</button>
+          <button type="button" onClick={() => set(Math.min(9, val + 1))} style={abBtn('#3B82F6')}>+</button>
+        </div>
+      )}
+    </div>
+  );
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px, 1.8vmin, 20px)', width: '100%' }}>
+      <div style={{ display: 'flex', alignItems: 'stretch', gap: 'clamp(16px, 3vmin, 40px)' }}>
+        {col('Puluh', tens, setTens, '#3B82F6', true)}
+        {col('Sa', ones, setOnes, '#F59E0B', false)}
+      </div>
+      <div style={{
+        fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(20px, 3.4vmin, 30px)',
+        color: answered ? (built === q.diff ? '#16A34A' : '#DC2626') : '#1E3A8A',
+      }}>{q.a} − {q.b} = {built}</div>
+      {answered && built !== q.diff && (
+        <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, color: '#64748B', fontSize: 'clamp(13px, 2vmin, 18px)' }}>
+          Jawapan: <b style={{ color: '#16A34A' }}>{q.diff}</b>
+        </div>
+      )}
+      {!answered && <SemakButton disabled={false} onClick={submit} />}
+    </div>
+  );
+}
+
+/* ── Padankan Tolak: {given} − ? = {target} ── */
+function PadankanTolakContent({ q, ctx }) {
+  const { answered, selected, answer, handlePick, theme: C } = ctx;
+  const circle = (val, kind) => (
+    <div style={{
+      width: 'clamp(52px, 9.5vmin, 70px)', height: 'clamp(52px, 9.5vmin, 70px)', borderRadius: '50%',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      background: kind === 'q' ? '#FEF3C7' : '#DBEAFE',
+      border: `3px solid ${kind === 'q' ? '#F59E0B' : '#3B82F6'}`,
+      color: kind === 'q' ? '#B45309' : '#1E3A8A',
+      fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(22px, 4vmin, 32px)',
+    }}>{val}</div>
+  );
+  const sym = (s) => (
+    <span style={{ fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 'clamp(20px, 3.6vmin, 30px)', color: '#64748B' }}>{s}</span>
+  );
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(14px, 2.2vmin, 26px)', width: '100%' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 1.6vmin, 16px)' }}>
+        {circle(q.given, 'n')}
+        {sym('−')}
+        {circle('?', 'q')}
+        {sym('=')}
+        <div style={{
+          padding: 'clamp(8px, 1.4vmin, 14px) clamp(14px, 2.6vmin, 22px)', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
+          background: '#EFF6FF', border: '3px solid #93C5FD', color: '#1E3A8A',
+          fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(22px, 4vmin, 32px)',
+        }}>{q.target}</div>
+      </div>
+      <NumOptionsGrid options={q.options} answered={answered} selected={selected} answer={answer} handlePick={handlePick} theme={C} />
+    </div>
+  );
+}
+
+export function LatihanTolakExplore({ data, language, theme, onExit }) {
+  const [level, setLevel] = useState(null);
+  const LEVEL_LABELS = { mudah: 'Mudah', sederhana: 'Sederhana', sukar: 'Sukar' };
+  if (!level) {
+    return <LevelPicker onSelect={setLevel} items={LT_TOLAK_LEVELS} />;
+  }
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
+      <div style={{
+        flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: 'clamp(4px, 0.8vmin, 8px) clamp(16px, 2.4vmin, 34px)',
+        background: 'rgba(255,255,255,.7)', backdropFilter: 'blur(8px)',
+        borderBottom: '1px solid #E2E8F0',
+        fontFamily: "'Fredoka', sans-serif", fontWeight: 600,
+        fontSize: 'clamp(13px, 1.8vmin, 18px)', color: '#64748B',
+      }}>
+        <span>Aras: <b style={{ color: '#1E293B' }}>{LEVEL_LABELS[level]}</b></span>
+        <button type="button" onClick={() => setLevel(null)}
+          style={{
+            border: 'none', background: 'transparent', cursor: 'pointer',
+            fontFamily: "'Fredoka', sans-serif", fontWeight: 600,
+            fontSize: 'clamp(12px, 1.6vmin, 16px)', color: '#3B82F6',
+            padding: '4px 8px', borderRadius: 8,
+            transition: 'background 0.15s',
+            WebkitTapHighlightColor: 'transparent',
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.background = '#EFF6FF'}
+          onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+        >
+          Tukar Aras ⟲
+        </button>
+      </div>
+      <div style={{ flex: 1, minHeight: 0 }}>
+        <MatematikActivityFrame
+          key={level}
+          buildRound={() => buildLatihanTolakRound(level)}
+          renderQuestion={(q, ctx) => {
+            switch (q.type) {
+              case 'lt-tolak-mudah-m1': return <MudahM1Content q={q} ctx={ctx} />;
+              case 'lt-tolak-warnai': return <WarnaiContent q={q} ctx={ctx} />;
+              case 'lt-tolak-padankan': return <PadankanTolakContent q={q} ctx={ctx} />;
+              case 'lt-tolak-bond': return <BondContent q={q} ctx={ctx} />;
+              case 'lt-tolak-blok': return <TolakBlokContent q={q} ctx={ctx} />;
+              case 'lt-tolak-sederhana-s1': return <VerticalDiffContent key={q.qid} q={q} ctx={ctx} />;
+              case 'lt-tolak-sukar-k1': return <VerticalDiffContent key={q.qid} q={q} ctx={ctx} />;
+              default: return null;
+            }
+          }}
+          theme={theme}
+          onExit={onExit}
+        />
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+ * Slice 2.5 — "Cerita Tambah & Tolak" (word problems). KSSR T1 Modul 2
+ * Tambah dan Tolak, pp.107–110. Round of 10 = 3 Type A (Cerita Tambah,
+ * keypad) + 3 Type B (Cerita Tolak, keypad) + 2 Type C (Kenalpasti Operasi,
+ * 2-option MC) + 2 Type D (Padankan Ayat Matematik, 3-option MC).
+ * ──────────────────────────────────────────────────────────────────────── */
+
+const CTT_NAMES = ['Ali', 'Siti', 'Mei', 'Raju', 'Amir', 'Lina'];
+const CTT_EMOJIS = ['🍎', '🌸', '🐟', '🥚', '🍌', '🐣', '🏀', '🎈', '🦋', '🍪', '📚', '🌻'];
+
+const CTT_ADD_FN = [
+  (a, b, e, n) => `Ada ${a} ${e}. ${n} ada ${b} lagi. Semuanya ada ___.`,
+  (a, b, e) => `Yi Lin ada ${a} ${e}. Adiknya ada ${b} ${e}. Semuanya ada ___.`,
+  (a, b, e, n) => `${n} ada ${a} ${e}. Dia kumpul ${b} lagi. Jumlah ${e} ialah ___.`,
+  (a, b, e) => `Di dalam bakul ada ${a} ${e}. Masukkan ${b} lagi. Jumlahnya ialah ___.`,
+];
+
+const CTT_SUB_FN = [
+  (a, b, e) => `Ada ${a} ${e}. ${b} ${e} telah rosak. Yang baik ada ___.`,
+  (a, b, e, n) => `Ada ${a} ${e}. ${n} bagi ${b} kepada jiran. Tinggal ___.`,
+  (a, b) => `Ada ${a} orang di dalam bas. ${b} orang turun. Baki ialah ___.`,
+  (a, b, e, n) => `${n} ada ${a} 🥥 kelapa. Dia jual ${b}. Kelapa yang tinggal ialah ___.`,
+  (a, b, e) => `Di dalam piring ada ${a} ${e}. ${b} ${e} diambil. Tinggal ___.`,
+];
+
+const CTT_C_ADD_FN = [
+  (a, b, e) => `Ada ${a} ${e} biru dan ${b} ${e} merah. Cari jumlah ${e}.`,
+  (a, b, e, n1, n2) => `${n1} ada ${a} ${e}. ${n2} ada ${b} ${e}. Cari semua ${e}.`,
+];
+
+const CTT_C_SUB_FN = [
+  (a, b, e) => `Ada ${a} ${e}. ${b} ${e} diberi kepada rakan. Cari ${e} yang tinggal.`,
+  (a, b, e, n1) => `${n1} ada ${a} ${e}. Dia makan ${b}. Cari baki ${e}.`,
+  (a, b) => `Ada ${a} kanak-kanak. ${b} kanak-kanak balik ke rumah. Cari yang tinggal.`,
+];
+
+function genTypeA() {
+  const tmpl = pick(CTT_ADD_FN);
+  const a = randInt(5, 30);
+  const b = Math.min(randInt(1, 15), 60 - a);
+  const sum = a + b;
+  const emoji = pick(CTT_EMOJIS);
+  const name = pick(CTT_NAMES);
+  return { type: 'ctt-tambah', header: 'Cerita Tambah', prompt: 'Berapakah jumlahnya?', emoji, a, b, story: tmpl(a, b, emoji, name), answer: String(sum) };
+}
+
+function genTypeB() {
+  const tmpl = pick(CTT_SUB_FN);
+  let a = randInt(10, 50), b = randInt(1, 20);
+  if (a <= b) { const t = a; a = b + randInt(1, 15); b = t; }
+  if (b < 1) b = 1;
+  if (a - b < 1) { a = a + 5; }
+  const result = a - b;
+  const emoji = pick(CTT_EMOJIS);
+  const name = pick(CTT_NAMES);
+  return { type: 'ctt-tolak', header: 'Cerita Tolak', prompt: 'Berapakah bakinya?', emoji, a, b, story: tmpl(a, b, emoji, name), answer: String(result) };
+}
+
+function genTypeC() {
+  const isAdd = Math.random() < 0.5;
+  const a = randInt(5, 30);
+  const b = randInt(1, 15);
+  const emoji = pick(CTT_EMOJIS);
+  const names = shuffle(CTT_NAMES);
+  let story;
+  if (isAdd) {
+    const tmpl = pick(CTT_C_ADD_FN);
+    story = tmpl(a, b, emoji, names[0], names[1]);
+  } else {
+    const tmpl = pick(CTT_C_SUB_FN);
+    story = tmpl(a, b, emoji, names[0]);
+  }
+  const options = shuffle([{ id: 'ctc-add', value: 'Tambah' }, { id: 'ctc-sub', value: 'Tolak' }]);
+  return { type: 'ctt-operasi', header: 'Cerita Matematik', prompt: 'Operasi yang digunakan ialah ___?', story, options, answer: isAdd ? 'ctc-add' : 'ctc-sub' };
+}
+
+function genTypeD() {
+  const isAdd = Math.random() < 0.5;
+  const a = randInt(10, 40);
+  const b = randInt(1, 15);
+  const emoji = pick(CTT_EMOJIS);
+  if (isAdd) {
+    const sum = a + b;
+    const story = `Ada ${a} ${emoji} merah dan ${b} ${emoji} kuning. Semuanya ada ${sum} ${emoji}.`;
+    const correct = `${a} + ${b} = ${sum}`;
+    const wrongOp = `${a} − ${b} = ${a - b}`;
+    let off = sum + (Math.random() < 0.5 ? 1 : -1) * randInt(1, 3);
+    if (off === sum) off = sum + 1;
+    const wrongAns = `${a} + ${b} = ${off}`;
+    const options = shuffle([{ id: 'd0', value: correct }, { id: 'd1', value: wrongOp }, { id: 'd2', value: wrongAns }]);
+    return { type: 'ctt-ayat', header: 'Ayat Matematik', prompt: 'Pilih ayat matematik yang betul.', story, options, answer: options.find(o => o.value === correct).id };
+  }
+  const result = a - b;
+  const story = `Ada ${a} ${emoji}. ${b} ${emoji} diambil. Tinggal ${result} ${emoji}.`;
+  const correct = `${a} − ${b} = ${result}`;
+  const wrongOp = `${a} + ${b} = ${a + b}`;
+  let off = result + (Math.random() < 0.5 ? 1 : -1) * randInt(1, 3);
+  if (off === result) off = result + 1;
+  const wrongAns = `${a} − ${b} = ${off}`;
+  const options = shuffle([{ id: 'd0', value: correct }, { id: 'd1', value: wrongOp }, { id: 'd2', value: wrongAns }]);
+  return { type: 'ctt-ayat', header: 'Ayat Matematik', prompt: 'Pilih ayat matematik yang betul.', story, options, answer: options.find(o => o.value === correct).id };
+}
+
+function buildCeritaTambahTolakRound() {
+  const qs = [];
+  for (let i = 0; i < 3; i++) qs.push(genTypeA());
+  for (let i = 0; i < 3; i++) qs.push(genTypeB());
+  // Type C guarantees 1 Add + 1 Sub
+  qs.push(genTypeCWithOp(true));
+  qs.push(genTypeCWithOp(false));
+  // Type D guarantees 1 Add + 1 Sub
+  qs.push(genTypeDWithOp(true));
+  qs.push(genTypeDWithOp(false));
+  return shuffle(qs).map((q, i) => ({ ...q, qid: i }));
+}
+
+function genTypeCWithOp(isAdd) {
+  const a = randInt(5, 30);
+  const b = randInt(1, 15);
+  const emoji = pick(CTT_EMOJIS);
+  const names = shuffle(CTT_NAMES);
+  let story;
+  if (isAdd) {
+    const tmpl = pick(CTT_C_ADD_FN);
+    story = tmpl(a, b, emoji, names[0], names[1]);
+  } else {
+    const tmpl = pick(CTT_C_SUB_FN);
+    story = tmpl(a, b, emoji, names[0]);
+  }
+  const options = shuffle([{ id: 'ctc-add', value: 'Tambah' }, { id: 'ctc-sub', value: 'Tolak' }]);
+  return { type: 'ctt-operasi', header: 'Cerita Matematik', prompt: 'Operasi yang digunakan ialah ___?', story, options, answer: isAdd ? 'ctc-add' : 'ctc-sub' };
+}
+
+function genTypeDWithOp(isAdd) {
+  // a ≥ 16 guarantees a > b (b max 15), so wrongOp distractor never shows a negative result
+  const a = randInt(16, 40);
+  const b = randInt(1, 15);
+  const emoji = pick(CTT_EMOJIS);
+  if (isAdd) {
+    const sum = a + b;
+    const story = `Ada ${a} ${emoji} merah dan ${b} ${emoji} kuning. Semuanya ada ${sum} ${emoji}.`;
+    const correct = `${a} + ${b} = ${sum}`;
+    const wrongOp = `${a} − ${b} = ${a - b}`;
+    let off = sum + (Math.random() < 0.5 ? 1 : -1) * randInt(1, 3);
+    if (off === sum) off = sum + 1;
+    const wrongAns = `${a} + ${b} = ${off}`;
+    const opts = shuffle([{ id: 'd0', value: correct }, { id: 'd1', value: wrongOp }, { id: 'd2', value: wrongAns }]);
+    return { type: 'ctt-ayat', header: 'Ayat Matematik', prompt: 'Pilih ayat matematik yang betul.', story, options: opts, answer: opts.find(o => o.value === correct).id };
+  }
+  const result = a - b;
+  const story = `Ada ${a} ${emoji}. ${b} ${emoji} diambil. Tinggal ${result} ${emoji}.`;
+  const correct = `${a} − ${b} = ${result}`;
+  const wrongOp = `${a} + ${b} = ${a + b}`;
+  let off = result + (Math.random() < 0.5 ? 1 : -1) * randInt(1, 3);
+  if (off === result) off = result + 1;
+  if (off < 1) off = result + 2;
+  const wrongAns = `${a} − ${b} = ${off}`;
+  const opts = shuffle([{ id: 'd0', value: correct }, { id: 'd1', value: wrongOp }, { id: 'd2', value: wrongAns }]);
+  return { type: 'ctt-ayat', header: 'Ayat Matematik', prompt: 'Pilih ayat matematik yang betul.', story, options: opts, answer: opts.find(o => o.value === correct).id };
+}
+
+function StoryText({ text, answer, answered }) {
+  const parts = text.split('___');
+  if (parts.length < 2) return <span>{text}</span>;
+  return (
+    <span>
+      {parts[0]}
+      {answered ? (
+        <b style={{ color: '#16A34A', fontSize: 'clamp(20px, 3.2vmin, 32px)' }}>{answer}</b>
+      ) : (
+        <span style={{ background: '#CBD5E1', borderRadius: 8, padding: '0 12px', minWidth: 28, display: 'inline-block', height: 'clamp(28px, 4vmin, 40px)', lineHeight: 'clamp(28px, 4vmin, 40px)' }}>&nbsp;</span>
+      )}
+      {parts[1]}
+    </span>
+  );
+}
+
+function CeritaKeypadContent({ q, ctx }) {
+  const { answered, isCorrect, handlePick, theme: C } = ctx;
+  const isTambah = q.type === 'ctt-tambah';
+  const accent    = isTambah ? '#16A34A' : '#EA580C';
+  const accentLt  = isTambah ? '#F0FDF4' : '#FFF7ED';
+  const accentMid = isTambah ? '#86EFAC' : '#FED7AA';
+  const opSym     = isTambah ? '+' : '−';
+  const tileStyle = { background: accentLt, border: `2.5px solid ${accentMid}`, borderRadius: 'clamp(12px,2vmin,18px)', padding: 'clamp(8px,1.4vmin,14px) clamp(12px,2vmin,20px)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, minWidth: 'clamp(66px,11vmin,98px)' };
+  const numStyle  = { fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(22px,3.8vmin,36px)', color: accent, lineHeight: 1 };
+  const emojiStyle = { fontSize: 'clamp(26px,4.5vmin,42px)', lineHeight: 1 };
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px,1.6vmin,18px)', width: '100%' }}>
+      {/* Visual equation: [emoji|A] OP [emoji|B] = [?|answer] */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(6px,1.1vmin,12px)', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <div style={tileStyle}><span style={emojiStyle}>{q.emoji}</span><span style={numStyle}>{q.a}</span></div>
+        <div style={{ background: accent, color: 'white', borderRadius: '50%', width: 'clamp(36px,5.5vmin,50px)', height: 'clamp(36px,5.5vmin,50px)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(22px,3.8vmin,36px)' }}>{opSym}</div>
+        <div style={tileStyle}><span style={emojiStyle}>{q.emoji}</span><span style={numStyle}>{q.b}</span></div>
+        <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(22px,3.8vmin,36px)', color: '#94A3B8' }}>=</span>
+        <div style={{ ...tileStyle, background: answered ? (isCorrect ? '#DCFCE7' : '#FEF2F2') : 'white', border: `2.5px solid ${answered ? (isCorrect ? '#16A34A' : '#DC2626') : '#CBD5E1'}` }}>
+          <span style={emojiStyle}>{answered ? (isCorrect ? '✓' : '✗') : '?'}</span>
+          <span style={{ ...numStyle, color: answered ? (isCorrect ? '#16A34A' : '#DC2626') : '#CBD5E1' }}>{answered ? q.answer : '??'}</span>
+        </div>
+      </div>
+      {/* Story card with left-colour accent border */}
+      <div style={{ background: 'white', borderRadius: 'clamp(12px,1.8vmin,18px)', padding: 'clamp(10px,1.6vmin,18px) clamp(14px,2.2vmin,22px)', borderLeft: `5px solid ${accent}`, boxShadow: '0 2px 10px rgba(0,0,0,0.07)', fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: 'clamp(14px,2.2vmin,22px)', color: '#334155', lineHeight: 1.7, width: '100%', maxWidth: 500, textAlign: 'left' }}>
+        <StoryText text={q.story} answer={q.answer} answered={answered} />
+      </div>
+      <KeypadInput answered={answered} isCorrect={isCorrect} handlePick={handlePick} answer={q.answer} theme={C} qid={q.qid} maxLength={2} />
+    </div>
+  );
+}
+
+function CeritaOperasiContent({ q, ctx }) {
+  const { answered, selected, answer, handlePick } = ctx;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px,1.8vmin,20px)', width: '100%' }}>
+      {/* Story card — amber/book tone */}
+      <div style={{ background: '#FFFBEB', border: '2.5px solid #FDE68A', borderRadius: 'clamp(14px,2vmin,20px)', padding: 'clamp(12px,2vmin,20px) clamp(16px,2.5vmin,24px)', fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: 'clamp(14px,2.3vmin,23px)', color: '#334155', lineHeight: 1.7, width: '100%', maxWidth: 520, textAlign: 'center' }}>
+        <span style={{ marginRight: 6 }}>📖</span>{q.story}
+      </div>
+      {/* Two large operation buttons */}
+      <div style={{ display: 'flex', gap: 'clamp(12px,2vmin,20px)', width: '100%', maxWidth: 380, justifyContent: 'center' }}>
+        {q.options.map(opt => {
+          const isAdd = opt.id === 'ctc-add';
+          const wasSelected = selected === opt.id;
+          const isCorrectOpt = opt.id === answer;
+          let bg, border, dotColor;
+          if (!answered) {
+            bg = isAdd ? '#F0FDF4' : '#FFF7ED';
+            border = isAdd ? '#86EFAC' : '#FED7AA';
+            dotColor = isAdd ? '#16A34A' : '#EA580C';
+          } else if (wasSelected && isCorrectOpt)  { bg = '#DCFCE7'; border = '#16A34A'; dotColor = '#16A34A'; }
+          else if (wasSelected && !isCorrectOpt)   { bg = '#FEF2F2'; border = '#DC2626'; dotColor = '#DC2626'; }
+          else if (!wasSelected && isCorrectOpt)   { bg = '#DCFCE7'; border = '#16A34A'; dotColor = '#16A34A'; }
+          else                                     { bg = '#F8FAFC'; border = '#E2E8F0'; dotColor = '#94A3B8'; }
+          const sym   = isAdd ? '+' : '−';
+          const label = !answered ? opt.value
+            : wasSelected ? (isCorrectOpt ? opt.value + ' ✓' : opt.value + ' ✗')
+            : isCorrectOpt ? opt.value + ' ✓' : opt.value;
+          return (
+            <div key={opt.id} onClick={() => !answered && handlePick(opt.id)}
+              style={{ background: bg, border: `3px solid ${border}`, borderRadius: 'clamp(16px,2.5vmin,24px)', padding: 'clamp(14px,2.2vmin,22px) clamp(12px,1.8vmin,18px)', cursor: answered ? 'default' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(6px,1vmin,10px)', flex: 1 }}>
+              <div style={{ width: 'clamp(46px,7.5vmin,64px)', height: 'clamp(46px,7.5vmin,64px)', background: dotColor, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(26px,4.5vmin,40px)', color: 'white', lineHeight: 1 }}>{sym}</div>
+              <div style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px,2.6vmin,26px)', color: dotColor, textAlign: 'center' }}>{label}</div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function CeritaAyatContent({ q, ctx }) {
+  const { answered, selected, answer, handlePick } = ctx;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px,1.8vmin,20px)', width: '100%' }}>
+      {/* Story card — blue tone */}
+      <div style={{ background: '#EFF6FF', border: '2.5px solid #BFDBFE', borderRadius: 'clamp(14px,2vmin,20px)', padding: 'clamp(12px,2vmin,20px) clamp(16px,2.5vmin,24px)', fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: 'clamp(14px,2.3vmin,23px)', color: '#1E3A8A', lineHeight: 1.7, width: '100%', maxWidth: 520, textAlign: 'center' }}>
+        {q.story}
+      </div>
+      {/* Equation ribbon options — pill-shaped cards */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(8px,1.3vmin,14px)', width: '100%', maxWidth: 480 }}>
+        {q.options.map(opt => {
+          const wasSelected = selected === opt.id;
+          const isCorrectOpt = opt.id === answer;
+          let bg, border, color, icon;
+          if (!answered)                           { bg = 'white';    border = '#CBD5E1'; color = '#1E3A8A'; }
+          else if (wasSelected && isCorrectOpt)    { bg = '#DCFCE7';  border = '#16A34A'; color = '#14532D'; icon = '✓'; }
+          else if (wasSelected && !isCorrectOpt)   { bg = '#FEF2F2';  border = '#DC2626'; color = '#7F1D1D'; icon = '✗'; }
+          else if (!wasSelected && isCorrectOpt)   { bg = '#DCFCE7';  border = '#16A34A'; color = '#14532D'; icon = '✓'; }
+          else                                     { bg = '#F8FAFC';  border = '#E2E8F0'; color = '#94A3B8'; }
+          return (
+            <div key={opt.id} onClick={() => !answered && handlePick(opt.id)}
+              style={{ background: bg, border: `3px solid ${border}`, borderRadius: '50px', padding: 'clamp(12px,2vmin,18px) clamp(20px,3vmin,30px)', cursor: answered ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: !answered ? '0 2px 8px rgba(0,0,0,0.06)' : 'none' }}>
+              <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(18px,3vmin,28px)', color, flex: 1, textAlign: 'center' }}>{opt.value}</span>
+              {icon && (
+                <div style={{ width: 'clamp(26px,4vmin,36px)', height: 'clamp(26px,4vmin,36px)', borderRadius: '50%', background: isCorrectOpt ? '#16A34A' : '#DC2626', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(13px,2.1vmin,19px)', flexShrink: 0, marginLeft: 8 }}>{icon}</div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+export function CeritaTambahTolakExplore({ data, language, theme, onExit }) {
+  return (
+    <MatematikActivityFrame
+      buildRound={buildCeritaTambahTolakRound}
+      renderQuestion={(q, ctx) => {
+        if (q.type === 'ctt-tambah' || q.type === 'ctt-tolak') return <CeritaKeypadContent q={q} ctx={ctx} />;
+        if (q.type === 'ctt-operasi') return <CeritaOperasiContent q={q} ctx={ctx} />;
+        return <CeritaAyatContent q={q} ctx={ctx} />;
+      }}
+      theme={theme}
+      onExit={onExit}
+    />
   );
 }

@@ -202,6 +202,8 @@
 | 3.1.3 | Topik 1.2 — Operasi Asas (Tambah & Tolak) | ✅ Reuse |
 | 3.1.4 | Topik 1.3 — Pecahan Asas | ❌ Gap (card shown as disabled "Segera Hadir") |
 | 3.1.5 | Topik 1.4 — Wang (Ringgit & Sen) | ✅ Reuse |
+| 3.1.6 | Topik 1.5 — Kenali Tolak (Konsep Tolak) — Slice 2.3 | 🔍 Built — pending QA |
+| 3.1.7 | Topik 1.5 — Latihan Tolak (Tiered Practice) — Slice 2.4 | 🔍 Built — pending QA |
 
 #### Modul 2: Sukatan dan Geometri
 

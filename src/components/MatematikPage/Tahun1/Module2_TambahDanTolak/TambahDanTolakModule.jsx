@@ -91,6 +91,27 @@ const TOPICS = [
     desc: 'Latih tambah tiga aras: mudah, sederhana, sukar.',
     visual: ROBOT,
   },
+  {
+    id: 'kenali-tolak',
+    pill: 'KENALI TOLAK',
+    title: 'Kenali Tolak',
+    desc: 'Kenali konsep tolak dan baki.',
+    visual: ROBOT,
+  },
+  {
+    id: 'latihan-tolak',
+    pill: 'LATIHAN TOLAK',
+    title: 'Latihan Tolak',
+    desc: 'Latih tolak tiga aras: mudah, sederhana, sukar.',
+    visual: ROBOT,
+  },
+  {
+    id: 'cerita-tambah-tolak',
+    pill: 'CERITA TAMBAH & TOLAK',
+    title: 'Cerita Tambah & Tolak',
+    desc: 'Selesaikan masalah tambah dan tolak dalam cerita.',
+    visual: ROBOT,
+  },
 ];
 
 export default function TambahDanTolakModule({ onSelectTopic, language = 'bm' }) {
