@@ -32,6 +32,8 @@ export default function MatematikTopicShell({
   quiz = null,
   showReadyCta = true,
   showToggle = true,
+  background = null,
+  darkChrome = false,
 }) {
   const [phase, setPhase] = useState('belajar');
 
@@ -39,7 +41,10 @@ export default function MatematikTopicShell({
   const subtitle = language === 'bm' ? subtitleBM : subtitleEN;
 
   return (
-    <div className="mt-topic-shell" style={{ '--mt-accent': theme.accent, '--mt-dark': theme.dark, '--mt-cd': theme.cd }}>
+    <div
+      className={`mt-topic-shell${darkChrome ? ' mt-dark-chrome' : ''}`}
+      style={{ '--mt-accent': theme.accent, '--mt-dark': theme.dark, '--mt-cd': theme.cd, ...(background ? { background: '#05030F' } : null) }}
+    >
       <style>{`
         .mt-topic-shell {
           display: flex;
@@ -80,6 +85,13 @@ export default function MatematikTopicShell({
         }
         .mt-shell-top .mt-top-back:hover { transform: translateY(-1px); }
         .mt-shell-top .mt-top-back:active { transform: translateY(1px); }
+        /* Dark chrome: blend the back button into a dark / galaxy background */
+        .mt-dark-chrome .mt-shell-top .mt-top-back {
+          background: rgba(255,255,255,.12);
+          color: #fff;
+          box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
+          backdrop-filter: blur(8px);
+        }
         .mt-shell-top .mt-top-stats {
           flex: 1 1 auto;
           min-width: 0;
@@ -195,7 +207,7 @@ export default function MatematikTopicShell({
         }
       `}</style>
 
-      <MatematikSceneBackground />
+      {background || <MatematikSceneBackground />}
 
       <div className="mt-shell-top">
         <button type="button" className="mt-top-back" onClick={onBack}>

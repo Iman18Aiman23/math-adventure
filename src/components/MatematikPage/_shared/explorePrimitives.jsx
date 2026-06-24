@@ -5054,3 +5054,1560 @@ export function CeritaTambahTolakExplore({ data, language, theme, onExit }) {
     />
   );
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+ * Slice 2.6 — "Tambah Berulang & Tolak Berturut" (repeated addition &
+ * repeated subtraction). Round of 10 = 3 Type A + 2 Type B + 2 Type C +
+ * 2 Type D + 1 Type E. Malay only. Uses NumOptionsGrid (3 options).
+ * ════════════════════════════════════════════════════════════════════════ */
+
+const TB_ICONS = ['🍎','⭐','🍦','🐱','🚗','🎈','🍬','🐟','🍌','🐒','🌟','🍇','🐘','🦒','🎁','🐰','🦋','🐝','🌺','🍕'];
+const TB_M = [2,3,4,5,10];
+const TB_N = [2,3,4,5];
+
+function genTbParams() {
+  const M = pick(TB_M);
+  const N = pick(TB_N.filter(n => n * M <= 50));
+  return { N, M, total: N * M };
+}
+
+function tbOpts(answer, M) {
+  const opts = new Set([answer]);
+  for (const c of shuffle([answer - M, answer + M, answer - 2 * M, answer + 2 * M])) {
+    if (opts.size >= 3) break;
+    if (c > 0 && c <= 50 && c !== answer) opts.add(c);
+  }
+  let g = 0;
+  while (opts.size < 3 && g++ < 50) { const r = randInt(1, 50); if (!opts.has(r)) opts.add(r); }
+  const arr = shuffle([...opts]);
+  return arr.map((v, i) => ({ id: `o${i}`, value: v }));
+}
+
+function genTbAddGroups() {
+  const { N, M, total } = genTbParams();
+  const options = tbOpts(total, M);
+  return { type: 'tb-add-groups', header: 'Pembelajaran Tambah Berulang',
+    prompt: `Ada ${N} kumpulan ${M}-${M}. Berapa jumlah kesemuanya?`,
+    N, M, total, icon: pick(TB_ICONS), options, answer: options.find(o => o.value === total).id };
+}
+
+function genTbAddLine() {
+  const { N, M, total } = genTbParams();
+  const options = tbOpts(total, M);
+  return { type: 'tb-add-line', header: 'Pembelajaran Tambah Berulang',
+    prompt: `${N} kumpulan ${M}-${M}. Berapa jumlah?`,
+    N, M, total, options, answer: options.find(o => o.value === total).id };
+}
+
+function genTbAddComplete() {
+  const { N, M, total } = genTbParams();
+  const missingIdx = randInt(0, N - 1);
+  const parts = Array.from({ length: N }, (_, i) => (i === missingIdx ? null : M));
+  const options = tbOpts(M, 1);
+  return { type: 'tb-add-complete', header: 'Pembelajaran Tambah Berulang',
+    prompt: 'Isi tempat kosong.', N, M, total, missingIdx, parts,
+    options, answer: options.find(o => o.value === M).id };
+}
+
+function genTbSubParams() {
+  const M = pick([2, 3, 4, 5]);
+  const N = randInt(2, 4);
+  const remainder = randInt(0, M - 1);
+  const total = N * M + remainder;
+  return { N, M, total, remainder };
+}
+
+function tbSubOpts(remainder, M) {
+  const opts = new Set([remainder]);
+  for (const c of shuffle([remainder + M, remainder + 2 * M, remainder === 0 ? M : 0, M - 1, M + 1])) {
+    if (opts.size >= 3) break;
+    if (c >= 0 && c <= 50 && c !== remainder) opts.add(c);
+  }
+  let g = 0;
+  while (opts.size < 3 && g++ < 50) { const r = randInt(0, M * 2); if (!opts.has(r)) opts.add(r); }
+  const arr = shuffle([...opts]);
+  return arr.map((v, i) => ({ id: `o${i}`, value: v }));
+}
+
+function genTbSubGroups() {
+  const { N, M, total, remainder } = genTbSubParams();
+  const options = tbSubOpts(remainder, M);
+  return { type: 'tb-sub-groups', header: 'Pembelajaran Tolak Berturut-turut',
+    prompt: 'Berapakah baki?', N, M, total, remainder, icon: pick(TB_ICONS),
+    options, answer: options.find(o => o.value === remainder).id };
+}
+
+function genTbSubLine() {
+  const { N, M, total, remainder } = genTbSubParams();
+  const options = tbSubOpts(remainder, M);
+  return { type: 'tb-sub-line', header: 'Pembelajaran Tolak Berturut-turut',
+    prompt: `${total} tolak ${M} berulang-ulang. Berapakah baki?`,
+    N, M, total, remainder, options, answer: options.find(o => o.value === remainder).id };
+}
+
+function buildTambahBerulangRound() {
+  const qs = [];
+  for (let i = 0; i < 3; i++) qs.push(genTbAddGroups());
+  for (let i = 0; i < 2; i++) qs.push(genTbAddLine());
+  for (let i = 0; i < 2; i++) qs.push(genTbAddComplete());
+  for (let i = 0; i < 2; i++) qs.push(genTbSubGroups());
+  for (let i = 0; i < 1; i++) qs.push(genTbSubLine());
+  return shuffle(qs).map((q, i) => ({ ...q, qid: i }));
+}
+
+function GroupsGrid({ icon, groups, count }) {
+  const perRow = 4;
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 'clamp(6px, 1.2vmin, 12px)' }}>
+      {Array.from({ length: groups }).map((_, g) => (
+        <div key={g} style={{
+          background: g % 2 === 0 ? '#F8FAFC' : '#F1F5F9',
+          border: '1.5px solid #E2E8F0', borderRadius: 'clamp(10px, 1.4vmin, 16px)',
+          padding: 'clamp(6px, 1vmin, 12px)',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1px',
+        }}>
+          {Array.from({ length: Math.ceil(count / perRow) }).map((_, r) => (
+            <div key={r} style={{ display: 'flex', justifyContent: 'center', gap: '2px' }}>
+              {Array.from({ length: Math.min(perRow, count - r * perRow) }).map((_, c) => (
+                <span key={c} style={{ fontSize: 'clamp(18px, 3.6vmin, 34px)', lineHeight: 1.1 }}>{icon}</span>
+              ))}
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function NumberLineAdd({ N, M, total, answered, correct }) {
+  const PAD = 36, STEP = Math.min(60, Math.floor((360 - PAD * 2) / N)), W = PAD * 2 + N * STEP, H = 150, AX = 96;
+  const x = (k) => PAD + k * STEP;
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', maxWidth: W, height: 'auto', display: 'block' }}>
+      <defs><marker id="tbaArr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#3B82F6" /></marker></defs>
+      <line x1={PAD - 8} y1={AX} x2={W - PAD + 8} y2={AX} stroke="#94A3B8" strokeWidth="3" strokeLinecap="round" />
+      {Array.from({ length: N }).map((_, i) => {
+        const x1 = x(i), x2 = x(i + 1), mx = (x1 + x2) / 2, my = AX - 40;
+        return <g key={`j${i}`}>
+          <path d={`M${x1} ${AX - 6} Q${mx} ${my} ${x2} ${AX - 6}`} fill="none" stroke="#3B82F6" strokeWidth="3" markerEnd="url(#tbaArr)" />
+          <text x={mx} y={my + 4} fontFamily="'Baloo 2',sans-serif" fontWeight={800} fontSize="13" fill="#2563EB" textAnchor="middle">+{M}</text>
+        </g>;
+      })}
+      {Array.from({ length: N + 1 }).map((_, i) => {
+        const val = i * M, isSt = i === 0, isLa = i === N;
+        let dot = '#CBD5E1', txt = '#475569';
+        if (isSt) { dot = '#3B82F6'; txt = '#1E3A8A'; }
+        if (isLa) { if (correct) { dot = '#16A34A'; txt = '#166534'; } else if (answered) { dot = '#1D4ED8'; txt = '#1E3A8A'; } else { dot = '#F59E0B'; txt = '#B45309'; } }
+        return <g key={`t${i}`}>
+          <line x1={x(i)} y1={AX - 8} x2={x(i)} y2={AX + 8} stroke={dot} strokeWidth={isSt || isLa ? 3 : 2} />
+          <text x={x(i)} y={AX + 26} fontFamily="'Baloo 2',sans-serif" fontWeight={isSt || isLa ? 900 : 600} fontSize={isSt || isLa ? 18 : 13} fill={txt} textAnchor="middle">{isLa && !answered ? '?' : val}</text>
+        </g>;
+      })}
+    </svg>
+  );
+}
+
+function NumberLineSub({ N, M, total, remainder = 0, answered, correct }) {
+  const PAD = 36, STEP = Math.min(60, Math.floor((360 - PAD * 2) / N)), W = PAD * 2 + N * STEP, H = 150, AX = 96;
+  const x = (k) => PAD + k * STEP; // k=0 → remainder (left end), k=N → total (right end)
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', maxWidth: W, height: 'auto', display: 'block' }}>
+      <defs><marker id="tbsArr" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10 0 L0 5 L10 10 z" fill="#3B82F6" /></marker></defs>
+      <line x1={PAD - 8} y1={AX} x2={W - PAD + 8} y2={AX} stroke="#94A3B8" strokeWidth="3" strokeLinecap="round" />
+      {Array.from({ length: N }).map((_, i) => {
+        const from = N - i, to = N - i - 1;
+        const x1 = x(from), x2 = x(to), mx = (x1 + x2) / 2, my = AX - 40;
+        return <g key={`j${i}`}>
+          <path d={`M${x1} ${AX - 6} Q${mx} ${my} ${x2} ${AX - 6}`} fill="none" stroke="#3B82F6" strokeWidth="3" markerEnd="url(#tbsArr)" />
+          <text x={mx} y={my + 4} fontFamily="'Baloo 2',sans-serif" fontWeight={800} fontSize="13" fill="#2563EB" textAnchor="middle">-{M}</text>
+        </g>;
+      })}
+      {Array.from({ length: N + 1 }).map((_, i) => {
+        const val = remainder + i * M; // ticks: remainder, remainder+M, …, total
+        const isSt = i === N, isLa = i === 0;
+        let dot = '#CBD5E1', txt = '#475569';
+        if (isSt) { dot = '#3B82F6'; txt = '#1E3A8A'; }
+        if (isLa) { if (correct) { dot = '#16A34A'; txt = '#166534'; } else if (answered) { dot = '#1D4ED8'; txt = '#1E3A8A'; } else { dot = '#F59E0B'; txt = '#B45309'; } }
+        return <g key={`t${i}`}>
+          <line x1={x(i)} y1={AX - 8} x2={x(i)} y2={AX + 8} stroke={dot} strokeWidth={isSt || isLa ? 3 : 2} />
+          <text x={x(i)} y={AX + 26} fontFamily="'Baloo 2',sans-serif" fontWeight={isSt || isLa ? 900 : 600} fontSize={isSt || isLa ? 18 : 13} fill={txt} textAnchor="middle">{isLa && !answered ? '?' : val}</text>
+        </g>;
+      })}
+    </svg>
+  );
+}
+
+function TbAddGroupsContent({ q, ctx }) {
+  const { answered, selected, answer, handlePick, theme: C } = ctx;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(14px, 2.4vmin, 28px)', width: '100%' }}>
+      <GroupsGrid icon={q.icon} groups={q.N} count={q.M} />
+      <NumOptionsGrid options={q.options} answered={answered} selected={selected} answer={answer} handlePick={handlePick} theme={C} />
+    </div>
+  );
+}
+
+function TbAddLineContent({ q, ctx }) {
+  const { answered, selected, answer, handlePick, theme: C } = ctx;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(14px, 2.4vmin, 28px)', width: '100%' }}>
+      <NumberLineAdd N={q.N} M={q.M} total={q.total} answered={answered} correct={answered && selected === answer} />
+      <NumOptionsGrid options={q.options} answered={answered} selected={selected} answer={answer} handlePick={handlePick} theme={C} />
+    </div>
+  );
+}
+
+function TbAddCompleteContent({ q, ctx }) {
+  const { answered, selected, answer, handlePick, theme: C } = ctx;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(14px, 2.4vmin, 28px)', width: '100%' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: 'clamp(6px, 1.2vmin, 10px)' }}>
+        {q.parts.map((part, i) => {
+          const isLast = i === q.parts.length - 1;
+          const isGap = part === null;
+          const ci = i % BOX_COLORS.length;
+          return (
+            <React.Fragment key={i}>
+              <div style={{
+                minWidth: 'clamp(36px, 7vmin, 52px)', minHeight: 'clamp(36px, 7vmin, 52px)',
+                border: isGap ? (answered ? 'none' : '3px dashed #D1D5DB') : 'none',
+                borderBottom: isGap && answered ? 'none' : `4px solid ${isGap ? '#D1D5DB' : BOX_COLORS[ci].border}`,
+                borderRadius: 'clamp(10px, 1.4vmin, 14px)',
+                background: isGap ? (answered ? C.green : '#F3F4F6') : BOX_COLORS[ci].bg,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontFamily: "'Baloo 2',sans-serif", fontWeight: 900,
+                fontSize: 'clamp(20px, 4vmin, 32px)',
+                color: isGap ? (answered ? '#fff' : '#9CA3AF') : '#fff', padding: '4px 8px',
+              }}>{isGap ? (answered ? q.M : '?') : part}</div>
+              {!isLast && <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 3vmin, 26px)', color: '#64748B' }}>+</span>}
+            </React.Fragment>
+          );
+        })}
+        <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 3vmin, 26px)', color: '#64748B' }}>=</span>
+        <div style={{
+          minWidth: 'clamp(36px, 7vmin, 52px)', minHeight: 'clamp(36px, 7vmin, 52px)',
+          border: 'none', borderBottom: '4px solid #16A34A', borderRadius: 'clamp(10px, 1.4vmin, 14px)',
+          background: '#34D399', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontFamily: "'Baloo 2',sans-serif", fontWeight: 900,
+          fontSize: 'clamp(20px, 4vmin, 32px)', color: '#fff', padding: '4px 8px',
+        }}>{q.total}</div>
+      </div>
+      <NumOptionsGrid options={q.options} answered={answered} selected={selected} answer={answer} handlePick={handlePick} theme={C} />
+    </div>
+  );
+}
+
+function TbSubGroupsContent({ q, ctx }) {
+  const { answered, selected, answer, handlePick, theme: C } = ctx;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(14px, 2.4vmin, 28px)', width: '100%' }}>
+      <GroupsGrid icon={q.icon} groups={q.N} count={q.M} />
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: 'clamp(4px, 0.8vmin, 8px)' }}>
+        <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: 'clamp(22px, 4vmin, 36px)', color: '#1E293B' }}>{q.total}</span>
+        {Array.from({ length: q.N }).map((_, i) => (
+          <React.Fragment key={i}>
+            <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 3vmin, 26px)', color: '#EF4444' }}>−</span>
+            <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: 'clamp(22px, 4vmin, 36px)', color: '#1E293B' }}>{q.M}</span>
+          </React.Fragment>
+        ))}
+        <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 3vmin, 26px)', color: '#64748B' }}>=</span>
+        <div style={{
+          minWidth: 'clamp(36px, 7vmin, 52px)', minHeight: 'clamp(36px, 7vmin, 52px)',
+          background: answered ? (selected === answer ? '#16A34A' : '#EF4444') : '#F3F4F6',
+          border: answered ? 'none' : '3px dashed #D1D5DB',
+          borderRadius: 'clamp(10px, 1.4vmin, 14px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontFamily: "'Baloo 2',sans-serif", fontWeight: 900,
+          fontSize: 'clamp(20px, 4vmin, 32px)',
+          color: answered ? '#fff' : '#9CA3AF',
+        }}>{answered ? String(q.remainder ?? 0) : '?'}</div>
+      </div>
+      <NumOptionsGrid options={q.options} answered={answered} selected={selected} answer={answer} handlePick={handlePick} theme={C} />
+    </div>
+  );
+}
+
+function TbSubLineContent({ q, ctx }) {
+  const { answered, selected, answer, handlePick, theme: C } = ctx;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(14px, 2.4vmin, 28px)', width: '100%' }}>
+      <NumberLineSub N={q.N} M={q.M} total={q.total} remainder={q.remainder ?? 0} answered={answered} correct={answered && selected === answer} />
+      <NumOptionsGrid options={q.options} answered={answered} selected={selected} answer={answer} handlePick={handlePick} theme={C} />
+    </div>
+  );
+}
+
+export function TambahBerulangExplore({ data, language, theme, onExit }) {
+  return (
+    <MatematikActivityFrame
+      buildRound={buildTambahBerulangRound}
+      renderQuestion={(q, ctx) => {
+        switch (q.type) {
+          case 'tb-add-groups': return <TbAddGroupsContent q={q} ctx={ctx} />;
+          case 'tb-add-line': return <TbAddLineContent q={q} ctx={ctx} />;
+          case 'tb-add-complete': return <TbAddCompleteContent q={q} ctx={ctx} />;
+          case 'tb-sub-groups': return <TbSubGroupsContent q={q} ctx={ctx} />;
+          default: return <TbSubLineContent q={q} ctx={ctx} />;
+        }
+      }}
+      theme={theme}
+      onExit={onExit}
+    />
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+ * Slice 2.F — "Selesaikan M2: Roda Nombor" (Module 2 problem-solving).
+ * Wheel activity where 6 spokes radiate from a center number N.
+ * Student fills in the blank for each spoke (free order).
+ * All 6 spokes share the same center N each round. N ∈ [11,25].
+ * No MatematikActivityFrame — custom layout with wheel SVG + card grid.
+ * ════════════════════════════════════════════════════════════════════════ */
+
+const SM2_NAMES = [['Aishah','Lili'],['Ali','Abu'],['Siti','Mira'],['Raju','Kumar']];
+const SM2_NOUNS = ['bunga','buku','bola','pensel','bintang','stiker'];
+const SM2_VERBS = ['pecah','hilang','jatuh','koyak','habis'];
+
+function buildSelesaikanM2Round() {
+  const N = randInt(11, 25);
+  const namePair = pick(SM2_NAMES);
+  const noun1 = pick(SM2_NOUNS);
+  const noun2 = pick(SM2_NOUNS.filter(n => n !== noun1));
+  const verb = pick(SM2_VERBS);
+
+  const aA = randInt(1, N - 1);
+  const aBcandidates = [...Array(N - 1)].map((_, i) => i + 1).filter(v => v !== aA);
+  const aB = pick(aBcandidates);
+  const bC = randInt(1, Math.min(20, 100 - N));
+  const aD_extra = randInt(1, Math.min(30, 100 - N));
+  const totalE = N + randInt(3, Math.min(20, 50 - N));
+  const totalF = N + randInt(2, Math.min(15, 40 - N));
+
+  return {
+    N,
+    correctAnswer: N, // the center number
+    spokes: [
+      { id: 0, type: 'sm2-add-addend',   a: aA,                 answer: N - aA,
+        display: `${aA} + __ = ${N}` },
+      { id: 1, type: 'sm2-sub-complete',  a: aB,                 answer: N - aB,
+        display: `${N} = __ + ${aB}` },
+      { id: 2, type: 'sm2-find-minuend',  b: bC,                 answer: N + bC,
+        display: `Tolak ${bC} daripada __ ialah ${N}.` },
+      { id: 3, type: 'sm2-compute-diff',  a: N + aD_extra, b: aD_extra, answer: N,
+        display: `${N + aD_extra} − ${aD_extra} = __` },
+      { id: 4, type: 'sm2-word-beza',     total: totalE, person1: namePair[0],
+        person2: namePair[1], noun: noun1,                answer: totalE - N,
+        display: `${namePair[0]} ada ${totalE} ${noun1}. ${namePair[1]} ada __ ${noun1}. Beza = ${N}.` },
+      { id: 5, type: 'sm2-word-baki',     total: totalF, noun: noun2, verb,
+        answer: totalF - N,
+        display: `Ada ${totalF} ${noun2}. __ ${noun2} ${verb}. Baki ialah ${N}.` },
+    ],
+  };
+}
+
+export function SelesaikanM2Explore({ data, language, theme, onExit }) {
+  const C = theme || {};
+  const accent = C.accent || '#3B82F6';
+  const dark = C.dark || '#1E3A8A';
+
+  const [round, setRound] = useState(() => buildSelesaikanM2Round());
+  const [solved, setSolved] = useState([false, false, false, false, false, false]);
+  const [activeSpoke, setActiveSpoke] = useState(null);
+  const [value, setValue] = useState('');
+  const [shakeIdx, setShakeIdx] = useState(null);
+  const [complete, setComplete] = useState(false);
+  const wheelPaneRef = useRef(null);
+  const [wheelSize, setWheelSize] = useState(240);
+
+  useEffect(() => {
+    const el = wheelPaneRef.current;
+    if (!el) return undefined;
+    const obs = new ResizeObserver((entries) => {
+      const { width, height } = entries[0].contentRect;
+      setWheelSize(Math.max(130, Math.min(width, height) - 12));
+    });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [complete]);
+
+  const N = round.N;
+  const spokes = round.spokes;
+  const solvedCount = solved.filter(Boolean).length;
+  const allSolved = solvedCount === 6;
+
+  useEffect(() => {
+    if (allSolved && !complete) {
+      const t = setTimeout(() => {
+        setComplete(true);
+        playSound('streak');
+        confetti({ particleCount: 200, spread: 160, origin: { y: 0.4 } });
+        setTimeout(() => confetti({ particleCount: 140, spread: 120, startVelocity: 45, origin: { y: 0.55 } }), 250);
+      }, 1200);
+      return () => clearTimeout(t);
+    }
+  }, [allSolved, complete]);
+
+  const handleOpen = (idx) => {
+    if (solved[idx] || complete) return;
+    setActiveSpoke(idx);
+    setValue('');
+    setShakeIdx(null);
+  };
+
+  const handleClose = () => {
+    setActiveSpoke(null);
+    setValue('');
+    setShakeIdx(null);
+  };
+
+  const handleConfirm = () => {
+    if (activeSpoke === null || value === '') return;
+    const ans = parseInt(value, 10);
+    const spoke = spokes[activeSpoke];
+    if (ans === spoke.answer) {
+      playSound('correct');
+      confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 }, scalar: 0.8 });
+      const next = [...solved];
+      next[activeSpoke] = true;
+      setSolved(next);
+      setActiveSpoke(null);
+      setValue('');
+      setShakeIdx(null);
+    } else {
+      playSound('wrong');
+      setShakeIdx(activeSpoke);
+      setValue('');
+      setTimeout(() => setShakeIdx(null), 500);
+    }
+  };
+
+  const handleReset = () => {
+    setRound(buildSelesaikanM2Round());
+    setSolved([false, false, false, false, false, false]);
+    setActiveSpoke(null);
+    setValue('');
+    setShakeIdx(null);
+    setComplete(false);
+  };
+
+  // ── SVG wheel angles (0° at top, clockwise) ──
+  const SPOKE_ANGLES = [0, 60, 120, 180, 240, 300];
+
+  // ── Keypad press handlers ──
+  const pressDigit = (d) => setValue(v => (v.length < 3 ? v + d : v));
+  const pressBack = () => setValue(v => v.slice(0, -1));
+
+  const spokeLabels = [
+    'Tambah', 'Lengkap', 'Cari', 'Tolak', 'Cerita 1', 'Cerita 2',
+  ];
+
+  // ── Physical keyboard support while the question dialog is open ──
+  useEffect(() => {
+    if (activeSpoke === null || complete) return undefined;
+    const onKey = (e) => {
+      if (e.key >= '0' && e.key <= '9') { e.preventDefault(); pressDigit(e.key); }
+      else if (e.key === 'Backspace' || e.key === 'Delete') { e.preventDefault(); pressBack(); }
+      else if (e.key === 'Enter') { e.preventDefault(); handleConfirm(); }
+      else if (e.key === 'Escape') { e.preventDefault(); handleClose(); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [activeSpoke, value, complete]);
+
+  return (
+    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', overflow: 'hidden', background: 'transparent' }}>
+      <style>{`
+        @keyframes sm2-shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-6px); }
+          75% { transform: translateX(6px); }
+        }
+        @keyframes sm2-pop {
+          0% { transform: scale(0.8); opacity: 0.5; }
+          60% { transform: scale(1.08); }
+          100% { transform: scale(1); opacity: 1; }
+        }
+        .sm2-shake { animation: sm2-shake .35s ease; }
+        .sm2-pop { animation: sm2-pop .4s cubic-bezier(.34,1.56,.64,1); }
+        .sm2-kp-btn { transition: all 0.08s ease; -webkit-tap-highlight-color: transparent; }
+        .sm2-kp-btn:active { transform: translateY(4px); border-bottom-width: 0 !important; }
+
+        .sm2-body { position: relative; z-index: 1; flex: 1; display: flex; min-height: 0; overflow: hidden; }
+        .sm2-wheel-pane { position: relative; flex: 1; overflow: hidden; min-height: 0; min-width: 0; }
+        .sm2-wheel { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+
+        @keyframes sm2-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes sm2-dialog-in { 0% { transform: translateY(12px) scale(0.94); opacity: 0; } 100% { transform: translateY(0) scale(1); opacity: 1; } }
+        .sm2-backdrop {
+          position: absolute; inset: 0; z-index: 50;
+          display: flex; align-items: center; justify-content: center;
+          padding: clamp(12px, 3vmin, 32px); overflow: hidden;
+          background: rgba(15, 23, 42, .45); backdrop-filter: blur(3px);
+          animation: sm2-backdrop-in .18s ease;
+        }
+        .sm2-dialog {
+          position: relative; width: 100%; max-width: 360px; max-height: 100%;
+          display: flex; flex-direction: column; align-items: center; gap: clamp(10px, 1.8vmin, 18px);
+          background: #fff; border-radius: clamp(16px, 2.4vmin, 24px);
+          padding: clamp(16px, 3vmin, 28px);
+          box-shadow: 0 20px 50px -12px rgba(15, 23, 42, .5);
+          animation: sm2-dialog-in .26s cubic-bezier(.34,1.56,.64,1);
+        }
+        .sm2-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(5px, 0.9vmin, 9px); width: 100%; }
+        .sm2-keypad button { height: clamp(34px, 5vmin, 48px); }
+      `}</style>
+
+      {/* ── Top bar ── */}
+      <div style={{
+        position: 'relative', zIndex: 2,
+        flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: 'clamp(6px, 1vmin, 12px) clamp(12px, 2vmin, 20px)',
+        background: 'rgba(10,12,40,.55)', backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid rgba(255,255,255,.12)',
+      }}>
+        <button type="button" onClick={onExit}
+          style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: 'clamp(14px, 2vmin, 18px)', color: '#C7D2FE', padding: '4px 0', WebkitTapHighlightColor: 'transparent' }}>
+          ← Kembali
+        </button>
+        <div style={{
+          fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.6vmin, 24px)', color: '#fff', textAlign: 'center', textShadow: '0 1px 12px rgba(129,140,248,.6)',
+        }}>
+          Roda Nombor
+        </div>
+        <div style={{
+          fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 2vmin, 17px)', color: solvedCount === 6 ? '#4ADE80' : '#C7D2FE',
+          background: 'rgba(255,255,255,.12)', borderRadius: 12, padding: '4px 10px',
+        }}>
+          {solvedCount}/6 ✓
+        </div>
+      </div>
+
+      {complete ? (
+        /* ── Completion overlay ── */
+        <div style={{
+          position: 'relative', zIndex: 1,
+          flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+          gap: 'clamp(16px, 3vmin, 32px)', padding: 'clamp(20px, 4vmin, 40px)',
+        }}>
+          <div style={{ fontSize: 'clamp(52px, 14vmin, 100px)', lineHeight: 1 }}>🎉</div>
+          <div style={{
+            fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(24px, 4.6vmin, 42px)', color: '#fff',
+            textAlign: 'center', textShadow: '0 2px 18px rgba(129,140,248,.7)',
+          }}>
+            Tahniah! Semua 6 selesai!
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(10px, 1.6vmin, 16px)', width: '100%', maxWidth: 320 }}>
+            <button type="button" onClick={handleReset}
+              style={{
+                padding: 'clamp(12px, 1.8vmin, 18px) clamp(24px, 4vmin, 48px)', border: 'none', borderRadius: 999,
+                background: accent, color: '#fff', cursor: 'pointer',
+                fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.6vmin, 24px)',
+                boxShadow: `0 4px 0 ${dark}`, WebkitTapHighlightColor: 'transparent',
+              }}>
+              ↻ Main Semula
+            </button>
+            <button type="button" onClick={onExit}
+              style={{
+                padding: 'clamp(12px, 1.8vmin, 18px) clamp(24px, 4vmin, 48px)', border: `2px solid ${accent}`, borderRadius: 999,
+                background: '#fff', color: dark, cursor: 'pointer',
+                fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.6vmin, 24px)',
+                WebkitTapHighlightColor: 'transparent',
+              }}>
+              ← Selesai
+            </button>
+          </div>
+        </div>
+      ) : (
+        /* ── Full-wheel body; tapping a spoke opens a question dialog ── */
+        <div className="sm2-body">
+          {/* Wheel pane (measured for responsive sizing) */}
+          <div className="sm2-wheel-pane" ref={wheelPaneRef}>
+            <div className="sm2-wheel" style={{ width: wheelSize, height: wheelSize }}>
+              {/* SVG spokes + center ring */}
+              <svg viewBox="0 0 100 100" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+                {SPOKE_ANGLES.map((angle, i) => {
+                  const rad = (angle - 90) * Math.PI / 180;
+                  const x2 = 50 + 30 * Math.cos(rad);
+                  const y2 = 50 + 30 * Math.sin(rad);
+                  return <line key={i} x1="50" y1="50" x2={x2} y2={y2} stroke={solved[i] ? '#86EFAC' : '#93C5FD'} strokeWidth="1.6" strokeLinecap="round" />;
+                })}
+                <circle cx="50" cy="50" r="13" fill="#fff" stroke="#1E3A8A" strokeWidth="2.4" />
+              </svg>
+              {/* Center number */}
+              <div style={{
+                position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%,-50%)',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', pointerEvents: 'none',
+              }}>
+                <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: wheelSize * 0.13, color: '#1E3A8A', lineHeight: 1 }}>{N}</span>
+                <span style={{ fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: Math.max(7, wheelSize * 0.035), color: '#64748B' }}>Pusat</span>
+              </div>
+              {/* Spoke cards (absolute px positions) */}
+              {spokes.map((spoke, i) => {
+                const angle = SPOKE_ANGLES[i];
+                const rad = (angle - 90) * Math.PI / 180;
+                const R = wheelSize * 0.345;
+                const cxPx = wheelSize / 2 + R * Math.cos(rad);
+                const cyPx = wheelSize / 2 + R * Math.sin(rad);
+                const cardW = wheelSize * 0.26;
+                const cardH = wheelSize * 0.175;
+                const isActive = activeSpoke === i;
+                const isSolved = solved[i];
+                const isShake = shakeIdx === i;
+                let bg = '#fff', bd = accent, clr = dark;
+                if (isSolved) { bg = '#DCFCE7'; bd = '#16A34A'; clr = '#166534'; }
+                if (isActive) { bg = '#EFF6FF'; bd = dark; }
+                return (
+                  <div key={spoke.id} style={{
+                    position: 'absolute', left: cxPx, top: cyPx, width: cardW, height: cardH,
+                    transform: 'translate(-50%,-50%)', zIndex: isActive ? 10 : 2,
+                  }}>
+                    <div
+                      onClick={() => isSolved ? null : handleOpen(i)}
+                      className={isShake ? 'sm2-shake' : isSolved ? 'sm2-pop' : ''}
+                      style={{
+                        width: '100%', height: '100%',
+                        background: bg, border: `2px solid ${bd}`, borderRadius: Math.max(8, wheelSize * 0.04),
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center',
+                        padding: '2px 4px', boxSizing: 'border-box',
+                        cursor: isSolved ? 'default' : 'pointer',
+                        boxShadow: isActive ? `0 0 0 3px ${accent}44` : '0 2px 6px rgba(0,0,0,0.08)',
+                        transition: 'background .15s ease, border-color .15s ease',
+                        WebkitTapHighlightColor: 'transparent', overflow: 'hidden',
+                      }}>
+                      {isSolved ? (
+                        <span style={{ fontSize: cardH * 0.6, color: '#16A34A', fontWeight: 900 }}>✓</span>
+                      ) : (
+                        <span style={{
+                          fontFamily: "'Baloo 2',sans-serif", fontWeight: 800,
+                          fontSize: Math.max(9, wheelSize * 0.045), color: clr, lineHeight: 1.1,
+                        }}>{spokeLabels[i]}</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* ── Question dialog (opens when a spoke is tapped) ── */}
+            {activeSpoke !== null && (
+              <div className="sm2-backdrop" onClick={handleClose}>
+                <div className="sm2-dialog" onClick={(e) => e.stopPropagation()}>
+                  <button type="button" onClick={handleClose} aria-label="Tutup"
+                    style={{
+                      position: 'absolute', top: 'clamp(8px, 1.4vmin, 14px)', right: 'clamp(8px, 1.4vmin, 14px)',
+                      width: 'clamp(28px, 4vmin, 36px)', height: 'clamp(28px, 4vmin, 36px)',
+                      border: 'none', borderRadius: '50%', background: '#F1F5F9', color: '#64748B',
+                      cursor: 'pointer', fontFamily: "'Baloo 2',sans-serif", fontWeight: 800,
+                      fontSize: 'clamp(14px, 2.2vmin, 18px)', lineHeight: 1, WebkitTapHighlightColor: 'transparent',
+                    }}>✕</button>
+                  <div style={{
+                    fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 2.2vmin, 17px)',
+                    color: accent, textTransform: 'uppercase', letterSpacing: '.04em',
+                  }}>{spokeLabels[activeSpoke]}</div>
+                  <div style={{
+                    fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(24px, 5vmin, 40px)',
+                    color: dark, textAlign: 'center', lineHeight: 1.3,
+                  }}>{spokes[activeSpoke].display}</div>
+                  <div style={{
+                    minWidth: 'clamp(96px, 18vmin, 140px)', height: 'clamp(48px, 6.6vmin, 66px)',
+                    border: '3px solid #CBD5E1', borderRadius: 'clamp(10px, 1.4vmin, 15px)',
+                    background: '#F9FAFB', boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.06)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: 'clamp(28px, 4.8vmin, 44px)',
+                    color: value ? '#334155' : '#CBD5E1', padding: '0 16px',
+                  }}>{value || '?'}</div>
+                  <div className="sm2-keypad">
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
+                      <button key={d} type="button" className="sm2-kp-btn" onClick={() => pressDigit(String(d))}
+                        style={{
+                          border: 'none', borderBottom: '4px solid #2563EB', borderRadius: 'clamp(9px, 1.2vmin, 13px)',
+                          background: '#3B82F6', color: '#fff', cursor: 'pointer',
+                          fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.6vmin, 24px)',
+                        }}>{d}</button>
+                    ))}
+                    <button type="button" className="sm2-kp-btn" onClick={pressBack}
+                      style={{
+                        border: 'none', borderBottom: '4px solid #DC2626', borderRadius: 'clamp(9px, 1.2vmin, 13px)',
+                        background: '#EF4444', color: '#fff', cursor: 'pointer',
+                        fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(12px, 2vmin, 18px)',
+                      }}>Padam</button>
+                    <button type="button" className="sm2-kp-btn" onClick={() => pressDigit('0')}
+                      style={{
+                        border: 'none', borderBottom: '4px solid #2563EB', borderRadius: 'clamp(9px, 1.2vmin, 13px)',
+                        background: '#3B82F6', color: '#fff', cursor: 'pointer',
+                        fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.6vmin, 24px)',
+                      }}>0</button>
+                  </div>
+                  <button type="button" className="sm2-kp-btn" onClick={handleConfirm} disabled={value === ''}
+                    style={{
+                      width: '100%', height: 'clamp(44px, 6vmin, 58px)',
+                      border: 'none', borderRadius: 'clamp(10px, 1.4vmin, 15px)',
+                      borderBottom: value === '' ? '5px solid #D1D5DB' : '5px solid #15803D',
+                      background: value === '' ? '#E5E7EB' : '#22C55E',
+                      color: value === '' ? '#94A3B8' : '#fff',
+                      cursor: value === '' ? 'not-allowed' : 'pointer',
+                      fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(18px, 3vmin, 26px)',
+                      WebkitTapHighlightColor: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                    }}>Semak ✓</button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+ * Slice 2.F — Master render dispatch for ALL 31 Module 2 question types.
+ * Used by both LatihDiriM2Explore and CabarMindaM2Explore.
+ * ════════════════════════════════════════════════════════════════════════ */
+
+function renderQuestionM2All(q, ctx) {
+  switch (q.type) {
+    case 'kt-gabung': return <GabungKumpulanContent q={q} ctx={ctx} />;
+    case 'kt-garis': return <GarisNomborContent q={q} ctx={ctx} />;
+    case 'kt-perkataan': return <PerkataanContent q={q} ctx={ctx} />;
+    case 'kt-ayat': return <AyatContent q={q} ctx={ctx} />;
+    case 'kt-buang': return <BuangKumpulanContent q={q} ctx={ctx} />;
+    case 'kt-garis-sub': return <GarisNomborSubContent q={q} ctx={ctx} />;
+    case 'kt-perkataan-tolak': return <PerkataanTolakContent q={q} ctx={ctx} />;
+    case 'kt-ayat-tolak': return <AyatTolakContent q={q} ctx={ctx} />;
+    case 'lt-mudah-m1': return <MudahM1Content q={q} ctx={ctx} />;
+    case 'lt-warnai': return <WarnaiContent q={q} ctx={ctx} />;
+    case 'lt-padankan': return <PadankanContent q={q} ctx={ctx} />;
+    case 'lt-bond': return <BondContent q={q} ctx={ctx} />;
+    case 'lt-abacus': return <AbacusBuildContent q={q} ctx={ctx} />;
+    case 'lt-sederhana-s1': return <ColumnAddContent key={q.qid} q={q} ctx={ctx} />;
+    case 'lt-sukar-k1': return <ColumnAddContent key={q.qid} q={q} ctx={ctx} />;
+    case 'lt-tolak-mudah-m1': return <MudahM1Content q={q} ctx={ctx} />;
+    case 'lt-tolak-warnai': return <WarnaiContent q={q} ctx={ctx} />;
+    case 'lt-tolak-padankan': return <PadankanTolakContent q={q} ctx={ctx} />;
+    case 'lt-tolak-bond': return <BondContent q={q} ctx={ctx} />;
+    case 'lt-tolak-blok': return <TolakBlokContent q={q} ctx={ctx} />;
+    case 'lt-tolak-sederhana-s1': return <VerticalDiffContent key={q.qid} q={q} ctx={ctx} />;
+    case 'lt-tolak-sukar-k1': return <VerticalDiffContent key={q.qid} q={q} ctx={ctx} />;
+    case 'ctt-tambah': case 'ctt-tolak': return <CeritaKeypadContent q={q} ctx={ctx} />;
+    case 'ctt-operasi': return <CeritaOperasiContent q={q} ctx={ctx} />;
+    case 'ctt-ayat': return <CeritaAyatContent q={q} ctx={ctx} />;
+    case 'tb-add-groups': return <TbAddGroupsContent q={q} ctx={ctx} />;
+    case 'tb-add-line': return <TbAddLineContent q={q} ctx={ctx} />;
+    case 'tb-add-complete': return <TbAddCompleteContent q={q} ctx={ctx} />;
+    case 'tb-sub-groups': return <TbSubGroupsContent q={q} ctx={ctx} />;
+    case 'tb-sub-line': return <TbSubLineContent q={q} ctx={ctx} />;
+    default: return null;
+  }
+}
+
+/* ── buildM2DrillRound ──────────────────────────────────────────────────
+ * Generates 10 questions of the same type for Latih Diri drill.
+ * ════════════════════════════════════════════════════════════════════════ */
+
+function buildM2DrillRound(typeId) {
+  const generators = {
+    'kt-gabung': genGabungKumpulan,
+    'kt-garis': genGarisNombor,
+    'kt-perkataan': genPilihPerkataan,
+    'kt-ayat': genLengkapkanAyat,
+    'lt-mudah-m1': genMudahM1,
+    'lt-warnai': genWarnai,
+    'lt-padankan': genPadankan,
+    'lt-bond': genBond,
+    'lt-abacus': () => genAbacusBuild('sukar'),
+    'lt-sederhana-s1': genSederhanaS1,
+    'lt-sukar-k1': genSukarK1,
+    'kt-buang': genBuangKumpulan,
+    'kt-garis-sub': genGarisNomborSub,
+    'kt-perkataan-tolak': genPilihPerkataanTolak,
+    'kt-ayat-tolak': genLengkapkanAyatTolak,
+    'lt-tolak-mudah-m1': genMudahTolakM1,
+    'lt-tolak-warnai': genWarnaiTolak,
+    'lt-tolak-padankan': genPadankanTolak,
+    'lt-tolak-bond': genBondTolak,
+    'lt-tolak-blok': () => genAbacusBuildTolak('sukar'),
+    'lt-tolak-sederhana-s1': genSederhanaTolakS1,
+    'lt-tolak-sukar-k1': genSukarTolakK1,
+    'ctt-tambah': genTypeA,
+    'ctt-tolak': genTypeB,
+    'ctt-operasi': () => genTypeCWithOp(true),
+    'ctt-ayat': () => genTypeDWithOp(true),
+    'tb-add-groups': genTbAddGroups,
+    'tb-add-line': genTbAddLine,
+    'tb-add-complete': genTbAddComplete,
+    'tb-sub-groups': genTbSubGroups,
+    'tb-sub-line': genTbSubLine,
+  };
+  const gen = generators[typeId];
+  if (!gen) return [];
+  const qs = Array.from({ length: 10 }, (_, i) => ({ ...gen(), qid: i }));
+  return qs;
+}
+
+/* ── Type labels & sections for the Latih Diri picker ────────────────── */
+
+const LD_SECTIONS = [
+  { id: 'kenali-tambah',   name: 'Kenali Tambah',          color: '#3B82F6', types: ['kt-gabung','kt-garis','kt-perkataan','kt-ayat'] },
+  { id: 'latihan-tambah',  name: 'Latihan Tambah',         color: '#6366F1', types: ['lt-mudah-m1','lt-warnai','lt-padankan','lt-bond','lt-abacus','lt-sederhana-s1','lt-sukar-k1'] },
+  { id: 'kenali-tolak',    name: 'Kenali Tolak',            color: '#EF4444', types: ['kt-buang','kt-garis-sub','kt-perkataan-tolak','kt-ayat-tolak'] },
+  { id: 'latihan-tolak',   name: 'Latihan Tolak',           color: '#F97316', types: ['lt-tolak-mudah-m1','lt-tolak-warnai','lt-tolak-padankan','lt-tolak-bond','lt-tolak-blok','lt-tolak-sederhana-s1','lt-tolak-sukar-k1'] },
+  { id: 'cerita',          name: 'Cerita Tambah & Tolak',   color: '#F59E0B', types: ['ctt-tambah','ctt-tolak','ctt-operasi','ctt-ayat'] },
+  { id: 'tambah-berulang', name: 'Tambah Berulang',         color: '#14B8A6', types: ['tb-add-groups','tb-add-line','tb-add-complete','tb-sub-groups','tb-sub-line'] },
+];
+
+const LD_TYPE_LABELS = {
+  'kt-gabung':            { label: 'Gabung Kumpulan',     hint: 'Kira jumlah kumpulan' },
+  'kt-garis':             { label: 'Garis Nombor',        hint: 'Kira loncatan pada garis' },
+  'kt-perkataan':         { label: 'Pilih Perkataan',     hint: 'Pilih tambah atau jumlah' },
+  'kt-ayat':              { label: 'Lengkapkan Ayat',     hint: 'Isi tempat kosong' },
+  'kt-buang':             { label: 'Buang Kumpulan',      hint: 'Kira baki kumpulan' },
+  'kt-garis-sub':         { label: 'Garis Nombor',        hint: 'Kira undur pada garis' },
+  'kt-perkataan-tolak':   { label: 'Pilih Perkataan',     hint: 'Pilih baki atau beza' },
+  'kt-ayat-tolak':        { label: 'Lengkapkan Ayat',     hint: 'Isi tempat tolak' },
+  'lt-mudah-m1':          { label: 'Mudah Tambah',        hint: 'Tambah fakta asas' },
+  'lt-warnai':            { label: 'Warnai Tambah',       hint: 'Padan warna jawapan' },
+  'lt-padankan':          { label: 'Padankan Tambah',     hint: 'Padan pasangan nombor' },
+  'lt-bond':              { label: 'Ikatan Nombor',       hint: 'Cari bahagian ikatan' },
+  'lt-abacus':            { label: 'Bina Blok',           hint: 'Bina dengan blok puluh' },
+  'lt-sederhana-s1':      { label: 'Sederhana Tambah',    hint: 'Tambah tanpa mengumpul' },
+  'lt-sukar-k1':          { label: 'Sukar Tambah',        hint: 'Tambah dengan mengumpul' },
+  'lt-tolak-mudah-m1':    { label: 'Mudah Tolak',         hint: 'Tolak fakta asas' },
+  'lt-tolak-warnai':      { label: 'Warnai Tolak',        hint: 'Padan warna jawapan' },
+  'lt-tolak-padankan':    { label: 'Padankan Tolak',      hint: 'Padan pasangan nombor' },
+  'lt-tolak-bond':        { label: 'Ikatan Nombor',       hint: 'Cari bahagian ikatan' },
+  'lt-tolak-blok':        { label: 'Bina Blok',           hint: 'Bina dengan blok puluh' },
+  'lt-tolak-sederhana-s1':{ label: 'Sederhana Tolak',     hint: 'Tolak tanpa meminjam' },
+  'lt-tolak-sukar-k1':    { label: 'Sukar Tolak',         hint: 'Tolak dengan meminjam' },
+  'ctt-tambah':           { label: 'Cerita Tambah',       hint: 'Selesaikan cerita tambah' },
+  'ctt-tolak':            { label: 'Cerita Tolak',        hint: 'Selesaikan cerita tolak' },
+  'ctt-operasi':          { label: 'Pilih Operasi',       hint: 'Tambah atau tolak?' },
+  'ctt-ayat':             { label: 'Ayat Matematik',      hint: 'Pilih ayat yang betul' },
+  'tb-add-groups':        { label: 'Kira Kumpulan',       hint: 'Kumpulan tambah berulang' },
+  'tb-add-line':          { label: 'Garis Nombor TB',     hint: 'Loncat tambah berulang' },
+  'tb-add-complete':      { label: 'Lengkapkan TB',       hint: 'Isi ayat tambah berulang' },
+  'tb-sub-groups':        { label: 'Tolak Berturut',      hint: 'Kumpulan tolak berturut' },
+  'tb-sub-line':          { label: 'Garis Nombor TB',     hint: 'Loncat tolak berturut' },
+};
+
+/* ════════════════════════════════════════════════════════════════════════
+ * Slice 2.F — Latih Diri M2 (type picker + 10-question drill)
+ * ════════════════════════════════════════════════════════════════════════ */
+
+export function LatihDiriM2Explore({ data, language, theme, onExit }) {
+  const C = theme || {};
+  const accent = C.accent || '#3B82F6';
+  const dark = C.dark || '#1E3A8A';
+  const cd = C.cd || '#1D4ED8';
+
+  const [selectedType, setSelectedType] = useState(null);
+
+  if (!selectedType) {
+    /* ── Phase A: Type Picker ── */
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: '#F8FAFC' }}>
+        <style>{`
+          .ld-section-chip {
+            display: inline-block; border-radius: 999px;
+            padding: 4px 14px; font-family: 'Baloo 2', sans-serif;
+            font-weight: 800; font-size: clamp(13px, 1.6vmin, 16px); color: #fff;
+            margin-bottom: 8px;
+          }
+          .ld-type-card {
+            background: #fff; border-radius: 14px; padding: 12px 16px;
+            display: flex; align-items: center; gap: 12px; cursor: pointer;
+            transition: all 0.12s ease; -webkit-tap-highlight-color: transparent;
+            border-left: 4px solid #CBD5E1; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+          }
+          .ld-type-card:active { transform: scale(0.97); }
+        `}</style>
+        {/* Top bar */}
+        <div style={{
+          flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: 'clamp(8px, 1.2vmin, 14px) clamp(14px, 2.4vmin, 24px)',
+          background: 'rgba(255,255,255,.85)', backdropFilter: 'blur(12px)',
+          borderBottom: '1px solid #E2E8F0',
+        }}>
+          <button type="button" onClick={onExit}
+            style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: 'clamp(14px, 1.8vmin, 18px)', color: dark, padding: '4px 0', WebkitTapHighlightColor: 'transparent' }}>
+            ← Kembali
+          </button>
+          <div style={{
+            fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.2vmin, 22px)', color: dark, textAlign: 'center',
+          }}>
+            Latih Diri
+          </div>
+          <div style={{ width: 'clamp(60px, 10vmin, 100px)' }} />
+        </div>
+        {/* Scrollable picker */}
+        <div style={{ flex: 1, overflow: 'auto', padding: 'clamp(12px, 2vmin, 24px)' }}>
+          <div style={{ maxWidth: 580, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'clamp(14px, 2.4vmin, 24px)' }}>
+            <div style={{
+              fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(20px, 3vmin, 28px)', color: dark, textAlign: 'center',
+            }}>
+              Pilih Jenis Latihan
+            </div>
+            {LD_SECTIONS.map(section => (
+              <div key={section.id}>
+                <div className="ld-section-chip" style={{ background: section.color }}>
+                  {section.name}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {section.types.map(typeId => {
+                    const info = LD_TYPE_LABELS[typeId];
+                    return (
+                      <div key={typeId} className="ld-type-card"
+                        onClick={() => setSelectedType(typeId)}
+                        style={{ borderLeftColor: section.color }}>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(13px, 1.6vmin, 16px)', color: '#1E293B' }}>
+                            {info.label}
+                          </div>
+                          <div style={{ fontFamily: "'Fredoka',sans-serif", fontWeight: 500, fontSize: 'clamp(10px, 1.3vmin, 13px)', color: '#94A3B8' }}>
+                            {info.hint}
+                          </div>
+                        </div>
+                        <span style={{ fontSize: 'clamp(16px, 2vmin, 22px)', color: section.color }}>→</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return <M2DrillScreen selectedType={selectedType} theme={theme} onBackToPicker={() => setSelectedType(null)} />;
+}
+
+function M2DrillScreen({ selectedType, theme, onBackToPicker }) {
+  const C = theme || {};
+  const accent = C.accent || '#3B82F6';
+  const dark = C.dark || '#1E3A8A';
+  const cd = C.cd || '#1D4ED8';
+
+  const info = LD_TYPE_LABELS[selectedType];
+  const section = LD_SECTIONS.find(s => s.types.includes(selectedType));
+
+  const [questions, setQuestions] = useState(() => buildM2DrillRound(selectedType));
+  const [idx, setIdx] = useState(0);
+  const [selected, setSelected] = useState(null);
+  const [correct, setCorrect] = useState(0);
+  const [wrong, setWrong] = useState(0);
+  const [streak, setStreak] = useState(0);
+  const [complete, setComplete] = useState(false);
+
+  const q = questions[idx];
+  if (!q) return null;
+
+  const answered = selected !== null;
+  const isCorrect = answered && selected === q.answer;
+  const isLast = idx + 1 >= questions.length;
+  const correctPct = questions.length > 0 ? Math.round((correct / questions.length) * 100) : 0;
+  const progressInGroup = streak > 0 && streak % 10 === 0 ? 10 : streak % 10;
+
+  const handlePick = (value) => {
+    if (answered) return;
+    setSelected(value);
+    if (value === q.answer) {
+      setCorrect(c => c + 1);
+      setStreak(s => s + 1);
+      playSound('correct');
+      confetti({ particleCount: 45, spread: 60, startVelocity: 32, origin: { y: 0.7 }, scalar: 0.85 });
+    } else {
+      setWrong(w => w + 1);
+      setStreak(0);
+      playSound('wrong');
+    }
+  };
+
+  const handleNext = () => {
+    if (isLast) { setComplete(true); return; }
+    setSelected(null);
+    setIdx(idx + 1);
+  };
+
+  const handleRedo = () => {
+    setQuestions(buildM2DrillRound(selectedType));
+    setIdx(0);
+    setSelected(null);
+    setCorrect(0);
+    setWrong(0);
+    setStreak(0);
+    setComplete(false);
+  };
+
+  const handleBackToPicker = () => {
+    onBackToPicker();
+  };
+
+  const drillCtx = { answered, selected, answer: q.answer, isCorrect, handlePick, handleNext, streak, correct, wrong, theme: { accent, dark, cd, green: '#16A34A', red: '#DC2626' } };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%' }}>
+      <style>{`
+        .ld-drill-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .maf-footer { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: clamp(8px,1.2vmin,15px) clamp(16px,2.4vmin,34px); background: rgba(255,255,255,.85); backdrop-filter: blur(12px); border-top: 1px solid #E2E8F0; }
+        .maf-footer-tally { display: flex; align-items: center; gap: 6px 10px; flex-wrap: wrap; font-family: 'Fredoka',sans-serif; font-size: clamp(13px,1.7vmin,18px); font-weight: 600; color: #64748B; }
+        .maf-stats { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+        .maf-stats .maf-stat { display: inline-flex; align-items: center; gap: 3px; }
+        .maf-stats .maf-divider { color: #CBD5E1; font-weight: 400; }
+        .ld-drill-body {
+          min-height: 100%; box-sizing: border-box;
+          display: flex; flex-direction: column; justify-content: center; align-items: center;
+          padding: clamp(14px, 3vmin, 40px);
+        }
+        .ld-drill-content {
+          width: 100%; max-width: min(94vw, 860px);
+          display: flex; flex-direction: column; align-items: center;
+          gap: clamp(8px, 1.6vmin, 18px);
+        }
+        .ld-drill-question {
+          font-family: 'Baloo 2', sans-serif; font-weight: 800;
+          font-size: clamp(22px, 4.6vmin, 44px); color: #1E293B; text-align: center; line-height: 1.15;
+        }
+        .ld-drill-feedback {
+          font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(17px, 2.6vmin, 28px);
+          text-align: center; min-height: clamp(24px, 3.4vmin, 38px);
+          display: flex; align-items: center; justify-content: center;
+        }
+        .ld-drill-feedback.ok { color: #16A34A; }
+        .ld-drill-feedback.no { color: #DC2626; }
+        .ld-drill-next {
+          padding: clamp(11px, 1.5vmin, 17px) clamp(28px, 4vmin, 52px); border: none; border-radius: 999px;
+          background: ${accent}; color: #fff;
+          font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(17px, 2.6vmin, 26px);
+          cursor: pointer; box-shadow: 0 4px 0 ${cd}; transition: transform .1s ease;
+          -webkit-tap-highlight-color: transparent;
+        }
+        .ld-drill-next:active { transform: translateY(2px); }
+        .ld-drill-done-emoji { font-size: clamp(52px, 14vmin, 120px); line-height: 1; }
+        .ld-drill-summary { display: flex; flex-direction: column; gap: clamp(8px, 1.4vmin, 14px); width: 100%; max-width: 340px; }
+        .ld-drill-summary-row {
+          display: flex; align-items: center; justify-content: space-between;
+          background: #fff; border: 2px solid #E2E8F0; border-radius: 14px;
+          padding: clamp(10px, 1.6vmin, 16px) clamp(16px, 2.4vmin, 26px);
+          font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(16px, 2.4vmin, 22px); color: #334155;
+        }
+        .ld-drill-summary-row b { font-size: clamp(20px, 3vmin, 28px); }
+        .ld-drill-summary-row.ok b { color: #16A34A; }
+        .ld-drill-summary-row.no b { color: #DC2626; }
+        .ld-drill-complete-actions { display: flex; flex-wrap: wrap; gap: clamp(10px, 1.6vmin, 16px); justify-content: center; }
+        .ld-drill-btn-secondary {
+          padding: clamp(11px, 1.5vmin, 17px) clamp(24px, 3.4vmin, 44px); border-radius: 999px;
+          border: 2px solid ${accent}; background: #fff; color: ${dark};
+          font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(16px, 2.4vmin, 24px);
+          cursor: pointer; -webkit-tap-highlight-color: transparent;
+        }
+      `}</style>
+      {/* Top strip */}
+      <div style={{
+        flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: 'clamp(4px, 0.8vmin, 10px) clamp(12px, 2vmin, 20px)',
+        background: `${section?.color || accent}18`, borderBottom: `1px solid ${section?.color || accent}44`,
+      }}>
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 6,
+          fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(13px, 1.6vmin, 16px)',
+          color: section?.color || dark,
+        }}>
+          <span style={{
+            display: 'inline-block', width: 8, height: 8, borderRadius: 4,
+            background: section?.color || accent,
+          }} />
+          {info?.label || selectedType}
+          <span style={{
+            fontFamily: "'Fredoka',sans-serif", fontWeight: 500, fontSize: 'clamp(10px, 1.3vmin, 13px)',
+            color: '#64748B', marginLeft: 4,
+          }}>
+            {idx + 1}/10
+          </span>
+        </div>
+        <button type="button" onClick={handleBackToPicker}
+          style={{
+            border: 'none', background: 'transparent', cursor: 'pointer',
+            fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(11px, 1.4vmin, 14px)', color: dark,
+            display: 'flex', alignItems: 'center', gap: 3, padding: '4px 0', WebkitTapHighlightColor: 'transparent',
+          }}>
+          Tukar Jenis ⟲
+        </button>
+      </div>
+
+      {complete ? (
+        <div className="ld-drill-scroll">
+          <div className="ld-drill-body">
+            <div className="ld-drill-content" style={{ textAlign: 'center' }}>
+              <div className="ld-drill-done-emoji">🎉</div>
+              <div className="ld-drill-question">Tahniah!</div>
+              <div className="ld-drill-feedback">Skor kamu: {correct}/{questions.length} ({correctPct}%)</div>
+              <div className="ld-drill-summary">
+                <div className="ld-drill-summary-row ok"><span>✅ Betul</span><b>{correct}</b></div>
+                <div className="ld-drill-summary-row no"><span>❌ Salah</span><b>{wrong}</b></div>
+              </div>
+              <div className="ld-drill-complete-actions">
+                <button className="ld-drill-btn-secondary" type="button" onClick={handleRedo}>↻ Main Semula</button>
+                <button className="ld-drill-next" type="button" onClick={handleBackToPicker}>Pilih Latihan Lain →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="ld-drill-scroll">
+            <div className="ld-drill-body">
+              <div className="ld-drill-content">
+                {q.prompt && <div className="ld-drill-question">{q.prompt}</div>}
+                {renderQuestionM2All(q, drillCtx)}
+                <div className={`ld-drill-feedback ${answered ? (isCorrect ? 'ok' : 'no') : ''}`}>
+                  {answered ? (isCorrect ? 'Betul! 🎉' : 'Cuba lagi') : ''}
+                </div>
+                {answered && (
+                  <button className="ld-drill-next" type="button" onClick={handleNext}>
+                    {isLast ? 'Tamat 🎉' : 'Seterusnya →'}
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="maf-footer">
+            <div className="maf-footer-tally">
+              <span>Jawapan :</span>
+              <span className="maf-stats">
+                <span className="maf-stat" style={{ color: '#1E293B' }}>
+                  <span>✅</span><span>{correct}</span><span style={{ color: '#94A3B8', fontWeight: 500 }}>Betul</span>
+                </span>
+                <span className="maf-divider">|</span>
+                <span className="maf-stat" style={{ color: '#EF4444' }}>
+                  <span>❌</span><span>{wrong}</span><span style={{ color: '#94A3B8', fontWeight: 500 }}>salah</span>
+                </span>
+              </span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ fontSize: 18 }}>🏆</span>
+              <div style={{ width: 70, height: 7, background: 'rgba(204,119,0,0.15)', borderRadius: 4, overflow: 'hidden' }}>
+                <div style={{ width: `${(progressInGroup / 10) * 100}%`, height: '100%', background: '#FFB800', borderRadius: 4, transition: 'width .3s ease-out' }} />
+              </div>
+              <span style={{ color: '#CC7700', fontSize: '0.85rem', fontWeight: 900, minWidth: 28, textAlign: 'right' }}>
+                {progressInGroup}/10
+              </span>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+ * Slice 2.F — Cabar Minda M2 (31-question timed exam)
+ * ════════════════════════════════════════════════════════════════════════ */
+
+// ── Exam question generator (1 per type, all 31 types, shuffled) ──
+function buildCabarMindaM2Round() {
+  const allTypes = [
+    ...LD_SECTIONS[0].types, ...LD_SECTIONS[1].types,
+    ...LD_SECTIONS[2].types, ...LD_SECTIONS[3].types,
+    ...LD_SECTIONS[4].types, ...LD_SECTIONS[5].types,
+  ];
+  const generators = {
+    'kt-gabung': genGabungKumpulan,
+    'kt-garis': genGarisNombor,
+    'kt-perkataan': genPilihPerkataan,
+    'kt-ayat': genLengkapkanAyat,
+    'lt-mudah-m1': genMudahM1,
+    'lt-warnai': genWarnai,
+    'lt-padankan': genPadankan,
+    'lt-bond': genBond,
+    'lt-abacus': () => genAbacusBuild('sukar'),
+    'lt-sederhana-s1': genSederhanaS1,
+    'lt-sukar-k1': genSukarK1,
+    'kt-buang': genBuangKumpulan,
+    'kt-garis-sub': genGarisNomborSub,
+    'kt-perkataan-tolak': genPilihPerkataanTolak,
+    'kt-ayat-tolak': genLengkapkanAyatTolak,
+    'lt-tolak-mudah-m1': genMudahTolakM1,
+    'lt-tolak-warnai': genWarnaiTolak,
+    'lt-tolak-padankan': genPadankanTolak,
+    'lt-tolak-bond': genBondTolak,
+    'lt-tolak-blok': () => genAbacusBuildTolak('sukar'),
+    'lt-tolak-sederhana-s1': genSederhanaTolakS1,
+    'lt-tolak-sukar-k1': genSukarTolakK1,
+    'ctt-tambah': genTypeA,
+    'ctt-tolak': genTypeB,
+    'ctt-operasi': () => genTypeCWithOp(true),
+    'ctt-ayat': () => genTypeDWithOp(true),
+    'tb-add-groups': genTbAddGroups,
+    'tb-add-line': genTbAddLine,
+    'tb-add-complete': genTbAddComplete,
+    'tb-sub-groups': genTbSubGroups,
+    'tb-sub-line': genTbSubLine,
+  };
+  const cmQ = allTypes.map((typeId, i) => ({ ...generators[typeId](), qid: i }));
+  return shuffle(cmQ);
+}
+
+// ── Slice breakdown table config ──
+const CM_SLICES = [
+  { id: 'kenali-tambah',   name: 'Kenali Tambah',          color: '#3B82F6', types: ['kt-gabung','kt-garis','kt-perkataan','kt-ayat'] },
+  { id: 'latihan-tambah',  name: 'Latihan Tambah',         color: '#6366F1', types: ['lt-mudah-m1','lt-warnai','lt-padankan','lt-bond','lt-abacus','lt-sederhana-s1','lt-sukar-k1'] },
+  { id: 'kenali-tolak',    name: 'Kenali Tolak',            color: '#EF4444', types: ['kt-buang','kt-garis-sub','kt-perkataan-tolak','kt-ayat-tolak'] },
+  { id: 'latihan-tolak',   name: 'Latihan Tolak',           color: '#F97316', types: ['lt-tolak-mudah-m1','lt-tolak-warnai','lt-tolak-padankan','lt-tolak-bond','lt-tolak-blok','lt-tolak-sederhana-s1','lt-tolak-sukar-k1'] },
+  { id: 'cerita',          name: 'Cerita Tambah & Tolak',   color: '#F59E0B', types: ['ctt-tambah','ctt-tolak','ctt-operasi','ctt-ayat'] },
+  { id: 'tambah-berulang', name: 'Tambah Berulang',         color: '#14B8A6', types: ['tb-add-groups','tb-add-line','tb-add-complete','tb-sub-groups','tb-sub-line'] },
+];
+
+export function CabarMindaM2Explore({ data, language, theme, onExit }) {
+  const C = theme || {};
+  const accent = C.accent || '#3B82F6';
+  const dark = C.dark || '#1E3A8A';
+  const cd = C.cd || '#1D4ED8';
+
+  const [phase, setPhase] = useState('start');
+  const [questions, setQuestions] = useState(null);
+  const [current, setCurrent] = useState(0);
+  const [answers, setAnswers] = useState(null);
+  const [selectedPerQ, setSelectedPerQ] = useState(null);
+  const [timeLeft, setTimeLeft] = useState(1800);
+  const [timeUsed, setTimeUsed] = useState(0);
+  const timerRef = useRef(null);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, []);
+
+  const startExam = () => {
+    const qs = buildCabarMindaM2Round();
+    setQuestions(qs);
+    setAnswers(new Array(qs.length).fill(null));
+    setSelectedPerQ({});
+    setCurrent(0);
+    setTimeLeft(1800);
+    setPhase('exam');
+    timerRef.current = setInterval(() => {
+      setTimeLeft(t => {
+        if (t <= 1) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+          setTimeUsed(1800);
+          setPhase('results');
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+  };
+
+  const handleExamPick = (value) => {
+    if (!questions || answers[current] !== null) return;
+    const correct = value === questions[current].answer;
+    const newAnswers = [...answers];
+    newAnswers[current] = correct;
+    setAnswers(newAnswers);
+    const newSel = { ...selectedPerQ, [current]: value };
+    setSelectedPerQ(newSel);
+    playSound(correct ? 'correct' : 'wrong');
+    if (correct) confetti({ particleCount: 45, spread: 60, startVelocity: 32, origin: { y: 0.7 }, scalar: 0.85 });
+    setTimeout(() => {
+      if (current + 1 >= questions.length) {
+        setTimeUsed(1800 - timeLeft);
+        if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+        setPhase('results');
+      } else {
+        setCurrent(c => c + 1);
+      }
+    }, 800);
+  };
+
+  if (phase === 'start') {
+    const passMark = 25;
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'linear-gradient(180deg,#EFF6FF 0%,#DBEAFE 50%,#BFDBFE 100%)' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'clamp(24px, 4vmin, 48px) clamp(16px, 3vmin, 32px)', gap: 'clamp(16px, 2.6vmin, 32px)' }}>
+          <div style={{ fontSize: 'clamp(48px, 10vmin, 80px)', lineHeight: 1 }}>🧠</div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: 'clamp(28px, 5vmin, 44px)', color: dark, lineHeight: 1.2 }}>
+              Cabar Minda
+            </div>
+            <div style={{ fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: 'clamp(14px, 2vmin, 18px)', color: '#64748B', marginTop: 4 }}>
+              Modul 2 — Tambah dan Tolak
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 'clamp(8px, 1.6vmin, 16px)', flexWrap: 'wrap', justifyContent: 'center' }}>
+            {[
+              { label: '31 Soalan', color: dark },
+              { label: '30 Minit', color: '#F97316' },
+              { label: 'Lulus 80% (25/31)', color: '#16A34A' },
+            ].map(chip => (
+              <div key={chip.label} style={{
+                padding: '6px 16px', borderRadius: 999, background: '#fff',
+                border: `2px solid ${chip.color}44`, color: chip.color,
+                fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(13px, 1.8vmin, 17px)',
+              }}>{chip.label}</div>
+            ))}
+          </div>
+          <div style={{
+            background: '#fff', borderRadius: 'clamp(14px, 2vmin, 20px)', padding: 'clamp(14px, 2.4vmin, 24px)',
+            maxWidth: 420, width: '100%', boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
+          }}>
+            <div style={{
+              fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 1.6vmin, 16px)', color: '#334155',
+              display: 'flex', flexDirection: 'column', gap: 'clamp(8px, 1.2vmin, 12px)',
+            }}>
+              <div>📌 Jawab semua 31 soalan dalam 30 minit.</div>
+              <div>⏱️ Masa berhenti apabila semua soalan dijawab atau masa tamat.</div>
+              <div>🎯 Skor 25/31 atau lebih untuk lulus.</div>
+            </div>
+          </div>
+          <button type="button" onClick={startExam}
+            style={{
+              padding: 'clamp(14px, 2vmin, 20px) clamp(32px, 5vmin, 64px)', border: 'none', borderRadius: 999,
+              background: accent, color: '#fff', cursor: 'pointer', width: '100%', maxWidth: 360,
+              fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(18px, 2.8vmin, 26px)',
+              boxShadow: `0 5px 0 ${cd}`, WebkitTapHighlightColor: 'transparent',
+            }}>
+            Mula Peperiksaan →
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'exam' && questions) {
+    const q = questions[current];
+    const answered = answers[current] !== null;
+    const isCorrect = answers[current] === true;
+    const mm = Math.floor(timeLeft / 60);
+    const ss = timeLeft % 60;
+    const timerStr = `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+    const timerRed = timeLeft <= 300;
+    const correctCount = answers.filter(Boolean).length;
+    const wrongCount = answers.filter(a => a === false).length;
+
+    const examCtx = {
+      answered,
+      selected: selectedPerQ[current] || null,
+      answer: q.answer,
+      isCorrect,
+      handlePick: handleExamPick,
+      handleNext: () => {},
+      streak: 0,
+      correct: correctCount,
+      wrong: wrongCount,
+      theme: { accent, dark, cd, green: '#16A34A', red: '#DC2626' },
+    };
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: '#F8FAFC' }}>
+        <style>{`
+          .cm-exam-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+          .cm-exam-body {
+            min-height: 100%; box-sizing: border-box;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: clamp(14px, 3vmin, 40px);
+          }
+          .cm-exam-content {
+            width: 100%; max-width: min(94vw, 860px);
+            display: flex; flex-direction: column; align-items: center;
+            gap: clamp(8px, 1.6vmin, 18px);
+          }
+          .cm-exam-q {
+            font-family: 'Baloo 2', sans-serif; font-weight: 800;
+            font-size: clamp(22px, 4.6vmin, 44px); color: #1E293B; text-align: center; line-height: 1.15;
+          }
+          .cm-exam-feedback {
+            font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(20px, 3vmin, 30px);
+            text-align: center; min-height: clamp(28px, 3.8vmin, 44px);
+            display: flex; align-items: center; justify-content: center;
+          }
+          .cm-exam-feedback.ok { color: #16A34A; }
+          .cm-exam-feedback.no { color: #DC2626; }
+        `}</style>
+        {/* Exam header */}
+        <div style={{
+          flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: 'clamp(8px, 1.2vmin, 14px) clamp(14px, 2.4vmin, 24px)',
+          background: '#fff', borderBottom: '1px solid #E2E8F0',
+        }}>
+          <div style={{
+            fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(14px, 1.8vmin, 18px)', color: '#334155',
+          }}>
+            Soalan {current + 1} / {questions.length}
+          </div>
+          <div style={{
+            fontFamily: "'Baloo 2',sans-serif", fontWeight: 800,
+            fontSize: 'clamp(18px, 2.4vmin, 24px)', color: timerRed ? '#EF4444' : dark,
+            transition: 'color 0.3s ease',
+          }}>
+            ⏱ {timerStr}
+          </div>
+        </div>
+        {/* Question body */}
+        <div className="cm-exam-scroll">
+          <div className="cm-exam-body">
+            <div className="cm-exam-content">
+              {q.prompt && <div className="cm-exam-q">{q.prompt}</div>}
+              {renderQuestionM2All(q, examCtx)}
+              <div className={`cm-exam-feedback ${answered ? (isCorrect ? 'ok' : 'no') : ''}`}>
+                {answered ? (isCorrect ? '✅ Betul!' : '❌ Salah') : ''}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'results' && questions) {
+    const correctCount = answers.filter(Boolean).length;
+    const wrongCount = answers.filter(a => a === false).length;
+    const unanswered = answers.filter(a => a === null).length;
+    const total = questions.length;
+    const passed = correctCount >= 25;
+    const usedMM = Math.floor(timeUsed / 60);
+    const usedSS = timeUsed % 60;
+
+    const sliceScores = CM_SLICES.map(slice => {
+      let got = 0, totalT = 0;
+      questions.forEach((q, i) => {
+        if (slice.types.includes(q.type)) {
+          totalT++;
+          if (answers[i] === true) got++;
+        }
+      });
+      return { ...slice, got, totalT, pct: totalT > 0 ? got / totalT : 0 };
+    });
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'linear-gradient(180deg,#EFF6FF 0%,#DBEAFE 50%,#BFDBFE 100%)' }}>
+        <style>{`
+          .cm-results-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+          .cm-results-body {
+            min-height: 100%; box-sizing: border-box;
+            display: flex; flex-direction: column; align-items: center;
+            padding: clamp(20px, 3.6vmin, 48px) clamp(16px, 3vmin, 32px);
+          }
+          .cm-results-content {
+            width: 100%; max-width: 480px;
+            display: flex; flex-direction: column; align-items: center;
+            gap: clamp(14px, 2.4vmin, 28px);
+          }
+          .cm-results-badge {
+            width: clamp(100px, 18vmin, 140px); height: clamp(100px, 18vmin, 140px);
+            border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-family: 'Baloo 2', sans-serif; font-weight: 900;
+            background: #fff; border: 4px solid;
+          }
+          .cm-results-stats { display: flex; gap: clamp(8px, 1.4vmin, 16px); flex-wrap: wrap; justify-content: center; }
+          .cm-results-stat {
+            padding: 5px 14px; border-radius: 999px; background: #fff;
+            font-family: 'Fredoka', sans-serif; font-weight: 700;
+            font-size: clamp(12px, 1.5vmin, 15px);
+          }
+          .cm-results-table { width: 100%; }
+          .cm-results-row {
+            display: flex; align-items: center; gap: 10px;
+            padding: clamp(8px, 1.2vmin, 12px) 0;
+            border-bottom: 1px solid #E2E8F0;
+          }
+          .cm-results-row:last-child { border-bottom: none; }
+          .cm-results-actions { display: flex; flex-direction: column; gap: clamp(10px, 1.6vmin, 16px); width: 100%; }
+        `}</style>
+        <div className="cm-results-scroll">
+          <div className="cm-results-body">
+            <div className="cm-results-content">
+              <div className="cm-results-badge" style={{ borderColor: passed ? '#16A34A' : '#EF4444' }}>
+                <span style={{ fontSize: 'clamp(28px, 5vmin, 44px)', color: passed ? '#16A34A' : '#EF4444' }}>
+                  {correctCount}/{total}
+                </span>
+                <span style={{
+                  fontFamily: "'Fredoka',sans-serif", fontWeight: 700,
+                  fontSize: 'clamp(11px, 1.6vmin, 15px)', color: passed ? '#16A34A' : '#EF4444',
+                }}>
+                  {passed ? 'LULUS ✓' : 'CUBA LAGI ✗'}
+                </span>
+              </div>
+              <div className="cm-results-stats">
+                <span className="cm-results-stat" style={{ color: '#16A34A' }}>✅ Betul: {correctCount}</span>
+                <span className="cm-results-stat" style={{ color: '#EF4444' }}>❌ Salah: {wrongCount}</span>
+                <span className="cm-results-stat" style={{ color: '#64748B' }}>⏱ {usedMM}:{String(usedSS).padStart(2, '0')}</span>
+              </div>
+              {unanswered > 0 && (
+                <div style={{
+                  fontFamily: "'Fredoka',sans-serif", fontWeight: 600,
+                  fontSize: 'clamp(12px, 1.5vmin, 15px)', color: '#F97316',
+                }}>
+                  ⏰ {unanswered} soalan tidak dijawab
+                </div>
+              )}
+              <div className="cm-results-table">
+                {sliceScores.map(slice => {
+                  const pct = slice.pct;
+                  let txtColor = '#DC2626';
+                  if (pct >= 1) txtColor = '#16A34A';
+                  else if (pct > 0) txtColor = '#64748B';
+                  return (
+                    <div key={slice.id} className="cm-results-row">
+                      <div style={{
+                        width: 3, height: 28, borderRadius: 2, background: slice.color, flexShrink: 0,
+                      }} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{
+                          fontFamily: "'Fredoka',sans-serif", fontWeight: 600,
+                          fontSize: 'clamp(12px, 1.5vmin, 15px)', color: '#334155', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                        }}>
+                          {slice.name}
+                        </div>
+                        <div style={{
+                          width: '100%', height: 6, background: '#E2E8F0', borderRadius: 3, marginTop: 4, overflow: 'hidden',
+                        }}>
+                          <div style={{
+                            width: `${pct * 100}%`, height: '100%', background: slice.color, borderRadius: 3,
+                            transition: 'width 0.5s ease',
+                          }} />
+                        </div>
+                      </div>
+                      <div style={{
+                        fontFamily: "'Baloo 2',sans-serif", fontWeight: 800,
+                        fontSize: 'clamp(13px, 1.6vmin, 17px)', color: txtColor, flexShrink: 0,
+                      }}>
+                        {slice.got}/{slice.totalT}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="cm-results-actions">
+                <button type="button" onClick={() => {
+                  if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+                  setPhase('start');
+                }}
+                  style={{
+                    padding: 'clamp(12px, 1.8vmin, 18px) clamp(24px, 4vmin, 48px)', border: 'none', borderRadius: 999,
+                    background: accent, color: '#fff', cursor: 'pointer', width: '100%',
+                    fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.6vmin, 24px)',
+                    boxShadow: `0 4px 0 ${cd}`, WebkitTapHighlightColor: 'transparent',
+                  }}>
+                  ↻ Cuba Semula
+                </button>
+                <button type="button" onClick={onExit}
+                  style={{
+                    padding: 'clamp(12px, 1.8vmin, 18px) clamp(24px, 4vmin, 48px)',
+                    border: `2px solid ${accent}`, borderRadius: 999, background: '#fff', color: dark, cursor: 'pointer', width: '100%',
+                    fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.6vmin, 24px)',
+                    WebkitTapHighlightColor: 'transparent',
+                  }}>
+                  ← Kembali
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+}

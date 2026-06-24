@@ -187,6 +187,10 @@ const LatihanTambah = React.lazy(() => import('./components/MatematikPage/Tahun1
 const KenaliTolak = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_TambahDanTolak/KenaliTolak'));
 const LatihanTolak = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_TambahDanTolak/LatihanTolak'));
 const CeritaTambahDanTolak = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_TambahDanTolak/CeritaTambahDanTolak'));
+const TambahBerulang = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_TambahDanTolak/TambahBerulang'));
+const SelesaikanM2 = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_TambahDanTolak/SelesaikanM2'));
+const LatihDiriM2 = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_TambahDanTolak/LatihDiriM2'));
+const CabarMindaM2 = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_TambahDanTolak/CabarMindaM2'));
 const PecahanModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module3_Pecahan/PecahanModule'));
 const WangModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module4_Wang/WangModule'));
 const MasaDanWaktuModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module5_MasaDanWaktu/MasaDanWaktuModule'));
@@ -408,7 +412,7 @@ const MT_MODULE1_ORDER = [
 
 // Ordered Matematik T1 Module-2 topics. New arrays are added per module; the nav
 // lookup below finds whichever array contains the current matematikTopic.
-const MT_MODULE2_ORDER = ['kenali-tambah', 'latihan-tambah', 'kenali-tolak', 'latihan-tolak', 'cerita-tambah-tolak'];
+const MT_MODULE2_ORDER = ['kenali-tambah', 'latihan-tambah', 'kenali-tolak', 'latihan-tolak', 'cerita-tambah-tolak', 'tambah-berulang', 'm2-selesaikan', 'm2-latih-diri', 'm2-cabar-minda'];
 
 export default function App() {
   const isDesktop = useIsDesktop();
@@ -589,6 +593,10 @@ export default function App() {
         if (matematikTopic === 'kenali-tolak')     return <KenaliTolak            onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'latihan-tolak')   return <LatihanTolak          onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'cerita-tambah-tolak') return <CeritaTambahDanTolak onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'tambah-berulang') return <TambahBerulang onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'm2-selesaikan')    return <SelesaikanM2  onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'm2-latih-diri')   return <LatihDiriM2   onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'm2-cabar-minda')  return <CabarMindaM2  onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'nombor-100')        return <Nombor100       onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'tambah-tolak')      return <Tambah100       onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'tambah-cerita')     return <SubtractionStory onBack={() => setMatematikTopic(null)} language={language} />;

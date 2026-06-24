@@ -1,5 +1,5 @@
 import React from 'react';
-import { CompareExplore, KenaliNomborExplore, KombinasiExplore, Kenali21Hingga100Explore, NilaiTempatExplore, SusunanNomborExplore, PolaNomborExplore, AnggarBundarExplore, SelesaikanExplore, LatihDiriExplore, CabarMindaExplore, KenaliTambahExplore, LatihanTambahExplore, KenaliTolakExplore, LatihanTolakExplore, CeritaTambahTolakExplore } from './explorePrimitives';
+import { CompareExplore, KenaliNomborExplore, KombinasiExplore, Kenali21Hingga100Explore, NilaiTempatExplore, SusunanNomborExplore, PolaNomborExplore, AnggarBundarExplore, SelesaikanExplore, LatihDiriExplore, CabarMindaExplore, KenaliTambahExplore, LatihanTambahExplore, KenaliTolakExplore, LatihanTolakExplore, CeritaTambahTolakExplore, TambahBerulangExplore, SelesaikanM2Explore, LatihDiriM2Explore, CabarMindaM2Explore } from './explorePrimitives';
 import useMtTts from './useMtTts';
 
 /**
@@ -166,6 +166,42 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'cerita-tambah-tolak':
       return (
         <CeritaTambahTolakExplore
+          data={data}
+          language={language}
+          theme={theme}
+          onExit={onExit}
+        />
+      );
+    case 'tambah-berulang':
+      return (
+        <TambahBerulangExplore
+          data={data}
+          language={language}
+          theme={theme}
+          onExit={onExit}
+        />
+      );
+    case 'selesaikan-m2':
+      return (
+        <SelesaikanM2Explore
+          data={data}
+          language={language}
+          theme={theme}
+          onExit={onExit}
+        />
+      );
+    case 'latih-diri-m2':
+      return (
+        <LatihDiriM2Explore
+          data={data}
+          language={language}
+          theme={theme}
+          onExit={onExit}
+        />
+      );
+    case 'cabar-minda-m2':
+      return (
+        <CabarMindaM2Explore
           data={data}
           language={language}
           theme={theme}

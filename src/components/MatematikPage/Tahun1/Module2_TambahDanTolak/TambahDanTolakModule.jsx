@@ -13,13 +13,14 @@ const THEME = {
 
 const ROBOT = <MatematikTopicRobot theme={THEME} />;
 
-function FooterTrio({ language, theme }) {
+function FooterTrio({ language, theme, onSelectTopic }) {
   const isBM = language === 'bm';
   const items = [
-    { id: 'selesaikan',  icon: '🧩', title: isBM ? 'Selesaikan' : 'Solve',        desc: isBM ? 'Penyelesaian masalah' : 'Problem solving' },
-    { id: 'latih-diri',  icon: '⚡', title: isBM ? 'Latih Diri' : 'Self Drill',   desc: isBM ? 'Latih tubi bertahap' : 'Timed leveled drill' },
-    { id: 'cabar-minda', icon: '🧠', title: isBM ? 'Cabar Minda' : 'Challenge',   desc: isBM ? 'Cabaran lebih sukar' : 'Harder challenge' },
+    { id: 'm2-selesaikan', icon: '🧩', title: isBM ? 'Selesaikan' : 'Solve',        desc: isBM ? 'Penyelesaian masalah' : 'Problem solving' },
+    { id: 'm2-latih-diri', icon: '⚡', title: isBM ? 'Latih Diri' : 'Self Drill',   desc: isBM ? 'Latih tubi bertahap' : 'Timed leveled drill' },
+    { id: 'm2-cabar-minda', icon: '🧠', title: isBM ? 'Cabar Minda' : 'Challenge',   desc: isBM ? 'Cabaran lebih sukar' : 'Harder challenge' },
   ];
+  const disabled = {};
   return (
     <div className="mt-footer-trio">
       <style>{`
@@ -45,6 +46,20 @@ function FooterTrio({ language, theme }) {
           cursor: default;
           pointer-events: none;
           text-align: center;
+          transition: all 0.15s ease;
+        }
+        .mt-footer-trio-card.active {
+          opacity: 1;
+          filter: grayscale(0);
+          cursor: pointer;
+          pointer-events: auto;
+        }
+        .mt-footer-trio-card.active:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 24px -8px ${theme.dark}50;
+        }
+        .mt-footer-trio-card.active:active {
+          transform: translateY(0);
         }
         .mt-footer-trio-icon { font-size: 28px; }
         .mt-footer-trio-title {
@@ -65,13 +80,19 @@ function FooterTrio({ language, theme }) {
           .mt-footer-trio { grid-template-columns: 1fr; max-width: 300px; }
         }
       `}</style>
-      {items.map(item => (
-        <div key={item.id} className="mt-footer-trio-card">
-          <span className="mt-footer-trio-icon">{item.icon}</span>
-          <div className="mt-footer-trio-title">{item.title}</div>
-          <div className="mt-footer-trio-desc">{item.desc}</div>
-        </div>
-      ))}
+      {items.map(item => {
+        const isDisabled = disabled[item.id];
+        return (
+          <div key={item.id}
+            className={`mt-footer-trio-card${isDisabled ? '' : ' active'}`}
+            onClick={isDisabled ? undefined : () => onSelectTopic(item.id)}
+          >
+            <span className="mt-footer-trio-icon">{item.icon}</span>
+            <div className="mt-footer-trio-title">{item.title}</div>
+            <div className="mt-footer-trio-desc">{item.desc}</div>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -112,6 +133,13 @@ const TOPICS = [
     desc: 'Selesaikan masalah tambah dan tolak dalam cerita.',
     visual: ROBOT,
   },
+  {
+    id: 'tambah-berulang',
+    pill: 'TAMBAH BERULANG & TOLAK BERTURUT',
+    title: 'Tambah Berulang & Tolak Berturut',
+    desc: 'Kumpulan sama banyak dan tolak berulang.',
+    visual: ROBOT,
+  },
 ];
 
 export default function TambahDanTolakModule({ onSelectTopic, language = 'bm' }) {
@@ -126,7 +154,7 @@ export default function TambahDanTolakModule({ onSelectTopic, language = 'bm' })
       topics={TOPICS}
       onSelectTopic={onSelectTopic}
       language={language}
-      footer={<FooterTrio language={language} theme={THEME} />}
+      footer={<FooterTrio language={language} theme={THEME} onSelectTopic={onSelectTopic} />}
     />
   );
 }
