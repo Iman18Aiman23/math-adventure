@@ -1,7 +1,26 @@
 import React, { useState } from 'react';
 import BackButton from '../../BackButton';
 import StatsBar from '../../_shared/StatsBar';
+import useGamification from '../../../hooks/useGamification';
 import MatematikSceneBackground from './MatematikSceneBackground';
+
+function MbScoreBar() {
+  const { xp, streak, loading } = useGamification('mt');
+  const score = loading ? '—' : xp;
+  const streakVal = loading ? '—' : streak;
+  const pill = {
+    display: 'flex', alignItems: 'center', gap: '6px',
+    fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: '17px',
+    padding: '7px 13px', borderRadius: '13px',
+    background: 'rgba(20,18,52,.6)',
+  };
+  return (
+    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+      <div style={{ ...pill, color: '#FFD23F', border: '1px solid rgba(255,210,63,.4)', boxShadow: '0 0 14px rgba(255,210,63,.18)' }}>⭐ {score}</div>
+      <div style={{ ...pill, color: '#2DE2E6', border: '1px solid rgba(45,226,230,.4)', boxShadow: '0 0 14px rgba(45,226,230,.18)' }}>⚡ {streakVal}</div>
+    </div>
+  );
+}
 
 /**
  * Shared shell for every Matematik topic page.
@@ -58,7 +77,8 @@ export default function MatematikTopicShell({
         .mt-topic-shell > .mt-shell-top,
         .mt-topic-shell > .mt-shell-toggle,
         .mt-topic-shell > .mt-shell-body,
-        .mt-topic-shell > .mt-shell-body-plain { position: relative; z-index: 1; }
+        .mt-topic-shell > .mt-shell-body-plain,
+        .mt-topic-shell > .mb-header { position: relative; z-index: 1; }
         .mt-shell-top {
           display: flex;
           align-items: center;
@@ -205,20 +225,190 @@ export default function MatematikTopicShell({
           outline: 3px solid var(--mt-dark);
           outline-offset: 3px;
         }
+
+        /* ── Math Buddies header (darkChrome pages) ── */
+        .mb-header {
+          display: flex; align-items: center;
+          padding: 10px 16px; flex-shrink: 0;
+          background: transparent;
+          position: relative;
+        }
+        .mb-brand-center {
+          position: absolute; left: 50%; transform: translateX(-50%);
+          display: flex; align-items: center; gap: 10px; pointer-events: none;
+        }
+        .mb-back {
+          display: flex; align-items: center; justify-content: center;
+          width: 36px; height: 36px; border-radius: 50%; border: none; padding: 0;
+          background: rgba(255,255,255,.1); color: #fff; cursor: pointer;
+          box-shadow: inset 0 0 0 1px rgba(255,255,255,.15); flex-shrink: 0;
+          transition: transform .1s;
+        }
+        .mb-back:hover { transform: scale(1.08); }
+        .mb-back:active { transform: scale(.95); }
+        .mb-planet-icon {
+          position: relative; width: 38px; height: 38px; flex-shrink: 0;
+          border-radius: 50%;
+          background: radial-gradient(circle at 34% 28%, #C9A9FF, #6E3CE0 80%);
+          border: 1.5px solid rgba(255,255,255,.4);
+          box-shadow: 0 0 18px rgba(124,77,238,.7), inset -4px -5px 8px rgba(0,0,0,.35);
+        }
+        .mb-planet-ring {
+          position: absolute; top: 50%; left: 50%; width: 52px; height: 17px;
+          transform: translate(-50%,-50%) rotate(-20deg);
+          border: 2.5px solid rgba(45,226,230,.7); border-radius: 50%;
+          box-shadow: 0 0 8px rgba(45,226,230,.6);
+        }
+        .mb-brand-title {
+          font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+          font-size: clamp(16px,4vw,20px); color: #fff; letter-spacing: .4px;
+          text-shadow: 0 0 16px rgba(124,77,238,.6); line-height: 1;
+        }
+        .mb-brand-sub {
+          font-family: 'Orbitron', sans-serif; font-weight: 600;
+          font-size: 8px; letter-spacing: 3px; color: #2DE2E6; margin-top: 4px;
+        }
       `}</style>
+
+      {darkChrome && <style>{`
+        /* ── Dark mode overrides for galaxy background ── */
+        .mt-dark-chrome .maf-head { color: rgba(255,255,255,.6) !important; }
+        .mt-dark-chrome .maf-question { color: #fff !important; }
+        .mt-dark-chrome .maf-footer { background: rgba(10,12,40,.55) !important; border-top-color: rgba(255,255,255,.08) !important; }
+        .mt-dark-chrome .maf-footer-tally { color: rgba(255,255,255,.55) !important; }
+        .mt-dark-chrome .maf-stats .maf-divider { color: rgba(255,255,255,.18) !important; }
+        .mt-dark-chrome .maf-summary-row { background: rgba(255,255,255,.06) !important; border-color: rgba(255,255,255,.1) !important; color: rgba(255,255,255,.85) !important; }
+        .mt-dark-chrome .maf-btn-secondary { background: rgba(255,255,255,.08) !important; border-color: rgba(255,255,255,.2) !important; color: #fff !important; }
+        .mt-dark-chrome .maf-next:disabled { background: rgba(255,255,255,.06) !important; color: rgba(255,255,255,.25) !important; box-shadow: none !important; }
+        .mt-dark-chrome .maf-feedback.ok { color: #4ADE80 !important; }
+        .mt-dark-chrome .maf-feedback.no { color: #F87171 !important; }
+        .mt-dark-chrome .maf-stat[style*="color: #1E293B"] span { color: #fff !important; }
+        .mt-dark-chrome .maf-stat[style*="color: #94A3B8"] span { color: rgba(255,255,255,.45) !important; }
+
+        /* Content card backgrounds → semi-transparent dark */
+        .mt-dark-chrome [style*="background: #F8FAFC"] { background: rgba(255,255,255,.06) !important; }
+        .mt-dark-chrome [style*="background: #EFF6FF"] { background: rgba(45,226,230,.12) !important; }
+        .mt-dark-chrome [style*="background: #FEF3C7"] { background: rgba(245,158,11,.12) !important; }
+        .mt-dark-chrome [style*="background: #DBEAFE"] { background: rgba(45,226,230,.08) !important; }
+        .mt-dark-chrome [style*="background: #FFFBEB"] { background: rgba(245,158,11,.08) !important; }
+        .mt-dark-chrome [style*="background: #FFF7ED"] { background: rgba(234,88,12,.08) !important; }
+        .mt-dark-chrome [style*="background: #F0FDF4"] { background: rgba(22,163,74,.08) !important; }
+        .mt-dark-chrome [style*="background: #F3F4F6"] { background: rgba(255,255,255,.04) !important; }
+        .mt-dark-chrome [style*="background: #F1F5F9"] { background: rgba(255,255,255,.04) !important; }
+        .mt-dark-chrome [style*="background: #fff"] { background: rgba(255,255,255,.06) !important; }
+        .mt-dark-chrome [style*="background: #ffffff"] { background: rgba(255,255,255,.06) !important; }
+        .mt-dark-chrome [style*="background: white"] { background: rgba(255,255,255,.06) !important; }
+        .mt-dark-chrome [style*="linear-gradient(180deg,#EFF6FF"] { background: transparent !important; }
+
+        /* Semi-transparent white bars → dark bars */
+        .mt-dark-chrome [style*="rgba(255,255,255"] { background: rgba(10,12,40,.55) !important; }
+
+        /* Content card text colors → light on dark */
+        .mt-dark-chrome [style*="color: #334155"] { color: rgba(255,255,255,.85) !important; }
+        .mt-dark-chrome [style*="color: #1E293B"] { color: #fff !important; }
+        .mt-dark-chrome [style*="color: #1E3A8A"] { color: #2DE2E6 !important; }
+        .mt-dark-chrome [style*="color: #475569"] { color: rgba(255,255,255,.7) !important; }
+        .mt-dark-chrome [style*="color: #64748B"] { color: rgba(255,255,255,.55) !important; }
+        .mt-dark-chrome [style*="color: #94A3B8"] { color: rgba(255,255,255,.45) !important; }
+        .mt-dark-chrome [style*="color: #5B6B7B"] { color: rgba(255,255,255,.55) !important; }
+        .mt-dark-chrome [style*="color: #9CA3AF"] { color: rgba(255,255,255,.35) !important; }
+
+        /* Content card borders */
+        .mt-dark-chrome [style*="solid #E2E8F0"],
+        .mt-dark-chrome [style*="solid #e2e8f0"] { border-color: rgba(255,255,255,.12) !important; }
+        .mt-dark-chrome [style*="solid #BFDBFE"],
+        .mt-dark-chrome [style*="solid #bfdbfe"] { border-color: rgba(45,226,230,.2) !important; }
+        .mt-dark-chrome [style*="solid #93C5FD"],
+        .mt-dark-chrome [style*="solid #93c5fd"] { border-color: rgba(45,226,230,.25) !important; }
+
+        /* SVG text elements on dark bg */
+        .mt-dark-chrome svg text { fill: rgba(255,255,255,.9) !important; }
+        .mt-dark-chrome svg text[fill="#16A34A"] { fill: #4ADE80 !important; }
+        .mt-dark-chrome svg text[fill="#F59E0B"] { fill: #FBBF24 !important; }
+        .mt-dark-chrome svg text[fill="#2563EB"] { fill: #2DE2E6 !important; }
+        .mt-dark-chrome svg text[fill="#3B82F6"] { fill: #2DE2E6 !important; }
+
+        /* SVG circle/line fills */
+        .mt-dark-chrome svg circle[fill="#CBD5E1"] { fill: rgba(255,255,255,.2) !important; }
+        .mt-dark-chrome svg line { stroke: rgba(255,255,255,.25) !important; }
+        .mt-dark-chrome svg path[stroke="#3B82F6"] { stroke: #2DE2E6 !important; }
+        .mt-dark-chrome svg line[stroke="#94A3B8"] { stroke: rgba(255,255,255,.3) !important; }
+
+        /* M2 drill / exam — Latih Diri */
+        .mt-dark-chrome .ld-drill-question { color: #fff !important; }
+        .mt-dark-chrome .ld-drill-summary-row { background: rgba(255,255,255,.06) !important; border-color: rgba(255,255,255,.1) !important; color: rgba(255,255,255,.85) !important; }
+        .mt-dark-chrome .ld-drill-btn-secondary { background: rgba(255,255,255,.08) !important; border-color: rgba(255,255,255,.2) !important; color: #fff !important; }
+
+        /* M2 exam — Cabar Minda */
+        .mt-dark-chrome .cm-exam-q { color: #fff !important; }
+        .mt-dark-chrome .cm-exam-feedback.ok { color: #4ADE80 !important; }
+        .mt-dark-chrome .cm-exam-feedback.no { color: #F87171 !important; }
+        .mt-dark-chrome .cm-results-badge { background: rgba(10,12,40,.5) !important; border-color: rgba(255,255,255,.15) !important; }
+        .mt-dark-chrome .cm-results-stat { background: rgba(10,12,40,.5) !important; }
+        .mt-dark-chrome .cm-results-row { border-bottom-color: rgba(255,255,255,.08) !important; }
+
+        /* M2 Level Picker (LatihanTambah / LatihanTolak) */
+        .mt-dark-chrome .lt-picker-heading { color: #fff !important; }
+        .mt-dark-chrome .lt-card { background: rgba(14,10,46,.82) !important; border-color: rgba(255,255,255,.18) !important; }
+        .mt-dark-chrome .lt-card-label { color: #fff !important; }
+        .mt-dark-chrome .lt-card-desc { color: rgba(255,255,255,.62) !important; }
+
+        /* M2 Level strip (Aras: Mudah / Tukar Aras) */
+        .mt-dark-chrome .lt-level-strip { background: rgba(14,10,46,.7) !important; border-bottom-color: rgba(255,255,255,.1) !important; color: rgba(255,255,255,.6) !important; }
+        .mt-dark-chrome .lt-level-label { color: rgba(255,255,255,.6) !important; }
+        .mt-dark-chrome .lt-level-label b { color: #fff !important; font-weight: 800; }
+        .mt-dark-chrome .lt-tukar-btn { color: #2DE2E6 !important; }
+
+        /* M2 Warnai answer options (plain mode — transparent bg, dark text) */
+        .mt-dark-chrome .word-opt-plain { background: rgba(255,255,255,.08) !important; color: #fff !important; }
+
+        /* Math Buddies: question prompt card */
+        .mt-dark-chrome .maf-question:not(:empty) {
+          background: rgba(28,25,64,.85) !important;
+          border: 1.5px solid rgba(45,226,230,.4) !important;
+          border-radius: 14px !important;
+          padding: 10px 16px !important;
+          box-shadow: 0 0 14px rgba(45,226,230,.18) !important;
+          color: #EAEAFF !important;
+        }
+      `}</style>}
+
+      {darkChrome && <style>{`@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Space+Grotesk:wght@700&display=swap');`}</style>}
 
       {background || <MatematikSceneBackground />}
 
-      <div className="mt-shell-top">
-        <button type="button" className="mt-top-back" onClick={onBack}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 12H5M12 19l-7-7 7-7"/>
-          </svg>
-        </button>
-        <div className="mt-top-stats">
-          <StatsBar subject="mt" />
+
+      {darkChrome ? (
+        <>
+          <div className="mb-header">
+            <button type="button" className="mb-back" onClick={onBack}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+              </svg>
+            </button>
+            <div className="mb-brand-center">
+              <div className="mb-planet-icon">
+                <div className="mb-planet-ring" />
+              </div>
+              <div>
+                <div className="mb-brand-title">Math Buddies</div>
+                <div className="mb-brand-sub">I M A N &nbsp; S P A C E &nbsp; L A B</div>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <div className="mt-shell-top">
+          <button type="button" className="mt-top-back" onClick={onBack}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+          </button>
+          <div className="mt-top-stats">
+            <StatsBar subject="mt" />
+          </div>
         </div>
-      </div>
+      )}
 
       {showToggle && (
         <div className="mt-shell-toggle">

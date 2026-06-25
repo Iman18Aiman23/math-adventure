@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import useGamification from '../../hooks/useGamification';
 
-export default function StatsBar({ subject = 'bm' }) {
+export default function StatsBar({ subject = 'bm', variant }) {
   const { loading, xp, gems, level, streak, hearts, maxHearts } = useGamification(subject);
   const prevXpRef = useRef(xp);
   const pulseRef = useRef(null);
@@ -14,6 +14,40 @@ export default function StatsBar({ subject = 'bm' }) {
     }
     prevXpRef.current = xp;
   }, [xp]);
+
+  if (variant === 'mb') {
+    const pill = {
+      display: 'flex', alignItems: 'center', gap: '5px',
+      fontFamily: "'Space Grotesk', 'Fredoka', sans-serif", fontWeight: 700, fontSize: '15px',
+      padding: '6px 11px', borderRadius: '12px', background: 'rgba(20,18,52,.6)',
+      whiteSpace: 'nowrap',
+    };
+    const val = loading ? '—' : null;
+    return (
+      <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div style={{ ...pill, color: '#FF6B6B', border: '1px solid rgba(255,107,107,.4)', boxShadow: '0 0 12px rgba(255,107,107,.18)' }}
+          aria-label={`Hearts: ${hearts} of ${maxHearts}`}>
+          ❤️ {val ?? hearts}
+        </div>
+        <div style={{ ...pill, color: '#2DE2E6', border: '1px solid rgba(45,226,230,.4)', boxShadow: '0 0 12px rgba(45,226,230,.18)' }}
+          aria-label={`${gems} gems`}>
+          💎 {val ?? gems}
+        </div>
+        <div style={{ ...pill, color: '#FFD23F', border: '1px solid rgba(255,210,63,.4)', boxShadow: '0 0 12px rgba(255,210,63,.18)' }}
+          aria-label={`${xp} experience points`}>
+          ⭐ {val ?? xp}
+        </div>
+        <div style={{ ...pill, color: '#FF9600', border: '1px solid rgba(255,150,0,.4)', boxShadow: '0 0 12px rgba(255,150,0,.18)' }}
+          aria-label={`Streak: ${streak}`}>
+          🔥 {val ?? streak}
+        </div>
+        <div style={{ ...pill, color: '#58CC02', border: '1px solid rgba(88,204,2,.4)', boxShadow: '0 0 12px rgba(88,204,2,.18)' }}
+          aria-label={`Level ${level}`}>
+          Lv {val ?? level}
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

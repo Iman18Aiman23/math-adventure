@@ -12,10 +12,10 @@ export default function SpaceBackground() {
         .mt-space {
           position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
           background:
-            radial-gradient(ellipse 60% 50% at 22% 14%, rgba(99,102,241,.38), transparent 60%),
-            radial-gradient(ellipse 55% 48% at 82% 76%, rgba(168,85,247,.32), transparent 60%),
-            radial-gradient(ellipse 75% 55% at 50% 108%, rgba(56,189,248,.22), transparent 62%),
-            linear-gradient(180deg,#0B1026 0%,#0A0A23 45%,#05030F 100%);
+            radial-gradient(ellipse 60% 50% at 22% 14%, rgba(124,77,238,.38), transparent 60%),
+            radial-gradient(ellipse 55% 48% at 82% 76%, rgba(255,79,216,.22), transparent 60%),
+            radial-gradient(ellipse 75% 55% at 50% 108%, rgba(45,226,230,.26), transparent 62%),
+            linear-gradient(180deg,#0A0826 0%,#0E0A2E 45%,#130A36 100%);
         }
         .mt-space-stars, .mt-space-stars-2, .mt-space-stars-3 { position: absolute; inset: 0; background-repeat: repeat; }
         .mt-space-stars {

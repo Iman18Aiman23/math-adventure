@@ -3,6 +3,7 @@ import confetti from 'canvas-confetti';
 import { playSound } from '../../../utils/soundManager';
 import MatematikActivityFrame from './MatematikActivityFrame';
 import { MatematikNavContext } from './MatematikNavContext';
+import useGamification from '../../../hooks/useGamification';
 
 const BOX_COLORS = [
   { bg: '#F87171', border: '#DC2626' },
@@ -1285,7 +1286,9 @@ function WordOptionsGrid({ options, answered, selected, answer, handlePick, them
         else if (plain) { bg = 'transparent'; bd = c.border; clr = '#1E293B'; txt = opt.value; anim = 'none'; }
         else { bg = c.bg; bd = c.border; clr = '#fff'; txt = opt.value; anim = 'none'; }
         return (
-          <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={answered}
+          <button key={opt.id} type="button"
+            className={plain && !answered ? 'word-opt-plain' : undefined}
+            onClick={() => handlePick(opt.id)} disabled={answered}
             style={{
               padding: 'clamp(10px, 1.6vmin, 18px) clamp(16px, 2.4vmin, 28px)',
               border: 'none',
@@ -3527,15 +3530,8 @@ function BuangKumpulanContent({ q, ctx }) {
                 const idx = start + c;
                 const crossed = idx < q.b;
                 return (
-                  <div key={c} style={{ position: 'relative', fontSize: 'clamp(22px, 5vmin, 48px)', lineHeight: 1.15 }}>
-                    <span>{q.icon}</span>
-                    {crossed && (
-                      <span style={{
-                        position: 'absolute', left: 0, top: '50%', width: '100%', height: '3px',
-                        background: '#EF4444', transform: 'translateY(-50%) rotate(-15deg)',
-                        borderRadius: 2,
-                      }} />
-                    )}
+                  <div key={c} style={{ fontSize: 'clamp(22px, 5vmin, 48px)', lineHeight: 1.15 }}>
+                    <span style={crossed ? { filter: 'grayscale(1)', opacity: 0.35 } : undefined}>{q.icon}</span>
                   </div>
                 );
               })}
@@ -4122,7 +4118,7 @@ function LevelPicker({ onSelect, items = LT_LEVELS }) {
         }
       `}</style>
 
-      <div style={{
+      <div className="lt-picker-heading" style={{
         fontSize: 'clamp(22px, 4vmin, 34px)', fontWeight: 800, color: '#1E293B',
         textAlign: 'center',
       }}>
@@ -4148,11 +4144,11 @@ function LevelPicker({ onSelect, items = LT_LEVELS }) {
             <LevelBars bars={lv.bars} color={lv.color} />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{
+            <div className="lt-card-label" style={{
               fontSize: 'clamp(18px, 3vmin, 26px)', fontWeight: 800, color: '#1E293B',
               lineHeight: 1.2,
             }}>{lv.label}</div>
-            <div style={{
+            <div className="lt-card-desc" style={{
               fontFamily: "'Fredoka', sans-serif", fontWeight: 600,
               fontSize: 'clamp(13px, 2vmin, 17px)', color: '#64748B',
             }}>{lv.desc}</div>
@@ -4175,7 +4171,7 @@ export function LatihanTambahExplore({ data, language, theme, onExit }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
       {/* Level strip — ≤ ~40px */}
-      <div style={{
+      <div className="lt-level-strip" style={{
         flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: 'clamp(4px, 0.8vmin, 8px) clamp(16px, 2.4vmin, 34px)',
         background: 'rgba(255,255,255,.7)', backdropFilter: 'blur(8px)',
@@ -4183,8 +4179,8 @@ export function LatihanTambahExplore({ data, language, theme, onExit }) {
         fontFamily: "'Fredoka', sans-serif", fontWeight: 600,
         fontSize: 'clamp(13px, 1.8vmin, 18px)', color: '#64748B',
       }}>
-        <span>Aras: <b style={{ color: '#1E293B' }}>{LEVEL_LABELS[level]}</b></span>
-        <button type="button" onClick={() => setLevel(null)}
+        <span className="lt-level-label">Aras: <b>{LEVEL_LABELS[level]}</b></span>
+        <button type="button" className="lt-tukar-btn" onClick={() => setLevel(null)}
           style={{
             border: 'none', background: 'transparent', cursor: 'pointer',
             fontFamily: "'Fredoka', sans-serif", fontWeight: 600,
@@ -4709,7 +4705,7 @@ export function LatihanTolakExplore({ data, language, theme, onExit }) {
   }
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
-      <div style={{
+      <div className="lt-level-strip" style={{
         flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: 'clamp(4px, 0.8vmin, 8px) clamp(16px, 2.4vmin, 34px)',
         background: 'rgba(255,255,255,.7)', backdropFilter: 'blur(8px)',
@@ -4717,8 +4713,8 @@ export function LatihanTolakExplore({ data, language, theme, onExit }) {
         fontFamily: "'Fredoka', sans-serif", fontWeight: 600,
         fontSize: 'clamp(13px, 1.8vmin, 18px)', color: '#64748B',
       }}>
-        <span>Aras: <b style={{ color: '#1E293B' }}>{LEVEL_LABELS[level]}</b></span>
-        <button type="button" onClick={() => setLevel(null)}
+        <span className="lt-level-label">Aras: <b>{LEVEL_LABELS[level]}</b></span>
+        <button type="button" className="lt-tukar-btn" onClick={() => setLevel(null)}
           style={{
             border: 'none', background: 'transparent', cursor: 'pointer',
             fontFamily: "'Fredoka', sans-serif", fontWeight: 600,
@@ -5492,6 +5488,12 @@ export function SelesaikanM2Explore({ data, language, theme, onExit }) {
 
   // ── SVG wheel angles (0° at top, clockwise) ──
   const SPOKE_ANGLES = [0, 60, 120, 180, 240, 300];
+  // Precomputed near-edge distance in SVG units (viewBox 0-100) for each spoke:
+  // Cards at R=34.5, half-width=13, half-height=8.75.
+  // Vertical spokes (0°/180°): line hits the top/bottom face → t = 34.5 - 8.75 = 25.75
+  // Diagonal spokes (60°/120°/240°/300°): line hits the side face → t ≈ (34.5×cos - 13)/cos ≈ 19.5
+  // Subtract 1 unit so the line stops cleanly just outside each card.
+  const SPOKE_END_R = [24.75, 18.5, 18.5, 24.75, 18.5, 18.5];
 
   // ── Keypad press handlers ──
   const pressDigit = (d) => setValue(v => (v.length < 3 ? v + d : v));
@@ -5548,9 +5550,10 @@ export function SelesaikanM2Explore({ data, language, theme, onExit }) {
         .sm2-dialog {
           position: relative; width: 100%; max-width: 360px; max-height: 100%;
           display: flex; flex-direction: column; align-items: center; gap: clamp(10px, 1.8vmin, 18px);
-          background: #fff; border-radius: clamp(16px, 2.4vmin, 24px);
+          background: rgba(10,12,46,.96); border-radius: clamp(16px, 2.4vmin, 24px);
+          border: 1px solid rgba(255,255,255,.14);
           padding: clamp(16px, 3vmin, 28px);
-          box-shadow: 0 20px 50px -12px rgba(15, 23, 42, .5);
+          box-shadow: 0 20px 50px -12px rgba(0,0,0,.7), 0 0 40px rgba(99,102,241,.18);
           animation: sm2-dialog-in .26s cubic-bezier(.34,1.56,.64,1);
         }
         .sm2-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(5px, 0.9vmin, 9px); width: 100%; }
@@ -5627,19 +5630,21 @@ export function SelesaikanM2Explore({ data, language, theme, onExit }) {
               <svg viewBox="0 0 100 100" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
                 {SPOKE_ANGLES.map((angle, i) => {
                   const rad = (angle - 90) * Math.PI / 180;
-                  const x2 = 50 + 30 * Math.cos(rad);
-                  const y2 = 50 + 30 * Math.sin(rad);
-                  return <line key={i} x1="50" y1="50" x2={x2} y2={y2} stroke={solved[i] ? '#86EFAC' : '#93C5FD'} strokeWidth="1.6" strokeLinecap="round" />;
+                  const x1 = 50 + 14 * Math.cos(rad);
+                  const y1 = 50 + 14 * Math.sin(rad);
+                  const x2 = 50 + SPOKE_END_R[i] * Math.cos(rad);
+                  const y2 = 50 + SPOKE_END_R[i] * Math.sin(rad);
+                  return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={solved[i] ? 'rgba(74,222,128,.7)' : 'rgba(99,130,255,.55)'} strokeWidth="1.6" strokeLinecap="round" />;
                 })}
-                <circle cx="50" cy="50" r="13" fill="#fff" stroke="#1E3A8A" strokeWidth="2.4" />
+                <circle cx="50" cy="50" r="13" fill="rgba(10,12,50,.92)" stroke="#2DE2E6" strokeWidth="2.4" />
               </svg>
               {/* Center number */}
               <div style={{
                 position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%,-50%)',
                 display: 'flex', flexDirection: 'column', alignItems: 'center', pointerEvents: 'none',
               }}>
-                <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: wheelSize * 0.13, color: '#1E3A8A', lineHeight: 1 }}>{N}</span>
-                <span style={{ fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: Math.max(7, wheelSize * 0.035), color: '#64748B' }}>Pusat</span>
+                <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: wheelSize * 0.13, color: '#fff', lineHeight: 1, textShadow: '0 0 10px rgba(45,226,230,.5)' }}>{N}</span>
+                <span style={{ fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: Math.max(7, wheelSize * 0.035), color: '#7DD3FC' }}>Pusat</span>
               </div>
               {/* Spoke cards (absolute px positions) */}
               {spokes.map((spoke, i) => {
@@ -5653,9 +5658,9 @@ export function SelesaikanM2Explore({ data, language, theme, onExit }) {
                 const isActive = activeSpoke === i;
                 const isSolved = solved[i];
                 const isShake = shakeIdx === i;
-                let bg = '#fff', bd = accent, clr = dark;
-                if (isSolved) { bg = '#DCFCE7'; bd = '#16A34A'; clr = '#166534'; }
-                if (isActive) { bg = '#EFF6FF'; bd = dark; }
+                let bg = 'rgba(255,255,255,.07)', bd = 'rgba(147,198,255,.45)', clr = '#C7D2FE';
+                if (isSolved) { bg = 'rgba(74,222,128,.15)'; bd = '#4ADE80'; clr = '#4ADE80'; }
+                if (isActive) { bg = 'rgba(99,102,241,.22)'; bd = '#818CF8'; }
                 return (
                   <div key={spoke.id} style={{
                     position: 'absolute', left: cxPx, top: cyPx, width: cardW, height: cardH,
@@ -5670,16 +5675,17 @@ export function SelesaikanM2Explore({ data, language, theme, onExit }) {
                         display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center',
                         padding: '2px 4px', boxSizing: 'border-box',
                         cursor: isSolved ? 'default' : 'pointer',
-                        boxShadow: isActive ? `0 0 0 3px ${accent}44` : '0 2px 6px rgba(0,0,0,0.08)',
+                        boxShadow: isActive ? `0 0 0 3px rgba(129,140,248,.5), 0 0 18px rgba(99,102,241,.35)` : isSolved ? '0 0 12px rgba(74,222,128,.25)' : '0 0 8px rgba(0,0,0,.35)',
                         transition: 'background .15s ease, border-color .15s ease',
                         WebkitTapHighlightColor: 'transparent', overflow: 'hidden',
                       }}>
                       {isSolved ? (
-                        <span style={{ fontSize: cardH * 0.6, color: '#16A34A', fontWeight: 900 }}>✓</span>
+                        <span style={{ fontSize: cardH * 0.6, color: '#4ADE80', fontWeight: 900, textShadow: '0 0 8px rgba(74,222,128,.5)' }}>✓</span>
                       ) : (
                         <span style={{
                           fontFamily: "'Baloo 2',sans-serif", fontWeight: 800,
                           fontSize: Math.max(9, wheelSize * 0.045), color: clr, lineHeight: 1.1,
+                          textShadow: isActive ? '0 0 8px rgba(129,140,248,.6)' : 'none',
                         }}>{spokeLabels[i]}</span>
                       )}
                     </div>
@@ -5696,25 +5702,25 @@ export function SelesaikanM2Explore({ data, language, theme, onExit }) {
                     style={{
                       position: 'absolute', top: 'clamp(8px, 1.4vmin, 14px)', right: 'clamp(8px, 1.4vmin, 14px)',
                       width: 'clamp(28px, 4vmin, 36px)', height: 'clamp(28px, 4vmin, 36px)',
-                      border: 'none', borderRadius: '50%', background: '#F1F5F9', color: '#64748B',
+                      border: 'none', borderRadius: '50%', background: 'rgba(255,255,255,.1)', color: '#94A3B8',
                       cursor: 'pointer', fontFamily: "'Baloo 2',sans-serif", fontWeight: 800,
                       fontSize: 'clamp(14px, 2.2vmin, 18px)', lineHeight: 1, WebkitTapHighlightColor: 'transparent',
                     }}>✕</button>
                   <div style={{
                     fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 2.2vmin, 17px)',
-                    color: accent, textTransform: 'uppercase', letterSpacing: '.04em',
+                    color: '#818CF8', textTransform: 'uppercase', letterSpacing: '.04em',
                   }}>{spokeLabels[activeSpoke]}</div>
                   <div style={{
                     fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(24px, 5vmin, 40px)',
-                    color: dark, textAlign: 'center', lineHeight: 1.3,
+                    color: '#fff', textAlign: 'center', lineHeight: 1.3,
                   }}>{spokes[activeSpoke].display}</div>
                   <div style={{
                     minWidth: 'clamp(96px, 18vmin, 140px)', height: 'clamp(48px, 6.6vmin, 66px)',
-                    border: '3px solid #CBD5E1', borderRadius: 'clamp(10px, 1.4vmin, 15px)',
-                    background: '#F9FAFB', boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.06)',
+                    border: '2px solid rgba(255,255,255,.2)', borderRadius: 'clamp(10px, 1.4vmin, 15px)',
+                    background: 'rgba(255,255,255,.07)', boxShadow: 'inset 0 2px 6px rgba(0,0,0,.2)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: 'clamp(28px, 4.8vmin, 44px)',
-                    color: value ? '#334155' : '#CBD5E1', padding: '0 16px',
+                    color: value ? '#fff' : 'rgba(255,255,255,.25)', padding: '0 16px',
                   }}>{value || '?'}</div>
                   <div className="sm2-keypad">
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
@@ -5893,86 +5899,129 @@ const LD_TYPE_LABELS = {
  * Slice 2.F — Latih Diri M2 (type picker + 10-question drill)
  * ════════════════════════════════════════════════════════════════════════ */
 
+const SECTOR_META = {
+  'kenali-tambah':   { icon: '⚡', ac: '#00d2ff', cardCls: 'ld-card-cyan'  },
+  'latihan-tambah':  { icon: '⚙️', ac: '#00d2ff', cardCls: 'ld-card-cyan'  },
+  'kenali-tolak':    { icon: '☄️', ac: '#ff5b7f', cardCls: 'ld-card-tolak' },
+  'latihan-tolak':   { icon: '🛡️', ac: '#ff5b7f', cardCls: 'ld-card-tolak' },
+  'cerita':          { icon: '🛰️', ac: '#ffd000', cardCls: 'ld-card-mixed' },
+  'tambah-berulang': { icon: '🌌', ac: '#ffd000', cardCls: 'ld-card-mixed' },
+};
+
 export function LatihDiriM2Explore({ data, language, theme, onExit }) {
   const C = theme || {};
   const accent = C.accent || '#3B82F6';
   const dark = C.dark || '#1E3A8A';
   const cd = C.cd || '#1D4ED8';
 
+  const { xp, streak, loading: gLoading } = useGamification('mt');
   const [selectedType, setSelectedType] = useState(null);
 
   if (!selectedType) {
-    /* ── Phase A: Type Picker ── */
+    /* ── Phase A: Mission Control Grid ── */
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: '#F8FAFC' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%' }}>
         <style>{`
-          .ld-section-chip {
-            display: inline-block; border-radius: 999px;
-            padding: 4px 14px; font-family: 'Baloo 2', sans-serif;
-            font-weight: 800; font-size: clamp(13px, 1.6vmin, 16px); color: #fff;
-            margin-bottom: 8px;
+          .ld-modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+            gap: 10px;
           }
-          .ld-type-card {
-            background: #fff; border-radius: 14px; padding: 12px 16px;
-            display: flex; align-items: center; gap: 12px; cursor: pointer;
-            transition: all 0.12s ease; -webkit-tap-highlight-color: transparent;
-            border-left: 4px solid #CBD5E1; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+          .ld-module-card {
+            background: rgba(20,15,38,.6); backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,.06); border-radius: 12px;
+            padding: 12px 14px; display: flex; flex-direction: column;
+            justify-content: space-between; min-height: 85px; cursor: pointer;
+            transition: all .22s cubic-bezier(.4,0,.2,1);
+            -webkit-tap-highlight-color: transparent;
           }
-          .ld-type-card:active { transform: scale(0.97); }
+          .ld-module-card:active { transform: scale(.97); }
+          .ld-module-name {
+            font-size: clamp(13px,1.8vmin,15px); font-weight: 600; color: #fff;
+            margin: 0 0 4px; line-height: 1.2;
+            font-family: 'Space Grotesk', 'Baloo 2', sans-serif;
+          }
+          .ld-module-desc {
+            font-size: clamp(10px,1.3vmin,12px); color: #9fa0cb; margin: 0 0 8px;
+            line-height: 1.3; font-family: 'Fredoka', sans-serif; flex: 1;
+          }
+          .ld-btn-launch {
+            align-self: flex-end; cursor: pointer;
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            padding: 4px 12px; border-radius: 6px; letter-spacing: .5px;
+            transition: all .2s ease; font-family: 'Baloo 2', sans-serif;
+          }
+          @media (hover: hover) {
+            .ld-card-cyan:hover { border-color: #7f56da; box-shadow: 0 0 15px rgba(127,86,218,.2); transform: translateY(-2px); background: rgba(31,23,61,.8); }
+            .ld-card-cyan:hover .ld-btn-launch { background: #7f56da !important; border-color: #9b72f3 !important; color: #fff !important; box-shadow: 0 0 8px rgba(127,86,218,.6); }
+            .ld-card-tolak:hover { border-color: #ff5b7f; box-shadow: 0 0 15px rgba(255,91,127,.2); transform: translateY(-2px); background: rgba(31,23,61,.8); }
+            .ld-card-tolak:hover .ld-btn-launch { background: #ff5b7f !important; border-color: #ff5b7f !important; color: #fff !important; box-shadow: 0 0 8px rgba(255,91,127,.6); }
+            .ld-card-mixed:hover { border-color: #ffd000; box-shadow: 0 0 15px rgba(255,208,0,.2); transform: translateY(-2px); background: rgba(31,23,61,.8); }
+            .ld-card-mixed:hover .ld-btn-launch { background: #ffd000 !important; border-color: #ffd000 !important; color: #000 !important; box-shadow: 0 0 8px rgba(255,208,0,.6); }
+          }
         `}</style>
-        {/* Top bar */}
-        <div style={{
-          flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: 'clamp(8px, 1.2vmin, 14px) clamp(14px, 2.4vmin, 24px)',
-          background: 'rgba(255,255,255,.85)', backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid #E2E8F0',
-        }}>
-          <button type="button" onClick={onExit}
-            style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: 'clamp(14px, 1.8vmin, 18px)', color: dark, padding: '4px 0', WebkitTapHighlightColor: 'transparent' }}>
-            ← Kembali
-          </button>
-          <div style={{
-            fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.2vmin, 22px)', color: dark, textAlign: 'center',
-          }}>
-            Latih Diri
-          </div>
-          <div style={{ width: 'clamp(60px, 10vmin, 100px)' }} />
-        </div>
-        {/* Scrollable picker */}
-        <div style={{ flex: 1, overflow: 'auto', padding: 'clamp(12px, 2vmin, 24px)' }}>
-          <div style={{ maxWidth: 580, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'clamp(14px, 2.4vmin, 24px)' }}>
-            <div style={{
-              fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(20px, 3vmin, 28px)', color: dark, textAlign: 'center',
-            }}>
-              Pilih Jenis Latihan
-            </div>
-            {LD_SECTIONS.map(section => (
-              <div key={section.id}>
-                <div className="ld-section-chip" style={{ background: section.color }}>
-                  {section.name}
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  {section.types.map(typeId => {
-                    const info = LD_TYPE_LABELS[typeId];
-                    return (
-                      <div key={typeId} className="ld-type-card"
-                        onClick={() => setSelectedType(typeId)}
-                        style={{ borderLeftColor: section.color }}>
-                        <div style={{ flex: 1 }}>
-                          <div style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(13px, 1.6vmin, 16px)', color: '#1E293B' }}>
-                            {info.label}
-                          </div>
-                          <div style={{ fontFamily: "'Fredoka',sans-serif", fontWeight: 500, fontSize: 'clamp(10px, 1.3vmin, 13px)', color: '#94A3B8' }}>
-                            {info.hint}
-                          </div>
-                        </div>
-                        <span style={{ fontSize: 'clamp(16px, 2vmin, 22px)', color: section.color }}>→</span>
-                      </div>
-                    );
-                  })}
-                </div>
+        <div style={{ flex: 1, overflow: 'auto', padding: 'clamp(10px,2vmin,20px)' }}>
+          <div style={{ maxWidth: 720, margin: '0 auto' }}>
+            {/* Title row + score badges */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 20 }}>
+              <div style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px,2.4vmin,22px)', color: '#fff', opacity: .9 }}>
+                Pilih Jenis Latihan
               </div>
-            ))}
+              {!gLoading && (
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
+                  {[
+                    { icon: '⭐', val: xp,     c: '#FFD23F', b: 'rgba(255,210,63,.4)', g: 'rgba(255,210,63,.18)' },
+                    { icon: '⚡', val: streak, c: '#2DE2E6', b: 'rgba(45,226,230,.4)',  g: 'rgba(45,226,230,.18)' },
+                  ].map(({ icon, val, c, b, g }) => (
+                    <div key={icon} style={{
+                      display: 'flex', alignItems: 'center', gap: 5,
+                      fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700,
+                      fontSize: 'clamp(12px,1.6vmin,14px)', color: c,
+                      padding: '5px 11px', borderRadius: 10,
+                      background: 'rgba(20,18,52,.6)', border: `1px solid ${b}`,
+                      boxShadow: `0 0 12px ${g}`,
+                    }}>{icon} {val}</div>
+                  ))}
+                </div>
+              )}
+            </div>
+            {/* Sector sections */}
+            {LD_SECTIONS.map((section, si) => {
+              const meta = SECTOR_META[section.id] || { icon: '▶', ac: section.color, cardCls: 'ld-card-cyan' };
+              return (
+                <div key={section.id} style={{ marginBottom: si < LD_SECTIONS.length - 1 ? 26 : 8 }}>
+                  {/* Sector title with gradient line */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, paddingLeft: 2 }}>
+                    <span style={{
+                      fontFamily: "'Baloo 2',sans-serif", fontWeight: 700,
+                      fontSize: 'clamp(12px,1.5vmin,14px)', textTransform: 'uppercase',
+                      letterSpacing: 2, color: meta.ac, whiteSpace: 'nowrap',
+                    }}>{meta.icon} {section.name}</span>
+                    <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${meta.ac}66, transparent)` }} />
+                  </div>
+                  {/* Card grid */}
+                  <div className="ld-modules-grid">
+                    {section.types.map(typeId => {
+                      const info = LD_TYPE_LABELS[typeId];
+                      return (
+                        <div key={typeId} className={`ld-module-card ${meta.cardCls}`} onClick={() => setSelectedType(typeId)}>
+                          <div>
+                            <p className="ld-module-name">{info.label}</p>
+                            <p className="ld-module-desc">{info.hint}</p>
+                          </div>
+                          <button type="button" className="ld-btn-launch" style={{
+                            background: `${meta.ac}25`,
+                            border: `1px solid ${meta.ac}66`,
+                            color: meta.ac,
+                          }}>Mula</button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -6049,11 +6098,11 @@ function M2DrillScreen({ selectedType, theme, onBackToPicker }) {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%' }}>
       <style>{`
         .ld-drill-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-        .maf-footer { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: clamp(8px,1.2vmin,15px) clamp(16px,2.4vmin,34px); background: rgba(255,255,255,.85); backdrop-filter: blur(12px); border-top: 1px solid #E2E8F0; }
-        .maf-footer-tally { display: flex; align-items: center; gap: 6px 10px; flex-wrap: wrap; font-family: 'Fredoka',sans-serif; font-size: clamp(13px,1.7vmin,18px); font-weight: 600; color: #64748B; }
+        .maf-footer { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: clamp(8px,1.2vmin,15px) clamp(16px,2.4vmin,34px); background: rgba(14,10,46,.85); backdrop-filter: blur(12px); border-top: 1px solid rgba(255,255,255,.1); }
+        .maf-footer-tally { display: flex; align-items: center; gap: 6px 10px; flex-wrap: wrap; font-family: 'Fredoka',sans-serif; font-size: clamp(13px,1.7vmin,18px); font-weight: 600; color: rgba(255,255,255,.6); }
         .maf-stats { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
         .maf-stats .maf-stat { display: inline-flex; align-items: center; gap: 3px; }
-        .maf-stats .maf-divider { color: #CBD5E1; font-weight: 400; }
+        .maf-stats .maf-divider { color: rgba(255,255,255,.2); font-weight: 400; }
         .ld-drill-body {
           min-height: 100%; box-sizing: border-box;
           display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -6066,38 +6115,40 @@ function M2DrillScreen({ selectedType, theme, onBackToPicker }) {
         }
         .ld-drill-question {
           font-family: 'Baloo 2', sans-serif; font-weight: 800;
-          font-size: clamp(22px, 4.6vmin, 44px); color: #1E293B; text-align: center; line-height: 1.15;
+          font-size: clamp(22px, 4.6vmin, 44px); color: #fff; text-align: center; line-height: 1.15;
         }
         .ld-drill-feedback {
           font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(17px, 2.6vmin, 28px);
           text-align: center; min-height: clamp(24px, 3.4vmin, 38px);
           display: flex; align-items: center; justify-content: center;
+          color: rgba(255,255,255,.75);
         }
-        .ld-drill-feedback.ok { color: #16A34A; }
-        .ld-drill-feedback.no { color: #DC2626; }
+        .ld-drill-feedback.ok { color: #7CFF6B; }
+        .ld-drill-feedback.no { color: #FF5C8A; }
         .ld-drill-next {
           padding: clamp(11px, 1.5vmin, 17px) clamp(28px, 4vmin, 52px); border: none; border-radius: 999px;
-          background: ${accent}; color: #fff;
+          background: linear-gradient(135deg, ${accent}, #FF4FD8);
+          color: #0A0826;
           font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(17px, 2.6vmin, 26px);
-          cursor: pointer; box-shadow: 0 4px 0 ${cd}; transition: transform .1s ease;
+          cursor: pointer; box-shadow: 0 4px 16px ${accent}55; transition: transform .1s ease, box-shadow .1s ease;
           -webkit-tap-highlight-color: transparent;
         }
-        .ld-drill-next:active { transform: translateY(2px); }
+        .ld-drill-next:active { transform: translateY(2px); box-shadow: 0 2px 8px ${accent}44; }
         .ld-drill-done-emoji { font-size: clamp(52px, 14vmin, 120px); line-height: 1; }
         .ld-drill-summary { display: flex; flex-direction: column; gap: clamp(8px, 1.4vmin, 14px); width: 100%; max-width: 340px; }
         .ld-drill-summary-row {
           display: flex; align-items: center; justify-content: space-between;
-          background: #fff; border: 2px solid #E2E8F0; border-radius: 14px;
+          background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); border-radius: 14px;
           padding: clamp(10px, 1.6vmin, 16px) clamp(16px, 2.4vmin, 26px);
-          font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(16px, 2.4vmin, 22px); color: #334155;
+          font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(16px, 2.4vmin, 22px); color: rgba(255,255,255,.9);
         }
         .ld-drill-summary-row b { font-size: clamp(20px, 3vmin, 28px); }
-        .ld-drill-summary-row.ok b { color: #16A34A; }
-        .ld-drill-summary-row.no b { color: #DC2626; }
+        .ld-drill-summary-row.ok b { color: #7CFF6B; }
+        .ld-drill-summary-row.no b { color: #FF5C8A; }
         .ld-drill-complete-actions { display: flex; flex-wrap: wrap; gap: clamp(10px, 1.6vmin, 16px); justify-content: center; }
         .ld-drill-btn-secondary {
           padding: clamp(11px, 1.5vmin, 17px) clamp(24px, 3.4vmin, 44px); border-radius: 999px;
-          border: 2px solid ${accent}; background: #fff; color: ${dark};
+          border: 2px solid ${accent}; background: rgba(45,226,230,.1); color: ${accent};
           font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(16px, 2.4vmin, 24px);
           cursor: pointer; -webkit-tap-highlight-color: transparent;
         }
@@ -6106,21 +6157,22 @@ function M2DrillScreen({ selectedType, theme, onBackToPicker }) {
       <div style={{
         flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: 'clamp(4px, 0.8vmin, 10px) clamp(12px, 2vmin, 20px)',
-        background: `${section?.color || accent}18`, borderBottom: `1px solid ${section?.color || accent}44`,
+        background: 'rgba(14,10,46,.75)', borderBottom: `1px solid ${section?.color || accent}44`,
       }}>
         <div style={{
           display: 'flex', alignItems: 'center', gap: 6,
           fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(13px, 1.6vmin, 16px)',
-          color: section?.color || dark,
+          color: section?.color || accent,
         }}>
           <span style={{
             display: 'inline-block', width: 8, height: 8, borderRadius: 4,
             background: section?.color || accent,
+            boxShadow: `0 0 6px ${section?.color || accent}`,
           }} />
           {info?.label || selectedType}
           <span style={{
             fontFamily: "'Fredoka',sans-serif", fontWeight: 500, fontSize: 'clamp(10px, 1.3vmin, 13px)',
-            color: '#64748B', marginLeft: 4,
+            color: 'rgba(255,255,255,.5)', marginLeft: 4,
           }}>
             {idx + 1}/10
           </span>
@@ -6128,7 +6180,7 @@ function M2DrillScreen({ selectedType, theme, onBackToPicker }) {
         <button type="button" onClick={handleBackToPicker}
           style={{
             border: 'none', background: 'transparent', cursor: 'pointer',
-            fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(11px, 1.4vmin, 14px)', color: dark,
+            fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(11px, 1.4vmin, 14px)', color: accent,
             display: 'flex', alignItems: 'center', gap: 3, padding: '4px 0', WebkitTapHighlightColor: 'transparent',
           }}>
           Tukar Jenis ⟲
@@ -6175,21 +6227,21 @@ function M2DrillScreen({ selectedType, theme, onBackToPicker }) {
             <div className="maf-footer-tally">
               <span>Jawapan :</span>
               <span className="maf-stats">
-                <span className="maf-stat" style={{ color: '#1E293B' }}>
-                  <span>✅</span><span>{correct}</span><span style={{ color: '#94A3B8', fontWeight: 500 }}>Betul</span>
+                <span className="maf-stat" style={{ color: '#7CFF6B' }}>
+                  <span>✅</span><span>{correct}</span><span style={{ color: 'rgba(255,255,255,.45)', fontWeight: 500 }}>Betul</span>
                 </span>
                 <span className="maf-divider">|</span>
-                <span className="maf-stat" style={{ color: '#EF4444' }}>
-                  <span>❌</span><span>{wrong}</span><span style={{ color: '#94A3B8', fontWeight: 500 }}>salah</span>
+                <span className="maf-stat" style={{ color: '#FF5C8A' }}>
+                  <span>❌</span><span>{wrong}</span><span style={{ color: 'rgba(255,255,255,.45)', fontWeight: 500 }}>salah</span>
                 </span>
               </span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
               <span style={{ fontSize: 18 }}>🏆</span>
-              <div style={{ width: 70, height: 7, background: 'rgba(204,119,0,0.15)', borderRadius: 4, overflow: 'hidden' }}>
-                <div style={{ width: `${(progressInGroup / 10) * 100}%`, height: '100%', background: '#FFB800', borderRadius: 4, transition: 'width .3s ease-out' }} />
+              <div style={{ width: 70, height: 7, background: 'rgba(255,210,63,.15)', borderRadius: 4, overflow: 'hidden' }}>
+                <div style={{ width: `${(progressInGroup / 10) * 100}%`, height: '100%', background: 'linear-gradient(90deg,#FFD23F,#FFAB00)', borderRadius: 4, transition: 'width .3s ease-out', boxShadow: '0 0 6px #FFD23F88' }} />
               </div>
-              <span style={{ color: '#CC7700', fontSize: '0.85rem', fontWeight: 900, minWidth: 28, textAlign: 'right' }}>
+              <span style={{ color: '#FFD23F', fontSize: '0.85rem', fontWeight: 900, minWidth: 28, textAlign: 'right' }}>
                 {progressInGroup}/10
               </span>
             </div>
@@ -6322,38 +6374,40 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
   };
 
   if (phase === 'start') {
-    const passMark = 25;
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'linear-gradient(180deg,#EFF6FF 0%,#DBEAFE 50%,#BFDBFE 100%)' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'transparent' }}>
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'clamp(24px, 4vmin, 48px) clamp(16px, 3vmin, 32px)', gap: 'clamp(16px, 2.6vmin, 32px)' }}>
-          <div style={{ fontSize: 'clamp(48px, 10vmin, 80px)', lineHeight: 1 }}>🧠</div>
+          <div style={{ fontSize: 'clamp(48px, 10vmin, 80px)', lineHeight: 1, filter: 'drop-shadow(0 0 20px rgba(255,79,216,.4))' }}>🧠</div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: 'clamp(28px, 5vmin, 44px)', color: dark, lineHeight: 1.2 }}>
+            <div style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: 'clamp(28px, 5vmin, 44px)', color: '#fff', lineHeight: 1.2, textShadow: '0 0 20px rgba(255,79,216,.5)' }}>
               Cabar Minda
             </div>
-            <div style={{ fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: 'clamp(14px, 2vmin, 18px)', color: '#64748B', marginTop: 4 }}>
+            <div style={{ fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: 'clamp(14px, 2vmin, 18px)', color: 'rgba(199,210,254,.7)', marginTop: 4 }}>
               Modul 2 — Tambah dan Tolak
             </div>
           </div>
           <div style={{ display: 'flex', gap: 'clamp(8px, 1.6vmin, 16px)', flexWrap: 'wrap', justifyContent: 'center' }}>
             {[
-              { label: '31 Soalan', color: dark },
-              { label: '30 Minit', color: '#F97316' },
-              { label: 'Lulus 80% (25/31)', color: '#16A34A' },
+              { label: '31 Soalan', color: '#818CF8' },
+              { label: '30 Minit', color: '#FB923C' },
+              { label: 'Lulus 80% (25/31)', color: '#4ADE80' },
             ].map(chip => (
               <div key={chip.label} style={{
-                padding: '6px 16px', borderRadius: 999, background: '#fff',
-                border: `2px solid ${chip.color}44`, color: chip.color,
+                padding: '6px 16px', borderRadius: 999,
+                background: 'rgba(255,255,255,.07)', backdropFilter: 'blur(8px)',
+                border: `1px solid ${chip.color}55`, color: chip.color,
                 fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(13px, 1.8vmin, 17px)',
               }}>{chip.label}</div>
             ))}
           </div>
           <div style={{
-            background: '#fff', borderRadius: 'clamp(14px, 2vmin, 20px)', padding: 'clamp(14px, 2.4vmin, 24px)',
-            maxWidth: 420, width: '100%', boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
+            background: 'rgba(255,255,255,.07)', backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,255,255,.12)',
+            borderRadius: 'clamp(14px, 2vmin, 20px)', padding: 'clamp(14px, 2.4vmin, 24px)',
+            maxWidth: 420, width: '100%',
           }}>
             <div style={{
-              fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 1.6vmin, 16px)', color: '#334155',
+              fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 1.6vmin, 16px)', color: '#C7D2FE',
               display: 'flex', flexDirection: 'column', gap: 'clamp(8px, 1.2vmin, 12px)',
             }}>
               <div>📌 Jawab semua 31 soalan dalam 30 minit.</div>
@@ -6364,9 +6418,9 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
           <button type="button" onClick={startExam}
             style={{
               padding: 'clamp(14px, 2vmin, 20px) clamp(32px, 5vmin, 64px)', border: 'none', borderRadius: 999,
-              background: accent, color: '#fff', cursor: 'pointer', width: '100%', maxWidth: 360,
+              background: 'linear-gradient(135deg,#FF4FD8,#7C4DEE)', color: '#fff', cursor: 'pointer', width: '100%', maxWidth: 360,
               fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(18px, 2.8vmin, 26px)',
-              boxShadow: `0 5px 0 ${cd}`, WebkitTapHighlightColor: 'transparent',
+              boxShadow: '0 5px 0 rgba(100,40,180,.6), 0 0 24px rgba(255,79,216,.3)', WebkitTapHighlightColor: 'transparent',
             }}>
             Mula Peperiksaan →
           </button>
@@ -6400,7 +6454,7 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
     };
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: '#F8FAFC' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'transparent' }}>
         <style>{`
           .cm-exam-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
           .cm-exam-body {
@@ -6415,30 +6469,33 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
           }
           .cm-exam-q {
             font-family: 'Baloo 2', sans-serif; font-weight: 800;
-            font-size: clamp(22px, 4.6vmin, 44px); color: #1E293B; text-align: center; line-height: 1.15;
+            font-size: clamp(22px, 4.6vmin, 44px); color: #fff; text-align: center; line-height: 1.15;
           }
           .cm-exam-feedback {
             font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(20px, 3vmin, 30px);
             text-align: center; min-height: clamp(28px, 3.8vmin, 44px);
             display: flex; align-items: center; justify-content: center;
           }
-          .cm-exam-feedback.ok { color: #16A34A; }
-          .cm-exam-feedback.no { color: #DC2626; }
+          .cm-exam-feedback.ok { color: #4ADE80; text-shadow: 0 0 12px rgba(74,222,128,.5); }
+          .cm-exam-feedback.no { color: #F87171; text-shadow: 0 0 12px rgba(248,113,113,.4); }
         `}</style>
         {/* Exam header */}
         <div style={{
           flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: 'clamp(8px, 1.2vmin, 14px) clamp(14px, 2.4vmin, 24px)',
-          background: '#fff', borderBottom: '1px solid #E2E8F0',
+          background: 'rgba(10,12,40,.6)', backdropFilter: 'blur(12px)',
+          borderBottom: '1px solid rgba(255,255,255,.1)',
         }}>
           <div style={{
-            fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(14px, 1.8vmin, 18px)', color: '#334155',
+            fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(14px, 1.8vmin, 18px)', color: '#C7D2FE',
           }}>
             Soalan {current + 1} / {questions.length}
           </div>
           <div style={{
             fontFamily: "'Baloo 2',sans-serif", fontWeight: 800,
-            fontSize: 'clamp(18px, 2.4vmin, 24px)', color: timerRed ? '#EF4444' : dark,
+            fontSize: 'clamp(18px, 2.4vmin, 24px)',
+            color: timerRed ? '#F87171' : '#2DE2E6',
+            textShadow: timerRed ? '0 0 12px rgba(248,113,113,.5)' : '0 0 12px rgba(45,226,230,.4)',
             transition: 'color 0.3s ease',
           }}>
             ⏱ {timerStr}
@@ -6481,7 +6538,7 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
     });
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'linear-gradient(180deg,#EFF6FF 0%,#DBEAFE 50%,#BFDBFE 100%)' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'transparent' }}>
         <style>{`
           .cm-results-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
           .cm-results-body {
@@ -6498,19 +6555,25 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
             width: clamp(100px, 18vmin, 140px); height: clamp(100px, 18vmin, 140px);
             border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center;
             font-family: 'Baloo 2', sans-serif; font-weight: 900;
-            background: #fff; border: 4px solid;
+            background: rgba(255,255,255,.07); backdrop-filter: blur(12px); border: 3px solid;
           }
           .cm-results-stats { display: flex; gap: clamp(8px, 1.4vmin, 16px); flex-wrap: wrap; justify-content: center; }
           .cm-results-stat {
-            padding: 5px 14px; border-radius: 999px; background: #fff;
+            padding: 5px 14px; border-radius: 999px;
+            background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
             font-family: 'Fredoka', sans-serif; font-weight: 700;
             font-size: clamp(12px, 1.5vmin, 15px);
           }
-          .cm-results-table { width: 100%; }
+          .cm-results-table {
+            width: 100%;
+            background: rgba(255,255,255,.06); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,.1); border-radius: 16px;
+            padding: 4px 16px; box-sizing: border-box;
+          }
           .cm-results-row {
             display: flex; align-items: center; gap: 10px;
             padding: clamp(8px, 1.2vmin, 12px) 0;
-            border-bottom: 1px solid #E2E8F0;
+            border-bottom: 1px solid rgba(255,255,255,.08);
           }
           .cm-results-row:last-child { border-bottom: none; }
           .cm-results-actions { display: flex; flex-direction: column; gap: clamp(10px, 1.6vmin, 16px); width: 100%; }
@@ -6518,26 +6581,26 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
         <div className="cm-results-scroll">
           <div className="cm-results-body">
             <div className="cm-results-content">
-              <div className="cm-results-badge" style={{ borderColor: passed ? '#16A34A' : '#EF4444' }}>
-                <span style={{ fontSize: 'clamp(28px, 5vmin, 44px)', color: passed ? '#16A34A' : '#EF4444' }}>
+              <div className="cm-results-badge" style={{ borderColor: passed ? '#4ADE80' : '#F87171', boxShadow: passed ? '0 0 24px rgba(74,222,128,.3)' : '0 0 24px rgba(248,113,113,.25)' }}>
+                <span style={{ fontSize: 'clamp(28px, 5vmin, 44px)', color: passed ? '#4ADE80' : '#F87171' }}>
                   {correctCount}/{total}
                 </span>
                 <span style={{
                   fontFamily: "'Fredoka',sans-serif", fontWeight: 700,
-                  fontSize: 'clamp(11px, 1.6vmin, 15px)', color: passed ? '#16A34A' : '#EF4444',
+                  fontSize: 'clamp(11px, 1.6vmin, 15px)', color: passed ? '#4ADE80' : '#F87171',
                 }}>
                   {passed ? 'LULUS ✓' : 'CUBA LAGI ✗'}
                 </span>
               </div>
               <div className="cm-results-stats">
-                <span className="cm-results-stat" style={{ color: '#16A34A' }}>✅ Betul: {correctCount}</span>
-                <span className="cm-results-stat" style={{ color: '#EF4444' }}>❌ Salah: {wrongCount}</span>
-                <span className="cm-results-stat" style={{ color: '#64748B' }}>⏱ {usedMM}:{String(usedSS).padStart(2, '0')}</span>
+                <span className="cm-results-stat" style={{ color: '#4ADE80' }}>✅ Betul: {correctCount}</span>
+                <span className="cm-results-stat" style={{ color: '#F87171' }}>❌ Salah: {wrongCount}</span>
+                <span className="cm-results-stat" style={{ color: '#7DD3FC' }}>⏱ {usedMM}:{String(usedSS).padStart(2, '0')}</span>
               </div>
               {unanswered > 0 && (
                 <div style={{
                   fontFamily: "'Fredoka',sans-serif", fontWeight: 600,
-                  fontSize: 'clamp(12px, 1.5vmin, 15px)', color: '#F97316',
+                  fontSize: 'clamp(12px, 1.5vmin, 15px)', color: '#FB923C',
                 }}>
                   ⏰ {unanswered} soalan tidak dijawab
                 </div>
@@ -6545,27 +6608,28 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
               <div className="cm-results-table">
                 {sliceScores.map(slice => {
                   const pct = slice.pct;
-                  let txtColor = '#DC2626';
-                  if (pct >= 1) txtColor = '#16A34A';
-                  else if (pct > 0) txtColor = '#64748B';
+                  let txtColor = '#F87171';
+                  if (pct >= 1) txtColor = '#4ADE80';
+                  else if (pct > 0) txtColor = '#94A3B8';
                   return (
                     <div key={slice.id} className="cm-results-row">
                       <div style={{
                         width: 3, height: 28, borderRadius: 2, background: slice.color, flexShrink: 0,
+                        boxShadow: `0 0 6px ${slice.color}88`,
                       }} />
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{
                           fontFamily: "'Fredoka',sans-serif", fontWeight: 600,
-                          fontSize: 'clamp(12px, 1.5vmin, 15px)', color: '#334155', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                          fontSize: 'clamp(12px, 1.5vmin, 15px)', color: '#C7D2FE', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                         }}>
                           {slice.name}
                         </div>
                         <div style={{
-                          width: '100%', height: 6, background: '#E2E8F0', borderRadius: 3, marginTop: 4, overflow: 'hidden',
+                          width: '100%', height: 6, background: 'rgba(255,255,255,.1)', borderRadius: 3, marginTop: 4, overflow: 'hidden',
                         }}>
                           <div style={{
                             width: `${pct * 100}%`, height: '100%', background: slice.color, borderRadius: 3,
-                            transition: 'width 0.5s ease',
+                            transition: 'width 0.5s ease', boxShadow: `0 0 6px ${slice.color}`,
                           }} />
                         </div>
                       </div>
@@ -6586,16 +6650,18 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
                 }}
                   style={{
                     padding: 'clamp(12px, 1.8vmin, 18px) clamp(24px, 4vmin, 48px)', border: 'none', borderRadius: 999,
-                    background: accent, color: '#fff', cursor: 'pointer', width: '100%',
+                    background: 'linear-gradient(135deg,#FF4FD8,#7C4DEE)', color: '#fff', cursor: 'pointer', width: '100%',
                     fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.6vmin, 24px)',
-                    boxShadow: `0 4px 0 ${cd}`, WebkitTapHighlightColor: 'transparent',
+                    boxShadow: '0 4px 0 rgba(100,40,180,.6), 0 0 20px rgba(255,79,216,.25)', WebkitTapHighlightColor: 'transparent',
                   }}>
                   ↻ Cuba Semula
                 </button>
                 <button type="button" onClick={onExit}
                   style={{
                     padding: 'clamp(12px, 1.8vmin, 18px) clamp(24px, 4vmin, 48px)',
-                    border: `2px solid ${accent}`, borderRadius: 999, background: '#fff', color: dark, cursor: 'pointer', width: '100%',
+                    border: '1px solid rgba(255,255,255,.2)', borderRadius: 999,
+                    background: 'rgba(255,255,255,.07)', backdropFilter: 'blur(8px)',
+                    color: '#C7D2FE', cursor: 'pointer', width: '100%',
                     fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.6vmin, 24px)',
                     WebkitTapHighlightColor: 'transparent',
                   }}>

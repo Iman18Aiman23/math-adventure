@@ -1510,7 +1510,7 @@ export default function App() {
         )}
 
         <div
-          className={`app-container${activeTab === 'leaderboard' ? ' app-leaderboard' : ''}${activeTab === 'learn' && !currentSubject && !currentAgeGroup ? ' app-home' : ''}`}
+          className={`app-container${activeTab === 'leaderboard' ? ' app-leaderboard' : ''}${activeTab === 'learn' && !currentSubject && !currentAgeGroup ? ' app-home' : ''}${currentSubject === 'matematik-kssr' ? ' app-matematik' : ''}`}
           style={{
             '--theme-hero-bg':     THEMES[currentTheme].heroBg,
             '--theme-hero-border': THEMES[currentTheme].heroBorder,

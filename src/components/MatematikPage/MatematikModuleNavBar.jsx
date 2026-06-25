@@ -193,6 +193,27 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           .mt-mnav-tab b { font-size: 14px; }
           .mt-mnav-tab span { font-size: 9px; }
         }
+
+        /* ── Dark galaxy mode (app-matematik) ── */
+        .app-matematik .mt-top-back {
+          background: rgba(255,255,255,.1);
+          color: #fff;
+          box-shadow: inset 0 0 0 1px rgba(255,255,255,.15);
+        }
+        .app-matematik .mt-mnav-tab {
+          background: rgba(255,255,255,.05);
+          border-color: rgba(255,255,255,.1);
+          color: rgba(255,255,255,.55);
+        }
+        .app-matematik .mt-mnav-tab b { color: rgba(255,255,255,.4); }
+        .app-matematik .mt-mnav-tab span { color: rgba(255,255,255,.55); }
+        .app-matematik .mt-mnav-tab.active {
+          background: var(--tc);
+          border-color: var(--tcd);
+          color: #fff;
+        }
+        .app-matematik .mt-mnav-tab.active b,
+        .app-matematik .mt-mnav-tab.active span { color: #fff; }
       `}</style>
 
       <div className="mt-top-bar">
@@ -202,7 +223,7 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           </svg>
         </button>
         <div className="mt-top-stats">
-          <StatsBar subject="mt" />
+          <StatsBar subject="mt" variant="mb" />
         </div>
       </div>
       <nav className="mt-mnav">

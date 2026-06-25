@@ -199,6 +199,19 @@ button {
   background: #ffffff !important;
 }
 
+/* Matematik KSSR — mission-control grid galaxy
+   Distinct from topic pages (animated nebulae) and the M2 hub (dot-field).
+   Blue grid lines on near-black with a deep-blue radial accent. */
+.app-matematik {
+  background-color: #030818;
+  background-image:
+    linear-gradient(rgba(59,130,246,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59,130,246,.07) 1px, transparent 1px),
+    radial-gradient(ellipse 70% 60% at 50% 0%, rgba(30,58,138,.45), transparent 65%),
+    linear-gradient(180deg, #030818 0%, #071230 55%, #020915 100%);
+  background-size: 48px 48px, 48px 48px, 100% 100%, 100% 100%;
+}
+
 /* =============================================
    SHARED PAGE SHELL — unified root scroll container
    for HomePage, LeaderboardHome, ProfileHome, AchievementHome
