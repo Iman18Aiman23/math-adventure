@@ -10,6 +10,9 @@ export default function MatematikActivityFrame({
   renderQuestion,
   theme,
   onExit,
+  hideChangeStrip = false,
+  changeLabel = 'Tukar Jenis',
+  onChangeType,
 }) {
   const nav = useContext(MatematikNavContext);
   const [questions, setQuestions] = useState(() => buildRound());
@@ -84,6 +87,21 @@ export default function MatematikActivityFrame({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%' }}>
       <style>{`
+        .maf-top-strip {
+          flex-shrink: 0; display: flex; align-items: center; justify-content: flex-end;
+          padding: clamp(4px, 0.8vmin, 10px) clamp(12px, 2vmin, 20px);
+          background: rgba(255,255,255,.7); backdrop-filter: blur(8px);
+          border-bottom: 1px solid #E2E8F0;
+        }
+        .maf-tukar-btn {
+          border: none; background: transparent; cursor: pointer;
+          display: flex; align-items: center; gap: 3px; padding: 4px 8px; border-radius: 8px;
+          font-family: 'Fredoka', sans-serif; font-weight: 700;
+          font-size: clamp(12px, 1.4vmin, 14px); color: ${C.dark};
+          transition: background .15s ease; -webkit-tap-highlight-color: transparent;
+        }
+        .maf-tukar-btn:hover { background: rgba(0,0,0,.05); }
+        .maf-tukar-btn:active { transform: translateY(1px); }
         .maf-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .maf-center {
           min-height: 100%; box-sizing: border-box;
@@ -170,6 +188,15 @@ export default function MatematikActivityFrame({
           75% { transform: translateX(10px); }
         }
       `}</style>
+
+      {!hideChangeStrip && (
+        <div className="maf-top-strip">
+          <button type="button" className="maf-tukar-btn"
+            onClick={() => (onChangeType ? onChangeType() : onExit?.())}>
+            {changeLabel} ⟲
+          </button>
+        </div>
+      )}
 
       {complete ? (
         <div className="maf-scroll">

@@ -15,6 +15,20 @@ const BOX_COLORS = [
   { bg: '#F472B6', border: '#DB2777' },
 ];
 
+/* SVG water-splash path data (200×200 viewBox). Each = irregular central body
+   with sharp tapering spikes shooting outward + many satellite droplets. The
+   central area stays solid so the answer number sits on opaque paint. */
+const SPLATTER_PATHS = [
+  /* Splat 0 — crown splash: tall upward explosion, asymmetric spikes */
+  'M90,145 C72,150 55,142 48,128 C42,115 40,100 45,88 C32,80 20,72 12,60 C26,72 38,78 50,82 C55,68 65,55 78,48 C68,35 58,18 52,5 C64,20 76,35 82,48 C92,40 105,38 118,42 C125,26 132,10 142,2 C132,18 128,32 122,48 C135,50 148,58 158,68 C168,58 178,52 188,50 C176,58 164,64 152,72 C158,88 160,105 152,118 C168,120 180,126 190,135 C176,128 164,124 148,122 C142,135 130,148 118,152 C126,164 132,176 136,188 C122,174 114,160 110,152 C102,152 94,150 90,145 Z M28,145 a8,8 0 1,1 16,0 a8,8 0 1,1 -16,0 M170,36 a6,6 0 1,1 12,0 a6,6 0 1,1 -12,0 M158,186 a7,7 0 1,1 14,0 a7,7 0 1,1 -14,0 M195,140 a5,5 0 1,1 10,0 a5,5 0 1,1 -10,0 M38,15 a9,9 0 1,1 18,0 a9,9 0 1,1 -18,0 M96,2 a5,5 0 1,1 10,0 a5,5 0 1,1 -10,0 M155,155 a4,4 0 1,1 8,0 a4,4 0 1,1 -8,0',
+  /* Splat 1 — wide side splash: long horizontal spikes, compact centre */
+  'M108,148 C88,152 68,148 55,138 C42,128 35,115 38,100 C22,96 10,88 4,78 C16,84 30,88 44,90 C48,76 56,62 68,52 C52,40 38,28 28,14 C44,28 58,40 74,50 C85,40 98,34 112,36 C122,22 132,8 145,4 C132,16 128,30 124,44 C138,48 150,56 160,68 C172,60 186,56 196,58 C184,64 170,70 158,80 C164,96 166,112 158,128 C176,132 192,138 198,148 C182,142 168,138 152,136 C146,148 134,158 120,162 C130,172 138,182 142,194 C128,182 118,170 112,162 C100,164 88,162 80,156 C82,148 88,148 108,148 Z M18,170 a8,8 0 1,1 16,0 a8,8 0 1,1 -16,0 M176,46 a7,7 0 1,1 14,0 a7,7 0 1,1 -14,0 M165,2 a5,5 0 1,1 10,0 a5,5 0 1,1 -10,0 M10,100 a6,6 0 1,1 12,0 a6,6 0 1,1 -12,0 M52,10 a9,9 0 1,1 18,0 a9,9 0 1,1 -18,0 M188,136 a4,4 0 1,1 8,0 a4,4 0 1,1 -8,0',
+  /* Splat 2 — diagonal splash: dramatic up-right + down-left vectors */
+  'M100,150 C82,156 62,150 52,138 C44,126 42,110 48,96 C34,86 22,76 14,64 C28,76 40,82 54,88 C58,72 68,58 82,50 C70,36 60,20 54,6 C68,22 80,36 88,50 C100,42 114,40 128,44 C136,28 144,12 156,2 C146,18 140,34 134,50 C148,54 160,62 170,74 C184,64 196,60 198,56 C186,68 172,76 158,82 C166,98 168,114 160,130 C176,136 188,142 192,152 C178,144 164,138 150,134 C142,148 130,160 116,166 C126,178 134,190 138,196 C124,184 114,170 108,160 C96,160 84,158 100,150 Z M26,148 a10,10 0 1,1 20,0 a10,10 0 1,1 -20,0 M178,44 a8,8 0 1,1 16,0 a8,8 0 1,1 -16,0 M185,158 a6,6 0 1,1 12,0 a6,6 0 1,1 -12,0 M15,85 a5,5 0 1,1 10,0 a5,5 0 1,1 -10,0 M68,4 a7,7 0 1,1 14,0 a7,7 0 1,1 -14,0 M6,52 a4,4 0 1,1 8,0 a4,4 0 1,1 -8,0 M155,170 a5,5 0 1,1 10,0 a5,5 0 1,1 -10,0',
+  /* Splat 3 — starburst splash: radial explosion, many thin spikes */
+  'M100,148 C82,154 60,148 48,136 C40,124 38,108 44,94 C28,86 16,78 8,66 C22,76 34,82 48,88 C52,72 62,58 76,48 C64,36 54,22 48,8 C60,24 72,38 80,50 C92,42 106,40 120,44 C128,28 136,12 148,4 C138,20 132,36 126,50 C140,52 154,60 164,72 C176,62 188,56 196,54 C184,62 170,68 158,76 C166,92 168,108 160,124 C176,130 188,136 194,146 C180,140 166,134 152,130 C146,144 134,156 120,162 C130,174 138,186 142,196 C128,184 118,170 112,160 C100,162 88,160 100,148 Z M16,148 a9,9 0 1,1 18,0 a9,9 0 1,1 -18,0 M172,34 a7,7 0 1,1 14,0 a7,7 0 1,1 -14,0 M148,188 a6,6 0 1,1 12,0 a6,6 0 1,1 -12,0 M198,130 a5,5 0 1,1 10,0 a5,5 0 1,1 -10,0 M28,16 a10,10 0 1,1 20,0 a10,10 0 1,1 -20,0 M92,2 a6,6 0 1,1 12,0 a6,6 0 1,1 -12,0 M175,165 a4,4 0 1,1 8,0 a4,4 0 1,1 -8,0 M40,175 a5,5 0 1,1 10,0 a5,5 0 1,1 -10,0',
+];
+
 /**
  * Reusable interactive widgets for the Belajar (explore) phase.
  * Each primitive: theme via `accent`/`dark` props, big tappable targets (>=44px),
@@ -1276,23 +1290,52 @@ function WordOptionsGrid({ options, answered, selected, answer, handlePick, them
       gap: 'clamp(8px, 1.2vmin, 14px)',
       width: '100%', maxWidth: 400,
     }}>
+      {plain && (
+        <style>{`
+          /* Warnai (coloring) options — uncoloured swatches that "fill" with
+             their crayon colour on hover / tap. */
+          .warnai-opt {
+            position: relative; overflow: hidden;
+            transition: transform .14s ease, background .18s ease, box-shadow .18s ease, border-color .18s ease;
+          }
+          .warnai-chip {
+            width: clamp(16px, 2.6vmin, 22px); height: clamp(16px, 2.6vmin, 22px);
+            border-radius: 6px; flex-shrink: 0; border: 2px solid #fff;
+            box-shadow: 0 1px 4px rgba(0,0,0,.4); transition: transform .18s ease;
+          }
+          .warnai-opt:active { transform: translateY(1px) scale(.99); }
+          @media (hover: hover) {
+            .warnai-opt:hover {
+              background: var(--swatch) !important;
+              border-color: var(--swatch) !important;
+              transform: translateY(-2px);
+              box-shadow: 0 7px 18px rgba(0,0,0,.32), 0 0 18px var(--swatch);
+            }
+            .warnai-opt:hover .warnai-chip { transform: rotate(-8deg) scale(1.1); }
+          }
+        `}</style>
+      )}
       {options.map((opt, idx) => {
         const picked = selected === opt.id;
         const isAns = opt.id === answer;
         const c = BOX_COLORS[idx % BOX_COLORS.length];
+        const warnai = plain && !answered;
         let bg, bd, clr, txt, anim;
         if (answered && isAns) { bg = C.green; bd = C.green; clr = '#fff'; txt = '✓'; anim = 'snkBounce .5s ease'; }
         else if (answered && picked) { bg = C.red; bd = C.red; clr = '#fff'; txt = '✗'; anim = 'shakeError .35s ease'; }
-        else if (plain) { bg = 'transparent'; bd = c.border; clr = '#1E293B'; txt = opt.value; anim = 'none'; }
+        else if (plain) { bg = `${c.bg}26`; bd = c.border; clr = '#fff'; txt = opt.value; anim = 'none'; }
         else { bg = c.bg; bd = c.border; clr = '#fff'; txt = opt.value; anim = 'none'; }
         return (
           <button key={opt.id} type="button"
-            className={plain && !answered ? 'word-opt-plain' : undefined}
+            className={warnai ? 'warnai-opt' : undefined}
             onClick={() => handlePick(opt.id)} disabled={answered}
             style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              gap: 'clamp(8px, 1.4vmin, 12px)',
               padding: 'clamp(10px, 1.6vmin, 18px) clamp(16px, 2.4vmin, 28px)',
-              border: 'none',
-              borderBottom: answered ? 'none' : `4px solid ${bd}`,
+              ...(warnai
+                ? { border: `2px solid ${bd}`, borderBottom: `5px solid ${bd}`, '--swatch': c.bg }
+                : { border: 'none', borderBottom: answered ? 'none' : `4px solid ${bd}` }),
               borderRadius: 'clamp(12px, 1.6vmin, 18px)',
               background: bg,
               color: clr,
@@ -1305,7 +1348,8 @@ function WordOptionsGrid({ options, answered, selected, answer, handlePick, them
               animation: anim,
             }}
           >
-            {txt}
+            {warnai && <span className="warnai-chip" style={{ background: c.bg }} aria-hidden="true" />}
+            <span>{txt}</span>
           </button>
         );
       })}
@@ -3826,19 +3870,45 @@ function ColumnAddContent({ q, ctx }) {
   const [ans, setAns] = useState(() => Array(maxLen).fill(''));
   const [carry, setCarry] = useState(() => Array(maxLen).fill(''));
   const [activeIdx, setActiveIdx] = useState(maxLen - 1);
+  const [activeCarry, setActiveCarry] = useState(-1);
   const ansRefs = useRef([]);
+  const carryRefs = useRef([]);
+
+  // Real per-column carries (computed right→left): carryFlags[k] === 1 means
+  // column k receives a carry from the column to its right, so the carry box
+  // above column k (carry[k]) is the one to fill before its answer digit.
+  const carryFlags = (() => {
+    const flags = Array(maxLen).fill(0);
+    let c = 0;
+    for (let k = maxLen - 1; k >= 0; k--) {
+      const da = pa[k] === ' ' ? 0 : Number(pa[k]);
+      const db = pb[k] === ' ' ? 0 : Number(pb[k]);
+      const sum = da + db + c;
+      c = sum >= 10 ? 1 : 0;
+      if (k - 1 >= 0) flags[k - 1] = c;
+    }
+    return flags;
+  })();
+  // Whether this sum regroups at all — drives showing the carry row.
+  const hasCarry = carryFlags.some(Boolean);
 
   const filled = ans.every(d => d !== '');
 
   // Move focus only during active typing (keyboard already open) — never auto-
   // open the keyboard on load or on a new question.
-  const focusIdx = (k) => { setActiveIdx(k); ansRefs.current[k]?.focus(); };
+  const focusIdx = (k) => { setActiveCarry(-1); setActiveIdx(k); ansRefs.current[k]?.focus(); };
+  const focusCarry = (k) => { setActiveCarry(k); carryRefs.current[k]?.focus(); };
 
   const onAns = (k, v) => {
     if (answered) return;
     const d = v.replace(/[^0-9]/g, '').slice(-1);
     setAns(prev => { const n = [...prev]; n[k] = d; return n; });
-    if (d && k > 0) focusIdx(k - 1);
+    if (d && k > 0) {
+      // If the next column to the left expects a carry, jump up to its carry
+      // box first; otherwise advance straight to the next answer digit.
+      if (carryFlags[k - 1] && !carry[k - 1]) focusCarry(k - 1);
+      else focusIdx(k - 1);
+    }
   };
   const onAnsKey = (k, e) => {
     if (e.key === 'Enter') { e.preventDefault(); if (filled) submit(); return; }
@@ -3850,6 +3920,8 @@ function ColumnAddContent({ q, ctx }) {
     if (answered) return;
     const d = v.replace(/[^0-9]/g, '').slice(-1);
     setCarry(prev => { const n = [...prev]; n[k] = d; return n; });
+    // After recording the carry above column k, drop down to its answer box.
+    if (d) focusIdx(k);
   };
   const submit = () => { if (!answered && filled) handlePick(ans.join('')); };
 
@@ -3886,18 +3958,28 @@ function ColumnAddContent({ q, ctx }) {
         background: '#F8FAFC', border: '3px solid #BFDBFE', borderRadius: 'clamp(18px, 2.4vmin, 28px)',
         fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
       }}>
-        {/* Carry row — optional scaffold (a carry can land in any column but the ones) */}
-        <span />
-        {target.map((_, k) => (k <= maxLen - 2 ? (
-          <input key={`c${k}`} type="text" inputMode="numeric" maxLength={1} value={carry[k]} disabled={answered}
-            onChange={e => onCarry(k, e.target.value)} aria-label="bawa"
-            style={{
-              width: '58%', height: 'clamp(26px, 5.2vmin, 40px)', textAlign: 'center', padding: 0,
-              border: '2px dashed #CBD5E1', borderRadius: 10, background: '#fff',
-              fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 3.4vmin, 26px)',
-              color: '#F59E0B', outline: 'none', WebkitTapHighlightColor: 'transparent',
-            }} />
-        ) : <span key={`c${k}`} />))}
+        {/* Carry row — shown only when the sum regroups; a box sits above each
+           column that actually receives a carry (none for no-carry sums). */}
+        {hasCarry && (
+          <>
+            <span />
+            {target.map((_, k) => (carryFlags[k] ? (
+              <input key={`c${k}`} ref={el => { carryRefs.current[k] = el; }}
+                type="text" inputMode="numeric" maxLength={1} value={carry[k]} disabled={answered}
+                onChange={e => onCarry(k, e.target.value)} onFocus={() => setActiveCarry(k)} onBlur={() => setActiveCarry(-1)}
+                aria-label="bawa"
+                style={{
+                  width: '58%', height: 'clamp(26px, 5.2vmin, 40px)', textAlign: 'center', padding: 0,
+                  border: `2px dashed ${activeCarry === k ? '#F59E0B' : '#CBD5E1'}`, borderRadius: 10,
+                  background: activeCarry === k ? '#FFFBEB' : '#fff',
+                  fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 3.4vmin, 26px)',
+                  color: '#F59E0B', outline: 'none', WebkitTapHighlightColor: 'transparent',
+                  boxShadow: activeCarry === k ? '0 0 0 4px rgba(245,158,11,0.25)' : 'none',
+                  transition: 'all .12s ease',
+                }} />
+            ) : <span key={`c${k}`} />))}
+          </>
+        )}
 
         {/* Top addend */}
         <span />
@@ -3979,22 +4061,137 @@ function BondDiagram({ whole, part }) {
     <svg viewBox="0 0 220 150" style={{ width: 'clamp(150px, 36vmin, 230px)', height: 'auto', display: 'block' }}>
       <line x1="110" y1="46" x2="60" y2="104" stroke="#93C5FD" strokeWidth="4" />
       <line x1="110" y1="46" x2="160" y2="104" stroke="#93C5FD" strokeWidth="4" />
-      <circle cx="110" cy="34" r="30" fill="#EFF6FF" stroke="#3B82F6" strokeWidth="3" />
-      <text x="110" y="34" fontFamily="'Baloo 2', sans-serif" fontWeight="900" fontSize="26" fill="#1E3A8A" textAnchor="middle" dominantBaseline="central">{whole}</text>
-      <circle cx="60" cy="116" r="26" fill="#DBEAFE" stroke="#3B82F6" strokeWidth="3" />
-      <text x="60" y="116" fontFamily="'Baloo 2', sans-serif" fontWeight="900" fontSize="24" fill="#1E3A8A" textAnchor="middle" dominantBaseline="central">{part}</text>
-      <circle cx="160" cy="116" r="26" fill="#FEF3C7" stroke="#F59E0B" strokeWidth="3" />
-      <text x="160" y="116" fontFamily="'Baloo 2', sans-serif" fontWeight="900" fontSize="24" fill="#B45309" textAnchor="middle" dominantBaseline="central">?</text>
+      <circle cx="110" cy="34" r="30" fill="#3B82F6" stroke="#93C5FD" strokeWidth="3" />
+      <text x="110" y="34" fontFamily="'Baloo 2', sans-serif" fontWeight="900" fontSize="26" fill="#FFFFFF" textAnchor="middle" dominantBaseline="central">{whole}</text>
+      <circle cx="60" cy="116" r="26" fill="#3B82F6" stroke="#93C5FD" strokeWidth="3" />
+      <text x="60" y="116" fontFamily="'Baloo 2', sans-serif" fontWeight="900" fontSize="24" fill="#FFFFFF" textAnchor="middle" dominantBaseline="central">{part}</text>
+      <circle cx="160" cy="116" r="26" fill="#F59E0B" stroke="#FCD34D" strokeWidth="3" />
+      <text x="160" y="116" fontFamily="'Baloo 2', sans-serif" fontWeight="900" fontSize="24" fill="#FFFFFF" textAnchor="middle" dominantBaseline="central">?</text>
     </svg>
   );
 }
 
-// Warnai — single-select: tap the expression that equals the target (auto-submits, colour flips).
+// Warnai — paint-splatter game: tap the splat whose expression matches the
+// target sum. Correct answer pours paint bottom→up via SVG gradient animation.
 function WarnaiContent({ q, ctx }) {
-  const { answered, selected, answer, handlePick, theme: C } = ctx;
+  const { answered, selected, answer, handlePick } = ctx;
+  const [pourProgress, setPourProgress] = useState(0);
+  const rafRef = useRef(null);
+
+  useEffect(() => {
+    if (answered && selected === answer) {
+      const start = performance.now();
+      const animate = (time) => {
+        const pct = Math.min((time - start) / 550, 1);
+        setPourProgress(pct);
+        if (pct < 1) rafRef.current = requestAnimationFrame(animate);
+      };
+      rafRef.current = requestAnimationFrame(animate);
+    } else {
+      setPourProgress(0);
+    }
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, [answered, selected, answer]);
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 24px)', width: '100%' }}>
-      <WordOptionsGrid options={q.options} answered={answered} selected={selected} answer={answer} handlePick={handlePick} theme={C} columns={2} plain />
+    <div style={{
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      gap: 'clamp(8px, 1.6vmin, 18px)', width: '100%',
+    }}>
+      <style>{`
+        .pw-btn {
+          position: relative; overflow: hidden;
+          -webkit-tap-highlight-color: transparent; cursor: pointer;
+          display: flex; align-items: center; justify-content: center;
+          width: 100%; aspect-ratio: 1 / 1;
+          font-family: 'Baloo 2', sans-serif; font-weight: 900;
+          font-size: clamp(26px, 6vmin, 48px);
+          line-height: 1.1;
+          border: none; outline: none; padding: 0;
+          background: transparent;
+          transition: transform 0.2s cubic-bezier(.34,1.56,.64,1);
+        }
+        .pw-btn:active { transform: scale(0.92); }
+        .pw-btn:disabled { cursor: default; }
+        .pw-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+        @keyframes pwShake {
+          0%, 100% { transform: translateX(0); }
+          20% { transform: translateX(-8px); }
+          40% { transform: translateX(8px); }
+          60% { transform: translateX(-5px); }
+          80% { transform: translateX(5px); }
+        }
+        @keyframes pwBounceIn {
+          0% { opacity: 0; transform: scale(0.5) rotate(-6deg); }
+          60% { transform: scale(1.08) rotate(2deg); }
+          100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+      `}</style>
+      <div style={{
+        display: 'grid', gridTemplateColumns: '1fr 1fr',
+        gap: 'clamp(10px, 2vmin, 24px)',
+        width: '100%', maxWidth: 'min(420px, 90vw, 48vh)',
+      }}>
+        {q.options.map((opt, idx) => {
+          const isCorrectAns = opt.id === answer;
+          const isPicked = selected === opt.id;
+          const isWrongPick = answered && isPicked && !isCorrectAns;
+          const isRightPick = answered && isCorrectAns;
+          const c = BOX_COLORS[idx % BOX_COLORS.length];
+          const splatPath = SPLATTER_PATHS[idx % 4];
+          const gradId = `pw${q.qid}_${idx}`;
+          const progress = isRightPick ? pourProgress : 0;
+          return (
+            <button key={opt.id} type="button"
+              className="pw-btn"
+              onClick={() => handlePick(opt.id)} disabled={answered}
+              style={{
+                color: isRightPick ? '#fff' : 'rgba(255,255,255,0.92)',
+                textShadow: isRightPick ? '0 2px 12px rgba(0,0,0,0.35)' : '0 1px 4px rgba(0,0,0,0.3)',
+                animation: isWrongPick
+                  ? 'pwShake 0.4s ease'
+                  : `pwBounceIn 0.45s cubic-bezier(.34,1.56,.64,1) ${idx * 0.08}s both`,
+              }}
+            >
+              <svg className="pw-svg" viewBox="0 0 200 200" aria-hidden="true">
+                <defs>
+                  <linearGradient id={gradId} x1="0" y1="1" x2="0" y2="0">
+                    <stop offset="0%" stopColor={c.bg} />
+                    <stop offset={`${progress * 100}%`} stopColor={c.bg} />
+                    <stop offset={`${progress * 100}%`} stopColor="transparent" stopOpacity="0" />
+                    <stop offset="100%" stopColor="transparent" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+                <path d={splatPath}
+                  fill={isRightPick ? `url(#${gradId})` : 'rgba(255,255,255,0.07)'}
+                  stroke={isWrongPick ? '#DC2626' : isRightPick ? 'transparent' : c.border}
+                  strokeWidth="3"
+                  strokeDasharray={!isRightPick && !isWrongPick ? '6,4' : 'none'}
+                />
+                {isRightPick && (
+                  <path d={splatPath} fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" />
+                )}
+              </svg>
+              <span style={{
+                position: 'relative', zIndex: 1,
+                textAlign: 'center', lineHeight: 1.15,
+                padding: '0 4px',
+              }}>
+                {isRightPick ? '✓' : opt.value}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      <div style={{
+        fontFamily: "'Fredoka', sans-serif", fontWeight: 600,
+        fontSize: 'clamp(12px, 1.8vmin, 16px)', color: 'rgba(255,255,255,0.3)',
+        display: 'flex', alignItems: 'center', gap: 6,
+        marginTop: 0,
+      }}>
+        <span style={{ fontSize: 'clamp(16px, 2.4vmin, 24px)' }}>🎨</span>
+        <span>Warna jawapan yang betul</span>
+      </div>
     </div>
   );
 }
@@ -4043,7 +4240,7 @@ function AbacusBuildContent({ q, ctx }) {
   const submit = () => { if (!answered) handlePick(built === q.total ? 'ok' : 'no'); };
   const col = (label, val, set, color, isTen) => (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-      <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 2vmin, 18px)', color: '#64748B' }}>{label}</div>
+      <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 2vmin, 18px)', color: '#B6C2D9' }}>{label}</div>
       {/* flex:1 lets the tray absorb the extra height so both columns' +/-
          buttons stay on the same line no matter how many blocks are inside. */}
       <div style={{
@@ -4072,12 +4269,12 @@ function AbacusBuildContent({ q, ctx }) {
         {col('Sa', ones, setOnes, '#F59E0B', false)}
       </div>
       <div style={{
-        fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(20px, 3.4vmin, 30px)',
-        color: answered ? (built === q.total ? '#16A34A' : '#DC2626') : '#1E3A8A',
+        fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(30px, 5.4vmin, 48px)',
+        color: answered ? (built === q.total ? '#4ADE80' : '#F87171') : '#FFFFFF',
       }}>{q.a} + {q.b} = {built}</div>
       {answered && built !== q.total && (
-        <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, color: '#64748B', fontSize: 'clamp(13px, 2vmin, 18px)' }}>
-          Jawapan: <b style={{ color: '#16A34A' }}>{q.total}</b>
+        <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, color: '#B6C2D9', fontSize: 'clamp(13px, 2vmin, 18px)' }}>
+          Jawapan: <b style={{ color: '#4ADE80' }}>{q.total}</b>
         </div>
       )}
       {!answered && <SemakButton disabled={false} onClick={submit} />}
@@ -4214,6 +4411,7 @@ export function LatihanTambahExplore({ data, language, theme, onExit }) {
           }}
           theme={theme}
           onExit={onExit}
+          hideChangeStrip
         />
       </div>
     </div>
@@ -4623,7 +4821,7 @@ function TolakBlokContent({ q, ctx }) {
   const submit = () => { if (!answered) handlePick(built === q.diff ? 'ok' : 'no'); };
   const col = (label, val, set, color, isTen) => (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-      <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 2vmin, 18px)', color: '#64748B' }}>{label}</div>
+      <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 2vmin, 18px)', color: '#B6C2D9' }}>{label}</div>
       <div style={{
         flex: 1, minHeight: 'clamp(84px, 15vmin, 140px)', width: 'clamp(78px, 15vmin, 124px)',
         display: 'flex', flexWrap: 'wrap', alignContent: 'flex-end', justifyContent: 'center', gap: 4,
@@ -4650,12 +4848,12 @@ function TolakBlokContent({ q, ctx }) {
         {col('Sa', ones, setOnes, '#F59E0B', false)}
       </div>
       <div style={{
-        fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(20px, 3.4vmin, 30px)',
-        color: answered ? (built === q.diff ? '#16A34A' : '#DC2626') : '#1E3A8A',
+        fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(30px, 5.4vmin, 48px)',
+        color: answered ? (built === q.diff ? '#4ADE80' : '#F87171') : '#FFFFFF',
       }}>{q.a} − {q.b} = {built}</div>
       {answered && built !== q.diff && (
-        <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, color: '#64748B', fontSize: 'clamp(13px, 2vmin, 18px)' }}>
-          Jawapan: <b style={{ color: '#16A34A' }}>{q.diff}</b>
+        <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, color: '#B6C2D9', fontSize: 'clamp(13px, 2vmin, 18px)' }}>
+          Jawapan: <b style={{ color: '#4ADE80' }}>{q.diff}</b>
         </div>
       )}
       {!answered && <SemakButton disabled={false} onClick={submit} />}
@@ -4747,6 +4945,7 @@ export function LatihanTolakExplore({ data, language, theme, onExit }) {
           }}
           theme={theme}
           onExit={onExit}
+          hideChangeStrip
         />
       </div>
     </div>
@@ -5275,11 +5474,11 @@ function TbAddCompleteContent({ q, ctx }) {
                 fontSize: 'clamp(20px, 4vmin, 32px)',
                 color: isGap ? (answered ? '#fff' : '#9CA3AF') : '#fff', padding: '4px 8px',
               }}>{isGap ? (answered ? q.M : '?') : part}</div>
-              {!isLast && <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 3vmin, 26px)', color: '#64748B' }}>+</span>}
+              {!isLast && <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 3vmin, 26px)', color: '#B6C2D9' }}>+</span>}
             </React.Fragment>
           );
         })}
-        <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 3vmin, 26px)', color: '#64748B' }}>=</span>
+        <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 3vmin, 26px)', color: '#B6C2D9' }}>=</span>
         <div style={{
           minWidth: 'clamp(36px, 7vmin, 52px)', minHeight: 'clamp(36px, 7vmin, 52px)',
           border: 'none', borderBottom: '4px solid #16A34A', borderRadius: 'clamp(10px, 1.4vmin, 14px)',
@@ -5299,14 +5498,14 @@ function TbSubGroupsContent({ q, ctx }) {
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(14px, 2.4vmin, 28px)', width: '100%' }}>
       <GroupsGrid icon={q.icon} groups={q.N} count={q.M} />
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: 'clamp(4px, 0.8vmin, 8px)' }}>
-        <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: 'clamp(22px, 4vmin, 36px)', color: '#1E293B' }}>{q.total}</span>
+        <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: 'clamp(22px, 4vmin, 36px)', color: '#FFFFFF' }}>{q.total}</span>
         {Array.from({ length: q.N }).map((_, i) => (
           <React.Fragment key={i}>
-            <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 3vmin, 26px)', color: '#EF4444' }}>−</span>
-            <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: 'clamp(22px, 4vmin, 36px)', color: '#1E293B' }}>{q.M}</span>
+            <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 3vmin, 26px)', color: '#FF6B6B' }}>−</span>
+            <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: 'clamp(22px, 4vmin, 36px)', color: '#FFFFFF' }}>{q.M}</span>
           </React.Fragment>
         ))}
-        <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 3vmin, 26px)', color: '#64748B' }}>=</span>
+        <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 3vmin, 26px)', color: '#B6C2D9' }}>=</span>
         <div style={{
           minWidth: 'clamp(36px, 7vmin, 52px)', minHeight: 'clamp(36px, 7vmin, 52px)',
           background: answered ? (selected === answer ? '#16A34A' : '#EF4444') : '#F3F4F6',
@@ -5858,7 +6057,7 @@ const LD_SECTIONS = [
   { id: 'kenali-tolak',    name: 'Kenali Tolak',            color: '#EF4444', types: ['kt-buang','kt-garis-sub','kt-perkataan-tolak','kt-ayat-tolak'] },
   { id: 'latihan-tolak',   name: 'Latihan Tolak',           color: '#F97316', types: ['lt-tolak-mudah-m1','lt-tolak-warnai','lt-tolak-padankan','lt-tolak-bond','lt-tolak-blok','lt-tolak-sederhana-s1','lt-tolak-sukar-k1'] },
   { id: 'cerita',          name: 'Cerita Tambah & Tolak',   color: '#F59E0B', types: ['ctt-tambah','ctt-tolak','ctt-operasi','ctt-ayat'] },
-  { id: 'tambah-berulang', name: 'Tambah Berulang',         color: '#14B8A6', types: ['tb-add-groups','tb-add-line','tb-add-complete','tb-sub-groups','tb-sub-line'] },
+  { id: 'tambah-berulang', name: 'Tambah Tolak Berulang',   color: '#14B8A6', types: ['tb-add-groups','tb-add-line','tb-add-complete','tb-sub-groups','tb-sub-line'] },
 ];
 
 const LD_TYPE_LABELS = {
@@ -5908,6 +6107,25 @@ const SECTOR_META = {
   'tambah-berulang': { icon: '🌌', ac: '#ffd000', cardCls: 'ld-card-mixed' },
 };
 
+const LD_SCORES_KEY = 'mt_ld_m2_scores';
+const LD_PASS_RATIO = 0.8; // 8/10
+
+function ldLoadScores() {
+  try { return JSON.parse(localStorage.getItem(LD_SCORES_KEY) || '{}'); }
+  catch { return {}; }
+}
+
+function ldRecordScore(typeId, correct, total) {
+  const scores = ldLoadScores();
+  const existing = scores[typeId];
+  if (!existing || correct > existing.best) {
+    const next = { ...scores, [typeId]: { best: correct, total, passed: correct / total >= LD_PASS_RATIO } };
+    try { localStorage.setItem(LD_SCORES_KEY, JSON.stringify(next)); } catch {}
+    return next;
+  }
+  return scores;
+}
+
 export function LatihDiriM2Explore({ data, language, theme, onExit }) {
   const C = theme || {};
   const accent = C.accent || '#3B82F6';
@@ -5916,6 +6134,12 @@ export function LatihDiriM2Explore({ data, language, theme, onExit }) {
 
   const { xp, streak, loading: gLoading } = useGamification('mt');
   const [selectedType, setSelectedType] = useState(null);
+  const [scores, setScores] = useState(ldLoadScores);
+
+  const handleScoreRecord = (typeId, correct, total) => {
+    const updated = ldRecordScore(typeId, correct, total);
+    setScores(updated);
+  };
 
   if (!selectedType) {
     /* ── Phase A: Mission Control Grid ── */
@@ -5927,38 +6151,179 @@ export function LatihDiriM2Explore({ data, language, theme, onExit }) {
             grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
             gap: 10px;
           }
+
+          /* ── Base card ── */
           .ld-module-card {
-            background: rgba(20,15,38,.6); backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255,255,255,.06); border-radius: 12px;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-radius: 14px; border: 1px solid;
             padding: 12px 14px; display: flex; flex-direction: column;
             justify-content: space-between; min-height: 85px; cursor: pointer;
-            transition: all .22s cubic-bezier(.4,0,.2,1);
+            transition: transform .22s cubic-bezier(.4,0,.2,1),
+                        box-shadow .22s cubic-bezier(.4,0,.2,1),
+                        border-color .22s ease, background .22s ease;
             -webkit-tap-highlight-color: transparent;
           }
-          .ld-module-card:active { transform: scale(.97); }
+          .ld-module-card:active { transform: scale(.96) !important; }
+
+          /* ── Permanent glow — always-on resting state ── */
+          .ld-card-cyan {
+            background: rgba(0,22,48,.72);
+            border-color: rgba(0,210,255,.42);
+            box-shadow: 0 0 16px rgba(0,210,255,.26), inset 0 0 20px rgba(0,210,255,.07);
+          }
+          .ld-card-tolak {
+            background: rgba(40,8,22,.72);
+            border-color: rgba(255,91,127,.42);
+            box-shadow: 0 0 16px rgba(255,91,127,.26), inset 0 0 20px rgba(255,91,127,.07);
+          }
+          .ld-card-mixed {
+            background: rgba(36,30,0,.72);
+            border-color: rgba(255,208,0,.42);
+            box-shadow: 0 0 16px rgba(255,208,0,.26), inset 0 0 20px rgba(255,208,0,.07);
+          }
+
+          /* ── Card text ── */
           .ld-module-name {
             font-size: clamp(13px,1.8vmin,15px); font-weight: 600; color: #fff;
             margin: 0 0 4px; line-height: 1.2;
             font-family: 'Space Grotesk', 'Baloo 2', sans-serif;
           }
           .ld-module-desc {
-            font-size: clamp(10px,1.3vmin,12px); color: #9fa0cb; margin: 0 0 8px;
+            font-size: clamp(10px,1.3vmin,12px); color: #b0b3d6; margin: 0 0 8px;
             line-height: 1.3; font-family: 'Fredoka', sans-serif; flex: 1;
           }
+
+          /* ── MULA button — permanent colored + glow ── */
           .ld-btn-launch {
-            align-self: flex-end; cursor: pointer;
+            cursor: pointer;
             font-size: 11px; font-weight: 700; text-transform: uppercase;
-            padding: 4px 12px; border-radius: 6px; letter-spacing: .5px;
+            padding: 5px 14px; border-radius: 8px; letter-spacing: .6px;
             transition: all .2s ease; font-family: 'Baloo 2', sans-serif;
+            position: relative; overflow: hidden; flex-shrink: 0;
           }
+          .ld-btn-launch::after {
+            content: '';
+            position: absolute; top: 0; left: -120%; width: 60%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,.32), transparent);
+            animation: ld-shine 2.8s ease-in-out infinite;
+          }
+          @keyframes ld-shine {
+            0%   { left: -120%; }
+            45%, 100% { left: 170%; }
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .ld-btn-launch::after { animation: none; }
+          }
+
+          .ld-card-cyan .ld-btn-launch {
+            background: rgba(0,210,255,.22);
+            border: 1px solid rgba(0,210,255,.6);
+            color: #00d2ff;
+            box-shadow: 0 0 11px rgba(0,210,255,.42);
+          }
+          .ld-card-tolak .ld-btn-launch {
+            background: rgba(255,91,127,.22);
+            border: 1px solid rgba(255,91,127,.6);
+            color: #ff5b7f;
+            box-shadow: 0 0 11px rgba(255,91,127,.42);
+          }
+          .ld-card-mixed .ld-btn-launch {
+            background: rgba(255,208,0,.22);
+            border: 1px solid rgba(255,208,0,.6);
+            color: #ffd000;
+            box-shadow: 0 0 11px rgba(255,208,0,.42);
+          }
+
+          /* ── Score badge ── */
+          .ld-card-footer {
+            display: flex; align-items: center; justify-content: space-between; gap: 6px;
+          }
+          .ld-score-badge {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 4px 13px 4px 5px; border-radius: 999px; white-space: nowrap;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
+          }
+          /* status icon chip */
+          .ld-score-icon {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0;
+            font-size: 10px; font-weight: 900; line-height: 1;
+            font-family: 'Space Grotesk', sans-serif;
+          }
+          .ld-score-meta { display: flex; flex-direction: column; line-height: 1; }
+          .ld-score-tag {
+            font-family: 'Fredoka', sans-serif; font-size: 7px; font-weight: 700;
+            letter-spacing: .7px; text-transform: uppercase; opacity: .75; margin-bottom: 2px;
+          }
+          .ld-score-num {
+            font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 800;
+            letter-spacing: -.2px;
+          }
+          .ld-score-num small { font-size: 9px; font-weight: 600; opacity: .6; margin-left: 2px; }
+
+          .ld-score-badge.unplayed {
+            background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.04));
+            border: 1px solid rgba(255,255,255,.16); color: rgba(255,255,255,.62);
+          }
+          .ld-score-badge.unplayed .ld-score-icon {
+            background: rgba(255,255,255,.12); color: rgba(255,255,255,.6);
+          }
+          .ld-score-badge.passed {
+            background: linear-gradient(180deg, rgba(34,197,94,.26), rgba(34,197,94,.12));
+            border: 1px solid rgba(74,222,128,.5); color: #6ee7a0;
+            box-shadow: 0 0 12px rgba(34,197,94,.3), inset 0 1px 0 rgba(255,255,255,.14);
+          }
+          .ld-score-badge.passed .ld-score-icon {
+            background: #22c55e; color: #052e16;
+            box-shadow: 0 0 8px rgba(74,222,128,.7);
+          }
+          .ld-score-badge.failed {
+            background: linear-gradient(180deg, rgba(239,68,68,.26), rgba(239,68,68,.12));
+            border: 1px solid rgba(248,113,113,.5); color: #fca5a5;
+            box-shadow: 0 0 12px rgba(239,68,68,.28), inset 0 1px 0 rgba(255,255,255,.14);
+          }
+          .ld-score-badge.failed .ld-score-icon {
+            background: #ef4444; color: #fff;
+            box-shadow: 0 0 8px rgba(248,113,113,.7);
+          }
+
+          /* ── New hover — stronger glow + lift ── */
           @media (hover: hover) {
-            .ld-card-cyan:hover { border-color: #7f56da; box-shadow: 0 0 15px rgba(127,86,218,.2); transform: translateY(-2px); background: rgba(31,23,61,.8); }
-            .ld-card-cyan:hover .ld-btn-launch { background: #7f56da !important; border-color: #9b72f3 !important; color: #fff !important; box-shadow: 0 0 8px rgba(127,86,218,.6); }
-            .ld-card-tolak:hover { border-color: #ff5b7f; box-shadow: 0 0 15px rgba(255,91,127,.2); transform: translateY(-2px); background: rgba(31,23,61,.8); }
-            .ld-card-tolak:hover .ld-btn-launch { background: #ff5b7f !important; border-color: #ff5b7f !important; color: #fff !important; box-shadow: 0 0 8px rgba(255,91,127,.6); }
-            .ld-card-mixed:hover { border-color: #ffd000; box-shadow: 0 0 15px rgba(255,208,0,.2); transform: translateY(-2px); background: rgba(31,23,61,.8); }
-            .ld-card-mixed:hover .ld-btn-launch { background: #ffd000 !important; border-color: #ffd000 !important; color: #000 !important; box-shadow: 0 0 8px rgba(255,208,0,.6); }
+            .ld-card-cyan:hover {
+              border-color: #00d2ff;
+              box-shadow: 0 0 26px rgba(0,210,255,.6), 0 0 60px rgba(0,210,255,.2),
+                          inset 0 0 30px rgba(0,210,255,.13);
+              transform: translateY(-4px);
+              background: rgba(0,34,64,.9);
+            }
+            .ld-card-cyan:hover .ld-btn-launch {
+              background: #00d2ff; border-color: #00d2ff;
+              color: #011820; box-shadow: 0 0 22px rgba(0,210,255,.85);
+            }
+
+            .ld-card-tolak:hover {
+              border-color: #ff5b7f;
+              box-shadow: 0 0 26px rgba(255,91,127,.6), 0 0 60px rgba(255,91,127,.2),
+                          inset 0 0 30px rgba(255,91,127,.13);
+              transform: translateY(-4px);
+              background: rgba(54,10,26,.9);
+            }
+            .ld-card-tolak:hover .ld-btn-launch {
+              background: #ff5b7f; border-color: #ff5b7f;
+              color: #fff; box-shadow: 0 0 22px rgba(255,91,127,.85);
+            }
+
+            .ld-card-mixed:hover {
+              border-color: #ffd000;
+              box-shadow: 0 0 26px rgba(255,208,0,.6), 0 0 60px rgba(255,208,0,.2),
+                          inset 0 0 30px rgba(255,208,0,.13);
+              transform: translateY(-4px);
+              background: rgba(50,42,0,.9);
+            }
+            .ld-card-mixed:hover .ld-btn-launch {
+              background: #ffd000; border-color: #ffd000;
+              color: #1a1200; box-shadow: 0 0 22px rgba(255,208,0,.85);
+            }
           }
         `}</style>
         <div style={{ flex: 1, overflow: 'auto', padding: 'clamp(10px,2vmin,20px)' }}>
@@ -6010,11 +6375,26 @@ export function LatihDiriM2Explore({ data, language, theme, onExit }) {
                             <p className="ld-module-name">{info.label}</p>
                             <p className="ld-module-desc">{info.hint}</p>
                           </div>
-                          <button type="button" className="ld-btn-launch" style={{
-                            background: `${meta.ac}25`,
-                            border: `1px solid ${meta.ac}66`,
-                            color: meta.ac,
-                          }}>Mula</button>
+                          <div className="ld-card-footer">
+                            {(() => {
+                              const s = scores[typeId];
+                              const status = !s ? 'unplayed' : (s.passed ? 'passed' : 'failed');
+                              const icon = !s ? '–' : (s.passed ? '✓' : '✗');
+                              const tag = !s ? 'Score' : (s.passed ? 'Lulus' : 'Gagal');
+                              const best = s ? s.best : 0;
+                              const total = s ? s.total : 10;
+                              return (
+                                <span className={`ld-score-badge ${status}`}>
+                                  <span className="ld-score-icon">{icon}</span>
+                                  <span className="ld-score-meta">
+                                    <span className="ld-score-tag">{tag}</span>
+                                    <span className="ld-score-num">{best}<small>/ {total}</small></span>
+                                  </span>
+                                </span>
+                              );
+                            })()}
+                            <button type="button" className="ld-btn-launch">Mula</button>
+                          </div>
                         </div>
                       );
                     })}
@@ -6028,10 +6408,10 @@ export function LatihDiriM2Explore({ data, language, theme, onExit }) {
     );
   }
 
-  return <M2DrillScreen selectedType={selectedType} theme={theme} onBackToPicker={() => setSelectedType(null)} />;
+  return <M2DrillScreen selectedType={selectedType} theme={theme} onBackToPicker={() => setSelectedType(null)} onScoreRecord={handleScoreRecord} />;
 }
 
-function M2DrillScreen({ selectedType, theme, onBackToPicker }) {
+function M2DrillScreen({ selectedType, theme, onBackToPicker, onScoreRecord }) {
   const C = theme || {};
   const accent = C.accent || '#3B82F6';
   const dark = C.dark || '#1E3A8A';
@@ -6073,7 +6453,11 @@ function M2DrillScreen({ selectedType, theme, onBackToPicker }) {
   };
 
   const handleNext = () => {
-    if (isLast) { setComplete(true); return; }
+    if (isLast) {
+      setComplete(true);
+      onScoreRecord?.(selectedType, correct, questions.length);
+      return;
+    }
     setSelected(null);
     setIdx(idx + 1);
   };
@@ -6170,12 +6554,6 @@ function M2DrillScreen({ selectedType, theme, onBackToPicker }) {
             boxShadow: `0 0 6px ${section?.color || accent}`,
           }} />
           {info?.label || selectedType}
-          <span style={{
-            fontFamily: "'Fredoka',sans-serif", fontWeight: 500, fontSize: 'clamp(10px, 1.3vmin, 13px)',
-            color: 'rgba(255,255,255,.5)', marginLeft: 4,
-          }}>
-            {idx + 1}/10
-          </span>
         </div>
         <button type="button" onClick={handleBackToPicker}
           style={{
@@ -6307,7 +6685,7 @@ const CM_SLICES = [
   { id: 'kenali-tolak',    name: 'Kenali Tolak',            color: '#EF4444', types: ['kt-buang','kt-garis-sub','kt-perkataan-tolak','kt-ayat-tolak'] },
   { id: 'latihan-tolak',   name: 'Latihan Tolak',           color: '#F97316', types: ['lt-tolak-mudah-m1','lt-tolak-warnai','lt-tolak-padankan','lt-tolak-bond','lt-tolak-blok','lt-tolak-sederhana-s1','lt-tolak-sukar-k1'] },
   { id: 'cerita',          name: 'Cerita Tambah & Tolak',   color: '#F59E0B', types: ['ctt-tambah','ctt-tolak','ctt-operasi','ctt-ayat'] },
-  { id: 'tambah-berulang', name: 'Tambah Berulang',         color: '#14B8A6', types: ['tb-add-groups','tb-add-line','tb-add-complete','tb-sub-groups','tb-sub-line'] },
+  { id: 'tambah-berulang', name: 'Tambah Tolak Berulang',   color: '#14B8A6', types: ['tb-add-groups','tb-add-line','tb-add-complete','tb-sub-groups','tb-sub-line'] },
 ];
 
 export function CabarMindaM2Explore({ data, language, theme, onExit }) {

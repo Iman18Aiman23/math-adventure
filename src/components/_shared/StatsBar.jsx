@@ -16,36 +16,74 @@ export default function StatsBar({ subject = 'bm', variant }) {
   }, [xp]);
 
   if (variant === 'mb') {
-    const pill = {
-      display: 'flex', alignItems: 'center', gap: '5px',
-      fontFamily: "'Space Grotesk', 'Fredoka', sans-serif", fontWeight: 700, fontSize: '15px',
-      padding: '6px 11px', borderRadius: '12px', background: 'rgba(20,18,52,.6)',
-      whiteSpace: 'nowrap',
-    };
     const val = loading ? '—' : null;
     return (
-      <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
-        <div style={{ ...pill, color: '#FF6B6B', border: '1px solid rgba(255,107,107,.4)', boxShadow: '0 0 12px rgba(255,107,107,.18)' }}
-          aria-label={`Hearts: ${hearts} of ${maxHearts}`}>
-          ❤️ {val ?? hearts}
+      <>
+        <style>{`
+          .sb-mb-wrap {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            flex-wrap: nowrap;
+            width: 100%;
+          }
+          .sb-mb-pill {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            flex: 1 1 0;
+            min-width: 0;
+            font-family: 'Space Grotesk', 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 6px 8px;
+            border-radius: 12px;
+            background: rgba(20,18,52,.6);
+            white-space: nowrap;
+            overflow: hidden;
+          }
+          .sb-mb-em { font-size: 13px; flex-shrink: 0; line-height: 1; }
+          .sb-mb-val { overflow: hidden; text-overflow: ellipsis; line-height: 1; }
+          @media (max-width: 400px) {
+            .sb-mb-wrap { gap: 3px; }
+            .sb-mb-pill { font-size: 11px; padding: 5px 5px; border-radius: 9px; gap: 3px; }
+            .sb-mb-em { font-size: 11px; }
+          }
+        `}</style>
+        <div className="sb-mb-wrap">
+          <div className="sb-mb-pill"
+            style={{ color: '#FF6B6B', border: '1px solid rgba(255,107,107,.4)', boxShadow: '0 0 10px rgba(255,107,107,.18)' }}
+            aria-label={`Hearts: ${hearts} of ${maxHearts}`}>
+            <span className="sb-mb-em" aria-hidden="true">❤️</span>
+            <span className="sb-mb-val">{val ?? hearts}</span>
+          </div>
+          <div className="sb-mb-pill"
+            style={{ color: '#2DE2E6', border: '1px solid rgba(45,226,230,.4)', boxShadow: '0 0 10px rgba(45,226,230,.18)' }}
+            aria-label={`${gems} gems`}>
+            <span className="sb-mb-em" aria-hidden="true">💎</span>
+            <span className="sb-mb-val">{val ?? gems}</span>
+          </div>
+          <div className="sb-mb-pill"
+            style={{ color: '#FFD23F', border: '1px solid rgba(255,210,63,.4)', boxShadow: '0 0 10px rgba(255,210,63,.18)' }}
+            aria-label={`${xp} experience points`}>
+            <span className="sb-mb-em" aria-hidden="true">⭐</span>
+            <span className="sb-mb-val">{val ?? xp}</span>
+          </div>
+          <div className="sb-mb-pill"
+            style={{ color: '#FF9600', border: '1px solid rgba(255,150,0,.4)', boxShadow: '0 0 10px rgba(255,150,0,.18)' }}
+            aria-label={`Streak: ${streak}`}>
+            <span className="sb-mb-em" aria-hidden="true">🔥</span>
+            <span className="sb-mb-val">{val ?? streak}</span>
+          </div>
+          <div className="sb-mb-pill"
+            style={{ color: '#58CC02', border: '1px solid rgba(88,204,2,.4)', boxShadow: '0 0 10px rgba(88,204,2,.18)' }}
+            aria-label={`Level ${level}`}>
+            <span className="sb-mb-em" style={{ fontSize: 'inherit' }}>Lv</span>
+            <span className="sb-mb-val">{val ?? level}</span>
+          </div>
         </div>
-        <div style={{ ...pill, color: '#2DE2E6', border: '1px solid rgba(45,226,230,.4)', boxShadow: '0 0 12px rgba(45,226,230,.18)' }}
-          aria-label={`${gems} gems`}>
-          💎 {val ?? gems}
-        </div>
-        <div style={{ ...pill, color: '#FFD23F', border: '1px solid rgba(255,210,63,.4)', boxShadow: '0 0 12px rgba(255,210,63,.18)' }}
-          aria-label={`${xp} experience points`}>
-          ⭐ {val ?? xp}
-        </div>
-        <div style={{ ...pill, color: '#FF9600', border: '1px solid rgba(255,150,0,.4)', boxShadow: '0 0 12px rgba(255,150,0,.18)' }}
-          aria-label={`Streak: ${streak}`}>
-          🔥 {val ?? streak}
-        </div>
-        <div style={{ ...pill, color: '#58CC02', border: '1px solid rgba(88,204,2,.4)', boxShadow: '0 0 12px rgba(88,204,2,.18)' }}
-          aria-label={`Level ${level}`}>
-          Lv {val ?? level}
-        </div>
-      </div>
+      </>
     );
   }
 

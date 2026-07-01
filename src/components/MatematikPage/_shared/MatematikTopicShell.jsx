@@ -229,13 +229,15 @@ export default function MatematikTopicShell({
         /* ── Math Buddies header (darkChrome pages) ── */
         .mb-header {
           display: flex; align-items: center;
-          padding: 10px 16px; flex-shrink: 0;
+          padding: 20px 16px 10px; flex-shrink: 0;
           background: transparent;
           position: relative;
         }
         .mb-brand-center {
           position: absolute; left: 50%; transform: translateX(-50%);
-          display: flex; align-items: center; gap: 10px; pointer-events: none;
+          display: flex; align-items: center; gap: 8px; pointer-events: none;
+          max-width: calc(100% - 88px);
+          overflow: hidden;
         }
         .mb-back {
           display: flex; align-items: center; justify-content: center;
@@ -259,14 +261,23 @@ export default function MatematikTopicShell({
           border: 2.5px solid rgba(45,226,230,.7); border-radius: 50%;
           box-shadow: 0 0 8px rgba(45,226,230,.6);
         }
+        .mb-brand-text { min-width: 0; overflow: hidden; }
         .mb-brand-title {
           font-family: 'Space Grotesk', sans-serif; font-weight: 700;
-          font-size: clamp(16px,4vw,20px); color: #fff; letter-spacing: .4px;
+          font-size: clamp(14px,4vw,20px); color: #fff; letter-spacing: .4px;
           text-shadow: 0 0 16px rgba(124,77,238,.6); line-height: 1;
+          white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .mb-brand-sub {
           font-family: 'Orbitron', sans-serif; font-weight: 600;
-          font-size: 8px; letter-spacing: 3px; color: #2DE2E6; margin-top: 4px;
+          font-size: 8px; letter-spacing: 2px; color: #2DE2E6; margin-top: 4px;
+          white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        @media (max-width: 400px) {
+          .mb-planet-icon { width: 30px; height: 30px; }
+          .mb-planet-ring { width: 42px; height: 13px; }
+          .mb-brand-sub { font-size: 7px; letter-spacing: 1px; }
+          .mb-brand-title { font-size: 13px; }
         }
       `}</style>
 
@@ -275,6 +286,9 @@ export default function MatematikTopicShell({
         .mt-dark-chrome .maf-head { color: rgba(255,255,255,.6) !important; }
         .mt-dark-chrome .maf-question { color: #fff !important; }
         .mt-dark-chrome .maf-footer { background: rgba(10,12,40,.55) !important; border-top-color: rgba(255,255,255,.08) !important; }
+        .mt-dark-chrome .maf-top-strip { background: rgba(14,10,46,.75) !important; border-bottom-color: rgba(255,255,255,.1) !important; }
+        .mt-dark-chrome .maf-tukar-btn { color: #2DE2E6 !important; }
+        .mt-dark-chrome .maf-tukar-btn:hover { background: rgba(255,255,255,.08) !important; }
         .mt-dark-chrome .maf-footer-tally { color: rgba(255,255,255,.55) !important; }
         .mt-dark-chrome .maf-stats .maf-divider { color: rgba(255,255,255,.18) !important; }
         .mt-dark-chrome .maf-summary-row { background: rgba(255,255,255,.06) !important; border-color: rgba(255,255,255,.1) !important; color: rgba(255,255,255,.85) !important; }
@@ -390,9 +404,9 @@ export default function MatematikTopicShell({
               <div className="mb-planet-icon">
                 <div className="mb-planet-ring" />
               </div>
-              <div>
+              <div className="mb-brand-text">
                 <div className="mb-brand-title">Math Buddies</div>
-                <div className="mb-brand-sub">I M A N &nbsp; S P A C E &nbsp; L A B</div>
+                <div className="mb-brand-sub">IMAN&nbsp;SPACE&nbsp;LAB</div>
               </div>
             </div>
           </div>
