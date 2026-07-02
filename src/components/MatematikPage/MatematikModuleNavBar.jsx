@@ -4,11 +4,11 @@ import StatsBar from '../_shared/StatsBar';
 
 // Tahun 1 — 5 new modules
 export const MT_MODULES_T1 = [
-  { id: 'nombor-hingga-100', num: 1, labelBM: 'Nombor Hingga 100', labelEN: 'Numbers to 100',      c: '#F59E0B', cd: '#D97706', pg: 'linear-gradient(180deg,#FFFBEB 0%,#FDE68A 50%,#D97706 100%)' },
-  { id: 'tambah-dan-tolak',  num: 2, labelBM: 'Tambah dan Tolak',  labelEN: 'Addition & Subtraction',c: '#3B82F6', cd: '#1D4ED8', pg: 'linear-gradient(180deg,#EFF6FF 0%,#93C5FD 50%,#1D4ED8 100%)' },
-  { id: 'pecahan',           num: 3, labelBM: 'Pecahan',           labelEN: 'Fractions',            c: '#8B5CF6', cd: '#6D28D9', pg: 'linear-gradient(180deg,#F5F3FF 0%,#C4B5FD 50%,#6D28D9 100%)' },
-  { id: 'wang',              num: 4, labelBM: 'Wang',              labelEN: 'Money',                c: '#10B981', cd: '#047857', pg: 'linear-gradient(180deg,#D1FAE5 0%,#6EE7B7 50%,#047857 100%)' },
-  { id: 'masa-dan-waktu',    num: 5, labelBM: 'Masa dan Waktu',    labelEN: 'Time',                 c: '#EC4899', cd: '#BE185D', pg: 'linear-gradient(180deg,#FDF2F8 0%,#F9A8D4 50%,#BE185D 100%)' },
+  { id: 'nombor-hingga-100', num: 1, labelBM: 'Nombor Hingga 100', labelEN: 'Numbers to 100',      c: '#3B82F6', cd: '#1D4ED8', pg: 'transparent' },
+  { id: 'tambah-dan-tolak',  num: 2, labelBM: 'Tambah dan Tolak',  labelEN: 'Addition & Subtraction',c: '#3B82F6', cd: '#1D4ED8', pg: 'transparent' },
+  { id: 'pecahan',           num: 3, labelBM: 'Pecahan',           labelEN: 'Fractions',            c: '#3B82F6', cd: '#1D4ED8', pg: 'transparent' },
+  { id: 'wang',              num: 4, labelBM: 'Wang',              labelEN: 'Money',                c: '#3B82F6', cd: '#1D4ED8', pg: 'transparent' },
+  { id: 'masa-dan-waktu',    num: 5, labelBM: 'Masa dan Waktu',    labelEN: 'Time',                 c: '#3B82F6', cd: '#1D4ED8', pg: 'transparent' },
 ];
 
 // Tahun 2 & 3 — keep the old 3-module structure
@@ -67,7 +67,7 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           box-sizing: border-box;
           background: transparent;
           position: relative;
-          z-index: 1;
+          z-index: 10;
         }
         .mt-top-back {
           display: flex;

@@ -3,12 +3,12 @@ import Tahun1ModuleHubLayout from '../../../PendidikanIslamPage/Tahun1/Tahun1Mod
 import MatematikTopicRobot from '../../MatematikTopicRobot';
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#D1FAE5 0%,#6EE7B7 50%,#047857 100%)',
-  dark: '#065F46',
-  cd: '#047857',
-  accent: '#10B981',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#A7F3D0 0%,#34D399 55%,#047857 100%)',
-  pillGradient: 'linear-gradient(180deg,#10B981,#047857)',
+  pageGradient: 'transparent',
+  dark: '#60A5FA',
+  cd: '#2563EB',
+  accent: '#3B82F6',
+  stageGradient: 'transparent',
+  pillGradient: 'linear-gradient(180deg,#3B82F6,#1D4ED8)',
 };
 
 const ROBOT = <MatematikTopicRobot theme={THEME} />;

@@ -4073,10 +4073,29 @@ function BondDiagram({ whole, part }) {
 
 // Warnai — paint-splatter game: tap the splat whose expression matches the
 // target sum. Correct answer pours paint bottom→up via SVG gradient animation.
+const SIMPLE_SHAPES = [
+  'M 100 4 A 96 96 0 1 0 100 196 A 96 96 0 1 0 100 4 Z', // Circle
+  'M 100 0 L 200 195 L 0 195 Z', // Triangle
+  'M 5 5 H 195 V 195 H 5 Z', // Square
+  'M 50 5 L 150 5 L 195 100 L 150 195 L 50 195 L 5 100 Z', // Hexagon
+  'M 100 195 C 100 195, 0 110, 0 55 C 0 15, 60 0, 100 40 C 140 0, 200 15, 200 55 C 200 110, 100 195, 100 195 Z', // Heart
+  'M 100 10 L 136 55 L 190 76 L 159 124 L 156 182 L 100 167 L 44 182 L 41 124 L 10 76 L 64 55 Z', // Star
+  'M 5 35 H 195 V 165 H 5 Z', // Rectangle
+];
+
 function WarnaiContent({ q, ctx }) {
   const { answered, selected, answer, handlePick } = ctx;
   const [pourProgress, setPourProgress] = useState(0);
   const rafRef = useRef(null);
+
+  const optionShapes = React.useMemo(() => {
+    const arr = [...SIMPLE_SHAPES];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }, [q.qid]);
 
   useEffect(() => {
     if (answered && selected === answer) {
@@ -4105,7 +4124,7 @@ function WarnaiContent({ q, ctx }) {
           display: flex; align-items: center; justify-content: center;
           width: 100%; aspect-ratio: 1 / 1;
           font-family: 'Baloo 2', sans-serif; font-weight: 900;
-          font-size: clamp(26px, 6vmin, 48px);
+          font-size: clamp(24px, 5.5vmin, 44px);
           line-height: 1.1;
           border: none; outline: none; padding: 0;
           background: transparent;
@@ -4138,7 +4157,7 @@ function WarnaiContent({ q, ctx }) {
           const isWrongPick = answered && isPicked && !isCorrectAns;
           const isRightPick = answered && isCorrectAns;
           const c = BOX_COLORS[idx % BOX_COLORS.length];
-          const splatPath = SPLATTER_PATHS[idx % 4];
+          const splatPath = optionShapes[idx % optionShapes.length];
           const gradId = `pw${q.qid}_${idx}`;
           const progress = isRightPick ? pourProgress : 0;
           return (
@@ -5745,16 +5764,16 @@ export function SelesaikanM2Explore({ data, language, theme, onExit }) {
           position: absolute; inset: 0; z-index: 50;
           display: flex; align-items: center; justify-content: center;
           padding: clamp(12px, 3vmin, 32px); overflow: hidden;
-          background: rgba(15, 23, 42, .45); backdrop-filter: blur(3px);
+          background: rgba(15, 23, 42, .55); backdrop-filter: blur(4px);
           animation: sm2-backdrop-in .18s ease;
         }
         .sm2-dialog {
           position: relative; width: 100%; max-width: 360px; max-height: 100%;
           display: flex; flex-direction: column; align-items: center; gap: clamp(10px, 1.8vmin, 18px);
-          background: rgba(10,12,46,.96); border-radius: clamp(16px, 2.4vmin, 24px);
-          border: 1px solid rgba(255,255,255,.14);
+          background: linear-gradient(145deg, rgba(30,10,60,.98), rgba(15,23,42,.96)); border-radius: clamp(16px, 2.4vmin, 24px);
+          border: 1px solid rgba(168,85,247,.3);
           padding: clamp(16px, 3vmin, 28px);
-          box-shadow: 0 20px 50px -12px rgba(0,0,0,.7), 0 0 40px rgba(99,102,241,.18);
+          box-shadow: 0 20px 50px -12px rgba(0,0,0,.8), 0 0 45px rgba(168,85,247,.25);
           animation: sm2-dialog-in .26s cubic-bezier(.34,1.56,.64,1);
         }
         .sm2-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(5px, 0.9vmin, 9px); width: 100%; }
@@ -5766,20 +5785,20 @@ export function SelesaikanM2Explore({ data, language, theme, onExit }) {
         position: 'relative', zIndex: 2,
         flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: 'clamp(6px, 1vmin, 12px) clamp(12px, 2vmin, 20px)',
-        background: 'rgba(10,12,40,.55)', backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid rgba(255,255,255,.12)',
+        background: 'rgba(15,23,42,.65)', backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid rgba(168,85,247,.15)',
       }}>
         <button type="button" onClick={onExit}
-          style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: 'clamp(14px, 2vmin, 18px)', color: '#C7D2FE', padding: '4px 0', WebkitTapHighlightColor: 'transparent' }}>
+          style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: 'clamp(14px, 2vmin, 18px)', color: '#E9D5FF', padding: '4px 0', WebkitTapHighlightColor: 'transparent' }}>
           ← Kembali
         </button>
         <div style={{
-          fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.6vmin, 24px)', color: '#fff', textAlign: 'center', textShadow: '0 1px 12px rgba(129,140,248,.6)',
+          fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.6vmin, 24px)', color: '#fff', textAlign: 'center', textShadow: '0 0 12px rgba(168,85,247,.8), 0 0 4px rgba(255,255,255,.4)',
         }}>
           Roda Nombor
         </div>
         <div style={{
-          fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 2vmin, 17px)', color: solvedCount === 6 ? '#4ADE80' : '#C7D2FE',
+          fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 2vmin, 17px)', color: solvedCount === 6 ? '#4ADE80' : '#E9D5FF',
           background: 'rgba(255,255,255,.12)', borderRadius: 12, padding: '4px 10px',
         }}>
           {solvedCount}/6 ✓
@@ -5828,24 +5847,31 @@ export function SelesaikanM2Explore({ data, language, theme, onExit }) {
           <div className="sm2-wheel-pane" ref={wheelPaneRef}>
             <div className="sm2-wheel" style={{ width: wheelSize, height: wheelSize }}>
               {/* SVG spokes + center ring */}
-              <svg viewBox="0 0 100 100" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+              <svg viewBox="0 0 100 100" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', filter: 'drop-shadow(0 0 8px rgba(0,0,0,0.5))' }}>
                 {SPOKE_ANGLES.map((angle, i) => {
                   const rad = (angle - 90) * Math.PI / 180;
                   const x1 = 50 + 14 * Math.cos(rad);
                   const y1 = 50 + 14 * Math.sin(rad);
                   const x2 = 50 + SPOKE_END_R[i] * Math.cos(rad);
                   const y2 = 50 + SPOKE_END_R[i] * Math.sin(rad);
-                  return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={solved[i] ? 'rgba(74,222,128,.7)' : 'rgba(99,130,255,.55)'} strokeWidth="1.6" strokeLinecap="round" />;
+                  const isSolved = solved[i];
+                  return (
+                    <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} 
+                          stroke={isSolved ? '#10B981' : '#A855F7'} 
+                          strokeWidth="2" strokeLinecap="round" 
+                          style={{ filter: isSolved ? 'drop-shadow(0 0 4px #10B981)' : 'drop-shadow(0 0 4px #A855F7)' }} />
+                  );
                 })}
-                <circle cx="50" cy="50" r="13" fill="rgba(10,12,50,.92)" stroke="#2DE2E6" strokeWidth="2.4" />
+                <circle cx="50" cy="50" r="13" fill="rgba(15,23,42,0.85)" stroke="#06B6D4" strokeWidth="2.4" style={{ filter: 'drop-shadow(0 0 6px #06B6D4)' }} />
+                <circle cx="50" cy="50" r="14.5" fill="none" stroke="rgba(6,182,212,0.3)" strokeWidth="0.5" strokeDasharray="1 1.5" />
               </svg>
               {/* Center number */}
               <div style={{
                 position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%,-50%)',
                 display: 'flex', flexDirection: 'column', alignItems: 'center', pointerEvents: 'none',
               }}>
-                <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: wheelSize * 0.13, color: '#fff', lineHeight: 1, textShadow: '0 0 10px rgba(45,226,230,.5)' }}>{N}</span>
-                <span style={{ fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: Math.max(7, wheelSize * 0.035), color: '#7DD3FC' }}>Pusat</span>
+                <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: wheelSize * 0.13, color: '#fff', lineHeight: 1, textShadow: '0 0 14px rgba(6,182,212,.8), 0 0 4px rgba(255,255,255,.5)' }}>{N}</span>
+                <span style={{ fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: Math.max(7, wheelSize * 0.035), color: '#22D3EE', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Pusat</span>
               </div>
               {/* Spoke cards (absolute px positions) */}
               {spokes.map((spoke, i) => {
@@ -5859,9 +5885,16 @@ export function SelesaikanM2Explore({ data, language, theme, onExit }) {
                 const isActive = activeSpoke === i;
                 const isSolved = solved[i];
                 const isShake = shakeIdx === i;
-                let bg = 'rgba(255,255,255,.07)', bd = 'rgba(147,198,255,.45)', clr = '#C7D2FE';
-                if (isSolved) { bg = 'rgba(74,222,128,.15)'; bd = '#4ADE80'; clr = '#4ADE80'; }
-                if (isActive) { bg = 'rgba(99,102,241,.22)'; bd = '#818CF8'; }
+                let bg = 'rgba(30,10,60,.55)', bd = 'rgba(168,85,247,.6)', clr = '#E9D5FF';
+                let boxShad = '0 0 12px rgba(168,85,247,.3)';
+                if (isSolved) { 
+                  bg = 'rgba(6,78,59,.65)'; bd = '#10B981'; clr = '#34D399'; 
+                  boxShad = '0 0 16px rgba(16,185,129,.4)';
+                }
+                if (isActive) { 
+                  bg = 'rgba(134,25,143,.7)'; bd = '#F472B6'; 
+                  boxShad = `0 0 0 3px rgba(244,114,182,.5), 0 0 25px rgba(236,72,153,.6)`;
+                }
                 return (
                   <div key={spoke.id} style={{
                     position: 'absolute', left: cxPx, top: cyPx, width: cardW, height: cardH,
@@ -5876,9 +5909,10 @@ export function SelesaikanM2Explore({ data, language, theme, onExit }) {
                         display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center',
                         padding: '2px 4px', boxSizing: 'border-box',
                         cursor: isSolved ? 'default' : 'pointer',
-                        boxShadow: isActive ? `0 0 0 3px rgba(129,140,248,.5), 0 0 18px rgba(99,102,241,.35)` : isSolved ? '0 0 12px rgba(74,222,128,.25)' : '0 0 8px rgba(0,0,0,.35)',
-                        transition: 'background .15s ease, border-color .15s ease',
+                        boxShadow: boxShad,
+                        transition: 'all .25s ease',
                         WebkitTapHighlightColor: 'transparent', overflow: 'hidden',
+                        backdropFilter: 'blur(6px)',
                       }}>
                       {isSolved ? (
                         <span style={{ fontSize: cardH * 0.6, color: '#4ADE80', fontWeight: 900, textShadow: '0 0 8px rgba(74,222,128,.5)' }}>✓</span>
@@ -5886,7 +5920,7 @@ export function SelesaikanM2Explore({ data, language, theme, onExit }) {
                         <span style={{
                           fontFamily: "'Baloo 2',sans-serif", fontWeight: 800,
                           fontSize: Math.max(9, wheelSize * 0.045), color: clr, lineHeight: 1.1,
-                          textShadow: isActive ? '0 0 8px rgba(129,140,248,.6)' : 'none',
+                          textShadow: isActive ? '0 0 8px rgba(244,114,182,.6)' : 'none',
                         }}>{spokeLabels[i]}</span>
                       )}
                     </div>
