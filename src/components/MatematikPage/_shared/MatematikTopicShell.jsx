@@ -53,6 +53,7 @@ export default function MatematikTopicShell({
   showToggle = true,
   background = null,
   darkChrome = false,
+  formalMode = false,
 }) {
   const [phase, setPhase] = useState('belajar');
 
@@ -62,7 +63,7 @@ export default function MatematikTopicShell({
   return (
     <div
       className={`mt-topic-shell${darkChrome ? ' mt-dark-chrome' : ''}`}
-      style={{ '--mt-accent': theme.accent, '--mt-dark': theme.dark, '--mt-cd': theme.cd, ...(background ? { background: '#05030F' } : null) }}
+      style={{ '--mt-accent': theme.accent, '--mt-dark': theme.dark, '--mt-cd': theme.cd, ...(background ? { background: '#05030F' } : (formalMode ? { background: '#fff' } : null)) }}
     >
       <style>{`
         .mt-topic-shell {
@@ -353,14 +354,6 @@ export default function MatematikTopicShell({
         .mt-dark-chrome .ld-drill-summary-row { background: rgba(255,255,255,.06) !important; border-color: rgba(255,255,255,.1) !important; color: rgba(255,255,255,.85) !important; }
         .mt-dark-chrome .ld-drill-btn-secondary { background: rgba(255,255,255,.08) !important; border-color: rgba(255,255,255,.2) !important; color: #fff !important; }
 
-        /* M2 exam — Cabar Minda */
-        .mt-dark-chrome .cm-exam-q { color: #fff !important; }
-        .mt-dark-chrome .cm-exam-feedback.ok { color: #4ADE80 !important; }
-        .mt-dark-chrome .cm-exam-feedback.no { color: #F87171 !important; }
-        .mt-dark-chrome .cm-results-badge { background: rgba(10,12,40,.5) !important; border-color: rgba(255,255,255,.15) !important; }
-        .mt-dark-chrome .cm-results-stat { background: rgba(10,12,40,.5) !important; }
-        .mt-dark-chrome .cm-results-row { border-bottom-color: rgba(255,255,255,.08) !important; }
-
         /* M2 Level Picker (LatihanTambah / LatihanTolak) */
         .mt-dark-chrome .lt-picker-heading { color: #fff !important; }
         .mt-dark-chrome .lt-card { background: rgba(14,10,46,.82) !important; border-color: rgba(255,255,255,.18) !important; }
@@ -388,8 +381,9 @@ export default function MatematikTopicShell({
       `}</style>}
 
       {darkChrome && <style>{`@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Space+Grotesk:wght@700&display=swap');`}</style>}
+      {formalMode && <style>{`.mt-shell { background: #fff !important; }`}</style>}
 
-      {background || <MatematikSceneBackground />}
+      {background || (!formalMode && <MatematikSceneBackground />)}
 
 
       {darkChrome ? (
@@ -418,9 +412,11 @@ export default function MatematikTopicShell({
               <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
           </button>
-          <div className="mt-top-stats">
-            <StatsBar subject="mt" />
-          </div>
+          {!formalMode && (
+            <div className="mt-top-stats">
+              <StatsBar subject="mt" />
+            </div>
+          )}
         </div>
       )}
 

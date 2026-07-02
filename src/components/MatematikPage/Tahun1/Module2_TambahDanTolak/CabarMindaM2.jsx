@@ -29,8 +29,7 @@ export default function CabarMindaM2({ onBack, language = 'bm' }) {
       subtitleEN=""
       showToggle={false}
       showReadyCta={false}
-      background={<SpaceBackground />}
-      darkChrome
+      formalMode={true}
       learn={<MatematikExplore config={EXPLORE_CONFIG} language={language} theme={THEME} onExit={onBack} />}
     />
   );

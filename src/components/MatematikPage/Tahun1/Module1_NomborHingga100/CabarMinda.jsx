@@ -29,6 +29,7 @@ export default function CabarMinda({ onBack, language = 'bm' }) {
       subtitleEN=""
       showToggle={false}
       showReadyCta={false}
+      formalMode={true}
       learn={<MatematikExplore config={EXPLORE_CONFIG} language={language} theme={THEME} onExit={onBack} />}
     />
   );
