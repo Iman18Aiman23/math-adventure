@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import BackButton from '../../BackButton';
-import StatsBar from '../../_shared/StatsBar';
 import useGamification from '../../../hooks/useGamification';
+import StatsBar from '../../_shared/StatsBar';
 import MatematikSceneBackground from './MatematikSceneBackground';
 
 function MbScoreBar() {
@@ -18,6 +17,29 @@ function MbScoreBar() {
     <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
       <div style={{ ...pill, color: '#FFD23F', border: '1px solid rgba(255,210,63,.4)', boxShadow: '0 0 14px rgba(255,210,63,.18)' }}>⭐ {score}</div>
       <div style={{ ...pill, color: '#2DE2E6', border: '1px solid rgba(45,226,230,.4)', boxShadow: '0 0 14px rgba(45,226,230,.18)' }}>⚡ {streakVal}</div>
+    </div>
+  );
+}
+
+function MtTopicStats() {
+  const { loading, xp, gems, level, streak, hearts, maxHearts } = useGamification('mt');
+  const items = [
+    { key: 'hearts', icon: '♥', value: loading ? '-' : `${hearts}/${maxHearts}`, label: 'Hati', color: '#FF4B4B' },
+    { key: 'gems', icon: '◇', value: loading ? '-' : gems, label: 'Permata', color: '#22D3EE' },
+    { key: 'xp', icon: '★', value: loading ? '-' : xp, label: 'XP', color: '#A855F7' },
+    { key: 'streak', icon: '♨', value: loading ? '-' : streak, label: 'Rentak', color: '#F59E0B' },
+    { key: 'level', icon: 'Lv', value: loading ? '-' : level, label: 'Level', color: '#58CC02' },
+  ];
+
+  return (
+    <div className="mt-topic-stats" aria-label="Statistik pembelajaran">
+      {items.map((item) => (
+        <div className="mt-topic-stat" key={item.key} style={{ '--stat-color': item.color }}>
+          <span className="mt-topic-stat-icon" aria-hidden="true">{item.icon}</span>
+          <span className="mt-topic-stat-value">{item.value}</span>
+          <span className="mt-topic-stat-label">{item.label}</span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -45,6 +67,8 @@ export default function MatematikTopicShell({
   emoji = '📖',
   titleBM = '',
   titleEN = '',
+  headerTitleBM = '',
+  headerTitleEN = '',
   subtitleBM = '',
   subtitleEN = '',
   learn = null,
@@ -56,14 +80,17 @@ export default function MatematikTopicShell({
   formalMode = false,
 }) {
   const [phase, setPhase] = useState('belajar');
+  const legacyDarkChrome = darkChrome;
 
   const title = language === 'bm' ? titleBM : titleEN;
+  const headerTitle = language === 'bm' ? headerTitleBM : headerTitleEN;
   const subtitle = language === 'bm' ? subtitleBM : subtitleEN;
+  const shellTitle = headerTitle || title || subtitle;
 
   return (
     <div
-      className={`mt-topic-shell${darkChrome ? ' mt-dark-chrome' : ''}`}
-      style={{ '--mt-accent': theme.accent, '--mt-dark': theme.dark, '--mt-cd': theme.cd, ...(background ? { background: '#05030F' } : (formalMode ? { background: '#fff' } : null)) }}
+      className={`mt-topic-shell${legacyDarkChrome ? ' mt-dark-chrome' : ''}`}
+      style={{ '--mt-accent': theme.accent, '--mt-dark': theme.dark, '--mt-cd': theme.cd, ...(legacyDarkChrome ? { background: '#05030F' } : (formalMode ? { background: '#fff' } : null)) }}
     >
       <style>{`
         .mt-topic-shell {
@@ -72,7 +99,7 @@ export default function MatematikTopicShell({
           height: 100%;
           min-height: 0;
           position: relative;
-          background: #F7F8FA;
+          background: #06142E;
         }
         /* keep all content above the decorative landscape scene */
         .mt-topic-shell > .mt-shell-top,
@@ -80,13 +107,17 @@ export default function MatematikTopicShell({
         .mt-topic-shell > .mt-shell-body,
         .mt-topic-shell > .mt-shell-body-plain,
         .mt-topic-shell > .mb-header { position: relative; z-index: 1; }
+        .mt-topic-shell > .mt-shell-top { z-index: 9000; }
         .mt-shell-top {
-          display: flex;
+          position: relative;
+          display: grid;
+          grid-template-columns: 48px minmax(0, 1fr) auto;
           align-items: center;
-          gap: 10px;
-          padding: 12px 16px;
+          gap: clamp(10px, 1.8vw, 18px);
+          padding: clamp(12px, 1.8vw, 18px) clamp(16px, 2.2vw, 28px) clamp(8px, 1.2vw, 12px);
           flex-shrink: 0;
           background: transparent;
+          min-height: clamp(64px, 8vw, 82px);
         }
         .mt-shell-top .mt-top-back {
           display: flex;
@@ -94,17 +125,29 @@ export default function MatematikTopicShell({
           justify-content: center;
           width: 44px;
           height: 44px;
-          border-radius: 50%;
-          border: none;
-          background: #ffffff;
-          color: #10243A;
+          border-radius: 16px;
+          border: 1px solid rgba(255,255,255,.82);
+          background:
+            linear-gradient(180deg, rgba(255,255,255,.92), rgba(241,249,255,.78)),
+            linear-gradient(135deg, color-mix(in srgb, var(--mt-accent) 14%, transparent), transparent 62%);
+          color: color-mix(in srgb, var(--mt-dark) 82%, #1E3A8A);
           cursor: pointer;
           flex-shrink: 0;
           padding: 0;
-          box-shadow: none;
-          transition: transform .1s ease;
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.96),
+            0 12px 26px rgba(15, 118, 110, .12);
+          backdrop-filter: blur(14px);
+          z-index: 2;
+          transition: transform .14s ease, box-shadow .18s ease, border-color .18s ease;
         }
-        .mt-shell-top .mt-top-back:hover { transform: translateY(-1px); }
+        .mt-shell-top .mt-top-back:hover {
+          transform: translateY(-1px);
+          border-color: color-mix(in srgb, var(--mt-accent) 30%, rgba(255,255,255,.82));
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.98),
+            0 16px 30px rgba(15, 118, 110, .16);
+        }
         .mt-shell-top .mt-top-back:active { transform: translateY(1px); }
         /* Dark chrome: blend the back button into a dark / galaxy background */
         .mt-dark-chrome .mt-shell-top .mt-top-back {
@@ -114,14 +157,120 @@ export default function MatematikTopicShell({
           backdrop-filter: blur(8px);
         }
         .mt-shell-top .mt-top-stats {
-          flex: 1 1 auto;
+          grid-column: 3;
+          flex: 0 0 auto;
           min-width: 0;
           margin-left: auto;
           display: flex;
           justify-content: flex-end;
+          position: relative;
+          z-index: 9999;
+        }
+        .mt-shell-topic-label {
+          grid-column: 2;
+          justify-self: center;
+          min-width: 0;
+          display: none;
+          align-items: center;
+          justify-content: center;
+          width: fit-content;
+          max-width: min(620px, 100%);
+          min-height: clamp(38px, 4.4vw, 48px);
+          padding: clamp(6px, .9vw, 9px) clamp(14px, 1.8vw, 22px);
+          border-radius: clamp(14px, 1.6vw, 18px);
+          background:
+            linear-gradient(180deg, rgba(18, 34, 62, .96), rgba(8, 18, 40, .92)),
+            radial-gradient(circle at 50% -32%, color-mix(in srgb, var(--mt-accent) 30%, transparent), transparent 68%);
+          border: 1px solid color-mix(in srgb, var(--mt-accent) 38%, rgba(226, 245, 255, .22));
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.16),
+            inset 0 -1px 0 rgba(3,7,20,.62),
+            0 14px 32px rgba(3,7,20,.28);
+          color: #EAF6FF;
+        }
+        .mt-shell-topic-label-text {
+          min-width: 0;
+          font-family: 'Baloo 2', sans-serif;
+          font-size: clamp(16px, 2.05vw, 23px);
+          font-weight: 900;
+          line-height: 1.05;
+          text-align: center;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          text-shadow: 0 2px 0 rgba(0,0,0,.18);
         }
         .mt-shell-top .mt-top-stats .sb-root { margin-bottom: 0; width: 100%; }
+        .mt-shell-top .mt-top-stats .sb-container { justify-content: flex-end; }
+        .mt-shell-top .mt-top-stats .sb-mb-wrap { justify-content: flex-end; }
+        .mt-shell-top .mt-top-stats .sb-bundle-btn {
+          min-width: 86px;
+          min-height: 40px;
+          border-radius: 17px;
+        }
+        .mt-shell-top .mt-top-stats .sb-popover {
+          right: 0;
+          z-index: 9999;
+        }
+        @media (max-width: 1024px) {
+          .mt-shell-top {
+            grid-template-columns: 15% minmax(0, 70%) 15%;
+            gap: 8px;
+            padding: 12px 16px 8px;
+            min-height: 62px;
+          }
+          .mt-shell-top .mt-top-back,
+          .mt-shell-top .mt-top-stats {
+            position: relative;
+            z-index: 2;
+          }
+          .mt-shell-top .mt-top-stats {
+            width: 100%;
+          }
+          .mt-shell-topic-label {
+            position: static;
+            transform: none;
+            display: flex;
+            width: fit-content;
+            max-width: 100%;
+            min-height: 0;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background:
+              linear-gradient(180deg, rgba(255,255,255,.94), rgba(234,245,249,.84));
+            border: 1px solid rgba(255,255,255,.86);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.94), 0 8px 18px rgba(15, 118, 110, .10);
+            color: color-mix(in srgb, var(--mt-dark) 76%, #1E293B);
+            z-index: 1;
+          }
+          .mt-shell-topic-label-text {
+            font-family: 'Fredoka', sans-serif;
+            font-size: clamp(10px, 1.85vw, 14px);
+            font-weight: 900;
+            line-height: 1.1;
+            white-space: nowrap;
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-shadow: 0 1px 0 rgba(255,255,255,.86);
+          }
+          .mt-shell-top .mt-top-stats .sb-bundle-btn {
+            width: 44px;
+            min-width: 44px;
+            min-height: 40px;
+            padding: 0;
+            gap: 0;
+            border-radius: 16px;
+          }
+          .mt-shell-top .mt-top-stats .sb-bundle-text {
+            display: none !important;
+          }
+          .mt-shell-top .mt-top-stats .sb-bundle-btn .sb-emoji {
+            font-size: 19px;
+          }
+        }
         @media (min-width: 768px) {
+          .mt-shell-topic-label { display: none; }
           .mt-shell-top .mt-top-stats { flex: 0 0 auto; }
           .mt-shell-top .mt-top-stats .sb-root {
             width: auto;
@@ -131,15 +280,134 @@ export default function MatematikTopicShell({
           }
           .mt-shell-top .mt-top-stats .sb-item { flex: 0 0 auto; }
         }
+        @media (max-width: 840px) {
+          .mt-shell-topic-label-text {
+            font-size: clamp(11px, 2.1vw, 14px);
+          }
+        }
+        @media (max-width: 560px) {
+          .mt-shell-top { grid-template-columns: 15% minmax(0, 70%) 15%; padding: 12px 14px 6px; min-height: 56px; }
+          .mt-shell-topic-label { color: color-mix(in srgb, var(--mt-dark) 80%, #1E293B); }
+          .mt-shell-topic-label-text {
+            font-size: clamp(9px, 2.5vw, 11px);
+            line-height: 1.12;
+          }
+        }
+        .mt-topic-stats {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          gap: 10px;
+          padding: 8px 9px;
+          border-radius: 18px;
+          background: rgba(255,255,255,.08);
+          border: 1px solid rgba(183, 247, 255, .16);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 16px 34px rgba(0,0,0,.24);
+          backdrop-filter: blur(16px);
+        }
+        .mt-topic-stat {
+          min-width: 42px;
+          height: 36px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 5px;
+          padding: 5px 8px;
+          border-radius: 13px;
+          background:
+            linear-gradient(180deg, color-mix(in srgb, var(--stat-color) 88%, #ffffff 12%), color-mix(in srgb, var(--stat-color) 72%, #0B1730 28%));
+          color: #fff;
+          box-shadow: 0 3px 0 color-mix(in srgb, var(--stat-color) 62%, #000), 0 8px 18px color-mix(in srgb, var(--stat-color) 18%, transparent);
+          font-family: 'Fredoka', sans-serif;
+        }
+        .mt-topic-stat-icon {
+          font-weight: 900;
+          font-size: 15px;
+          line-height: 1;
+          filter: drop-shadow(0 1px 1px rgba(0,0,0,.28));
+        }
+        .mt-topic-stat-value {
+          font-weight: 900;
+          font-size: 15px;
+          line-height: 1;
+          font-variant-numeric: tabular-nums;
+        }
+        .mt-topic-stat-label {
+          display: none;
+          grid-column: 1 / -1;
+          font-size: 8px;
+          font-weight: 800;
+          line-height: 1;
+          opacity: .82;
+          text-transform: uppercase;
+          letter-spacing: .3px;
+          text-align: center;
+        }
+        .mt-topic-stats {
+          width: 92px;
+          height: 38px;
+          padding: 0 8px;
+          border-radius: 999px;
+          justify-content: center;
+          overflow: hidden;
+          background: rgba(7, 20, 48, .78);
+          border-color: rgba(168, 85, 247, .36);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 12px 26px rgba(0,0,0,.25);
+        }
+        .mt-topic-stat { display: none; }
+        .mt-topic-stat:nth-child(3) {
+          display: flex;
+          min-width: 0;
+          width: auto;
+          height: 30px;
+          padding: 0;
+          align-items: center;
+          justify-content: center;
+          gap: 5px;
+          background: transparent;
+          box-shadow: none;
+        }
+        .mt-topic-stat:nth-child(3) .mt-topic-stat-label { display: none; }
+        .mt-topic-stat:nth-child(3) .mt-topic-stat-icon,
+        .mt-topic-stat:nth-child(3) .mt-topic-stat-value { font-size: 14px; }
+        .mt-topic-stat:nth-child(3)::after {
+          content: 'XP';
+          font-family: 'Fredoka', sans-serif;
+          font-size: 9px;
+          font-weight: 900;
+          color: rgba(234,246,255,.72);
+          line-height: 1;
+        }
+        @media (max-width: 560px) {
+          .mt-topic-stats {
+            width: 42px;
+            height: 38px;
+            padding: 0;
+            border-radius: 14px;
+          }
+          .mt-topic-stat:nth-child(3) {
+            width: 34px;
+            gap: 2px;
+          }
+          .mt-topic-stat:nth-child(3)::after { display: none; }
+          .mt-topic-stat:nth-child(3) .mt-topic-stat-icon,
+          .mt-topic-stat:nth-child(3) .mt-topic-stat-value { font-size: 12px; }
+        }
 
         .mt-shell-toggle {
           display: flex;
           align-items: center;
           gap: 0;
           margin: 0 16px 12px;
-          padding: 4px;
-          border-radius: 16px;
-          background: #E8EAF0;
+          padding: 5px;
+          border-radius: 18px;
+          background:
+            linear-gradient(180deg, rgba(255,255,255,.82), rgba(236,244,250,.72)),
+            linear-gradient(135deg, color-mix(in srgb, var(--mt-accent) 10%, transparent), transparent 64%);
+          border: 1px solid rgba(255,255,255,.82);
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.96),
+            0 14px 28px rgba(15, 118, 110, .10);
           flex-shrink: 0;
         }
         .mt-shell-toggle-btn {
@@ -147,21 +415,27 @@ export default function MatematikTopicShell({
           border: none;
           background: transparent;
           padding: 8px 16px;
-          border-radius: 12px;
+          border-radius: 14px;
           font-family: 'Fredoka', system-ui, sans-serif;
           font-weight: 700;
           font-size: 15px;
-          color: #5B6B7B;
+          color: #597076;
           cursor: pointer;
           transition: all .2s ease;
           -webkit-tap-highlight-color: transparent;
         }
         .mt-shell-toggle-btn.active {
-          background: #ffffff;
-          color: var(--mt-dark);
-          box-shadow: 0 2px 8px rgba(0,0,0,.08);
+          background:
+            linear-gradient(180deg, color-mix(in srgb, var(--mt-accent) 18%, #FFFFFF), #FFFFFF);
+          color: color-mix(in srgb, var(--mt-dark) 82%, #1E3A8A);
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.98),
+            0 8px 18px rgba(15, 118, 110, .12);
         }
-        .mt-shell-toggle-btn:not(.active):hover { color: var(--mt-dark); }
+        .mt-shell-toggle-btn:not(.active):hover {
+          color: color-mix(in srgb, var(--mt-dark) 82%, #1E3A8A);
+          background: rgba(255,255,255,.48);
+        }
 
         .mt-shell-body {
           flex: 1;
@@ -227,6 +501,349 @@ export default function MatematikTopicShell({
           outline-offset: 3px;
         }
 
+        /* Shared playground polish for the existing activity primitives. */
+        .mt-topic-shell .cmp-head,
+        .mt-topic-shell .maf-head {
+          color: rgba(234,246,255,.72) !important;
+          text-shadow: 0 0 18px color-mix(in srgb, var(--mt-accent) 24%, transparent);
+        }
+        .mt-topic-shell .cmp-head-title {
+          display: none !important;
+        }
+        .mt-topic-shell .cmp-question,
+        .mt-topic-shell .maf-question {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          max-width: min(760px, 100%);
+          box-sizing: border-box;
+          min-height: clamp(48px, 6.6vmin, 70px);
+          padding: clamp(10px, 1.5vmin, 16px) clamp(20px, 3vmin, 36px);
+          border-radius: clamp(17px, 2.1vmin, 24px);
+          background:
+            linear-gradient(180deg, rgba(255,255,255,.96), rgba(239,248,255,.88)),
+            radial-gradient(circle at 50% -28%, color-mix(in srgb, var(--mt-accent) 18%, transparent), transparent 68%) !important;
+          border: 1.5px solid color-mix(in srgb, var(--mt-accent) 34%, rgba(255,255,255,.92)) !important;
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.86),
+            0 0 0 3px rgba(255,255,255,.48),
+            0 16px 32px rgba(15,23,42,.16) !important;
+          backdrop-filter: blur(10px) !important;
+          color: #1E293B !important;
+          text-shadow: 0 1px 0 rgba(255,255,255,.8);
+          text-wrap: balance;
+        }
+        @media (max-width: 560px) {
+          .mt-topic-shell .cmp-question,
+          .mt-topic-shell .maf-question {
+            max-width: min(340px, 92vw);
+            min-height: 48px;
+            padding-inline: 18px;
+          }
+        }
+        .mt-topic-shell .cmp-panel {
+          min-width: 0;
+          box-sizing: border-box;
+          overflow: hidden;
+          background:
+            linear-gradient(180deg, rgba(255,255,255,.98), rgba(245,249,255,.94)),
+            radial-gradient(circle at 50% -16%, color-mix(in srgb, var(--mt-accent) 12%, transparent), transparent 62%) !important;
+          border: 1px solid rgba(220, 232, 244, .96) !important;
+          border-bottom-width: 5px !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.86), 0 18px 44px rgba(3,7,20,.30) !important;
+          backdrop-filter: none;
+          gap: clamp(10px, 1.8vmin, 20px) !important;
+          padding: clamp(14px, 2.1vmin, 26px) clamp(12px, 1.8vmin, 22px) clamp(12px, 1.9vmin, 22px) !important;
+          min-height: clamp(132px, 21vmin, 236px) !important;
+        }
+        .mt-topic-shell .cmp-panel:hover:not(.done) {
+          transform: translateY(-2px);
+          border-color: color-mix(in srgb, var(--mt-accent) 48%, #DCE8F4) !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 0 0 3px color-mix(in srgb, var(--mt-accent) 16%, transparent), 0 24px 52px rgba(3,7,20,.36) !important;
+        }
+        .mt-topic-shell .cmp-panel.picked {
+          border-color: color-mix(in srgb, var(--mt-accent) 55%, #DCE8F4) !important;
+        }
+        .mt-topic-shell .cmp-panel.is-correct,
+        .mt-topic-shell .kog-option.is-correct {
+          border-color: #16A34A !important;
+          border-bottom-color: #16A34A !important;
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.9),
+            0 0 0 4px rgba(255,255,255,.78),
+            0 0 0 8px rgba(22,163,74,.38),
+            0 22px 44px rgba(3,7,20,.26) !important;
+        }
+        .mt-topic-shell .cmp-panel.is-wrong,
+        .mt-topic-shell .kog-option.is-wrong {
+          border-color: #EF4444 !important;
+          border-bottom-color: #DC2626 !important;
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.9),
+            0 0 0 4px rgba(255,255,255,.82),
+            0 0 0 8px rgba(239,68,68,.42),
+            0 22px 44px rgba(3,7,20,.26) !important;
+        }
+        .mt-topic-shell .cmp-options {
+          width: 100%;
+          max-width: 100%;
+          box-sizing: border-box;
+          gap: clamp(14px, 2.4vmin, 28px) !important;
+          margin-top: clamp(8px, 2.2vmin, 22px) !important;
+        }
+        .mt-topic-shell .kog-options {
+          max-width: min(960px, 96vw);
+          gap: clamp(14px, 2.6vmin, 28px) !important;
+        }
+        .mt-topic-shell .cmp-content,
+        .mt-topic-shell .maf-content {
+          width: 100% !important;
+          max-width: min(980px, calc(100% - clamp(24px, 5vw, 48px))) !important;
+          box-sizing: border-box;
+          gap: clamp(10px, 2.4vmin, 28px) !important;
+        }
+        .mt-topic-shell .cmp-scroll,
+        .mt-topic-shell .maf-scroll {
+          overflow: hidden !important;
+        }
+        .mt-topic-shell .cmp-body,
+        .mt-topic-shell .maf-body {
+          width: 100%;
+          box-sizing: border-box;
+          padding-top: clamp(6px, 1.2vmin, 16px) !important;
+          padding-left: clamp(14px, 3vmin, 32px) !important;
+          padding-right: clamp(14px, 3vmin, 32px) !important;
+          padding-bottom: clamp(14px, 2.2vmin, 28px) !important;
+        }
+        .mt-topic-shell .cmp-objects {
+          width: 100%;
+          min-width: 0;
+          box-sizing: border-box;
+          min-height: clamp(58px, 11vmin, 126px);
+          padding: clamp(4px, .8vmin, 10px) 0;
+        }
+        .mt-topic-shell .kog-option {
+          background:
+            linear-gradient(180deg, rgba(255,255,255,.98), rgba(245,249,255,.94)),
+            radial-gradient(circle at 50% -16%, color-mix(in srgb, var(--mt-accent) 12%, transparent), transparent 62%) !important;
+          border: 1px solid rgba(220, 232, 244, .96) !important;
+          border-bottom-width: 5px !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.86), 0 18px 44px rgba(3,7,20,.30) !important;
+          gap: clamp(12px, 2vmin, 22px) !important;
+          padding: clamp(16px, 2.6vmin, 30px) clamp(12px, 2vmin, 24px) clamp(14px, 2.2vmin, 24px) !important;
+          min-height: clamp(144px, 24vmin, 260px) !important;
+        }
+        .mt-topic-shell .kog-option:hover:not([aria-disabled="true"]) {
+          transform: translateY(-2px);
+          border-color: color-mix(in srgb, var(--mt-accent) 48%, #DCE8F4) !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 0 0 3px color-mix(in srgb, var(--mt-accent) 16%, transparent), 0 24px 52px rgba(3,7,20,.36) !important;
+        }
+        .mt-topic-shell .kog-cell {
+          min-height: clamp(68px, 13vmin, 136px);
+          padding: clamp(4px, .8vmin, 10px) 0;
+        }
+        .mt-topic-shell .kog-option > div:last-child {
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.42), 0 4px 0 rgba(15,23,42,.14), 0 8px 18px rgba(15,23,42,.14) !important;
+        }
+        .mt-topic-shell .kog-count-stage {
+          gap: clamp(18px, 3vmin, 30px) !important;
+        }
+        .mt-topic-shell .kog-count-objects {
+          min-height: clamp(48px, 10vmin, 118px);
+          display: grid;
+          place-items: center;
+          padding: clamp(4px, .8vmin, 8px) clamp(8px, 1.4vmin, 18px);
+          border-radius: 18px;
+        }
+        .mt-topic-shell .kog-answer-grid {
+          max-width: min(520px, 86vw) !important;
+          gap: clamp(10px, 1.8vmin, 18px) !important;
+        }
+        .mt-topic-shell .kog-answer-btn {
+          border-radius: 13px !important;
+          min-height: clamp(46px, 7vmin, 58px) !important;
+          padding: clamp(10px, 1.6vmin, 16px) clamp(12px, 2vmin, 20px) !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.36), 0 5px 0 rgba(15,23,42,.20), 0 14px 26px rgba(3,7,20,.22) !important;
+          text-shadow: 0 1px 2px rgba(0,0,0,.22);
+          transition: transform .14s ease, box-shadow .18s ease, filter .18s ease !important;
+        }
+        .mt-topic-shell .kog-answer-btn:hover:not(:disabled) {
+          transform: translateY(-2px);
+          filter: saturate(1.04) brightness(1.02);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.42), 0 6px 0 rgba(15,23,42,.18), 0 18px 32px rgba(3,7,20,.28) !important;
+        }
+        .mt-topic-shell .kog-answer-btn:active:not(:disabled) {
+          transform: translateY(1px);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.34), 0 2px 0 rgba(15,23,42,.20), 0 10px 20px rgba(3,7,20,.22) !important;
+        }
+        .mt-topic-shell .kog-answer-btn:focus-visible,
+        .mt-topic-shell .kog-option:focus-visible,
+        .mt-topic-shell .cmp-panel:focus-visible {
+          outline: 3px solid color-mix(in srgb, var(--mt-accent) 58%, #FFFFFF);
+          outline-offset: 4px;
+        }
+        .mt-topic-shell .cmp-box,
+        .mt-topic-shell .maf-summary-row {
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.5);
+        }
+        .mt-topic-shell .cmp-box {
+          border: 0 !important;
+          border-radius: 12px !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.42), 0 4px 0 rgba(15,23,42,.14), 0 8px 18px rgba(15,23,42,.14) !important;
+        }
+        .mt-topic-shell .cmp-box.num {
+          min-width: clamp(38px, 5vmin, 54px);
+        }
+        .mt-topic-shell .cmp-ref-label {
+          color: rgba(234,246,255,.72) !important;
+        }
+        .mt-topic-shell .cmp-ref-box {
+          background: rgba(255,255,255,.08) !important;
+          border: 1px solid rgba(255,255,255,.14);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
+        }
+        .mt-topic-shell .cmp-footer,
+        .mt-topic-shell .maf-footer {
+          margin: 0 clamp(10px, 2vmin, 24px) clamp(8px, 1.4vmin, 14px);
+          border: 1px solid rgba(255,255,255,.82) !important;
+          border-radius: 18px;
+          background:
+            linear-gradient(180deg, rgba(250,253,255,.92), rgba(232,241,247,.88)) !important;
+          color: #587073 !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.98), 0 16px 34px rgba(15, 118, 110, .10);
+          backdrop-filter: blur(16px);
+        }
+        .mt-topic-shell .cmp-footer-tally,
+        .mt-topic-shell .maf-footer-tally {
+          color: #6A8286 !important;
+        }
+        .mt-topic-shell .maf-top-strip {
+          margin: -2px 16px 2px;
+          padding: 0 !important;
+          background: transparent !important;
+          border-bottom: none !important;
+          backdrop-filter: none !important;
+          -webkit-backdrop-filter: none !important;
+          min-height: 0 !important;
+          box-shadow: none !important;
+        }
+        .mt-topic-shell .maf-tukar-btn {
+          margin-left: auto;
+          background:
+            linear-gradient(180deg, rgba(255,255,255,.96), rgba(240,247,251,.90)) !important;
+          border: 1px solid rgba(255,255,255,.88) !important;
+          border-radius: 999px !important;
+          color: color-mix(in srgb, var(--mt-dark) 78%, #1E3A8A) !important;
+          padding: 7px 12px !important;
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.98),
+            0 10px 22px rgba(15, 118, 110, .10);
+          backdrop-filter: blur(10px);
+        }
+        .mt-topic-shell .maf-next,
+        .mt-topic-shell .cmp-next {
+          box-shadow: 0 5px 0 color-mix(in srgb, var(--mt-cd) 78%, #000 0%), 0 14px 28px color-mix(in srgb, var(--mt-accent) 22%, transparent) !important;
+        }
+        @media (max-width: 560px) {
+          .mt-topic-shell .cmp-content,
+          .mt-topic-shell .maf-content {
+            max-width: calc(100% - 20px) !important;
+            gap: clamp(8px, 1.8vh, 16px) !important;
+          }
+          .mt-topic-shell .cmp-body,
+          .mt-topic-shell .maf-body {
+            justify-content: center !important;
+            padding: 4px 10px 6px !important;
+          }
+          .mt-topic-shell .cmp-question,
+          .mt-topic-shell .maf-question {
+            max-width: 100%;
+            min-height: 0;
+            padding: 8px 16px;
+            border-radius: 18px;
+            font-size: clamp(22px, 6.2vw, 28px);
+            line-height: 1.1;
+          }
+          .mt-topic-shell .cmp-ref {
+            gap: 2px !important;
+          }
+          .mt-topic-shell .cmp-ref-label {
+            font-size: 11px !important;
+          }
+          .mt-topic-shell .cmp-ref-box {
+            padding: 4px 10px !important;
+            border-radius: 12px !important;
+          }
+          .mt-topic-shell .cmp-options {
+            flex-direction: row;
+            gap: clamp(12px, 4vw, 18px) !important;
+            margin-top: clamp(6px, 1.4vh, 12px) !important;
+          }
+          .mt-topic-shell .kog-options {
+            gap: 18px !important;
+          }
+          .mt-topic-shell .kog-option {
+            min-height: 128px !important;
+            border-radius: 18px !important;
+            padding: 14px 12px 12px !important;
+            margin-block: 4px;
+          }
+          .mt-topic-shell .kog-cell {
+            min-height: 54px;
+          }
+          .mt-topic-shell .kog-answer-grid {
+            max-width: 100% !important;
+          }
+          .mt-topic-shell .kog-answer-btn {
+            min-height: 44px !important;
+            border-radius: 12px !important;
+          }
+          .mt-topic-shell .cmp-panel {
+            min-height: clamp(126px, 18vh, 152px) !important;
+            border-radius: 18px !important;
+            padding: 10px 10px 8px !important;
+            margin-block: 0;
+            gap: 4px !important;
+          }
+          .mt-topic-shell .cmp-objects {
+            min-height: 34px;
+            padding: 0;
+          }
+          .mt-topic-shell .cmp-feedback {
+            min-height: 18px !important;
+            font-size: 16px !important;
+          }
+          .mt-topic-shell .cmp-next,
+          .mt-topic-shell .maf-next {
+            padding: 8px 24px !important;
+            font-size: 17px !important;
+            box-shadow: 0 3px 0 color-mix(in srgb, var(--mt-cd) 78%, #000 0%), 0 10px 18px color-mix(in srgb, var(--mt-accent) 18%, transparent) !important;
+          }
+          .mt-topic-shell .cmp-footer,
+          .mt-topic-shell .maf-footer {
+            margin-inline: 8px;
+            border-radius: 16px;
+            padding: 8px 14px !important;
+          }
+        }
+        @media (min-width: 561px) and (max-height: 620px) {
+          .mt-topic-shell .cmp-panel,
+          .mt-topic-shell .kog-option {
+            min-height: clamp(120px, 19vmin, 170px) !important;
+          }
+          .mt-topic-shell .cmp-objects,
+          .mt-topic-shell .kog-cell {
+            min-height: clamp(50px, 9vmin, 86px) !important;
+          }
+          .mt-topic-shell .cmp-content,
+          .mt-topic-shell .maf-content {
+            gap: clamp(10px, 1.8vmin, 18px) !important;
+          }
+          .mt-topic-shell .cmp-options {
+            margin-top: clamp(24px, 5.4vmin, 34px) !important;
+          }
+        }
+
         /* ── Math Buddies header (darkChrome pages) ── */
         .mb-header {
           display: flex; align-items: center;
@@ -282,7 +899,7 @@ export default function MatematikTopicShell({
         }
       `}</style>
 
-      {darkChrome && <style>{`
+      {legacyDarkChrome && <style>{`
         /* ── Dark mode overrides for galaxy background ── */
         .mt-dark-chrome .maf-head { color: rgba(255,255,255,.6) !important; }
         .mt-dark-chrome .maf-question { color: #fff !important; }
@@ -380,13 +997,13 @@ export default function MatematikTopicShell({
         }
       `}</style>}
 
-      {darkChrome && <style>{`@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Space+Grotesk:wght@700&display=swap');`}</style>}
+      {legacyDarkChrome && <style>{`@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Space+Grotesk:wght@700&display=swap');`}</style>}
       {formalMode && <style>{`.mt-shell { background: #fff !important; }`}</style>}
 
       {background || (!formalMode && <MatematikSceneBackground />)}
 
 
-      {darkChrome ? (
+      {legacyDarkChrome ? (
         <>
           <div className="mb-header">
             <button type="button" className="mb-back" onClick={onBack}>
@@ -412,9 +1029,14 @@ export default function MatematikTopicShell({
               <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
           </button>
+          {shellTitle && (
+            <div className="mt-shell-topic-label" aria-label={shellTitle}>
+              <div className="mt-shell-topic-label-text">{shellTitle}</div>
+            </div>
+          )}
           {!formalMode && (
             <div className="mt-top-stats">
-              <StatsBar subject="mt" />
+              <StatsBar subject="mt" variant="mb" />
             </div>
           )}
         </div>

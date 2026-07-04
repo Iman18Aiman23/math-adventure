@@ -2068,6 +2068,12 @@ button {
     margin-right: auto;
   }
 
+  .game-container > .mt-topic-shell {
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
   /* Game header spans full width */
   .game-header {
     max-width: 100%;

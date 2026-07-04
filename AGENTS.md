@@ -1,5 +1,9 @@
 # Math Adventure — Project Conventions
 
+## Plugin Preference
+
+- For feature tasks, always prefer using the Ponytail and Caveman plugins when applicable, so the user does not need to mention them each time.
+
 ## Architecture
 
 - **No React Router** — all navigation is state-driven via `useState` in `App.jsx`

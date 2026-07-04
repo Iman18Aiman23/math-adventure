@@ -1,11 +1,41 @@
 .mt-body {
     flex: 1; display: flex; flex-direction: column;
-    background: #F7F8FA;
+    background: transparent;
 }
 
 .mt-home-root {
     display: flex; flex-direction: column; flex: 1; width: 100%; overflow: hidden;
-    background: #F7F8FA;
+    color: #EAF6FF;
+    background:
+        radial-gradient(circle at 18% 12%, rgba(45, 226, 230, .22) 0, transparent 34%),
+        radial-gradient(circle at 82% 20%, rgba(255, 191, 71, .18) 0, transparent 30%),
+        radial-gradient(circle at 55% 86%, rgba(59, 130, 246, .28) 0, transparent 38%),
+        linear-gradient(180deg, #06142E 0%, #071B3E 48%, #030714 100%);
+    position: relative;
+}
+
+.mt-home-root::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: .46;
+    background-image:
+        linear-gradient(rgba(94, 234, 212, .09) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(94, 234, 212, .09) 1px, transparent 1px);
+    background-size: 52px 52px;
+    mask-image: linear-gradient(180deg, rgba(0,0,0,.75), rgba(0,0,0,.15) 72%, transparent);
+}
+
+.mt-home-root::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(120deg, transparent 0 44%, rgba(94, 234, 212, .12) 45%, transparent 46% 100%),
+        radial-gradient(circle at 50% 18%, rgba(255,255,255,.12), transparent 18%);
+    opacity: .75;
 }
 
 .mt-home-scroll {
@@ -17,8 +47,9 @@
     position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;
 }
 .mt-home-sky i {
-    position: absolute; border-radius: 50%; background: #fff;
+    position: absolute; border-radius: 50%; background: #B7F7FF;
     opacity: .7; animation: mt-twf 5s ease-in-out infinite;
+    box-shadow: 0 0 12px rgba(94, 234, 212, .85);
 }
 @keyframes mt-twf {
     0%,100% { opacity: .25; transform: translateY(0) scale(.8); }
@@ -34,12 +65,27 @@
 .mt-home-back {
     position: absolute; top: 12px; left: 12px; z-index: 10;
 }
+.app-matematik .mt-home-back button {
+    background: rgba(7, 20, 48, .72) !important;
+    border-color: rgba(183, 247, 255, .24) !important;
+    color: #EAF6FF !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 12px 28px rgba(0,0,0,.28) !important;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
 @media (max-width: 560px) {
     .mt-home-back { top: 4px; left: 4px; }
 }
 
 .mt-brand {
     display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+    border: 1px solid rgba(183, 247, 255, .18);
+    background: rgba(255,255,255,.06);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
+    border-radius: 18px;
+    padding: 8px 12px 8px 9px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
 }
 .mt-brand-dot {
     width: 30px; height: 30px; border-radius: 9px;
@@ -50,27 +96,29 @@
 .mt-brand-dot svg { width: 18px; height: 18px; }
 .mt-brand-text {
     font-family: 'Fredoka', system-ui, sans-serif; font-weight: 700;
-    font-size: 20px; letter-spacing: -.01em; color: #0F766E;
+    font-size: 20px; letter-spacing: 0; color: #EAF6FF;
 }
-.mt-brand-text span { color: #0F9488; }
+.mt-brand-text span { color: #7DF7E8; }
 
 .mt-tagline {
     font-family: 'Fredoka', sans-serif; font-weight: 600;
-    font-size: 14px; color: #0F9488;
+    font-size: 14px; color: rgba(234, 246, 255, .78);
     margin: 0 0 16px; text-align: center;
+    max-width: 44ch;
+    text-wrap: balance;
 }
 
 .mt-home-h1 {
-    font-family: 'Fredoka', system-ui, sans-serif; font-weight: 700;
-    font-size: 34px; line-height: 1.1; letter-spacing: -.015em;
-    color: #0F766E; margin: 0 0 6px; text-align: center;
-    text-shadow: 0 2px 0 #fff; white-space: nowrap;
+    font-family: 'Baloo 2', 'Fredoka', system-ui, sans-serif; font-weight: 800;
+    font-size: 38px; line-height: 1.05; letter-spacing: 0;
+    color: #FFFFFF; margin: 0 0 6px; text-align: center;
+    text-shadow: 0 0 28px rgba(94,234,212,.32); white-space: nowrap;
 }
 
 .mt-home-hint {
     font-family: 'Fredoka', sans-serif; font-weight: 600;
-    font-size: 13px; line-height: 1.3; letter-spacing: .16em;
-    text-transform: uppercase; color: #0F9488;
+    font-size: 12px; line-height: 1.3; letter-spacing: .12em;
+    text-transform: uppercase; color: #9EEAE3;
     margin: 0 0 20px; text-align: center;
 }
 
@@ -85,14 +133,42 @@
 
 .mt-year {
     position: relative; border: none; cursor: pointer; text-decoration: none;
-    color: inherit; background: linear-gradient(180deg, #FFFFFF 0%, var(--soft) 100%);
+    color: inherit;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.055)),
+        radial-gradient(circle at 50% 0%, var(--soft), transparent 68%);
     border-radius: 24px; padding: 20px 18px 18px;
     display: flex; flex-direction: column; align-items: center; gap: 6px;
-    box-shadow: 0 2px 0 #fff inset, 0 18px 40px -14px var(--sh), 0 3px 8px rgba(16,36,58,.06);
-    border: 2px solid var(--ring);
-    transition: transform .34s cubic-bezier(.34,1.56,.64,1), box-shadow .34s;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.24), 0 22px 50px -24px var(--sh), 0 12px 32px rgba(0,0,0,.24);
+    border: 1px solid var(--ring);
+    overflow: hidden;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    transition: transform .34s cubic-bezier(.34,1.56,.64,1), box-shadow .34s, border-color .34s;
 }
-.mt-year:hover { transform: translateY(-12px) scale(1.025); }
+.mt-year::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(115deg, rgba(255,255,255,.24), transparent 38% 100%);
+    opacity: .75;
+}
+.mt-year::after {
+    content: "";
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 12px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--beam), transparent);
+    opacity: .8;
+}
+.mt-year:hover {
+    transform: translateY(-12px) scale(1.025);
+    border-color: var(--beam);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.28), 0 0 34px -10px var(--beam), 0 28px 60px -26px var(--sh);
+}
 .mt-year:hover .mt-disc { transform: scale(1.05); }
 .mt-year:hover .mt-year-robot-svg { transform: translateY(-8px); }
 .mt-year:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }
@@ -101,8 +177,9 @@
     width: 150px; height: 150px; border-radius: 50%; display: grid;
     place-items: center; position: relative;
     background: radial-gradient(ellipse at 50% 32%, var(--d1) 0%, var(--d2) 58%, var(--d3) 100%);
-    box-shadow: inset 0 -10px 30px rgba(16,36,58,.16), inset 0 3px 0 rgba(255,255,255,.5), 0 10px 24px -8px var(--sh);
+    box-shadow: inset 0 -10px 30px rgba(16,36,58,.24), inset 0 3px 0 rgba(255,255,255,.5), 0 0 0 8px rgba(255,255,255,.05), 0 16px 30px -12px var(--sh);
     transition: transform .34s cubic-bezier(.34,1.56,.64,1);
+    z-index: 1;
 }
 .mt-disc::after {
     content: ""; position: absolute; inset: 0; border-radius: 50%;
@@ -122,7 +199,7 @@
 @keyframes mt-year-pulse { 0%,100% { opacity: .55; transform: scale(.96); } 50% { opacity: 1; transform: scale(1.04); } }
 
 .mt-ribbon {
-    margin-top: 6px; z-index: 2; font-family: 'Nunito', sans-serif;
+    margin-top: 6px; z-index: 2; font-family: 'Fredoka', sans-serif;
     font-weight: 800; font-size: 17px; color: #fff; white-space: nowrap;
     padding: 6px 22px; border-radius: 999px; position: relative;
     background: linear-gradient(180deg, var(--r1), var(--r2));
@@ -132,38 +209,40 @@
 
 .mt-meta {
     font-family: 'Fredoka', sans-serif; font-weight: 600;
-    font-size: 13px; color: #5B6F86; margin-top: 6px;
+    font-size: 13px; color: rgba(234, 246, 255, .76); margin-top: 6px;
     display: flex; align-items: center; gap: 7px;
+    z-index: 1;
 }
-.mt-meta b { color: var(--accent); font-weight: 700; }
+.mt-meta b { color: #fff; font-weight: 700; }
 
 .mt-go {
-    margin-top: 6px; font-family: 'Nunito', sans-serif;
+    margin-top: 6px; font-family: 'Fredoka', sans-serif;
     font-weight: 800; font-size: 13px; letter-spacing: .04em;
     white-space: nowrap; color: #fff; background: var(--accent);
     padding: 5px 14px; border-radius: 999px; display: inline-flex;
     align-items: center; gap: 7px; box-shadow: 0 3px 0 var(--r3);
+    z-index: 1;
 }
 
 /* ── Year theme colours — standardized to the module palette
    (Tahun 1 orange · Tahun 2 blue · Tahun 3 purple) ── */
 .mt-year.t1 {
-    --soft: #D2F4EF; --ring: #9FE3DB; --sh: rgba(15,148,136,.32);
+    --soft: rgba(45, 212, 191, .22); --ring: rgba(159, 227, 219, .32); --sh: rgba(15,148,136,.48);
     --d1: #CCFBF1;   --d2: #5EEAD4;  --d3: #14B8A6;
     --r1: #2DD4BF;   --r2: #14B8A6;  --r3: #0F766E;
-    --accent: #0F9488;
+    --accent: #0F9488; --beam: #5EEAD4;
 }
 .mt-year.t2 {
-    --soft: #E6F1FB; --ring: #A8D0F5; --sh: rgba(30,122,201,.32);
+    --soft: rgba(91, 184, 242, .20); --ring: rgba(168, 208, 245, .30); --sh: rgba(30,122,201,.46);
     --d1: #D5E9FA;   --d2: #7DB8ED;  --d3: #36A9F0;
     --r1: #5BB8F2;   --r2: #36A9F0;  --r3: #1A78C7;
-    --accent: #1A78C7;
+    --accent: #1A78C7; --beam: #7DB8ED;
 }
 .mt-year.t3 {
-    --soft: #F0EBFB; --ring: #D6C4F5; --sh: rgba(112,56,214,.32);
+    --soft: rgba(185, 138, 242, .18); --ring: rgba(214, 196, 245, .28); --sh: rgba(112,56,214,.46);
     --d1: #EBE2FB;   --d2: #B49EEE;  --d3: #A368F0;
     --r1: #B98AF2;   --r2: #A368F0;  --r3: #7038D6;
-    --accent: #7038D6;
+    --accent: #7038D6; --beam: #B49EEE;
 }
 
 @media (max-width: 560px) {

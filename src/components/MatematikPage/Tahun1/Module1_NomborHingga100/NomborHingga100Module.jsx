@@ -11,7 +11,9 @@ const THEME = {
   pillGradient: 'linear-gradient(180deg,#3B82F6,#1D4ED8)',
 };
 
-const ROBOT = <MatematikTopicRobot theme={THEME} />;
+const robotFor = (symbol, badge = '#FFB547') => (
+  <MatematikTopicRobot theme={THEME} badge={badge} symbol={symbol} />
+);
 
 function FooterTrio({ language, theme, onSelectTopic }) {
   const isBM = language === 'bm';
@@ -102,70 +104,70 @@ const TOPICS = [
     pill: 'BANYAK DAN SEDIKIT',
     title: 'Banyak, Sedikit, Lebih atau Kurang',
     desc: 'Bandingkan banyak atau sedikit, lebih atau kurang.',
-    visual: ROBOT,
+    visual: robotFor('<', '#22C55E'),
   },
   {
     id: 'kenali-0-10',
     pill: 'KENALI 0 HINGGA 10',
     title: 'Kenali 0 hingga 10',
     desc: 'Kenali nombor 0 hingga 10.',
-    visual: ROBOT,
+    visual: robotFor('10', '#38BDF8'),
   },
   {
     id: 'kenali-11-20',
     pill: 'KENALI 11 HINGGA 20',
     title: 'Kenali 11 hingga 20',
     desc: 'Kenali nombor 11 hingga 20.',
-    visual: ROBOT,
+    visual: robotFor('20', '#60A5FA'),
   },
   {
     id: 'tulis-0-20',
     pill: 'TULIS 0 HINGGA 20',
     title: 'Tulis 0 hingga 20',
     desc: 'Tulis nombor 0 hingga 20 dengan jari.',
-    visual: ROBOT,
+    visual: robotFor('0', '#F97316'),
   },
   {
     id: 'kombinasi-nombor',
     pill: 'KOMBINASI NOMBOR',
     title: 'Kombinasi Nombor',
     desc: 'Gabungkan nombor untuk jadi 10.',
-    visual: ROBOT,
+    visual: robotFor('+', '#FACC15'),
   },
   {
     id: 'kenali-21-100',
     pill: 'KENALI 21 HINGGA 100',
     title: 'Kenali 21 hingga 100',
     desc: 'Kenali nombor 21 hingga 100.',
-    visual: ROBOT,
+    visual: robotFor('100', '#A78BFA'),
   },
   {
     id: 'nilai-tempat',
     pill: 'NILAI TEMPAT & NILAI DIGIT',
     title: 'Nilai Tempat & Nilai Digit',
     desc: 'Kenali nilai tempat dan nilai digit.',
-    visual: ROBOT,
+    visual: robotFor('P', '#FB7185'),
   },
   {
     id: 'susunan-nombor',
     pill: 'SUSUNAN NOMBOR',
     title: 'Susunan Nombor',
     desc: 'Susun dan lengkapkan urutan nombor.',
-    visual: ROBOT,
+    visual: robotFor('1-3', '#2DD4BF'),
   },
   {
     id: 'pola-nombor',
     pill: 'POLA NOMBOR',
     title: 'Pola Nombor',
     desc: 'Kenal pasti dan sambung pola nombor.',
-    visual: ROBOT,
+    visual: robotFor('...', '#818CF8'),
   },
   {
     id: 'anggar-bundar',
     pill: 'ANGGAR & BUNDAR',
     title: 'Anggar & Bundar',
     desc: 'Anggar bilangan dan bundarkan kepada puluh.',
-    visual: ROBOT,
+    visual: robotFor('~', '#F59E0B'),
   },
 ];
 

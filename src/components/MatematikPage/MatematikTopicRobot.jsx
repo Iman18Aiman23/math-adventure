@@ -22,7 +22,7 @@ export default function MatematikTopicRobot({
   earTop,      // ear gradient (top)
   earBottom,   // ear gradient (bottom) + stroke
   badge = '#ff8c42',
-  symbol = 'π',
+  symbol = '+',
   className = '',
   style = {},
   ...props
@@ -37,6 +37,7 @@ export default function MatematikTopicRobot({
   const raw = useId();
   const uid = raw.replace(/[^a-zA-Z0-9]/g, '');
   const id = (name) => `${name}-${uid}`;
+  const badgeFontSize = String(symbol).length > 2 ? 10 : String(symbol).length > 1 ? 13 : 18;
 
   return (
     <svg viewBox="24 4 252 240" className={className} style={style} {...props}>
@@ -115,7 +116,7 @@ export default function MatematikTopicRobot({
       {/* ===== MATH SYMBOL BADGE ===== */}
       <circle cx="230" cy="210" r="18" fill={badge} stroke="#ffffff" strokeWidth="2" />
       <text x="230" y="216" textAnchor="middle" fontFamily="Arial, sans-serif"
-            fontSize="18" fontWeight="bold" fill="#ffffff">{symbol}</text>
+            fontSize={badgeFontSize} fontWeight="bold" fill="#ffffff">{symbol}</text>
     </svg>
   );
 }

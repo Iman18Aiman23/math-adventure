@@ -215,6 +215,16 @@ export default function Tahun1ModuleHubLayout({
           width: min(150px, 58vw);
           height: min(150px, 58vw);
         }
+        .pi-mhub-card--v2 .pi-mhub-eyebrow {
+          font-family: 'Fredoka', system-ui, sans-serif;
+          font-weight: 700;
+          font-size: 10px;
+          letter-spacing: .14em;
+          color: ${theme.accent};
+          text-transform: uppercase;
+          opacity: .9;
+          margin-top: -2px;
+        }
         .pi-mhub-card--v2 .pi-mhub-pill {
           font-size: 18px;
         }
@@ -325,7 +335,10 @@ export default function Tahun1ModuleHubLayout({
                 {t.visual}
               </div>
               {headerVariant === 'banner' ? (
-                <span className="pi-mhub-pill">{t.title}</span>
+                <>
+                  {t.pill && <span className="pi-mhub-eyebrow">{t.pill}</span>}
+                  <span className="pi-mhub-pill">{t.title}</span>
+                </>
               ) : (
                 <h3 className="pi-mhub-card-title">{t.title}</h3>
               )}

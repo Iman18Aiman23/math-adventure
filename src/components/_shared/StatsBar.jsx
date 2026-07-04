@@ -21,9 +21,9 @@ export default function StatsBar({ subject = 'bm', variant }) {
 
   useEffect(() => {
     const handleResize = () => {
-      // If window is small (e.g. tablet or mobile < 840px), there might not be enough space
+      // If window is tablet/mobile sized, there might not be enough space
       // safely display all 5 items side-by-side with large numbers, so we bundle it.
-      if (window.innerWidth <= 840) {
+      if (window.innerWidth <= 1024) {
         setIsBundled(true);
       } else {
         setIsBundled(false);
@@ -35,16 +35,24 @@ export default function StatsBar({ subject = 'bm', variant }) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Click outside to close popover
   useEffect(() => {
     if (!isOpen) return;
-    const handleClickOutside = (e) => {
+    const handlePointerDown = (e) => {
       if (popoverRef.current && !popoverRef.current.contains(e.target)) {
         setIsOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('pointerdown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, [isOpen]);
 
   if (loading) {
@@ -75,31 +83,31 @@ export default function StatsBar({ subject = 'bm', variant }) {
     if (variant === 'mb') {
       return (
         <div className={isPopover ? "sb-mb-wrap popover-mode" : "sb-mb-wrap"}>
-          <div className="sb-mb-pill"
+          <div className="sb-mb-pill sb-mb-heart" data-label="Hearts"
             style={{ color: '#FF6B6B', border: '1px solid rgba(255,107,107,.4)', boxShadow: '0 0 10px rgba(255,107,107,.18)' }}
             aria-label={`Hearts: ${hearts} of ${maxHearts}`}>
             <span className="sb-mb-em" aria-hidden="true">❤️</span>
             <span className="sb-mb-val">{val ?? hearts}</span>
           </div>
-          <div className="sb-mb-pill"
+          <div className="sb-mb-pill sb-mb-gems" data-label="Gems"
             style={{ color: '#2DE2E6', border: '1px solid rgba(45,226,230,.4)', boxShadow: '0 0 10px rgba(45,226,230,.18)' }}
             aria-label={`${gems} gems`}>
             <span className="sb-mb-em" aria-hidden="true">💎</span>
             <span className="sb-mb-val">{val ?? gems}</span>
           </div>
-          <div className="sb-mb-pill"
+          <div className="sb-mb-pill sb-mb-xp" data-label="XP"
             style={{ color: '#FFD23F', border: '1px solid rgba(255,210,63,.4)', boxShadow: '0 0 10px rgba(255,210,63,.18)' }}
             aria-label={`${xp} experience points`}>
             <span className="sb-mb-em" aria-hidden="true">⭐</span>
             <span className="sb-mb-val">{val ?? xp}</span>
           </div>
-          <div className="sb-mb-pill"
+          <div className="sb-mb-pill sb-mb-streak" data-label="Streak"
             style={{ color: '#FF9600', border: '1px solid rgba(255,150,0,.4)', boxShadow: '0 0 10px rgba(255,150,0,.18)' }}
             aria-label={`Streak: ${streak}`}>
             <span className="sb-mb-em" aria-hidden="true">🔥</span>
             <span className="sb-mb-val">{val ?? streak}</span>
           </div>
-          <div className="sb-mb-pill"
+          <div className="sb-mb-pill sb-mb-level" data-label="Level"
             style={{ color: '#58CC02', border: '1px solid rgba(88,204,2,.4)', boxShadow: '0 0 10px rgba(88,204,2,.18)' }}
             aria-label={`Level ${level}`}>
             <span className="sb-mb-em" style={{ fontSize: 'inherit' }}>Lv</span>
@@ -151,39 +159,72 @@ export default function StatsBar({ subject = 'bm', variant }) {
           position: relative;
           display: inline-flex;
           align-items: center;
+          isolation: isolate;
+          z-index: 9999;
         }
         .sb-bundle-btn {
           display: flex;
           align-items: center;
-          gap: 6px;
-          background: ${variant === 'mb' ? 'rgba(20,18,52,0.8)' : '#ffffff'};
-          color: ${variant === 'mb' ? '#fff' : '#10243A'};
-          border: ${variant === 'mb' ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(20,40,70,.06)'};
-          padding: 8px 14px;
-          border-radius: 12px;
+          justify-content: center;
+          gap: 7px;
+          min-height: ${variant === 'mb' ? '42px' : '38px'};
+          background: ${variant === 'mb' ? 'linear-gradient(180deg, rgba(255,255,255,.96), rgba(241,248,252,.88)), linear-gradient(135deg, rgba(20,184,166,.12), rgba(99,102,241,.08))' : '#ffffff'};
+          color: ${variant === 'mb' ? '#1D3A43' : '#10243A'};
+          border: ${variant === 'mb' ? '1px solid rgba(255,255,255,.88)' : '1px solid rgba(20,40,70,.06)'};
+          padding: ${variant === 'mb' ? '8px 12px 8px 10px' : '8px 14px'};
+          border-radius: ${variant === 'mb' ? '18px' : '12px'};
           font-family: 'Fredoka', system-ui, sans-serif;
-          font-weight: 700;
+          font-weight: 800;
           font-size: 14px;
           cursor: pointer;
-          box-shadow: ${variant === 'mb' ? '0 0 10px rgba(0,0,0,0.2)' : '0 4px 12px rgba(20,40,70,.12)'};
-          transition: transform 0.1s ease, box-shadow 0.1s ease;
+          letter-spacing: 0;
+          box-shadow: ${variant === 'mb' ? 'inset 0 1px 0 rgba(255,255,255,.98), 0 12px 26px rgba(15,118,110,.12)' : '0 4px 12px rgba(20,40,70,.12)'};
+          transition: transform .16s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+          -webkit-tap-highlight-color: transparent;
         }
-        .sb-bundle-btn:active { transform: translateY(1px); }
-        .sb-bundle-btn:hover { box-shadow: ${variant === 'mb' ? '0 0 14px rgba(255,255,255,0.1)' : '0 6px 16px rgba(20,40,70,.15)'}; }
+        .sb-bundle-btn .sb-emoji {
+          font-size: 16px;
+          filter: drop-shadow(0 1px 0 rgba(255,255,255,.6));
+        }
+        .sb-bundle-text {
+          line-height: 1;
+          text-shadow: none;
+        }
+        .sb-bundle-btn:active { transform: translateY(1px) scale(.99); }
+        .sb-bundle-btn:hover {
+          border-color: ${variant === 'mb' ? 'rgba(20,184,166,.24)' : 'rgba(20,40,70,.10)'};
+          box-shadow: ${variant === 'mb' ? 'inset 0 1px 0 rgba(255,255,255,.98), 0 15px 30px rgba(15,118,110,.16)' : '0 6px 16px rgba(20,40,70,.15)'};
+        }
+        .sb-bundle-btn:focus-visible {
+          outline: 3px solid ${variant === 'mb' ? '#14B8A6' : '#2563EB'};
+          outline-offset: 3px;
+        }
         
         .sb-popover {
           position: absolute;
-          top: calc(100% + 8px);
+          top: calc(100% + 10px);
           right: 0;
-          z-index: 100;
-          background: ${variant === 'mb' ? '#0F0D28' : '#ffffff'};
-          padding: 12px;
-          border-radius: 16px;
-          box-shadow: 0 10px 24px rgba(0,0,0,0.4);
-          border: ${variant === 'mb' ? '1px solid rgba(255,255,255,0.15)' : '1px solid rgba(20,40,70,.1)'};
-          backdrop-filter: blur(10px);
-          animation: sb-fade-in 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          z-index: 9999;
+          min-width: ${variant === 'mb' ? '168px' : '144px'};
+          background: ${variant === 'mb' ? 'linear-gradient(180deg, rgba(255,255,255,.98), rgba(243,249,252,.96))' : '#ffffff'};
+          padding: ${variant === 'mb' ? '10px' : '12px'};
+          border-radius: ${variant === 'mb' ? '20px' : '16px'};
+          box-shadow: ${variant === 'mb' ? 'inset 0 1px 0 rgba(255,255,255,.98), 0 24px 54px rgba(15,118,110,.16), 0 0 0 1px rgba(20,184,166,.06)' : '0 10px 24px rgba(0,0,0,0.4)'};
+          border: ${variant === 'mb' ? '1px solid rgba(255,255,255,.92)' : '1px solid rgba(20,40,70,.1)'};
+          backdrop-filter: blur(18px);
+          -webkit-backdrop-filter: blur(18px);
+          overflow: hidden;
+          animation: sb-fade-in .18s cubic-bezier(.34,1.56,.64,1);
           transform-origin: top right;
+        }
+        .sb-popover--mb::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background:
+            linear-gradient(90deg, transparent, rgba(255,255,255,.42), transparent) 0 0 / 100% 1px no-repeat,
+            radial-gradient(circle at 100% 8%, rgba(20,184,166,.12), transparent 38%);
         }
         @keyframes sb-fade-in {
           0% { opacity: 0; transform: scale(0.95) translateY(-5px); }
@@ -194,20 +235,32 @@ export default function StatsBar({ subject = 'bm', variant }) {
         .sb-mb-wrap.popover-mode {
           flex-direction: column;
           align-items: stretch;
-          gap: 8px;
-          width: 120px;
+          gap: 7px;
+          width: 100%;
+          position: relative;
+          z-index: 1;
         }
         .sb-mb-wrap.popover-mode .sb-mb-pill {
           flex: none;
           width: 100%;
-          height: 34px;
+          height: 40px;
           justify-content: flex-start;
-          padding: 0 14px;
+          padding: 0 12px;
           box-sizing: border-box;
         }
         .sb-mb-wrap.popover-mode .sb-mb-em {
-          width: 24px;
-          text-align: left;
+          width: 22px;
+          height: 22px;
+          display: grid;
+          place-items: center;
+          text-align: center;
+        }
+        .sb-mb-wrap.popover-mode .sb-mb-pill::after {
+          display: block;
+        }
+        .sb-mb-wrap.popover-mode .sb-mb-val {
+          margin-left: auto;
+          font-size: 14px;
         }
 
         .sb-root.popover-mode {
@@ -241,35 +294,82 @@ export default function StatsBar({ subject = 'bm', variant }) {
         /* Existing styles */
         .sb-mb-wrap {
           display: flex;
-          gap: 5px;
+          gap: 6px;
           align-items: center;
           flex-wrap: nowrap;
           width: 100%;
         }
         .sb-mb-pill {
+          position: relative;
+          overflow: hidden;
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 4px;
+          gap: 7px;
           flex: none; /* NEVER squish */
-          font-family: 'Space Grotesk', 'Fredoka', sans-serif;
-          font-weight: 700;
+          font-family: 'Fredoka', system-ui, sans-serif;
+          font-weight: 800;
           font-size: 13px;
-          padding: 6px 10px;
-          border-radius: 12px;
-          background: rgba(20,18,52,.6);
+          padding: 7px 10px;
+          border-radius: 14px;
+          background:
+            linear-gradient(180deg, rgba(255,255,255,.98), rgba(243,248,252,.92)),
+            linear-gradient(135deg, color-mix(in srgb, currentColor 10%, transparent), rgba(255,255,255,.16)) !important;
+          border: 1px solid color-mix(in srgb, currentColor 22%, rgba(255,255,255,.82)) !important;
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.98),
+            0 10px 22px rgba(15, 118, 110, .10) !important;
           white-space: nowrap;
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          transition: transform .16s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
         }
-        .sb-mb-em { font-size: 13px; flex-shrink: 0; line-height: 1; }
-        .sb-mb-val { line-height: 1; }
+        .sb-mb-pill::before {
+          content: "";
+          position: absolute;
+          inset: 0 auto 0 0;
+          width: 3px;
+          background: currentColor;
+          opacity: .26;
+          box-shadow: none;
+        }
+        .sb-mb-pill::after {
+          content: attr(data-label);
+          display: none;
+          order: 2;
+          color: rgba(62, 92, 101, .70);
+          font-size: 10px;
+          font-weight: 700;
+          line-height: 1;
+        }
+        .sb-mb-pill:hover {
+          transform: translateY(-1px);
+          background:
+            linear-gradient(180deg, #FFFFFF, rgba(243,248,252,.96)),
+            linear-gradient(135deg, color-mix(in srgb, currentColor 13%, transparent), rgba(255,255,255,.20)) !important;
+        }
+        .sb-mb-em {
+          order: 1;
+          font-size: 13px;
+          flex-shrink: 0;
+          line-height: 1;
+          filter: drop-shadow(0 1px 0 rgba(255,255,255,.55));
+        }
+        .sb-mb-val {
+          order: 3;
+          line-height: 1;
+          color: currentColor;
+          font-variant-numeric: tabular-nums;
+          text-shadow: 0 1px 0 rgba(255,255,255,.52);
+        }
         @media (max-width: 400px) {
           .sb-mb-wrap:not(.popover-mode) { gap: 3px; }
-          .sb-mb-pill { font-size: 11px; padding: 5px 5px; border-radius: 9px; gap: 3px; }
+          .sb-mb-pill { font-size: 11px; padding: 6px 6px; border-radius: 11px; gap: 4px; }
           .sb-mb-em { font-size: 11px; }
         }
         @media (min-width: 768px) {
           .sb-mb-wrap:not(.popover-mode) { width: auto; gap: 8px; }
-          .sb-mb-pill { flex: 0 0 auto; padding: 6px 12px; font-size: 14px; }
+          .sb-mb-pill { flex: 0 0 auto; padding: 7px 12px; font-size: 14px; }
           .sb-mb-em { font-size: 14px; }
         }
 
@@ -390,6 +490,16 @@ export default function StatsBar({ subject = 'bm', variant }) {
           animation: sb-pop .35s cubic-bezier(.34,1.56,.64,1);
         }
         @media (prefers-reduced-motion: reduce) {
+          .sb-bundle-btn,
+          .sb-mb-pill {
+            transition: none;
+          }
+          .sb-popover {
+            animation: none;
+          }
+          .sb-mb-pill:hover {
+            transform: none;
+          }
           .sb-pulse .sb-value,
           .sb-pulse .sb-emoji { animation: none; }
         }
@@ -398,15 +508,17 @@ export default function StatsBar({ subject = 'bm', variant }) {
         {isBundled ? (
           <div ref={popoverRef}>
             <button
-              className="sb-bundle-btn"
+              type="button"
+              className={`sb-bundle-btn${variant === 'mb' ? ' sb-bundle-btn--mb' : ''}`}
               onClick={() => setIsOpen(!isOpen)}
               aria-expanded={isOpen}
+              aria-label={isOpen ? 'Close stats' : 'Open stats'}
             >
               <span className="sb-emoji">⭐</span>
-              <span>Stats</span>
+              <span className="sb-bundle-text">Stats</span>
             </button>
             {isOpen && (
-              <div className="sb-popover">
+              <div className={`sb-popover${variant === 'mb' ? ' sb-popover--mb' : ''}`}>
                 {renderStats(true)}
               </div>
             )}
@@ -418,4 +530,3 @@ export default function StatsBar({ subject = 'bm', variant }) {
     </>
   );
 }
-

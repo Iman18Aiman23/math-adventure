@@ -264,9 +264,11 @@ export function CompareExplore({ data, language, theme, onExit }) {
   const Panel = ({ side }) => {
     const ci = colorIdx(side);
     const c = BOX_COLORS[ci];
+    const picked = selected === side;
+    const isAns = side === answer;
     return (
       <div
-        className={`cmp-panel${answered ? ' done' : ''}${selected === side ? ' picked' : ''}`}
+        className={`cmp-panel${answered ? ' done' : ''}${picked ? ' picked' : ''}${answered && isAns ? ' is-correct' : ''}${answered && picked && !isAns ? ' is-wrong' : ''}`}
         onClick={() => handlePick(side)}
         role="button"
         tabIndex={0}
@@ -274,8 +276,8 @@ export function CompareExplore({ data, language, theme, onExit }) {
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handlePick(side); } }}
         style={{
           background: '#fff',
-          border: answered ? `2px solid ${selected === side && selected !== answer ? C.red : C.green}` : '2px solid #E2E8F0',
-          borderBottom: `4px solid ${answered ? (selected === side && selected !== answer ? C.red : C.green) : c.border}`,
+          border: answered ? `2px solid ${picked && !isAns ? C.red : C.green}` : '2px solid #E2E8F0',
+          borderBottom: `4px solid ${answered ? (picked && !isAns ? C.red : C.green) : c.border}`,
           color: '#334155',
         }}
       >
@@ -583,7 +585,7 @@ function genKenaliSifar(config = DEFAULT_KENALI_CONFIG) {
   return {
     type: 'kenali-sifar',
     header: 'Pembelajaran Sifar',
-    prompt: 'Yang manakah sifar?',
+    prompt: 'Pilih kad kosong (sifar)',
     icon,
     groups: shuffle(groups),
     answer: answerId,
@@ -692,9 +694,9 @@ function BilangContent({ q, ctx }) {
   const { answered, selected, answer, handlePick, theme: C } = ctx;
   const isWord = q.kind === 'word';
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 24px)', width: '100%' }}>
-      <BilangObjectsGrid icon={q.icon} count={q.count} />
-      <div style={{
+    <div className="kog-count-stage" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 24px)', width: '100%' }}>
+      <div className="kog-count-objects"><BilangObjectsGrid icon={q.icon} count={q.count} /></div>
+      <div className="kog-answer-grid" style={{
         display: 'grid',
         gridTemplateColumns: isWord ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
         gap: 'clamp(8px, 1.4vmin, 16px)',
@@ -709,7 +711,7 @@ function BilangContent({ q, ctx }) {
           else if (answered && picked) { bg = C.red; bd = C.red; clr = '#fff'; txt = '✗'; anim = 'shakeError .35s ease'; }
           else { bg = c.bg; bd = c.border; clr = '#fff'; txt = opt.display; anim = 'none'; }
           return (
-            <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={answered}
+            <button key={opt.id} className="kog-answer-btn" type="button" onClick={() => handlePick(opt.id)} disabled={answered}
               style={{
                 padding: isWord ? 'clamp(10px, 1.6vmin, 18px) clamp(8px, 1.4vmin, 16px)' : 'clamp(10px, 1.6vmin, 18px)',
                 border: 'none',
@@ -779,7 +781,7 @@ function KenalObjectsGrid({ icon, count, cols = 3 }) {
 function KenalContent({ q, ctx }) {
   const { answered, selected, answer, handlePick, theme: C } = ctx;
   return (
-    <div style={{ display: 'flex', gap: 'clamp(12px, 2.2vmin, 26px)', width: '100%', justifyContent: 'center' }}>
+    <div className="kog-options" style={{ display: 'flex', gap: 'clamp(12px, 2.2vmin, 26px)', width: '100%', justifyContent: 'center' }}>
       <style>{KOG_STYLE}</style>
       {q.groups.map((group, idx) => {
         const picked = selected === group.id;
@@ -791,6 +793,7 @@ function KenalContent({ q, ctx }) {
         else { bg = c.bg; bd = c.border; anim = 'none'; }
         return (
           <div key={group.id}
+            className={`kog-option${answered && isAns ? ' is-correct' : ''}${answered && picked && !isAns ? ' is-wrong' : ''}`}
             onClick={() => handlePick(group.id)}
             role="button" tabIndex={0}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handlePick(group.id); } }}
@@ -833,7 +836,7 @@ function KenalContent({ q, ctx }) {
 function SifarContent({ q, ctx }) {
   const { answered, selected, answer, handlePick, theme: C } = ctx;
   return (
-    <div style={{ display: 'flex', gap: 'clamp(12px, 2.2vmin, 26px)', width: '100%', justifyContent: 'center' }}>
+    <div className="kog-options" style={{ display: 'flex', gap: 'clamp(12px, 2.2vmin, 26px)', width: '100%', justifyContent: 'center' }}>
       <style>{KOG_STYLE}</style>
       {q.groups.map((group, idx) => {
         const picked = selected === group.id;
@@ -846,6 +849,7 @@ function SifarContent({ q, ctx }) {
         else { bg = c.bg; bd = c.border; anim = 'none'; }
         return (
           <div key={group.id}
+            className={`kog-option${answered && isAns ? ' is-correct' : ''}${answered && picked && !isAns ? ' is-wrong' : ''}`}
             onClick={() => handlePick(group.id)}
             role="button" tabIndex={0}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handlePick(group.id); } }}

@@ -104,6 +104,78 @@ const TYPE_META = {
 };
 const emptyStats = () => ({ read: { c: 0, t: 0 }, compare: { c: 0, t: 0 }, place: { c: 0, t: 0 } });
 
+const LEARNING_THEME = {
+  page: '#F4FFFD',
+  panel: 'rgba(255, 255, 255, 0.92)',
+  panelStrong: '#FFFFFF',
+  line: 'rgba(20, 184, 166, 0.24)',
+  lineStrong: 'rgba(15, 118, 110, 0.34)',
+  teal: '#14B8A6',
+  tealDark: '#0F766E',
+  indigo: '#3F51B5',
+  amber: '#F59E0B',
+  ink: '#12332F',
+  muted: '#5E7772',
+};
+
+const pageShellStyle = {
+  minHeight: '100%',
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  position: 'relative',
+  isolation: 'isolate',
+  overflow: 'hidden',
+  background: LEARNING_THEME.page,
+};
+
+function LearningBackdrop() {
+  return (
+    <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: -1, overflow: 'hidden', pointerEvents: 'none' }}>
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: [
+          'radial-gradient(ellipse at 18% 8%, rgba(204, 251, 241, 0.95) 0%, rgba(204, 251, 241, 0) 42%)',
+          'radial-gradient(ellipse at 82% 20%, rgba(224, 231, 255, 0.84) 0%, rgba(224, 231, 255, 0) 44%)',
+          'linear-gradient(180deg, #F7FFFD 0%, #ECFEFF 52%, #E6FAF6 100%)',
+        ].join(', '),
+      }} />
+      <div style={{
+        position: 'absolute',
+        inset: '-12% -8%',
+        opacity: 0.34,
+        backgroundImage: [
+          'linear-gradient(rgba(15, 118, 110, 0.12) 1px, transparent 1px)',
+          'linear-gradient(90deg, rgba(15, 118, 110, 0.10) 1px, transparent 1px)',
+        ].join(', '),
+        backgroundSize: '42px 42px',
+        transform: 'rotate(-2deg)',
+      }} />
+      <div style={{
+        position: 'absolute',
+        width: '760px',
+        height: '760px',
+        left: '50%',
+        top: '48%',
+        transform: 'translate(-50%, -50%)',
+        border: '1px solid rgba(63, 81, 181, 0.12)',
+        borderRadius: '50%',
+        boxShadow: '0 0 0 96px rgba(20, 184, 166, 0.045), 0 0 0 192px rgba(63, 81, 181, 0.035)',
+      }} />
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        opacity: 0.42,
+        backgroundImage: 'radial-gradient(circle at center, rgba(15, 118, 110, 0.34) 1px, transparent 1.4px)',
+        backgroundSize: '36px 36px',
+        WebkitMaskImage: 'linear-gradient(180deg, transparent 0%, black 24%, black 72%, transparent 100%)',
+        maskImage: 'linear-gradient(180deg, transparent 0%, black 24%, black 72%, transparent 100%)',
+      }} />
+    </div>
+  );
+}
+
 // ── Place-value visual (base-10 blocks) ───────────────────────────────────────
 // Bars (puluh, indigo) and dots (sa, orange) shown side-by-side, each with its
 // own label directly underneath — the visual link between the digit colour in
@@ -117,22 +189,22 @@ const PlaceValueBlocks = React.memo(function PlaceValueBlocks({ n }) {
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
         <div style={{ display: 'flex', gap: '5px', alignItems: 'flex-end', minHeight: '70px' }}>
           {tens > 0 ? Array.from({ length: tens }).map((_, i) => (
-            <div key={`t${i}`} style={{ width: '14px', height: '70px', background: '#3F51B5', borderRadius: '3px', boxShadow: '0 2px 0 #303F9F' }} />
-          )) : <div style={{ width: '14px', height: '70px', border: '2px dashed #C5CAE9', borderRadius: '3px' }} />}
+            <div key={`t${i}`} style={{ width: '14px', height: '70px', background: LEARNING_THEME.indigo, borderRadius: '3px', boxShadow: '0 2px 0 #283593' }} />
+          )) : <div style={{ width: '14px', height: '70px', border: '2px dashed rgba(63, 81, 181, 0.28)', borderRadius: '3px' }} />}
         </div>
-        <div style={{ fontSize: '0.78rem', fontWeight: 900, color: '#3F51B5', letterSpacing: '0.5px' }}>PULUH</div>
-        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#9FA8DA' }}>× 10</div>
+        <div style={{ fontSize: '0.78rem', fontWeight: 900, color: LEARNING_THEME.indigo, letterSpacing: '0.5px' }}>PULUH</div>
+        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'rgba(63, 81, 181, 0.52)' }}>× 10</div>
       </div>
 
       {/* Ones column */}
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '4px', minWidth: '76px', minHeight: '70px', alignContent: 'flex-end' }}>
           {ones > 0 ? Array.from({ length: ones }).map((_, i) => (
-            <div key={`o${i}`} style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#FF9800', boxShadow: '0 1px 0 #D47A00' }} />
-          )) : <div style={{ gridColumn: '1 / -1', alignSelf: 'flex-end', textAlign: 'center', fontSize: '0.7rem', fontWeight: 700, color: '#FFCC80' }}>—</div>}
+            <div key={`o${i}`} style={{ width: '12px', height: '12px', borderRadius: '50%', background: LEARNING_THEME.amber, boxShadow: '0 1px 0 #B45309' }} />
+          )) : <div style={{ gridColumn: '1 / -1', alignSelf: 'flex-end', textAlign: 'center', fontSize: '0.7rem', fontWeight: 700, color: 'rgba(245, 158, 11, 0.48)' }}>—</div>}
         </div>
-        <div style={{ fontSize: '0.78rem', fontWeight: 900, color: '#E68900', letterSpacing: '0.5px' }}>SA</div>
-        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#FFCC80' }}>× 1</div>
+        <div style={{ fontSize: '0.78rem', fontWeight: 900, color: '#B45309', letterSpacing: '0.5px' }}>SA</div>
+        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'rgba(245, 158, 11, 0.52)' }}>× 1</div>
       </div>
     </div>
   );
@@ -219,55 +291,56 @@ export default function Nombor100({ onBack, language = 'bm' }) {
                   : pct >= 50 ? { bm: 'Boleh lagi!', eng: 'Keep going!', color: '#F57C00' }
                               : { bm: 'Cuba lagi!', eng: 'Try again!',  color: '#C62828' };
     return (
-      <div style={{ minHeight: '100%', background: '#FFE9CC', display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
+      <div style={{ ...pageShellStyle, overflowY: 'auto' }}>
+        <LearningBackdrop />
         <BackButton onClick={onBack} />
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '3.5rem 1rem 1rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
+        <div style={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '3.5rem 1rem 1rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
 
           {/* Header */}
           <div style={{ fontSize: '4rem', marginBottom: '0.5rem' }}>💯</div>
           <h2 style={{ color: verdict.color, fontSize: '1.8rem', fontWeight: 900, marginBottom: '0.25rem' }}>
             {language === 'bm' ? verdict.bm : verdict.eng}
           </h2>
-          <p style={{ fontSize: '0.95rem', color: '#888', marginBottom: '1rem' }}>
+          <p style={{ fontSize: '0.95rem', color: LEARNING_THEME.muted, marginBottom: '1rem' }}>
             {language === 'bm' ? 'Laporan Markah' : 'Score Report'}
           </p>
 
           {/* Big score card */}
-          <div style={{ background: '#FFFFFF', borderRadius: '20px', padding: '1.25rem 1.5rem', border: '3px solid #FFCF80', marginBottom: '1rem', textAlign: 'center', width: '100%', boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}>
-            <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#888', letterSpacing: '0.5px', marginBottom: '0.25rem' }}>
+          <div style={{ background: LEARNING_THEME.panelStrong, borderRadius: '20px', padding: '1.25rem 1.5rem', border: `2px solid ${LEARNING_THEME.line}`, marginBottom: '1rem', textAlign: 'center', width: '100%', boxShadow: '0 18px 45px rgba(15, 118, 110, 0.12)' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 800, color: LEARNING_THEME.muted, letterSpacing: '0.5px', marginBottom: '0.25rem' }}>
               {language === 'bm' ? 'MARKAH KESELURUHAN' : 'TOTAL SCORE'}
             </div>
-            <div style={{ fontSize: '3rem', fontWeight: 900, color: '#FF9600', lineHeight: 1 }}>
+            <div style={{ fontSize: '3rem', fontWeight: 900, color: LEARNING_THEME.tealDark, lineHeight: 1 }}>
               {score}<span style={{ fontSize: '1.5rem', color: '#999' }}> / {questions.length}</span>
             </div>
             <div style={{ fontSize: '1.1rem', fontWeight: 800, color: verdict.color, marginTop: '0.25rem' }}>{pct}%</div>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginTop: '0.75rem' }}>
-              <div style={{ background: '#FFEAD0', borderRadius: '999px', padding: '4px 12px', fontWeight: 900, fontSize: '0.82rem', color: '#D9610B', border: '1.5px solid #FFC081' }}>
+              <div style={{ background: '#E6FFFA', borderRadius: '999px', padding: '4px 12px', fontWeight: 900, fontSize: '0.82rem', color: LEARNING_THEME.tealDark, border: `1.5px solid ${LEARNING_THEME.line}` }}>
                 🔥 {language === 'bm' ? 'Streak terbaik' : 'Best streak'}: {bestStreak}
               </div>
             </div>
           </div>
 
           {/* Per-mechanic breakdown */}
-          <div style={{ background: '#FFFFFF', borderRadius: '20px', padding: '1rem 1.25rem', border: '2px solid #FFCF80', marginBottom: '1rem', width: '100%' }}>
-            <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#888', letterSpacing: '0.5px', marginBottom: '0.65rem' }}>
+          <div style={{ background: LEARNING_THEME.panel, borderRadius: '20px', padding: '1rem 1.25rem', border: `2px solid ${LEARNING_THEME.line}`, marginBottom: '1rem', width: '100%', boxShadow: '0 14px 32px rgba(15, 118, 110, 0.08)' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 800, color: LEARNING_THEME.muted, letterSpacing: '0.5px', marginBottom: '0.65rem' }}>
               {language === 'bm' ? 'PRESTASI MENGIKUT KEMAHIRAN' : 'PERFORMANCE BY SKILL'}
             </div>
             {Object.entries(TYPE_META).map(([key, meta]) => {
               const s = stats[key];
               const p = s.t ? Math.round((s.c / s.t) * 100) : 0;
-              const barColor = p >= 75 ? '#4CAF50' : p >= 50 ? '#FF9600' : '#FF6B6B';
+              const barColor = p >= 75 ? '#14B8A6' : p >= 50 ? '#F59E0B' : '#EF4444';
               return (
                 <div key={key} style={{ marginBottom: '0.65rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                    <span style={{ fontWeight: 800, fontSize: '0.88rem', color: '#333' }}>
+                    <span style={{ fontWeight: 800, fontSize: '0.88rem', color: LEARNING_THEME.ink }}>
                       {meta.emoji} {language === 'bm' ? meta.bm : meta.eng}
                     </span>
                     <span style={{ fontWeight: 900, fontSize: '0.85rem', color: barColor }}>
                       {s.c}/{s.t} · {p}%
                     </span>
                   </div>
-                  <div style={{ background: '#F5F5F5', borderRadius: '999px', height: '8px', overflow: 'hidden' }}>
+                  <div style={{ background: '#DDF7F1', borderRadius: '999px', height: '8px', overflow: 'hidden' }}>
                     <div style={{ background: barColor, height: '100%', width: `${p}%`, borderRadius: '999px', transition: 'width 0.4s' }} />
                   </div>
                 </div>
@@ -277,10 +350,10 @@ export default function Nombor100({ onBack, language = 'bm' }) {
 
           {/* Actions */}
           <div style={{ display: 'flex', gap: '0.75rem', width: '100%' }}>
-            <button onClick={handleReset} style={{ flex: 1, padding: '0.85rem', background: '#FFFFFF', color: '#FF9600', border: '2px solid #FF9600', borderRadius: '12px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold' }}>
+            <button onClick={handleReset} style={{ flex: 1, padding: '0.85rem', background: '#FFFFFF', color: LEARNING_THEME.tealDark, border: `2px solid ${LEARNING_THEME.teal}`, borderRadius: '12px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold' }}>
               {language === 'bm' ? 'Main Semula' : 'Play Again'}
             </button>
-            <button onClick={onBack} style={{ flex: 1, padding: '0.85rem', background: '#FF9600', color: 'white', border: 'none', borderRadius: '12px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold', boxShadow: '0 4px 0 #D47A00' }}>
+            <button onClick={onBack} style={{ flex: 1, padding: '0.85rem', background: `linear-gradient(180deg, ${LEARNING_THEME.teal}, ${LEARNING_THEME.tealDark})`, color: 'white', border: 'none', borderRadius: '12px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold', boxShadow: '0 4px 0 #0B5F59' }}>
               {language === 'bm' ? 'Kembali' : 'Back'}
             </button>
           </div>
@@ -300,66 +373,67 @@ export default function Nombor100({ onBack, language = 'bm' }) {
 
   // ── Active game ────────────────────────────────────────────────────────────
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: '#FFE9CC', overflow: 'hidden' }}>
+    <div style={pageShellStyle}>
+      <LearningBackdrop />
       <BackButton onClick={onBack} />
 
       {/* ── Header ── */}
-      <div style={{ flexShrink: 0, padding: '3.5rem 1rem 0.75rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
+      <div style={{ position: 'relative', zIndex: 1, flexShrink: 0, padding: '3.5rem 1rem 0.75rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
           <div>
-            <h1 style={{ color: '#FF9600', fontSize: '1.4rem', fontWeight: 900, marginBottom: '0.1rem' }}>
+            <h1 style={{ color: LEARNING_THEME.tealDark, fontSize: '1.4rem', fontWeight: 900, marginBottom: '0.1rem' }}>
               💯 {language === 'bm' ? 'Nombor 1–100' : 'Numbers 1–100'}
             </h1>
-            <p style={{ color: '#888', fontSize: '0.82rem' }}>
+            <p style={{ color: LEARNING_THEME.muted, fontSize: '0.82rem' }}>
               {language === 'bm' ? 'Baca, banding & nilai tempat' : 'Read, compare & place value'}
             </p>
           </div>
           <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
-            <div style={{ background: '#FFF6D6', borderRadius: '999px', padding: '4px 12px', fontWeight: 900, fontSize: '0.82rem', color: '#B58800', border: '1.5px solid #FFE08A' }}>
+            <div style={{ background: 'rgba(255, 255, 255, 0.86)', borderRadius: '999px', padding: '4px 12px', fontWeight: 900, fontSize: '0.82rem', color: '#8A6400', border: '1.5px solid rgba(245, 158, 11, 0.30)', boxShadow: '0 8px 18px rgba(15, 118, 110, 0.08)' }}>
               ⭐ {score}
             </div>
-            <div style={{ background: '#FFEAD0', borderRadius: '999px', padding: '4px 12px', fontWeight: 900, fontSize: '0.82rem', color: '#D9610B', border: '1.5px solid #FFC081' }}>
+            <div style={{ background: 'rgba(230, 255, 250, 0.88)', borderRadius: '999px', padding: '4px 12px', fontWeight: 900, fontSize: '0.82rem', color: LEARNING_THEME.tealDark, border: `1.5px solid ${LEARNING_THEME.line}`, boxShadow: '0 8px 18px rgba(15, 118, 110, 0.08)' }}>
               🔥 {streak}
             </div>
           </div>
         </div>
         {/* Progress bar */}
-        <div style={{ background: '#FFD9A8', borderRadius: '999px', height: '8px', overflow: 'hidden' }}>
-          <div style={{ background: '#FF9600', height: '100%', borderRadius: '999px', width: `${(index / questions.length) * 100}%`, transition: 'width 0.3s' }} />
+        <div style={{ background: 'rgba(20, 184, 166, 0.16)', borderRadius: '999px', height: '8px', overflow: 'hidden', boxShadow: 'inset 0 0 0 1px rgba(15, 118, 110, 0.08)' }}>
+          <div style={{ background: `linear-gradient(90deg, ${LEARNING_THEME.teal}, ${LEARNING_THEME.indigo})`, height: '100%', borderRadius: '999px', width: `${(index / questions.length) * 100}%`, transition: 'width 0.3s' }} />
         </div>
-        <p style={{ textAlign: 'center', color: '#888', fontSize: '0.78rem', marginTop: '0.35rem' }}>
+        <p style={{ textAlign: 'center', color: LEARNING_THEME.muted, fontSize: '0.78rem', marginTop: '0.35rem' }}>
           {index + 1} / {questions.length}
         </p>
       </div>
 
       {/* ── Body ── */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '0.5rem 1rem 1rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
+      <div style={{ position: 'relative', zIndex: 1, flex: 1, overflowY: 'auto', padding: '0.5rem 1rem 1rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
 
         {/* Question card */}
-        <div style={{ background: '#FFFFFF', border: '3px solid #FFCF80', borderRadius: '24px', padding: '1.25rem 1rem', textAlign: 'center', marginBottom: '1rem', boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}>
-          <p style={{ fontSize: '0.72rem', fontWeight: 800, color: '#3F51B5', marginBottom: '0.5rem', letterSpacing: '0.6px' }}>
+        <div style={{ background: LEARNING_THEME.panelStrong, border: `2px solid ${LEARNING_THEME.lineStrong}`, borderRadius: '24px', padding: '1.25rem 1rem', textAlign: 'center', marginBottom: '1rem', boxShadow: '0 22px 54px rgba(15, 118, 110, 0.14), inset 0 1px 0 rgba(255,255,255,0.9)' }}>
+          <p style={{ fontSize: '0.72rem', fontWeight: 800, color: LEARNING_THEME.indigo, marginBottom: '0.5rem', letterSpacing: '0.6px' }}>
             {language === 'bm' ? typeLabel.bm : typeLabel.eng}
           </p>
 
           {/* Visual — varies by type */}
           {current.type === 'read' && (
-            <div style={{ fontSize: '5.5rem', fontWeight: 900, color: '#3F51B5', lineHeight: 1, margin: '0.25rem 0' }}>
+            <div style={{ fontSize: '5.5rem', fontWeight: 900, color: LEARNING_THEME.indigo, lineHeight: 1, margin: '0.25rem 0' }}>
               {current.n}
             </div>
           )}
           {current.type === 'compare' && (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '2rem', margin: '0.5rem 0' }}>
-              <span style={{ fontSize: '3.5rem', fontWeight: 900, color: '#3F51B5' }}>{current.a}</span>
-              <span style={{ fontSize: '1.6rem', fontWeight: 900, color: '#888' }}>vs</span>
-              <span style={{ fontSize: '3.5rem', fontWeight: 900, color: '#3F51B5' }}>{current.b}</span>
+              <span style={{ fontSize: '3.5rem', fontWeight: 900, color: LEARNING_THEME.indigo }}>{current.a}</span>
+              <span style={{ fontSize: '1.6rem', fontWeight: 900, color: LEARNING_THEME.muted }}>vs</span>
+              <span style={{ fontSize: '3.5rem', fontWeight: 900, color: LEARNING_THEME.indigo }}>{current.b}</span>
             </div>
           )}
           {current.type === 'place' && (
             <>
               {/* Number with colour-coded digits — tens=indigo (matches bars), ones=orange (matches dots) */}
               <div style={{ fontSize: '3.6rem', fontWeight: 900, lineHeight: 1, margin: '0.25rem 0' }}>
-                <span style={{ color: '#3F51B5' }}>{Math.floor(current.n / 10)}</span>
-                <span style={{ color: '#FF9800' }}>{current.n % 10}</span>
+                <span style={{ color: LEARNING_THEME.indigo }}>{Math.floor(current.n / 10)}</span>
+                <span style={{ color: LEARNING_THEME.amber }}>{current.n % 10}</span>
               </div>
               <PlaceValueBlocks n={current.n} />
             </>
@@ -367,15 +441,15 @@ export default function Nombor100({ onBack, language = 'bm' }) {
 
           {/* Question text — colour-highlight "puluh"/"sa" so the question links to the visual */}
           {current.type === 'place' ? (
-            <p style={{ fontSize: '1.15rem', fontWeight: 800, color: '#333', marginTop: '0.75rem' }}>
+            <p style={{ fontSize: '1.15rem', fontWeight: 800, color: LEARNING_THEME.ink, marginTop: '0.75rem' }}>
               {language === 'bm' ? 'Berapa ' : 'How many '}
-              <span style={{ color: current.askTens ? '#3F51B5' : '#E68900', fontWeight: 900, textDecoration: 'underline', textDecorationThickness: '3px', textUnderlineOffset: '3px' }}>
+              <span style={{ color: current.askTens ? LEARNING_THEME.indigo : '#B45309', fontWeight: 900, textDecoration: 'underline', textDecorationThickness: '3px', textUnderlineOffset: '3px' }}>
                 {language === 'bm' ? (current.askTens ? 'puluh' : 'sa') : (current.askTens ? 'tens' : 'ones')}
               </span>
               {language === 'bm' ? '?' : '?'}
             </p>
           ) : (
-            <p style={{ fontSize: '1rem', fontWeight: 800, color: '#333', marginTop: '0.75rem' }}>
+            <p style={{ fontSize: '1rem', fontWeight: 800, color: LEARNING_THEME.ink, marginTop: '0.75rem' }}>
               {language === 'bm' ? current.question_bm : current.question_eng}
             </p>
           )}
@@ -388,7 +462,7 @@ export default function Nombor100({ onBack, language = 'bm' }) {
             const isAnswerOpt = option === current.answer;
             const showCorrect = isAnswered && isAnswerOpt;
             const showWrong   = isAnswered && chosen && !isAnswerOpt;
-            let bg = '#FFFFFF', border = '#FFCF80', color = '#333';
+            let bg = 'rgba(255, 255, 255, 0.94)', border = LEARNING_THEME.lineStrong, color = LEARNING_THEME.ink;
             if (showCorrect) { bg = '#E8F5E9'; border = '#4CAF50'; color = '#2E7D32'; }
             else if (showWrong) { bg = '#FFEBEE'; border = '#FF6B6B'; color = '#C62828'; }
             else if (isAnswered) { color = '#999'; }
@@ -408,6 +482,7 @@ export default function Nombor100({ onBack, language = 'bm' }) {
                   cursor: isAnswered ? 'default' : 'pointer',
                   transition: 'all 0.2s',
                   textAlign: 'center',
+                  boxShadow: showCorrect || showWrong ? '0 10px 22px rgba(15, 118, 110, 0.10)' : '0 8px 18px rgba(15, 118, 110, 0.08)',
                 }}
               >
                 {option}
@@ -432,13 +507,13 @@ export default function Nombor100({ onBack, language = 'bm' }) {
       </div>
 
       {/* ── Footer ── */}
-      <div style={{ flexShrink: 0, background: '#FFE9CC', borderTop: '2px solid rgba(255,150,0,0.25)', padding: '0.75rem 1rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box', display: 'flex', gap: '0.75rem' }}>
+      <div style={{ position: 'relative', zIndex: 1, flexShrink: 0, background: 'rgba(244, 255, 253, 0.86)', backdropFilter: 'blur(14px)', borderTop: `1px solid ${LEARNING_THEME.line}`, padding: '0.75rem 1rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box', display: 'flex', gap: '0.75rem' }}>
         <button onClick={handleReset}
-          style={{ flex: 1, padding: '0.75rem', background: '#E0E0E0', color: '#555', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
+          style={{ flex: 1, padding: '0.75rem', background: '#FFFFFF', color: LEARNING_THEME.muted, border: `1.5px solid ${LEARNING_THEME.line}`, borderRadius: '10px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', boxShadow: '0 8px 18px rgba(15, 118, 110, 0.08)' }}>
           <RefreshCw size={18} /> {language === 'bm' ? 'Mula Semula' : 'Reset'}
         </button>
         <button onClick={handleNext} disabled={!isAnswered}
-          style={{ flex: 1, padding: '0.75rem', background: isAnswered ? '#FF9600' : '#FFCF80', color: 'white', border: 'none', borderRadius: '10px', cursor: isAnswered ? 'pointer' : 'not-allowed', fontWeight: 'bold', fontSize: '1rem', boxShadow: isAnswered ? '0 4px 0 #D47A00' : 'none', transition: 'background 0.2s' }}>
+          style={{ flex: 1, padding: '0.75rem', background: isAnswered ? `linear-gradient(180deg, ${LEARNING_THEME.teal}, ${LEARNING_THEME.tealDark})` : 'rgba(20, 184, 166, 0.34)', color: 'white', border: 'none', borderRadius: '10px', cursor: isAnswered ? 'pointer' : 'not-allowed', fontWeight: 'bold', fontSize: '1rem', boxShadow: isAnswered ? '0 4px 0 #0B5F59' : 'none', transition: 'background 0.2s' }}>
           {index + 1 >= questions.length
             ? (language === 'bm' ? 'Tamat ✓' : 'Finish ✓')
             : (language === 'bm' ? 'Seterusnya →' : 'Next →')}
