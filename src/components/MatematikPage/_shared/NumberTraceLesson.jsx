@@ -6,6 +6,7 @@ import TraceCanvas from '../../AgeGroup-4-6/TraceCanvas';
 import { getNumberGlyph } from '../../../data/numberPaths';
 import Celebration from '../../PendidikanIslamPage/_shared/Celebration';
 import useTopicGamification from '../../../hooks/useTopicGamification';
+import { recordActivityScore } from './MatematikActivityFrame';
 
 const ONES  = ['sifar','satu','dua','tiga','empat','lima','enam','tujuh','lapan','sembilan'];
 const TEENS = ['sepuluh','sebelas','dua belas','tiga belas','empat belas','lima belas','enam belas','tujuh belas','lapan belas','sembilan belas'];
@@ -25,6 +26,8 @@ const NUMBERS = Array.from({ length: 21 }, (_, i) => i);
 export default function NumberTraceLesson({
   onBack, language = 'bm', topicComplete, onNextTopic,
   topicId, topicLabel, accentColor = '#F59E0B',
+  scoreStorageKey,
+  scoreId,
 }) {
   const [idx, setIdx] = useState(0);
   const [done, setDone] = useState(false);
@@ -41,9 +44,10 @@ export default function NumberTraceLesson({
   useEffect(() => {
     if (finished && !completedRef.current) {
       completedRef.current = true;
+      recordActivityScore(scoreStorageKey, scoreId, 10, 10);
       completeActivity();
     }
-  }, [finished, completeActivity]);
+  }, [finished, completeActivity, scoreStorageKey, scoreId]);
 
   const current = NUMBERS[idx];
   const isLast = idx >= NUMBERS.length - 1;

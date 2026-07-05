@@ -1,5 +1,54 @@
 import React from 'react';
+import {
+  BookOpen,
+  Boxes,
+  Calculator,
+  ChevronRight,
+  ChevronUp,
+  Gem,
+  Home,
+  Layers3,
+  Link,
+  Medal,
+  MinusCircle,
+  Move,
+  Palette,
+  Pencil,
+  Puzzle,
+  Repeat2,
+  Sparkles,
+  Star,
+  Trophy,
+  Type,
+  UserCircle,
+  Users,
+} from 'lucide-react';
 import { FONT_IMPORT } from '../_shared/arabic';
+
+const LESSON_ICONS = {
+  users: Users,
+  move: Move,
+  type: Type,
+  pencil: Pencil,
+  calculator: Calculator,
+  palette: Palette,
+  puzzle: Puzzle,
+  link: Link,
+  boxes: Boxes,
+  minus: MinusCircle,
+  book: BookOpen,
+  repeat: Repeat2,
+  trophy: Trophy,
+  sparkles: Sparkles,
+};
+
+const BOTTOM_NAV = [
+  { label: 'Home', icon: Home },
+  { label: 'Module', icon: Layers3 },
+  { label: 'Achievement', icon: Medal },
+  { label: 'Rewards', icon: Gem },
+  { label: 'Profile', icon: UserCircle },
+];
 
 export default function Tahun1ModuleHubLayout({
   moduleNum,
@@ -16,11 +65,25 @@ export default function Tahun1ModuleHubLayout({
   // when true, the topic stage has no background/shadow — the visual (e.g. a
   // robot head) floats directly on the card.
   bareStage = false,
+  layoutVariant = 'grid',
+  dashboardLead,
 }) {
+  const isDashboard = layoutVariant === 'dashboard';
+  const [openTopics, setOpenTopics] = React.useState(() => new Set(topics.map(t => t.id)));
+  const toggleTopic = (id) => {
+    setOpenTopics(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
   return (
     <>
       <style>{`
         ${FONT_IMPORT}
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap');
         .pi-mhub-page {
           padding: 56px 24px 80px;
           width: 100%;
@@ -197,6 +260,92 @@ export default function Tahun1ModuleHubLayout({
 
         /* ── "v2" topic card (Matematik) — cleaner white game-style surface
            with a TOPIK pill, readable copy, and a "Mula ▸" button cue ── */
+        .pi-mhub-actions {
+          width: 100%;
+          display: grid;
+          gap: 7px;
+          margin-top: 6px;
+        }
+        .pi-mhub-action {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 10px;
+          border: 1.5px solid color-mix(in srgb, ${theme.accent} 22%, #DCEBFF);
+          border-radius: 12px;
+          padding: 8px 11px 8px 13px;
+          background: linear-gradient(180deg, #FFFFFF, #F4F8FF);
+          color: #1E3A8A;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.96), 0 5px 12px rgba(30,64,175,.08);
+          cursor: pointer;
+          font-family: 'Baloo 2', sans-serif;
+          font-size: 13.5px;
+          font-weight: 800;
+          line-height: 1.12;
+          text-align: left;
+          transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease;
+        }
+        .pi-mhub-action-label {
+          min-width: 0;
+          overflow-wrap: anywhere;
+        }
+        .pi-mhub-action-score {
+          flex: 0 0 auto;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 54px;
+          min-height: 22px;
+          border-radius: 999px;
+          padding: 3px 8px;
+          border: 1px solid #D9E5F6;
+          background: #F1F5F9;
+          color: #64748B;
+          font-family: 'Fredoka', sans-serif;
+          font-size: 10px;
+          font-weight: 800;
+          line-height: 1;
+          white-space: nowrap;
+        }
+        .pi-mhub-action-score--passed {
+          border-color: #86EFAC;
+          background: #DCFCE7;
+          color: #15803D;
+        }
+        .pi-mhub-action-score--failed {
+          border-color: #FCA5A5;
+          background: #FEE2E2;
+          color: #B91C1C;
+        }
+        .pi-mhub-action::after {
+          content: '›';
+          width: 20px;
+          height: 20px;
+          flex: 0 0 auto;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 999px;
+          background: color-mix(in srgb, ${theme.accent} 14%, #FFFFFF);
+          color: ${theme.cd || theme.dark};
+          font-size: 18px;
+          line-height: 1;
+        }
+        .pi-mhub-action:hover {
+          transform: translateY(-1px);
+          border-color: color-mix(in srgb, ${theme.accent} 50%, #BFD7FF);
+          background: #FFFFFF;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,1), 0 9px 18px rgba(30,64,175,.13);
+        }
+        .pi-mhub-action:active {
+          transform: translateY(1px);
+          box-shadow: inset 0 1px 2px rgba(30,64,175,.10), 0 4px 10px rgba(30,64,175,.08);
+        }
+        .pi-mhub-action:focus-visible {
+          outline: 3px solid color-mix(in srgb, ${theme.accent} 35%, transparent);
+          outline-offset: 2px;
+        }
         .pi-mhub-card--v2 {
           background: #ffffff;
           border: 2px solid ${theme.accent}33;
@@ -257,6 +406,507 @@ export default function Tahun1ModuleHubLayout({
           transition: transform .12s ease;
         }
         .pi-mhub-card--v2:hover .pi-mhub-cta { transform: translateY(-1px); }
+        .pi-mhub-dashboard {
+          width: min(1400px, 100%);
+          margin: 0 auto;
+          display: grid;
+          gap: 32px;
+          font-family: 'Poppins', 'Fredoka', system-ui, sans-serif;
+        }
+        .pi-mhub-hero {
+          position: relative;
+          overflow: hidden;
+          min-height: 148px;
+          border: 1px solid #E8EEF9;
+          border-radius: 28px;
+          padding: clamp(22px, 3vw, 32px);
+          background:
+            radial-gradient(circle at 88% 24%, rgba(37, 99, 235, .18), transparent 18%),
+            radial-gradient(circle at 15% 110%, rgba(139, 92, 246, .12), transparent 30%),
+            linear-gradient(135deg, #FFFFFF 0%, #F1F6FF 100%);
+          box-shadow: 0 18px 42px rgba(37, 99, 235, .08);
+          color: #1E293B;
+        }
+        .pi-mhub-hero::before,
+        .pi-mhub-hero::after {
+          content: "";
+          position: absolute;
+          border-radius: 999px;
+          background: rgba(37, 99, 235, .1);
+          animation: pi-mhub-drift 3s ease-in-out infinite;
+        }
+        .pi-mhub-hero::before { width: 68px; height: 68px; right: 96px; top: 26px; }
+        .pi-mhub-hero::after { width: 24px; height: 24px; right: 42px; bottom: 26px; animation-delay: .45s; }
+        .pi-mhub-hero-copy { position: relative; z-index: 1; max-width: 760px; }
+        .pi-mhub-hero-kicker,
+        .pi-mhub-unit-badge {
+          display: inline-flex;
+          align-items: center;
+          min-height: 30px;
+          border-radius: 999px;
+          padding: 5px 12px;
+          background: #EFF6FF;
+          color: #2563EB;
+          font-size: 12px;
+          font-weight: 700;
+          letter-spacing: .04em;
+        }
+        .pi-mhub-dashboard h1 {
+          margin: 12px 0 8px;
+          text-align: left;
+          color: #1E293B;
+          font-size: clamp(34px, 5vw, 56px);
+          line-height: 1.02;
+          letter-spacing: 0;
+        }
+        .pi-mhub-hero-lead {
+          margin: 0;
+          max-width: 62ch;
+          color: #475569;
+          font-size: clamp(16px, 2vw, 20px);
+          font-weight: 500;
+          line-height: 1.55;
+        }
+        .pi-mhub-unit-badge {
+          position: absolute;
+          right: clamp(22px, 3vw, 34px);
+          top: clamp(22px, 3vw, 34px);
+          width: clamp(64px, 8vw, 88px);
+          height: clamp(64px, 8vw, 88px);
+          justify-content: center;
+          padding: 0;
+          color: #FFFFFF;
+          font-size: clamp(30px, 5vw, 44px);
+          font-weight: 800;
+          background: linear-gradient(180deg, #60A5FA, #2563EB);
+          box-shadow: inset 0 2px 0 rgba(255,255,255,.32), 0 16px 30px rgba(37, 99, 235, .28);
+        }
+        .pi-mhub-sections { display: grid; gap: 32px; }
+        .pi-mhub-lesson-card {
+          --topic-accent-soft: color-mix(in srgb, var(--topic-accent, #2563EB) 13%, #FFFFFF);
+          --topic-accent-wash: color-mix(in srgb, var(--topic-accent, #2563EB) 7%, #F8FBFF);
+          --topic-accent-line: color-mix(in srgb, var(--topic-accent, #2563EB) 38%, #D8E6FA);
+          border: 1px solid var(--topic-accent-line);
+          border-radius: 28px;
+          background:
+            linear-gradient(180deg, rgba(255,255,255,.94), rgba(255,255,255,.88)),
+            radial-gradient(circle at 4% 0%, var(--topic-accent-soft), transparent 42%);
+          box-shadow: 0 18px 46px rgba(15, 23, 42, .06), inset 0 1px 0 rgba(255,255,255,.92);
+          overflow: hidden;
+        }
+        .pi-mhub-lesson-head {
+          width: 100%;
+          min-height: 170px;
+          display: grid;
+          grid-template-columns: 156px minmax(0, 1fr) 64px;
+          align-items: center;
+          gap: 24px;
+          border: 0;
+          background: linear-gradient(90deg, var(--topic-accent-wash), rgba(255,255,255,.68));
+          padding: 24px;
+          color: #1E293B;
+          text-align: left;
+          cursor: pointer;
+        }
+        .pi-mhub-lesson-head:focus-visible,
+        .pi-mhub-lesson-button:focus-visible,
+        .pi-mhub-bottom-item:focus-visible {
+          outline: 3px solid rgba(37, 99, 235, .45);
+          outline-offset: 3px;
+        }
+        .pi-mhub-lesson-robot {
+          width: 148px;
+          height: 124px;
+          display: grid;
+          place-items: center;
+        }
+        .pi-mhub-lesson-robot svg {
+          width: 130px;
+          height: 130px;
+          filter: drop-shadow(0 14px 18px rgba(37, 99, 235, .16));
+          animation: pi-mhub-float 3s ease-in-out infinite;
+        }
+        .pi-mhub-lesson-copy { min-width: 0; }
+        .pi-mhub-lesson-title {
+          display: block;
+          margin: 0 0 8px;
+          color: color-mix(in srgb, var(--topic-accent, #2563EB) 78%, #1D4ED8);
+          font-size: clamp(22px, 3vw, 34px);
+          font-weight: 800;
+          line-height: 1.1;
+        }
+        .pi-mhub-lesson-desc {
+          display: block;
+          max-width: 56ch;
+          color: #475569;
+          font-size: clamp(15px, 1.7vw, 18px);
+          font-weight: 500;
+          line-height: 1.5;
+        }
+        .pi-mhub-expand {
+          width: 56px;
+          height: 56px;
+          display: grid;
+          place-items: center;
+          border-radius: 22px;
+          background: color-mix(in srgb, var(--topic-accent, #2563EB) 10%, #FFFFFF);
+          color: color-mix(in srgb, var(--topic-accent, #2563EB) 78%, #1D4ED8);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.86), 0 8px 18px rgba(15,23,42,.05);
+          transition: transform .3s ease, background .2s ease, color .2s ease;
+        }
+        .pi-mhub-lesson-card:not(.is-open) .pi-mhub-expand { transform: rotate(180deg); }
+        .pi-mhub-lesson-panel {
+          display: grid;
+          grid-template-rows: 0fr;
+          transition: grid-template-rows .3s ease;
+        }
+        .pi-mhub-lesson-card.is-open .pi-mhub-lesson-panel { grid-template-rows: 1fr; }
+        .pi-mhub-lesson-panel-inner { min-height: 0; overflow: hidden; }
+        .pi-mhub-lesson-list {
+          display: grid;
+          gap: 12px;
+          padding: 0 24px 24px;
+          opacity: 0;
+          transform: translateY(-6px);
+          transition: opacity .25s ease, transform .3s ease;
+        }
+        .pi-mhub-lesson-card.is-open .pi-mhub-lesson-list {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        .pi-mhub-lesson-button {
+          min-height: 72px;
+          width: 100%;
+          display: grid;
+          grid-template-columns: 44px minmax(160px, 1fr) max-content max-content 42px;
+          align-items: center;
+          gap: 16px;
+          border: 1px solid var(--topic-accent-line);
+          border-left: 6px solid var(--topic-accent, #2563EB);
+          border-radius: 18px;
+          padding: 14px 18px 14px 20px;
+          background:
+            linear-gradient(90deg, color-mix(in srgb, var(--topic-accent, #2563EB) 7%, #FFFFFF), #FFFFFF 38%),
+            #FFFFFF;
+          color: #1E293B;
+          box-shadow: 0 10px 22px rgba(15, 23, 42, .05), inset 0 1px 0 rgba(255,255,255,.98);
+          cursor: pointer;
+          text-align: left;
+          transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+        }
+        .pi-mhub-lesson-button:hover {
+          transform: translateY(-2px) scale(1.02);
+          border-color: color-mix(in srgb, var(--topic-accent, #2563EB) 52%, #D8E6FA);
+          border-left-color: var(--topic-accent, #2563EB);
+          box-shadow: 0 16px 30px color-mix(in srgb, var(--topic-accent, #2563EB) 18%, transparent);
+        }
+        .pi-mhub-lesson-button:active { transform: translateY(1px) scale(.99); }
+        .pi-mhub-lesson-button--no-score {
+          grid-template-columns: 44px minmax(160px, 1fr) max-content 42px;
+        }
+        .pi-mhub-lesson-icon {
+          width: 32px;
+          height: 32px;
+          color: color-mix(in srgb, var(--topic-accent, #2563EB) 82%, #1D4ED8);
+          border-radius: 12px;
+          background: color-mix(in srgb, var(--topic-accent, #2563EB) 9%, #FFFFFF);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.82);
+          display: grid;
+          place-items: center;
+        }
+        .pi-mhub-lesson-name {
+          min-width: 0;
+          overflow-wrap: normal;
+          font-size: clamp(16px, 1.8vw, 20px);
+          font-weight: 700;
+          line-height: 1.2;
+        }
+        .pi-mhub-status,
+        .pi-mhub-score {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          box-sizing: border-box;
+          min-height: 28px;
+          border-radius: 999px;
+          padding: 5px 14px;
+          font-size: 13px;
+          font-weight: 700;
+          white-space: nowrap;
+          animation: pi-mhub-fade .3s ease both;
+        }
+        .pi-mhub-status--passed { background: #DCFCE7; border: 1px solid #86EFAC; color: #15803D; }
+        .pi-mhub-status--progress { background: #FEF3C7; border: 1px solid #FCD34D; color: #B45309; }
+        .pi-mhub-status--failed { background: #FEE2E2; border: 1px solid #FCA5A5; color: #DC2626; }
+        .pi-mhub-status--unplayed {
+          background: color-mix(in srgb, var(--topic-accent, #2563EB) 7%, #F8FAFC);
+          border: 1px solid color-mix(in srgb, var(--topic-accent, #2563EB) 20%, #E2E8F0);
+          color: #64748B;
+        }
+        .pi-mhub-score { background: #F1F5F9; border: 1px solid #E2E8F0; color: #2563EB; }
+        .pi-mhub-row-chevron {
+          width: 36px;
+          height: 36px;
+          display: grid;
+          place-items: center;
+          justify-self: end;
+          border-radius: 999px;
+          background: color-mix(in srgb, var(--topic-accent, #2563EB) 10%, #FFFFFF);
+          color: var(--topic-accent, #2563EB);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.9);
+        }
+        .pi-mhub-bottom-nav { display: none; }
+        .pi-mhub-progress-strip {
+          min-height: 64px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 18px;
+          border: 1px solid #CFE0FF;
+          border-radius: 14px;
+          padding: 10px 22px 10px 18px;
+          background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(239,246,255,.78));
+          color: #315DA8;
+          font-size: 17px;
+          font-weight: 600;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.86);
+        }
+        .pi-mhub-progress-left {
+          display: inline-flex;
+          align-items: center;
+          gap: 16px;
+          min-width: 0;
+        }
+        .pi-mhub-progress-left svg {
+          flex: 0 0 auto;
+          color: #F59E0B;
+          fill: #FDE68A;
+          filter: drop-shadow(0 3px 4px rgba(245,158,11,.22));
+        }
+        @media (min-width: 769px) {
+          .pi-mhub-dashboard {
+            gap: 18px;
+          }
+          .pi-mhub-hero {
+            min-height: 122px;
+            border-radius: 18px;
+            padding: 26px 30px;
+            box-shadow: none;
+          }
+          .pi-mhub-hero::before { width: 34px; height: 34px; right: 92px; top: 24px; }
+          .pi-mhub-hero::after { width: 16px; height: 16px; right: 50px; bottom: 24px; }
+          .pi-mhub-hero-kicker { display: none; }
+          .pi-mhub-dashboard h1 {
+            margin: 0 0 6px;
+            font-family: 'Baloo 2', 'Poppins', system-ui, sans-serif;
+            font-size: 36px;
+            line-height: 1;
+            font-weight: 800;
+          }
+          .pi-mhub-hero-lead {
+            font-size: 15px;
+            line-height: 1.35;
+          }
+          .pi-mhub-unit-badge {
+            width: 76px;
+            height: 76px;
+            right: 32px;
+            top: 24px;
+            font-size: 42px;
+          }
+          .pi-mhub-sections {
+            gap: 24px;
+          }
+          .pi-mhub-lesson-card {
+            display: grid;
+            grid-template-columns: 286px minmax(0, 1fr);
+            gap: 22px;
+            align-items: stretch;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+            overflow: visible;
+          }
+          .pi-mhub-lesson-head {
+            min-height: 274px;
+            height: 100%;
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: 128px auto 1fr;
+            justify-items: center;
+            align-content: start;
+            align-items: start;
+            gap: 12px;
+            border: 1px solid var(--topic-accent-line);
+            border-radius: 14px;
+            padding: 16px 20px 22px;
+            background:
+              linear-gradient(180deg, rgba(255,255,255,.94), rgba(255,255,255,.86)),
+              radial-gradient(circle at 50% 0%, var(--topic-accent-soft), transparent 66%);
+            box-shadow: 0 12px 28px rgba(15,23,42,.055), inset 0 1px 0 rgba(255,255,255,.94);
+            cursor: default;
+            text-align: center;
+          }
+          .pi-mhub-lesson-robot {
+            width: 100%;
+            height: 126px;
+          }
+          .pi-mhub-lesson-robot svg {
+            width: 154px;
+            height: 154px;
+          }
+          .pi-mhub-lesson-copy {
+            width: 100%;
+            display: grid;
+            gap: 12px;
+            justify-items: center;
+            align-content: start;
+          }
+          .pi-mhub-lesson-title {
+            width: 100%;
+            min-height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            border-radius: 9px;
+            padding: 9px 14px;
+            background: linear-gradient(180deg, #60A5FA, #2563EB);
+            color: #FFFFFF;
+            box-shadow: 0 5px 0 #1D4ED8, 0 12px 20px rgba(37,99,235,.22);
+            font-size: 20px;
+            font-weight: 800;
+            line-height: 1.1;
+          }
+          .pi-mhub-lesson-desc {
+            max-width: 24ch;
+            color: #475569;
+            font-size: 15px;
+            line-height: 1.42;
+            text-align: center;
+            margin-top: 2px;
+          }
+          .pi-mhub-expand {
+            display: none;
+          }
+          .pi-mhub-lesson-panel,
+          .pi-mhub-lesson-card.is-open .pi-mhub-lesson-panel {
+            display: block;
+          }
+          .pi-mhub-lesson-panel-inner {
+            height: 100%;
+            overflow: visible;
+          }
+          .pi-mhub-lesson-list,
+          .pi-mhub-lesson-card.is-open .pi-mhub-lesson-list {
+            height: 100%;
+            padding: 0;
+            opacity: 1;
+            transform: none;
+            gap: 8px;
+            align-content: start;
+          }
+          .pi-mhub-lesson-button {
+            min-height: 56px;
+            grid-template-columns: 40px minmax(0, 1fr) 108px 116px 40px;
+            gap: 16px;
+            border-radius: 10px;
+            padding: 10px 14px 10px 24px;
+            box-shadow: none;
+          }
+          .pi-mhub-lesson-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px rgba(37,99,235,.08);
+          }
+          .pi-mhub-lesson-button--no-score {
+            grid-template-columns: 40px minmax(0, 1fr) 108px 40px;
+          }
+          .pi-mhub-lesson-icon svg {
+            width: 29px;
+            height: 29px;
+          }
+          .pi-mhub-lesson-name {
+            font-size: 18px;
+            font-weight: 700;
+          }
+          .pi-mhub-status,
+          .pi-mhub-score {
+            min-height: 28px;
+            padding: 5px 14px;
+            font-size: 13px;
+          }
+          .pi-mhub-row-chevron {
+            width: 34px;
+            height: 34px;
+          }
+        }
+        @media (min-width: 769px) and (max-width: 980px) {
+          .pi-mhub-hero {
+            padding-right: 104px;
+          }
+          .pi-mhub-dashboard h1 {
+            font-size: 30px;
+          }
+          .pi-mhub-hero-lead {
+            font-size: 14px;
+          }
+          .pi-mhub-unit-badge {
+            width: 64px;
+            height: 64px;
+            right: 22px;
+            font-size: 36px;
+          }
+          .pi-mhub-lesson-card {
+            grid-template-columns: 1fr;
+            gap: 12px;
+          }
+          .pi-mhub-lesson-head {
+            min-height: 156px;
+            grid-template-columns: 116px minmax(0, 1fr);
+            grid-template-rows: 1fr;
+            align-items: center;
+            justify-items: start;
+            text-align: left;
+            padding: 14px 18px;
+          }
+          .pi-mhub-lesson-robot {
+            width: 106px;
+            height: 104px;
+          }
+          .pi-mhub-lesson-robot svg {
+            width: 116px;
+            height: 116px;
+          }
+          .pi-mhub-lesson-copy {
+            justify-items: start;
+          }
+          .pi-mhub-lesson-title {
+            width: auto;
+            min-width: min(240px, 100%);
+            min-height: 42px;
+            padding-inline: 18px;
+          }
+          .pi-mhub-lesson-desc {
+            max-width: 32ch;
+            text-align: left;
+          }
+          .pi-mhub-lesson-button,
+          .pi-mhub-lesson-button--no-score {
+            grid-template-columns: 40px minmax(0, 1fr) max-content 40px;
+          }
+          .pi-mhub-lesson-name {
+            overflow-wrap: anywhere;
+          }
+        }
+        @keyframes pi-mhub-drift {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+        }
+        @keyframes pi-mhub-fade {
+          from { opacity: 0; transform: translateY(3px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
         @keyframes pi-mhub-float {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-5px); }
@@ -283,10 +933,393 @@ export default function Tahun1ModuleHubLayout({
         .wave{animation:wave 1.8s ease-in-out infinite}
         .wave.w2{animation-delay:.3s}.wave.w3{animation-delay:.6s}
         @keyframes wave{0%,100%{opacity:.35;transform:scale(.9)}50%{opacity:1;transform:scale(1.05)}}
+        @media (max-width: 768px) {
+          .pi-mhub-page.has-dashboard {
+            padding: 18px 14px 28px !important;
+          }
+          .pi-mhub-dashboard {
+            gap: 14px;
+            min-height: 100%;
+          }
+          .pi-mhub-hero {
+            border-radius: 18px;
+            padding: 16px 18px;
+            min-height: 0;
+          }
+          .pi-mhub-dashboard h1 {
+            max-width: calc(100% - 92px);
+            font-size: clamp(25px, 6.8vw, 30px);
+            line-height: 1.08;
+          }
+          .pi-mhub-hero-lead {
+            display: none;
+          }
+          .pi-mhub-unit-badge {
+            width: 62px;
+            height: 62px;
+            font-size: 31px;
+          }
+          .pi-mhub-sections { gap: 18px; }
+          .pi-mhub-sections,
+          .pi-mhub-lesson-card,
+          .pi-mhub-lesson-list,
+          .pi-mhub-lesson-button {
+            min-width: 0;
+            max-width: 100%;
+          }
+          .pi-mhub-lesson-card {
+            width: 100%;
+            border-radius: 22px;
+            border-color: var(--topic-accent-line);
+            background:
+              linear-gradient(180deg, rgba(255,255,255,.94), rgba(255,255,255,.86)),
+              radial-gradient(circle at 0 0, var(--topic-accent-soft), transparent 45%);
+            box-shadow: 0 16px 34px rgba(15,23,42,.07), inset 0 1px 0 rgba(255,255,255,.92);
+            overflow: hidden;
+          }
+          .pi-mhub-lesson-head {
+            min-height: auto;
+            grid-template-columns: 94px minmax(0, 1fr) 42px;
+            gap: 12px;
+            padding: 14px;
+            align-items: center;
+          }
+          .pi-mhub-lesson-robot {
+            width: 88px;
+            height: 76px;
+          }
+          .pi-mhub-lesson-robot svg {
+            width: 86px;
+            height: 86px;
+          }
+          .pi-mhub-expand {
+            justify-self: end;
+            width: 42px;
+            height: 42px;
+            border-radius: 16px;
+            background: color-mix(in srgb, var(--topic-accent, #2563EB) 10%, #FFFFFF);
+            color: color-mix(in srgb, var(--topic-accent, #2563EB) 78%, #1D4ED8);
+          }
+          .pi-mhub-lesson-copy {
+            display: grid;
+            gap: 10px;
+            align-content: center;
+          }
+          .pi-mhub-lesson-title {
+            margin: 0;
+            color: color-mix(in srgb, var(--topic-accent, #2563EB) 78%, #1D4ED8);
+            font-size: clamp(20px, 5.4vw, 24px);
+            line-height: 1.1;
+          }
+          .pi-mhub-lesson-desc {
+            display: none;
+          }
+          .pi-mhub-lesson-list {
+            padding: 0 22px 22px;
+            gap: 8px;
+          }
+          .pi-mhub-lesson-button {
+            min-height: 68px;
+            grid-template-columns: 36px minmax(0, 1fr) 84px 34px;
+            column-gap: 12px;
+            row-gap: 8px;
+            padding: 10px 12px;
+            border-radius: 17px;
+          }
+          .pi-mhub-score {
+            display: none;
+          }
+          .pi-mhub-lesson-name {
+            overflow-wrap: anywhere;
+          }
+          .pi-mhub-status,
+          .pi-mhub-score {
+            justify-self: center;
+            min-height: 28px;
+            font-size: 12px;
+            padding-inline: 12px;
+          }
+          .pi-mhub-row-chevron {
+            width: 34px;
+            height: 34px;
+            grid-column: auto;
+            grid-row: auto;
+          }
+          .pi-mhub-bottom-nav {
+            display: none;
+          }
+          .pi-mhub-progress-strip {
+            position: static;
+            min-height: 58px;
+            border-radius: 16px;
+            padding: 10px 14px;
+            background: #FFFFFF;
+            font-size: clamp(12px, 3.2vw, 14px);
+            line-height: 1.25;
+            box-shadow: 0 8px 20px rgba(37,99,235,.10), inset 0 1px 0 rgba(255,255,255,.86);
+          }
+          .pi-mhub-progress-left {
+            gap: 10px;
+          }
+        }
+        @media (max-width: 680px) {
+          .pi-mhub-lesson-head {
+            grid-template-columns: 82px minmax(0, 1fr) 38px;
+            gap: 10px;
+            padding-inline: 18px;
+          }
+          .pi-mhub-lesson-robot {
+            width: 78px;
+            height: 68px;
+          }
+          .pi-mhub-lesson-robot svg {
+            width: 78px;
+            height: 78px;
+          }
+          .pi-mhub-lesson-button {
+            grid-template-columns: 34px minmax(0, 1fr) 70px 32px;
+            column-gap: 11px;
+            row-gap: 7px;
+            min-height: 66px;
+            padding: 10px 9px 10px 14px;
+          }
+          .pi-mhub-status,
+          .pi-mhub-score {
+            min-height: 26px;
+            font-size: 10px;
+            padding-inline: 8px;
+          }
+          .pi-mhub-row-chevron {
+            width: 32px;
+            height: 32px;
+          }
+        }
+        @media (max-width: 520px) {
+          .pi-mhub-hero {
+            min-height: 0;
+            padding: 16px 18px;
+          }
+          .pi-mhub-lesson-head {
+            grid-template-columns: 78px minmax(0, 1fr) 38px;
+            padding: 14px;
+            gap: 10px;
+            text-align: left;
+          }
+          .pi-mhub-lesson-robot { width: 74px; height: 64px; }
+          .pi-mhub-lesson-robot svg {
+            width: 74px;
+            height: 74px;
+          }
+          .pi-mhub-lesson-copy {
+            gap: 8px;
+            justify-items: start;
+          }
+          .pi-mhub-expand {
+            width: 38px;
+            height: 38px;
+            border-radius: 14px;
+            justify-self: end;
+          }
+          .pi-mhub-lesson-title { font-size: 21px; }
+          .pi-mhub-lesson-list { padding: 0 18px 18px; }
+          .pi-mhub-lesson-button {
+            min-height: 64px;
+            grid-template-columns: 32px minmax(0, 1fr) 62px 30px;
+            column-gap: 8px;
+            row-gap: 6px;
+            padding: 10px 8px 10px 12px;
+          }
+          .pi-mhub-lesson-name {
+            font-size: 14px;
+            line-height: 1.15;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+          }
+          .pi-mhub-status,
+          .pi-mhub-score {
+            width: 100%;
+            font-size: 9px;
+            padding-inline: 4px;
+          }
+        }
+        @media (max-width: 390px) {
+          .pi-mhub-lesson-head {
+            grid-template-columns: 68px minmax(0, 1fr) 34px;
+            gap: 10px;
+            padding: 12px;
+          }
+          .pi-mhub-lesson-robot { width: 64px; height: 56px; }
+          .pi-mhub-lesson-robot svg {
+            width: 64px;
+            height: 64px;
+          }
+          .pi-mhub-lesson-title { font-size: 19px; }
+          .pi-mhub-expand {
+            width: 34px;
+            height: 34px;
+            border-radius: 13px;
+          }
+          .pi-mhub-lesson-button {
+            grid-template-columns: 30px minmax(0, 1fr) 54px 28px;
+            column-gap: 7px;
+            row-gap: 4px;
+            min-height: 62px;
+          }
+          .pi-mhub-lesson-name { font-size: 13px; }
+          .pi-mhub-status,
+          .pi-mhub-score { font-size: 8px; }
+          .pi-mhub-status {
+            grid-column: auto;
+            grid-row: auto;
+            justify-self: center;
+          }
+          .pi-mhub-score {
+            grid-column: auto;
+            grid-row: auto;
+            justify-self: center;
+          }
+          .pi-mhub-row-chevron {
+            grid-column: auto;
+            grid-row: auto;
+            align-self: center;
+          }
+        }
+        @media (max-width: 480px) {
+          .pi-mhub-progress-strip {
+            padding: 8px 10px;
+            font-size: 11px;
+            min-height: 48px;
+            gap: 8px;
+          }
+          .pi-mhub-progress-left {
+            gap: 6px;
+          }
+          .pi-mhub-progress-left svg {
+            width: 22px;
+            height: 22px;
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .pi-mhub-hero::before,
+          .pi-mhub-hero::after,
+          .pi-mhub-lesson-robot svg,
+          .pi-mhub-lesson-list,
+          .pi-mhub-lesson-panel,
+          .pi-mhub-lesson-button,
+          .pi-mhub-expand {
+            animation: none !important;
+            transition: none !important;
+          }
+          .pi-mhub-lesson-button:hover { transform: none; }
+        }
       `}</style>
 
-      <div className="pi-mhub-page">
-        {headerVariant === 'banner' ? (
+      <div className={`pi-mhub-page${isDashboard ? ' has-dashboard' : ''}`}>
+        {isDashboard ? (
+          <div className="pi-mhub-dashboard">
+            <section className="pi-mhub-hero" aria-labelledby="pi-mhub-title">
+              <div className="pi-mhub-hero-copy">
+                <span className="pi-mhub-hero-kicker">
+                  {language === 'bm' ? `Modul ${moduleNum}` : `Module ${moduleNum}`}
+                </span>
+                <h1 id="pi-mhub-title">{language === 'bm' ? moduleName : moduleNameEn}</h1>
+                <p className="pi-mhub-hero-lead">
+                  {dashboardLead || (language === 'bm'
+                    ? 'Pelajari konsep melalui aktiviti interaktif yang menyeronokkan.'
+                    : 'Learn with focused interactive practice.')}
+                </p>
+              </div>
+              <span className="pi-mhub-unit-badge" aria-label={language === 'bm' ? `Modul ${moduleNum}` : `Module ${moduleNum}`}>
+                {moduleNum}
+              </span>
+            </section>
+
+            <div className="pi-mhub-sections">
+              {topics.map((t) => {
+                const isOpen = openTopics.has(t.id);
+                return (
+                  <section
+                    key={t.id}
+                    className={`pi-mhub-lesson-card${isOpen ? ' is-open' : ''}`}
+                    style={{ '--topic-accent': t.color || theme.accent }}
+                  >
+                    <button
+                      type="button"
+                      className="pi-mhub-lesson-head"
+                      onClick={() => toggleTopic(t.id)}
+                      aria-expanded={isOpen}
+                    >
+                      <span className="pi-mhub-lesson-robot" aria-hidden="true">{t.visual}</span>
+                      <span className="pi-mhub-lesson-copy">
+                        <span className="pi-mhub-lesson-title">{t.title}</span>
+                        <span className="pi-mhub-lesson-desc">{t.desc}</span>
+                      </span>
+                      <span className="pi-mhub-expand" aria-hidden="true">
+                        <ChevronUp size={28} strokeWidth={2.8} />
+                      </span>
+                    </button>
+                    <div className="pi-mhub-lesson-panel">
+                      <div className="pi-mhub-lesson-panel-inner">
+                        <div className="pi-mhub-lesson-list">
+                          {(t.actions?.length ? t.actions : [{ id: t.id, label: language === 'bm' ? 'Mula aktiviti' : 'Start activity', icon: t.icon || 'sparkles' }]).map((action) => {
+                            const Icon = LESSON_ICONS[action.icon] || Sparkles;
+                            const status = action.score?.status || 'unplayed';
+                            return (
+                              <button
+                                key={action.id}
+                                type="button"
+                                className="pi-mhub-lesson-button pi-mhub-lesson-button--no-score"
+                                style={{ '--topic-accent': t.color || theme.accent }}
+                                onClick={() => onSelectTopic?.(action.id)}
+                              >
+                                <span className="pi-mhub-lesson-icon" aria-hidden="true">
+                                  <Icon size={30} strokeWidth={2.4} />
+                                </span>
+                                <span className="pi-mhub-lesson-name">{action.label}</span>
+                                <span className={`pi-mhub-status pi-mhub-status--${status}`}>
+                                  {action.score?.label || 'Score 0/10'}
+                                </span>
+                                <span className="pi-mhub-row-chevron" aria-hidden="true">
+                                  <ChevronRight size={24} strokeWidth={3} />
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                );
+              })}
+            </div>
+
+            <div className="pi-mhub-progress-strip" aria-label={language === 'bm' ? 'Kemajuan latihan' : 'Practice progress'}>
+              <span className="pi-mhub-progress-left">
+                <Star size={34} strokeWidth={2.2} />
+                <span>
+                  {language === 'bm'
+                    ? 'Teruskan latihan untuk meningkatkan skor dan dapatkan lebih banyak bintang!'
+                    : 'Keep practising to raise your score and collect more stars.'}
+                </span>
+              </span>
+            </div>
+
+            <nav className="pi-mhub-bottom-nav" aria-label={language === 'bm' ? 'Navigasi pantas' : 'Quick navigation'}>
+              {BOTTOM_NAV.map(({ label, icon: Icon }, index) => (
+                <button
+                  key={label}
+                  type="button"
+                  className={`pi-mhub-bottom-item${index === 1 ? ' is-active' : ''}`}
+                  aria-label={label}
+                >
+                  <Icon size={23} strokeWidth={2.4} />
+                </button>
+              ))}
+            </nav>
+          </div>
+        ) : headerVariant === 'banner' ? (
           <div className="pi-mhub-banner" style={{ '--c': theme.accent, '--cd': theme.cd || theme.dark }}>
             <div className="pi-mhub-banner-text">
               <div className="pi-mhub-banner-kicker">
@@ -315,7 +1348,7 @@ export default function Tahun1ModuleHubLayout({
           </>
         )}
 
-        <div className="pi-mhub-grid">
+        {!isDashboard && <div className="pi-mhub-grid">
           {topics.map((t) => (
             <div
               key={t.id}
@@ -323,9 +1356,9 @@ export default function Tahun1ModuleHubLayout({
               role="button"
               tabIndex={t.disabled ? -1 : 0}
               aria-disabled={t.disabled || undefined}
-              onClick={() => { if (!t.disabled) onSelectTopic?.(t.id); }}
+              onClick={() => { if (!t.disabled && !t.actions?.length) onSelectTopic?.(t.id); }}
               onKeyDown={(e) => {
-                if (!t.disabled && (e.key === 'Enter' || e.key === ' ')) {
+                if (!t.disabled && !t.actions?.length && (e.key === 'Enter' || e.key === ' ')) {
                   e.preventDefault();
                   onSelectTopic?.(t.id);
                 }
@@ -343,12 +1376,33 @@ export default function Tahun1ModuleHubLayout({
                 <h3 className="pi-mhub-card-title">{t.title}</h3>
               )}
               <p className="pi-mhub-card-desc">{t.desc}</p>
-              {headerVariant === 'banner' && !t.disabled && (
+              {t.actions?.length ? (
+                <div className="pi-mhub-actions">
+                  {t.actions.map((action) => (
+                    <button
+                      key={action.id}
+                      type="button"
+                      className="pi-mhub-action"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onSelectTopic?.(action.id);
+                      }}
+                    >
+                      <span className="pi-mhub-action-label">{action.label}</span>
+                      {action.score && (
+                        <span className={`pi-mhub-action-score pi-mhub-action-score--${action.score.status}`}>
+                          {action.score.label}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              ) : headerVariant === 'banner' && !t.disabled && (
                 <span className="pi-mhub-cta">{language === 'bm' ? 'Mula ▸' : 'Start ▸'}</span>
               )}
             </div>
           ))}
-        </div>
+        </div>}
 
         {footer && (
           <div style={{ marginTop: '3rem' }}>

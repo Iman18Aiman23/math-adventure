@@ -18,15 +18,15 @@ const TOPICS = [
   {
     id: '3-data',
     pill: 'TOPIK 3.1',
-    title: 'Pengurusan Data',
-    desc: 'Baca dan tafsir data daripada carta palang, jadual dan jadual kekerapan.',
+    title: 'Baca Carta dan Jadual',
+    desc: 'Cari maklumat daripada carta palang, jadual dan jadual kekerapan.',
     visual: ROBOT,
   },
   {
     id: '3-kebarangkalian',
     pill: 'TOPIK 3.2',
-    title: 'Kebarangkalian Asas',
-    desc: 'Fahami konsep mesti, mungkin dan tidak mungkin berlaku.',
+    title: 'Mungkin atau Mustahil',
+    desc: 'Tentukan sama ada sesuatu peristiwa pasti, mungkin atau mustahil.',
     visual: ROBOT,
   },
 ];

@@ -13,6 +13,7 @@ const THEME = {
 
 const EXPLORE_CONFIG = {
   primitive: 'pola-nombor',
+  scoreId: 'pola-nombor',
   data: {},
 };
 

@@ -13,6 +13,7 @@ const THEME = {
 
 const EXPLORE_CONFIG = {
   primitive: 'nilai-tempat',
+  scoreId: 'nilai-tempat',
   data: {},
 };
 

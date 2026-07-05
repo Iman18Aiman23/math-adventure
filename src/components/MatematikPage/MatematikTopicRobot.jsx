@@ -37,7 +37,8 @@ export default function MatematikTopicRobot({
   const raw = useId();
   const uid = raw.replace(/[^a-zA-Z0-9]/g, '');
   const id = (name) => `${name}-${uid}`;
-  const badgeFontSize = String(symbol).length > 2 ? 10 : String(symbol).length > 1 ? 13 : 18;
+  const symbolText = String(symbol);
+  const badgeFontSize = symbolText.length > 2 ? 24 : symbolText.length > 1 ? 30 : 42;
 
   return (
     <svg viewBox="24 4 252 240" className={className} style={style} {...props}>
@@ -70,6 +71,14 @@ export default function MatematikTopicRobot({
           <stop offset="0%" stopColor={cEarTop} />
           <stop offset="100%" stopColor={cEarBottom} />
         </linearGradient>
+        <radialGradient id={id('badge')} cx="38%" cy="28%" r="72%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.85" />
+          <stop offset="32%" stopColor={badge} />
+          <stop offset="100%" stopColor={badge} stopOpacity="0.94" />
+        </radialGradient>
+        <filter id={id('badgeShadow')} x="-35%" y="-35%" width="170%" height="170%">
+          <feDropShadow dx="0" dy="10" stdDeviation="8" floodColor="#1E293B" floodOpacity="0.22" />
+        </filter>
       </defs>
 
       {/* ===== ANTENNAS ===== */}
@@ -114,9 +123,21 @@ export default function MatematikTopicRobot({
       <rect x="120" y="218" width="60" height="6" rx="3" ry="3" fill={d} opacity="0.5" />
 
       {/* ===== MATH SYMBOL BADGE ===== */}
-      <circle cx="230" cy="210" r="18" fill={badge} stroke="#ffffff" strokeWidth="2" />
-      <text x="230" y="216" textAnchor="middle" fontFamily="Arial, sans-serif"
-            fontSize={badgeFontSize} fontWeight="bold" fill="#ffffff">{symbol}</text>
+      <g filter={`url(#${id('badgeShadow')})`}>
+        <circle cx="224" cy="176" r="43" fill={`url(#${id('badge')})`} stroke="#ffffff" strokeWidth="6" />
+        <ellipse cx="209" cy="160" rx="13" ry="8" fill="#ffffff" opacity="0.32" />
+        {symbolText === '+' ? (
+          <g fill="#ffffff">
+            <rect x="201" y="169" width="46" height="14" rx="7" />
+            <rect x="217" y="153" width="14" height="46" rx="7" />
+          </g>
+        ) : symbolText === '-' ? (
+          <rect x="201" y="169" width="46" height="14" rx="7" fill="#ffffff" />
+        ) : (
+          <text x="224" y="189" textAnchor="middle" fontFamily="'Baloo 2', Arial, sans-serif"
+                fontSize={badgeFontSize} fontWeight="800" fill="#ffffff">{symbolText}</text>
+        )}
+      </g>
     </svg>
   );
 }

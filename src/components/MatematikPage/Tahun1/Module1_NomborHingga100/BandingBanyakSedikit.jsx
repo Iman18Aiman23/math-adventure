@@ -13,6 +13,7 @@ const THEME = {
 
 const EXPLORE_CONFIG = {
   primitive: 'compare',
+  scoreId: 'banding-banyak-sedikit',
   data: {},
 };
 

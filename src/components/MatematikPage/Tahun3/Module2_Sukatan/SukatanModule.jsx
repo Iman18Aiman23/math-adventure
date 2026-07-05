@@ -18,22 +18,22 @@ const TOPICS = [
   {
     id: '3-masa',
     pill: 'TOPIK 2.1',
-    title: 'Masa dan Waktu',
-    desc: 'Baca waktu dalam minit dan saat, serta operasi melibatkan masa.',
+    title: 'Masa, Minit dan Saat',
+    desc: 'Baca waktu tepat dan kira tempoh menggunakan jam, minit dan saat.',
     visual: ROBOT,
   },
   {
     id: '3-ukuran',
     pill: 'TOPIK 2.2',
-    title: 'Ukuran',
-    desc: 'Tukar unit panjang, jisim dan isi padu cecair antara unit metrik.',
+    title: 'Tukar Unit Ukuran',
+    desc: 'Tukar antara m, cm, kg, g, l dan ml dalam soalan harian.',
     visual: ROBOT,
   },
   {
     id: '3-perimeter',
     pill: 'TOPIK 2.3',
-    title: 'Luas dan Perimeter',
-    desc: 'Kira luas menggunakan petak segi empat sama dan perimeter bentuk 2D.',
+    title: 'Luas dan Keliling',
+    desc: 'Kira ruang dalam bentuk dan jumlah panjang di sekelilingnya.',
     visual: ROBOT,
   },
 ];

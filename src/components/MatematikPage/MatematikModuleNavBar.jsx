@@ -86,25 +86,24 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
         }
         .mt-top-bar {
           display: grid;
-          grid-template-columns: 44px minmax(220px, auto) minmax(0, 1fr);
+          grid-template-columns: 44px minmax(0, 1fr) max-content;
           align-items: center;
-          gap: 10px;
+          gap: 8px;
           width: min(1180px, calc(100% - 24px));
-          min-height: 62px;
+          min-height: 54px;
           height: auto;
           margin: 0 auto;
-          padding: 9px 12px;
+          padding: 8px 10px;
           box-sizing: border-box;
-          background:
-            linear-gradient(180deg, rgba(255,255,255,.105), rgba(255,255,255,.05)),
-            radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--accent) 17%, transparent), transparent 48%);
-          border: 1px solid rgba(255,255,255,.12);
+          background: #ffffff;
+          border: 3px solid #E6E6E6;
           border-radius: 22px;
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 16px 36px rgba(0,0,0,.24);
-          backdrop-filter: blur(18px);
-          -webkit-backdrop-filter: blur(18px);
+          box-shadow: none;
+          backdrop-filter: none;
+          -webkit-backdrop-filter: none;
           position: relative;
           z-index: 10;
+          overflow: visible;
         }
         .mt-top-back {
           display: flex;
@@ -112,21 +111,21 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           justify-content: center;
           width: 44px;
           height: 44px;
-          border-radius: 50%;
-          border: 1px solid rgba(255,255,255,.14);
-          background: rgba(255,255,255,.08);
-          color: #EAF6FF;
+          border-radius: 16px;
+          border: 3px solid #E6E6E6;
+          background: #ffffff;
+          color: #707070;
           cursor: pointer;
           flex-shrink: 0;
           padding: 0;
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 8px 18px rgba(0,0,0,.18);
+          box-shadow: none;
           transition: transform .16s ease, background .16s ease, border-color .16s ease, box-shadow .16s ease;
         }
         .mt-top-back:hover {
           transform: translateY(-1px);
-          background: color-mix(in srgb, var(--accent) 18%, rgba(255,255,255,.10));
-          border-color: color-mix(in srgb, var(--accent) 42%, rgba(255,255,255,.16));
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 0 18px color-mix(in srgb, var(--accent) 28%, transparent);
+          background: #ffffff;
+          border-color: var(--accent);
+          box-shadow: 0 8px 18px rgba(15,118,110,.10);
         }
         .mt-top-back:active { transform: translateY(1px); }
         .mt-top-back:focus-visible {
@@ -136,9 +135,16 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
         .mt-top-stats {
           grid-column: 3;
           min-width: 0;
+          width: max-content;
+          max-width: 100%;
           margin-left: auto;
           display: flex;
           justify-content: flex-end;
+        }
+        .mt-top-module {
+          grid-column: 2;
+          min-width: 0;
+          position: relative;
         }
         .mt-module-brand {
           grid-column: 2;
@@ -149,14 +155,11 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           gap: 9px;
           padding: 7px 14px 7px 9px;
           border-radius: 18px;
-          background:
-            linear-gradient(180deg, rgba(255,255,255,.13), rgba(255,255,255,.055)),
-            radial-gradient(circle at 0% 0%, rgba(245,158,11,.25), transparent 55%),
-            rgba(7,20,48,.55);
-          border: 1px solid rgba(183, 247, 255, .18);
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.16), inset 0 -14px 28px rgba(0,0,0,.10), 0 14px 30px rgba(0,0,0,.22);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
+          background: #ffffff;
+          border: 3px solid #E6E6E6;
+          box-shadow: none;
+          backdrop-filter: none;
+          -webkit-backdrop-filter: none;
         }
         .mt-module-brand-mark {
           width: 34px;
@@ -186,23 +189,23 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           font-family: 'Baloo 2', sans-serif;
           font-size: clamp(18px, 2.3vw, 23px);
           font-weight: 900;
-          color: #EAF6FF;
+          color: #1F2937;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-          text-shadow: 0 1px 0 rgba(0,0,0,.22);
+          text-shadow: none;
         }
         .mt-module-brand-sub {
           margin-top: 3px;
           font-family: 'Fredoka', sans-serif;
           font-size: 9px;
           font-weight: 900;
-          color: color-mix(in srgb, var(--accent) 38%, #EAF6FF);
+          color: #9AA0AB;
           letter-spacing: .8px;
           text-transform: uppercase;
           white-space: nowrap;
         }
-        .mt-top-stats .sb-container { width: 100%; justify-content: flex-end; }
+        .mt-top-stats .sb-container { width: auto; max-width: 100%; justify-content: flex-end; }
         .mt-top-stats .sb-mb-wrap { justify-content: flex-end; }
         .mt-top-stats .sb-root { margin-bottom: 0; width: 100%; }
         .mt-top-stats .sb-mb-pill {
@@ -213,6 +216,11 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
         }
         .mt-top-stats .sb-popover {
           right: 0;
+        }
+        @media (min-width: 1181px) {
+          .mt-top-module {
+            max-width: 560px;
+          }
         }
         @media (min-width: 768px) {
           .mt-top-stats { flex: 0 0 auto; }
@@ -235,17 +243,42 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           padding: 10px;
           margin: 10px auto 18px;
           border-radius: 22px;
-          background:
-            linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.035)),
-            radial-gradient(circle at 18% 0%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 52%);
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 16px 34px rgba(0,0,0,.20);
-          border: 1px solid rgba(255,255,255,.10);
-          backdrop-filter: blur(18px);
-          -webkit-backdrop-filter: blur(18px);
+          background: #ffffff;
+          box-shadow: none;
+          border: 3px solid #E6E6E6;
+          backdrop-filter: none;
+          -webkit-backdrop-filter: none;
           transition: background .35s ease, box-shadow .35s ease, border-color .35s ease;
           font-family: 'Fredoka', system-ui, sans-serif;
           position: relative;
           z-index: 1;
+        }
+        .mt-top-module .mt-mnav-select-wrap {
+          display: block;
+          width: 100%;
+        }
+        .mt-top-module .mt-mnav-select-label {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+        }
+        .mt-top-module .mt-mnav-select-shell {
+          min-height: 44px;
+          padding: 5px;
+          background: #F7F8FA;
+        }
+        .mt-top-module .mt-mnav-current-num {
+          width: 46px;
+          height: 34px;
+          font-size: 10px;
+          border-radius: 12px;
+        }
+        .mt-top-module .mt-mnav-select {
+          min-height: 34px;
+          padding: 7px 10px;
+          font-size: 14px;
         }
         .mt-mnav-tab-wrap {
           display: flex;
@@ -266,7 +299,7 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           font-weight: 700;
           letter-spacing: .14em;
           text-transform: uppercase;
-          color: color-mix(in srgb, var(--accent) 32%, #EAF6FF);
+          color: #9AA0AB;
           margin: 0 0 8px 3px;
         }
         .mt-mnav-select-shell {
@@ -276,24 +309,14 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           gap: 8px;
           border-radius: 18px;
           padding: 8px;
-          background:
-            linear-gradient(180deg, rgba(255,255,255,.13), rgba(255,255,255,.045)),
-            radial-gradient(circle at 8% 0%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 58%),
-            rgba(6,12,32,.58);
-          border: 1px solid color-mix(in srgb, var(--accent) 40%, rgba(255,255,255,.14));
-          box-shadow:
-            inset 0 1px 0 rgba(255,255,255,.18),
-            inset 0 -16px 30px rgba(0,0,0,.08),
-            0 14px 30px rgba(0,0,0,.23);
+          background: #F7F8FA;
+          border: 3px solid #E6E6E6;
+          box-shadow: none;
           transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
         }
         .mt-mnav-select-shell.open {
-          border-color: color-mix(in srgb, var(--accent) 72%, rgba(255,255,255,.18));
-          box-shadow:
-            inset 0 1px 0 rgba(255,255,255,.20),
-            inset 0 -16px 30px rgba(0,0,0,.08),
-            0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent),
-            0 18px 38px rgba(0,0,0,.30);
+          border-color: var(--accent);
+          box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
         }
         .mt-mnav-current-num {
           width: 46px;
@@ -320,10 +343,10 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           align-items: center;
           justify-content: space-between;
           gap: 12px;
-          border: 1px solid rgba(255,255,255,.08);
+          border: 0;
           border-radius: 14px;
           background: transparent;
-          color: #fff;
+          color: #1F2937;
           font-family: 'Fredoka', system-ui, sans-serif;
           font-size: 16px;
           font-weight: 800;
@@ -331,12 +354,11 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           text-align: left;
           padding: 10px 12px;
           cursor: pointer;
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+          box-shadow: none;
           transition: background .18s ease, border-color .18s ease, transform .16s ease;
         }
         .mt-mnav-select:hover {
-          background: rgba(255,255,255,.06);
-          border-color: color-mix(in srgb, var(--accent) 32%, rgba(255,255,255,.12));
+          background: #ffffff;
         }
         .mt-mnav-select:active {
           transform: translateY(1px);
@@ -345,11 +367,11 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
-          text-shadow: 0 1px 0 rgba(0,0,0,.18);
+          text-shadow: none;
         }
         .mt-mnav-select-arrow {
           flex: 0 0 auto;
-          color: color-mix(in srgb, var(--accent) 38%, #EAF6FF);
+          color: var(--accent);
           pointer-events: none;
           transition: transform .18s ease;
         }
@@ -370,15 +392,11 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           gap: 6px;
           padding: 8px;
           border-radius: 18px;
-          border: 1px solid color-mix(in srgb, var(--accent) 34%, rgba(255,255,255,.14));
-          background:
-            linear-gradient(180deg, rgba(16,29,62,.96), rgba(6,12,32,.96)),
-            radial-gradient(circle at 12% 0%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 58%);
-          box-shadow:
-            inset 0 1px 0 rgba(255,255,255,.12),
-            0 20px 46px rgba(0,0,0,.38);
-          backdrop-filter: blur(18px);
-          -webkit-backdrop-filter: blur(18px);
+          border: 3px solid #E6E6E6;
+          background: #ffffff;
+          box-shadow: 0 12px 28px rgba(15,23,42,.12);
+          backdrop-filter: none;
+          -webkit-backdrop-filter: none;
           animation: mtMenuDrop .16s ease-out both;
         }
         .mt-mnav-menu-option {
@@ -391,8 +409,8 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           border: 1px solid transparent;
           border-radius: 14px;
           padding: 10px 12px;
-          background: rgba(255,255,255,.045);
-          color: rgba(234,246,255,.82);
+          background: #ffffff;
+          color: #707070;
           font-family: 'Fredoka', system-ui, sans-serif;
           font-size: 15px;
           font-weight: 750;
@@ -402,19 +420,18 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
         }
         .mt-mnav-menu-option:hover {
           transform: translateY(-1px);
-          color: #fff;
-          background: color-mix(in srgb, var(--accent) 18%, rgba(255,255,255,.07));
-          border-color: color-mix(in srgb, var(--accent) 34%, rgba(255,255,255,.10));
+          color: #4A4A4A;
+          background: #F7F8FA;
+          border-color: #E6E6E6;
         }
         .mt-mnav-menu-option:active {
           transform: translateY(1px);
         }
         .mt-mnav-menu-option.active {
           color: #fff;
-          background:
-            linear-gradient(180deg, color-mix(in srgb, var(--accent) 35%, rgba(255,255,255,.10)), color-mix(in srgb, var(--accent-d) 22%, rgba(255,255,255,.06)));
-          border-color: color-mix(in srgb, var(--accent) 54%, rgba(255,255,255,.16));
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.16);
+          background: var(--accent);
+          border-color: var(--accent-d);
+          box-shadow: none;
         }
         .mt-mnav-menu-option:focus-visible {
           outline: 3px solid var(--accent);
@@ -433,9 +450,8 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           font-family: 'Fredoka', sans-serif;
           font-weight: 900;
           cursor: pointer;
-          border: 1px solid rgba(255,255,255,.10);
-          background:
-            linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.035));
+          border: 3px solid #E6E6E6;
+          background: #ffffff;
           border-radius: 16px;
           padding: 11px 10px;
           display: flex;
@@ -444,19 +460,18 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           justify-content: center;
           line-height: 1.15;
           gap: 2px;
-          color: rgba(234,246,255,.58);
+          color: #707070;
           transition: transform .16s ease, border-color .18s ease, color .18s ease, box-shadow .18s ease, background .18s ease;
           min-width: 64px;
           flex: 1;
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+          box-shadow: none;
           -webkit-tap-highlight-color: transparent;
         }
         .mt-mnav-tab:not(.active):hover {
           transform: translateY(-2px);
-          color: #EAF6FF;
-          border-color: color-mix(in srgb, var(--tcd) 42%, rgba(255,255,255,.16));
-          background:
-            linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.045));
+          color: #4A4A4A;
+          border-color: #D8D8D8;
+          background: #ffffff;
         }
         .mt-mnav-tab:active { transform: translateY(2px); }
         .mt-mnav-tab:focus-visible {
@@ -468,14 +483,14 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
             linear-gradient(180deg, color-mix(in srgb, var(--tc) 88%, white), var(--tc));
           border-color: var(--tcd);
           color: #fff;
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 4px 0 rgba(0,0,0,.28), 0 0 22px color-mix(in srgb, var(--tc) 42%, transparent);
+          box-shadow: none;
         }
         .mt-mnav-tab.active:active { transform: translateY(2px); }
         .mt-mnav-tab b {
           font-family: 'Fredoka', sans-serif;
           font-weight: 700;
           font-size: 20px;
-          color: rgba(234,246,255,.48);
+          color: #9AA0AB;
           font-variant-numeric: tabular-nums;
         }
         .mt-mnav-tab span {
@@ -517,22 +532,9 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
         @media (max-width: 840px) {
           .mt-top-bar {
             width: calc(100% - 16px);
-            grid-template-columns: 44px minmax(0, 1fr) auto;
+            grid-template-columns: 44px minmax(0, 1fr) max-content;
             border-radius: 18px;
-            padding: 8px;
-          }
-          .mt-module-brand {
-            grid-column: 2;
-            justify-self: center;
-            max-width: min(250px, 54vw);
-            padding: 7px 12px 7px 9px;
-          }
-          .mt-module-brand-title {
-            font-size: clamp(17px, 4.4vw, 22px);
-          }
-          .mt-module-brand-sub {
-            font-size: 8px;
-            letter-spacing: .6px;
+            padding: 7px;
           }
           .mt-top-stats {
             grid-column: 3;
@@ -544,42 +546,27 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
             border-radius: 17px;
           }
           .mt-mnav {
-            width: calc(100% - 16px);
-            margin-top: 8px;
-            margin-bottom: 12px;
-            border-radius: 18px;
-            overflow: visible;
-            justify-content: stretch;
-            padding: 8px;
-          }
-          .mt-mnav-tab-wrap {
             display: none;
-          }
-          .mt-mnav-select-wrap {
-            display: block;
           }
         }
         @media (max-width: 380px) {
-          .mt-module-brand {
-            max-width: min(220px, 50vw);
-            gap: 7px;
-            padding-right: 9px;
+          .mt-top-bar {
+            grid-template-columns: 40px minmax(0, 1fr) auto;
+            gap: 6px;
           }
-          .mt-module-brand-mark {
-            width: 30px;
-            height: 30px;
-            border-radius: 11px;
-            font-size: 20px;
+          .mt-top-back { width: 40px; height: 40px; border-radius: 14px; }
+          .mt-top-module .mt-mnav-current-num { width: 38px; font-size: 9px; }
+          .mt-top-module .mt-mnav-select { font-size: 12px; padding-inline: 7px; }
+        }
+        @media (max-width: 480px) {
+          .mt-top-stats .sb-bundle-btn {
+            min-width: 40px;
+            padding: 8px;
+            gap: 0;
           }
-          .mt-module-brand-sub { display: none; }
-          .mt-mnav { padding: 7px; gap: 6px; }
-          .mt-mnav-tab-wrap { gap: 7px; }
-          .mt-mnav-tab {
-            padding: 10px 5px;
-            border-radius: 10px;
+          .mt-top-stats .sb-bundle-text {
+            display: none;
           }
-          .mt-mnav-tab b { font-size: 14px; }
-          .mt-mnav-tab span { font-size: 9px; }
         }
         @media (prefers-reduced-motion: reduce) {
           .mt-top-back,
@@ -613,108 +600,76 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
         </button>
-        <div className="mt-module-brand" aria-label="Math Buddies">
-          <div className="mt-module-brand-mark" aria-hidden="true">+</div>
-          <div className="mt-module-brand-text">
-            <div className="mt-module-brand-title">Math Buddies</div>
-            <div className="mt-module-brand-sub">Iman Math Playground</div>
+        <div className="mt-top-module">
+          <div className="mt-mnav-select-wrap" ref={dropdownRef}>
+            <label className="mt-mnav-select-label" htmlFor="mt-module-select">
+              {language === 'bm' ? 'Pilih Modul' : 'Choose Module'}
+            </label>
+            <div className={`mt-mnav-select-shell${isSelectOpen ? ' open' : ''}`}>
+              <span className="mt-mnav-current-num" aria-hidden="true">
+                {language === 'bm' ? 'Modul' : 'Module'}
+              </span>
+              <button
+                type="button"
+                id="mt-module-select"
+                className="mt-mnav-select"
+                aria-haspopup="listbox"
+                aria-expanded={isSelectOpen}
+                aria-controls={listboxId}
+                onClick={() => {
+                  playHoverSound();
+                  setIsSelectOpen(open => !open);
+                }}
+                aria-label={language === 'bm' ? 'Pilih modul Matematik' : 'Choose math module'}
+              >
+                <span className="mt-mnav-select-text">{activeLabel || (language === 'bm' ? 'Pilih modul' : 'Choose module')}</span>
+                <svg className="mt-mnav-select-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+            </div>
+            {isSelectOpen && (
+              <div
+                id={listboxId}
+                className="mt-mnav-menu"
+                role="listbox"
+                aria-label={language === 'bm' ? 'Senarai modul Matematik' : 'Math module list'}
+              >
+                {modules.map(m => {
+                  const isActive = current === m.id;
+                  const label = language === 'bm' ? m.labelBM : m.labelEN;
+                  return (
+                    <button
+                      key={m.id}
+                      type="button"
+                      role="option"
+                      aria-selected={isActive}
+                      className={`mt-mnav-menu-option${isActive ? ' active' : ''}`}
+                      onClick={() => {
+                        setIsSelectOpen(false);
+                        if (!isActive) {
+                          playHoverSound();
+                          onModuleChange?.(year === 1 ? m.id : `${year}-${m.id}`);
+                        }
+                      }}
+                    >
+                      <span>{label}</span>
+                      {isActive && (
+                        <svg className="mt-mnav-menu-check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <path d="M20 6 9 17l-5-5" />
+                        </svg>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
         <div className="mt-top-stats">
           <StatsBar subject="mt" variant="mb" />
         </div>
       </div>
-      <nav className="mt-mnav" aria-label={language === 'bm' ? 'Modul Matematik' : 'Math modules'}>
-        <div className="mt-mnav-select-wrap" ref={dropdownRef}>
-          <label className="mt-mnav-select-label" htmlFor="mt-module-select">
-            {language === 'bm' ? 'Pilih Modul' : 'Choose Module'}
-          </label>
-          <div className={`mt-mnav-select-shell${isSelectOpen ? ' open' : ''}`}>
-            <span className="mt-mnav-current-num" aria-hidden="true">
-              {language === 'bm' ? 'Modul' : 'Module'}
-            </span>
-            <button
-              type="button"
-              id="mt-module-select"
-              className="mt-mnav-select"
-              aria-haspopup="listbox"
-              aria-expanded={isSelectOpen}
-              aria-controls={listboxId}
-              onClick={() => {
-                playHoverSound();
-                setIsSelectOpen(open => !open);
-              }}
-              aria-label={language === 'bm' ? 'Pilih modul Matematik' : 'Choose math module'}
-            >
-              <span className="mt-mnav-select-text">{activeLabel || (language === 'bm' ? 'Pilih modul' : 'Choose module')}</span>
-              <svg className="mt-mnav-select-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            </button>
-          </div>
-          {isSelectOpen && (
-            <div
-              id={listboxId}
-              className="mt-mnav-menu"
-              role="listbox"
-              aria-label={language === 'bm' ? 'Senarai modul Matematik' : 'Math module list'}
-            >
-              {modules.map(m => {
-                const isActive = current === m.id;
-                const label = language === 'bm' ? m.labelBM : m.labelEN;
-                return (
-                  <button
-                    key={m.id}
-                    type="button"
-                    role="option"
-                    aria-selected={isActive}
-                    className={`mt-mnav-menu-option${isActive ? ' active' : ''}`}
-                    onClick={() => {
-                      setIsSelectOpen(false);
-                      if (!isActive) {
-                        playHoverSound();
-                        onModuleChange?.(year === 1 ? m.id : `${year}-${m.id}`);
-                      }
-                    }}
-                  >
-                    <span>{label}</span>
-                    {isActive && (
-                      <svg className="mt-mnav-menu-check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="M20 6 9 17l-5-5" />
-                      </svg>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </div>
-        <div className="mt-mnav-tab-wrap">
-          {modules.map(m => {
-            const isActive = current === m.id;
-            const tabAccent = yearTheme?.c || m.c;
-            const tabAccentD = yearTheme?.cd || m.cd;
-            return (
-              <button
-                key={m.id}
-                className={`mt-mnav-tab${isActive ? ' active' : ''}`}
-                style={{ '--tc': tabAccent, '--tcd': tabAccentD }}
-                onClick={() => {
-                  if (!isActive) {
-                    playHoverSound();
-                    onModuleChange?.(year === 1 ? m.id : `${year}-${m.id}`);
-                  }
-                }}
-                type="button"
-                aria-current={isActive ? 'page' : undefined}
-              >
-                <b>{m.num}</b>
-                <span>{language === 'bm' ? m.labelBM : m.labelEN}</span>
-              </button>
-            );
-          })}
-        </div>
-      </nav>
     </header>
   );
 }

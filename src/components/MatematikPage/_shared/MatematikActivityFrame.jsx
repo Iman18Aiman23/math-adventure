@@ -5,11 +5,25 @@ import { MatematikNavContext } from './MatematikNavContext';
 
 const PASS_RATIO = 0.8; // 80% needed to unlock "Topik Seterusnya →"
 
+export function recordActivityScore(storageKey, scoreId, correct, total) {
+  if (!storageKey || !scoreId || typeof localStorage === 'undefined') return;
+  try {
+    const scores = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    const existing = scores[scoreId];
+    if (!existing || correct > existing.best) {
+      scores[scoreId] = { best: correct, total, passed: correct / total >= PASS_RATIO };
+      localStorage.setItem(storageKey, JSON.stringify(scores));
+    }
+  } catch {}
+}
+
 export default function MatematikActivityFrame({
   buildRound,
   renderQuestion,
   theme,
   onExit,
+  scoreStorageKey,
+  scoreId,
   hideChangeStrip = false,
   changeLabel = 'Tukar Jenis',
   onChangeType,
@@ -60,6 +74,7 @@ export default function MatematikActivityFrame({
 
   const handleNext = () => {
     if (isLast) {
+      recordActivityScore(scoreStorageKey, scoreId, correct, questions.length);
       setComplete(true);
       playSound('streak');
       confetti({ particleCount: 200, spread: 160, origin: { y: 0.4 } });

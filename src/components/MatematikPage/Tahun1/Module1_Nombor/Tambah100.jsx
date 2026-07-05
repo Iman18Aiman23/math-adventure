@@ -358,19 +358,26 @@ export default function Tambah100({ onBack, language = 'bm' }) {
         </div>
 
         {/* MCQ options */}
+        <style>{`
+          .t1-opt-btn { transition: all 0.2s cubic-bezier(.34,1.56,.64,1); }
+          .t1-opt-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(255, 150, 0, 0.18); }
+          .t1-opt-btn:active:not(:disabled) { transform: translateY(0); }
+        `}</style>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
           {current.options.map((option, idx) => {
             const chosen      = selected === option;
             const isAnswerOpt = option === current.answerStr;
             const showCorrect = isAnswered && isAnswerOpt;
             const showWrong   = isAnswered && chosen && !isAnswerOpt;
-            let bg = '#FFFFFF', border = '#FFCF80', color = '#333';
+            let bg = 'rgba(255, 150, 0, 0.07)', border = 'rgba(255, 150, 0, 0.35)', color = '#333';
             if (showCorrect) { bg = '#E8F5E9'; border = '#4CAF50'; color = '#2E7D32'; }
             else if (showWrong) { bg = '#FFEBEE'; border = '#FF6B6B'; color = '#C62828'; }
-            else if (isAnswered) { color = '#999'; }
+            else if (isAnswered) { bg = 'rgba(255, 150, 0, 0.03)'; border = 'rgba(255, 150, 0, 0.12)'; color = '#999'; }
+            const optNum = String.fromCharCode(0x2460 + idx);
             return (
               <button
                 key={idx}
+                className="t1-opt-btn"
                 onClick={() => handleSelect(option)}
                 disabled={isAnswered}
                 style={{
@@ -382,10 +389,10 @@ export default function Tambah100({ onBack, language = 'bm' }) {
                   fontSize: '1.6rem',
                   color,
                   cursor: isAnswered ? 'default' : 'pointer',
-                  transition: 'all 0.2s',
                   textAlign: 'center',
                 }}
               >
+                <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 26, height: 26, borderRadius: '50%', background: showCorrect ? '#4CAF50' : showWrong ? '#FF6B6B' : 'rgba(255, 150, 0, 0.15)', color: showCorrect ? '#fff' : showWrong ? '#fff' : 'rgba(255, 150, 0, 0.8)', fontSize: '0.75rem', fontWeight: 900, marginRight: 8, flexShrink: 0 }}>{optNum}</span>
                 {option}
                 {showCorrect && ' ✓'}
                 {showWrong && ' ✗'}

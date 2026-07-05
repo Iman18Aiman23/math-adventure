@@ -13,6 +13,7 @@ const THEME = {
 
 const EXPLORE_CONFIG = {
   primitive: 'anggar-bundar',
+  scoreId: 'anggar-bundar',
   data: {},
 };
 

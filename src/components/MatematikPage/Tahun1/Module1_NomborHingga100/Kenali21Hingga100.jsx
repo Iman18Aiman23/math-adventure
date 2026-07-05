@@ -13,6 +13,7 @@ const THEME = {
 
 const EXPLORE_CONFIG = {
   primitive: 'kenali-21-100',
+  scoreId: 'kenali-21-100',
   data: {},
 };
 

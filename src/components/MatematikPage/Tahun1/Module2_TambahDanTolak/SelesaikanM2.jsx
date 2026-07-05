@@ -1,7 +1,6 @@
 import React from 'react';
 import MatematikTopicShell from '../../_shared/MatematikTopicShell';
 import MatematikExplore from '../../_shared/MatematikExplore';
-import SpaceBackground from '../../_shared/SpaceBackground';
 
 const THEME = {
   pageGradient: 'linear-gradient(180deg,#EFF6FF 0%,#93C5FD 50%,#1D4ED8 100%)',
@@ -23,14 +22,14 @@ export default function SelesaikanM2({ onBack, language = 'bm' }) {
       onBack={onBack}
       theme={THEME}
       emoji=""
-      titleBM=""
-      titleEN=""
+      titleBM="Selesaikan Cerita"
+      titleEN="Solve Word Problems"
+      headerTitleBM="Selesaikan Cerita"
+      headerTitleEN="Solve Word Problems"
       subtitleBM=""
       subtitleEN=""
       showToggle={false}
       showReadyCta={false}
-      background={<SpaceBackground />}
-      darkChrome
       learn={<MatematikExplore config={EXPLORE_CONFIG} language={language} theme={THEME} onExit={onBack} />}
     />
   );

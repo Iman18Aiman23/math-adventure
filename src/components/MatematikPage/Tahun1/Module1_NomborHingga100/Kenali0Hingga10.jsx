@@ -13,6 +13,7 @@ const THEME = {
 
 const EXPLORE_CONFIG = {
   primitive: 'kenali-nombor',
+  scoreId: 'kenali-0-10',
   data: { config: { min: 0, max: 10, bilang: 4, kenal: 3, sifar: 3 } },
 };
 

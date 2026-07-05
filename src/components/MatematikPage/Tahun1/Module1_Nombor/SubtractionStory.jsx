@@ -184,7 +184,7 @@ export default function SubtractionStory({ onBack, language = 'bm' }) {
                   : pct >= 50 ? { bm: 'Boleh lagi!', eng: 'Keep going!', color: '#F57C00' }
                               : { bm: 'Cuba lagi!',  eng: 'Try again!',  color: '#C62828' };
     return (
-      <div style={{ minHeight: '100%', background: '#FFE9CC', display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
+      <div style={{ minHeight: '100%', background: '#FFF1F2', display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
         <BackButton onClick={onBack} />
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '3.5rem 1rem 1rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
           <div style={{ fontSize: '4rem', marginBottom: '0.5rem' }}>📖</div>
@@ -194,28 +194,28 @@ export default function SubtractionStory({ onBack, language = 'bm' }) {
           <p style={{ fontSize: '0.95rem', color: '#888', marginBottom: '1rem' }}>
             {language === 'bm' ? 'Laporan Markah' : 'Score Report'}
           </p>
-          <div style={{ background: '#FFFFFF', borderRadius: '20px', padding: '1.25rem 1.5rem', border: '3px solid #FFCF80', marginBottom: '1rem', textAlign: 'center', width: '100%', boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}>
+          <div style={{ background: '#FFFFFF', borderRadius: '20px', padding: '1.25rem 1.5rem', border: '3px solid #FDA4AF', marginBottom: '1rem', textAlign: 'center', width: '100%', boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}>
             <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#888', letterSpacing: '0.5px', marginBottom: '0.25rem' }}>
               {language === 'bm' ? 'MARKAH KESELURUHAN' : 'TOTAL SCORE'}
             </div>
-            <div style={{ fontSize: '3rem', fontWeight: 900, color: '#FF9600', lineHeight: 1 }}>
+            <div style={{ fontSize: '3rem', fontWeight: 900, color: '#F43F5E', lineHeight: 1 }}>
               {score}<span style={{ fontSize: '1.5rem', color: '#999' }}> / {questions.length}</span>
             </div>
             <div style={{ fontSize: '1.1rem', fontWeight: 800, color: verdict.color, marginTop: '0.25rem' }}>{pct}%</div>
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '0.75rem' }}>
-              <div style={{ background: '#FFEAD0', borderRadius: '999px', padding: '4px 12px', fontWeight: 900, fontSize: '0.82rem', color: '#D9610B', border: '1.5px solid #FFC081' }}>
+              <div style={{ background: '#FFE4E6', borderRadius: '999px', padding: '4px 12px', fontWeight: 900, fontSize: '0.82rem', color: '#BE123C', border: '1.5px solid #FDA4AF' }}>
                 🔥 {language === 'bm' ? 'Streak terbaik' : 'Best streak'}: {bestStreak}
               </div>
             </div>
           </div>
-          <div style={{ background: '#FFFFFF', borderRadius: '20px', padding: '1rem 1.25rem', border: '2px solid #FFCF80', marginBottom: '1rem', width: '100%' }}>
+          <div style={{ background: '#FFFFFF', borderRadius: '20px', padding: '1rem 1.25rem', border: '2px solid #FDA4AF', marginBottom: '1rem', width: '100%' }}>
             <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#888', letterSpacing: '0.5px', marginBottom: '0.65rem' }}>
               {language === 'bm' ? 'PRESTASI MENGIKUT KEMAHIRAN' : 'PERFORMANCE BY SKILL'}
             </div>
             {Object.entries(TYPE_META).map(([key, meta]) => {
               const s = stats[key];
               const p = s.t ? Math.round((s.c / s.t) * 100) : 0;
-              const barColor = p >= 75 ? '#4CAF50' : p >= 50 ? '#FF9600' : '#FF6B6B';
+              const barColor = p >= 75 ? '#4CAF50' : p >= 50 ? '#F43F5E' : '#FF6B6B';
               return (
                 <div key={key} style={{ marginBottom: '0.65rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
@@ -232,10 +232,10 @@ export default function SubtractionStory({ onBack, language = 'bm' }) {
             })}
           </div>
           <div style={{ display: 'flex', gap: '0.75rem', width: '100%' }}>
-            <button onClick={handleReset} style={{ flex: 1, padding: '0.85rem', background: '#FFFFFF', color: '#FF9600', border: '2px solid #FF9600', borderRadius: '12px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold' }}>
+            <button onClick={handleReset} style={{ flex: 1, padding: '0.85rem', background: '#FFFFFF', color: '#F43F5E', border: '2px solid #F43F5E', borderRadius: '12px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold' }}>
               {language === 'bm' ? 'Main Semula' : 'Play Again'}
             </button>
-            <button onClick={onBack} style={{ flex: 1, padding: '0.85rem', background: '#FF9600', color: 'white', border: 'none', borderRadius: '12px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold', boxShadow: '0 4px 0 #D47A00' }}>
+            <button onClick={onBack} style={{ flex: 1, padding: '0.85rem', background: '#F43F5E', color: 'white', border: 'none', borderRadius: '12px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold', boxShadow: '0 4px 0 #BE123C' }}>
               {language === 'bm' ? 'Kembali' : 'Back'}
             </button>
           </div>
@@ -248,13 +248,13 @@ export default function SubtractionStory({ onBack, language = 'bm' }) {
   const typeLabel = TYPE_META[current.type];
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: '#FFE9CC', overflow: 'hidden' }}>
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: '#FFF1F2', overflow: 'hidden' }}>
       <BackButton onClick={onBack} />
 
       <div style={{ flexShrink: 0, padding: '3.5rem 1rem 0.75rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
           <div>
-            <h1 style={{ color: '#FF9600', fontSize: '1.4rem', fontWeight: 900, marginBottom: '0.1rem' }}>
+            <h1 style={{ color: '#F43F5E', fontSize: '1.4rem', fontWeight: 900, marginBottom: '0.1rem' }}>
               📖 {language === 'bm' ? 'Cerita Penolakan' : 'Subtraction Story'}
             </h1>
             <p style={{ color: '#888', fontSize: '0.82rem' }}>
@@ -262,19 +262,19 @@ export default function SubtractionStory({ onBack, language = 'bm' }) {
             </p>
           </div>
           <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
-            <div style={{ background: '#FFF6D6', borderRadius: '999px', padding: '4px 12px', fontWeight: 900, fontSize: '0.82rem', color: '#B58800', border: '1.5px solid #FFE08A' }}>⭐ {score}</div>
-            <div style={{ background: '#FFEAD0', borderRadius: '999px', padding: '4px 12px', fontWeight: 900, fontSize: '0.82rem', color: '#D9610B', border: '1.5px solid #FFC081' }}>🔥 {streak}</div>
+            <div style={{ background: '#FFE4E6', borderRadius: '999px', padding: '4px 12px', fontWeight: 900, fontSize: '0.82rem', color: '#BE123C', border: '1.5px solid #FDA4AF' }}>⭐ {score}</div>
+            <div style={{ background: '#FFE4E6', borderRadius: '999px', padding: '4px 12px', fontWeight: 900, fontSize: '0.82rem', color: '#BE123C', border: '1.5px solid #FDA4AF' }}>🔥 {streak}</div>
           </div>
         </div>
-        <div style={{ background: '#FFD9A8', borderRadius: '999px', height: '8px', overflow: 'hidden' }}>
-          <div style={{ background: '#FF9600', height: '100%', borderRadius: '999px', width: `${(index / questions.length) * 100}%`, transition: 'width 0.3s' }} />
+        <div style={{ background: '#FECDD3', borderRadius: '999px', height: '8px', overflow: 'hidden' }}>
+          <div style={{ background: '#F43F5E', height: '100%', borderRadius: '999px', width: `${(index / questions.length) * 100}%`, transition: 'width 0.3s' }} />
         </div>
         <p style={{ textAlign: 'center', color: '#888', fontSize: '0.78rem', marginTop: '0.35rem' }}>{index + 1} / {questions.length}</p>
       </div>
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '0.5rem 1rem 1rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
-        <div style={{ background: '#FFFFFF', border: '3px solid #FFCF80', borderRadius: '24px', padding: '1.25rem 1rem', textAlign: 'center', marginBottom: '1rem', boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}>
-          <p style={{ fontSize: '0.72rem', fontWeight: 800, color: '#FF7043', marginBottom: '0.5rem', letterSpacing: '0.6px' }}>
+        <div style={{ background: '#FFFFFF', border: '3px solid #FDA4AF', borderRadius: '24px', padding: '1.25rem 1rem', textAlign: 'center', marginBottom: '1rem', boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}>
+          <p style={{ fontSize: '0.72rem', fontWeight: 800, color: '#F43F5E', marginBottom: '0.5rem', letterSpacing: '0.6px' }}>
             {typeLabel.emoji} {language === 'bm' ? typeLabel.bm.toUpperCase() : typeLabel.eng.toUpperCase()}
           </p>
 
@@ -304,7 +304,7 @@ export default function SubtractionStory({ onBack, language = 'bm' }) {
           {/* Cerita: story text */}
           {current.type === 'cerita' && (
             <>
-              <div style={{ textAlign: 'left', background: '#FFF8F0', border: '2px solid #FFCF80', borderRadius: '14px', padding: '0.85rem 1rem', marginBottom: '0.75rem', fontSize: '0.95rem', lineHeight: 1.6, color: '#333', fontWeight: 700 }}>
+              <div style={{ textAlign: 'left', background: '#FFF1F2', border: '2px solid #FDA4AF', borderRadius: '14px', padding: '0.85rem 1rem', marginBottom: '0.75rem', fontSize: '0.95rem', lineHeight: 1.6, color: '#333', fontWeight: 700 }}>
                 <span style={{ fontSize: '1.4rem', marginRight: '0.4rem' }}>{current.item.emoji}</span>
                 {language === 'bm' ? current.story_bm : current.story_eng}
               </div>
@@ -316,19 +316,26 @@ export default function SubtractionStory({ onBack, language = 'bm' }) {
           </p>
         </div>
 
+        <style>{`
+          .ss-opt-btn { transition: all 0.2s cubic-bezier(.34,1.56,.64,1); }
+          .ss-opt-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(244, 63, 94, 0.18); }
+          .ss-opt-btn:active:not(:disabled) { transform: translateY(0); }
+        `}</style>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
           {current.options.map((opt, idx) => {
             const chosen      = selected === opt.key;
             const isAnswerOpt = opt.key === current.answer;
             const showCorrect = isAnswered && isAnswerOpt;
             const showWrong   = isAnswered && chosen && !isAnswerOpt;
-            let bg = '#FFFFFF', border = '#FFCF80', color = '#333';
+            let bg = 'rgba(244, 63, 94, 0.07)', border = 'rgba(244, 63, 94, 0.35)', color = '#333';
             if (showCorrect)     { bg = '#E8F5E9'; border = '#4CAF50'; color = '#2E7D32'; }
             else if (showWrong)  { bg = '#FFEBEE'; border = '#FF6B6B'; color = '#C62828'; }
-            else if (isAnswered) { color = '#999'; }
+            else if (isAnswered) { bg = 'rgba(244, 63, 94, 0.03)'; border = 'rgba(244, 63, 94, 0.12)'; color = '#999'; }
+            const optNum = String.fromCharCode(0x2460 + idx);
             return (
               <button
                 key={idx}
+                className="ss-opt-btn"
                 onClick={() => handleSelect(opt.key)}
                 disabled={isAnswered}
                 style={{
@@ -337,6 +344,7 @@ export default function SubtractionStory({ onBack, language = 'bm' }) {
                   cursor: isAnswered ? 'default' : 'pointer',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
                 }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 26, height: 26, borderRadius: '50%', background: showCorrect ? '#4CAF50' : showWrong ? '#FF6B6B' : 'rgba(244, 63, 94, 0.15)', color: showCorrect ? '#fff' : showWrong ? '#fff' : 'rgba(244, 63, 94, 0.8)', fontSize: '0.75rem', fontWeight: 900, marginRight: 8, flexShrink: 0 }}>{optNum}</span>
                 <span>{language === 'bm' ? opt.label_bm : opt.label_eng}</span>
                 {showCorrect && <span style={{ fontSize: '1rem' }}>✓</span>}
                 {showWrong   && <span style={{ fontSize: '1rem' }}>✗</span>}
@@ -354,13 +362,13 @@ export default function SubtractionStory({ onBack, language = 'bm' }) {
         )}
       </div>
 
-      <div style={{ flexShrink: 0, background: '#FFE9CC', borderTop: '2px solid rgba(255,150,0,0.25)', padding: '0.75rem 1rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box', display: 'flex', gap: '0.75rem' }}>
+      <div style={{ flexShrink: 0, background: '#FFF1F2', borderTop: '2px solid rgba(244,63,94,0.25)', padding: '0.75rem 1rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box', display: 'flex', gap: '0.75rem' }}>
         <button onClick={handleReset}
           style={{ flex: 1, padding: '0.75rem', background: '#E0E0E0', color: '#555', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
           <RefreshCw size={18} /> {language === 'bm' ? 'Mula Semula' : 'Reset'}
         </button>
         <button onClick={handleNext} disabled={!isAnswered}
-          style={{ flex: 1, padding: '0.75rem', background: isAnswered ? '#FF9600' : '#FFCF80', color: 'white', border: 'none', borderRadius: '10px', cursor: isAnswered ? 'pointer' : 'not-allowed', fontWeight: 'bold', fontSize: '1rem', boxShadow: isAnswered ? '0 4px 0 #D47A00' : 'none', transition: 'background 0.2s' }}>
+          style={{ flex: 1, padding: '0.75rem', background: isAnswered ? '#F43F5E' : '#FDA4AF', color: 'white', border: 'none', borderRadius: '10px', cursor: isAnswered ? 'pointer' : 'not-allowed', fontWeight: 'bold', fontSize: '1rem', boxShadow: isAnswered ? '0 4px 0 #BE123C' : 'none', transition: 'background 0.2s' }}>
           {isLastQ
             ? (language === 'bm' ? 'Tamat ✓' : 'Finish ✓')
             : (language === 'bm' ? 'Seterusnya →' : 'Next →')}

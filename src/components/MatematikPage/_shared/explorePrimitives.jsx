@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import confetti from 'canvas-confetti';
 import { playSound } from '../../../utils/soundManager';
-import MatematikActivityFrame from './MatematikActivityFrame';
+import MatematikActivityFrame, { recordActivityScore } from './MatematikActivityFrame';
 import { MatematikNavContext } from './MatematikNavContext';
 import useGamification from '../../../hooks/useGamification';
 
@@ -224,6 +224,7 @@ export function CompareExplore({ data, language, theme, onExit }) {
   const handleNext = () => {
     if (isLast) {
       // finished the round of 10 → completion screen + full confetti + cheer
+      recordActivityScore(data?.scoreStorageKey, data?.scoreId, correct, questions.length);
       setComplete(true);
       playSound('streak');
       confetti({ particleCount: 200, spread: 160, origin: { y: 0.4 } });
@@ -906,6 +907,8 @@ export function KenaliNomborExplore({ data, language, theme, onExit }) {
       }}
       theme={theme}
       onExit={onExit}
+      scoreStorageKey={data?.scoreStorageKey}
+      scoreId={data?.scoreId}
     />
   );
 }
@@ -1117,6 +1120,8 @@ export function KombinasiExplore({ data, language, theme, onExit }) {
       }}
       theme={theme}
       onExit={onExit}
+      scoreStorageKey={data?.scoreStorageKey}
+      scoreId={data?.scoreId}
     />
   );
 }
@@ -1582,6 +1587,8 @@ export function Kenali21Hingga100Explore({ data, language, theme, onExit }) {
       }}
       theme={theme}
       onExit={onExit}
+      scoreStorageKey={data?.scoreStorageKey}
+      scoreId={data?.scoreId}
     />
   );
 }
@@ -1847,6 +1854,8 @@ export function NilaiTempatExplore({ data, language, theme, onExit }) {
       }}
       theme={theme}
       onExit={onExit}
+      scoreStorageKey={data?.scoreStorageKey}
+      scoreId={data?.scoreId}
     />
   );
 }
@@ -2411,6 +2420,8 @@ export function SusunanNomborExplore({ data, language, theme, onExit }) {
       }}
       theme={theme}
       onExit={onExit}
+      scoreStorageKey={data?.scoreStorageKey}
+      scoreId={data?.scoreId}
     />
   );
 }
@@ -2587,6 +2598,8 @@ export function PolaNomborExplore({ data, language, theme, onExit }) {
       }}
       theme={theme}
       onExit={onExit}
+      scoreStorageKey={data?.scoreStorageKey}
+      scoreId={data?.scoreId}
     />
   );
 }
@@ -2758,6 +2771,8 @@ export function AnggarBundarExplore({ data, language, theme, onExit }) {
       }}
       theme={theme}
       onExit={onExit}
+      scoreStorageKey={data?.scoreStorageKey}
+      scoreId={data?.scoreId}
     />
   );
 }
@@ -2861,6 +2876,8 @@ export function SelesaikanExplore({ data, language, theme, onExit }) {
         : <SusunanKeypadContent q={q} ctx={ctx} />)}
       theme={theme}
       onExit={onExit}
+      scoreStorageKey={data?.scoreStorageKey}
+      scoreId={data?.scoreId}
     />
   );
 }
@@ -2955,6 +2972,8 @@ export function LatihDiriExplore({ data, language, theme, onExit }) {
       }}
       theme={theme}
       onExit={onExit}
+      scoreStorageKey={data?.scoreStorageKey}
+      scoreId={data?.scoreId}
     />
   );
 }
@@ -3059,6 +3078,8 @@ export function CabarMindaExplore({ data, language, theme, onExit }) {
       }}
       theme={theme}
       onExit={onExit}
+      scoreStorageKey={data?.scoreStorageKey}
+      scoreId={data?.scoreId}
     />
   );
 }
@@ -3395,6 +3416,8 @@ export function KenaliTambahExplore({ data, language, theme, onExit }) {
       }}
       theme={theme}
       onExit={onExit}
+      scoreStorageKey={data?.scoreStorageKey}
+      scoreId={data?.scoreId}
     />
   );
 }
@@ -3650,6 +3673,8 @@ export function KenaliTolakExplore({ data, language, theme, onExit }) {
       }}
       theme={theme}
       onExit={onExit}
+      scoreStorageKey={data?.scoreStorageKey}
+      scoreId={data?.scoreId}
     />
   );
 }
@@ -4436,6 +4461,8 @@ export function LatihanTambahExplore({ data, language, theme, onExit }) {
           }}
           theme={theme}
           onExit={onExit}
+          scoreStorageKey={data?.scoreStorageKey}
+          scoreId={data?.scoreId}
           hideChangeStrip
         />
       </div>
@@ -4970,6 +4997,8 @@ export function LatihanTolakExplore({ data, language, theme, onExit }) {
           }}
           theme={theme}
           onExit={onExit}
+          scoreStorageKey={data?.scoreStorageKey}
+          scoreId={data?.scoreId}
           hideChangeStrip
         />
       </div>
@@ -5271,6 +5300,8 @@ export function CeritaTambahTolakExplore({ data, language, theme, onExit }) {
       }}
       theme={theme}
       onExit={onExit}
+      scoreStorageKey={data?.scoreStorageKey}
+      scoreId={data?.scoreId}
     />
   );
 }
@@ -5572,6 +5603,8 @@ export function TambahBerulangExplore({ data, language, theme, onExit }) {
       }}
       theme={theme}
       onExit={onExit}
+      scoreStorageKey={data?.scoreStorageKey}
+      scoreId={data?.scoreId}
     />
   );
 }
@@ -5768,46 +5801,21 @@ export function SelesaikanM2Explore({ data, language, theme, onExit }) {
           position: absolute; inset: 0; z-index: 50;
           display: flex; align-items: center; justify-content: center;
           padding: clamp(12px, 3vmin, 32px); overflow: hidden;
-          background: rgba(15, 23, 42, .55); backdrop-filter: blur(4px);
+          background: rgba(15, 23, 42, .32); backdrop-filter: blur(4px);
           animation: sm2-backdrop-in .18s ease;
         }
         .sm2-dialog {
           position: relative; width: 100%; max-width: 360px; max-height: 100%;
           display: flex; flex-direction: column; align-items: center; gap: clamp(10px, 1.8vmin, 18px);
-          background: linear-gradient(145deg, rgba(30,10,60,.98), rgba(15,23,42,.96)); border-radius: clamp(16px, 2.4vmin, 24px);
-          border: 1px solid rgba(168,85,247,.3);
+          background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(239,248,255,.96)); border-radius: clamp(16px, 2.4vmin, 24px);
+          border: 1.5px solid rgba(147,197,253,.7);
           padding: clamp(16px, 3vmin, 28px);
-          box-shadow: 0 20px 50px -12px rgba(0,0,0,.8), 0 0 45px rgba(168,85,247,.25);
+          box-shadow: 0 20px 50px -12px rgba(30,64,175,.26), inset 0 1px 0 rgba(255,255,255,.98);
           animation: sm2-dialog-in .26s cubic-bezier(.34,1.56,.64,1);
         }
         .sm2-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(5px, 0.9vmin, 9px); width: 100%; }
         .sm2-keypad button { height: clamp(34px, 5vmin, 48px); }
       `}</style>
-
-      {/* ── Top bar ── */}
-      <div style={{
-        position: 'relative', zIndex: 2,
-        flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: 'clamp(6px, 1vmin, 12px) clamp(12px, 2vmin, 20px)',
-        background: 'rgba(15,23,42,.65)', backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid rgba(168,85,247,.15)',
-      }}>
-        <button type="button" onClick={onExit}
-          style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: 'clamp(14px, 2vmin, 18px)', color: '#E9D5FF', padding: '4px 0', WebkitTapHighlightColor: 'transparent' }}>
-          ← Kembali
-        </button>
-        <div style={{
-          fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.6vmin, 24px)', color: '#fff', textAlign: 'center', textShadow: '0 0 12px rgba(168,85,247,.8), 0 0 4px rgba(255,255,255,.4)',
-        }}>
-          Roda Nombor
-        </div>
-        <div style={{
-          fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 2vmin, 17px)', color: solvedCount === 6 ? '#4ADE80' : '#E9D5FF',
-          background: 'rgba(255,255,255,.12)', borderRadius: 12, padding: '4px 10px',
-        }}>
-          {solvedCount}/6 ✓
-        </div>
-      </div>
 
       {complete ? (
         /* ── Completion overlay ── */
@@ -5860,14 +5868,14 @@ export function SelesaikanM2Explore({ data, language, theme, onExit }) {
                   const y2 = 50 + SPOKE_END_R[i] * Math.sin(rad);
                   const isSolved = solved[i];
                   return (
-                    <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} 
-                          stroke={isSolved ? '#10B981' : '#A855F7'} 
-                          strokeWidth="2" strokeLinecap="round" 
-                          style={{ filter: isSolved ? 'drop-shadow(0 0 4px #10B981)' : 'drop-shadow(0 0 4px #A855F7)' }} />
+                    <line key={i} x1={x1} y1={y1} x2={x2} y2={y2}
+                          stroke={isSolved ? '#16A34A' : accent}
+                          strokeWidth="2" strokeLinecap="round"
+                          style={{ filter: isSolved ? 'drop-shadow(0 0 4px rgba(22,163,74,.45))' : `drop-shadow(0 0 4px ${accent}66)` }} />
                   );
                 })}
-                <circle cx="50" cy="50" r="13" fill="rgba(15,23,42,0.85)" stroke="#06B6D4" strokeWidth="2.4" style={{ filter: 'drop-shadow(0 0 6px #06B6D4)' }} />
-                <circle cx="50" cy="50" r="14.5" fill="none" stroke="rgba(6,182,212,0.3)" strokeWidth="0.5" strokeDasharray="1 1.5" />
+                <circle cx="50" cy="50" r="13" fill={dark} stroke={accent} strokeWidth="2.4" style={{ filter: `drop-shadow(0 10px 18px ${accent}44)` }} />
+                <circle cx="50" cy="50" r="14.5" fill="none" stroke="rgba(59,130,246,0.32)" strokeWidth="0.5" strokeDasharray="1 1.5" />
               </svg>
               {/* Center number */}
               <div style={{
@@ -5875,7 +5883,7 @@ export function SelesaikanM2Explore({ data, language, theme, onExit }) {
                 display: 'flex', flexDirection: 'column', alignItems: 'center', pointerEvents: 'none',
               }}>
                 <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: wheelSize * 0.13, color: '#fff', lineHeight: 1, textShadow: '0 0 14px rgba(6,182,212,.8), 0 0 4px rgba(255,255,255,.5)' }}>{N}</span>
-                <span style={{ fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: Math.max(7, wheelSize * 0.035), color: '#22D3EE', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Pusat</span>
+                <span style={{ fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: Math.max(7, wheelSize * 0.035), color: '#BFDBFE', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Pusat</span>
               </div>
               {/* Spoke cards (absolute px positions) */}
               {spokes.map((spoke, i) => {
@@ -5889,15 +5897,15 @@ export function SelesaikanM2Explore({ data, language, theme, onExit }) {
                 const isActive = activeSpoke === i;
                 const isSolved = solved[i];
                 const isShake = shakeIdx === i;
-                let bg = 'rgba(30,10,60,.55)', bd = 'rgba(168,85,247,.6)', clr = '#E9D5FF';
-                let boxShad = '0 0 12px rgba(168,85,247,.3)';
-                if (isSolved) { 
-                  bg = 'rgba(6,78,59,.65)'; bd = '#10B981'; clr = '#34D399'; 
-                  boxShad = '0 0 16px rgba(16,185,129,.4)';
+                let bg = 'rgba(255,255,255,.92)', bd = '#93C5FD', clr = dark;
+                let boxShad = '0 12px 24px rgba(30,64,175,.12)';
+                if (isSolved) {
+                  bg = '#DCFCE7'; bd = '#16A34A'; clr = '#15803D';
+                  boxShad = '0 12px 24px rgba(22,163,74,.16)';
                 }
-                if (isActive) { 
-                  bg = 'rgba(134,25,143,.7)'; bd = '#F472B6'; 
-                  boxShad = `0 0 0 3px rgba(244,114,182,.5), 0 0 25px rgba(236,72,153,.6)`;
+                if (isActive) {
+                  bg = '#DBEAFE'; bd = accent;
+                  boxShad = `0 0 0 3px ${accent}33, 0 16px 28px rgba(30,64,175,.20)`;
                 }
                 return (
                   <div key={spoke.id} style={{
@@ -5941,25 +5949,25 @@ export function SelesaikanM2Explore({ data, language, theme, onExit }) {
                     style={{
                       position: 'absolute', top: 'clamp(8px, 1.4vmin, 14px)', right: 'clamp(8px, 1.4vmin, 14px)',
                       width: 'clamp(28px, 4vmin, 36px)', height: 'clamp(28px, 4vmin, 36px)',
-                      border: 'none', borderRadius: '50%', background: 'rgba(255,255,255,.1)', color: '#94A3B8',
+                      border: 'none', borderRadius: '50%', background: '#EAF2FF', color: '#64748B',
                       cursor: 'pointer', fontFamily: "'Baloo 2',sans-serif", fontWeight: 800,
                       fontSize: 'clamp(14px, 2.2vmin, 18px)', lineHeight: 1, WebkitTapHighlightColor: 'transparent',
                     }}>✕</button>
                   <div style={{
                     fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 2.2vmin, 17px)',
-                    color: '#818CF8', textTransform: 'uppercase', letterSpacing: '.04em',
+                    color: accent, textTransform: 'uppercase', letterSpacing: '.04em',
                   }}>{spokeLabels[activeSpoke]}</div>
                   <div style={{
                     fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(24px, 5vmin, 40px)',
-                    color: '#fff', textAlign: 'center', lineHeight: 1.3,
+                    color: '#1E293B', textAlign: 'center', lineHeight: 1.3,
                   }}>{spokes[activeSpoke].display}</div>
                   <div style={{
                     minWidth: 'clamp(96px, 18vmin, 140px)', height: 'clamp(48px, 6.6vmin, 66px)',
-                    border: '2px solid rgba(255,255,255,.2)', borderRadius: 'clamp(10px, 1.4vmin, 15px)',
-                    background: 'rgba(255,255,255,.07)', boxShadow: 'inset 0 2px 6px rgba(0,0,0,.2)',
+                    border: '2px solid #BFDBFE', borderRadius: 'clamp(10px, 1.4vmin, 15px)',
+                    background: '#F8FBFF', boxShadow: 'inset 0 2px 6px rgba(30,64,175,.08)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: 'clamp(28px, 4.8vmin, 44px)',
-                    color: value ? '#fff' : 'rgba(255,255,255,.25)', padding: '0 16px',
+                    color: value ? dark : '#94A3B8', padding: '0 16px',
                   }}>{value || '?'}</div>
                   <div className="sm2-keypad">
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
@@ -6171,10 +6179,15 @@ export function LatihDiriM2Explore({ data, language, theme, onExit }) {
   const accent = C.accent || '#3B82F6';
   const dark = C.dark || '#1E3A8A';
   const cd = C.cd || '#1D4ED8';
+  const initialType = data?.initialType;
 
   const { xp, streak, loading: gLoading } = useGamification('mt');
-  const [selectedType, setSelectedType] = useState(null);
+  const [selectedType, setSelectedType] = useState(initialType || null);
   const [scores, setScores] = useState(ldLoadScores);
+
+  useEffect(() => {
+    if (initialType) setSelectedType(initialType);
+  }, [initialType]);
 
   const handleScoreRecord = (typeId, correct, total) => {
     const updated = ldRecordScore(typeId, correct, total);
@@ -6365,16 +6378,76 @@ export function LatihDiriM2Explore({ data, language, theme, onExit }) {
               color: #1a1200; box-shadow: 0 0 22px rgba(255,208,0,.85);
             }
           }
+          .ld-module-card,
+          .ld-card-cyan,
+          .ld-card-tolak,
+          .ld-card-mixed {
+            background:
+              linear-gradient(180deg, rgba(255,255,255,.96), rgba(239,248,255,.90)),
+              radial-gradient(circle at 50% 0%, color-mix(in srgb, ${accent} 16%, transparent), transparent 68%) !important;
+            border: 1.5px solid color-mix(in srgb, ${accent} 30%, #D8E8FF) !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.98), 0 12px 26px rgba(30,64,175,.12) !important;
+          }
+          .ld-module-name {
+            color: #1E293B !important;
+            font-family: 'Baloo 2', sans-serif !important;
+            font-weight: 900 !important;
+          }
+          .ld-module-desc {
+            color: #5B6B7B !important;
+            font-weight: 600 !important;
+          }
+          .ld-picker-stats { display: none !important; }
+          .ld-btn-launch {
+            background: linear-gradient(180deg, ${accent}, ${cd}) !important;
+            border: 1px solid rgba(255,255,255,.34) !important;
+            color: #fff !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.34), 0 3px 0 ${dark}, 0 10px 18px rgba(59,130,246,.22) !important;
+          }
+          .ld-score-badge.unplayed {
+            background: #F1F5F9 !important;
+            border-color: #D9E5F6 !important;
+            color: #64748B !important;
+            box-shadow: none !important;
+          }
+          .ld-score-badge.unplayed .ld-score-icon {
+            background: #CBD5E1 !important;
+            color: #fff !important;
+          }
+          .ld-score-badge.passed {
+            background: #DCFCE7 !important;
+            border-color: #86EFAC !important;
+            color: #15803D !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.7) !important;
+          }
+          .ld-score-badge.failed {
+            background: #FEE2E2 !important;
+            border-color: #FCA5A5 !important;
+            color: #B91C1C !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.7) !important;
+          }
+          @media (hover: hover) {
+            .ld-module-card:hover {
+              background: #fff !important;
+              border-color: ${accent} !important;
+              box-shadow: inset 0 1px 0 rgba(255,255,255,.98), 0 16px 34px rgba(30,64,175,.18) !important;
+              transform: translateY(-3px);
+            }
+            .ld-module-card:hover .ld-btn-launch {
+              background: linear-gradient(180deg, color-mix(in srgb, ${accent} 92%, white), ${cd}) !important;
+              box-shadow: inset 0 1px 0 rgba(255,255,255,.36), 0 4px 0 ${dark}, 0 14px 24px rgba(59,130,246,.30) !important;
+            }
+          }
         `}</style>
         <div style={{ flex: 1, overflow: 'auto', padding: 'clamp(10px,2vmin,20px)' }}>
           <div style={{ maxWidth: 720, margin: '0 auto' }}>
             {/* Title row + score badges */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 20 }}>
-              <div style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px,2.4vmin,22px)', color: '#fff', opacity: .9 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+              <div style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: 'clamp(17px,2.4vmin,23px)', color: dark }}>
                 Pilih Jenis Latihan
               </div>
               {!gLoading && (
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
+                <div className="ld-picker-stats" style={{ display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
                   {[
                     { icon: '⭐', val: xp,     c: '#FFD23F', b: 'rgba(255,210,63,.4)', g: 'rgba(255,210,63,.18)' },
                     { icon: '⚡', val: streak, c: '#2DE2E6', b: 'rgba(45,226,230,.4)',  g: 'rgba(45,226,230,.18)' },
@@ -6448,7 +6521,14 @@ export function LatihDiriM2Explore({ data, language, theme, onExit }) {
     );
   }
 
-  return <M2DrillScreen selectedType={selectedType} theme={theme} onBackToPicker={() => setSelectedType(null)} onScoreRecord={handleScoreRecord} />;
+  return (
+    <M2DrillScreen
+      selectedType={selectedType}
+      theme={theme}
+      onBackToPicker={initialType ? onExit : () => setSelectedType(null)}
+      onScoreRecord={handleScoreRecord}
+    />
+  );
 }
 
 function M2DrillScreen({ selectedType, theme, onBackToPicker, onScoreRecord }) {
@@ -6458,7 +6538,6 @@ function M2DrillScreen({ selectedType, theme, onBackToPicker, onScoreRecord }) {
   const cd = C.cd || '#1D4ED8';
 
   const info = LD_TYPE_LABELS[selectedType];
-  const section = LD_SECTIONS.find(s => s.types.includes(selectedType));
 
   const [questions, setQuestions] = useState(() => buildM2DrillRound(selectedType));
   const [idx, setIdx] = useState(0);
@@ -6522,11 +6601,11 @@ function M2DrillScreen({ selectedType, theme, onBackToPicker, onScoreRecord }) {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%' }}>
       <style>{`
         .ld-drill-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-        .maf-footer { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: clamp(8px,1.2vmin,15px) clamp(16px,2.4vmin,34px); background: rgba(14,10,46,.85); backdrop-filter: blur(12px); border-top: 1px solid rgba(255,255,255,.1); }
-        .maf-footer-tally { display: flex; align-items: center; gap: 6px 10px; flex-wrap: wrap; font-family: 'Fredoka',sans-serif; font-size: clamp(13px,1.7vmin,18px); font-weight: 600; color: rgba(255,255,255,.6); }
+        .maf-footer { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: clamp(8px,1.2vmin,15px) clamp(16px,2.4vmin,34px); background: rgba(255,255,255,.9); backdrop-filter: blur(12px); border-top: 1px solid rgba(147,197,253,.42); box-shadow: 0 -10px 28px rgba(30,64,175,.08); }
+        .maf-footer-tally { display: flex; align-items: center; gap: 6px 10px; flex-wrap: wrap; font-family: 'Fredoka',sans-serif; font-size: clamp(13px,1.7vmin,18px); font-weight: 700; color: #475569; }
         .maf-stats { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
         .maf-stats .maf-stat { display: inline-flex; align-items: center; gap: 3px; }
-        .maf-stats .maf-divider { color: rgba(255,255,255,.2); font-weight: 400; }
+        .maf-stats .maf-divider { color: #CBD5E1; font-weight: 400; }
         .ld-drill-body {
           min-height: 100%; box-sizing: border-box;
           display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -6539,20 +6618,20 @@ function M2DrillScreen({ selectedType, theme, onBackToPicker, onScoreRecord }) {
         }
         .ld-drill-question {
           font-family: 'Baloo 2', sans-serif; font-weight: 800;
-          font-size: clamp(22px, 4.6vmin, 44px); color: #fff; text-align: center; line-height: 1.15;
+          font-size: clamp(22px, 4.6vmin, 44px); color: #1E293B; text-align: center; line-height: 1.15;
         }
         .ld-drill-feedback {
           font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(17px, 2.6vmin, 28px);
           text-align: center; min-height: clamp(24px, 3.4vmin, 38px);
           display: flex; align-items: center; justify-content: center;
-          color: rgba(255,255,255,.75);
+          color: #64748B;
         }
-        .ld-drill-feedback.ok { color: #7CFF6B; }
-        .ld-drill-feedback.no { color: #FF5C8A; }
+        .ld-drill-feedback.ok { color: #16A34A; }
+        .ld-drill-feedback.no { color: #DC2626; }
         .ld-drill-next {
           padding: clamp(11px, 1.5vmin, 17px) clamp(28px, 4vmin, 52px); border: none; border-radius: 999px;
-          background: linear-gradient(135deg, ${accent}, #FF4FD8);
-          color: #0A0826;
+          background: linear-gradient(180deg, ${accent}, ${cd});
+          color: #fff;
           font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(17px, 2.6vmin, 26px);
           cursor: pointer; box-shadow: 0 4px 16px ${accent}55; transition: transform .1s ease, box-shadow .1s ease;
           -webkit-tap-highlight-color: transparent;
@@ -6562,49 +6641,21 @@ function M2DrillScreen({ selectedType, theme, onBackToPicker, onScoreRecord }) {
         .ld-drill-summary { display: flex; flex-direction: column; gap: clamp(8px, 1.4vmin, 14px); width: 100%; max-width: 340px; }
         .ld-drill-summary-row {
           display: flex; align-items: center; justify-content: space-between;
-          background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); border-radius: 14px;
+          background: rgba(255,255,255,.92); border: 1px solid rgba(147,197,253,.42); border-radius: 14px;
           padding: clamp(10px, 1.6vmin, 16px) clamp(16px, 2.4vmin, 26px);
-          font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(16px, 2.4vmin, 22px); color: rgba(255,255,255,.9);
+          font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(16px, 2.4vmin, 22px); color: #1E293B;
         }
         .ld-drill-summary-row b { font-size: clamp(20px, 3vmin, 28px); }
-        .ld-drill-summary-row.ok b { color: #7CFF6B; }
-        .ld-drill-summary-row.no b { color: #FF5C8A; }
+        .ld-drill-summary-row.ok b { color: #16A34A; }
+        .ld-drill-summary-row.no b { color: #DC2626; }
         .ld-drill-complete-actions { display: flex; flex-wrap: wrap; gap: clamp(10px, 1.6vmin, 16px); justify-content: center; }
         .ld-drill-btn-secondary {
           padding: clamp(11px, 1.5vmin, 17px) clamp(24px, 3.4vmin, 44px); border-radius: 999px;
-          border: 2px solid ${accent}; background: rgba(45,226,230,.1); color: ${accent};
+          border: 2px solid color-mix(in srgb, ${accent} 55%, #BFDBFE); background: #EFF6FF; color: ${dark};
           font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(16px, 2.4vmin, 24px);
           cursor: pointer; -webkit-tap-highlight-color: transparent;
         }
       `}</style>
-      {/* Top strip */}
-      <div style={{
-        flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: 'clamp(4px, 0.8vmin, 10px) clamp(12px, 2vmin, 20px)',
-        background: 'rgba(14,10,46,.75)', borderBottom: `1px solid ${section?.color || accent}44`,
-      }}>
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 6,
-          fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(13px, 1.6vmin, 16px)',
-          color: section?.color || accent,
-        }}>
-          <span style={{
-            display: 'inline-block', width: 8, height: 8, borderRadius: 4,
-            background: section?.color || accent,
-            boxShadow: `0 0 6px ${section?.color || accent}`,
-          }} />
-          {info?.label || selectedType}
-        </div>
-        <button type="button" onClick={handleBackToPicker}
-          style={{
-            border: 'none', background: 'transparent', cursor: 'pointer',
-            fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(11px, 1.4vmin, 14px)', color: accent,
-            display: 'flex', alignItems: 'center', gap: 3, padding: '4px 0', WebkitTapHighlightColor: 'transparent',
-          }}>
-          Tukar Jenis ⟲
-        </button>
-      </div>
-
       {complete ? (
         <div className="ld-drill-scroll">
           <div className="ld-drill-body">
@@ -6645,11 +6696,11 @@ function M2DrillScreen({ selectedType, theme, onBackToPicker, onScoreRecord }) {
             <div className="maf-footer-tally">
               <span>Jawapan :</span>
               <span className="maf-stats">
-                <span className="maf-stat" style={{ color: '#7CFF6B' }}>
+                <span className="maf-stat" style={{ color: '#16A34A' }}>
                   <span>✅</span><span>{correct}</span><span style={{ color: 'rgba(255,255,255,.45)', fontWeight: 500 }}>Betul</span>
                 </span>
                 <span className="maf-divider">|</span>
-                <span className="maf-stat" style={{ color: '#FF5C8A' }}>
+                <span className="maf-stat" style={{ color: '#DC2626' }}>
                   <span>❌</span><span>{wrong}</span><span style={{ color: 'rgba(255,255,255,.45)', fontWeight: 500 }}>salah</span>
                 </span>
               </span>
@@ -6659,7 +6710,7 @@ function M2DrillScreen({ selectedType, theme, onBackToPicker, onScoreRecord }) {
               <div style={{ width: 70, height: 7, background: 'rgba(255,210,63,.15)', borderRadius: 4, overflow: 'hidden' }}>
                 <div style={{ width: `${(progressInGroup / 10) * 100}%`, height: '100%', background: 'linear-gradient(90deg,#FFD23F,#FFAB00)', borderRadius: 4, transition: 'width .3s ease-out', boxShadow: '0 0 6px #FFD23F88' }} />
               </div>
-              <span style={{ color: '#FFD23F', fontSize: '0.85rem', fontWeight: 900, minWidth: 28, textAlign: 'right' }}>
+              <span style={{ color: dark, fontSize: '0.85rem', fontWeight: 900, minWidth: 28, textAlign: 'right' }}>
                 {progressInGroup}/10
               </span>
             </div>
@@ -6793,7 +6844,7 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
 
   if (phase === 'start') {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: '#fff' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'transparent' }}>
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'clamp(24px, 4vmin, 48px) clamp(16px, 3vmin, 32px)', gap: 'clamp(16px, 2.6vmin, 32px)' }}>
           <div style={{ fontSize: 'clamp(48px, 10vmin, 80px)', lineHeight: 1 }}>🧠</div>
           <div style={{ textAlign: 'center' }}>
@@ -6812,15 +6863,16 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
             ].map(chip => (
               <div key={chip.label} style={{
                 padding: '6px 16px', borderRadius: 999,
-                background: '#F8FAFC',
+                background: 'rgba(255,255,255,.88)',
                 border: `1.5px solid ${chip.color}44`, color: chip.color,
                 fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(13px, 1.8vmin, 17px)',
               }}>{chip.label}</div>
             ))}
           </div>
           <div style={{
-            background: '#F8FAFC',
-            border: '1.5px solid #E2E8F0',
+            background: 'rgba(255,255,255,.90)',
+            border: '1.5px solid #BFDBFE',
+            boxShadow: '0 12px 28px rgba(30,64,175,.10)',
             borderRadius: 'clamp(14px, 2vmin, 20px)', padding: 'clamp(14px, 2.4vmin, 24px)',
             maxWidth: 420, width: '100%',
           }}>
@@ -6836,9 +6888,9 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
           <button type="button" onClick={startExam}
             style={{
               padding: 'clamp(14px, 2vmin, 20px) clamp(32px, 5vmin, 64px)', border: 'none', borderRadius: 999,
-              background: '#1E293B', color: '#fff', cursor: 'pointer', width: '100%', maxWidth: 360,
+              background: `linear-gradient(180deg, ${accent}, ${cd})`, color: '#fff', cursor: 'pointer', width: '100%', maxWidth: 360,
               fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(18px, 2.8vmin, 26px)',
-              boxShadow: '0 4px 0 #0F172A', WebkitTapHighlightColor: 'transparent',
+              boxShadow: `0 4px 0 ${dark}, 0 14px 24px rgba(59,130,246,.24)`, WebkitTapHighlightColor: 'transparent',
             }}>
             Mula Peperiksaan →
           </button>
@@ -6872,7 +6924,7 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
     };
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: '#fff' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'transparent' }}>
         <style>{`
           .cm-exam-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
           .cm-exam-body {
@@ -6901,8 +6953,8 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
         <div style={{
           flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: 'clamp(8px, 1.2vmin, 14px) clamp(14px, 2.4vmin, 24px)',
-          background: '#fff',
-          borderBottom: 'none',
+          background: 'rgba(255,255,255,.86)',
+          borderBottom: '1px solid rgba(147,197,253,.42)',
         }}>
           <div style={{
             fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(14px, 1.8vmin, 18px)', color: '#475569',
@@ -6955,7 +7007,7 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
     });
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: '#fff' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'transparent' }}>
         <style>{`
           .cm-results-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
           .cm-results-body {
@@ -7066,9 +7118,9 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
                 }}
                   style={{
                     padding: 'clamp(12px, 1.8vmin, 18px) clamp(24px, 4vmin, 48px)', border: 'none', borderRadius: 999,
-                    background: '#1E293B', color: '#fff', cursor: 'pointer', width: '100%',
+                    background: `linear-gradient(180deg, ${accent}, ${cd})`, color: '#fff', cursor: 'pointer', width: '100%',
                     fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.6vmin, 24px)',
-                    boxShadow: '0 4px 0 #0F172A', WebkitTapHighlightColor: 'transparent',
+                    boxShadow: `0 4px 0 ${dark}, 0 14px 24px rgba(59,130,246,.22)`, WebkitTapHighlightColor: 'transparent',
                   }}>
                   ↻ Cuba Semula
                 </button>

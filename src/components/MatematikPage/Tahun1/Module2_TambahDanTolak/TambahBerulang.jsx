@@ -1,7 +1,6 @@
 import React from 'react';
 import MatematikTopicShell from '../../_shared/MatematikTopicShell';
 import MatematikExplore from '../../_shared/MatematikExplore';
-import SpaceBackground from '../../_shared/SpaceBackground';
 
 const THEME = {
   pageGradient: 'radial-gradient(ellipse at 18% 12%,rgba(124,77,238,.38),transparent 55%),radial-gradient(ellipse at 86% 22%,rgba(255,79,216,.22),transparent 50%),linear-gradient(160deg,#0A0826 0%,#0E0A2E 100%)',
@@ -29,8 +28,7 @@ export default function TambahBerulang({ onBack, language = 'bm' }) {
       subtitleEN=""
       showToggle={false}
       showReadyCta={false}
-      background={<SpaceBackground />}
-      darkChrome
+      formalMode={true}
       learn={<MatematikExplore config={EXPLORE_CONFIG} language={language} theme={THEME} onExit={onBack} />}
     />
   );

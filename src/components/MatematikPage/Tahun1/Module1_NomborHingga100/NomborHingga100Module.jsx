@@ -15,163 +15,100 @@ const robotFor = (symbol, badge = '#FFB547') => (
   <MatematikTopicRobot theme={THEME} badge={badge} symbol={symbol} />
 );
 
-function FooterTrio({ language, theme, onSelectTopic }) {
-  const isBM = language === 'bm';
-  const items = [
-    { id: 'selesaikan',  icon: '🧩', title: isBM ? 'Selesaikan' : 'Solve',        desc: isBM ? 'Penyelesaian masalah' : 'Problem solving', enabled: true },
-    { id: 'latih-diri',  icon: '⚡', title: isBM ? 'Latih Diri' : 'Self Drill',   desc: isBM ? 'Latih tubi bertahap' : 'Timed leveled drill', enabled: true },
-    { id: 'cabar-minda', icon: '🧠', title: isBM ? 'Cabar Minda' : 'Challenge',   desc: isBM ? 'Cabaran lebih sukar' : 'Harder challenge', enabled: true },
-  ];
-  return (
-    <div className="mt-footer-trio">
-      <style>{`
-        .mt-footer-trio {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 16px;
-          max-width: 720px;
-          margin: 0 auto;
-        }
-        .mt-footer-trio-card {
-          background: #fff;
-          border-radius: 20px;
-          padding: 18px 14px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 6px;
-          border: 2px solid ${theme.accent}44;
-          box-shadow: 0 6px 20px -10px ${theme.dark}30;
-          opacity: 0.7;
-          filter: grayscale(0.4);
-          cursor: default;
-          pointer-events: none;
-          text-align: center;
-        }
-        .mt-footer-trio-card.is-enabled {
-          opacity: 1;
-          filter: none;
-          cursor: pointer;
-          pointer-events: auto;
-          transition: transform .12s ease, box-shadow .12s ease;
-          -webkit-tap-highlight-color: transparent;
-        }
-        .mt-footer-trio-card.is-enabled:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 10px 26px -10px ${theme.dark}55;
-        }
-        .mt-footer-trio-card.is-enabled:active { transform: translateY(0); }
-        .mt-footer-trio-icon { font-size: 28px; }
-        .mt-footer-trio-title {
-          font-family: 'Baloo 2', sans-serif;
-          font-weight: 800;
-          font-size: 16px;
-          color: ${theme.dark};
-          margin: 0;
-        }
-        .mt-footer-trio-desc {
-          font-family: 'Fredoka', sans-serif;
-          font-weight: 500;
-          font-size: 11px;
-          color: #5B6B7B;
-          margin: 0;
-        }
-        @media (max-width: 560px) {
-          .mt-footer-trio { grid-template-columns: 1fr; max-width: 300px; }
-        }
-      `}</style>
-      {items.map(item => (
-        <div
-          key={item.id}
-          className={`mt-footer-trio-card${item.enabled ? ' is-enabled' : ''}`}
-          role={item.enabled ? 'button' : undefined}
-          tabIndex={item.enabled ? 0 : undefined}
-          onClick={item.enabled ? () => onSelectTopic?.(item.id) : undefined}
-          onKeyDown={item.enabled ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectTopic?.(item.id); } } : undefined}
-        >
-          <span className="mt-footer-trio-icon">{item.icon}</span>
-          <div className="mt-footer-trio-title">{item.title}</div>
-          <div className="mt-footer-trio-desc">{item.desc}</div>
-        </div>
-      ))}
-    </div>
-  );
+const SCORE_KEY = 'mt_ld_m1_scores';
+
+function loadScores() {
+  if (typeof localStorage === 'undefined') return {};
+  try { return JSON.parse(localStorage.getItem(SCORE_KEY) || '{}'); }
+  catch { return {}; }
+}
+
+function actionScore(actionId, scores) {
+  const score = scores[actionId];
+  if (!score) return { status: 'unplayed', label: 'Score 0/10' };
+  const score10 = Math.max(0, Math.min(10, Math.round((score.best / score.total) * 10)));
+  return {
+    status: score.passed ? 'passed' : 'failed',
+    label: `Score ${score10}/10`,
+  };
 }
 
 const TOPICS = [
   {
-    id: 'banding-banyak-sedikit',
-    pill: 'BANYAK DAN SEDIKIT',
-    title: 'Banyak, Sedikit, Lebih atau Kurang',
-    desc: 'Bandingkan banyak atau sedikit, lebih atau kurang.',
-    visual: robotFor('<', '#22C55E'),
-  },
-  {
-    id: 'kenali-0-10',
-    pill: 'KENALI 0 HINGGA 10',
-    title: 'Kenali 0 hingga 10',
-    desc: 'Kenali nombor 0 hingga 10.',
+    id: 'm1-kenali-nombor',
+    pill: 'TOPIK 1.1',
+    title: 'Kenali Nombor',
+    desc: 'Mula dengan membanding kumpulan, membaca nombor kecil dan menulis nombor.',
     visual: robotFor('10', '#38BDF8'),
+    color: '#38BDF8',
+    actions: [
+      { id: 'banding-banyak-sedikit', label: 'Banding Banyak Sedikit', icon: 'users' },
+      { id: 'kenali-0-10', label: 'Kenali 0 Hingga 10', icon: 'type' },
+      { id: 'kenali-11-20', label: 'Kenali 11 Hingga 20', icon: 'type' },
+      { id: 'tulis-0-20', label: 'Tulis Nombor 0-20', icon: 'pencil' },
+    ],
   },
   {
-    id: 'kenali-11-20',
-    pill: 'KENALI 11 HINGGA 20',
-    title: 'Kenali 11 hingga 20',
-    desc: 'Kenali nombor 11 hingga 20.',
-    visual: robotFor('20', '#60A5FA'),
-  },
-  {
-    id: 'tulis-0-20',
-    pill: 'TULIS 0 HINGGA 20',
-    title: 'Tulis 0 hingga 20',
-    desc: 'Tulis nombor 0 hingga 20 dengan jari.',
-    visual: robotFor('0', '#F97316'),
-  },
-  {
-    id: 'kombinasi-nombor',
-    pill: 'KOMBINASI NOMBOR',
-    title: 'Kombinasi Nombor',
-    desc: 'Gabungkan nombor untuk jadi 10.',
-    visual: robotFor('+', '#FACC15'),
-  },
-  {
-    id: 'kenali-21-100',
-    pill: 'KENALI 21 HINGGA 100',
-    title: 'Kenali 21 hingga 100',
-    desc: 'Kenali nombor 21 hingga 100.',
+    id: 'm1-nombor-besar',
+    pill: 'TOPIK 1.2',
+    title: 'Nombor hingga 100',
+    desc: 'Bina nombor besar, faham puluh dan sa, kemudian susun ikut tertib.',
     visual: robotFor('100', '#A78BFA'),
+    color: '#A78BFA',
+    actions: [
+      { id: 'kenali-21-100', label: 'Kenali 21 Hingga 100', icon: 'calculator' },
+      { id: 'nilai-tempat', label: 'Nilai Tempat dan Digit', icon: 'boxes' },
+      { id: 'susunan-nombor', label: 'Susunan Nombor', icon: 'move' },
+    ],
   },
   {
-    id: 'nilai-tempat',
-    pill: 'NILAI TEMPAT & NILAI DIGIT',
-    title: 'Nilai Tempat & Nilai Digit',
-    desc: 'Kenali nilai tempat dan nilai digit.',
-    visual: robotFor('P', '#FB7185'),
-  },
-  {
-    id: 'susunan-nombor',
-    pill: 'SUSUNAN NOMBOR',
-    title: 'Susunan Nombor',
-    desc: 'Susun dan lengkapkan urutan nombor.',
-    visual: robotFor('1-3', '#2DD4BF'),
-  },
-  {
-    id: 'pola-nombor',
-    pill: 'POLA NOMBOR',
-    title: 'Pola Nombor',
-    desc: 'Kenal pasti dan sambung pola nombor.',
-    visual: robotFor('...', '#818CF8'),
-  },
-  {
-    id: 'anggar-bundar',
-    pill: 'ANGGAR & BUNDAR',
-    title: 'Anggar & Bundar',
-    desc: 'Anggar bilangan dan bundarkan kepada puluh.',
+    id: 'm1-pola-anggar',
+    pill: 'TOPIK 1.3',
+    title: 'Pola, anggar dan bundar',
+    desc: 'Cari corak nombor, buat anggaran dan bundarkan nombor kepada puluh terdekat.',
     visual: robotFor('~', '#F59E0B'),
+    color: '#F59E0B',
+    actions: [
+      { id: 'pola-nombor', label: 'Sambung Pola Nombor', icon: 'repeat' },
+      { id: 'anggar-bundar', label: 'Anggar dan Bundar', icon: 'sparkles' },
+    ],
+  },
+  {
+    id: 'm1-kombinasi',
+    pill: 'TOPIK 1.4',
+    title: 'Kombinasi nombor',
+    desc: 'Cari pasangan nombor dan lengkapkan gabungan asas sebelum masuk Modul 2.',
+    visual: robotFor('+', '#FACC15'),
+    color: '#FACC15',
+    actions: [
+      { id: 'kombinasi-nombor', label: 'Pasangan Jadi 10', icon: 'link' },
+    ],
+  },
+  {
+    id: 'm1-cabaran',
+    pill: 'CABARAN',
+    title: 'Latihan dan cabaran',
+    desc: 'Gunakan semua kemahiran nombor dalam latihan, cerita dan cabaran akhir.',
+    visual: robotFor('?', '#FB7185'),
+    color: '#FB7185',
+    actions: [
+      { id: 'selesaikan', label: 'Cerita Nombor', icon: 'book' },
+      { id: 'latih-diri', label: 'Latihan Pantas', icon: 'calculator' },
+      { id: 'cabar-minda', label: 'Cabaran Nombor', icon: 'trophy' },
+    ],
   },
 ];
 
 export default function NomborHingga100Module({ onSelectTopic, language = 'bm' }) {
+  const scores = React.useMemo(loadScores, []);
+  const topics = React.useMemo(() => TOPICS.map((topic) => ({
+    ...topic,
+    actions: topic.actions?.map((action) => ({
+      ...action,
+      score: actionScore(action.id, scores),
+    })),
+  })), [scores]);
+
   return (
     <Tahun1ModuleHubLayout
       moduleNum={1}
@@ -179,11 +116,14 @@ export default function NomborHingga100Module({ onSelectTopic, language = 'bm' }
       moduleNameEn="Numbers to 100"
       theme={THEME}
       headerVariant="banner"
+      layoutVariant="dashboard"
       bareStage
-      topics={TOPICS}
+      topics={topics}
       onSelectTopic={onSelectTopic}
       language={language}
-      footer={<FooterTrio language={language} theme={THEME} onSelectTopic={onSelectTopic} />}
+      dashboardLead={language === 'bm'
+        ? 'Belajar nombor hingga 100 langkah demi langkah sebelum masuk tambah dan tolak.'
+        : 'Learn numbers to 100 step by step before addition and subtraction.'}
     />
   );
 }

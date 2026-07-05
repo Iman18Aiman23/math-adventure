@@ -412,7 +412,15 @@ const MT_MODULE1_ORDER = [
 
 // Ordered Matematik T1 Module-2 topics. New arrays are added per module; the nav
 // lookup below finds whichever array contains the current matematikTopic.
-const MT_MODULE2_ORDER = ['kenali-tambah', 'latihan-tambah', 'kenali-tolak', 'latihan-tolak', 'cerita-tambah-tolak', 'tambah-berulang', 'm2-selesaikan', 'm2-latih-diri', 'm2-cabar-minda'];
+const MT_MODULE2_DRILL_TYPES = [
+  'kt-gabung', 'kt-garis', 'kt-perkataan', 'kt-ayat',
+  'lt-mudah-m1', 'lt-warnai', 'lt-padankan', 'lt-bond', 'lt-abacus', 'lt-sederhana-s1', 'lt-sukar-k1',
+  'kt-buang', 'kt-garis-sub', 'kt-perkataan-tolak', 'kt-ayat-tolak',
+  'lt-tolak-mudah-m1', 'lt-tolak-warnai', 'lt-tolak-padankan', 'lt-tolak-bond', 'lt-tolak-blok', 'lt-tolak-sederhana-s1', 'lt-tolak-sukar-k1',
+  'ctt-tambah', 'ctt-tolak', 'ctt-operasi', 'ctt-ayat',
+  'tb-add-groups', 'tb-add-line', 'tb-add-complete', 'tb-sub-groups', 'tb-sub-line',
+];
+const MT_MODULE2_ORDER = [...MT_MODULE2_DRILL_TYPES.map((id) => `m2-drill-${id}`), 'm2-selesaikan', 'm2-cabar-minda'];
 
 export default function App() {
   const isDesktop = useIsDesktop();
@@ -594,6 +602,7 @@ export default function App() {
         if (matematikTopic === 'latihan-tolak')   return <LatihanTolak          onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'cerita-tambah-tolak') return <CeritaTambahDanTolak onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'tambah-berulang') return <TambahBerulang onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic?.startsWith('m2-drill-')) return <LatihDiriM2 initialType={matematikTopic.slice('m2-drill-'.length)} onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'm2-selesaikan')    return <SelesaikanM2  onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'm2-latih-diri')   return <LatihDiriM2   onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'm2-cabar-minda')  return <CabarMindaM2  onBack={() => setMatematikTopic(null)} language={language} />;

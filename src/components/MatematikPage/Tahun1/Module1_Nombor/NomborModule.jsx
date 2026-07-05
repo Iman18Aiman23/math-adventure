@@ -12,43 +12,45 @@ const THEME = {
 };
 
 // Shared robot icon — recolours from THEME so every topic in this module matches.
-const ROBOT = <MatematikTopicRobot theme={THEME} />;
+const robot = (symbol, badge, glow) => (
+  <MatematikTopicRobot theme={THEME} symbol={symbol} badge={badge} glow={glow} />
+);
 
 const TOPICS = [
   {
     id: 'nombor-100',
     pill: 'TOPIK 1.1',
-    title: 'Belajar 1-100',
-    desc: 'Kenali nombor 1 hingga 100, nilai tempat, dan pola nombor.',
-    visual: ROBOT,
+    title: 'Nombor 1 hingga 100',
+    desc: 'Belajar sebut, baca, susun dan faham nilai nombor hingga 100.',
+    visual: robot('N', '#14B8A6', '#14B8A6'),
   },
   {
     id: 'tambah-tolak',
     pill: 'TOPIK 1.2',
-    title: 'Operasi Tambah',
-    desc: 'Belajar menambah nombor dalam lingkungan 100 dengan mudah.',
-    visual: ROBOT,
+    title: 'Tambah Nombor',
+    desc: 'Gabungkan dua nombor dan cari jumlah dengan langkah mudah.',
+    visual: robot('+', '#FF9600', '#FF9600'),
   },
   {
     id: 'tambah-cerita',
     pill: 'TOPIK 1.2',
-    title: 'Cerita Tolak',
-    desc: 'Selesaikan masalah harian dengan operasi tolak.',
-    visual: ROBOT,
+    title: 'Tolak Dalam Cerita',
+    desc: 'Baca cerita pendek, pilih nombor penting, kemudian cari baki.',
+    visual: robot('−', '#F43F5E', '#F43F5E'),
   },
   {
     id: 'pecahan-asas',
     pill: 'TOPIK 1.3',
-    title: 'Pecahan Asas',
-    desc: 'Kenali pecahan 1/2, 1/4 dan 3/4 melalui bentuk dan gambar rajah.',
-    visual: ROBOT,
+    title: 'Separuh dan Suku',
+    desc: 'Kenali bahagian sama besar seperti separuh, suku dan tiga suku.',
+    visual: robot('½', '#8B5CF6', '#8B5CF6'),
   },
   {
     id: 'wang-t1',
     pill: 'TOPIK 1.4',
-    title: 'Wang',
-    desc: 'Kenali wang Malaysia dan kira nilai ringgit dan sen.',
-    visual: ROBOT,
+    title: 'Kenal dan Kira Wang',
+    desc: 'Kenali duit Malaysia, kira sen dan ringgit dalam situasi mudah.',
+    visual: robot('RM', '#10B981', '#10B981'),
   },
 ];
 

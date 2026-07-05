@@ -18,8 +18,8 @@ const TOPICS = [
   {
     id: 'data-t1',
     pill: 'TOPIK 3.1',
-    title: 'Pengurusan Data',
-    desc: 'Kumpul dan baca data daripada piktograf dengan mudah.',
+    title: 'Baca Carta Gambar',
+    desc: 'Kira gambar dalam piktograf dan jawab soalan tentang data.',
     visual: ROBOT,
   },
 ];

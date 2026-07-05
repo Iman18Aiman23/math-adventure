@@ -16,9 +16,9 @@ const ROBOT = <MatematikTopicRobot theme={THEME} />;
 function FooterTrio({ language, theme }) {
   const isBM = language === 'bm';
   const items = [
-    { id: 'selesaikan',  icon: '🧩', title: isBM ? 'Selesaikan' : 'Solve',        desc: isBM ? 'Penyelesaian masalah' : 'Problem solving' },
-    { id: 'latih-diri',  icon: '⚡', title: isBM ? 'Latih Diri' : 'Self Drill',   desc: isBM ? 'Latih tubi bertahap' : 'Timed leveled drill' },
-    { id: 'cabar-minda', icon: '🧠', title: isBM ? 'Cabar Minda' : 'Challenge',   desc: isBM ? 'Cabaran lebih sukar' : 'Harder challenge' },
+    { id: 'selesaikan',  icon: '🧩', title: isBM ? 'Cerita Wang' : 'Money Stories', desc: isBM ? 'Kira harga dan baki' : 'Count prices and change' },
+    { id: 'latih-diri',  icon: '⚡', title: isBM ? 'Latihan Wang' : 'Money Practice', desc: isBM ? 'Kenal duit dan jumlah' : 'Learn notes and totals' },
+    { id: 'cabar-minda', icon: '🧠', title: isBM ? 'Cabaran Wang' : 'Money Challenge', desc: isBM ? 'Soalan wang lebih sukar' : 'Harder money questions' },
   ];
   return (
     <div className="mt-footer-trio">
@@ -80,8 +80,8 @@ const TOPICS = [
   {
     id: 'placeholder-1',
     pill: 'SEGERA HADIR',
-    title: 'Kandungan Baharu',
-    desc: 'Kad pembelajaran akan ditambah dalam kemas kini akan datang.',
+    title: 'Duit Malaysia',
+    desc: 'Akan datang: kenal syiling, wang kertas dan jumlah harga.',
     visual: ROBOT,
     disabled: true,
   },

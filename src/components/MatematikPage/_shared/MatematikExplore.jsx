@@ -23,13 +23,14 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     );
   }
 
-  const { primitive, data } = config;
+  const { primitive, data, scoreId, scoreStorageKey = 'mt_ld_m1_scores' } = config;
+  const dataWithScore = scoreId ? { ...data, scoreId, scoreStorageKey } : data;
 
   switch (primitive) {
     case 'compare':
       return (
         <CompareExplore
-          data={data}
+          data={dataWithScore}
           language={language}
           theme={theme}
           onExit={onExit}
@@ -40,7 +41,7 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'kenali-nombor':
       return (
         <KenaliNomborExplore
-          data={data}
+          data={dataWithScore}
           language={language}
           theme={theme}
           onExit={onExit}
@@ -49,7 +50,7 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'kombinasi':
       return (
         <KombinasiExplore
-          data={data}
+          data={dataWithScore}
           language={language}
           theme={theme}
           onExit={onExit}
@@ -58,7 +59,7 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'kenali-21-100':
       return (
         <Kenali21Hingga100Explore
-          data={data}
+          data={dataWithScore}
           language={language}
           theme={theme}
           onExit={onExit}
@@ -67,7 +68,7 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'nilai-tempat':
       return (
         <NilaiTempatExplore
-          data={data}
+          data={dataWithScore}
           language={language}
           theme={theme}
           onExit={onExit}
@@ -76,7 +77,7 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'susunan-nombor':
       return (
         <SusunanNomborExplore
-          data={data}
+          data={dataWithScore}
           language={language}
           theme={theme}
           onExit={onExit}
@@ -85,7 +86,7 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'pola-nombor':
       return (
         <PolaNomborExplore
-          data={data}
+          data={dataWithScore}
           language={language}
           theme={theme}
           onExit={onExit}
@@ -94,7 +95,7 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'anggar-bundar':
       return (
         <AnggarBundarExplore
-          data={data}
+          data={dataWithScore}
           language={language}
           theme={theme}
           onExit={onExit}
@@ -103,7 +104,7 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'selesaikan':
       return (
         <SelesaikanExplore
-          data={data}
+          data={dataWithScore}
           language={language}
           theme={theme}
           onExit={onExit}
@@ -112,7 +113,7 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'latih-diri':
       return (
         <LatihDiriExplore
-          data={data}
+          data={dataWithScore}
           language={language}
           theme={theme}
           onExit={onExit}
@@ -121,7 +122,7 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'cabar-minda':
       return (
         <CabarMindaExplore
-          data={data}
+          data={dataWithScore}
           language={language}
           theme={theme}
           onExit={onExit}
@@ -130,7 +131,7 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'kenali-tambah':
       return (
         <KenaliTambahExplore
-          data={data}
+          data={dataWithScore}
           language={language}
           theme={theme}
           onExit={onExit}
@@ -139,7 +140,7 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'latihan-tambah':
       return (
         <LatihanTambahExplore
-          data={data}
+          data={dataWithScore}
           language={language}
           theme={theme}
           onExit={onExit}
@@ -148,7 +149,7 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'kenali-tolak':
       return (
         <KenaliTolakExplore
-          data={data}
+          data={dataWithScore}
           language={language}
           theme={theme}
           onExit={onExit}
@@ -157,7 +158,7 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'latihan-tolak':
       return (
         <LatihanTolakExplore
-          data={data}
+          data={dataWithScore}
           language={language}
           theme={theme}
           onExit={onExit}
@@ -166,7 +167,7 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'cerita-tambah-tolak':
       return (
         <CeritaTambahTolakExplore
-          data={data}
+          data={dataWithScore}
           language={language}
           theme={theme}
           onExit={onExit}
@@ -175,7 +176,7 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'tambah-berulang':
       return (
         <TambahBerulangExplore
-          data={data}
+          data={dataWithScore}
           language={language}
           theme={theme}
           onExit={onExit}
@@ -184,7 +185,7 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'selesaikan-m2':
       return (
         <SelesaikanM2Explore
-          data={data}
+          data={dataWithScore}
           language={language}
           theme={theme}
           onExit={onExit}
@@ -193,7 +194,7 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'latih-diri-m2':
       return (
         <LatihDiriM2Explore
-          data={data}
+          data={dataWithScore}
           language={language}
           theme={theme}
           onExit={onExit}
@@ -202,7 +203,7 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'cabar-minda-m2':
       return (
         <CabarMindaM2Explore
-          data={data}
+          data={dataWithScore}
           language={language}
           theme={theme}
           onExit={onExit}

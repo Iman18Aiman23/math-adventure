@@ -16,9 +16,9 @@ const ROBOT = <MatematikTopicRobot theme={THEME} />;
 function FooterTrio({ language, theme }) {
   const isBM = language === 'bm';
   const items = [
-    { id: 'selesaikan',  icon: '🧩', title: isBM ? 'Selesaikan' : 'Solve',        desc: isBM ? 'Penyelesaian masalah' : 'Problem solving' },
-    { id: 'latih-diri',  icon: '⚡', title: isBM ? 'Latih Diri' : 'Self Drill',   desc: isBM ? 'Latih tubi bertahap' : 'Timed leveled drill' },
-    { id: 'cabar-minda', icon: '🧠', title: isBM ? 'Cabar Minda' : 'Challenge',   desc: isBM ? 'Cabaran lebih sukar' : 'Harder challenge' },
+    { id: 'selesaikan',  icon: '🧩', title: isBM ? 'Cerita Masa' : 'Time Stories', desc: isBM ? 'Guna masa dalam cerita' : 'Use time in stories' },
+    { id: 'latih-diri',  icon: '⚡', title: isBM ? 'Latihan Jam' : 'Clock Practice', desc: isBM ? 'Baca waktu ikut tahap' : 'Read time by level' },
+    { id: 'cabar-minda', icon: '🧠', title: isBM ? 'Cabaran Masa' : 'Time Challenge', desc: isBM ? 'Soalan masa lebih sukar' : 'Harder time questions' },
   ];
   return (
     <div className="mt-footer-trio">
@@ -80,8 +80,8 @@ const TOPICS = [
   {
     id: 'placeholder-1',
     pill: 'SEGERA HADIR',
-    title: 'Kandungan Baharu',
-    desc: 'Kad pembelajaran akan ditambah dalam kemas kini akan datang.',
+    title: 'Baca Masa',
+    desc: 'Akan datang: baca jam, hari dan urutan waktu harian.',
     visual: ROBOT,
     disabled: true,
   },

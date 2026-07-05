@@ -12,6 +12,8 @@ export default function Tulis0Hingga20(props) {
       topicId={TOPIC_ID}
       topicLabel={label}
       accentColor={ACCENT}
+      scoreStorageKey="mt_ld_m1_scores"
+      scoreId="tulis-0-20"
     />
   );
 }

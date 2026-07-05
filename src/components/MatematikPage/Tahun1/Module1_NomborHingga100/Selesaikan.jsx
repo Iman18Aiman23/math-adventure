@@ -13,6 +13,7 @@ const THEME = {
 
 const EXPLORE_CONFIG = {
   primitive: 'selesaikan',
+  scoreId: 'selesaikan',
   data: {},
 };
 

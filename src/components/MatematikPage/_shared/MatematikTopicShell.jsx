@@ -269,7 +269,7 @@ export default function MatematikTopicShell({
             font-size: 19px;
           }
         }
-        @media (min-width: 768px) {
+        @media (min-width: 1025px) {
           .mt-shell-topic-label { display: none; }
           .mt-shell-top .mt-top-stats { flex: 0 0 auto; }
           .mt-shell-top .mt-top-stats .sb-root {
