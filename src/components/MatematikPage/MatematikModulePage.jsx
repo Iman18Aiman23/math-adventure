@@ -14,7 +14,6 @@ export default function MatematikModulePage({ year, activeModule, onModuleChange
       className={`mt-module-page mt-module-page--mission mt-module-page--y${year}`}
       style={{ '--mt-accent': theme.c, '--mt-accent-d': theme.cd }}
     >
-      <div className="mt-module-atmosphere" aria-hidden="true" />
       <MatematikModuleNavBar
         year={year}
         activeModule={activeModule}
@@ -33,44 +32,15 @@ export default function MatematikModulePage({ year, activeModule, onModuleChange
           flex-direction: column;
           height: 100%;
           min-height: 0;
-          background:
-            radial-gradient(circle at 18% 14%, color-mix(in srgb, var(--mt-accent) 14%, transparent) 0, transparent 30%),
-            radial-gradient(circle at 84% 18%, rgba(163,104,240,.08) 0, transparent 28%),
-            linear-gradient(180deg, #FBFCFD 0%, #F7F8FA 48%, #EEF6F5 100%);
+          background: #FFFFFF;
           color: #1F2937;
           position: relative;
           overflow: hidden;
           isolation: isolate;
         }
-        .mt-module-page::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          z-index: 0;
-          pointer-events: none;
-          opacity: .62;
-          background-image:
-            linear-gradient(rgba(112,112,112,.045) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(112,112,112,.045) 1px, transparent 1px);
-          background-size: 52px 52px;
-          mask-image: linear-gradient(180deg, rgba(0,0,0,.72), rgba(0,0,0,.22) 70%, transparent);
-        }
+        .mt-module-page::before,
         .mt-module-page::after {
-          content: "";
-          position: absolute;
-          inset: 0;
-          z-index: 0;
-          pointer-events: none;
-          background: radial-gradient(circle at 50% 20%, rgba(255,255,255,.8), transparent 18%);
-          opacity: .8;
-        }
-        .mt-module-atmosphere {
-          position: absolute;
-          inset: 0;
-          z-index: 0;
-          pointer-events: none;
-          background:
-            radial-gradient(circle at 22% 18%, color-mix(in srgb, var(--mt-accent) 12%, transparent), transparent 30%);
+          display: none;
         }
         .mt-module-content {
           flex: 1;
@@ -94,7 +64,7 @@ export default function MatematikModulePage({ year, activeModule, onModuleChange
         }
         .mt-module-content .pi-mhub-page.has-dashboard {
           padding: 32px !important;
-          background: #F6F9FF !important;
+          background: transparent !important;
         }
         .mt-module-content .pi-mhub-page.has-dashboard h1,
         .mt-module-content .pi-mhub-page.has-dashboard .pi-mhub-lesson-title,
@@ -169,8 +139,52 @@ export default function MatematikModulePage({ year, activeModule, onModuleChange
           height: clamp(44px, 6vw, 58px) !important;
           border-radius: 18px !important;
           background: linear-gradient(180deg, var(--mt-accent), var(--mt-accent-d)) !important;
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.24), 0 8px 22px color-mix(in srgb, var(--mt-accent) 34%, transparent) !important;
+           box-shadow: none !important;
           font-size: clamp(20px, 4vw, 28px) !important;
+        }
+
+        .mt-module-content .pi-mhub-page.has-dashboard .pi-mhub-hero,
+        .mt-module-content .pi-mhub-page.has-dashboard .pi-mhub-lesson-head {
+          border: 1px solid color-mix(in srgb, var(--topic-accent, var(--mt-accent)) 30%, #DCE6F2) !important;
+          background:
+            linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.88)),
+            radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--topic-accent, var(--mt-accent)) 17%, transparent), transparent 68%) !important;
+          box-shadow: none !important;
+        }
+        .mt-module-content .pi-mhub-page.has-dashboard .pi-mhub-lesson-title {
+          color: #FFFFFF !important;
+          background:
+            linear-gradient(180deg, rgba(255,255,255,.18), transparent 42%),
+            linear-gradient(180deg, color-mix(in srgb, var(--topic-accent, var(--mt-accent)) 82%, white), var(--topic-accent, var(--mt-accent))) !important;
+          box-shadow: none !important;
+        }
+        .mt-module-content .pi-mhub-page.has-dashboard .pi-mhub-unit-badge {
+          background: linear-gradient(180deg, color-mix(in srgb, var(--mt-accent) 78%, white), var(--mt-accent-d)) !important;
+          box-shadow: none !important;
+        }
+        .mt-module-content .pi-mhub-page.has-dashboard .pi-mhub-lesson-robot svg {
+          filter: none !important;
+        }
+        .mt-module-content .pi-mhub-page.has-dashboard .pi-mhub-lesson-button {
+          border: 1px solid color-mix(in srgb, var(--topic-accent, var(--mt-accent)) 34%, #DDE7F2) !important;
+          border-left: 7px solid var(--topic-accent, var(--mt-accent)) !important;
+          background:
+            linear-gradient(90deg, color-mix(in srgb, var(--topic-accent, var(--mt-accent)) 10%, #FFFFFF), #FFFFFF 46%) !important;
+          box-shadow: none !important;
+        }
+        .mt-module-content .pi-mhub-page.has-dashboard .pi-mhub-lesson-button:hover {
+          border-color: color-mix(in srgb, var(--topic-accent, var(--mt-accent)) 58%, #DDE7F2) !important;
+          box-shadow: none !important;
+        }
+        .mt-module-content .pi-mhub-page.has-dashboard .pi-mhub-lesson-icon,
+        .mt-module-content .pi-mhub-page.has-dashboard .pi-mhub-row-chevron,
+        .mt-module-content .pi-mhub-page.has-dashboard .pi-mhub-expand {
+          background: color-mix(in srgb, var(--topic-accent, var(--mt-accent)) 13%, #FFFFFF) !important;
+          color: color-mix(in srgb, var(--topic-accent, var(--mt-accent)) 86%, #0F172A) !important;
+        }
+        .mt-module-content .pi-mhub-page.has-dashboard .pi-mhub-status--unplayed {
+          background: color-mix(in srgb, var(--topic-accent, var(--mt-accent)) 8%, #FFFFFF) !important;
+          border-color: color-mix(in srgb, var(--topic-accent, var(--mt-accent)) 24%, #DDE7F2) !important;
         }
 
         .mt-module-content .pi-mhub-card,
@@ -189,7 +203,6 @@ export default function MatematikModulePage({ year, activeModule, onModuleChange
           transition:
             transform .28s cubic-bezier(.34,1.56,.64,1),
             border-color .22s ease,
-            box-shadow .22s ease,
             background .22s ease !important;
           padding: clamp(20px, 2.4vw, 26px) clamp(16px, 2vw, 22px) clamp(22px, 2.6vw, 28px) !important;
           gap: clamp(12px, 1.6vw, 17px) !important;
@@ -219,7 +232,7 @@ export default function MatematikModulePage({ year, activeModule, onModuleChange
         .mt-module-content .pi-mhub-card--v2:hover {
           background: #ffffff !important;
           border-color: var(--mt-accent) !important;
-          box-shadow: 0 12px 28px rgba(15,118,110,.10) !important;
+          box-shadow: none !important;
           transform: translateY(-4px) !important;
         }
         .mt-module-content .pi-mhub-card > *,
@@ -235,7 +248,7 @@ export default function MatematikModulePage({ year, activeModule, onModuleChange
         .mt-module-content .pi-mhub-stage:not(.pi-mhub-stage--bare) {
           background:
             radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--mt-accent) 22%, #ffffff), #F7F8FA) !important;
-          box-shadow: inset 0 2px 0 rgba(255,255,255,.9), 0 8px 18px rgba(15,118,110,.10) !important;
+          box-shadow: none !important;
         }
         .mt-module-content .pi-mhub-stage--bare {
           width: min(132px, 46vw) !important;
@@ -243,7 +256,7 @@ export default function MatematikModulePage({ year, activeModule, onModuleChange
           margin-bottom: 2px !important;
         }
         .mt-module-content .pi-mhub-stage svg {
-          filter: drop-shadow(0 12px 16px rgba(15,23,42,.14));
+          filter: none;
         }
         .mt-module-content .pi-mhub-eyebrow {
           display: none !important;
@@ -258,21 +271,17 @@ export default function MatematikModulePage({ year, activeModule, onModuleChange
           overflow: hidden;
           background:
             linear-gradient(180deg, rgba(255,255,255,.18), transparent 42%),
-            linear-gradient(180deg, #3B82F6 0%, #2563EB 100%) !important;
+            linear-gradient(180deg, color-mix(in srgb, var(--topic-accent, var(--mt-accent)) 82%, white), var(--topic-accent, var(--mt-accent))) !important;
           color: #ffffff !important;
           border: 1px solid rgba(255,255,255,.34);
-          box-shadow:
-            inset 0 1px 0 rgba(255,255,255,.34),
-            inset 0 -1px 0 rgba(0,0,0,.12),
-            0 4px 0 #1D4ED8,
-            0 14px 24px rgba(37,99,235,.24) !important;
+          box-shadow: none !important;
           border-radius: 15px !important;
           max-width: 100% !important;
           text-wrap: balance;
           line-height: 1.15 !important;
           padding: 9px 16px !important;
           font-size: clamp(15px, 1.7vw, 17px) !important;
-          transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+          transition: transform .18s ease;
         }
         .mt-module-content .pi-mhub-pill::after {
           content: "";
@@ -287,11 +296,7 @@ export default function MatematikModulePage({ year, activeModule, onModuleChange
         .mt-module-content .pi-mhub-card--v2:hover .pi-mhub-pill {
           filter: saturate(1.06);
           transform: translateY(-2px);
-          box-shadow:
-            inset 0 1px 0 rgba(255,255,255,.36),
-            inset 0 -1px 0 rgba(0,0,0,.12),
-            0 5px 0 #1D4ED8,
-            0 18px 30px rgba(37,99,235,.30) !important;
+          box-shadow: none !important;
         }
         .mt-module-content .pi-mhub-card-title {
           color: #fff !important;
@@ -318,12 +323,9 @@ export default function MatematikModulePage({ year, activeModule, onModuleChange
           color: #fff !important;
           border: 1px solid rgba(255,255,255,.28);
           border-radius: 999px !important;
-          box-shadow:
-            inset 0 1px 0 rgba(255,255,255,.28),
-            0 3px 0 var(--mt-accent-d),
-            0 10px 18px color-mix(in srgb, var(--mt-accent) 24%, transparent) !important;
+          box-shadow: none !important;
           padding: 7px 18px !important;
-          transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+          transition: transform .16s ease;
         }
         .mt-module-content .pi-mhub-card:hover .pi-mhub-cta,
         .mt-module-content .pi-mhub-card--v2:hover .pi-mhub-cta {
@@ -365,10 +367,47 @@ export default function MatematikModulePage({ year, activeModule, onModuleChange
           .mt-module-content .pi-mhub-page {
             padding-top: 22px !important;
           }
+          .mt-module-content .pi-mhub-page.has-dashboard .pi-mhub-lesson-head {
+            grid-template-rows: 116px auto 1fr !important;
+            gap: 4px !important;
+            padding-top: 14px !important;
+          }
+          .mt-module-content .pi-mhub-page.has-dashboard .pi-mhub-lesson-robot {
+            height: 116px !important;
+          }
+          .mt-module-content .pi-mhub-page.has-dashboard .pi-mhub-lesson-robot svg {
+            width: 148px !important;
+            height: 148px !important;
+          }
+          .mt-module-content .pi-mhub-page.has-dashboard .pi-mhub-lesson-title {
+            margin-top: -4px !important;
+          }
         }
         @media (max-width: 720px) {
           .mt-module-content .pi-mhub-page.has-dashboard {
             padding: 20px 16px calc(18px + env(safe-area-inset-bottom)) !important;
+          }
+          .mt-module-content .pi-mhub-page.has-dashboard .pi-mhub-lesson-card {
+            border: 1px solid color-mix(in srgb, var(--topic-accent, var(--mt-accent)) 38%, #D8E6FA) !important;
+            background:
+              linear-gradient(180deg, rgba(255,255,255,.94), rgba(255,255,255,.86)),
+              radial-gradient(circle at 0 0, color-mix(in srgb, var(--topic-accent, var(--mt-accent)) 13%, #FFFFFF), transparent 45%) !important;
+            box-shadow: none !important;
+            overflow: hidden !important;
+          }
+          .mt-module-content .pi-mhub-page.has-dashboard .pi-mhub-lesson-head {
+            border: 0 !important;
+            box-shadow: none !important;
+            margin-bottom: 0 !important;
+          }
+          .mt-module-content .pi-mhub-page.has-dashboard .pi-mhub-lesson-title {
+            color: var(--topic-accent, var(--mt-accent)) !important;
+            background: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+          }
+          .mt-module-content .pi-mhub-page.has-dashboard .pi-mhub-lesson-list {
+            padding-top: 12px !important;
           }
           .mt-module-content .pi-mhub-banner {
             border-radius: 20px !important;

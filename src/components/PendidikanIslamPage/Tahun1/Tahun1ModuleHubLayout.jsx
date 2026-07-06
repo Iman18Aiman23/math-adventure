@@ -125,7 +125,7 @@ export default function Tahun1ModuleHubLayout({
           border: 5px solid var(--cd);
           border-radius: 28px;
           padding: 18px 22px;
-          box-shadow: 0 15px 25px rgba(0,0,0,.1);
+          box-shadow: none;
         }
         .pi-mhub-banner-text { flex: 1; min-width: 0; }
         .pi-mhub-banner-kicker {
@@ -135,7 +135,6 @@ export default function Tahun1ModuleHubLayout({
           letter-spacing: .14em;
           text-transform: uppercase;
           color: #fff;
-          text-shadow: 2px 3px 0 var(--cd);
           margin-bottom: 4px;
         }
         .pi-mhub-banner-name {
@@ -144,7 +143,6 @@ export default function Tahun1ModuleHubLayout({
           font-size: 21px;
           line-height: 1.1;
           letter-spacing: -.01em;
-          text-shadow: 2px 3px 0 var(--cd);
           text-wrap: balance;
         }
         .pi-mhub-banner-badge {
@@ -173,7 +171,6 @@ export default function Tahun1ModuleHubLayout({
           border-radius: 28px;
           padding: 24px 20px 26px;
           border: 1px solid ${theme.accent}2E;
-          box-shadow: 0 12px 32px -12px ${theme.dark}38, 0 2px 6px ${theme.accent}1A;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -184,7 +181,6 @@ export default function Tahun1ModuleHubLayout({
         }
         .pi-mhub-card:hover {
           transform: translateY(-8px) scale(1.02);
-          box-shadow: 0 22px 48px -14px ${theme.dark}52;
         }
         .pi-mhub-card:focus-visible {
           outline: 3px solid ${theme.accent};
@@ -199,7 +195,6 @@ export default function Tahun1ModuleHubLayout({
           justify-content: center;
           position: relative;
           background: ${theme.stageGradient};
-          box-shadow: inset 0 -8px 24px ${theme.dark}33, inset 0 2px 0 rgba(255,255,255,.5);
         }
         /* Bare stage — no disc behind the visual (robot head floats on the card). */
         .pi-mhub-stage--bare {
@@ -223,7 +218,6 @@ export default function Tahun1ModuleHubLayout({
           padding: 8px 16px;
           border-radius: 16px;
           background: ${theme.accent};
-          box-shadow: 0 3px 0 ${theme.cd || theme.dark};
           text-align: center;
           line-height: 1.25;
           max-width: 92%;
@@ -255,7 +249,6 @@ export default function Tahun1ModuleHubLayout({
         }
         .pi-mhub-card-disabled:hover {
           transform: none;
-          box-shadow: 0 12px 32px -12px ${theme.dark}38, 0 2px 6px ${theme.accent}1A;
         }
 
         /* ── "v2" topic card (Matematik) — cleaner white game-style surface
@@ -277,14 +270,13 @@ export default function Tahun1ModuleHubLayout({
           padding: 8px 11px 8px 13px;
           background: linear-gradient(180deg, #FFFFFF, #F4F8FF);
           color: #1E3A8A;
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.96), 0 5px 12px rgba(30,64,175,.08);
           cursor: pointer;
           font-family: 'Baloo 2', sans-serif;
           font-size: 13.5px;
           font-weight: 800;
           line-height: 1.12;
           text-align: left;
-          transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease;
+          transition: transform .16s ease, border-color .16s ease, background .16s ease;
         }
         .pi-mhub-action-label {
           min-width: 0;
@@ -336,11 +328,9 @@ export default function Tahun1ModuleHubLayout({
           transform: translateY(-1px);
           border-color: color-mix(in srgb, ${theme.accent} 50%, #BFD7FF);
           background: #FFFFFF;
-          box-shadow: inset 0 1px 0 rgba(255,255,255,1), 0 9px 18px rgba(30,64,175,.13);
         }
         .pi-mhub-action:active {
           transform: translateY(1px);
-          box-shadow: inset 0 1px 2px rgba(30,64,175,.10), 0 4px 10px rgba(30,64,175,.08);
         }
         .pi-mhub-action:focus-visible {
           outline: 3px solid color-mix(in srgb, ${theme.accent} 35%, transparent);
@@ -352,12 +342,10 @@ export default function Tahun1ModuleHubLayout({
           border-radius: 24px;
           padding: 20px 18px 22px;
           gap: 11px;
-          box-shadow: 0 10px 26px -14px ${theme.dark}40, 0 2px 4px ${theme.accent}14;
         }
         .pi-mhub-card--v2:hover {
           transform: translateY(-6px) scale(1.015);
           border-color: ${theme.accent}66;
-          box-shadow: 0 20px 40px -16px ${theme.dark}5C;
         }
         .pi-mhub-card--v2:active { transform: translateY(2px) scale(.99); }
         .pi-mhub-card--v2 .pi-mhub-stage {
@@ -402,7 +390,6 @@ export default function Tahun1ModuleHubLayout({
           background: ${theme.accent};
           padding: 6px 18px;
           border-radius: 999px;
-          box-shadow: 0 3px 0 ${theme.cd || theme.dark};
           transition: transform .12s ease;
         }
         .pi-mhub-card--v2:hover .pi-mhub-cta { transform: translateY(-1px); }
@@ -424,7 +411,6 @@ export default function Tahun1ModuleHubLayout({
             radial-gradient(circle at 88% 24%, rgba(37, 99, 235, .18), transparent 18%),
             radial-gradient(circle at 15% 110%, rgba(139, 92, 246, .12), transparent 30%),
             linear-gradient(135deg, #FFFFFF 0%, #F1F6FF 100%);
-          box-shadow: 0 18px 42px rgba(37, 99, 235, .08);
           color: #1E293B;
         }
         .pi-mhub-hero::before,
@@ -479,7 +465,6 @@ export default function Tahun1ModuleHubLayout({
           font-size: clamp(30px, 5vw, 44px);
           font-weight: 800;
           background: linear-gradient(180deg, #60A5FA, #2563EB);
-          box-shadow: inset 0 2px 0 rgba(255,255,255,.32), 0 16px 30px rgba(37, 99, 235, .28);
         }
         .pi-mhub-sections { display: grid; gap: 32px; }
         .pi-mhub-lesson-card {
@@ -491,7 +476,6 @@ export default function Tahun1ModuleHubLayout({
           background:
             linear-gradient(180deg, rgba(255,255,255,.94), rgba(255,255,255,.88)),
             radial-gradient(circle at 4% 0%, var(--topic-accent-soft), transparent 42%);
-          box-shadow: 0 18px 46px rgba(15, 23, 42, .06), inset 0 1px 0 rgba(255,255,255,.92);
           overflow: hidden;
         }
         .pi-mhub-lesson-head {
@@ -523,7 +507,6 @@ export default function Tahun1ModuleHubLayout({
         .pi-mhub-lesson-robot svg {
           width: 130px;
           height: 130px;
-          filter: drop-shadow(0 14px 18px rgba(37, 99, 235, .16));
           animation: pi-mhub-float 3s ease-in-out infinite;
         }
         .pi-mhub-lesson-copy { min-width: 0; }
@@ -551,7 +534,6 @@ export default function Tahun1ModuleHubLayout({
           border-radius: 22px;
           background: color-mix(in srgb, var(--topic-accent, #2563EB) 10%, #FFFFFF);
           color: color-mix(in srgb, var(--topic-accent, #2563EB) 78%, #1D4ED8);
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.86), 0 8px 18px rgba(15,23,42,.05);
           transition: transform .3s ease, background .2s ease, color .2s ease;
         }
         .pi-mhub-lesson-card:not(.is-open) .pi-mhub-expand { transform: rotate(180deg); }
@@ -585,20 +567,16 @@ export default function Tahun1ModuleHubLayout({
           border-left: 6px solid var(--topic-accent, #2563EB);
           border-radius: 18px;
           padding: 14px 18px 14px 20px;
-          background:
-            linear-gradient(90deg, color-mix(in srgb, var(--topic-accent, #2563EB) 7%, #FFFFFF), #FFFFFF 38%),
-            #FFFFFF;
+          background: transparent;
           color: #1E293B;
-          box-shadow: 0 10px 22px rgba(15, 23, 42, .05), inset 0 1px 0 rgba(255,255,255,.98);
           cursor: pointer;
           text-align: left;
-          transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+          transition: transform .2s ease, border-color .2s ease;
         }
         .pi-mhub-lesson-button:hover {
           transform: translateY(-2px) scale(1.02);
           border-color: color-mix(in srgb, var(--topic-accent, #2563EB) 52%, #D8E6FA);
           border-left-color: var(--topic-accent, #2563EB);
-          box-shadow: 0 16px 30px color-mix(in srgb, var(--topic-accent, #2563EB) 18%, transparent);
         }
         .pi-mhub-lesson-button:active { transform: translateY(1px) scale(.99); }
         .pi-mhub-lesson-button--no-score {
@@ -607,10 +585,8 @@ export default function Tahun1ModuleHubLayout({
         .pi-mhub-lesson-icon {
           width: 32px;
           height: 32px;
-          color: color-mix(in srgb, var(--topic-accent, #2563EB) 82%, #1D4ED8);
           border-radius: 12px;
-          background: color-mix(in srgb, var(--topic-accent, #2563EB) 9%, #FFFFFF);
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.82);
+          background: transparent;
           display: grid;
           place-items: center;
         }
@@ -639,7 +615,7 @@ export default function Tahun1ModuleHubLayout({
         .pi-mhub-status--progress { background: #FEF3C7; border: 1px solid #FCD34D; color: #B45309; }
         .pi-mhub-status--failed { background: #FEE2E2; border: 1px solid #FCA5A5; color: #DC2626; }
         .pi-mhub-status--unplayed {
-          background: color-mix(in srgb, var(--topic-accent, #2563EB) 7%, #F8FAFC);
+          background: transparent;
           border: 1px solid color-mix(in srgb, var(--topic-accent, #2563EB) 20%, #E2E8F0);
           color: #64748B;
         }
@@ -651,9 +627,8 @@ export default function Tahun1ModuleHubLayout({
           place-items: center;
           justify-self: end;
           border-radius: 999px;
-          background: color-mix(in srgb, var(--topic-accent, #2563EB) 10%, #FFFFFF);
+          background: transparent;
           color: var(--topic-accent, #2563EB);
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.9);
         }
         .pi-mhub-bottom-nav { display: none; }
         .pi-mhub-progress-strip {
@@ -669,7 +644,6 @@ export default function Tahun1ModuleHubLayout({
           color: #315DA8;
           font-size: 17px;
           font-weight: 600;
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.86);
         }
         .pi-mhub-progress-left {
           display: inline-flex;
@@ -681,7 +655,6 @@ export default function Tahun1ModuleHubLayout({
           flex: 0 0 auto;
           color: #F59E0B;
           fill: #FDE68A;
-          filter: drop-shadow(0 3px 4px rgba(245,158,11,.22));
         }
         @media (min-width: 769px) {
           .pi-mhub-dashboard {
@@ -737,14 +710,13 @@ export default function Tahun1ModuleHubLayout({
             justify-items: center;
             align-content: start;
             align-items: start;
-            gap: 12px;
+            gap: 20px;
             border: 1px solid var(--topic-accent-line);
             border-radius: 14px;
             padding: 16px 20px 22px;
             background:
               linear-gradient(180deg, rgba(255,255,255,.94), rgba(255,255,255,.86)),
               radial-gradient(circle at 50% 0%, var(--topic-accent-soft), transparent 66%);
-            box-shadow: 0 12px 28px rgba(15,23,42,.055), inset 0 1px 0 rgba(255,255,255,.94);
             cursor: default;
             text-align: center;
           }
@@ -762,6 +734,7 @@ export default function Tahun1ModuleHubLayout({
             gap: 12px;
             justify-items: center;
             align-content: start;
+            margin-top: 28px;
           }
           .pi-mhub-lesson-title {
             width: 100%;
@@ -774,7 +747,6 @@ export default function Tahun1ModuleHubLayout({
             padding: 9px 14px;
             background: linear-gradient(180deg, #60A5FA, #2563EB);
             color: #FFFFFF;
-            box-shadow: 0 5px 0 #1D4ED8, 0 12px 20px rgba(37,99,235,.22);
             font-size: 20px;
             font-weight: 800;
             line-height: 1.1;
@@ -813,11 +785,9 @@ export default function Tahun1ModuleHubLayout({
             gap: 16px;
             border-radius: 10px;
             padding: 10px 14px 10px 24px;
-            box-shadow: none;
           }
           .pi-mhub-lesson-button:hover {
             transform: translateY(-1px);
-            box-shadow: 0 10px 20px rgba(37,99,235,.08);
           }
           .pi-mhub-lesson-button--no-score {
             grid-template-columns: 40px minmax(0, 1fr) 108px 40px;
@@ -946,18 +916,20 @@ export default function Tahun1ModuleHubLayout({
             padding: 16px 18px;
             min-height: 0;
           }
+          .pi-mhub-hero-kicker {
+            display: none;
+          }
           .pi-mhub-dashboard h1 {
-            max-width: calc(100% - 92px);
             font-size: clamp(25px, 6.8vw, 30px);
             line-height: 1.08;
           }
           .pi-mhub-hero-lead {
-            display: none;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-top: 6px;
           }
           .pi-mhub-unit-badge {
-            width: 62px;
-            height: 62px;
-            font-size: 31px;
+            display: none;
           }
           .pi-mhub-sections { gap: 18px; }
           .pi-mhub-sections,
@@ -974,7 +946,6 @@ export default function Tahun1ModuleHubLayout({
             background:
               linear-gradient(180deg, rgba(255,255,255,.94), rgba(255,255,255,.86)),
               radial-gradient(circle at 0 0, var(--topic-accent-soft), transparent 45%);
-            box-shadow: 0 16px 34px rgba(15,23,42,.07), inset 0 1px 0 rgba(255,255,255,.92);
             overflow: hidden;
           }
           .pi-mhub-lesson-head {
@@ -1056,7 +1027,6 @@ export default function Tahun1ModuleHubLayout({
             background: #FFFFFF;
             font-size: clamp(12px, 3.2vw, 14px);
             line-height: 1.25;
-            box-shadow: 0 8px 20px rgba(37,99,235,.10), inset 0 1px 0 rgba(255,255,255,.86);
           }
           .pi-mhub-progress-left {
             gap: 10px;

@@ -4,11 +4,11 @@ import MatematikTopicRobot from '../../MatematikTopicRobot';
 
 const THEME = {
   pageGradient: 'transparent',
-  dark: '#60A5FA',
-  cd: '#2563EB',
-  accent: '#3B82F6',
+  dark: '#6D28D9',
+  cd: '#6D28D9',
+  accent: '#8B5CF6',
   stageGradient: 'transparent',
-  pillGradient: 'linear-gradient(180deg,#3B82F6,#1D4ED8)',
+  pillGradient: 'linear-gradient(180deg,#8B5CF6,#6D28D9)',
 };
 
 const ROBOT = <MatematikTopicRobot theme={THEME} />;

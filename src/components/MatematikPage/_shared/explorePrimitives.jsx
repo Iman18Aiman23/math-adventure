@@ -1602,14 +1602,15 @@ export function Kenali21Hingga100Explore({ data, language, theme, onExit }) {
  * ──────────────────────────────────────────────────────────────────────────── */
 
 function genBilangTulis() {
-  const n = randInt(10, 99);
-  const icon = pick(KENALI21_ICONS);
+  const isThreeDigit = Math.random() < 0.5;
+  const n = isThreeDigit ? randInt(100, 999) : randInt(10, 99);
+  const digits = String(n).split('');
   return {
     type: 'nilai-tempat-bilang',
     header: 'Pembelajaran Nilai Tempat',
-    prompt: 'Bilang dan tulis nombor',
-    count: n,
-    icon,
+    prompt: 'Isi nilai tempat',
+    number: n,
+    digits,
     answer: String(n),
   };
 }
@@ -1644,32 +1645,55 @@ function buildNilaiTempatRound() {
   return shuffle(qs).map((q, i) => ({ ...q, qid: i }));
 }
 
-function BilangTulisContent({ q, ctx }) {
+function IsiNilaiTempatContent({ q, ctx }) {
   const { answered, isCorrect, handlePick, theme: C } = ctx;
-  const [activeBox, setActiveBox] = useState('puluh');
-  const [puluhVal, setPuluhVal] = useState('');
-  const [saVal, setSaVal] = useState('');
+  const numDigits = q.digits.length;
+  const placeData = numDigits === 3
+    ? [
+        { key: 'ratus', label: 'Ratus', multiplier: 100 },
+        { key: 'puluh', label: 'Puluh', multiplier: 10 },
+        { key: 'sa', label: 'Sa', multiplier: 1 },
+      ]
+    : [
+        { key: 'puluh', label: 'Puluh', multiplier: 10 },
+        { key: 'sa', label: 'Sa', multiplier: 1 },
+      ];
 
-  useEffect(() => { setPuluhVal(''); setSaVal(''); setActiveBox('puluh'); }, [q.qid]);
+  const [vals, setVals] = useState(placeData.map(() => ''));
+  const [activeIdx, setActiveIdx] = useState(0);
 
-  // Fill the active box only — NO auto-submit. The child reviews/edits and then
-  // submits with the ✓ button or Enter. Typing overwrites the active box so a
-  // wrong digit can be corrected by tapping the box and re-typing.
+  useEffect(() => {
+    setVals(placeData.map(() => ''));
+    setActiveIdx(0);
+  }, [q.qid]);
+
   const pressDigit = (d) => {
     if (answered) return;
-    if (activeBox === 'puluh') {
-      setPuluhVal(d);
-      if (saVal === '') setActiveBox('sa');   // advance on first fill only
-    } else if (activeBox === 'sa') {
-      setSaVal(d);
+    setVals(prev => {
+      const next = [...prev];
+      next[activeIdx] = d;
+      return next;
+    });
+    if (activeIdx < placeData.length - 1) {
+      setActiveIdx(activeIdx + 1);
     }
   };
 
   const pressBack = () => {
     if (answered) return;
-    if (saVal !== '') { setSaVal(''); setActiveBox('sa'); }
-    else if (puluhVal !== '') { setPuluhVal(''); setActiveBox('puluh'); }
+    const lastFilled = vals.reduce((last, v, i) => v !== '' ? i : last, -1);
+    if (lastFilled >= 0) {
+      setVals(prev => {
+        const next = [...prev];
+        next[lastFilled] = '';
+        return next;
+      });
+      setActiveIdx(lastFilled);
+    }
   };
+
+  const allFilled = vals.every(v => v !== '');
+  const submitValue = vals.join('');
 
   useEffect(() => {
     const onKey = (e) => {
@@ -1678,36 +1702,46 @@ function BilangTulisContent({ q, ctx }) {
       else if (e.key === 'Backspace') { e.preventDefault(); pressBack(); }
       else if (e.key === 'Enter') {
         e.preventDefault();
-        if (puluhVal !== '' && saVal !== '') handlePick(puluhVal + saVal);
+        if (allFilled) handlePick(submitValue);
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [answered, activeBox, puluhVal, saVal, handlePick]);
+  }, [answered, activeIdx, vals, allFilled, submitValue, handlePick]);
 
-  const boxStyle = (which) => ({
-    width: 'clamp(56px, 12vmin, 80px)',
-    height: 'clamp(56px, 12vmin, 80px)',
+  const boxStyle = (idx) => ({
+    width: 'clamp(56px, 10vmin, 84px)',
+    height: 'clamp(48px, 9vmin, 72px)',
     border: 'none',
     borderBottom: `4px solid ${
       answered
         ? (isCorrect ? C.green : C.red)
-        : (activeBox === which ? C.dark : '#CBD5E1')
+        : (activeIdx === idx ? C.dark : '#CBD5E1')
     }`,
-    borderRadius: 'clamp(12px, 1.6vmin, 18px)',
+    borderRadius: 'clamp(10px, 1.4vmin, 16px)',
     background: answered
       ? (isCorrect ? C.green : C.red)
-      : (activeBox === which ? '#FFF7ED' : '#F3F4F6'),
+      : (activeIdx === idx ? '#FFF7ED' : '#F3F4F6'),
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
-    fontSize: 'clamp(28px, 6vmin, 48px)',
-    color: answered ? '#fff' : (puluhVal !== '' || saVal !== '' ? '#334155' : '#9CA3AF'),
+    fontSize: 'clamp(18px, 3.6vmin, 32px)',
+    color: answered ? '#fff' : (vals[idx] !== '' ? '#334155' : '#9CA3AF'),
     cursor: answered ? 'default' : 'pointer',
     transition: 'all .15s ease', WebkitTapHighlightColor: 'transparent',
   });
 
+  const displayValue = (idx) => {
+    if (idx >= vals.length || vals[idx] === '') return '';
+    const d = parseInt(vals[idx], 10);
+    return String(d * placeData[idx].multiplier);
+  };
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px, 1.8vmin, 20px)', width: '100%' }}>
+    <div style={{
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      flex: 1, width: '100%', minHeight: 0,
+      gap: 'clamp(6px, 1.2vmin, 16px)',
+    }}>
       <style>{`
         .btk-kp-btn {
           transition: all 0.08s ease;
@@ -1718,65 +1752,85 @@ function BilangTulisContent({ q, ctx }) {
           border-bottom-width: 0 !important;
         }
       `}</style>
-      <TensOnesGrid icon={q.icon} count={q.count} />
-      <div style={{ display: 'flex', gap: 'clamp(16px, 3vmin, 36px)', alignItems: 'flex-end' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(4px, 0.6vmin, 8px)' }}>
-          <span style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(12px, 2vmin, 18px)', color: '#64748B' }}>PULUH</span>
-          <div onClick={() => { if (!answered) setActiveBox('puluh'); }} style={boxStyle('puluh')}>
-            {puluhVal}
+      <div style={{
+        fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
+        fontSize: 'clamp(28px, 7vmin, 64px)',
+        color: '#1E293B', lineHeight: 1.1, letterSpacing: 'clamp(2px, 0.4vmin, 6px)',
+        textAlign: 'center', flexShrink: 0,
+      }}>
+        {q.number}
+      </div>
+      <div style={{
+        display: 'flex', gap: 'clamp(12px, 2.4vmin, 28px)',
+        alignItems: 'flex-end', flexShrink: 0,
+      }}>
+        {placeData.map((p, idx) => (
+          <div key={p.key} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(3px, 0.5vmin, 6px)' }}>
+            <span style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(11px, 1.8vmin, 16px)', color: '#64748B' }}>{p.label}</span>
+            <div onClick={() => { if (!answered) setActiveIdx(idx); }} style={boxStyle(idx)}>
+              {displayValue(idx)}
+            </div>
           </div>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(4px, 0.6vmin, 8px)' }}>
-          <span style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(12px, 2vmin, 18px)', color: '#64748B' }}>SA</span>
-          <div onClick={() => { if (!answered) setActiveBox('sa'); }} style={boxStyle('sa')}>
-            {saVal}
-          </div>
-        </div>
+        ))}
       </div>
       {answered && !isCorrect && (
-        <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(14px, 2.2vmin, 20px)', color: '#64748B' }}>
-          Jawapan: <b style={{ color: C.green }}>{q.count} → {Math.floor(q.count / 10)} puluh {q.count % 10} sa</b>
+        <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(12px, 1.8vmin, 18px)', color: '#64748B', textAlign: 'center' }}>
+          Jawapan: {
+            placeData.map((p, i) => {
+              const digit = parseInt(q.digits[i], 10);
+              return `${digit * p.multiplier} ${p.label}`;
+            }).join(', ')
+          }
         </div>
       )}
       {!answered && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(5px, 1vmin, 9px)', width: '100%', maxWidth: 300 }}>
+        <div style={{
+          display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: 'clamp(3px, 0.6vmin, 8px)', width: '100%', maxWidth: 280,
+          flex: 1, minHeight: 0,
+          alignContent: 'stretch',
+        }}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
             <button key={d} type="button" className="btk-kp-btn" onClick={() => pressDigit(String(d))}
               style={{
-                minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
-                borderBottom: '4px solid #2563EB', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
+                border: 'none',
+                borderBottom: '3px solid #2563EB', borderRadius: 'clamp(10px, 1.2vmin, 14px)',
                 background: '#3B82F6', color: '#fff', cursor: 'pointer',
                 fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-                fontSize: 'clamp(20px, 3.4vmin, 30px)',
+                fontSize: 'clamp(16px, 2.8vmin, 26px)',
+                minHeight: 0, height: '100%',
               }}>{d}</button>
           ))}
           <button type="button" className="btk-kp-btn" onClick={pressBack}
             style={{
-              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
-              borderBottom: '4px solid #DC2626', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
+              border: 'none',
+              borderBottom: '3px solid #DC2626', borderRadius: 'clamp(10px, 1.2vmin, 14px)',
               background: '#EF4444', color: '#fff', cursor: 'pointer',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-              fontSize: 'clamp(16px, 2.6vmin, 22px)',
+              fontSize: 'clamp(13px, 2.2vmin, 20px)',
+              minHeight: 0, height: '100%',
             }}>Padam</button>
           <button type="button" className="btk-kp-btn" onClick={() => pressDigit('0')}
             style={{
-              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
-              borderBottom: '4px solid #2563EB', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
+              border: 'none',
+              borderBottom: '3px solid #2563EB', borderRadius: 'clamp(10px, 1.2vmin, 14px)',
               background: '#3B82F6', color: '#fff', cursor: 'pointer',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-              fontSize: 'clamp(20px, 3.4vmin, 30px)',
+              fontSize: 'clamp(16px, 2.8vmin, 26px)',
+              minHeight: 0, height: '100%',
             }}>0</button>
-          <button type="button" className="btk-kp-btn" onClick={() => { if (puluhVal !== '' && saVal !== '') handlePick(puluhVal + saVal); }}
-            disabled={puluhVal === '' || saVal === ''}
+          <button type="button" className="btk-kp-btn" onClick={() => { if (allFilled) handlePick(submitValue); }}
+            disabled={!allFilled}
             style={{
-              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
-              borderBottom: (puluhVal && saVal) ? '4px solid #16A34A' : '4px solid #D1D5DB',
-              borderRadius: 'clamp(12px, 1.6vmin, 16px)',
-              background: (puluhVal && saVal) ? '#22C55E' : '#E5E7EB',
+              border: 'none',
+              borderBottom: allFilled ? '3px solid #16A34A' : '3px solid #D1D5DB',
+              borderRadius: 'clamp(10px, 1.2vmin, 14px)',
+              background: allFilled ? '#22C55E' : '#E5E7EB',
               color: '#fff',
-              cursor: (puluhVal && saVal) ? 'pointer' : 'not-allowed',
+              cursor: allFilled ? 'pointer' : 'not-allowed',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-              fontSize: 'clamp(16px, 2.6vmin, 22px)',
+              fontSize: 'clamp(13px, 2.2vmin, 20px)',
+              minHeight: 0, height: '100%',
             }}>Semak</button>
         </div>
       )}
@@ -1849,7 +1903,7 @@ export function NilaiTempatExplore({ data, language, theme, onExit }) {
     <MatematikActivityFrame
       buildRound={buildNilaiTempatRound}
       renderQuestion={(q, ctx) => {
-        if (q.type === 'nilai-tempat-bilang') return <BilangTulisContent q={q} ctx={ctx} />;
+        if (q.type === 'nilai-tempat-bilang') return <IsiNilaiTempatContent q={q} ctx={ctx} />;
         return <NilaiTempatPilihContent q={q} ctx={ctx} />;
       }}
       theme={theme}

@@ -896,27 +896,22 @@ const Tambah100 = lazy(() => import('./components/MatematikPage/Tahun1/Module1_N
 
 ## 12. Module Colour System
 
-| Module | Name | Light | Mid | Dark | Accent | Card Gradient |
-|--------|------|-------|-----|------|--------|---------------|
-| 1 | Nombor dan Operasi | `#CCFBF1` | `#5EEAD4` | `#0F766E` | `#14B8A6` | Teal |
-| 2 | Sukatan dan Geometri | `#E0E7FF` | `#A5B4FC` | `#4338CA` | `#6366F1` | Indigo |
-| 3 | Statistik | `#F3E8FF` | `#D8B4FE` | `#7E22CE` | `#A855F7` | Purple |
+| Module | Name | Dark | Accent | Card Gradient |
+|--------|------|------|--------|---------------|
+| 1 | Nombor dan Operasi | `#6D28D9` | `#8B5CF6` | Purple (Pecahan) |
+| 2 | Sukatan dan Geometri | `#6D28D9` | `#8B5CF6` | Purple (Pecahan) |
+| 3 | Statistik | `#6D28D9` | `#8B5CF6` | Purple (Pecahan) |
 
-Per-year theme for homepage:
-| Year | Colour | Robot Accent |
-|------|--------|-------------|
-| Tahun 1 | Teal | `#14B8A6` |
-| Tahun 2 | Indigo | `#6366F1` |
-| Tahun 3 | Purple | `#A855F7` |
+All modules now unify under the Pecahan purple theme:
 
-Each module theme object:
 ```js
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#CCFBF1 0%,#5EEAD4 50%,#0F766E 100%)',
-  dark: '#0F766E',
-  accent: '#14B8A6',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#CCFBF1 0%,#5EEAD4 55%,#0F766E 100%)',
-  pillGradient: 'linear-gradient(180deg,#14B8A6,#0F766E)',
+  pageGradient: 'transparent',
+  dark: '#6D28D9',
+  cd: '#6D28D9',
+  accent: '#8B5CF6',
+  stageGradient: 'transparent',
+  pillGradient: 'linear-gradient(180deg,#8B5CF6,#6D28D9)',
 };
 ```
 

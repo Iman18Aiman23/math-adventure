@@ -3,11 +3,11 @@ import { playHoverSound } from '../../utils/soundManager';
 import StatsBar from '../_shared/StatsBar';
 
 export const MT_MODULES_T1 = [
-  { id: 'nombor-hingga-100', num: 1, labelBM: 'Nombor Hingga 100', labelEN: 'Numbers to 100', c: '#3B82F6', cd: '#1D4ED8', pg: 'transparent' },
-  { id: 'tambah-dan-tolak', num: 2, labelBM: 'Tambah dan Tolak', labelEN: 'Addition & Subtraction', c: '#3B82F6', cd: '#1D4ED8', pg: 'transparent' },
-  { id: 'pecahan', num: 3, labelBM: 'Pecahan', labelEN: 'Fractions', c: '#3B82F6', cd: '#1D4ED8', pg: 'transparent' },
-  { id: 'wang', num: 4, labelBM: 'Wang', labelEN: 'Money', c: '#3B82F6', cd: '#1D4ED8', pg: 'transparent' },
-  { id: 'masa-dan-waktu', num: 5, labelBM: 'Masa dan Waktu', labelEN: 'Time', c: '#3B82F6', cd: '#1D4ED8', pg: 'transparent' },
+  { id: 'nombor-hingga-100', num: 1, labelBM: 'Nombor Hingga 100', labelEN: 'Numbers to 100', c: '#8B5CF6', cd: '#6D28D9', pg: 'transparent' },
+  { id: 'tambah-dan-tolak', num: 2, labelBM: 'Tambah dan Tolak', labelEN: 'Addition & Subtraction', c: '#8B5CF6', cd: '#6D28D9', pg: 'transparent' },
+  { id: 'pecahan', num: 3, labelBM: 'Pecahan', labelEN: 'Fractions', c: '#8B5CF6', cd: '#6D28D9', pg: 'transparent' },
+  { id: 'wang', num: 4, labelBM: 'Wang', labelEN: 'Money', c: '#8B5CF6', cd: '#6D28D9', pg: 'transparent' },
+  { id: 'masa-dan-waktu', num: 5, labelBM: 'Masa dan Waktu', labelEN: 'Time', c: '#8B5CF6', cd: '#6D28D9', pg: 'transparent' },
 ];
 
 const MT_MODULES_T2T3 = [
@@ -119,13 +119,13 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           flex-shrink: 0;
           padding: 0;
           box-shadow: none;
-          transition: transform .16s ease, background .16s ease, border-color .16s ease, box-shadow .16s ease;
+          transition: transform .16s ease, background .16s ease, border-color .16s ease;
         }
         .mt-top-back:hover {
           transform: translateY(-1px);
           background: #ffffff;
           border-color: var(--accent);
-          box-shadow: 0 8px 18px rgba(15,118,110,.10);
+          box-shadow: none;
         }
         .mt-top-back:active { transform: translateY(1px); }
         .mt-top-back:focus-visible {
@@ -144,6 +144,8 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
         .mt-top-module {
           grid-column: 2;
           min-width: 0;
+          width: min(460px, 100%);
+          justify-self: start;
           position: relative;
         }
         .mt-module-brand {
@@ -176,7 +178,7 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           font-size: 23px;
           font-weight: 900;
           line-height: 1;
-          box-shadow: 0 4px 0 color-mix(in srgb, var(--accent-d) 65%, #000), 0 0 18px color-mix(in srgb, var(--accent) 34%, transparent);
+          box-shadow: none;
           text-shadow: 0 1px 0 rgba(0,0,0,.22);
         }
         .mt-module-brand-text {
@@ -219,7 +221,7 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
         }
         @media (min-width: 1181px) {
           .mt-top-module {
-            max-width: 560px;
+            width: min(520px, 100%);
           }
         }
         @media (min-width: 768px) {
@@ -248,7 +250,7 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           border: 3px solid #E6E6E6;
           backdrop-filter: none;
           -webkit-backdrop-filter: none;
-          transition: background .35s ease, box-shadow .35s ease, border-color .35s ease;
+          transition: background .35s ease, border-color .35s ease;
           font-family: 'Fredoka', system-ui, sans-serif;
           position: relative;
           z-index: 1;
@@ -312,11 +314,11 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           background: #F7F8FA;
           border: 3px solid #E6E6E6;
           box-shadow: none;
-          transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+          transition: border-color .18s ease, background .18s ease;
         }
         .mt-mnav-select-shell.open {
           border-color: var(--accent);
-          box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+          box-shadow: none;
         }
         .mt-mnav-current-num {
           width: 46px;
@@ -331,7 +333,7 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           letter-spacing: .02em;
           color: #fff;
           background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 86%, white), var(--accent-d));
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.24), 0 4px 0 rgba(0,0,0,.24);
+          box-shadow: none;
           text-shadow: 0 1px 0 rgba(0,0,0,.18);
         }
         .mt-mnav-select {
@@ -394,7 +396,7 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           border-radius: 18px;
           border: 3px solid #E6E6E6;
           background: #ffffff;
-          box-shadow: 0 12px 28px rgba(15,23,42,.12);
+          box-shadow: none;
           backdrop-filter: none;
           -webkit-backdrop-filter: none;
           animation: mtMenuDrop .16s ease-out both;
@@ -461,7 +463,7 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           line-height: 1.15;
           gap: 2px;
           color: #707070;
-          transition: transform .16s ease, border-color .18s ease, color .18s ease, box-shadow .18s ease, background .18s ease;
+          transition: transform .16s ease, border-color .18s ease, color .18s ease, background .18s ease;
           min-width: 64px;
           flex: 1;
           box-shadow: none;

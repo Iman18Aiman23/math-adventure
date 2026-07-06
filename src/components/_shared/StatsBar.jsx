@@ -178,13 +178,13 @@ export default function StatsBar({ subject = 'bm', variant }) {
           font-size: 14px;
           cursor: pointer;
           letter-spacing: 0;
-          box-shadow: ${variant === 'mb' ? 'inset 0 1px 0 rgba(255,255,255,.98), 0 12px 26px rgba(15,118,110,.12)' : '0 4px 12px rgba(20,40,70,.12)'};
-          transition: transform .16s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+          box-shadow: none;
+          transition: transform .16s ease, border-color .18s ease, background .18s ease;
           -webkit-tap-highlight-color: transparent;
         }
         .sb-bundle-btn .sb-emoji {
           font-size: 16px;
-          filter: drop-shadow(0 1px 0 rgba(255,255,255,.6));
+          filter: none;
         }
         .sb-bundle-text {
           line-height: 1;
@@ -193,7 +193,7 @@ export default function StatsBar({ subject = 'bm', variant }) {
         .sb-bundle-btn:active { transform: translateY(1px) scale(.99); }
         .sb-bundle-btn:hover {
           border-color: ${variant === 'mb' ? 'rgba(20,184,166,.24)' : 'rgba(20,40,70,.10)'};
-          box-shadow: ${variant === 'mb' ? 'inset 0 1px 0 rgba(255,255,255,.98), 0 15px 30px rgba(15,118,110,.16)' : '0 6px 16px rgba(20,40,70,.15)'};
+          box-shadow: none;
         }
         .sb-bundle-btn:focus-visible {
           outline: 3px solid ${variant === 'mb' ? '#14B8A6' : '#2563EB'};
@@ -209,22 +209,11 @@ export default function StatsBar({ subject = 'bm', variant }) {
           background: ${variant === 'mb' ? 'linear-gradient(180deg, rgba(255,255,255,.98), rgba(243,249,252,.96))' : '#ffffff'};
           padding: ${variant === 'mb' ? '10px' : '12px'};
           border-radius: ${variant === 'mb' ? '20px' : '16px'};
-          box-shadow: ${variant === 'mb' ? 'inset 0 1px 0 rgba(255,255,255,.98), 0 24px 54px rgba(15,118,110,.16), 0 0 0 1px rgba(20,184,166,.06)' : '0 10px 24px rgba(0,0,0,0.4)'};
-          border: ${variant === 'mb' ? '1px solid rgba(255,255,255,.92)' : '1px solid rgba(20,40,70,.1)'};
-          backdrop-filter: blur(18px);
-          -webkit-backdrop-filter: blur(18px);
+          box-shadow: none;
+          border: ${variant === 'mb' ? '1px solid #E6E6E6' : '1px solid rgba(20,40,70,.1)'};
           overflow: hidden;
           animation: sb-fade-in .18s cubic-bezier(.34,1.56,.64,1);
           transform-origin: top right;
-        }
-        .sb-popover--mb::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-          background:
-            linear-gradient(90deg, transparent, rgba(255,255,255,.42), transparent) 0 0 / 100% 1px no-repeat,
-            radial-gradient(circle at 100% 8%, rgba(20,184,166,.12), transparent 38%);
         }
         @keyframes sb-fade-in {
           0% { opacity: 0; transform: scale(0.95) translateY(-5px); }
@@ -316,13 +305,11 @@ export default function StatsBar({ subject = 'bm', variant }) {
             linear-gradient(180deg, rgba(255,255,255,.98), rgba(243,248,252,.92)),
             linear-gradient(135deg, color-mix(in srgb, currentColor 10%, transparent), rgba(255,255,255,.16)) !important;
           border: 1px solid color-mix(in srgb, currentColor 22%, rgba(255,255,255,.82)) !important;
-          box-shadow:
-            inset 0 1px 0 rgba(255,255,255,.98),
-            0 10px 22px rgba(15, 118, 110, .10) !important;
+          box-shadow: none !important;
           white-space: nowrap;
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
-          transition: transform .16s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
+          transition: transform .16s ease, background .18s ease, border-color .18s ease;
         }
         .sb-mb-pill::before {
           content: "";
@@ -353,14 +340,14 @@ export default function StatsBar({ subject = 'bm', variant }) {
           font-size: 13px;
           flex-shrink: 0;
           line-height: 1;
-          filter: drop-shadow(0 1px 0 rgba(255,255,255,.55));
+          filter: none;
         }
         .sb-mb-val {
           order: 3;
           line-height: 1;
           color: currentColor;
           font-variant-numeric: tabular-nums;
-          text-shadow: 0 1px 0 rgba(255,255,255,.52);
+          text-shadow: none;
         }
         @media (max-width: 400px) {
           .sb-mb-wrap:not(.popover-mode) { gap: 3px; }
@@ -387,7 +374,7 @@ export default function StatsBar({ subject = 'bm', variant }) {
           -webkit-user-select: none;
           border-radius: 14px;
           border: 1px solid rgba(20,40,70,.06);
-          box-shadow: 0 4px 12px rgba(20,40,70,.12);
+          box-shadow: none;
           margin-bottom: 12px;
         }
         @media (max-width: 480px) {
@@ -409,7 +396,7 @@ export default function StatsBar({ subject = 'bm', variant }) {
           padding: 9px 9px;
           border-radius: 11px;
           background: var(--chip, #94a3b8);
-          box-shadow: 0 2px 0 rgba(0,0,0,.12), 0 1px 0 rgba(255,255,255,.30) inset;
+          box-shadow: none;
         }
         .sb-item:nth-child(1) { --chip: #FF4B4B; }
         .sb-item:nth-child(3) { --chip: #1CC8EE; }
@@ -419,9 +406,7 @@ export default function StatsBar({ subject = 'bm', variant }) {
         .sb-emoji {
           font-size: 16px;
           line-height: 1;
-          filter:
-            drop-shadow(0 1px 1px rgba(0,0,0,.28))
-            drop-shadow(0 0 1px rgba(255,255,255,.55));
+          filter: none;
         }
         @media (max-width: 480px) {
           .sb-emoji { font-size: 14px; }

@@ -4,14 +4,15 @@ import MatematikTopicRobot from '../../MatematikTopicRobot';
 
 const THEME = {
   pageGradient: 'transparent',
-  dark: '#60A5FA',
-  cd: '#2563EB',
-  accent: '#3B82F6',
+  dark: '#6D28D9',
+  cd: '#6D28D9',
+  accent: '#8B5CF6',
   stageGradient: 'transparent',
-  pillGradient: 'linear-gradient(180deg,#3B82F6,#1D4ED8)',
+  pillGradient: 'linear-gradient(180deg,#8B5CF6,#6D28D9)',
 };
 
-const robot = (symbol, badge, glow) => <MatematikTopicRobot theme={THEME} symbol={symbol} badge={badge} glow={glow || badge} />;
+const TOPIC_COLORS = ['#8B5CF6', '#8B5CF6', '#8B5CF6', '#8B5CF6', '#8B5CF6', '#8B5CF6', '#8B5CF6', '#8B5CF6'];
+const robot = (symbol, color = THEME.accent) => <MatematikTopicRobot theme={THEME} symbol={symbol} badge={color} glow={color} />;
 const drill = (id) => `m2-drill-${id}`;
 const SCORE_KEY = 'mt_ld_m2_scores';
 
@@ -39,8 +40,8 @@ const TOPICS = [
     pill: 'TOPIK 2.1',
     title: 'Kenali Tambah',
     desc: 'Fahami maksud tambah melalui kumpulan, garis nombor dan ayat mudah.',
-    visual: robot('+', '#FBBF24'),
-    color: '#FBBF24',
+    visual: robot('+', TOPIC_COLORS[0]),
+    color: TOPIC_COLORS[0],
     actions: [
       { id: drill('kt-gabung'), label: 'Gabung Kumpulan', icon: 'users' },
       { id: drill('kt-garis'), label: 'Garis Nombor', icon: 'move' },
@@ -53,8 +54,8 @@ const TOPICS = [
     pill: 'TOPIK 2.2',
     title: 'Latihan Tambah',
     desc: 'Kira tambah daripada fakta asas hingga soalan bentuk lazim.',
-    visual: robot('+', '#22C55E'),
-    color: '#22C55E',
+    visual: robot('+', TOPIC_COLORS[1]),
+    color: TOPIC_COLORS[1],
     actions: [
       { id: drill('lt-mudah-m1'), label: 'Mudah Tambah', icon: 'calculator' },
       { id: drill('lt-warnai'), label: 'Warnai Tambah', icon: 'palette' },
@@ -70,8 +71,8 @@ const TOPICS = [
     pill: 'TOPIK 2.3',
     title: 'Kenali Tolak',
     desc: 'Fahami tolak sebagai buang, undur, baki dan beza.',
-    visual: robot('-', '#F97316'),
-    color: '#F97316',
+    visual: robot('-', TOPIC_COLORS[2]),
+    color: TOPIC_COLORS[2],
     actions: [
       { id: drill('kt-buang'), label: 'Buang Kumpulan', icon: 'minus' },
       { id: drill('kt-garis-sub'), label: 'Garis Nombor', icon: 'move' },
@@ -84,8 +85,8 @@ const TOPICS = [
     pill: 'TOPIK 2.4',
     title: 'Latihan Tolak',
     desc: 'Kira tolak daripada fakta asas hingga soalan bentuk lazim.',
-    visual: robot('-', '#8B5CF6'),
-    color: '#8B5CF6',
+    visual: robot('-', TOPIC_COLORS[3]),
+    color: TOPIC_COLORS[3],
     actions: [
       { id: drill('lt-tolak-mudah-m1'), label: 'Mudah Tolak', icon: 'calculator' },
       { id: drill('lt-tolak-warnai'), label: 'Warnai Tolak', icon: 'palette' },
@@ -101,8 +102,8 @@ const TOPICS = [
     pill: 'TOPIK 2.5',
     title: 'Cerita Tambah Tolak',
     desc: 'Baca cerita nombor dan pilih kiraan yang sesuai.',
-    visual: robot('+-', '#0EA5E9'),
-    color: '#0EA5E9',
+    visual: robot('+-', TOPIC_COLORS[4]),
+    color: TOPIC_COLORS[4],
     actions: [
       { id: drill('ctt-tambah'), label: 'Cerita Tambah', icon: 'book' },
       { id: drill('ctt-tolak'), label: 'Cerita Tolak', icon: 'book' },
@@ -115,8 +116,8 @@ const TOPICS = [
     pill: 'TOPIK 2.6',
     title: 'Tambah Tolak Berulang',
     desc: 'Latih kira berulang dengan kumpulan dan garis nombor.',
-    color: '#14B8A6',
-    visual: robot('↻', '#14B8A6'),
+    color: TOPIC_COLORS[5],
+    visual: robot('↻', TOPIC_COLORS[5]),
     actions: [
       { id: drill('tb-add-groups'), label: 'Kira Kumpulan', icon: 'users' },
       { id: drill('tb-add-line'), label: 'Garis Tambah', icon: 'move' },
@@ -130,8 +131,8 @@ const TOPICS = [
     pill: 'CABARAN',
     title: 'Selesaikan Cerita',
     desc: 'Selesaikan enam soalan cerita pada roda nombor.',
-    visual: robot('?', '#F59E0B'),
-    color: '#F59E0B',
+    visual: robot('?', TOPIC_COLORS[6]),
+    color: TOPIC_COLORS[6],
     icon: 'trophy',
   },
   {
@@ -139,8 +140,8 @@ const TOPICS = [
     pill: 'CABARAN',
     title: 'Cabaran Campur',
     desc: 'Uji semua kemahiran tambah dan tolak dalam satu cabaran.',
-    color: '#A855F7',
-    visual: robot('★', '#A855F7'),
+    color: TOPIC_COLORS[7],
+    visual: robot('★', TOPIC_COLORS[7]),
     icon: 'sparkles',
   },
 ];

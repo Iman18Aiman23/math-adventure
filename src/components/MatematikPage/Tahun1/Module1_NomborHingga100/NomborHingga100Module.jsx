@@ -4,15 +4,16 @@ import MatematikTopicRobot from '../../MatematikTopicRobot';
 
 const THEME = {
   pageGradient: 'transparent',
-  dark: '#60A5FA',
-  cd: '#2563EB',
-  accent: '#3B82F6',
+  dark: '#6D28D9',
+  cd: '#6D28D9',
+  accent: '#8B5CF6',
   stageGradient: 'transparent',
-  pillGradient: 'linear-gradient(180deg,#3B82F6,#1D4ED8)',
+  pillGradient: 'linear-gradient(180deg,#8B5CF6,#6D28D9)',
 };
 
-const robotFor = (symbol, badge = '#FFB547') => (
-  <MatematikTopicRobot theme={THEME} badge={badge} symbol={symbol} />
+const TOPIC_COLORS = ['#8B5CF6', '#8B5CF6', '#8B5CF6', '#8B5CF6', '#8B5CF6'];
+const robotFor = (symbol, color = THEME.accent) => (
+  <MatematikTopicRobot theme={THEME} badge={color} glow={color} symbol={symbol} />
 );
 
 const SCORE_KEY = 'mt_ld_m1_scores';
@@ -39,8 +40,8 @@ const TOPICS = [
     pill: 'TOPIK 1.1',
     title: 'Kenali Nombor',
     desc: 'Mula dengan membanding kumpulan, membaca nombor kecil dan menulis nombor.',
-    visual: robotFor('10', '#38BDF8'),
-    color: '#38BDF8',
+    visual: robotFor('10', TOPIC_COLORS[0]),
+    color: TOPIC_COLORS[0],
     actions: [
       { id: 'banding-banyak-sedikit', label: 'Banding Banyak Sedikit', icon: 'users' },
       { id: 'kenali-0-10', label: 'Kenali 0 Hingga 10', icon: 'type' },
@@ -53,8 +54,8 @@ const TOPICS = [
     pill: 'TOPIK 1.2',
     title: 'Nombor hingga 100',
     desc: 'Bina nombor besar, faham puluh dan sa, kemudian susun ikut tertib.',
-    visual: robotFor('100', '#A78BFA'),
-    color: '#A78BFA',
+    visual: robotFor('100', TOPIC_COLORS[1]),
+    color: TOPIC_COLORS[1],
     actions: [
       { id: 'kenali-21-100', label: 'Kenali 21 Hingga 100', icon: 'calculator' },
       { id: 'nilai-tempat', label: 'Nilai Tempat dan Digit', icon: 'boxes' },
@@ -66,8 +67,8 @@ const TOPICS = [
     pill: 'TOPIK 1.3',
     title: 'Pola, anggar dan bundar',
     desc: 'Cari corak nombor, buat anggaran dan bundarkan nombor kepada puluh terdekat.',
-    visual: robotFor('~', '#F59E0B'),
-    color: '#F59E0B',
+    visual: robotFor('~', TOPIC_COLORS[2]),
+    color: TOPIC_COLORS[2],
     actions: [
       { id: 'pola-nombor', label: 'Sambung Pola Nombor', icon: 'repeat' },
       { id: 'anggar-bundar', label: 'Anggar dan Bundar', icon: 'sparkles' },
@@ -78,8 +79,8 @@ const TOPICS = [
     pill: 'TOPIK 1.4',
     title: 'Kombinasi nombor',
     desc: 'Cari pasangan nombor dan lengkapkan gabungan asas sebelum masuk Modul 2.',
-    visual: robotFor('+', '#FACC15'),
-    color: '#FACC15',
+    visual: robotFor('+', TOPIC_COLORS[3]),
+    color: TOPIC_COLORS[3],
     actions: [
       { id: 'kombinasi-nombor', label: 'Pasangan Jadi 10', icon: 'link' },
     ],
@@ -89,8 +90,8 @@ const TOPICS = [
     pill: 'CABARAN',
     title: 'Latihan dan cabaran',
     desc: 'Gunakan semua kemahiran nombor dalam latihan, cerita dan cabaran akhir.',
-    visual: robotFor('?', '#FB7185'),
-    color: '#FB7185',
+    visual: robotFor('?', TOPIC_COLORS[4]),
+    color: TOPIC_COLORS[4],
     actions: [
       { id: 'selesaikan', label: 'Cerita Nombor', icon: 'book' },
       { id: 'latih-diri', label: 'Latihan Pantas', icon: 'calculator' },
