@@ -8,9 +8,18 @@
   <title>math-adventure</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Fredoka:wght@500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
-  <script type="module" crossorigin src="/math-adventure/assets/index-D9md4qG0.js"></script>
-  <link rel="stylesheet" crossorigin href="/math-adventure/assets/index-Cj23U3Ed.css">
+  <!-- All app fonts in ONE preconnected request (was split between here + an @import in index.css).
+       Outfit=--font-heading, Inter=--font-body, Nunito=body/canvas text, Amiri=Jawi/Arabic script.
+       Loaded non-render-blocking: media="print" defers CSS evaluation, onload swaps it live.
+       Text renders immediately with fallback fonts, then swaps (display=swap). -->
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Baloo+2:wght@500;700;800&family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Baloo+2:wght@500;700;800&family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap"
+          rel="stylesheet" />
+  </noscript>
+  <script type="module" crossorigin src="/math-adventure/assets/index-YCInXYg5.js"></script>
+  <link rel="stylesheet" crossorigin href="/math-adventure/assets/index-D3Znixer.css">
 </head>
 
 <body>
