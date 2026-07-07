@@ -28,6 +28,7 @@ export default function NumberTraceLesson({
   topicId, topicLabel, accentColor = '#F59E0B',
   scoreStorageKey,
   scoreId,
+  hideTopbar,
 }) {
   const [idx, setIdx] = useState(0);
   const [done, setDone] = useState(false);
@@ -131,22 +132,22 @@ export default function NumberTraceLesson({
     const msg = language === 'bm'
       ? `Kamu telah berjaya menulis ${topicLabel}!`
       : `You have completed tracing ${topicLabel}!`;
-    const gradient = 'linear-gradient(180deg, #FFFBEB 0%, #FDE68A 50%, #F59E0B 100%)';
+    const gradient = 'linear-gradient(180deg, #FFFBEB 0%, #FDE68A 50%, #D97706 100%)';
     return (
       <>
         {showCelebration && <Celebration count={30} />}
         <div style={{
-          minHeight: '100dvh',
+          minHeight: '100%', boxSizing: 'border-box',
           background: gradient,
-          fontFamily: "'Fredoka', system-ui, sans-serif",
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-          padding: '24px', color: '#1E293B',
-        }}>
-          <div style={{
-            background: '#fff', borderRadius: 28, padding: 'clamp(32px,5vw,48px)',
-            textAlign: 'center', maxWidth: 400, width: '100%',
-            border: `1px solid ${accentColor}1A`, boxShadow: '0 12px 32px -16px rgba(0,0,0,.1)',
+            fontFamily: "'Fredoka', system-ui, sans-serif",
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            padding: '24px', color: '#1E293B',
           }}>
+            <div style={{
+              background: '#fff', borderRadius: 28, padding: 'clamp(32px,5vw,48px)',
+              textAlign: 'center', maxWidth: 400, width: '100%',
+              border: `1px solid ${accentColor}1A`, boxShadow: '0 20px 44px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.08)',
+            }}>
             <span style={{ fontSize: 'clamp(48px,10vw,72px)', display: 'block', marginBottom: 8 }}>✏️</span>
             <h2 style={{
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
@@ -170,7 +171,7 @@ export default function NumberTraceLesson({
               <button onClick={handleBack} style={{
                 fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 15,
                 cursor: 'pointer', border: 'none', borderRadius: 999, padding: '12px 28px',
-                color: '#64748B', background: '#F1F5F9', boxShadow: '0 4px 0 #CBD5E1',
+                color: '#92400E', background: '#FFFBEB', boxShadow: '0 4px 0 #FDE68A',
               }}>
                 ← {language === 'bm' ? 'Kembali' : 'Back'}
               </button>
@@ -180,7 +181,7 @@ export default function NumberTraceLesson({
               cursor: 'pointer', border: 'none', borderRadius: 999, padding: '12px 28px',
               marginTop: 12, color: '#fff',
               background: `linear-gradient(180deg, ${accentColor}, #B45309)`,
-              boxShadow: `0 4px 0 #92400E`,
+              boxShadow: `0 4px 0 #78350F`,
             }}>
               {language === 'bm' ? 'Topik Seterusnya →' : 'Next Topic →'}
             </button>
@@ -198,76 +199,78 @@ export default function NumberTraceLesson({
     <>
       <style>{`
         .ntl-root {
-          height: 100dvh; overflow: hidden;
-          background: linear-gradient(180deg, #FFFBEB 0%, #FDE68A 50%, #F59E0B 100%);
+          flex: 1; min-height: 0; overflow: hidden;
           font-family: 'Fredoka', system-ui, sans-serif;
           display: flex; flex-direction: column;
           color: #1E293B;
+          position: relative;
         }
         .ntl-topbar {
-          flex-shrink: 0; position: relative;
-          display: flex; align-items: center; gap: 4px;
-          padding: 10px 12px; min-height: 44px;
-          background: rgba(255,255,255,.88);
-          backdrop-filter: blur(10px);
+          flex-shrink: 0; position: relative; z-index: 2;
+          display: flex; align-items: center;
+          padding: 12px 16px; min-height: 52px;
+          background: rgba(255,255,255,.82);
+          backdrop-filter: blur(14px);
           border-bottom: 1px solid rgba(0,0,0,.06);
         }
-        .ntl-topbar::after { content: ''; flex: 0 1 88px; }
         .ntl-back {
           flex-shrink: 0;
-          display: flex; align-items: center; gap: 4px;
+          display: flex; align-items: center; justify-content: center;
+          width: 44px; height: 44px;
           font-family: 'Baloo 2', sans-serif; font-weight: 700;
-          font-size: 13px; color: #64748B;
-          background: none; border: none; cursor: pointer; padding: 6px 10px;
-          border-radius: 10px;
+          font-size: 14px; color: #B45309;
+          background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,245,230,.90));
+          border: 1px solid rgba(255,255,255,.82);
+          cursor: pointer; border-radius: 16px; padding: 0;
+          transition: background .2s, transform .14s;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.96), 0 12px 26px rgba(180,83,9,.12);
         }
-        .ntl-back:hover { background: #F1F5F9; }
-        @media (max-width: 480px) {
-          .ntl-back-label { display: none; }
-          .ntl-topbar::after { flex-basis: 42px; }
-        }
+        .ntl-back:hover { transform: translateY(-1px); }
+        .ntl-back:active { transform: translateY(1px); }
+        .ntl-back-label { display: none; }
         .ntl-title {
-          flex: 1; min-width: 0;
-          text-align: center;
+          flex: 1; min-width: 0; text-align: center;
           white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
           font-family: 'Baloo 2', sans-serif; font-weight: 800;
-          font-size: clamp(12px, 3.4vw, 14px); color: #1E293B;
+          font-size: clamp(14px, 3.6vw, 17px);
+          color: #B45309;
         }
         .ntl-body {
-          flex: 1; min-height: 0;
+          flex: 1; min-height: 0; position: relative; z-index: 1;
           display: flex; flex-direction: column;
-          padding: clamp(8px, 1.6vh, 16px) 16px;
+          padding: clamp(10px, 2vh, 20px) clamp(12px, 2.4vw, 28px) clamp(8px, 1.2vh, 14px);
           overflow: hidden;
         }
         .ntl-picker-wrap {
           flex-shrink: 0;
-          margin-bottom: clamp(6px, 1.2vh, 12px);
+          margin-bottom: clamp(8px, 1.4vh, 14px);
           display: flex; align-items: center; gap: 10px;
           width: 100%;
         }
         .ntl-picker-label {
           font-family: 'Baloo 2', sans-serif; font-weight: 800;
-          font-size: clamp(11px, 2vw, 14px);
-          color: #64748B; white-space: nowrap;
+          font-size: clamp(12px, 2vw, 15px);
+          color: #92400E; white-space: nowrap;
         }
         .ntl-picker {
           flex: 1;
           font-family: 'Baloo 2', sans-serif; font-weight: 700;
-          font-size: clamp(13px, 2.4vw, 16px);
-          padding: clamp(5px, .8vh, 8px) clamp(8px, 1.4vw, 12px);
+          font-size: clamp(14px, 2.6vw, 17px);
+          padding: clamp(6px, .9vh, 10px) clamp(10px, 1.6vw, 14px);
           border: 2px solid ${accentColor}44;
-          border-radius: 12px;
+          border-radius: 14px;
           background: #fff;
           color: #1E293B;
           cursor: pointer;
           outline: none;
-          min-height: 36px;
+          min-height: 40px;
           -webkit-appearance: none;
           appearance: none;
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23${accentColor.replace('#','')}' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
           background-repeat: no-repeat;
-          background-position: right 10px center;
-          padding-right: 32px;
+          background-position: right 12px center;
+          padding-right: 36px;
+          box-shadow: 0 2px 0 ${accentColor}22;
         }
         .ntl-picker option {
           font-family: 'Baloo 2', sans-serif; font-weight: 700;
@@ -276,102 +279,79 @@ export default function NumberTraceLesson({
         .ntl-picker option:checked {
           background: ${accentColor}20;
         }
-        .ntl-digit-pills {
-          flex-shrink: 0;
-          display: flex; gap: 10px; justify-content: center;
-          margin-bottom: clamp(6px, 1.2vh, 12px);
-        }
-        .ntl-digit-pill {
-          font-family: 'Baloo 2', sans-serif; font-weight: 800;
-          font-size: clamp(13px, 2.6vw, 16px);
-          display: flex; align-items: center; gap: 7px;
-          padding: clamp(6px, 1vh, 9px) clamp(14px, 3.4vw, 24px);
-          border-radius: 999px; cursor: pointer;
-          border: 2px solid #E2E8F0; background: #fff; color: #64748B;
-          transition: background .2s, border-color .2s, color .2s;
-        }
-        .ntl-digit-pill .pill-digit {
-          font-weight: 900; font-size: 1.3em; line-height: 1;
-          font-family: 'Baloo 2', sans-serif;
-        }
-        .ntl-digit-pill.active {
-          border-color: ${accentColor}; background: ${accentColor}14; color: ${accentColor};
-        }
-        .ntl-digit-pill.done {
-          border-color: #58CC02; background: #F0FBE6; color: #46A302;
-        }
-        .ntl-digit-pill.done.active {
-          background: #E2F7CC;
-        }
         .ntl-canvas-area {
           flex: 1; min-height: 0;
           display: flex; justify-content: center;
           width: 100%;
         }
         .ntl-card {
-          flex: 1; min-width: 0; max-width: 560px;
+          flex: 1; min-width: 0; max-width: 600px;
           background: #fff;
-          border-radius: 20px;
+          border-radius: 28px;
           display: flex; flex-direction: column;
           overflow: hidden;
-          border: 3px solid #E2E8F0;
-          box-shadow: 0 4px 0 #CBD5E1, 0 6px 16px rgba(0,0,0,.06);
+          border: 1px solid rgba(255,255,255,.82);
+          box-shadow: 0 4px 0 ${accentColor}26, 0 16px 40px rgba(0,0,0,.3), 0 0 0 1px rgba(255,255,255,.1);
           transition: border-color .3s, box-shadow .3s;
         }
         .ntl-card.done {
           border-color: #58CC02;
-          box-shadow: 0 6px 0 #46A302, 0 8px 20px rgba(88,204,2,.12);
+          box-shadow: 0 6px 0 #46A302, 0 18px 44px rgba(88,204,2,.18), 0 0 0 1px rgba(88,204,2,.2);
         }
         .ntl-card-canvas {
           flex: 1; min-height: 0;
-          background: #F8FAFC;
+          background: #FAFCFE;
+          border-radius: 25px 25px 0 0;
         }
         .ntl-controls {
           flex-shrink: 0;
-          display: flex; justify-content: center; gap: 12px;
-          padding: clamp(6px, 1vh, 12px) 0 0;
+          display: flex; justify-content: center; gap: 10px;
+          padding: clamp(8px, 1.4vh, 14px) 0 clamp(2px, .4vh, 6px);
         }
         .ntl-btn {
           font-family: 'Baloo 2', sans-serif; font-weight: 800;
-          font-size: clamp(12px, min(2.6vw, 2vh), 15px);
+          font-size: clamp(14px, min(2.8vw, 2.4vh), 17px);
           cursor: pointer; border: none; border-radius: 999px;
-          padding: clamp(7px, 1.2vh, 10px) clamp(16px, 3vw, 24px);
-          transition: transform .12s;
+          padding: clamp(8px, 1.4vh, 12px) clamp(20px, 3.6vw, 30px);
+          transition: transform .12s, box-shadow .12s;
+          -webkit-tap-highlight-color: transparent;
         }
         .ntl-btn:hover { transform: translateY(-2px); }
         .ntl-btn:active { transform: translateY(1px); }
         .ntl-btn.ghost {
-          color: #64748B; background: #F1F5F9;
-          box-shadow: 0 3px 0 #CBD5E1;
+          color: #92400E;
+          background: #fff;
+          box-shadow: 0 3px 0 #D9770644, 0 4px 10px rgba(0,0,0,.06);
+        }
+        .ntl-btn.ghost:hover { filter: brightness(1.03); }
+        .ntl-btn.ghost:disabled {
+          opacity: .3; cursor: default; transform: none;
+          color: #94A3B8; box-shadow: 0 3px 0 #CBD5E1;
         }
         .ntl-btn.primary {
-          color: #fff;
-          background: linear-gradient(180deg, ${accentColor}cc, ${accentColor});
-          box-shadow: 0 3px 0 ${accentColor}66;
+          color: #B45309;
+          background: #fff;
+          box-shadow: 0 3px 0 #D9770644, 0 4px 10px rgba(0,0,0,.06);
         }
         .ntl-btn.primary:disabled {
-          opacity: .4; cursor: default; transform: none;
-        }
-        .ntl-footer {
-          flex-shrink: 0; text-align: center;
-          padding: clamp(2px, .4vh, 4px) 16px clamp(4px, .6vh, 8px);
-          font-size: 10px; font-weight: 500; color: #94A3B8;
-        }
-        @media (max-height: 480px) {
-          .ntl-footer { display: none; }
+          opacity: .3; cursor: default; transform: none;
+          color: #94A3B8;
+          box-shadow: 0 3px 0 #CBD5E1;
         }
       `}</style>
 
       <div className="ntl-root">
-        <div className="ntl-topbar">
-          <button className="ntl-back" onClick={handleBack}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-            <span className="ntl-back-label">{language === 'bm' ? 'Kembali' : 'Back'}</span>
-          </button>
-          <span className="ntl-title">{topicLabel}</span>
-        </div>
+        {!hideTopbar && (
+          <div className="ntl-topbar">
+            <button className="ntl-back" onClick={handleBack}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+              </svg>
+              <span className="ntl-back-label">{language === 'bm' ? 'Kembali' : 'Back'}</span>
+            </button>
+            <span className="ntl-title">{topicLabel}</span>
+          </div>
+        )}
 
         <div className="ntl-body">
           <div className="ntl-picker-wrap">
@@ -420,9 +400,6 @@ export default function NumberTraceLesson({
           </div>
         </div>
 
-        <div className="ntl-footer">
-          Matematik KSSR · {topicLabel}
-        </div>
       </div>
     </>
   );

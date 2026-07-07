@@ -369,10 +369,10 @@ export default function Tambah100({ onBack, language = 'bm' }) {
             const isAnswerOpt = option === current.answerStr;
             const showCorrect = isAnswered && isAnswerOpt;
             const showWrong   = isAnswered && chosen && !isAnswerOpt;
-            let bg = 'rgba(255, 150, 0, 0.07)', border = 'rgba(255, 150, 0, 0.35)', color = '#333';
-            if (showCorrect) { bg = '#E8F5E9'; border = '#4CAF50'; color = '#2E7D32'; }
-            else if (showWrong) { bg = '#FFEBEE'; border = '#FF6B6B'; color = '#C62828'; }
-            else if (isAnswered) { bg = 'rgba(255, 150, 0, 0.03)'; border = 'rgba(255, 150, 0, 0.12)'; color = '#999'; }
+            let bg = '#fff', border = '#CBD5E1', color = '#1E293B';
+            if (showCorrect) { bg = '#22C55E'; border = '#22C55E'; color = '#fff'; }
+            else if (showWrong) { bg = '#EF4444'; border = '#EF4444'; color = '#fff'; }
+            else if (isAnswered) { bg = '#fff'; border = '#E2E8F0'; color = '#94A3B8'; }
             const optNum = String.fromCharCode(0x2460 + idx);
             return (
               <button
@@ -393,9 +393,7 @@ export default function Tambah100({ onBack, language = 'bm' }) {
                 }}
               >
                 <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 26, height: 26, borderRadius: '50%', background: showCorrect ? '#4CAF50' : showWrong ? '#FF6B6B' : 'rgba(255, 150, 0, 0.15)', color: showCorrect ? '#fff' : showWrong ? '#fff' : 'rgba(255, 150, 0, 0.8)', fontSize: '0.75rem', fontWeight: 900, marginRight: 8, flexShrink: 0 }}>{optNum}</span>
-                {option}
-                {showCorrect && ' ✓'}
-                {showWrong && ' ✗'}
+                {showCorrect ? `${option} ✓` : showWrong ? `${option} ✗` : option}
               </button>
             );
           })}

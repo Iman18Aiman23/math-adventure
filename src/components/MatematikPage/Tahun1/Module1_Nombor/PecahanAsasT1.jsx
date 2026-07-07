@@ -169,10 +169,10 @@ export default function PecahanAsasT1({ onBack, language = 'bm' }) {
   }, []);
 
   const getOptionStyle = (option) => {
-    if (!isAnswered) return { bg: 'rgba(139, 92, 246, 0.07)', border: 'rgba(139, 92, 246, 0.35)', color: '#333' };
-    if (option === question.answer) return { bg: '#4CAF50', border: '#388E3C', color: 'white' };
-    if (option === selectedAnswer) return { bg: '#FF6B6B', border: '#D32F2F', color: 'white' };
-    return { bg: '#F5F5F5', border: '#DDD', color: '#AAA' };
+    if (!isAnswered) return { bg: '#fff', border: '#CBD5E1', color: '#1E293B' };
+    if (option === question.answer) return { bg: '#22C55E', border: '#22C55E', color: 'white' };
+    if (option === selectedAnswer) return { bg: '#EF4444', border: '#EF4444', color: 'white' };
+    return { bg: '#fff', border: '#E2E8F0', color: '#94A3B8' };
   };
 
   if (!gameStarted) {
@@ -322,9 +322,9 @@ export default function PecahanAsasT1({ onBack, language = 'bm' }) {
               const optNum = String.fromCharCode(0x2460 + idx);
               return (
                 <button key={idx} className="pf-opt-btn" onClick={() => handleSelect(option)} disabled={isAnswered}
-                  style={{ padding: '0.8rem 1rem', background: bg, color, border: `2px solid ${border}`, borderRadius: '12px', cursor: isAnswered ? 'default' : 'pointer', fontWeight: 700, fontFamily: "'Fredoka',sans-serif", fontSize: '1.2rem', textAlign: 'center', boxShadow: !isAnswered ? '0 2px 0 #6D28D9' : 'none' }}>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 26, height: 26, borderRadius: '50%', background: bg === '#4CAF50' ? '#4CAF50' : bg === '#FF6B6B' ? '#FF6B6B' : 'rgba(139, 92, 246, 0.15)', color: bg === '#4CAF50' || bg === '#FF6B6B' ? '#fff' : 'rgba(139, 92, 246, 0.8)', fontSize: '0.75rem', fontWeight: 900, marginRight: 8, flexShrink: 0 }}>{optNum}</span>
-                  {question.type === 'warna' ? `${option} bahagian` : option}
+                  style={{ padding: '0.8rem 1rem', background: bg, color, border: `2px solid ${border}`, borderRadius: '12px', cursor: isAnswered ? 'default' : 'pointer', fontWeight: 700, fontFamily: "'Fredoka',sans-serif", fontSize: '1.2rem', textAlign: 'center' }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 26, height: 26, borderRadius: '50%', background: bg === '#22C55E' ? '#22C55E' : bg === '#EF4444' ? '#EF4444' : '#E2E8F0', color: bg === '#22C55E' || bg === '#EF4444' ? '#fff' : '#94A3B8', fontSize: '0.75rem', fontWeight: 900, marginRight: 8, flexShrink: 0 }}>{optNum}</span>
+                  {isAnswered && option === question.answer ? `${question.type === 'warna' ? `${option} bahagian` : option} ✓` : isAnswered && option === selectedAnswer ? `${question.type === 'warna' ? `${option} bahagian` : option} ✗` : question.type === 'warna' ? `${option} bahagian` : option}
                 </button>
               );
             })}

@@ -144,14 +144,6 @@ const CMP_PROMPTS = {
   'sama-banyak': 'Yang manakah sama banyak?',
 };
 
-const CMP_HEADERS = {
-  banyak: 'Pembelajaran Banyak atau Sedikit',
-  sedikit: 'Pembelajaran Banyak atau Sedikit',
-  lebih: 'Pembelajaran Lebih atau Kurang',
-  kurang: 'Pembelajaran Lebih atau Kurang',
-  'sama-banyak': 'Pembelajaran Sama Banyak',
-};
-
 function correctSide(q) {
   if (q.type === 'sama-banyak') return q.a === q.ref ? 'a' : 'b';
   const bigger = q.a > q.b ? 'a' : 'b';
@@ -245,26 +237,18 @@ export function CompareExplore({ data, language, theme, onExit }) {
     setComplete(false);
   };
 
-  // Box shows the group's COUNT by default; once answered it is covered by a
-  // ✓ (correct group) or ✗ (the wrong pick).
-  const colorIdx = (side) => side === 'a' ? 0 : 1;
-
   const renderBox = (side) => {
     const picked = selected === side;
     const isAns = side === answer;
-    const ci = colorIdx(side);
-    const c = BOX_COLORS[ci];
     if (answered) {
       if (isAns) return <div className="cmp-box ok" aria-hidden="true">✓</div>;
       if (picked) return <div className="cmp-box no" aria-hidden="true">✗</div>;
       return <div className="cmp-box num dim" aria-hidden="true">{q[side]}</div>;
     }
-    return <div className="cmp-box num" aria-hidden="true" style={{ background: c.bg, color: '#fff', textShadow: '0 1px 2px rgba(0,0,0,.34)', border: 'none', borderBottom: `4px solid ${c.border}` }}>{q[side]}</div>;
+    return <div className="cmp-box num" aria-hidden="true">{q[side]}</div>;
   };
 
   const Panel = ({ side }) => {
-    const ci = colorIdx(side);
-    const c = BOX_COLORS[ci];
     const picked = selected === side;
     const isAns = side === answer;
     return (
@@ -277,8 +261,8 @@ export function CompareExplore({ data, language, theme, onExit }) {
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handlePick(side); } }}
         style={{
           background: '#fff',
-          border: answered ? `2px solid ${picked && !isAns ? C.red : C.green}` : '2px solid #E2E8F0',
-          borderBottom: `4px solid ${answered ? (picked && !isAns ? C.red : C.green) : c.border}`,
+          border: answered ? `2px solid ${picked && !isAns ? '#EF4444' : '#22C55E'}` : '2px solid #E2E8F0',
+          borderBottom: `4px solid ${answered ? (picked && !isAns ? '#EF4444' : '#22C55E') : '#CBD5E1'}`,
           color: '#334155',
         }}
       >
@@ -318,10 +302,6 @@ export function CompareExplore({ data, language, theme, onExit }) {
         /* Header sits as a TITLE near the top; the body is centred in the space
            below it (kept clear of the header). */
         .cmp-scroll-q { display: flex; flex-direction: column; }
-        .cmp-head-title {
-          flex-shrink: 0;
-          padding: clamp(10px, 2.4vmin, 22px) 16px clamp(2px, 0.6vmin, 8px);
-        }
         .cmp-body {
           flex: 1 0 auto; box-sizing: border-box;
           display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -455,9 +435,7 @@ export function CompareExplore({ data, language, theme, onExit }) {
         </div>
       ) : (
         <>
-          {/* Title header near the top; body centred in the space below it. */}
           <div className="cmp-scroll cmp-scroll-q">
-            <div className="cmp-head cmp-head-title">{CMP_HEADERS[q.type]}</div>
             <div className="cmp-body">
               <div className="cmp-content">
                 <div className="cmp-question">{CMP_PROMPTS[q.type]}</div>
@@ -501,15 +479,9 @@ export function CompareExplore({ data, language, theme, onExit }) {
                 </span>
               </span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-              <span style={{ fontSize: 18 }}>🏆</span>
-              <div style={{ width: 70, height: 7, background: 'rgba(204,119,0,0.15)', borderRadius: 4, overflow: 'hidden' }}>
-                <div style={{ width: `${(progressInGroup / 10) * 100}%`, height: '100%', background: '#FFB800', borderRadius: 4, transition: 'width .3s ease-out' }} />
-              </div>
-              <span style={{ color: '#CC7700', fontSize: '0.85rem', fontWeight: 900, minWidth: 28, textAlign: 'right' }}>
-                {progressInGroup}/10
-              </span>
-            </div>
+            <span style={{ color: '#CC7700', fontSize: '0.85rem', fontWeight: 900, minWidth: 28, textAlign: 'right' }}>
+              {progressInGroup}/10
+            </span>
           </div>
         </>
       )}
@@ -576,7 +548,7 @@ function genKenaliSifar(config = DEFAULT_KENALI_CONFIG) {
   const groups = [{ id: 'g-0', count: 0 }];
   const used = new Set([0]);
   const { min, max } = config;
-  for (let i = 1; i < 3; i++) {
+  for (let i = 1; i < 2; i++) {
     let c;
     do { c = randInt(Math.max(1, min), max); } while (used.has(c));
     used.add(c);
@@ -597,7 +569,7 @@ function genKenalNombor(config = DEFAULT_KENALI_CONFIG) {
   const { min, max } = config;
   const number = randInt(min, max);
   const icon = pick(KENALI_ICONS);
-  const numGroups = Math.random() < 0.5 ? 2 : 3;
+  const numGroups = 2;
   const groups = [{ id: 'g-0', count: number }];
   const used = new Set([number]);
   for (let i = 1; i < numGroups; i++) {
@@ -610,7 +582,8 @@ function genKenalNombor(config = DEFAULT_KENALI_CONFIG) {
   return {
     type: 'kenal-nombor',
     header: 'Pembelajaran Nombor',
-    prompt: `Yang manakah ${number}?`,
+    prompt: 'Yang manakah',
+    promptNumber: number,
     number,
     icon,
     groups: shuffle(groups),
@@ -706,11 +679,11 @@ function BilangContent({ q, ctx }) {
         {q.options.map((opt, idx) => {
           const picked = selected === opt.id;
           const isAns = opt.id === answer;
-          const c = BOX_COLORS[idx % BOX_COLORS.length];
           let bg, bd, clr, txt, anim;
-          if (answered && isAns) { bg = C.green; bd = C.green; clr = '#fff'; txt = '✓'; anim = 'snkBounce .5s ease'; }
-          else if (answered && picked) { bg = C.red; bd = C.red; clr = '#fff'; txt = '✗'; anim = 'shakeError .35s ease'; }
-          else { bg = c.bg; bd = c.border; clr = '#fff'; txt = opt.display; anim = 'none'; }
+          const label = `${opt.value}`;
+          if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; clr = '#fff'; txt = label + ' ✓'; anim = 'snkBounce .5s ease'; }
+          else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; clr = '#fff'; txt = label + ' ✗'; anim = 'shakeError .35s ease'; }
+          else { bg = '#fff'; bd = '#E2E8F0'; clr = '#1E293B'; txt = label; anim = 'none'; }
           return (
             <button key={opt.id} className="kog-answer-btn" type="button" onClick={() => handlePick(opt.id)} disabled={answered}
               style={{
@@ -721,8 +694,8 @@ function BilangContent({ q, ctx }) {
                 background: bg,
                 color: clr,
                 fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
-                fontSize: isWord && !(answered && (isAns || picked)) ? 'clamp(16px, 2.8vmin, 28px)' : 'clamp(24px, 4vmin, 40px)',
-                lineHeight: 1.1, whiteSpace: 'nowrap',
+                fontSize: 'clamp(28px, 5vmin, 48px)',
+                lineHeight: 1.2, whiteSpace: 'nowrap',
                 cursor: answered ? 'default' : 'pointer',
                 transition: 'all .15s ease', WebkitTapHighlightColor: 'transparent',
                 minHeight: 44, minWidth: 44,
@@ -787,11 +760,10 @@ function KenalContent({ q, ctx }) {
       {q.groups.map((group, idx) => {
         const picked = selected === group.id;
         const isAns = group.id === answer;
-        const c = BOX_COLORS[idx % BOX_COLORS.length];
         let bg, bd, anim;
-        if (answered && isAns) { bg = C.green; bd = C.green; anim = 'snkBounce .5s ease'; }
-        else if (answered && picked) { bg = C.red; bd = C.red; anim = 'shakeError .35s ease'; }
-        else { bg = c.bg; bd = c.border; anim = 'none'; }
+        if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; anim = 'snkBounce .5s ease'; }
+        else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; anim = 'shakeError .35s ease'; }
+        else { bg = '#fff'; bd = '#CBD5E1'; anim = 'none'; }
         return (
           <div key={group.id}
             className={`kog-option${answered && isAns ? ' is-correct' : ''}${answered && picked && !isAns ? ' is-wrong' : ''}`}
@@ -843,11 +815,10 @@ function SifarContent({ q, ctx }) {
         const picked = selected === group.id;
         const isAns = group.id === answer;
         const isEmpty = group.count === 0;
-        const c = BOX_COLORS[idx % BOX_COLORS.length];
         let bg, bd, anim;
-        if (answered && isAns) { bg = C.green; bd = C.green; anim = 'snkBounce .5s ease'; }
-        else if (answered && picked) { bg = C.red; bd = C.red; anim = 'shakeError .35s ease'; }
-        else { bg = c.bg; bd = c.border; anim = 'none'; }
+        if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; anim = 'snkBounce .5s ease'; }
+        else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; anim = 'shakeError .35s ease'; }
+        else { bg = '#fff'; bd = '#CBD5E1'; anim = 'none'; }
         return (
           <div key={group.id}
             className={`kog-option${answered && isAns ? ' is-correct' : ''}${answered && picked && !isAns ? ' is-wrong' : ''}`}
@@ -1029,9 +1000,10 @@ function NumOptionsGrid({ options, answered, selected, answer, handlePick, theme
         const isAns = opt.id === answer;
         const c = BOX_COLORS[idx % BOX_COLORS.length];
         let bg, bd, clr, txt, anim;
-        if (answered && isAns) { bg = C.green; bd = C.green; clr = '#fff'; txt = '✓'; anim = 'snkBounce .5s ease'; }
-        else if (answered && picked) { bg = C.red; bd = C.red; clr = '#fff'; txt = '✗'; anim = 'shakeError .35s ease'; }
-        else { bg = c.bg; bd = c.border; clr = '#fff'; txt = opt.value; anim = 'none'; }
+        if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; clr = '#fff'; txt = `${opt.value} ✓`; anim = 'snkBounce .5s ease'; }
+        else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; clr = '#fff'; txt = `${opt.value} ✗`; anim = 'shakeError .35s ease'; }
+        else if (answered) { bg = '#fff'; bd = '#E2E8F0'; clr = '#94A3B8'; txt = opt.value; anim = 'none'; }
+        else { bg = '#fff'; bd = '#CBD5E1'; clr = '#1E293B'; txt = opt.value; anim = 'none'; }
         return (
           <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={answered}
             style={{
@@ -1252,37 +1224,67 @@ function build21Round() {
   return shuffle(qs).map((q, i) => ({ ...q, qid: i }));
 }
 
-// Shows the number as TENS (rows of ten, grouped in a box) + ONES (loose below),
-// so it is countable by tens — matches the workbook (Aktiviti 1/2). Responsive.
+// Shows the number as TENS (compact "icon = 10" badges joined with +) + ONES (individual icons)
+// so children can understand the decomposition (e.g. 🐰=10 + 🐰=10 + 🐰🐰🐰).
 function TensOnesGrid({ icon, count }) {
   if (count === 0) return <EmptyTray />;
   const tens = Math.floor(count / 10);
   const ones = count % 10;
-  // Emoji is smaller than its cell → breathing room around each one (not packed);
-  // cell width is vw-based so 10-across still fills the box.
-  const fontSz = 'clamp(15px, 5.6vw, 26px)';
-  const cellSz = 'clamp(22px, 8vw, 38px)';
-  const gap = 'clamp(2px, 1vw, 8px)';
-  const cell = (k) => <span key={k} style={{ fontSize: fontSz, width: cellSz, lineHeight: 1.1, textAlign: 'center', display: 'inline-block' }}>{icon}</span>;
-  const tenRow = (key) => (
-    <div key={key} style={{ display: 'flex', justifyContent: 'center', gap }}>
-      {Array.from({ length: 10 }).map((_, i) => cell(key + '-' + i))}
-    </div>
+  const badgeFont = 'clamp(16px, 2.8vmin, 24px)';
+  const iconFont = 'clamp(24px, 5vmin, 42px)';
+  const onesFont = 'clamp(18px, 5vmin, 34px)';
+  const cellSz = 'clamp(28px, 7vw, 40px)';
+  const plusStyle = {
+    fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
+    fontSize: 'clamp(18px, 3vmin, 28px)', color: '#94A3B8',
+    lineHeight: 1,
+  };
+  const badge = (key) => (
+    <span key={key} style={{
+      display: 'inline-flex', alignItems: 'center', gap: 'clamp(4px, 0.8vmin, 8px)',
+      fontSize: badgeFont, fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
+      color: '#475569', background: '#F1F5F9',
+      padding: 'clamp(4px, 0.8vmin, 8px) clamp(8px, 1.4vmin, 14px)',
+      borderRadius: 'clamp(8px, 1.2vmin, 12px)',
+      lineHeight: 1,
+    }}>
+      <span style={{ fontSize: iconFont, lineHeight: 1 }}>{icon}</span>
+      <span>= 10</span>
+    </span>
   );
+  // Split tens badges into rows of 2, with + between badges in a row and a standalone + between rows
+  const tensRows = [];
+  for (let r = 0; r < tens; r += 2) {
+    const row = [];
+    row.push(badge('b' + r));
+    if (r + 1 < tens) {
+      row.push(<span key={'plus-' + (r + 1)} style={plusStyle}>+</span>);
+      row.push(badge('b' + (r + 1)));
+    }
+    tensRows.push(row);
+  }
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(6px, 1.4vw, 14px)', width: '100%', maxWidth: 'min(96vw, 600px)' }}>
-      {tens > 0 && (
-        <div style={{
-          display: 'flex', flexDirection: 'column', gap: 'clamp(3px, 0.9vw, 8px)',
-          padding: 'clamp(10px, 2.4vw, 20px)',
-          background: '#FAFAFA', border: '2px solid #E2E8F0', borderRadius: 'clamp(12px, 1.6vmin, 20px)',
-        }}>
-          {Array.from({ length: tens }).map((_, r) => tenRow('t' + r))}
+    <div style={{
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      padding: 'clamp(12px, 2.4vmin, 22px)',
+      background: '#fff', border: '2px solid #E2E8F0', borderRadius: 'clamp(14px, 2vmin, 22px)',
+      width: '100%',
+    }}>
+      {tensRows.map((row, i) => (
+        <div key={'row' + i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'clamp(6px, 1.2vmin, 12px)', flexWrap: 'wrap' }}>
+          {row}
+        </div>
+      ))}
+      {tens > 0 && ones > 0 && (
+        <div style={{ margin: 'clamp(4px, 0.8vmin, 8px) 0' }}>
+          <span style={plusStyle}>+</span>
         </div>
       )}
       {ones > 0 && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap }}>
-          {Array.from({ length: ones }).map((_, i) => cell('o' + i))}
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 'clamp(3px, 0.8vw, 6px)' }}>
+          {Array.from({ length: ones }).map((_, i) => (
+            <span key={'o' + i} style={{ fontSize: onesFont, width: cellSz, lineHeight: 1.1, textAlign: 'center', display: 'inline-block' }}>{icon}</span>
+          ))}
         </div>
       )}
     </div>
@@ -1330,10 +1332,10 @@ function WordOptionsGrid({ options, answered, selected, answer, handlePick, them
         const c = BOX_COLORS[idx % BOX_COLORS.length];
         const warnai = plain && !answered;
         let bg, bd, clr, txt, anim;
-        if (answered && isAns) { bg = C.green; bd = C.green; clr = '#fff'; txt = '✓'; anim = 'snkBounce .5s ease'; }
-        else if (answered && picked) { bg = C.red; bd = C.red; clr = '#fff'; txt = '✗'; anim = 'shakeError .35s ease'; }
-        else if (plain) { bg = `${c.bg}26`; bd = c.border; clr = '#fff'; txt = opt.value; anim = 'none'; }
-        else { bg = c.bg; bd = c.border; clr = '#fff'; txt = opt.value; anim = 'none'; }
+        if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; clr = '#fff'; txt = `${opt.value} ✓`; anim = 'snkBounce .5s ease'; }
+        else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; clr = '#fff'; txt = `${opt.value} ✗`; anim = 'shakeError .35s ease'; }
+        else if (plain) { bg = '#fff'; bd = '#CBD5E1'; clr = '#1E293B'; txt = opt.value; anim = 'none'; }
+        else { bg = '#fff'; bd = '#CBD5E1'; clr = '#1E293B'; txt = opt.value; anim = 'none'; }
         return (
           <button key={opt.id} type="button"
             className={warnai ? 'warnai-opt' : undefined}
@@ -1389,8 +1391,8 @@ function AngkaKePerkataanContent({ q, ctx }) {
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 24px)', width: '100%' }}>
       <div style={{
         fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
-        fontSize: 'clamp(42px, 12vmin, 96px)', color: '#1E293B',
-        lineHeight: 1.1, textAlign: 'center',
+        fontSize: 'clamp(42px, 12vmin, 96px)', color: C?.accent || '#F59E0B',
+        lineHeight: 1.1, textAlign: 'center', textShadow: '0 2px 8px rgba(0,0,0,.12)',
       }}>{q.number}</div>
       <WordOptionsGrid options={q.options} answered={answered} selected={selected} answer={answer} handlePick={handlePick} theme={C} />
     </div>
@@ -1629,7 +1631,7 @@ function genNilaiTempat() {
   return {
     type: 'nilai-tempat-pilih',
     header: 'Pembelajaran Nilai Tempat',
-    prompt: 'Tulis nilai tempat bagi nombor bergaris',
+    prompt: 'Pilih nilai tempat bagi nombor bergaris',
     number: n,
     digits,
     underlinedIdx: digitIdx,
@@ -1865,11 +1867,10 @@ function NilaiTempatPilihContent({ q, ctx }) {
         {q.options.map((opt, idx) => {
           const picked = selected === opt.id;
           const isAns = opt.id === answer;
-          const c = BOX_COLORS[idx % BOX_COLORS.length];
           let bg, bd, clr, txt, anim;
-          if (answered && isAns) { bg = C.green; bd = C.green; clr = '#fff'; txt = '✓'; anim = 'snkBounce .5s ease'; }
-          else if (answered && picked) { bg = C.red; bd = C.red; clr = '#fff'; txt = '✗'; anim = 'shakeError .35s ease'; }
-          else { bg = c.bg; bd = c.border; clr = '#fff'; txt = opt.value; anim = 'none'; }
+          if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; clr = '#fff'; txt = `${opt.value} ✓`; anim = 'snkBounce .5s ease'; }
+          else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; clr = '#fff'; txt = `${opt.value} ✗`; anim = 'shakeError .35s ease'; }
+          else { bg = '#fff'; bd = '#CBD5E1'; clr = '#1E293B'; txt = opt.value; anim = 'none'; }
           return (
             <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={answered}
               style={{
@@ -6759,15 +6760,9 @@ function M2DrillScreen({ selectedType, theme, onBackToPicker, onScoreRecord }) {
                 </span>
               </span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-              <span style={{ fontSize: 18 }}>🏆</span>
-              <div style={{ width: 70, height: 7, background: 'rgba(255,210,63,.15)', borderRadius: 4, overflow: 'hidden' }}>
-                <div style={{ width: `${(progressInGroup / 10) * 100}%`, height: '100%', background: 'linear-gradient(90deg,#FFD23F,#FFAB00)', borderRadius: 4, transition: 'width .3s ease-out', boxShadow: '0 0 6px #FFD23F88' }} />
-              </div>
-              <span style={{ color: dark, fontSize: '0.85rem', fontWeight: 900, minWidth: 28, textAlign: 'right' }}>
-                {progressInGroup}/10
-              </span>
-            </div>
+            <span style={{ color: dark, fontSize: '0.85rem', fontWeight: 900, minWidth: 28, textAlign: 'right' }}>
+              {progressInGroup}/10
+            </span>
           </div>
         </>
       )}

@@ -24,9 +24,6 @@ export default function MatematikActivityFrame({
   onExit,
   scoreStorageKey,
   scoreId,
-  hideChangeStrip = false,
-  changeLabel = 'Tukar Jenis',
-  onChangeType,
 }) {
   const nav = useContext(MatematikNavContext);
   const [questions, setQuestions] = useState(() => buildRound());
@@ -102,21 +99,6 @@ export default function MatematikActivityFrame({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%' }}>
       <style>{`
-        .maf-top-strip {
-          flex-shrink: 0; display: flex; align-items: center; justify-content: flex-end;
-          padding: clamp(4px, 0.8vmin, 10px) clamp(12px, 2vmin, 20px);
-          background: rgba(255,255,255,.7); backdrop-filter: blur(8px);
-          border-bottom: 1px solid #E2E8F0;
-        }
-        .maf-tukar-btn {
-          border: none; background: transparent; cursor: pointer;
-          display: flex; align-items: center; gap: 3px; padding: 4px 8px; border-radius: 8px;
-          font-family: 'Fredoka', sans-serif; font-weight: 700;
-          font-size: clamp(12px, 1.4vmin, 14px); color: ${C.dark};
-          transition: background .15s ease; -webkit-tap-highlight-color: transparent;
-        }
-        .maf-tukar-btn:hover { background: rgba(0,0,0,.05); }
-        .maf-tukar-btn:active { transform: translateY(1px); }
         .maf-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .maf-center {
           min-height: 100%; box-sizing: border-box;
@@ -134,7 +116,6 @@ export default function MatematikActivityFrame({
         }
         /* Header sits as a TITLE near the top; body centred in the space below. */
         .maf-scroll-q { display: flex; flex-direction: column; }
-        .maf-head-title { flex-shrink: 0; padding: clamp(10px, 2.4vmin, 22px) 16px clamp(2px, 0.6vmin, 8px); }
         .maf-body {
           flex: 1 0 auto; box-sizing: border-box;
           display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -143,6 +124,7 @@ export default function MatematikActivityFrame({
         .maf-question {
           font-family: 'Baloo 2', sans-serif; font-weight: 800;
           font-size: clamp(22px, 4.6vmin, 44px); color: #1E293B; text-align: center; line-height: 1.15;
+          margin-bottom: clamp(20px, 4vmin, 40px);
         }
         .maf-feedback {
           font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(17px, 2.6vmin, 28px);
@@ -204,15 +186,6 @@ export default function MatematikActivityFrame({
         }
       `}</style>
 
-      {!hideChangeStrip && (
-        <div className="maf-top-strip">
-          <button type="button" className="maf-tukar-btn"
-            onClick={() => (onChangeType ? onChangeType() : onExit?.())}>
-            {changeLabel} ⟲
-          </button>
-        </div>
-      )}
-
       {complete ? (
         <div className="maf-scroll">
           <div className="maf-center">
@@ -242,10 +215,9 @@ export default function MatematikActivityFrame({
       ) : (
         <>
           <div className="maf-scroll maf-scroll-q">
-            <div className="maf-head maf-head-title">{q.header}</div>
             <div className="maf-body">
               <div className="maf-content">
-                {q.prompt && <div className="maf-question">{q.prompt}</div>}
+                {q.prompt && <div className="maf-question">{q.prompt}{q.promptNumber != null && <>&nbsp;<strong style={{fontSize:'1.3em', color:C.accent}}>{q.promptNumber}</strong>&nbsp;?</>}</div>}
                 {renderQuestion(q, ctx)}
                 <div className={`maf-feedback ${answered ? (isCorrect ? 'ok' : 'no') : ''}`}>
                   {answered ? (isCorrect ? 'Betul! 🎉' : 'Cuba lagi') : ''}
@@ -272,15 +244,9 @@ export default function MatematikActivityFrame({
                 </span>
               </span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-              <span style={{ fontSize: 18 }}>🏆</span>
-              <div style={{ width: 70, height: 7, background: 'rgba(204,119,0,0.15)', borderRadius: 4, overflow: 'hidden' }}>
-                <div style={{ width: `${(progressInGroup / 10) * 100}%`, height: '100%', background: '#FFB800', borderRadius: 4, transition: 'width .3s ease-out' }} />
-              </div>
-              <span style={{ color: '#CC7700', fontSize: '0.85rem', fontWeight: 900, minWidth: 28, textAlign: 'right' }}>
-                {progressInGroup}/10
-              </span>
-            </div>
+            <span style={{ color: '#CC7700', fontSize: '0.85rem', fontWeight: 900, minWidth: 28, textAlign: 'right' }}>
+              {progressInGroup}/10
+            </span>
           </div>
         </>
       )}

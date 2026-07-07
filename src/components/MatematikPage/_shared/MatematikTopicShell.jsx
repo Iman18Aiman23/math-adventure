@@ -507,9 +507,6 @@ export default function MatematikTopicShell({
           color: rgba(234,246,255,.72) !important;
           text-shadow: 0 0 18px color-mix(in srgb, var(--mt-accent) 24%, transparent);
         }
-        .mt-topic-shell .cmp-head-title {
-          display: none !important;
-        }
         .mt-topic-shell .cmp-question,
         .mt-topic-shell .maf-question {
           display: inline-flex;
@@ -727,19 +724,6 @@ export default function MatematikTopicShell({
           min-height: 0 !important;
           box-shadow: none !important;
         }
-        .mt-topic-shell .maf-tukar-btn {
-          margin-left: auto;
-          background:
-            linear-gradient(180deg, rgba(255,255,255,.96), rgba(240,247,251,.90)) !important;
-          border: 1px solid rgba(255,255,255,.88) !important;
-          border-radius: 999px !important;
-          color: color-mix(in srgb, var(--mt-dark) 78%, #1E3A8A) !important;
-          padding: 7px 12px !important;
-          box-shadow:
-            inset 0 1px 0 rgba(255,255,255,.98),
-            0 10px 22px rgba(15, 118, 110, .10);
-          backdrop-filter: blur(10px);
-        }
         .mt-topic-shell .maf-next,
         .mt-topic-shell .cmp-next {
           box-shadow: 0 5px 0 color-mix(in srgb, var(--mt-cd) 78%, #000 0%), 0 14px 28px color-mix(in srgb, var(--mt-accent) 22%, transparent) !important;
@@ -904,9 +888,6 @@ export default function MatematikTopicShell({
         .mt-dark-chrome .maf-head { color: rgba(255,255,255,.6) !important; }
         .mt-dark-chrome .maf-question { color: #fff !important; }
         .mt-dark-chrome .maf-footer { background: rgba(10,12,40,.55) !important; border-top-color: rgba(255,255,255,.08) !important; }
-        .mt-dark-chrome .maf-top-strip { background: rgba(14,10,46,.75) !important; border-bottom-color: rgba(255,255,255,.1) !important; }
-        .mt-dark-chrome .maf-tukar-btn { color: #2DE2E6 !important; }
-        .mt-dark-chrome .maf-tukar-btn:hover { background: rgba(255,255,255,.08) !important; }
         .mt-dark-chrome .maf-footer-tally { color: rgba(255,255,255,.55) !important; }
         .mt-dark-chrome .maf-stats .maf-divider { color: rgba(255,255,255,.18) !important; }
         .mt-dark-chrome .maf-summary-row { background: rgba(255,255,255,.06) !important; border-color: rgba(255,255,255,.1) !important; color: rgba(255,255,255,.85) !important; }
