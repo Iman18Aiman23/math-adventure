@@ -50,6 +50,60 @@ const BOTTOM_NAV = [
   { label: 'Profile', icon: UserCircle },
 ];
 
+function DropdownActions({ items, language, accent, onSelect }) {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <div style={{ width: '100%', padding: '8px 16px 16px' }}>
+      <button type="button" onClick={() => setOpen(o => !o)}
+        style={{
+          width: '100%', padding: '14px 20px', border: `2px solid ${accent}44`, borderRadius: 16,
+          background: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          fontFamily: "'Baloo 2',sans-serif", fontWeight: 700, fontSize: 18, color: '#334155',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.06)', WebkitTapHighlightColor: 'transparent',
+        }}
+      >
+        <span>{language === 'bm' ? 'Pilih Aktiviti' : 'Select Activity'}</span>
+        <span style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform .2s ease' }}>
+          <ChevronUp size={26} strokeWidth={2.8} />
+        </span>
+      </button>
+      {open && (
+        <div style={{
+          marginTop: 6, borderRadius: 14, border: `1.5px solid ${accent}33`,
+          background: '#fff', overflow: 'hidden',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.10)',
+          animation: 'scm-dropdown-in .2s ease',
+        }}>
+          <style>{`@keyframes scm-dropdown-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}`}</style>
+          {items.map((item, i) => {
+            const Icon = LESSON_ICONS[item.icon] || Sparkles;
+            return (
+              <button key={item.id} type="button" onClick={() => { onSelect(item.id); setOpen(false); }}
+                style={{
+                  width: '100%', padding: '14px 18px', border: 'none', borderBottom: i < items.length - 1 ? '1px solid #F1F5F9' : 'none',
+                  background: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14, textAlign: 'left', transition: 'background .15s',
+                  fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: 16, color: '#1E293B', WebkitTapHighlightColor: 'transparent',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#F8FAFC'}
+                onMouseLeave={(e) => e.currentTarget.style.background = '#fff'}
+              >
+                <span style={{ flexShrink: 0, width: 38, height: 38, borderRadius: 10, background: `${accent}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: accent }}>
+                  <Icon size={22} strokeWidth={2.4} />
+                </span>
+                <span style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 700, fontSize: 17, color: '#1E293B' }}>{item.label}</div>
+                  {item.desc && <div style={{ fontSize: 13, color: '#94A3B8', marginTop: 1 }}>{item.desc}</div>}
+                </span>
+                <ChevronRight size={20} strokeWidth={2.6} style={{ color: '#CBD5E1', flexShrink: 0 }} />
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Tahun1ModuleHubLayout({
   moduleNum,
   moduleName,
@@ -1232,32 +1286,41 @@ export default function Tahun1ModuleHubLayout({
                     </button>
                     <div className="pi-mhub-lesson-panel">
                       <div className="pi-mhub-lesson-panel-inner">
-                        <div className="pi-mhub-lesson-list">
-                          {(t.actions?.length ? t.actions : [{ id: t.id, label: language === 'bm' ? 'Mula aktiviti' : 'Start activity', icon: t.icon || 'sparkles' }]).map((action) => {
-                            const Icon = LESSON_ICONS[action.icon] || Sparkles;
-                            const status = action.score?.status || 'unplayed';
-                            return (
-                              <button
-                                key={action.id}
-                                type="button"
-                                className="pi-mhub-lesson-button pi-mhub-lesson-button--no-score"
-                                style={{ '--topic-accent': t.color || theme.accent }}
-                                onClick={() => onSelectTopic?.(action.id)}
-                              >
-                                <span className="pi-mhub-lesson-icon" aria-hidden="true">
-                                  <Icon size={30} strokeWidth={2.4} />
-                                </span>
-                                <span className="pi-mhub-lesson-name">{action.label}</span>
-                                <span className={`pi-mhub-status pi-mhub-status--${status}`}>
-                                  {action.score?.label || 'Score 0/10'}
-                                </span>
-                                <span className="pi-mhub-row-chevron" aria-hidden="true">
-                                  <ChevronRight size={24} strokeWidth={3} />
-                                </span>
-                              </button>
-                            );
-                          })}
-                        </div>
+                        {t.dropdown ? (
+                          <DropdownActions
+                            items={t.dropdown}
+                            language={language}
+                            accent={t.color || theme.accent}
+                            onSelect={(id) => onSelectTopic?.(id)}
+                          />
+                        ) : (
+                          <div className="pi-mhub-lesson-list">
+                            {(t.actions?.length ? t.actions : [{ id: t.id, label: language === 'bm' ? 'Mula aktiviti' : 'Start activity', icon: t.icon || 'sparkles' }]).map((action) => {
+                              const Icon = LESSON_ICONS[action.icon] || Sparkles;
+                              const status = action.score?.status || 'unplayed';
+                              return (
+                                <button
+                                  key={action.id}
+                                  type="button"
+                                  className="pi-mhub-lesson-button pi-mhub-lesson-button--no-score"
+                                  style={{ '--topic-accent': t.color || theme.accent }}
+                                  onClick={() => onSelectTopic?.(action.id)}
+                                >
+                                  <span className="pi-mhub-lesson-icon" aria-hidden="true">
+                                    <Icon size={30} strokeWidth={2.4} />
+                                  </span>
+                                  <span className="pi-mhub-lesson-name">{action.label}</span>
+                                  <span className={`pi-mhub-status pi-mhub-status--${status}`}>
+                                    {action.score?.label || 'Score 0/10'}
+                                  </span>
+                                  <span className="pi-mhub-row-chevron" aria-hidden="true">
+                                    <ChevronRight size={24} strokeWidth={3} />
+                                  </span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </section>

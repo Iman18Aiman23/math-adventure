@@ -82,20 +82,20 @@ const TOPICS = [
     visual: robotFor('+', TOPIC_COLORS[3]),
     color: TOPIC_COLORS[3],
     actions: [
-      { id: 'kombinasi-nombor', label: 'Pasangan Jadi 10', icon: 'link' },
+      { id: 'kombinasi-nombor', label: 'Cari pasangan nombor', icon: 'link' },
+      { id: 'selesaikan', label: 'Cerita Nombor', icon: 'book' },
     ],
   },
   {
     id: 'm1-cabaran',
     pill: 'CABARAN',
     title: 'Latihan dan cabaran',
-    desc: 'Gunakan semua kemahiran nombor dalam latihan, cerita dan cabaran akhir.',
+    desc: 'Selesaikan cerita menggunakan roda nombor dan uji minda dengan cabaran Modul 1.',
     visual: robotFor('?', TOPIC_COLORS[4]),
     color: TOPIC_COLORS[4],
     actions: [
-      { id: 'selesaikan', label: 'Cerita Nombor', icon: 'book' },
-      { id: 'latih-diri', label: 'Latihan Pantas', icon: 'calculator' },
-      { id: 'cabar-minda', label: 'Cabaran Nombor', icon: 'trophy' },
+      { id: 'selesaikan-cerita-m1', label: 'Selesaikan Cerita', icon: 'book' },
+      { id: 'cabar-minda-m1', label: 'Cabaran', icon: 'trophy' },
     ],
   },
 ];

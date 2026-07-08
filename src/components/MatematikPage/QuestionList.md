@@ -34,19 +34,19 @@ Bilangan: 2 susun + 3 tulis + 2 bilang + 3 angka-ke-perkataan = 10 soalan
 Bilangan: 5 bilang-tulis + 5 pilih = 10 soalan
 
 7. Susunan Nombor
-- susunan-order → "Susun mengikut tertib menaik" / "Susun mengikut tertib menurun" — tile nombor 7, 4, 9, 2 → tap ikut urutan
+- susunan-order → "Susun nombor secara menaik" / "Susun nombor secara menurun" — tile nombor 7, 4, 9, 2 → tap ikut urutan
 - susunan-jiran (sebelum) → "Tulis nombor sebelum" — "__ , 15" → taip 14
 - susunan-jiran (selepas) → "Tulis nombor selepas" — "12 , __" → taip 13
 - susunan-jiran (di-antara) → "Tulis nombor di antara" — "7 , __ , 9" → taip 8
-- susunan-lengkapkan → "Bilang menaik 10-30" / "Bilang menurun 30-10" — "10 15 __ 25 30" → taip 20
+- susunan-lengkapkan → "Kira nombor secara menaik 10-30" / "Kira nombor secara menurun 30-10" — "10 15 __ 25 30" → taip 20
 - susunan-sambung-titik → "Sambung titik ikut urutan nombor" — klik titik 1→2→3→...→10 untuk bentuk bintang/hati/mahkota
 Bilangan: 3 susun + 2 jiran + 3 lengkapkan + 2 sambung titik = 10 soalan
 
 8. Pola Nombor
-- pola-berulang (next) → "Tulis nombor seterusnya" — pola "2 4 2 4 2 4 ?" → pilih 2
-- pola-berulang (gap) → "Lengkapkan pola" — "2 4 ? 8 2 4" → pilih 6
-- pola-bilang-lengkap → "Lengkapkan pola nombor" — "10 15 __ 25 30 35" → taip 20 (keypad)
-- pola-bilang-terang → "Terangkan pola nombor" — "10, 20, 30, 40" → pilih "Menaik sepuluh-sepuluh" (dari pilihan seperti "Menaik dua-dua", "Menurun tiga-tiga", dll)
+- pola-berulang (next) → "Pilih nombor seterusnya" — pola "2 4 2 4 2 4 ?" → pilih 2
+- pola-berulang (gap) → "Lengkapkan urutan nombor" — "2 4 ? 8 2 4" → pilih 6
+- pola-bilang-lengkap → "Lengkapkan urutan nombor" — "10 15 __ 25 30 35" → taip 20 (keypad)
+- pola-bilang-terang → "Pilih pola yang betul" — "10, 20, 30, 40" → pilih "Menaik sepuluh-sepuluh" (dari pilihan seperti "Menaik dua-dua", "Menurun tiga-tiga", dll)
 Bilangan: 3 next + 2 gap + 3 lengkap + 2 terang = 10 soalan
 
 9. Anggar & Bundar
@@ -77,7 +77,7 @@ Bilangan: 3 banding + 2 bina + 3 cerita + 2 bundar = 10 soalan
 - latih-word → perkataan nombor — "Tiga puluh tujuh" → pilih 37
 - latih-count → "Berapa bilangannya?" — kira emoji, pilih jumlah
 - latih-besar → "Pilih nombor lebih besar daripada N" — "Pilih nombor lebih besar daripada 35"
-- latih-lengkap → "Lengkapkan pola" — "4 8 __ 16 20" → pilih 12
+- latih-lengkap → "Lengkapkan urutan nombor" — "4 8 __ 16 20" → pilih 12
 - latih-bundar → "Bundarkan n kepada puluh terdekat" — "Bundarkan 47 kepada puluh terdekat"
 Bilangan: 2 word + 2 count + 2 besar + 2 lengkap + 2 bundar = 10 soalan
 
@@ -86,7 +86,7 @@ Bilangan: 2 word + 2 count + 2 besar + 2 lengkap + 2 bundar = 10 soalan
 - cabar-pick (nilai digit) → "Digit d bernilai d×10 dalam nombor?" — "Digit 7 bernilai 70 dalam nombor?" → pilih 73
 - cabar-bundar → "Bundarkan n kepada puluh terdekat" — "Bundarkan 42 kepada puluh terdekat" → pilih 40
 - cabar-pick (reverse bundar) → "Nombor manakah menjadi T apabila dibundar?" — "Nombor manakah menjadi 80 apabila dibundar?"
-- cabar-lengkap → "Lengkapkan pola" — "27 24 21 __ 15" → pilih 18
+- cabar-lengkap → "Lengkapkan urutan nombor" — "27 24 21 __ 15" → pilih 18
 Bilangan: 2 antara + 2 nilai digit + 2 bundar + 2 reverse + 2 lengkap = 10 soalan
 PERMAINAN ASAL (tidak aktif) — Module1_Nombor/
 
