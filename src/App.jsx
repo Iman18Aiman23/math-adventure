@@ -193,6 +193,7 @@ const LatihDiriM2 = React.lazy(() => import('./components/MatematikPage/Tahun1/M
 const CabarMindaM2 = React.lazy(() => import('./components/MatematikPage/Tahun1/Module2_TambahDanTolak/CabarMindaM2'));
 const SelesaikanCeritaM1 = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_NomborHingga100/SelesaikanCeritaM1'));
 const CabarMindaM1 = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_NomborHingga100/CabarMindaM1'));
+const KenaliPecahan = React.lazy(() => import('./components/MatematikPage/Tahun1/Module3_Pecahan/KenaliPecahan'));
 const PecahanModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module3_Pecahan/PecahanModule'));
 const WangModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module4_Wang/WangModule'));
 const MasaDanWaktuModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module5_MasaDanWaktu/MasaDanWaktuModule'));
@@ -423,6 +424,7 @@ const MT_MODULE2_DRILL_TYPES = [
   'tb-add-groups', 'tb-add-line', 'tb-add-complete', 'tb-sub-groups', 'tb-sub-line',
 ];
 const MT_MODULE2_ORDER = [...MT_MODULE2_DRILL_TYPES.map((id) => `m2-drill-${id}`), 'm2-selesaikan', 'm2-cabar-minda'];
+const MT_MODULE3_ORDER = ['kenali-pecahan'];
 
 export default function App() {
   const isDesktop = useIsDesktop();
@@ -638,6 +640,7 @@ export default function App() {
         if (matematikTopic === '3-ukuran')           return <UkuranT3           onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === '3-data')             return <DataT3             onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === '3-kebarangkalian')   return <KebarangkalianT3   onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'kenali-pecahan')      return <KenaliPecahan      onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'pecahan-asas')       return <PecahanAsasT1      onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === '2-bahagi')           return <BahagiT2           onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === '2-ukuran-jisim-cecair') return <JisimCecairT2   onBack={() => setMatematikTopic(null)} language={language} />;
@@ -1494,7 +1497,7 @@ export default function App() {
     }
   };
 
-  const MT_ORDERS = [MT_MODULE1_ORDER, MT_MODULE2_ORDER];
+  const MT_ORDERS = [MT_MODULE1_ORDER, MT_MODULE2_ORDER, MT_MODULE3_ORDER];
   const mtOrder = MT_ORDERS.find(o => o.includes(matematikTopic)) || [];
   const mtIdx = mtOrder.indexOf(matematikTopic);
   const matematikNav = {

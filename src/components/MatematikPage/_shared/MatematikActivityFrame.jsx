@@ -109,7 +109,7 @@ export default function MatematikActivityFrame({
         .maf-content {
           width: 100%; max-width: min(94vw, 860px);
           display: flex; flex-direction: column; align-items: center;
-          gap: clamp(8px, 1.6vmin, 18px);
+          gap: clamp(6px, 1.2vmin, 14px);
         }
         .maf-head {
           font-family: 'Fredoka', sans-serif; font-weight: 700;
@@ -118,26 +118,26 @@ export default function MatematikActivityFrame({
         /* Header sits as a TITLE near the top; body centred in the space below. */
         .maf-scroll-q { display: flex; flex-direction: column; }
         .maf-body {
-          flex: 1 0 auto; box-sizing: border-box;
+          flex: 1 1 0; min-height: 0; box-sizing: border-box;
           display: flex; flex-direction: column; justify-content: center; align-items: center;
           padding: clamp(6px, 1.4vmin, 14px) clamp(14px, 3vmin, 40px) clamp(8px, 1.6vmin, 16px);
         }
         .maf-question {
           font-family: 'Baloo 2', sans-serif; font-weight: 800;
-          font-size: clamp(22px, 4.6vmin, 44px); color: #1E293B; text-align: center; line-height: 1.15;
-          margin-bottom: clamp(20px, 4vmin, 40px);
+          font-size: clamp(18px, 3.6vmin, 38px); color: #1E293B; text-align: center; line-height: 1.15;
+          margin-bottom: clamp(8px, 1.6vmin, 20px);
         }
         .maf-feedback {
-          font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(17px, 2.6vmin, 28px);
-          text-align: center; min-height: clamp(24px, 3.4vmin, 38px);
+          font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(14px, 2vmin, 22px);
+          text-align: center; min-height: clamp(18px, 2.4vmin, 28px);
           display: flex; align-items: center; justify-content: center;
         }
         .maf-feedback.ok { color: ${C.green}; }
         .maf-feedback.no { color: ${C.red}; }
         .maf-next {
-          padding: clamp(11px, 1.5vmin, 17px) clamp(28px, 4vmin, 52px); border: none; border-radius: 999px;
+          padding: clamp(8px, 1.2vmin, 14px) clamp(20px, 3.2vmin, 44px); border: none; border-radius: 999px;
           background: ${C.accent}; color: #fff;
-          font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(17px, 2.6vmin, 26px);
+          font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(14px, 2.2vmin, 22px);
           cursor: pointer; box-shadow: 0 4px 0 ${C.cd}; transition: transform .1s ease;
           -webkit-tap-highlight-color: transparent;
         }

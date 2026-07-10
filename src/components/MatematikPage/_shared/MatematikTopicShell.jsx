@@ -595,22 +595,33 @@ export default function MatematikTopicShell({
         .mt-topic-shell .cmp-content,
         .mt-topic-shell .maf-content {
           width: 100% !important;
+          flex: 1 1 0 !important;
+          min-height: 0 !important;
           max-width: min(980px, calc(100% - clamp(24px, 5vw, 48px))) !important;
           box-sizing: border-box;
-          gap: clamp(10px, 2.4vmin, 28px) !important;
+          gap: clamp(6px, 1.2vmin, 14px) !important;
+          justify-content: space-between !important;
         }
         .mt-topic-shell .cmp-scroll,
         .mt-topic-shell .maf-scroll {
+          overflow: hidden !important;
+        }
+        .mt-topic-shell .maf-scroll-q {
+          flex: 1 1 0 !important;
+          min-height: 0 !important;
           overflow: hidden !important;
         }
         .mt-topic-shell .cmp-body,
         .mt-topic-shell .maf-body {
           width: 100%;
           box-sizing: border-box;
-          padding-top: clamp(6px, 1.2vmin, 16px) !important;
-          padding-left: clamp(14px, 3vmin, 32px) !important;
-          padding-right: clamp(14px, 3vmin, 32px) !important;
-          padding-bottom: clamp(14px, 2.2vmin, 28px) !important;
+          flex: 1 1 0 !important;
+          min-height: 0 !important;
+          justify-content: center !important;
+          padding-top: clamp(4px, 0.8vmin, 10px) !important;
+          padding-left: clamp(10px, 2vmin, 24px) !important;
+          padding-right: clamp(10px, 2vmin, 24px) !important;
+          padding-bottom: clamp(4px, 0.8vmin, 10px) !important;
         }
         .mt-topic-shell .cmp-objects {
           width: 100%;

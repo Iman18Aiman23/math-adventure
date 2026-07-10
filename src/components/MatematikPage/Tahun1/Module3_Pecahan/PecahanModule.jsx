@@ -76,12 +76,39 @@ function FooterTrio({ language, theme }) {
   );
 }
 
+const ROBOT_HALF = <MatematikTopicRobot theme={THEME} symbol="½" badge={THEME.accent} glow={THEME.accent} />;
+const ROBOT_QUARTER = <MatematikTopicRobot theme={THEME} symbol="¼" badge={THEME.accent} glow={THEME.accent} />;
+
 const TOPICS = [
   {
-    id: 'placeholder-1',
+    id: 'kenali-pecahan',
+    pill: 'TOPIK 3.1',
+    title: 'Kenali Pecahan',
+    desc: 'Kenali setengah, suku, dua perempat dan tiga perempat.',
+    visual: ROBOT_HALF,
+    color: THEME.accent,
+  },
+  {
+    id: 'placeholder-selesaikan',
     pill: 'SEGERA HADIR',
-    title: 'Pecahan Mudah',
-    desc: 'Akan datang: belajar separuh, suku dan tiga suku dengan gambar.',
+    title: 'Selesaikan Cerita Pecahan',
+    desc: 'Akan datang: guna pecahan dalam cerita.',
+    visual: ROBOT,
+    disabled: true,
+  },
+  {
+    id: 'placeholder-latih-diri',
+    pill: 'SEGERA HADIR',
+    title: 'Latih Diri Pecahan',
+    desc: 'Akan datang: latih kendiri pecahan.',
+    visual: ROBOT,
+    disabled: true,
+  },
+  {
+    id: 'placeholder-cabar-minda',
+    pill: 'SEGERA HADIR',
+    title: 'Cabaran Pecahan',
+    desc: 'Akan datang: cabaran pecahan lebih sukar.',
     visual: ROBOT,
     disabled: true,
   },

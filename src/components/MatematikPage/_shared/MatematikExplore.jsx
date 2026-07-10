@@ -1,5 +1,5 @@
 import React from 'react';
-import { CompareExplore, KenaliNomborExplore, KombinasiExplore, Kenali21Hingga100Explore, NilaiTempatExplore, SusunanNomborExplore, PolaNomborExplore, AnggarBundarExplore, SelesaikanExplore, LatihDiriExplore, CabarMindaExplore, KenaliTambahExplore, LatihanTambahExplore, KenaliTolakExplore, LatihanTolakExplore, CeritaTambahTolakExplore, TambahBerulangExplore, SelesaikanM2Explore, LatihDiriM2Explore, CabarMindaM2Explore, SelesaikanCeritaM1Explore, CabarMindaM1Explore } from './explorePrimitives';
+import { CompareExplore, KenaliNomborExplore, KombinasiExplore, Kenali21Hingga100Explore, NilaiTempatExplore, SusunanNomborExplore, PolaNomborExplore, AnggarBundarExplore, SelesaikanExplore, LatihDiriExplore, CabarMindaExplore, KenaliTambahExplore, LatihanTambahExplore, KenaliTolakExplore, LatihanTolakExplore, CeritaTambahTolakExplore, TambahBerulangExplore, SelesaikanM2Explore, LatihDiriM2Explore, CabarMindaM2Explore, SelesaikanCeritaM1Explore, CabarMindaM1Explore, KenaliPecahanExplore } from './explorePrimitives';
 import useMtTts from './useMtTts';
 
 /**
@@ -221,6 +221,15 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
     case 'cabar-minda-m1':
       return (
         <CabarMindaM1Explore
+          data={dataWithScore}
+          language={language}
+          theme={theme}
+          onExit={onExit}
+        />
+      );
+    case 'kenali-pecahan':
+      return (
+        <KenaliPecahanExplore
           data={dataWithScore}
           language={language}
           theme={theme}
