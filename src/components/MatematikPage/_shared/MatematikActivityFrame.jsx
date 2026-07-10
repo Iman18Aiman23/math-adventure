@@ -24,6 +24,7 @@ export default function MatematikActivityFrame({
   onExit,
   scoreStorageKey,
   scoreId,
+  showQuestionProgress,
 }) {
   const nav = useContext(MatematikNavContext);
   const [questions, setQuestions] = useState(() => buildRound());
@@ -245,7 +246,7 @@ export default function MatematikActivityFrame({
               </span>
             </div>
             <span style={{ color: '#CC7700', fontSize: '0.85rem', fontWeight: 900, minWidth: 28, textAlign: 'right' }}>
-              {progressInGroup}/10
+              {showQuestionProgress ? `${idx + 1}/${questions.length}` : `${progressInGroup}/10`}
             </span>
           </div>
         </>

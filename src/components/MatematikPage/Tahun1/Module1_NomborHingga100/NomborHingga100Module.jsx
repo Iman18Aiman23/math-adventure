@@ -90,7 +90,7 @@ const TOPICS = [
     id: 'm1-cabaran',
     pill: 'CABARAN',
     title: 'Latihan dan cabaran',
-    desc: 'Selesaikan cerita menggunakan roda nombor dan uji minda dengan cabaran Modul 1.',
+    desc: 'Selesaikan cerita secara buku flip dan uji minda dengan cabaran Modul 1.',
     visual: robotFor('?', TOPIC_COLORS[4]),
     color: TOPIC_COLORS[4],
     actions: [

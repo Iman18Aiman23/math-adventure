@@ -151,21 +151,29 @@ function correctSide(q) {
   return (q.type === 'banyak' || q.type === 'lebih') ? bigger : smaller;
 }
 
+function objEmojiSize(count) {
+  if (count <= 4) return 'clamp(24px, 6vmin, 52px)';
+  if (count <= 6) return 'clamp(22px, 5vmin, 44px)';
+  if (count <= 10) return 'clamp(19px, 4vmin, 36px)';
+  return 'clamp(16px, 3.2vmin, 30px)';
+}
+
 function ObjectsGrid({ icon, count }) {
   const perRow = 4;
   const rows = [];
+  const sz = objEmojiSize(count);
   for (let r = 0; r < Math.ceil(count / perRow); r++) {
     const rowItems = [];
     for (let c = 0; c < perRow && r * perRow + c < count; c++) {
       rowItems.push(
-        <span key={c} style={{ fontSize: 'clamp(22px, 5vmin, 48px)', lineHeight: 1.15 }}>{icon}</span>
+        <span key={c} style={{ fontSize: sz, lineHeight: 1.1 }}>{icon}</span>
       );
     }
     rows.push(
-      <div key={r} style={{ display: 'flex', justifyContent: 'center', gap: 'clamp(2px, 0.5vw, 6px)' }}>{rowItems}</div>
+      <div key={r} style={{ display: 'flex', justifyContent: 'center', gap: 'clamp(2px, 0.5vw, 5px)' }}>{rowItems}</div>
     );
   }
-  return <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>{rows}</div>;
+  return <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1px' }}>{rows}</div>;
 }
 
 export function CompareExplore({ data, language, theme, onExit }) {
@@ -683,6 +691,7 @@ function BilangContent({ q, ctx }) {
           const label = `${opt.value}`;
           if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; clr = '#fff'; txt = label + ' ✓'; anim = 'snkBounce .5s ease'; }
           else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; clr = '#fff'; txt = label + ' ✗'; anim = 'shakeError .35s ease'; }
+          else if (picked) { bg = `${C?.accent || '#8B5CF6'}40`; bd = C?.accent || '#8B5CF6'; clr = C?.dark || C?.accent || '#5B21B6'; txt = label; anim = 'none'; }
           else { bg = '#fff'; bd = '#E2E8F0'; clr = '#1E293B'; txt = label; anim = 'none'; }
           return (
             <button key={opt.id} className="kog-answer-btn" type="button" onClick={() => handlePick(opt.id)} disabled={answered}
@@ -763,6 +772,7 @@ function KenalContent({ q, ctx }) {
         let bg, bd, anim;
         if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; anim = 'snkBounce .5s ease'; }
         else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; anim = 'shakeError .35s ease'; }
+        else if (picked) { bg = `${C?.accent || '#8B5CF6'}40`; bd = C?.accent || '#8B5CF6'; anim = 'none'; }
         else { bg = '#fff'; bd = '#CBD5E1'; anim = 'none'; }
         return (
           <div key={group.id}
@@ -774,8 +784,8 @@ function KenalContent({ q, ctx }) {
               flex: 1, minWidth: 0, overflow: 'hidden',
               display: 'flex', flexDirection: 'column', alignItems: 'center',
               gap: 'clamp(8px, 1.4vmin, 16px)',
-              background: '#fff',
-              border: '2px solid #E2E8F0',
+              background: bg,
+              border: `2px solid ${picked && !answered ? bd : '#E2E8F0'}`,
               borderBottom: `4px solid ${bd}`,
               borderRadius: 'clamp(18px, 2vmin, 26px)',
               padding: 'clamp(10px, 1.6vmin, 22px) clamp(12px, 2.2vmin, 22px)',
@@ -818,6 +828,7 @@ function SifarContent({ q, ctx }) {
         let bg, bd, anim;
         if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; anim = 'snkBounce .5s ease'; }
         else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; anim = 'shakeError .35s ease'; }
+        else if (picked) { bg = `${C?.accent || '#8B5CF6'}40`; bd = C?.accent || '#8B5CF6'; anim = 'none'; }
         else { bg = '#fff'; bd = '#CBD5E1'; anim = 'none'; }
         return (
           <div key={group.id}
@@ -829,8 +840,8 @@ function SifarContent({ q, ctx }) {
               flex: 1, minWidth: 0, overflow: 'hidden',
               display: 'flex', flexDirection: 'column', alignItems: 'center',
               gap: 'clamp(8px, 1.4vmin, 16px)',
-              background: '#fff',
-              border: '2px solid #E2E8F0',
+              background: bg,
+              border: `2px solid ${picked && !answered ? bd : '#E2E8F0'}`,
               borderBottom: `4px solid ${bd}`,
               borderRadius: 'clamp(18px, 2vmin, 26px)',
               padding: 'clamp(10px, 1.6vmin, 22px) clamp(12px, 2.2vmin, 22px)',
@@ -997,6 +1008,7 @@ function NumOptionsGrid({ options, answered, selected, answer, handlePick, theme
         if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; clr = '#fff'; txt = `${opt.value} ✓`; anim = 'snkBounce .5s ease'; }
         else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; clr = '#fff'; txt = `${opt.value} ✗`; anim = 'shakeError .35s ease'; }
         else if (answered) { bg = '#fff'; bd = '#E2E8F0'; clr = '#94A3B8'; txt = opt.value; anim = 'none'; }
+        else if (picked) { bg = `${C?.accent || '#8B5CF6'}40`; bd = C?.accent || '#8B5CF6'; clr = C?.dark || C?.accent || '#5B21B6'; txt = opt.value; anim = 'none'; }
         else { bg = '#fff'; bd = '#CBD5E1'; clr = '#1E293B'; txt = opt.value; anim = 'none'; }
         return (
           <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={answered}
@@ -1331,6 +1343,7 @@ function WordOptionsGrid({ options, answered, selected, answer, handlePick, them
         let bg, bd, clr, txt, anim;
         if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; clr = '#fff'; txt = `${opt.value} ✓`; anim = 'snkBounce .5s ease'; }
         else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; clr = '#fff'; txt = `${opt.value} ✗`; anim = 'shakeError .35s ease'; }
+        else if (picked) { bg = `${C?.accent || '#8B5CF6'}40`; bd = C?.accent || '#8B5CF6'; clr = C?.dark || C?.accent || '#5B21B6'; txt = opt.value; anim = 'none'; }
         else if (plain) { bg = '#fff'; bd = '#CBD5E1'; clr = '#1E293B'; txt = opt.value; anim = 'none'; }
         else { bg = '#fff'; bd = '#CBD5E1'; clr = '#1E293B'; txt = opt.value; anim = 'none'; }
         return (
@@ -1423,6 +1436,14 @@ function TulisAngkaContent({ q, ctx }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px, 1.8vmin, 20px)', width: '100%' }}>
       <style>{`
+        .tak-input-box {
+          transition: box-shadow .16s ease, background-color .16s ease;
+        }
+        .tak-input-box:focus {
+          outline: none;
+          background: #fff;
+          box-shadow: inset 0 2px 8px rgba(15,23,42,0.05), 0 0 0 3px rgba(148,163,184,0.18);
+        }
         .tak-kp-btn {
           transition: all 0.08s ease;
           -webkit-tap-highlight-color: transparent;
@@ -1435,28 +1456,29 @@ function TulisAngkaContent({ q, ctx }) {
       <div style={{ fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 'clamp(24px, 5vmin, 44px)', color: '#1E293B', textAlign: 'center', lineHeight: 1.15 }}>
         {q.word}
       </div>
-      <div style={{
-        minWidth: 'clamp(96px, 22vmin, 170px)', minHeight: 'clamp(50px, 9vmin, 82px)',
-        border: `3px solid ${answered ? (isCorrect ? C.green : C.red) : '#CBD5E1'}`,
-        borderRadius: 'clamp(12px, 1.6vmin, 18px)', background: '#F9FAFB',
-        boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.06)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(30px, 6.5vmin, 54px)',
-        color: answered ? (isCorrect ? C.green : C.red) : (input ? '#334155' : '#CBD5E1'), padding: '0 18px',
-      }}>
-        {input || '?'}
-      </div>
+      <input type="text" inputMode="numeric" className="tak-input-box"
+        value={answered ? q.answer : input}
+        style={{
+          width: 120, height: 54, boxSizing: 'border-box',
+          border: `3px solid ${answered ? (isCorrect ? C.green : C.red) : '#CBD5E1'}`,
+          borderRadius: 'clamp(12px, 1.6vmin, 18px)', background: '#F9FAFB',
+          boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.06)',
+          textAlign: 'center', outline: 'none',
+          fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(24px, 5vmin, 44px)',
+          color: answered ? (isCorrect ? C.green : C.red) : (input ? '#334155' : '#CBD5E1'),
+          caretColor: '#475569', padding: 0, margin: 0,
+        }} />
       {answered && !isCorrect && (
         <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(14px, 2.2vmin, 20px)', color: '#64748B' }}>
           Jawapan: <b style={{ color: C.green }}>{q.answer}</b>
         </div>
       )}
       {!answered && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(5px, 1vmin, 9px)', width: '100%', maxWidth: 300 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(5px, 1vmin, 10px)', width: '100%', maxWidth: 'clamp(260px, 50vmin, 420px)' }}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
             <button key={d} type="button" className="tak-kp-btn" onClick={() => press(String(d))}
               style={{
-                minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
+                minHeight: 'clamp(44px, 6vmin, 54px)', border: 'none',
                 borderBottom: '4px solid #2563EB', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
                 background: '#3B82F6', color: '#fff', cursor: 'pointer',
                 fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
@@ -1465,15 +1487,15 @@ function TulisAngkaContent({ q, ctx }) {
           ))}
           <button type="button" className="tak-kp-btn" onClick={back}
             style={{
-              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
+              minHeight: 'clamp(44px, 6vmin, 54px)', border: 'none',
               borderBottom: '4px solid #DC2626', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: '#EF4444', color: '#fff', cursor: 'pointer',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-              fontSize: 'clamp(16px, 2.6vmin, 22px)',
+              fontSize: 'clamp(16px, 2.6vmin, 24px)',
             }}>Padam</button>
           <button type="button" className="tak-kp-btn" onClick={() => press('0')}
             style={{
-              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
+              minHeight: 'clamp(44px, 6vmin, 54px)', border: 'none',
               borderBottom: '4px solid #2563EB', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: '#3B82F6', color: '#fff', cursor: 'pointer',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
@@ -1481,14 +1503,14 @@ function TulisAngkaContent({ q, ctx }) {
             }}>0</button>
           <button type="button" className="tak-kp-btn" onClick={submit} disabled={input === ''}
             style={{
-              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
+              minHeight: 'clamp(44px, 6vmin, 54px)', border: 'none',
               borderBottom: input === '' ? '4px solid #D1D5DB' : '4px solid #16A34A',
               borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: input === '' ? '#E5E7EB' : '#22C55E',
               color: input === '' ? '#9CA3AF' : '#fff',
               cursor: input === '' ? 'not-allowed' : 'pointer',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-              fontSize: 'clamp(16px, 2.6vmin, 22px)',
+              fontSize: 'clamp(16px, 2.6vmin, 24px)',
             }}>Semak</button>
         </div>
       )}
@@ -1867,6 +1889,7 @@ function NilaiTempatPilihContent({ q, ctx }) {
           let bg, bd, clr, txt, anim;
           if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; clr = '#fff'; txt = `${opt.value} ✓`; anim = 'snkBounce .5s ease'; }
           else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; clr = '#fff'; txt = `${opt.value} ✗`; anim = 'shakeError .35s ease'; }
+          else if (picked) { bg = `${C?.accent || '#8B5CF6'}40`; bd = C?.accent || '#8B5CF6'; clr = C?.dark || C?.accent || '#5B21B6'; txt = opt.value; anim = 'none'; }
           else { bg = '#fff'; bd = '#CBD5E1'; clr = '#1E293B'; txt = opt.value; anim = 'none'; }
           return (
             <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={answered}
@@ -1880,7 +1903,7 @@ function NilaiTempatPilihContent({ q, ctx }) {
                 color: clr,
                 fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
                 fontSize: answered && (isAns || picked) ? 'clamp(24px, 4vmin, 40px)' : 'clamp(18px, 3vmin, 28px)',
-                lineHeight: 1.1, whiteSpace: 'nowrap',
+              lineHeight: 1.15, whiteSpace: 'normal', wordBreak: 'break-word',
                 cursor: answered ? 'default' : 'pointer',
                 transition: 'all .15s ease', WebkitTapHighlightColor: 'transparent',
                 minHeight: 44,
@@ -2200,6 +2223,14 @@ function SusunanKeypadContent({ q, ctx }) {
         .snk-box-shake {
           animation: snkShake 0.5s ease;
         }
+        .snk-input-box {
+          transition: box-shadow .16s ease, background-color .16s ease;
+        }
+        .snk-input-box:focus {
+          outline: none;
+          background: #fff;
+          box-shadow: inset 0 2px 8px rgba(15,23,42,0.05), 0 0 0 3px rgba(148,163,184,0.18);
+        }
         .snk-kp-btn {
           transition: all 0.08s ease;
           -webkit-tap-highlight-color: transparent;
@@ -2258,28 +2289,29 @@ function SusunanKeypadContent({ q, ctx }) {
           fontSize: 'clamp(28px, 5.6vmin, 50px)', color: '#1E293B', textAlign: 'center', lineHeight: 1.3, letterSpacing: 2,
         }}>{q.display}</div>
       )}
-      <div style={{
-        minWidth: 'clamp(96px, 22vmin, 170px)', minHeight: 'clamp(50px, 9vmin, 82px)',
-        border: `3px solid ${answered ? (isCorrect ? C.green : C.red) : '#CBD5E1'}`,
-        borderRadius: 'clamp(12px, 1.6vmin, 18px)', background: '#F9FAFB',
-        boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.06)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(30px, 6.5vmin, 54px)',
-        color: answered ? (isCorrect ? C.green : C.red) : (input ? '#334155' : '#CBD5E1'), padding: '0 18px',
-      }}>
-        {input || '?'}
-      </div>
+      <input type="text" inputMode="numeric" className="snk-input-box"
+        value={answered ? q.answer : input}
+        style={{
+          width: 120, height: 54, boxSizing: 'border-box',
+          border: `3px solid ${answered ? (isCorrect ? C.green : C.red) : '#CBD5E1'}`,
+          borderRadius: 'clamp(12px, 1.6vmin, 18px)', background: '#F9FAFB',
+          boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.06)',
+          textAlign: 'center', outline: 'none',
+          fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(24px, 5vmin, 44px)',
+          color: answered ? (isCorrect ? C.green : C.red) : (input ? '#334155' : '#CBD5E1'),
+          caretColor: '#475569', padding: 0, margin: 0,
+        }} />
       {answered && !isCorrect && (
         <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(14px, 2.2vmin, 20px)', color: '#64748B' }}>
           Jawapan: <b style={{ color: C.green }}>{q.answer}</b>
         </div>
       )}
       {!answered && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(5px, 1vmin, 9px)', width: '100%', maxWidth: 300 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(5px, 1vmin, 10px)', width: '100%', maxWidth: 'clamp(260px, 50vmin, 420px)' }}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
             <button key={d} type="button" className="snk-kp-btn" onClick={() => press(String(d))}
               style={{
-                minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
+                minHeight: 'clamp(44px, 6vmin, 54px)', border: 'none',
                 borderBottom: '4px solid #2563EB', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
                 background: '#3B82F6', color: '#fff', cursor: 'pointer',
                 fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
@@ -2288,15 +2320,15 @@ function SusunanKeypadContent({ q, ctx }) {
           ))}
           <button type="button" className="snk-kp-btn" onClick={back}
             style={{
-              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
+              minHeight: 'clamp(44px, 6vmin, 54px)', border: 'none',
               borderBottom: '4px solid #DC2626', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: '#EF4444', color: '#fff', cursor: 'pointer',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-              fontSize: 'clamp(16px, 2.6vmin, 22px)',
+              fontSize: 'clamp(16px, 2.6vmin, 24px)',
             }}>Padam</button>
           <button type="button" className="snk-kp-btn" onClick={() => press('0')}
             style={{
-              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
+              minHeight: 'clamp(44px, 6vmin, 54px)', border: 'none',
               borderBottom: '4px solid #2563EB', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: '#3B82F6', color: '#fff', cursor: 'pointer',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
@@ -2304,13 +2336,13 @@ function SusunanKeypadContent({ q, ctx }) {
             }}>0</button>
           <button type="button" className="snk-kp-btn" onClick={submit} disabled={input === ''}
             style={{
-              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
+              minHeight: 'clamp(44px, 6vmin, 54px)', border: 'none',
               borderBottom: input === '' ? '4px solid #D1D5DB' : '4px solid #16A34A',
               borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: input === '' ? '#E5E7EB' : '#22C55E',
               color: input === '' ? '#9CA3AF' : '#fff', cursor: input === '' ? 'not-allowed' : 'pointer',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-              fontSize: 'clamp(16px, 2.6vmin, 22px)',
+              fontSize: 'clamp(16px, 2.6vmin, 24px)',
             }}>Semak</button>
         </div>
       )}
@@ -3137,425 +3169,259 @@ export function CabarMindaExplore({ data, language, theme, onExit }) {
 }
 
 /* ════════════════════════════════════════════════════════════════════════
- * Slice 1.G — "Selesaikan Cerita M1: Roda Nombor Modul 1"
- * Wheel activity (6 spokes) adapted for Modul 1 content.
- * Center number N ∈ [15, 50]. Each spoke is a Modul 1 concept.
+ * Slice 1.G — "Selesaikan Cerita M1" — MatematikActivityFrame
+ * 15 soalan merangkumi Aktiviti 1–10 KSSR.
+ * Pick → SelPickContent (NumOptionsGrid), keypad → SusunanKeypadContent.
  * ════════════════════════════════════════════════════════════════════════ */
 
-function buildSelesaikanCeritaM1Round() {
-  const N = randInt(15, 50);
-  const placeValNum = N + randInt(10, 40);
-  const tensDigit = Math.floor(placeValNum / 10);
-  const onesDigit = placeValNum % 10;
-  const bonds = [];
-  for (let i = 0; i < 3; i++) {
-    const b = randInt(1, 9);
-    if (!bonds.includes(b)) bonds.push(b);
-  }
-  while (bonds.length < 2) bonds.push(randInt(1, 9));
-  const bondA = bonds[0];
-  const bondTarget = randInt(5, 18);
-  const pattern = [];
-  const step = pick([1, 2, 5, 10]);
-  const pStart = randInt(1, 90);
-  for (let i = 0; i < 4; i++) pattern.push(pStart + step * i);
-  const pGap = pattern[1];
-
-  const names = pick([['Amin','Siti'],['Ali','Mira'],['Raju','Lili'],['Kumar','Aishah']]);
-  const items = pick(['buku','pensel','bunga','biskut','guli','stiker']);
-  const storyCount = randInt(3, 9);
-  const storyTotal = N;
-  const storyRemain = storyTotal - storyCount;
-
+function genA1Banding(dir) {
+  const a = randInt(2, 6); let b;
+  do { b = randInt(2, 6); } while (b === a);
+  const items = [['🍎', 'epal'], ['🍌', 'pisang']];
   return {
-    N,
-    spokes: [
-      { id: 0, type: 'scm1-before', answer: N - 1,
-        display: `Nombor sebelum ${N} ialah ___` },
-      { id: 1, type: 'scm1-after', answer: N + 1,
-        display: `Nombor selepas ${N} ialah ___` },
-      { id: 2, type: 'scm1-placevalue', num: placeValNum, tensDigit, onesDigit, answer: tensDigit,
-        display: `Digit puluh dalam ${placeValNum} ialah ___` },
-      { id: 3, type: 'scm1-round', N, answer: Math.round(N / 10) * 10,
-        display: `Bundarkan ${N} kepada puluh terdekat` },
-      { id: 4, type: 'scm1-bond', a: bondA, target: bondTarget, answer: bondTarget - bondA,
-        display: `${bondA} + ___ = ${bondTarget}` },
-      { id: 5, type: 'scm1-story', total: storyTotal, count: storyCount, answer: storyRemain,
-        display: `${names[0]} ada ${storyTotal} ${items}. ${names[1]} bagi ${storyCount} ${items}. Baki ialah ___` },
+    type: 'a-pick',
+    prompt: `Yang manakah ${dir}?`,
+    options: [
+      { id: '0', value: `${items[0][0]} ${a}` },
+      { id: '1', value: `${items[1][0]} ${b}` },
     ],
+    answer: String(dir === 'banyak' ? (a > b ? 0 : 1) : (a < b ? 0 : 1)),
   };
 }
 
-export function SelesaikanCeritaM1Explore({ data, language, theme, onExit }) {
-  const C = theme || {};
-  const accent = C.accent || '#8B5CF6';
-  const dark = C.dark || '#7C3AED';
+function genA2Bilang() {
+  const c = randInt(1, 10);
+  const e = pick(['🐝', '🌸', '🐱', '⭐']);
+  return { type: 'a-keypad', prompt: 'Berapakah bilangannya?', objects: { icon: e, count: c }, answer: String(c) };
+}
 
-  const [round, setRound] = useState(() => buildSelesaikanCeritaM1Round());
-  const [solved, setSolved] = useState([false, false, false, false, false, false]);
-  const [activeSpoke, setActiveSpoke] = useState(null);
-  const [value, setValue] = useState('');
-  const [shakeIdx, setShakeIdx] = useState(null);
-  const [complete, setComplete] = useState(false);
-  const wheelPaneRef = useRef(null);
-  const [wheelSize, setWheelSize] = useState(240);
-
-  useEffect(() => {
-    const el = wheelPaneRef.current;
-    if (!el) return undefined;
-    const obs = new ResizeObserver((entries) => {
-      const { width, height } = entries[0].contentRect;
-      setWheelSize(Math.max(130, Math.min(width, height) - 12));
-    });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [complete]);
-
-  const N = round.N;
-  const spokes = round.spokes;
-  const solvedCount = solved.filter(Boolean).length;
-  const allSolved = solvedCount === 6;
-
-  useEffect(() => {
-    if (allSolved && !complete) {
-      const t = setTimeout(() => {
-        setComplete(true);
-        playSound('streak');
-        confetti({ particleCount: 200, spread: 160, origin: { y: 0.4 } });
-        setTimeout(() => confetti({ particleCount: 140, spread: 120, startVelocity: 45, origin: { y: 0.55 } }), 250);
-      }, 1200);
-      return () => clearTimeout(t);
-    }
-  }, [allSolved, complete]);
-
-  const handleOpen = (idx) => {
-    if (solved[idx] || complete) return;
-    setActiveSpoke(idx);
-    setValue('');
-    setShakeIdx(null);
+function genA2Kenal() {
+  const t = randInt(1, 7);
+  const g = [{ id: '0', c: t }]; const u = new Set([t]);
+  while (g.length < 3) { const c = randInt(1, 9); if (!u.has(c)) { u.add(c); g.push({ id: String(g.length), c }); } }
+  const sg = shuffle(g);
+  return {
+    type: 'a-pick', prompt: `Yang manakah ${t}?`,
+    options: sg.map(x => ({ id: x.id, value: String(x.c) })),
+    answer: sg.find(x => x.c === t).id,
   };
+}
 
-  const handleClose = () => {
-    setActiveSpoke(null);
-    setValue('');
-    setShakeIdx(null);
+function genA3Bilang() {
+  const c = randInt(11, 20);
+  const e = pick(['🐶', '🌸', '🐱', '⭐']);
+  return { type: 'a-keypad', prompt: 'Berapakah bilangannya?', objects: { icon: e, count: c }, answer: String(c) };
+}
+
+function genA3Kenal() {
+  const t = randInt(11, 17);
+  const g = [{ id: '0', c: t }]; const u = new Set([t]);
+  while (g.length < 3) { const c = randInt(11, 19); if (!u.has(c)) { u.add(c); g.push({ id: String(g.length), c }); } }
+  const sg = shuffle(g);
+  return {
+    type: 'a-pick', prompt: `Yang manakah ${t}?`,
+    options: sg.map(x => ({ id: x.id, value: String(x.c) })),
+    answer: sg.find(x => x.c === t).id,
   };
+}
 
-  const handleConfirm = () => {
-    if (activeSpoke === null || value === '') return;
-    const ans = parseInt(value, 10);
-    const spoke = spokes[activeSpoke];
-    if (ans === spoke.answer) {
-      playSound('correct');
-      confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 }, scalar: 0.8 });
-      const next = [...solved];
-      next[activeSpoke] = true;
-      setSolved(next);
-      setActiveSpoke(null);
-      setValue('');
-      setShakeIdx(null);
-    } else {
-      playSound('wrong');
-      setShakeIdx(activeSpoke);
-      setValue('');
-      setTimeout(() => setShakeIdx(null), 500);
-    }
-  };
+function genA5PerkataanKeAngka() {
+  const n = randInt(21, 99);
+  const w = numToBM(n);
+  return { type: 'a-keypad', prompt: 'Tulis dalam angka.', displayWord: w.charAt(0).toUpperCase() + w.slice(1), answer: String(n) };
+}
 
-  const handleReset = () => {
-    setRound(buildSelesaikanCeritaM1Round());
-    setSolved([false, false, false, false, false, false]);
-    setActiveSpoke(null);
-    setValue('');
-    setShakeIdx(null);
-    setComplete(false);
-  };
+function genA5AngkaKePerkataan() {
+  const n = randInt(21, 99);
+  const cw = numToBM(n);
+  const ws = new Set([cw]); while (ws.size < 4) ws.add(numToBM(randInt(21, 99)));
+  const opts = shuffle([...ws]).map((w, i) => ({ id: `o${i}`, value: w }));
+  return { type: 'a-pick', prompt: 'Apakah nama nombor ini?', displayNum: n, options: opts, answer: opts.find(o => o.value === cw).id };
+}
 
-  const SPOKE_ANGLES = [0, 60, 120, 180, 240, 300];
-  const SPOKE_END_R = [24.75, 18.5, 18.5, 24.75, 18.5, 18.5];
+function genA6NilaiTempat(which) {
+  const n = randInt(21, 99);
+  return { type: 'a-keypad', prompt: `Digit di tempat ${which} ialah?`, displayNum: n, answer: String(which === 'puluh' ? Math.floor(n / 10) : n % 10) };
+}
 
-  const pressDigit = (d) => setValue(v => (v.length < 3 ? v + d : v));
-  const pressBack = () => setValue(v => v.slice(0, -1));
+function genA7Jiran() {
+  const mode = pick(['sebelum', 'selepas', 'antara']);
+  if (mode === 'sebelum') {
+    const n = randInt(2, 99);
+    return { type: 'a-keypad', prompt: 'Tulis nombor sebelum.', cells: [{ value: '?', isGap: true }, { value: String(n), isGap: false }], answerVal: n - 1, answer: String(n - 1) };
+  }
+  if (mode === 'selepas') {
+    const n = randInt(1, 98);
+    return { type: 'a-keypad', prompt: 'Tulis nombor selepas.', cells: [{ value: String(n), isGap: false }, { value: '?', isGap: true }], answerVal: n + 1, answer: String(n + 1) };
+  }
+  const a = randInt(1, 97);
+  return { type: 'a-keypad', prompt: 'Tulis nombor di antara.', cells: [{ value: String(a), isGap: false }, { value: '?', isGap: true }, { value: String(a + 2), isGap: false }], answerVal: a + 1, answer: String(a + 1) };
+}
 
-  const spokeLabels = ['Sebelum','Selepas','Digit','Bundar','Gabung','Cerita'];
+function genA7Lengkapkan() {
+  const step = pick([2, 3, 5, 10]);
+  const asc = Math.random() < 0.5;
+  const start = asc ? randInt(1, 100 - step * 4) : randInt(step * 4 + 1, 100);
+  const seq = Array.from({ length: 5 }, (_, i) => asc ? start + step * i : start - step * i);
+  const gapIdx = randInt(1, 3);
+  const answerVal = seq[gapIdx];
+  const cells = seq.map((v, i) => ({ value: String(v), isGap: i === gapIdx }));
+  return { type: 'a-keypad', prompt: 'Lengkapkan urutan nombor', cells, answerVal, answer: String(answerVal) };
+}
 
-  useEffect(() => {
-    if (activeSpoke === null || complete) return undefined;
-    const onKey = (e) => {
-      if (e.key >= '0' && e.key <= '9') { e.preventDefault(); pressDigit(e.key); }
-      else if (e.key === 'Backspace' || e.key === 'Delete') { e.preventDefault(); pressBack(); }
-      else if (e.key === 'Enter') { e.preventDefault(); handleConfirm(); }
-      else if (e.key === 'Escape') { e.preventDefault(); handleClose(); }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [activeSpoke, value, complete]);
+function genA8Pola() {
+  const a = randInt(1, 9); let b;
+  do { b = randInt(1, 9); } while (b === a);
+  const seq = [a, b, a, b, a, b];
+  const cells = [...seq.map(v => ({ value: String(v), isGap: false })), { value: '?', isGap: true }];
+  const set = new Set([String(a), String(b)]); while (set.size < 3) set.add(String(randInt(1, 9)));
+  const opts = shuffle([...set]).map((v, i) => ({ id: `o${i}`, value: v }));
+  return { type: 'a-pick', prompt: 'Pilih nombor seterusnya', cells, answerVal: a, options: opts, answer: opts.find(o => o.value === String(a)).id };
+}
 
+function genA9Bundar() {
+  let n; do { n = randInt(11, 96); } while (n % 10 === 0);
+  const nearest = roundTen(n);
+  const set = new Set([nearest]);
+  for (const c of [nearest - 10, nearest + 10, nearest - 20, nearest + 20]) { if (set.size < 3 && c >= 0 && c <= 100) set.add(c); }
+  while (set.size < 3) set.add(randInt(0, 100));
+  const opts = shuffle([...set]).map((v, i) => ({ id: `o${i}`, value: String(v) }));
+  return { type: 'a-pick', prompt: 'Bundarkan kepada puluh terdekat.', displayNum: n, options: opts, answer: opts.find(o => Number(o.value) === nearest).id };
+}
+
+function genA10Kombinasi() {
+  const mode = pick(['jumlah', 'lengkapkan', 'jadikan-10']);
+  if (mode === 'jumlah') {
+    const a = randInt(1, 5); const b = randInt(1, 5); const e = pick(['🍎', '🍊', '⭐', '🌸']);
+    return { type: 'a-keypad', prompt: 'Berapa jumlahnya?', objects: { icon: e, count: a + b }, answer: String(a + b) };
+  }
+  if (mode === 'lengkapkan') {
+    const total = randInt(5, 18); const a = randInt(1, total - 1);
+    return { type: 'a-keypad', prompt: `${a} + ? = ${total}`, answer: String(total - a) };
+  }
+  const n = randInt(1, 9);
+  return { type: 'a-keypad', prompt: 'Berapa lagi untuk jadi 10?', displayNum: n, answer: String(10 - n) };
+}
+
+function buildSelesaikanCeritaM1Round() {
+  const qs = [
+    genA1Banding('banyak'), genA1Banding('sedikit'),
+    genA2Bilang(), genA2Bilang(),
+    genA3Bilang(), genA3Bilang(),
+    genA5PerkataanKeAngka(), genA5AngkaKePerkataan(),
+    genA6NilaiTempat('puluh'), genA6NilaiTempat('sa'),
+    genA7Jiran(), genA7Lengkapkan(),
+    genA8Pola(), genA9Bundar(),
+    genA10Kombinasi(),
+  ];
+  return shuffle(qs).map((q, i) => ({ ...q, qid: i }));
+}
+
+function SCPickContent({ q, ctx }) {
+  const { answered, selected, answer, handlePick, theme: C } = ctx;
+  const isQuad = q.options.length === 4;
+  const cols = isQuad ? 2 : Math.min(q.options.length, 3);
   return (
-    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', overflow: 'hidden', background: 'transparent' }}>
-      <style>{`
-        @keyframes scm1-shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-6px); }
-          75% { transform: translateX(6px); }
-        }
-        @keyframes scm1-pop {
-          0% { transform: scale(0.8); opacity: 0.5; }
-          60% { transform: scale(1.08); }
-          100% { transform: scale(1); opacity: 1; }
-        }
-        .scm1-shake { animation: scm1-shake .35s ease; }
-        .scm1-pop { animation: scm1-pop .4s cubic-bezier(.34,1.56,.64,1); }
-        .scm1-kp-btn { transition: all 0.08s ease; -webkit-tap-highlight-color: transparent; }
-        .scm1-kp-btn:active { transform: translateY(4px); border-bottom-width: 0 !important; }
-
-        .scm1-body { position: relative; z-index: 1; flex: 1; display: flex; min-height: 0; overflow: hidden; }
-        .scm1-wheel-pane { position: relative; flex: 1; overflow: hidden; min-height: 0; min-width: 0; }
-        .scm1-wheel { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
-
-        @keyframes scm1-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes scm1-dialog-in { 0% { transform: translateY(12px) scale(0.94); opacity: 0; } 100% { transform: translateY(0) scale(1); opacity: 1; } }
-        .scm1-backdrop {
-          position: absolute; inset: 0; z-index: 50;
-          display: flex; align-items: center; justify-content: center;
-          padding: clamp(12px, 3vmin, 32px); overflow: hidden;
-          background: rgba(15, 23, 42, .32); backdrop-filter: blur(4px);
-          animation: scm1-backdrop-in .18s ease;
-        }
-        .scm1-dialog {
-          position: relative; width: 100%; max-width: 360px; max-height: 100%;
-          display: flex; flex-direction: column; align-items: center; gap: clamp(10px, 1.8vmin, 18px);
-          background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(245,243,255,.96)); border-radius: clamp(16px, 2.4vmin, 24px);
-          border: 1.5px solid rgba(196,181,253,.7);
-          padding: clamp(16px, 3vmin, 28px);
-          box-shadow: 0 20px 50px -12px rgba(91,33,182,.26), inset 0 1px 0 rgba(255,255,255,.98);
-          animation: scm1-dialog-in .26s cubic-bezier(.34,1.56,.64,1);
-        }
-        .scm1-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(5px, 0.9vmin, 9px); width: 100%; }
-        .scm1-keypad button { height: clamp(34px, 5vmin, 48px); }
-      `}</style>
-
-      {/* Header */}
-      <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 16px' }}>
-        <div style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(15px, 2.4vmin, 22px)', color: '#1E293B' }}>
-          {language === 'bm' ? 'Selesaikan Cerita' : 'Solve Story Problems'}
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          {[0,1,2,3,4,5].map(i => (
-            <div key={i} style={{
-              width: 20, height: 20, borderRadius: '50%',
-              background: solved[i] ? '#16A34A' : '#E2E8F0',
-              border: solved[i] ? 'none' : '2px solid #CBD5E1',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 10, color: '#fff', fontWeight: 800,
-              transition: 'all .3s ease',
-            }}>{solved[i] ? '✓' : i + 1}</div>
-          ))}
-        </div>
-      </div>
-
-      {/* Spoke label strip */}
-      <div style={{ flexShrink: 0, display: 'flex', justifyContent: 'center', gap: 'clamp(4px, 1vmin, 12px)', padding: '0 8px 4px' }}>
-        {spokeLabels.map((label, i) => (
-          <div key={i} style={{
-            flex: 1, textAlign: 'center',
-            fontFamily: "'Fredoka',sans-serif", fontWeight: 700,
-            fontSize: 'clamp(9px, 1.4vmin, 13px)',
-            color: solved[i] ? '#16A34A' : '#94A3B8',
-            transition: 'color .3s',
-          }}>{label}</div>
-        ))}
-      </div>
-
-      {complete ? (
-        <div style={{
-          position: 'relative', zIndex: 1,
-          flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-          gap: 'clamp(16px, 3vmin, 32px)', padding: 'clamp(20px, 4vmin, 40px)',
-        }}>
-          <div style={{ fontSize: 'clamp(52px, 14vmin, 100px)', lineHeight: 1 }}>🎉</div>
-          <div style={{
-            fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(24px, 4.6vmin, 42px)', color: '#fff',
-            textAlign: 'center', textShadow: '0 2px 18px rgba(139,92,246,.7)',
-          }}>
-            Tahniah! Semua 6 selesai!
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(10px, 1.6vmin, 16px)', width: '100%', maxWidth: 320 }}>
-            <button type="button" onClick={handleReset}
-              style={{
-                padding: 'clamp(12px, 1.8vmin, 18px) clamp(24px, 4vmin, 48px)', border: 'none', borderRadius: 999,
-                background: accent, color: '#fff', cursor: 'pointer',
-                fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.6vmin, 24px)',
-                boxShadow: `0 4px 0 ${dark}`, WebkitTapHighlightColor: 'transparent',
-              }}>
-              ↻ Main Semula
-            </button>
-            <button type="button" onClick={onExit}
-              style={{
-                padding: 'clamp(12px, 1.8vmin, 18px) clamp(24px, 4vmin, 48px)', border: `2px solid ${accent}`, borderRadius: 999,
-                background: '#fff', color: dark, cursor: 'pointer',
-                fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.6vmin, 24px)',
-                WebkitTapHighlightColor: 'transparent',
-              }}>
-              ← Selesai
-            </button>
-          </div>
-        </div>
-      ) : (
-        <div className="scm1-body">
-          <div className="scm1-wheel-pane" ref={wheelPaneRef}>
-            <div className="scm1-wheel" style={{ width: wheelSize, height: wheelSize }}>
-              {/* SVG spokes + center ring */}
-              <svg viewBox="0 0 100 100" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', filter: 'drop-shadow(0 0 8px rgba(0,0,0,0.5))' }}>
-                {SPOKE_ANGLES.map((angle, i) => {
-                  const rad = (angle - 90) * Math.PI / 180;
-                  const x1 = 50 + 14 * Math.cos(rad);
-                  const y1 = 50 + 14 * Math.sin(rad);
-                  const x2 = 50 + SPOKE_END_R[i] * Math.cos(rad);
-                  const y2 = 50 + SPOKE_END_R[i] * Math.sin(rad);
-                  const isSolved = solved[i];
-                  return (
-                    <line key={i} x1={x1} y1={y1} x2={x2} y2={y2}
-                          stroke={isSolved ? '#16A34A' : accent}
-                          strokeWidth="2" strokeLinecap="round"
-                          style={{ filter: isSolved ? 'drop-shadow(0 0 4px rgba(22,163,74,.45))' : `drop-shadow(0 0 4px ${accent}66)` }} />
-                  );
-                })}
-                <circle cx="50" cy="50" r="13" fill={dark} stroke={accent} strokeWidth="2.4" style={{ filter: `drop-shadow(0 10px 18px ${accent}44)` }} />
-                <circle cx="50" cy="50" r="14.5" fill="none" stroke="rgba(139,92,246,0.32)" strokeWidth="0.5" strokeDasharray="1 1.5" />
-              </svg>
-              {/* Center number */}
-              <div style={{
-                position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%,-50%)',
-                display: 'flex', flexDirection: 'column', alignItems: 'center', pointerEvents: 'none',
-              }}>
-                <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: wheelSize * 0.13, color: '#fff', lineHeight: 1, textShadow: '0 0 14px rgba(139,92,246,.8), 0 0 4px rgba(255,255,255,.5)' }}>{N}</span>
-                <span style={{ fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: Math.max(7, wheelSize * 0.035), color: '#C4B5FD', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Pusat</span>
-              </div>
-              {/* Spoke cards (absolute px positions) */}
-              {spokes.map((spoke, i) => {
-                const angle = SPOKE_ANGLES[i];
-                const rad = (angle - 90) * Math.PI / 180;
-                const R = wheelSize * 0.345;
-                const cxPx = wheelSize / 2 + R * Math.cos(rad);
-                const cyPx = wheelSize / 2 + R * Math.sin(rad);
-                const cardW = wheelSize * 0.26;
-                const cardH = wheelSize * 0.175;
-                const isActive = activeSpoke === i;
-                const isSolved = solved[i];
-                const isShake = shakeIdx === i;
-                let bg = 'rgba(255,255,255,.92)', bd = '#C4B5FD', clr = dark;
-                let boxShad = '0 12px 24px rgba(91,33,182,.12)';
-                if (isSolved) {
-                  bg = '#DCFCE7'; bd = '#16A34A'; clr = '#15803D';
-                  boxShad = '0 12px 24px rgba(22,163,74,.16)';
-                }
-                if (isActive) {
-                  bg = '#EDE9FE'; bd = accent;
-                  boxShad = `0 0 0 3px ${accent}33, 0 16px 28px rgba(91,33,182,.20)`;
-                }
-                return (
-                  <div key={spoke.id} style={{
-                    position: 'absolute', left: cxPx, top: cyPx, width: cardW, height: cardH,
-                    transform: 'translate(-50%,-50%)', zIndex: isActive ? 10 : 2,
-                  }}>
-                    <div
-                      onClick={() => isSolved ? null : handleOpen(i)}
-                      className={isShake ? 'scm1-shake' : isSolved ? 'scm1-pop' : ''}
-                      style={{
-                        width: '100%', height: '100%',
-                        background: bg, border: `2px solid ${bd}`, borderRadius: Math.max(8, wheelSize * 0.04),
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center',
-                        padding: '2px 4px', boxSizing: 'border-box',
-                        cursor: isSolved ? 'default' : 'pointer',
-                        boxShadow: boxShad,
-                        transition: 'all .25s ease',
-                        WebkitTapHighlightColor: 'transparent', overflow: 'hidden',
-                        backdropFilter: 'blur(6px)',
-                      }}>
-                      {isSolved ? (
-                        <span style={{ fontSize: cardH * 0.6, color: '#4ADE80', fontWeight: 900, textShadow: '0 0 8px rgba(74,222,128,.5)' }}>✓</span>
-                      ) : (
-                        <span style={{
-                          fontFamily: "'Baloo 2',sans-serif", fontWeight: 800,
-                          fontSize: Math.max(9, wheelSize * 0.045), color: clr, lineHeight: 1.1,
-                          textShadow: isActive ? '0 0 8px rgba(139,92,246,.6)' : 'none',
-                        }}>{spokeLabels[i]}</span>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Question dialog */}
-            {activeSpoke !== null && (
-              <div className="scm1-backdrop" onClick={handleClose}>
-                <div className="scm1-dialog" onClick={(e) => e.stopPropagation()}>
-                  <button type="button" onClick={handleClose} aria-label="Tutup"
-                    style={{
-                      position: 'absolute', top: 'clamp(8px, 1.4vmin, 14px)', right: 'clamp(8px, 1.4vmin, 14px)',
-                      width: 'clamp(28px, 4vmin, 36px)', height: 'clamp(28px, 4vmin, 36px)',
-                      border: 'none', borderRadius: '50%', background: '#F0EAFD', color: '#64748B',
-                      cursor: 'pointer', fontFamily: "'Baloo 2',sans-serif", fontWeight: 800,
-                      fontSize: 'clamp(14px, 2.2vmin, 18px)', lineHeight: 1, WebkitTapHighlightColor: 'transparent',
-                    }}>✕</button>
-                  <div style={{
-                    fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 2.2vmin, 17px)',
-                    color: accent, textTransform: 'uppercase', letterSpacing: '.04em',
-                  }}>{spokeLabels[activeSpoke]}</div>
-                  <div style={{
-                    fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(24px, 5vmin, 40px)',
-                    color: '#1E293B', textAlign: 'center', lineHeight: 1.3,
-                  }}>{spokes[activeSpoke].display}</div>
-                  <div style={{
-                    minWidth: 'clamp(96px, 18vmin, 140px)', height: 'clamp(48px, 6.6vmin, 66px)',
-                    border: '2px solid #C4B5FD', borderRadius: 'clamp(10px, 1.4vmin, 15px)',
-                    background: '#F8FBFF', boxShadow: 'inset 0 2px 6px rgba(91,33,182,.08)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: 'clamp(28px, 4.8vmin, 44px)',
-                    color: value ? dark : '#94A3B8', padding: '0 16px',
-                  }}>{value || '?'}</div>
-                  <div className="scm1-keypad">
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
-                      <button key={d} type="button" className="scm1-kp-btn" onClick={() => pressDigit(String(d))}
-                        style={{
-                          border: 'none', borderBottom: '4px solid #6D28D9', borderRadius: 'clamp(9px, 1.2vmin, 13px)',
-                          background: accent, color: '#fff', cursor: 'pointer',
-                          fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.6vmin, 24px)',
-                        }}>{d}</button>
-                    ))}
-                    <button type="button" className="scm1-kp-btn" onClick={pressBack}
-                      style={{
-                        border: 'none', borderBottom: '4px solid #DC2626', borderRadius: 'clamp(9px, 1.2vmin, 13px)',
-                        background: '#EF4444', color: '#fff', cursor: 'pointer',
-                        fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(12px, 2vmin, 18px)',
-                      }}>Padam</button>
-                    <button type="button" className="scm1-kp-btn" onClick={() => pressDigit('0')}
-                      style={{
-                        border: 'none', borderBottom: '4px solid #6D28D9', borderRadius: 'clamp(9px, 1.2vmin, 13px)',
-                        background: accent, color: '#fff', cursor: 'pointer',
-                        fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.6vmin, 24px)',
-                      }}>0</button>
-                  </div>
-                  <button type="button" className="scm1-kp-btn" onClick={handleConfirm} disabled={value === ''}
-                    style={{
-                      width: '100%', height: 'clamp(44px, 6vmin, 58px)',
-                      border: 'none', borderRadius: 'clamp(10px, 1.4vmin, 15px)',
-                      borderBottom: value === '' ? '5px solid #D1D5DB' : '5px solid #15803D',
-                      background: value === '' ? '#E5E7EB' : '#22C55E',
-                      color: value === '' ? '#94A3B8' : '#fff',
-                      cursor: value === '' ? 'not-allowed' : 'pointer',
-                      fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(18px, 3vmin, 26px)',
-                      WebkitTapHighlightColor: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                    }}>Semak ✓</button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+    <>
+      {isQuad && <style>{'@media(max-width:640px){.sc-grid-4{grid-template-columns:1fr!important}}'}</style>}
+      <div className={isQuad ? 'sc-grid-4' : ''} style={{
+        display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`,
+        gap: 'clamp(10px, 1.6vmin, 16px)',
+        width: '100%', maxWidth: cols <= 2 ? 520 : cols <= 3 ? 540 : '100%',
+      }}>
+      {q.options.map((opt, idx) => {
+        const picked = selected === opt.id;
+        const isAns = opt.id === answer;
+        const c = BOX_COLORS[idx % BOX_COLORS.length];
+        let bg, bd, clr, txt, anim;
+        if (answered && isAns) { bg = '#22C55E'; bd = '#16A34A'; clr = '#fff'; txt = `${opt.value} ✓`; anim = 'snkBounce .5s ease'; }
+        else if (answered && picked) { bg = '#EF4444'; bd = '#DC2626'; clr = '#fff'; txt = `${opt.value} ✗`; anim = 'shakeError .35s ease'; }
+        else if (answered) { bg = '#E5E7EB'; bd = '#9CA3AF'; clr = '#9CA3AF'; txt = opt.value; anim = 'none'; }
+        else if (picked) { bg = C?.accent || '#8B5CF6'; bd = '#fff'; clr = '#fff'; txt = `✓ ${opt.value}`; anim = 'none'; }
+        else { bg = c.bg; bd = c.border; clr = '#fff'; txt = opt.value; anim = 'none'; }
+        return (
+          <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={answered}
+            style={{
+              padding: 'clamp(10px, 1.6vmin, 18px)',
+              border: picked && !answered ? `2px solid #fff` : 'none',
+              borderBottom: answered ? 'none' : `4px solid ${bd}`,
+              borderRadius: 'clamp(12px, 1.6vmin, 18px)',
+              background: bg,
+              color: clr,
+              fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
+              fontSize: 'clamp(18px, 3.4vmin, 32px)',
+              lineHeight: 1.2, wordBreak: 'break-word', overflowWrap: 'break-word',
+              cursor: answered ? 'default' : 'pointer',
+              transition: 'all .15s ease', WebkitTapHighlightColor: 'transparent',
+              minHeight: 44, minWidth: 44,
+              animation: anim,
+            }}
+          >
+            {txt}
+          </button>
+        );
+      })}
     </div>
+    </>
+  );
+}
+
+function SCVisualContent({ q, ctx }) {
+  const picks = [];
+  if (q.objects) picks.push(<ObjectsGrid key="obj" icon={q.objects.icon} count={q.objects.count} />);
+  if (q.cells) picks.push(<PolaSeqTiles key="tiles" cells={q.cells} answerVal={q.answerVal} ctx={ctx} />);
+  if (q.displayNum != null) {
+    const idx = Math.abs(Number(q.displayNum)) % BOX_COLORS.length;
+    const c = BOX_COLORS[idx];
+    picks.push(
+      <div key="num" style={{
+        display: 'inline-block',
+        padding: 'clamp(8px, 1.6vmin, 16px) clamp(16px, 3.2vmin, 32px)',
+        border: 'none', borderBottom: `4px solid ${c.border}`,
+        borderRadius: 'clamp(12px, 1.6vmin, 18px)',
+        background: c.bg, color: '#fff',
+        fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
+        fontSize: 'clamp(32px, 8vmin, 64px)', lineHeight: 1,
+      }}>{String(q.displayNum)}</div>
+    );
+  }
+  if (q.displayWord) {
+    const idx = (q.displayWord.length * 7) % BOX_COLORS.length;
+    const c = BOX_COLORS[idx];
+    picks.push(
+      <div key="word" style={{
+        display: 'inline-block',
+        padding: 'clamp(10px, 1.6vmin, 18px) clamp(20px, 3vmin, 36px)',
+        border: 'none', borderBottom: `4px solid ${c.border}`,
+        borderRadius: 'clamp(12px, 1.6vmin, 18px)',
+        background: c.bg, color: '#fff',
+        fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
+        fontSize: 'clamp(20px, 4vmin, 36px)', lineHeight: 1.15,
+        textAlign: 'center',
+      }}>{q.displayWord}</div>
+    );
+  }
+  const input = q.type === 'a-pick' ? <SCPickContent q={q} ctx={ctx} /> : <SusunanKeypadContent q={q} ctx={ctx} />;
+  if (picks.length === 0) return input;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(8px, 1.4vmin, 16px)', width: '100%' }}>
+      {picks}
+      {input}
+    </div>
+  );
+}
+
+export function SelesaikanCeritaM1Explore({ data, language, theme, onExit }) {
+  return (
+    <MatematikActivityFrame
+      buildRound={buildSelesaikanCeritaM1Round}
+      renderQuestion={(q, ctx) => <SCVisualContent q={q} ctx={ctx} />}
+      theme={theme}
+      onExit={onExit}
+      scoreStorageKey={data?.scoreStorageKey}
+      scoreId={data?.scoreId}
+      showQuestionProgress
+    />
   );
 }
 
@@ -3665,49 +3531,131 @@ function genCM1Kombinasi() {
   };
 }
 
+function genCM1BandingObjects() {
+  const dir = pick(['banyak', 'sedikit']);
+  let a = randInt(2, 8), b = randInt(2, 8);
+  while (b === a) b = randInt(2, 8);
+  const correct = dir === 'banyak' ? (a > b ? 'a' : 'b') : (a < b ? 'a' : 'b');
+  return {
+    type: 'cabar-banding-obj',
+    prompt: dir === 'banyak' ? 'Yang manakah banyak?' : 'Yang manakah sedikit?',
+    icon: pick(CMP_ICONS), a, b,
+    answer: correct,
+  };
+}
+
+function genCM1Bilang() {
+  const count = randInt(3, 12);
+  const icon = pick(KENALI_ICONS);
+  const set = new Set([count]);
+  while (set.size < 4) set.add(Math.max(1, randInt(count - 3, count + 3)));
+  const options = shuffle([...set]).map((v, i) => ({ id: `o${i}`, value: v }));
+  return {
+    type: 'cabar-bilang',
+    prompt: 'Berapakah bilangannya?',
+    icon, count, options,
+    answer: options.find(o => o.value === count).id,
+  };
+}
+
 function buildCabarMindaM1Round() {
-  const qs = [];
-  for (let i = 0; i < 2; i++) qs.push(genCM1WordToNum());
-  for (let i = 0; i < 2; i++) qs.push(genCM1Antara());
-  for (let i = 0; i < 2; i++) qs.push(genCM1NilaiDigit());
-  for (let i = 0; i < 2; i++) qs.push(genCM1Bundar());
-  for (let i = 0; i < 2; i++) qs.push(genCM1Banding());
-  for (let i = 0; i < 2; i++) qs.push(genCM1Lengkap());
-  for (let i = 0; i < 2; i++) qs.push(genCM1Kombinasi());
-  return shuffle(qs).map((q, i) => ({ ...q, qid: i }));
+  const comparePool = tagCM1Topic('banding-banyak-sedikit', buildRound().map((q) => ({ ...q, answer: correctSide(q) })));
+  const kenali0Pool = tagCM1Topic('kenali-0-10', buildKenaliRound({ min: 0, max: 10, bilang: 4, kenal: 3, sifar: 3 }));
+  const kenali11Pool = tagCM1Topic('kenali-11-20', buildKenaliRound({ min: 11, max: 20, bilang: 5, kenal: 5, sifar: 0 }));
+  const kenali21Pool = tagCM1Topic('kenali-21-100', build21Round());
+  const nilaiPool = tagCM1Topic('nilai-tempat', buildNilaiTempatRound());
+  const susunanPool = tagCM1Topic('susunan-nombor', buildSusunanRound());
+  const polaPool = tagCM1Topic('pola-nombor', buildPolaRound());
+  const anggarPool = tagCM1Topic('anggar-bundar', buildAnggarBundarRound());
+  const kombinasiPool = tagCM1Topic('kombinasi-nombor', buildKombinasiRound());
+  const selesaikanPool = tagCM1Topic('selesaikan', buildSelesaikanRound());
+  const ceritaPool = tagCM1Topic('selesaikan-cerita-m1', buildSelesaikanCeritaM1Round());
+
+  const qs = [
+    takeFromPool(comparePool, q => q.type === 'sama-banyak'),
+    takeFromPool(comparePool, q => q.type === 'banyak' || q.type === 'sedikit'),
+    takeFromPool(comparePool, q => q.type === 'lebih' || q.type === 'kurang'),
+
+    takeFromPool(kenali0Pool, q => q.type === 'kenali-sifar'),
+    takeFromPool(kenali0Pool, q => q.type === 'bilang'),
+    takeFromPool(kenali0Pool, q => q.type === 'kenal-nombor'),
+
+    takeFromPool(kenali11Pool),
+
+    takeFromPool(kenali21Pool, q => q.type === 'kenali21-bilang'),
+    takeFromPool(kenali21Pool, q => q.type === 'kenali21-tulis-angka'),
+    takeFromPool(kenali21Pool, q => q.type === 'kenali21-susun'),
+    takeFromPool(kenali21Pool, q => q.type === 'kenali21-angka-ke-perkataan'),
+
+    takeFromPool(nilaiPool, q => q.type === 'nilai-tempat-bilang'),
+    takeFromPool(nilaiPool, q => q.type === 'nilai-tempat-pilih'),
+
+    takeFromPool(susunanPool, q => q.type === 'susunan-order'),
+    takeFromPool(susunanPool, q => q.type === 'susunan-jiran'),
+    takeFromPool(susunanPool, q => q.type === 'susunan-lengkapkan'),
+    takeFromPool(susunanPool, q => q.type === 'susunan-sambung-titik'),
+
+    takeFromPool(polaPool, q => q.type === 'pola-berulang'),
+    takeFromPool(polaPool, q => q.type === 'pola-bilang-lengkap'),
+    takeFromPool(polaPool, q => q.type === 'pola-bilang-terang'),
+
+    takeFromPool(anggarPool, q => q.type === 'anggar-lebihkurang'),
+    takeFromPool(anggarPool, q => q.type === 'anggar-terbaik'),
+    takeFromPool(anggarPool, q => q.type === 'bundar-garis'),
+    takeFromPool(anggarPool, q => q.type === 'bundar-pilih'),
+
+    takeFromPool(kombinasiPool, q => q.type === 'jumlah'),
+    takeFromPool(kombinasiPool, q => q.type === 'lengkapkan'),
+    takeFromPool(kombinasiPool, q => q.type === 'jadikan-10'),
+
+    takeFromPool(selesaikanPool, q => q.type === 'sel-pick'),
+    takeFromPool(selesaikanPool, q => q.type === 'sel-keypad'),
+
+    takeFromPool(ceritaPool),
+  ];
+
+  return shuffle(qs.filter(Boolean)).map((q, i) => ({ ...q, qid: i }));
 }
 
 function CM1SelPickContent({ q, ctx }) {
   const { answered, selected, answer, handlePick, theme: C } = ctx;
+  const cols = Math.min(q.options.length, 4);
   return (
     <div style={{
-      display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(clamp(60px, 12vmin, 90px), 1fr))',
-      gap: 'clamp(8px, 1.4vmin, 14px)', width: '100%', maxWidth: 380, margin: '0 auto',
+      display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`,
+      gap: 'clamp(8px, 1.4vmin, 16px)',
+      width: '100%', maxWidth: cols <= 3 ? 360 : 400,
     }}>
-      {q.options.map(opt => {
-        const isSelected = selected === opt.id;
-        const isAnswer = opt.id === answer;
-        let bg = '#F8FAFC';
-        let border = '#E2E8F0';
-        let txt = '#334155';
-        if (answered) {
-          if (isAnswer) { bg = '#DCFCE7'; border = '#22C55E'; txt = '#16A34A'; }
-          else if (isSelected) { bg = '#FEE2E2'; border = '#EF4444'; txt = '#DC2626'; }
-        } else if (isSelected) { bg = `${C?.accent}18`; border = C?.accent; txt = C?.accent; }
+      {q.options.map((opt, idx) => {
+        const picked = selected === opt.id;
+        const isAns = opt.id === answer;
+        const c = BOX_COLORS[idx % BOX_COLORS.length];
+        let bg, bd, clr, txt, anim;
+        if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; clr = '#fff'; txt = `${opt.value} ✓`; anim = 'snkBounce .5s ease'; }
+        else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; clr = '#fff'; txt = `${opt.value} ✗`; anim = 'shakeError .35s ease'; }
+        else if (answered) { bg = '#fff'; bd = '#E2E8F0'; clr = '#94A3B8'; txt = opt.value; anim = 'none'; }
+        else if (picked) { bg = `${C?.accent || '#8B5CF6'}40`; bd = C?.accent || '#8B5CF6'; clr = C?.dark || C?.accent || '#5B21B6'; txt = opt.value; anim = 'none'; }
+        else { bg = '#fff'; bd = '#CBD5E1'; clr = '#1E293B'; txt = opt.value; anim = 'none'; }
         return (
           <button key={opt.id} type="button" disabled={answered}
             onClick={() => handlePick(opt.id)}
             style={{
-              padding: 'clamp(10px, 1.8vmin, 16px) clamp(8px, 1.4vmin, 14px)',
-              border: `2px solid ${border}`, borderRadius: 14,
-              background: bg, color: txt, cursor: answered ? 'default' : 'pointer',
-              fontFamily: "'Baloo 2',sans-serif", fontWeight: 800,
-              fontSize: 'clamp(22px, 4vmin, 36px)',
-              textAlign: 'center', transition: 'all .15s ease',
-              WebkitTapHighlightColor: 'transparent',
+              padding: 'clamp(10px, 1.6vmin, 18px)',
+              border: 'none',
+              borderBottom: answered ? 'none' : `4px solid ${bd}`,
+              borderRadius: 'clamp(12px, 1.6vmin, 18px)',
+              background: bg,
+              color: clr,
+              fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
+              fontSize: 'clamp(24px, 4vmin, 40px)',
+              lineHeight: 1.1, whiteSpace: 'nowrap',
+              cursor: answered ? 'default' : 'pointer',
+              transition: 'all .15s ease', WebkitTapHighlightColor: 'transparent',
+              minHeight: 44, minWidth: 44,
+              animation: anim,
             }}
           >
-            {opt.value}
+            {txt}
           </button>
         );
       })}
@@ -3746,7 +3694,7 @@ function CM1PolaTilesContent({ q, ctx }) {
           if (answered) {
             if (isAnswer) { bg = '#DCFCE7'; border = '#22C55E'; txt = '#16A34A'; }
             else if (isSelected) { bg = '#FEE2E2'; border = '#EF4444'; txt = '#DC2626'; }
-          } else if (isSelected) { bg = `${C?.accent}18`; border = C?.accent; txt = C?.accent; }
+          } else if (isSelected) { bg = `${C?.accent}50`; border = C?.accent; txt = C?.accent; }
           return (
             <button key={opt.id} type="button" disabled={answered}
               onClick={() => handlePick(opt.id)}
@@ -3768,15 +3716,201 @@ function CM1PolaTilesContent({ q, ctx }) {
   );
 }
 
+function CM1BandingObjectsContent({ q, ctx }) {
+  const { answered, selected, answer, handlePick, theme: C } = ctx;
+  const Panel = ({ side }) => {
+    const picked = selected === side;
+    const isAns = side === answer;
+    return (
+      <div
+        onClick={() => !answered && handlePick(side)}
+        role="button" tabIndex={0}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (!answered) handlePick(side); } }}
+        style={{
+          flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px, 1.6vmin, 18px)',
+          background: '#fff', border: answered ? `2px solid ${picked && !isAns ? '#EF4444' : '#22C55E'}` : '2px solid #E2E8F0',
+          borderBottom: `4px solid ${answered ? (picked && !isAns ? '#EF4444' : '#22C55E') : '#CBD5E1'}`,
+          borderRadius: 'clamp(18px, 2vmin, 26px)', padding: 'clamp(12px, 2vmin, 28px) clamp(8px, 1.4vmin, 20px)',
+          cursor: answered ? 'default' : 'pointer', transition: 'all .15s ease',
+          minHeight: 'clamp(130px, 24vmin, 300px)', justifyContent: 'space-between',
+          userSelect: 'none', WebkitTapHighlightColor: 'transparent',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+          <RenderObjects icon={q.icon} count={q[side]} />
+        </div>
+        <div style={{
+          width: 'clamp(34px, 4.8vmin, 52px)', height: 'clamp(34px, 4.8vmin, 52px)',
+          borderRadius: 'clamp(9px, 1.2vmin, 13px)',
+          border: answered ? 'none' : '3px solid #CBD5E1',
+          background: answered ? (isAns ? '#22C55E' : picked ? '#EF4444' : '#fff') : '#fff',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
+          fontSize: 'clamp(20px, 3.2vmin, 32px)',
+          color: answered ? '#fff' : '#334155',
+        }}>
+          {answered ? (isAns ? '✓' : picked ? '✗' : '') : q[side]}
+        </div>
+      </div>
+    );
+  };
+  return (
+    <div style={{ display: 'flex', gap: 'clamp(12px, 2.2vmin, 26px)', width: '100%' }}>
+      <Panel side="a" />
+      <Panel side="b" />
+    </div>
+  );
+}
+
+function CM1BilangContent({ q, ctx }) {
+  const { answered, selected, answer, handlePick, theme: C } = ctx;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(14px, 2.4vmin, 28px)', width: '100%' }}>
+      <div style={{
+        padding: 'clamp(10px, 1.8vmin, 20px)', borderRadius: 'clamp(16px, 2vmin, 24px)',
+        background: '#F8FAFC', border: '2px solid #E2E8F0', maxWidth: '90%',
+      }}>
+        <RenderObjects icon={q.icon} count={q.count} />
+      </div>
+      <NumOptionsGrid options={q.options} answered={answered} selected={selected} answer={answer} handlePick={handlePick} theme={C} />
+    </div>
+  );
+}
+
+const CM1_TOTAL_QUESTIONS = 30;
+const CM1_DURATION_SECONDS = 30 * 60;
+const CM1_PASS_MARK = Math.ceil(CM1_TOTAL_QUESTIONS * 0.8);
+
 const CM1_SLICES = [
-  { id: 'word-num', name: 'Perkataan ke Angka', color: '#8B5CF6', types: ['cabar-word-num'] },
-  { id: 'antara', name: 'Nombor Antara', color: '#6D28D9', types: ['cabar-antara'] },
-  { id: 'nilai-digit', name: 'Nilai Digit', color: '#7C3AED', types: ['cabar-nilai-digit'] },
-  { id: 'bundar', name: 'Bundar', color: '#A78BFA', types: ['cabar-bundar'] },
-  { id: 'banding', name: 'Banding Nombor', color: '#C4B5FD', types: ['cabar-banding'] },
-  { id: 'pola', name: 'Pola Nombor', color: '#5B21B6', types: ['cabar-lengkap'] },
-  { id: 'kombinasi', name: 'Kombinasi', color: '#3B0764', types: ['cabar-kombinasi'] },
+  { id: 'banding-banyak-sedikit', name: 'Banding Banyak Sedikit', color: '#EC4899' },
+  { id: 'kenali-0-10', name: 'Kenali 0 Hingga 10', color: '#F59E0B' },
+  { id: 'kenali-11-20', name: 'Kenali 11 Hingga 20', color: '#D97706' },
+  { id: 'kenali-21-100', name: 'Kenali 21 Hingga 100', color: '#8B5CF6' },
+  { id: 'nilai-tempat', name: 'Nilai Tempat', color: '#7C3AED' },
+  { id: 'susunan-nombor', name: 'Susunan Nombor', color: '#5B21B6' },
+  { id: 'pola-nombor', name: 'Pola Nombor', color: '#6D28D9' },
+  { id: 'anggar-bundar', name: 'Anggar dan Bundar', color: '#A78BFA' },
+  { id: 'kombinasi-nombor', name: 'Kombinasi Nombor', color: '#3B0764' },
+  { id: 'selesaikan', name: 'Selesaikan', color: '#14B8A6' },
+  { id: 'selesaikan-cerita-m1', name: 'Selesaikan Cerita', color: '#2563EB' },
 ];
+
+function tagCM1Topic(topicId, questions) {
+  return questions.map((question) => ({ ...question, topicId }));
+}
+
+function takeFromPool(pool, matcher = null) {
+  if (!Array.isArray(pool) || pool.length === 0) return null;
+  const idx = matcher ? pool.findIndex(matcher) : -1;
+  if (idx >= 0) return pool.splice(idx, 1)[0];
+  const randomIdx = randInt(0, pool.length - 1);
+  return pool.splice(randomIdx, 1)[0];
+}
+
+function CM1CompareContent({ q, ctx }) {
+  const { answered, selected, answer, handlePick, theme: C } = ctx;
+  const actualAnswer = answer || correctSide(q);
+
+  const renderBox = (side) => {
+    const picked = selected === side;
+    const isAns = side === actualAnswer;
+    if (answered) {
+      if (isAns) return <div className="cmp-box ok" aria-hidden="true">✓</div>;
+      if (picked) return <div className="cmp-box no" aria-hidden="true">✗</div>;
+      return <div className="cmp-box num dim" aria-hidden="true">{q[side]}</div>;
+    }
+    return <div className="cmp-box num" aria-hidden="true">{q[side]}</div>;
+  };
+
+  const Panel = ({ side }) => {
+    const picked = selected === side;
+    const isAns = side === actualAnswer;
+    return (
+      <div
+        className={`cmp-panel${answered ? ' done' : ''}${picked ? ' picked' : ''}${answered && isAns ? ' is-correct' : ''}${answered && picked && !isAns ? ' is-wrong' : ''}`}
+        onClick={() => handlePick(side)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handlePick(side);
+          }
+        }}
+        style={{
+          background: picked && !answered ? `${C?.accent || '#8B5CF6'}50` : '#fff',
+          border: answered ? `2px solid ${picked && !isAns ? C.red : C.green}` : `2px solid ${picked ? (C?.accent || '#8B5CF6') : '#E2E8F0'}`,
+          borderBottom: `4px solid ${answered ? (picked && !isAns ? C.red : C.green) : (picked ? (C?.accent || '#8B5CF6') : '#CBD5E1')}`,
+          color: '#334155',
+        }}
+      >
+        <div className="cmp-objects"><ObjectsGrid icon={q.icon} count={q[side]} /></div>
+        {renderBox(side)}
+      </div>
+    );
+  };
+
+  return (
+    <>
+      {q.type === 'sama-banyak' && (
+        <div className="cmp-ref">
+          <div className="cmp-ref-label">Sama dengan ini</div>
+          <div className="cmp-ref-box"><ObjectsGrid icon={q.icon} count={q.ref} /></div>
+        </div>
+      )}
+      <div className="cmp-options">
+        <Panel side="a" />
+        <Panel side="b" />
+      </div>
+    </>
+  );
+}
+
+function renderQuestionM1All(q, ctx) {
+  if (['banyak', 'sedikit', 'lebih', 'kurang', 'sama-banyak'].includes(q.type)) return <CM1CompareContent q={q} ctx={ctx} />;
+  if (q.type === 'bilang') return <BilangContent q={q} ctx={ctx} />;
+  if (q.type === 'kenali-sifar') return <SifarContent q={q} ctx={ctx} />;
+  if (q.type === 'kenal-nombor') return <KenalContent q={q} ctx={ctx} />;
+  if (q.type === 'jumlah') return <JumlahContent q={q} ctx={ctx} />;
+  if (q.type === 'lengkapkan') return <LengkapkanContent q={q} ctx={ctx} />;
+  if (q.type === 'jadikan-10') return <Jadikan10Content q={q} ctx={ctx} />;
+  if (q.type === 'kenali21-bilang') return <Bilang21Content q={q} ctx={ctx} />;
+  if (q.type === 'kenali21-tulis-angka') return <TulisAngkaContent q={q} ctx={ctx} />;
+  if (q.type === 'kenali21-susun') return <SusunPerkataanContent q={q} ctx={ctx} />;
+  if (q.type === 'kenali21-perkataan-ke-angka') return <PerkataanKeAngkaContent q={q} ctx={ctx} />;
+  if (q.type === 'kenali21-angka-ke-perkataan') return <AngkaKePerkataanContent q={q} ctx={ctx} />;
+  if (q.type === 'nilai-tempat-bilang') return <IsiNilaiTempatContent q={q} ctx={ctx} />;
+  if (q.type === 'nilai-tempat-pilih') return <NilaiTempatPilihContent q={q} ctx={ctx} />;
+  if (q.type === 'susunan-order') return <SusunOrderContent q={q} ctx={ctx} />;
+  if (q.type === 'susunan-jiran' || q.type === 'susunan-lengkapkan' || q.type === 'pola-bilang-lengkap' || q.type === 'sel-keypad') {
+    return <SusunanKeypadContent q={q} ctx={ctx} />;
+  }
+  if (q.type === 'susunan-sambung-titik') return <SambungTitikContent q={q} ctx={ctx} />;
+  if (q.type === 'pola-berulang') return <PolaTilesContent q={q} ctx={ctx} />;
+  if (q.type === 'pola-bilang-terang') return <PolaTerangContent q={q} ctx={ctx} />;
+  if (q.type === 'anggar-lebihkurang') return <AnggarObjectsContent q={q} ctx={ctx} word />;
+  if (q.type === 'anggar-terbaik') return <AnggarObjectsContent q={q} ctx={ctx} />;
+  if (q.type === 'bundar-garis') return <BundarGarisContent q={q} ctx={ctx} />;
+  if (q.type === 'bundar-pilih') return <BundarPilihContent q={q} ctx={ctx} />;
+  if (q.type === 'sel-pick') return <SelPickContent q={q} ctx={ctx} />;
+  if (q.type === 'a-pick' || q.type === 'a-keypad') return <SCVisualContent q={q} ctx={ctx} />;
+  return <CM1SelPickContent q={q} ctx={ctx} />;
+}
+
+function renderCM1Prompt(q, accent) {
+  if (q?.promptNumber != null) {
+    return (
+      <>
+        {q.prompt}
+        &nbsp;
+        <strong style={{ fontSize: '1.3em', color: accent }}>{q.promptNumber}</strong>
+        ?
+      </>
+    );
+  }
+  if (!q?.prompt && CMP_PROMPTS[q?.type]) return CMP_PROMPTS[q.type];
+  return q?.prompt || null;
+}
 
 export function CabarMindaM1Explore({ data, language, theme, onExit }) {
   const C = theme || {};
@@ -3789,7 +3923,7 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState(null);
   const [selectedPerQ, setSelectedPerQ] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(1200);
+  const [timeLeft, setTimeLeft] = useState(CM1_DURATION_SECONDS);
   const [timeUsed, setTimeUsed] = useState(0);
   const timerRef = useRef(null);
 
@@ -3803,14 +3937,14 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
     setAnswers(new Array(qs.length).fill(null));
     setSelectedPerQ({});
     setCurrent(0);
-    setTimeLeft(1200);
+    setTimeLeft(CM1_DURATION_SECONDS);
     setPhase('exam');
     timerRef.current = setInterval(() => {
       setTimeLeft(t => {
         if (t <= 1) {
           clearInterval(timerRef.current);
           timerRef.current = null;
-          setTimeUsed(1200);
+          setTimeUsed(CM1_DURATION_SECONDS);
           setPhase('results');
           return 0;
         }
@@ -3820,24 +3954,24 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
   };
 
   const handleExamPick = (value) => {
-    if (!questions || answers[current] !== null) return;
+    if (!questions) return;
     const correct = value === questions[current].answer;
     const newAnswers = [...answers];
     newAnswers[current] = correct;
     setAnswers(newAnswers);
     const newSel = { ...selectedPerQ, [current]: value };
     setSelectedPerQ(newSel);
-    playSound(correct ? 'correct' : 'wrong');
-    if (correct) confetti({ particleCount: 45, spread: 60, startVelocity: 32, origin: { y: 0.7 }, scalar: 0.85 });
-    setTimeout(() => {
-      if (current + 1 >= questions.length) {
-        setTimeUsed(1200 - timeLeft);
-        if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
-        setPhase('results');
-      } else {
-        setCurrent(c => c + 1);
-      }
-    }, 800);
+  };
+
+  const handleExamNext = () => {
+    if (!questions || answers[current] === null) return;
+    if (current + 1 >= questions.length) {
+      setTimeUsed(CM1_DURATION_SECONDS - timeLeft);
+      if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+      setPhase('results');
+      return;
+    }
+    setCurrent(c => c + 1);
   };
 
   if (phase === 'start') {
@@ -3855,9 +3989,9 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
           </div>
           <div style={{ display: 'flex', gap: 'clamp(8px, 1.6vmin, 16px)', flexWrap: 'wrap', justifyContent: 'center' }}>
             {[
-              { label: language === 'bm' ? 'Soalan: 14' : 'Questions: 14', color: accent },
-              { label: language === 'bm' ? '20 Minit' : '20 Minutes', color: '#F59E0B' },
-              { label: language === 'bm' ? 'Lulus 80% (11/14)' : 'Pass 80% (11/14)', color: '#16A34A' },
+              { label: language === 'bm' ? 'Soalan: 30' : 'Questions: 30', color: accent },
+              { label: language === 'bm' ? '30 Minit' : '30 Minutes', color: '#F59E0B' },
+              { label: language === 'bm' ? `Lulus 80% (${CM1_PASS_MARK}/30)` : `Pass 80% (${CM1_PASS_MARK}/30)`, color: '#16A34A' },
             ].map(chip => (
               <div key={chip.label} style={{
                 padding: '6px 16px', borderRadius: 999,
@@ -3878,9 +4012,10 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
               fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 1.6vmin, 16px)', color: '#475569',
               display: 'flex', flexDirection: 'column', gap: 'clamp(8px, 1.2vmin, 12px)',
             }}>
-              <div>{language === 'bm' ? '📌 Jawab semua 14 soalan dalam 20 minit.' : '📌 Answer all 14 questions in 20 minutes.'}</div>
+              <div>{language === 'bm' ? '📌 Jawab semua 30 soalan dalam 30 minit.' : '📌 Answer all 30 questions in 30 minutes.'}</div>
               <div>{language === 'bm' ? '⏱️ Masa berhenti apabila semua dijawab atau tamat.' : '⏱️ Time stops when done or time runs out.'}</div>
-              <div>{language === 'bm' ? '🎯 Skor 11/14 atau lebih untuk lulus.' : '🎯 Score 11/14 or more to pass.'}</div>
+              <div>{language === 'bm' ? '🎲 Soalan diambil secara rawak daripada semua topik Modul 1.' : '🎲 Questions are mixed randomly from every Module 1 topic.'}</div>
+              <div>{language === 'bm' ? `🎯 Skor ${CM1_PASS_MARK}/30 atau lebih untuk lulus.` : `🎯 Score ${CM1_PASS_MARK}/30 or more to pass.`}</div>
             </div>
           </div>
           <button type="button" onClick={startExam}
@@ -3897,84 +4032,161 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
     );
   }
 
-  if (phase === 'exam' && questions) {
+    if (phase === 'exam' && questions) {
     const q = questions[current];
+    const promptContent = renderCM1Prompt(q, accent);
     const answered = answers[current] !== null;
-    const isCorrect = answers[current] === true;
+    const isCompareQuestion = ['banyak', 'sedikit', 'lebih', 'kurang', 'sama-banyak'].includes(q.type);
     const mm = Math.floor(timeLeft / 60);
     const ss = timeLeft % 60;
     const timerStr = `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
     const timerRed = timeLeft <= 300;
-    const correctCount = answers.filter(Boolean).length;
-    const wrongCount = answers.filter(a => a === false).length;
 
     const examCtx = {
-      answered,
+      answered: false,
       selected: selectedPerQ[current] || null,
       answer: q.answer,
-      isCorrect,
+      isCorrect: false,
       handlePick: handleExamPick,
-      handleNext: () => {},
+      handleNext: handleExamNext,
       streak: 0,
-      correct: correctCount,
-      wrong: wrongCount,
+      correct: 0,
+      wrong: 0,
       theme: { accent, dark, cd, green: '#16A34A', red: '#DC2626' },
     };
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'transparent' }}>
         <style>{`
-          .cm1-exam-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-          .cm1-exam-body {
+          .maf-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+          .maf-scroll-q { display: flex; flex-direction: column; }
+          .maf-body {
             min-height: 100%; box-sizing: border-box;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             padding: clamp(14px, 3vmin, 40px);
           }
-          .cm1-exam-content {
+          .maf-content {
             width: 100%; max-width: min(94vw, 860px);
             display: flex; flex-direction: column; align-items: center;
             gap: clamp(8px, 1.6vmin, 18px);
           }
-          .cm1-exam-q {
+          .maf-question {
             font-family: 'Baloo 2', sans-serif; font-weight: 800;
             font-size: clamp(22px, 4.6vmin, 44px); color: #1E293B; text-align: center; line-height: 1.15;
           }
-          .cm1-exam-feedback {
-            font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(20px, 3vmin, 30px);
+          .maf-feedback {
+            font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: clamp(14px, 2vmin, 18px);
             text-align: center; min-height: clamp(28px, 3.8vmin, 44px);
             display: flex; align-items: center; justify-content: center;
+            color: #64748B;
           }
-          .cm1-exam-feedback.ok { color: #16A34A; }
-          .cm1-exam-feedback.no { color: #DC2626; }
+          .maf-next {
+            padding: clamp(11px, 1.5vmin, 17px) clamp(28px, 4vmin, 52px);
+            border: none;
+            border-radius: 999px;
+            background: ${accent};
+            color: #fff;
+            font-family: 'Baloo 2', sans-serif;
+            font-weight: 800;
+            font-size: clamp(17px, 2.6vmin, 26px);
+            cursor: pointer;
+            box-shadow: 0 4px 0 ${cd};
+            transition: transform .1s ease;
+            -webkit-tap-highlight-color: transparent;
+          }
+          .maf-next:hover:not(:disabled) { transform: translateY(-2px); }
+          .maf-next:active:not(:disabled) { transform: translateY(2px); }
+          .cmp-ref {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(6px, 1.2vmin, 12px);
+          }
+          .cmp-ref-label {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: clamp(13px, 1.9vmin, 20px);
+            color: #64748B;
+          }
+          .cmp-ref-box {
+            background: #F1F5F9;
+            border-radius: 16px;
+            padding: clamp(8px, 1.4vmin, 16px) clamp(16px, 2.4vmin, 28px);
+          }
+          .cmp-options {
+            display: flex;
+            gap: clamp(12px, 2.2vmin, 26px);
+            width: 100%;
+          }
+          .cmp-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(10px, 1.6vmin, 18px);
+            border-radius: clamp(18px, 2vmin, 26px);
+            padding: clamp(12px, 2vmin, 28px) clamp(8px, 1.4vmin, 20px);
+            cursor: pointer;
+            transition: all .15s ease;
+            min-height: clamp(130px, 24vmin, 300px);
+            justify-content: space-between;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+          }
+          .cmp-panel.done { cursor: default; }
+          .cmp-objects { display: flex; align-items: center; justify-content: center; flex: 1; }
+          .cmp-box {
+            width: clamp(34px, 4.8vmin, 52px);
+            height: clamp(34px, 4.8vmin, 52px);
+            border-radius: clamp(9px, 1.2vmin, 13px);
+            border: 3px solid #CBD5E1;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Baloo 2', sans-serif;
+            font-weight: 900;
+            font-size: clamp(20px, 3.2vmin, 32px);
+            color: #334155;
+            transition: all .15s ease;
+          }
+          .cmp-box.dim { opacity: .4; }
+          .cmp-box.ok { border-color: #16A34A; background: #16A34A; color: #fff; }
+          .cmp-box.no { border-color: #DC2626; background: #DC2626; color: #fff; }
+          .maf-footer {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: clamp(8px, 1.2vmin, 15px) clamp(16px, 2.4vmin, 34px);
+            background: rgba(255,255,255,.85);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid #E2E8F0;
+          }
         `}</style>
-        <div style={{
-          flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: 'clamp(8px, 1.2vmin, 14px) clamp(14px, 2.4vmin, 24px)',
-          background: 'rgba(255,255,255,.86)',
-          borderBottom: '1px solid rgba(196,181,253,.42)',
-        }}>
-          <div style={{ fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(14px, 1.8vmin, 18px)', color: '#475569' }}>
-            {language === 'bm' ? 'Soalan' : 'Question'} {current + 1} / {questions.length}
-          </div>
-          <div style={{
-            fontFamily: "'Baloo 2',sans-serif", fontWeight: 800,
-            fontSize: 'clamp(18px, 2.4vmin, 24px)',
-            color: timerRed ? '#DC2626' : '#1E293B',
-            transition: 'color 0.3s ease',
-          }}>
-            ⏱ {timerStr}
-          </div>
-        </div>
-        <div className="cm1-exam-scroll">
-          <div className="cm1-exam-body">
-            <div className="cm1-exam-content">
-              {q.prompt && <div className="cm1-exam-q">{q.prompt}</div>}
-              {q.type === 'cabar-lengkap' ? <CM1PolaTilesContent q={q} ctx={examCtx} /> : <CM1SelPickContent q={q} ctx={examCtx} />}
-              <div className={`cm1-exam-feedback ${answered ? (isCorrect ? 'ok' : 'no') : ''}`}>
-                {answered ? (isCorrect ? '✅ Betul!' : '❌ Salah') : ''}
+        <div className="maf-scroll maf-scroll-q">
+          <div className="maf-body">
+            <div className="maf-content">
+              {promptContent && <div className={isCompareQuestion ? 'cmp-question' : 'maf-question'}>{promptContent}</div>}
+              {renderQuestionM1All(q, examCtx)}
+              <div className="maf-feedback">
+                {answered ? (language === 'bm' ? 'Pilihan disimpan.' : 'Answer saved.') : ''}
               </div>
+              {answered && (
+                <button className="maf-next" type="button" onClick={handleExamNext}>
+                  {current + 1 >= questions.length
+                    ? (language === 'bm' ? 'Tamat 🎉' : 'Finish 🎉')
+                    : (language === 'bm' ? 'Seterusnya →' : 'Next →')}
+                </button>
+              )}
             </div>
           </div>
+        </div>
+        <div className="maf-footer">
+          <span style={{ color: timerRed ? '#DC2626' : dark, fontSize: '0.85rem', fontWeight: 900, minWidth: 88, textAlign: 'right' }}>
+            ⏱ {timerStr} · {current + 1}/{questions.length}
+          </span>
         </div>
       </div>
     );
@@ -3985,14 +4197,15 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
     const wrongCount = answers.filter(a => a === false).length;
     const unanswered = answers.filter(a => a === null).length;
     const total = questions.length;
-    const passed = correctCount >= 11;
+    const passMark = Math.ceil(total * 0.8);
+    const passed = correctCount >= passMark;
     const usedMM = Math.floor(timeUsed / 60);
     const usedSS = timeUsed % 60;
 
     const sliceScores = CM1_SLICES.map(slice => {
       let got = 0, totalT = 0;
       questions.forEach((q, i) => {
-        if (slice.types.includes(q.type)) {
+        if (q.topicId === slice.id) {
           totalT++;
           if (answers[i] === true) got++;
         }
@@ -4137,24 +4350,24 @@ export function KeypadInput({ answered, isCorrect, handlePick, answer, theme: C,
         .kp-btn { transition: all 0.08s ease; -webkit-tap-highlight-color: transparent; }
         .kp-btn:active { transform: translateY(4px); border-bottom-width: 0 !important; }
       `}</style>
-      <div style={{
-        minWidth: 'clamp(96px, 20vmin, 150px)', minHeight: 'clamp(46px, 6.5vmin, 60px)',
+      <div className={!answered ? 'snk-input-ready' : ''} style={{
+        minWidth: 'clamp(80px, 20vmin, 160px)', minHeight: 'clamp(42px, 7vmin, 64px)',
         border: `3px solid ${answered ? (isCorrect ? C.green : C.red) : '#CBD5E1'}`,
         borderRadius: 'clamp(12px, 1.6vmin, 18px)', background: '#F9FAFB',
         boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.06)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(28px, 5vmin, 44px)',
-        color: answered ? (isCorrect ? C.green : C.red) : (input ? '#334155' : '#CBD5E1'), padding: '0 18px',
+        fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(24px, 5vmin, 44px)',
+        color: answered ? (isCorrect ? C.green : C.red) : (input ? '#334155' : '#CBD5E1'), padding: '0 14px',
       }}>
         {input || '?'}
       </div>
       {answered && !isCorrect && (
         <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(14px, 2.2vmin, 20px)', color: '#64748B' }}>
-          Jawapan: <b style={{ color: C.green }}>{answer}</b>
+          Jawapan: <b style={{ color: C.green }}>{q.answer}</b>
         </div>
       )}
       {!answered && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(5px, 1vmin, 9px)', width: '100%', maxWidth: 300 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(5px, 1vmin, 10px)', width: '100%', maxWidth: 'clamp(260px, 50vmin, 420px)' }}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
             <button key={d} type="button" className="kp-btn" onClick={() => press(String(d))}
               style={{
@@ -4996,7 +5209,7 @@ function ColumnAddContent({ q, ctx }) {
       border: `3px solid ${borderColor}`, borderRadius: 'clamp(10px, 1.6vmin, 16px)',
       background: bg, color,
       fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(30px, 6vmin, 52px)',
-      outline: 'none', transition: 'all .12s ease', WebkitTapHighlightColor: 'transparent',
+       transition: 'all .12s ease', WebkitTapHighlightColor: 'transparent',
       boxShadow: active ? '0 0 0 4px rgba(59,130,246,0.2)' : 'none',
     };
   };
@@ -5025,7 +5238,7 @@ function ColumnAddContent({ q, ctx }) {
                   border: `2px dashed ${activeCarry === k ? '#F59E0B' : '#CBD5E1'}`, borderRadius: 10,
                   background: activeCarry === k ? '#FFFBEB' : '#fff',
                   fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 3.4vmin, 26px)',
-                  color: '#F59E0B', outline: 'none', WebkitTapHighlightColor: 'transparent',
+                  color: '#F59E0B',  WebkitTapHighlightColor: 'transparent',
                   boxShadow: activeCarry === k ? '0 0 0 4px rgba(245,158,11,0.25)' : 'none',
                   transition: 'all .12s ease',
                 }} />
@@ -5773,7 +5986,7 @@ function VerticalDiffContent({ q, ctx }) {
       border: `3px solid ${borderColor}`, borderRadius: 'clamp(10px, 1.6vmin, 16px)',
       background: bg, color,
       fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(30px, 6vmin, 52px)',
-      outline: 'none', transition: 'all .12s ease', WebkitTapHighlightColor: 'transparent',
+       transition: 'all .12s ease', WebkitTapHighlightColor: 'transparent',
       boxShadow: active ? '0 0 0 4px rgba(59,130,246,0.2)' : 'none',
     };
   };
@@ -5857,7 +6070,7 @@ function VerticalDiffContent({ q, ctx }) {
                 width: 'clamp(48px, 9vmin, 64px)', height: 'clamp(48px, 9vmin, 64px)', textAlign: 'center',
                 border: `3px solid ${borrowWrong ? C.red : '#FB923C'}`, borderRadius: 12, background: '#fff',
                 fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(26px, 5vmin, 40px)',
-                color: '#1E293B', outline: 'none',
+                color: '#1E293B', 
               }} />
             <SemakButton disabled={borrowInput === ''} onClick={checkBorrow} />
           </div>

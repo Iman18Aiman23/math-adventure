@@ -89,7 +89,7 @@ export default function MatematikTopicShell({
 
   return (
     <div
-      className={`mt-topic-shell${legacyDarkChrome ? ' mt-dark-chrome' : ''}`}
+      className={`mt-topic-shell${legacyDarkChrome ? ' mt-dark-chrome' : ''}${formalMode ? ' mt-formal-mode' : ''}`}
       style={{ '--mt-accent': theme.accent, '--mt-dark': theme.dark, '--mt-cd': theme.cd, ...(legacyDarkChrome ? { background: '#05030F' } : (formalMode ? { background: '#fff' } : null)) }}
     >
       <style>{`
@@ -727,6 +727,19 @@ export default function MatematikTopicShell({
         .mt-topic-shell .maf-next,
         .mt-topic-shell .cmp-next {
           box-shadow: 0 5px 0 color-mix(in srgb, var(--mt-cd) 78%, #000 0%), 0 14px 28px color-mix(in srgb, var(--mt-accent) 22%, transparent) !important;
+        }
+        .mt-topic-shell.mt-formal-mode .cmp-head,
+        .mt-topic-shell.mt-formal-mode .maf-head {
+          color: #64748B !important;
+          text-shadow: none;
+        }
+        .mt-topic-shell.mt-formal-mode .cmp-ref-label {
+          color: #64748B !important;
+        }
+        .mt-topic-shell.mt-formal-mode .cmp-ref-box {
+          background: #F1F5F9 !important;
+          border: 1px solid #E2E8F0;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.9);
         }
         @media (max-width: 560px) {
           .mt-topic-shell .cmp-content,
