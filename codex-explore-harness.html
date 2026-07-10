@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Codex Explore Harness</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        background: #eef4ff;
+      }
+      #root {
+        min-height: 100vh;
+      }
+      .shell {
+        min-height: 100vh;
+        padding: 16px;
+        box-sizing: border-box;
+      }
+      .error {
+        white-space: pre-wrap;
+        background: #fff1f2;
+        color: #9f1239;
+        border: 1px solid #fecdd3;
+        border-radius: 12px;
+        padding: 16px;
+        font: 14px/1.5 ui-monospace, SFMono-Regular, Consolas, monospace;
+      }
+      .ok {
+        margin-bottom: 12px;
+        color: #1e3a8a;
+        font-weight: 700;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid #bfdbfe;
+        border-radius: 12px;
+        padding: 12px;
+        min-height: 180px;
+        overflow: hidden;
+      }
+      .label {
+        font-weight: 700;
+        color: #1e3a8a;
+        margin-bottom: 8px;
+      }
+      .badge {
+        display: inline-block;
+        border-radius: 999px;
+        padding: 4px 10px;
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .badge.pending {
+        background: #e2e8f0;
+        color: #475569;
+      }
+      .badge.ok {
+        background: #dcfce7;
+        color: #166534;
+      }
+      .mini-error {
+        white-space: pre-wrap;
+        color: #9f1239;
+        font: 12px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
+      }
+      .viewport {
+        max-height: 110px;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      const root = document.getElementById('root');
+      const params = new URLSearchParams(window.location.search);
+      const primitive = params.get('primitive') || 'kenali-pecahan';
+      const mode = params.get('mode') || 'single';
+      const scoreId = params.get('scoreId') || undefined;
+
+      const showError = (error) => {
+        root.innerHTML = `<div class="shell"><div class="error">${String(error?.stack || error)}</div></div>`;
+      };
+
+      window.addEventListener('error', (event) => {
+        showError(event.error || event.message);
+      });
+
+      window.addEventListener('unhandledrejection', (event) => {
+        showError(event.reason || event);
+      });
+
+      try {
+        const React = (await import('react')).default;
+        const { createRoot } = await import('react-dom/client');
+        const { default: MatematikExplore } = await import('/src/components/MatematikPage/_shared/MatematikExplore.jsx');
+
+        class ErrorBoundary extends React.Component {
+          constructor(props) {
+            super(props);
+            this.state = { error: null };
+          }
+
+          static getDerivedStateFromError(error) {
+            return { error };
+          }
+
+          componentDidCatch(error) {
+            console.error(error);
+          }
+
+          render() {
+            if (this.state.error) {
+              return React.createElement(
+                'div',
+                { className: 'shell' },
+                React.createElement('div', { className: 'error' }, String(this.state.error?.stack || this.state.error))
+              );
+            }
+            return this.props.children;
+          }
+        }
+
+        function MountSignal({ onReady, children }) {
+          React.useEffect(() => {
+            onReady();
+          }, [onReady]);
+          return children;
+        }
+
+        const config = {
+          primitive,
+          scoreId,
+          data: {},
+        };
+
+        const theme = {
+          accent: '#3b82f6',
+          dark: '#1e3a8a',
+          cd: '#1d4ed8',
+        };
+
+        const allPrimitives = [
+          'compare',
+          'kenali-nombor',
+          'kombinasi',
+          'kenali-21-100',
+          'nilai-tempat',
+          'susunan-nombor',
+          'pola-nombor',
+          'anggar-bundar',
+          'selesaikan',
+          'latih-diri',
+          'cabar-minda',
+          'kenali-tambah',
+          'latihan-tambah',
+          'kenali-tolak',
+          'latihan-tolak',
+          'cerita-tambah-tolak',
+          'tambah-berulang',
+          'selesaikan-m2',
+          'latih-diri-m2',
+          'cabar-minda-m2',
+          'selesaikan-cerita-m1',
+          'cabar-minda-m1',
+          'kenali-pecahan',
+        ];
+
+        function PrimitiveProbe({ name }) {
+          const [status, setStatus] = React.useState('pending');
+          const [error, setError] = React.useState(null);
+
+          return React.createElement(
+            ErrorBoundary,
+            {
+              fallback: null,
+            },
+            React.createElement(
+              'div',
+              { className: 'card' },
+              React.createElement('div', { className: 'label' }, name),
+              React.createElement('div', { className: `badge ${error ? 'pending' : status}` }, error ? 'error' : status),
+              error
+                ? React.createElement('div', { className: 'mini-error' }, String(error?.stack || error))
+                : React.createElement(
+                    'div',
+                    { className: 'viewport' },
+                    React.createElement(
+                      LocalErrorBoundary,
+                      { onError: setError },
+                      React.createElement(
+                        MountSignal,
+                        { onReady: () => setStatus('ok') },
+                        React.createElement(MatematikExplore, {
+                          config: { primitive: name, data: {}, scoreId },
+                          language: 'bm',
+                          theme,
+                          onExit: () => {},
+                        })
+                      )
+                    )
+                  )
+            )
+          );
+        }
+
+        class LocalErrorBoundary extends React.Component {
+          constructor(props) {
+            super(props);
+            this.state = { error: null };
+          }
+
+          static getDerivedStateFromError(error) {
+            return { error };
+          }
+
+          componentDidCatch(error) {
+            this.props.onError(error);
+          }
+
+          render() {
+            if (this.state.error) return null;
+            return this.props.children;
+          }
+        }
+
+        const app =
+          mode === 'grid'
+            ? React.createElement(
+                'div',
+                { className: 'shell' },
+                React.createElement('div', { className: 'ok' }, 'grid mode'),
+                React.createElement(
+                  'div',
+                  { className: 'grid' },
+                  ...allPrimitives.map((name) => React.createElement(PrimitiveProbe, { key: name, name }))
+                )
+              )
+            : React.createElement(
+                ErrorBoundary,
+                null,
+                React.createElement(
+                  'div',
+                  { className: 'shell' },
+                  React.createElement('div', { className: 'ok' }, `primitive=${primitive}`),
+                  React.createElement(MatematikExplore, {
+                    config,
+                    language: 'bm',
+                    theme,
+                    onExit: () => {},
+                  })
+                )
+              );
+
+        createRoot(root).render(app);
+      } catch (error) {
+        showError(error);
+      }
+    </script>
+  </body>
+</html>
