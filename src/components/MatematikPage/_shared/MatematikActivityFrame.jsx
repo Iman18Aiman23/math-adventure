@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import confetti from 'canvas-confetti';
 import { playSound } from '../../../utils/soundManager';
 import { MatematikNavContext } from './MatematikNavContext';
@@ -59,12 +59,12 @@ export default function MatematikActivityFrame({
     if (answered) return;
     setSelected(value);
     if (value === q.answer) {
-      setCorrect(c => c + 1);
-      setStreak(s => s + 1);
+      setCorrect((c) => c + 1);
+      setStreak((s) => s + 1);
       playSound('correct');
       confetti({ particleCount: 45, spread: 60, startVelocity: 32, origin: { y: 0.7 }, scalar: 0.85 });
     } else {
-      setWrong(w => w + 1);
+      setWrong((w) => w + 1);
       setStreak(0);
       playSound('wrong');
     }
@@ -95,87 +95,274 @@ export default function MatematikActivityFrame({
 
   const progressInGroup = streak > 0 && streak % 10 === 0 ? 10 : streak % 10;
 
-  const ctx = { answered, selected, answer: q.answer, isCorrect, handlePick, handleNext, streak, correct, wrong, theme: C };
+  const ctx = {
+    answered,
+    selected,
+    answer: q.answer,
+    isCorrect,
+    handlePick,
+    handleNext,
+    streak,
+    correct,
+    wrong,
+    theme: C,
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%' }}>
       <style>{`
         .maf-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .maf-result-scroll { overflow-y: auto; }
         .maf-center {
-          min-height: 100%; box-sizing: border-box;
-          display: flex; flex-direction: column; justify-content: center; align-items: center;
+          min-height: 100%;
+          box-sizing: border-box;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
           padding: clamp(14px, 3vmin, 40px);
         }
         .maf-content {
-          width: 100%; max-width: min(94vw, 860px);
-          display: flex; flex-direction: column; align-items: center;
-          gap: clamp(6px, 1.2vmin, 14px);
+          width: 100%;
+          max-width: min(94vw, 960px);
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+          justify-content: center;
+          gap: clamp(12px, 2.2vh, 26px);
         }
         .maf-head {
-          font-family: 'Fredoka', sans-serif; font-weight: 700;
-          font-size: clamp(14px, 2.4vmin, 24px); color: #64748B; text-align: center; letter-spacing: .01em;
+          font-family: 'Fredoka', sans-serif;
+          font-weight: 700;
+          font-size: clamp(14px, 2.4vmin, 24px);
+          color: #64748B;
+          text-align: center;
+          letter-spacing: .01em;
         }
-        /* Header sits as a TITLE near the top; body centred in the space below. */
-        .maf-scroll-q { display: flex; flex-direction: column; }
+        .maf-scroll-q {
+          display: flex;
+          flex-direction: column;
+        }
         .maf-body {
-          flex: 1 1 0; min-height: 0; box-sizing: border-box;
-          display: flex; flex-direction: column; justify-content: center; align-items: center;
-          padding: clamp(6px, 1.4vmin, 14px) clamp(14px, 3vmin, 40px) clamp(8px, 1.6vmin, 16px);
+          flex: 1 1 0;
+          min-height: 0;
+          box-sizing: border-box;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: stretch;
+          padding: clamp(4px, 1vmin, 10px) clamp(14px, 3vmin, 40px) clamp(10px, 2vmin, 18px);
+        }
+        .maf-content-area {
+          --maf-section-gap: clamp(8px, 1.4vh, 16px);
+          --maf-question-gap: clamp(18px, 2.8vh, 30px);
+          width: 100%;
+          max-width: min(94vw, 960px);
+          margin: 0 auto;
+          flex: 0 1 auto;
+          min-height: auto;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          gap: var(--maf-section-gap);
+        }
+        .maf-section-question {
+          width: 100%;
+          max-width: min(100%, 760px);
+          align-self: center;
+          display: flex;
+          justify-content: center;
+          margin-bottom: calc(var(--maf-question-gap) - var(--maf-section-gap));
+        }
+        .maf-section-stage {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: clamp(8px, 1.2vh, 14px);
+          padding: clamp(2px, 0.4vh, 6px) 0;
+        }
+        .maf-section-feedback {
+          width: 100%;
+          max-width: min(100%, 880px);
+          align-self: center;
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+        }
+        .maf-action-row {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
         .maf-question {
-          font-family: 'Baloo 2', sans-serif; font-weight: 800;
-          font-size: clamp(18px, 3.6vmin, 38px); color: #1E293B; text-align: center; line-height: 1.15;
-          margin-bottom: clamp(8px, 1.6vmin, 20px);
+          font-family: 'Baloo 2', sans-serif;
+          font-weight: 800;
+          font-size: clamp(18px, 3.6vmin, 38px);
+          color: #1E293B;
+          text-align: center;
+          line-height: 1.15;
+          margin: 0;
+          max-width: 24ch;
+          text-wrap: balance;
         }
         .maf-feedback {
-          font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(14px, 2vmin, 22px);
-          text-align: center; min-height: clamp(18px, 2.4vmin, 28px);
-          display: flex; align-items: center; justify-content: center;
+          font-family: 'Baloo 2', sans-serif;
+          font-weight: 800;
+          font-size: clamp(14px, 2vmin, 22px);
+          text-align: center;
+          min-height: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0;
         }
         .maf-feedback.ok { color: ${C.green}; }
         .maf-feedback.no { color: ${C.red}; }
         .maf-next {
-          padding: clamp(8px, 1.2vmin, 14px) clamp(20px, 3.2vmin, 44px); border: none; border-radius: 999px;
-          background: ${C.accent}; color: #fff;
-          font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(14px, 2.2vmin, 22px);
-          cursor: pointer; box-shadow: 0 4px 0 ${C.cd}; transition: transform .1s ease;
+          padding: clamp(8px, 1.2vmin, 14px) clamp(20px, 3.2vmin, 44px);
+          border: none;
+          border-radius: 999px;
+          background: ${C.accent};
+          color: #fff;
+          font-family: 'Baloo 2', sans-serif;
+          font-weight: 800;
+          font-size: clamp(14px, 2.2vmin, 22px);
+          cursor: pointer;
+          box-shadow: 0 4px 0 ${C.cd};
+          transition: transform .1s ease;
           -webkit-tap-highlight-color: transparent;
         }
         .maf-next:hover:not(:disabled) { transform: translateY(-2px); }
         .maf-next:active:not(:disabled) { transform: translateY(2px); }
-        .maf-next:disabled { background: #E5E7EB; color: #9CA3AF; box-shadow: 0 4px 0 #D1D5DB; cursor: not-allowed; }
+        .maf-next:disabled {
+          background: #E5E7EB;
+          color: #9CA3AF;
+          box-shadow: 0 4px 0 #D1D5DB;
+          cursor: not-allowed;
+        }
         .maf-footer {
-          flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
-          gap: 10px; padding: clamp(8px, 1.2vmin, 15px) clamp(16px, 2.4vmin, 34px);
-          background: rgba(255,255,255,.85); backdrop-filter: blur(12px);
+          flex-shrink: 0;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 10px;
+          padding: clamp(8px, 1.2vmin, 15px) clamp(16px, 2.4vmin, 34px);
+          background: rgba(255,255,255,.85);
+          backdrop-filter: blur(12px);
           border-top: 1px solid #E2E8F0;
         }
         .maf-footer-tally {
-          display: flex; align-items: center; gap: 6px 10px; flex-wrap: wrap;
-          font-family: 'Fredoka', sans-serif; font-size: clamp(13px, 1.7vmin, 18px); font-weight: 600; color: #64748B;
+          display: flex;
+          align-items: center;
+          gap: 6px 10px;
+          flex-wrap: wrap;
+          font-family: 'Fredoka', sans-serif;
+          font-size: clamp(13px, 1.7vmin, 18px);
+          font-weight: 600;
+          color: #64748B;
         }
         .maf-stats { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
         .maf-stats .maf-stat { display: inline-flex; align-items: center; gap: 3px; }
         .maf-stats .maf-divider { color: #CBD5E1; font-weight: 400; }
-        .maf-done-emoji { font-size: clamp(52px, 14vmin, 120px); line-height: 1; }
-        .maf-summary { display: flex; flex-direction: column; gap: clamp(8px, 1.4vmin, 14px); width: 100%; max-width: 340px; }
+        .maf-result-content {
+          width: min(92vw, 720px);
+          max-width: 720px;
+          align-items: center;
+          gap: clamp(12px, 2vmin, 22px);
+          text-align: center;
+        }
+        .maf-result-title {
+          width: 100%;
+          max-width: 620px;
+        }
+        .maf-result-score {
+          color: #64748B;
+          text-shadow: 0 1px 0 rgba(255,255,255,.72);
+        }
+        .maf-done-emoji { font-size: clamp(46px, 10vmin, 90px); line-height: 1; }
+        .maf-summary {
+          display: flex;
+          flex-direction: column;
+          gap: clamp(8px, 1.4vmin, 14px);
+          width: 100%;
+          max-width: 360px;
+          align-self: center;
+        }
         .maf-summary-row {
-          display: flex; align-items: center; justify-content: space-between;
-          background: #fff; border: 2px solid #E2E8F0; border-radius: 14px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background: #fff;
+          border: 2px solid #E2E8F0;
+          border-radius: 14px;
           padding: clamp(10px, 1.6vmin, 16px) clamp(16px, 2.4vmin, 26px);
-          font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(16px, 2.4vmin, 22px); color: #334155;
+          font-family: 'Baloo 2', sans-serif;
+          font-weight: 800;
+          font-size: clamp(16px, 2.4vmin, 22px);
+          color: #334155;
         }
         .maf-summary-row b { font-size: clamp(20px, 3vmin, 28px); }
         .maf-summary-row.ok b { color: ${C.green}; }
         .maf-summary-row.no b { color: ${C.red}; }
-        .maf-complete-actions { display: flex; flex-wrap: wrap; gap: clamp(10px, 1.6vmin, 16px); justify-content: center; }
+        .maf-complete-actions { display: flex; flex-wrap: wrap; gap: clamp(10px, 1.6vmin, 16px); justify-content: center; align-items: center; width: 100%; }
         .maf-btn-secondary {
-          padding: clamp(11px, 1.5vmin, 17px) clamp(24px, 3.4vmin, 44px); border-radius: 999px;
-          border: 2px solid ${C.accent}; background: #fff; color: ${C.dark};
-          font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(16px, 2.4vmin, 24px);
-          cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform .1s ease;
+          padding: clamp(11px, 1.5vmin, 17px) clamp(24px, 3.4vmin, 44px);
+          border-radius: 999px;
+          border: 2px solid ${C.accent};
+          background: #fff;
+          color: ${C.dark};
+          font-family: 'Baloo 2', sans-serif;
+          font-weight: 800;
+          font-size: clamp(16px, 2.4vmin, 24px);
+          cursor: pointer;
+          -webkit-tap-highlight-color: transparent;
+          transition: transform .1s ease;
         }
         .maf-btn-secondary:active { transform: translateY(1px); }
+        @media (max-width: 560px) {
+          .maf-body {
+            padding: 4px 10px 6px;
+          }
+          .maf-content-area {
+            --maf-section-gap: 6px;
+            --maf-question-gap: 10px;
+          }
+          .maf-section-stage {
+            gap: 6px;
+            padding: 0;
+          }
+          .maf-question {
+            font-size: clamp(15px, 2.8vh, 24px);
+            max-width: 20ch;
+            line-height: 1.08;
+          }
+          .maf-feedback {
+            font-size: 13px;
+            min-height: 16px;
+          }
+          .maf-next {
+            padding: 8px 22px;
+            font-size: 16px;
+          }
+          .maf-footer {
+            gap: 8px;
+            padding: 8px 12px;
+          }
+          .maf-footer-tally {
+            gap: 4px 8px;
+            font-size: 12px;
+          }
+          .maf-stats {
+            gap: 6px;
+          }
+        }
+        @media (min-width: 768px) {
+          .maf-content-area { gap: clamp(10px, 1.6vh, 18px); }
+          .maf-section-stage { gap: clamp(10px, 1.4vh, 16px); }
+        }
         @keyframes snkBounce {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-20px); }
@@ -188,12 +375,12 @@ export default function MatematikActivityFrame({
       `}</style>
 
       {complete ? (
-        <div className="maf-scroll">
+        <div className="maf-scroll maf-result-scroll">
           <div className="maf-center">
-            <div className="maf-content" style={{ textAlign: 'center' }}>
-              <div className="maf-done-emoji">{passed ? '🎉' : '💪'}</div>
-              <div className="maf-question">{passed ? 'Tahniah!' : 'Cuba lagi!'}</div>
-              <div className="maf-head">Skor kamu: {correct}/{questions.length} ({scorePct}%)</div>
+              <div className="maf-content maf-result-content">
+                <div className="maf-done-emoji">{passed ? '🎉' : '💪'}</div>
+                <div className="maf-question maf-result-title">{passed ? 'Tahniah!' : 'Cuba lagi!'}</div>
+                <div className="maf-head maf-result-score">Skor kamu: {correct}/{questions.length} ({scorePct}%)</div>
               <div className="maf-summary">
                 <div className="maf-summary-row ok"><span>✅ Betul</span><b>{correct}</b></div>
                 <div className="maf-summary-row no"><span>❌ Salah</span><b>{wrong}</b></div>
@@ -205,8 +392,12 @@ export default function MatematikActivityFrame({
               )}
               <div className="maf-complete-actions">
                 <button className="maf-btn-secondary" type="button" onClick={handleRedo}>↻ Main Semula</button>
-                <button className="maf-next" type="button" disabled={!passed}
-                  onClick={() => (nav?.goNext ? nav.goNext() : onExit?.())}>
+                <button
+                  className="maf-next"
+                  type="button"
+                  disabled={!passed}
+                  onClick={() => (nav?.goNext ? nav.goNext() : onExit?.())}
+                >
                   {nav?.hasNext === false ? 'Selesai ✓' : 'Topik Seterusnya →'}
                 </button>
               </div>
@@ -217,18 +408,30 @@ export default function MatematikActivityFrame({
         <>
           <div className="maf-scroll maf-scroll-q">
             <div className="maf-body">
-              <div className="maf-content">
-                {q.prompt && <div className="maf-question">{q.prompt}{q.promptNumber != null && <>&nbsp;<strong style={{fontSize:'1.3em', color:C.accent}}>{q.promptNumber}</strong>&nbsp;?</>}</div>}
-                {renderQuestion(q, ctx)}
-                <div className={`maf-feedback ${answered ? (isCorrect ? 'ok' : 'no') : ''}`}>
-                  {answered ? (isCorrect ? 'Betul! 🎉' : 'Cuba lagi') : ''}
-                </div>
-                {/* Advance button appears only AFTER answering (keypad uses Semak to submit) */}
-                {answered && (
-                  <button className="maf-next" type="button" onClick={handleNext}>
-                    {isLast ? 'Tamat 🎉' : 'Seterusnya →'}
-                  </button>
+              <div className="maf-content-area">
+                {q.prompt && (
+                  <div className="maf-section-question">
+                    <div className="maf-question">
+                      {q.prompt}
+                      {q.promptNumber != null && <>&nbsp;<strong style={{ fontSize: '1.3em', color: C.accent }}>{q.promptNumber}</strong>&nbsp;?</>}
+                    </div>
+                  </div>
                 )}
+                <div className="maf-section-stage">
+                  {renderQuestion(q, ctx)}
+                </div>
+                <div className="maf-section-feedback">
+                  <div className={`maf-feedback ${answered ? (isCorrect ? 'ok' : 'no') : ''}`}>
+                    {answered && !isCorrect ? 'Cuba lagi' : ''}
+                  </div>
+                  {answered && (
+                    <div className="maf-action-row">
+                      <button className="maf-next" type="button" onClick={handleNext}>
+                        {isLast ? 'Tamat 🎉' : 'Seterusnya →'}
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>

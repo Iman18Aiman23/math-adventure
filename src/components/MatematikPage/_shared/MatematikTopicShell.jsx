@@ -586,13 +586,21 @@ export default function MatematikTopicShell({
           max-width: 100%;
           box-sizing: border-box;
           gap: clamp(14px, 2.4vmin, 28px) !important;
-          margin-top: clamp(8px, 2.2vmin, 22px) !important;
+          margin-top: 0 !important;
         }
         .mt-topic-shell .kog-options {
           max-width: min(960px, 96vw);
           gap: clamp(14px, 2.6vmin, 28px) !important;
         }
-        .mt-topic-shell .cmp-content,
+        .mt-topic-shell .cmp-content {
+          width: 100% !important;
+          flex: 0 1 auto !important;
+          min-height: 0 !important;
+          max-width: min(980px, calc(100% - clamp(24px, 5vw, 48px))) !important;
+          box-sizing: border-box;
+          gap: var(--cmp-section-gap, clamp(12px, 2vmin, 20px)) !important;
+          justify-content: center !important;
+        }
         .mt-topic-shell .maf-content {
           width: 100% !important;
           flex: 1 1 0 !important;
@@ -601,6 +609,32 @@ export default function MatematikTopicShell({
           box-sizing: border-box;
           gap: clamp(6px, 1.2vmin, 14px) !important;
           justify-content: space-between !important;
+        }
+        .mt-topic-shell .maf-content-area {
+          width: 100% !important;
+          flex: 0 1 auto !important;
+          min-height: 0 !important;
+          max-width: min(980px, calc(100% - clamp(24px, 5vw, 48px))) !important;
+          box-sizing: border-box;
+          justify-content: center !important;
+        }
+        .mt-topic-shell .cmp-result-content,
+        .mt-topic-shell .maf-result-content {
+          width: min(92vw, 720px) !important;
+          max-width: 720px !important;
+          flex: 0 1 auto !important;
+          align-items: center !important;
+          justify-content: center !important;
+          gap: clamp(12px, 2vmin, 22px) !important;
+        }
+        .mt-topic-shell .cmp-scroll.cmp-result-scroll,
+        .mt-topic-shell .maf-scroll.maf-result-scroll {
+          overflow-y: auto !important;
+        }
+        .mt-topic-shell .cmp-result-title,
+        .mt-topic-shell .maf-result-title {
+          width: 100% !important;
+          max-width: 620px !important;
         }
         .mt-topic-shell .cmp-scroll,
         .mt-topic-shell .maf-scroll {
@@ -754,7 +788,8 @@ export default function MatematikTopicShell({
         }
         @media (max-width: 560px) {
           .mt-topic-shell .cmp-content,
-          .mt-topic-shell .maf-content {
+          .mt-topic-shell .maf-content,
+          .mt-topic-shell .maf-content-area {
             max-width: calc(100% - 20px) !important;
             gap: clamp(8px, 1.8vh, 16px) !important;
           }
@@ -785,7 +820,7 @@ export default function MatematikTopicShell({
           .mt-topic-shell .cmp-options {
             flex-direction: row;
             gap: clamp(12px, 4vw, 18px) !important;
-            margin-top: clamp(6px, 1.4vh, 12px) !important;
+            margin-top: 0 !important;
           }
           .mt-topic-shell .kog-options {
             gap: 18px !important;
@@ -844,11 +879,12 @@ export default function MatematikTopicShell({
             min-height: clamp(50px, 9vmin, 86px) !important;
           }
           .mt-topic-shell .cmp-content,
-          .mt-topic-shell .maf-content {
+          .mt-topic-shell .maf-content,
+          .mt-topic-shell .maf-content-area {
             gap: clamp(10px, 1.8vmin, 18px) !important;
           }
           .mt-topic-shell .cmp-options {
-            margin-top: clamp(24px, 5.4vmin, 34px) !important;
+            margin-top: 0 !important;
           }
         }
 

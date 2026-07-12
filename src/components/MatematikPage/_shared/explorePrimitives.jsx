@@ -13,19 +13,22 @@ export {
 
 export {
   AnggarBundarExplore,
-  CabarMindaExplore,
-  CabarMindaM1Explore,
   CompareExplore,
   Kenali21Hingga100Explore,
   KenaliNomborExplore,
   KombinasiExplore,
-  LatihDiriExplore,
   NilaiTempatExplore,
   PolaNomborExplore,
+  SusunanNomborExplore,
+} from './explore_T1_1_core';
+
+export {
+  CabarMindaExplore,
+  CabarMindaM1Explore,
+  LatihDiriExplore,
   SelesaikanCeritaM1Explore,
   SelesaikanExplore,
-  SusunanNomborExplore,
-} from './explore_T1_1';
+} from './explore_T1_1_assessment';
 
 export {
   CeritaTambahTolakExplore,

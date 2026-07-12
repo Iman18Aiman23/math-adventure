@@ -9,6 +9,158 @@
 
 ---
 
+## ⚠️ UI/UX RENDERING CONTRACT — Read Before Every Slice (2026-07-11)
+
+> **Why this exists:** Every new slice that bypassed this contract resulted in a white/plain
+> background, non-responsive content, or layout that didn't match previous slices. These rules
+> are **mandatory and non-negotiable** for every topic component built in this project.
+> They override convenience. Check these before marking any slice 🔍.
+
+### CONTRACT A — Background & Shell Wiring
+
+`MatematikTopicShell` **automatically renders `MatematikSceneBackground`** — the light-mode
+orbit-and-grid backdrop tinted with the module's `--mt-accent` colour (line 1044 of the
+shell file). Build agents must NOT fight this or add competing backgrounds.
+
+**Rule 1 — Never add your own background to an explore component root div.**
+The shell provides it. Any `background:` style on the top-level div of a primitive
+will either paint over the scene or cause a jarring colour clash.
+
+**Rule 2 — THEME must always have `accent`, `dark`, AND `cd`.**
+```js
+// ✅ Required — all three present
+const THEME = {
+  accent: '#F59E0B',   // → --mt-accent (scene tint, toggle, buttons)
+  dark:   '#B45309',   // → --mt-dark   (text, borders)
+  cd:     '#D97706',   // → --mt-cd     (button shadow)
+};
+// ❌ Wrong — missing cd causes broken button shadow + scene fallback
+const THEME = { accent: '#F59E0B', dark: '#B45309' };
+```
+
+**Rule 3 — Pass theme to BOTH Shell AND Explore in every topic page wrapper.**
+```jsx
+// ✅ Correct: theme flows page → shell (scene tint) and page → explore (content colours)
+<MatematikTopicShell theme={THEME} onBack={onBack} showToggle={false} showReadyCta={false}
+  learn={<MatematikExplore config={CONFIG} language={language} theme={THEME} onExit={onBack} />}
+/>
+// ❌ Wrong: theme missing from explore — content colours fall back to amber defaults
+<MatematikTopicShell theme={THEME}
+  learn={<MatematikExplore config={CONFIG} language={language} onExit={onBack} />}
+/>
+```
+
+### CONTRACT B — Layout Inheritance Chain
+
+When `showToggle={false}`, the shell wraps the `learn` child in:
+```css
+.mt-shell-body-plain { flex:1; min-height:0; display:flex; flex-direction:column; }
+```
+The explore component **must fill this container**. If it doesn't, you get a tiny content
+island floating in empty space (looks like a white rectangle in the centre of the screen).
+
+**Rule 4 — Explore component root: `display:'flex'; flexDirection:'column'; height:'100%'; minHeight:0`**
+```jsx
+// ✅ Correct — fills the shell body
+<div style={{ display:'flex', flexDirection:'column', height:'100%', minHeight:0, width:'100%' }}>
+  <MatematikActivityFrame ... />
+</div>
+
+// Or just return MatematikActivityFrame directly (it already has the right root styles)
+return <MatematikActivityFrame buildRound={buildRound} renderQuestion={...} theme={theme} onExit={onExit} />;
+```
+
+**Rule 5 — Never wrap `MatematikActivityFrame` in a div with fixed height or `overflow:hidden`.**
+The frame has its own internal scroll management. Wrapping it clips that scroll.
+
+**Rule 6 — Any intermediate wrapper div between shell and frame must propagate flex fill.**
+```jsx
+// ✅ If you need a wrapper (e.g. for a level picker):
+<div style={{ display:'flex', flexDirection:'column', flex:1, minHeight:0 }}>
+  {level === null ? <LevelPicker /> : <MatematikActivityFrame ... />}
+</div>
+// ❌ Wrong — missing flex:1 causes the frame to collapse to 0 height
+<div>
+  <MatematikActivityFrame ... />
+</div>
+```
+
+### CONTRACT C — Responsive Sizing
+
+**Rule 7 — All sizes in question content use `clamp(min, Nvmin, max)`.**
+Never use plain `px` values for fonts, padding, icon sizes, or gap inside question content.
+Use `vmin` (not `vw`) so the layout scales correctly in both portrait and landscape.
+
+```css
+/* ✅ vmin scales with the shortest viewport dimension — phone or tablet */
+font-size: clamp(16px, 2.8vmin, 28px);
+padding: clamp(10px, 1.6vmin, 20px);
+gap: clamp(8px, 1.4vmin, 16px);
+width: clamp(80px, 18vmin, 160px);
+
+/* ❌ Fixed px — breaks on small phone or fails to grow on desktop */
+font-size: 18px;
+gap: 14px;
+```
+
+**Rule 8 — Question content must fit in one viewport on tablet/desktop (768px height).**
+The frame scrolls on phones; it must NOT scroll on tablets and desktops. If your stage
+content is taller than ~460px at desktop, use `clamp()` to make it shorter.
+
+**Rule 9 — Tap targets ≥ 44px.** All interactive elements (answer buttons, tick boxes,
+option cards) must have a minimum hit area of 44 × 44 px. Use `minHeight: clamp(44px, ...)`.
+
+### CONTRACT D — Pre-🔍 Checklist
+
+Before marking any slice 🔍, verify every item:
+
+- [ ] **THEME:** has `accent`, `dark`, `cd` — no field missing
+- [ ] **Topic page:** passes `theme={THEME}` to BOTH `MatematikTopicShell` and `MatematikExplore`
+- [ ] **Shell props:** `showToggle={false}`, `showReadyCta={false}`, `emoji=""`, `titleBM=""`
+- [ ] **Background:** NOT overridden in any explore component — shell provides it
+- [ ] **Explore root div:** `display:'flex'`, `flexDirection:'column'`, `height:'100%'`, `minHeight:0`
+- [ ] **No fixed-height wrappers** around `MatematikActivityFrame`
+- [ ] **All sizes** in question content use `clamp(min, Nvmin, max)` (vmin)
+- [ ] **Hub card:** ROBOT visual, UPPERCASE pill, desc ≤10 words, NOT disabled
+- [ ] **App.jsx:** lazy import + `if (matematikTopic === '...')` route added
+- [ ] **`npm run build` exit 0**; no console errors
+
+### CONTRACT E — Layout Memory
+
+Treat this as the default visual rule for every new slice:
+
+- Keep the existing `MatematikTopicShell` background scene. Do not add a new page
+  background on the explore root or replace the shell tint.
+- Keep the content area centered inside the available shell body.
+- Keep Section 1 close to Section 2, then keep Sections 2, 3, and 4 on a consistent gap.
+- Keep the page responsive on small phones and wide screens with `clamp()` sizing and
+  `flex`-based centering, not fixed pixel spacing.
+- Keep the same header and footer behaviour as the previous module/question pages.
+- If a slice needs custom layout, it still has to inherit the same shell background and
+  width rhythm before adding any custom details.
+
+Question-page content structure is locked to this 4-section layout:
+
+- Section 1 = the question header inside the content area. It is the content header, not part of the page header.
+- Section 2 = the main visual prompt zone such as emoji, number, card, or illustration.
+- Section 3 = the answer interaction zone.
+- Section 4 = the action zone, usually the primary next button or retry button.
+
+Spacing memory:
+
+- The whole content block should stay vertically centered between the existing header and footer.
+- Section 1 must have a visible bottom gap before Section 2.
+- Sections 2, 3, and 4 should use the same baseline gap rhythm.
+- Remove extra celebration text banners like `Betul! 🎉` when they create dead space; confetti and the action button are enough.
+
+Verification memory:
+
+- A slice is not considered stable from build output alone.
+- Always check the real Matematik question page in the browser, not only an isolated harness.
+- Layout verification includes background scene, content centering, spacing rhythm, and footer alignment on small and large screens.
+
+---
+
 ## 0. How to read & use this plan (build agents MUST read first)
 
 1. **You build ONE topic per slice.** Never bulk-process multiple topics. After
@@ -184,6 +336,107 @@ if (matematikTopic === 'nombor-100')
 > it, OR converting the existing file to render the shell internally. Pick whichever keeps
 > the diff smallest for that topic and note your choice in the slice. Keep lazy-loading
 > intact either way.
+
+---
+
+## 3.6 explorePrimitives.jsx — Completed Split (Executed)
+
+> **Status:** ✅ Completed — the monolithic `explorePrimitives.jsx` has been split into a 5-file topic-scoped structure + 1 shared utilities file, following the dependency-based split plan in `src/components/MatematikPage/_shared/EXPLORE_SPLIT_PLAN.md`. The original file is now a thin barrel re-export (~40 lines). `MatematikExplore.jsx` required **zero changes**.
+
+### Final File Structure
+
+```
+src/components/MatematikPage/_shared/
+├── explorePrimitives.jsx                 ← REPLACED: barrel re-export (~40 lines)
+├── explorePrimitives_shared.jsx          ← NEW: shared utils, KeypadInput, stubs (~650 lines)
+├── explore_T1_1.jsx                      ← NEW: T1.1 Nombor Bulat hingga 100 (~3,200 lines)
+├── explore_T1_2_core.jsx                 ← NEW: T1.2 core addition & subtraction learning (~2,650 lines)
+├── explore_T1_2_assessment.jsx           ← NEW: T1.2 assessment/mixed-practice (~1,550 lines)
+└── explore_T1_3.jsx                      ← NEW: T1.3 Pecahan Asas (~350 lines)
+```
+
+### Shared Dependencies (in `explorePrimitives_shared.jsx`)
+
+These symbols are used across multiple topic files and exist **only once** in `_shared`:
+
+| Symbol | Used In |
+|--------|---------|
+| `randInt`, `pick`, `shuffle` | ALL sections |
+| `NumOptionsGrid` | T1.1, LatihanTambah, LatihanTolak, TambahBerulang |
+| `WordOptionsGrid` | T1.1, KenaliTambah, KenaliTolak |
+| `BM_ONES`, `BM_TEENS`, `BM_TENS`, `numToBM` | T1.1, SelesaikanCabaran |
+| `KeypadInput` | KenaliTambah, KenaliTolak, LatihanTambah, LatihanTolak, SelesaikanCabaran |
+| `ObjectsGrid` | CompareExplore (T1.1), GabungKumpulanContent (KenaliTambah) |
+| `EmptyTray` | KenaliTambah |
+| `BOX_COLORS`, `SPLATTER_PATHS` | T1.1, LatihanTambah, TambahBerulang |
+| Stub exports (`NumberGridExplore`, `BuildAddExplore`, etc.) | `MatematikExplore.jsx` fallback |
+
+### File Responsibilities (per EXPLORE_SPLIT_PLAN.md)
+
+| File | Components |
+|------|------------|
+| `explore_T1_1.jsx` | CompareExplore, KenaliNomborExplore, KombinasiExplore, Kenali21Hingga100Explore, NilaiTempatExplore, SusunanNomborExplore, PolaNomborExplore, AnggarBundarExplore, SelesaikanExplore, LatihDiriExplore, CabarMindaExplore, SelesaikanCeritaM1Explore, CabarMindaM1Explore |
+| `explore_T1_2_core.jsx` | KenaliTambahExplore, LatihanTambahExplore, KenaliTolakExplore, LatihanTolakExplore, CeritaTambahTolakExplore, TambahBerulangExplore |
+| `explore_T1_2_assessment.jsx` | SelesaikanM2Explore, LatihDiriM2Explore, CabarMindaM2Explore |
+| `explore_T1_3.jsx` | KenaliPecahanExplore |
+
+### Cross-File Dependency Flow
+
+```
+explorePrimitives_shared.jsx  ← imported by ALL topic files
+explore_T1_1.jsx              ← independent
+explore_T1_2_core.jsx         ← independent (exports components for explore_T1_2_assessment.jsx)
+explore_T1_2_assessment.jsx   ← imports from explore_T1_2_core.jsx
+explore_T1_3.jsx              ← independent
+```
+
+**No circular dependencies.** Flow is one-way: `explore_T1_2_core.jsx` → `explore_T1_2_assessment.jsx`.
+
+### Verification Checklist (All Passed)
+
+- [x] `npm run dev` starts without errors/warnings
+- [x] Matematik → Tahun 1 → Module 1 (Nombor) → any Belajar topic → activity loads
+- [x] Matematik → Tahun 1 → Module 2 (Operasi Asas) → Kenali Tambah Belajar → loads
+- [x] Matematik → Tahun 1 → Module 2 → Latihan Tambah Belajar → loads
+- [x] Matematik → Tahun 1 → Module 2 → Kenali Tolak Belajar → loads
+- [x] Matematik → Tahun 1 → Module 2 → Latihan Tolak Belajar → loads
+- [x] Matematik → Tahun 1 → Module 2 → Cerita Tambah & Tolak Belajar → loads
+- [x] Matematik → Tahun 1 → Module 2 → Tambah Berulang Belajar → loads
+- [x] Matematik → Tahun 1 → Module 2 → Selesaikan Cerita M2 Belajar → loads (uses all topic components)
+- [x] Matematik → Tahun 1 → Module 2 → Latih Diri M2 Belajar → loads (drill mode works)
+- [x] Matematik → Tahun 1 → Module 2 → Cabar Minda M2 Belajar → loads (mixed exam works)
+- [x] Matematik → Tahun 1 → Module 3 (Pecahan) → Kenali Pecahan Belajar → loads
+- [x] No "Cannot find module" / "is not exported" / duplicate declaration errors
+- [x] Runtime verification: compare, keypad pages, and ObjectsGrid all mount without ReferenceError
+
+### 3.6.1 Current Architecture Lock (2026-07-11)
+
+Treat the notes above as historical context only. The current enforced split shape is:
+
+```text
+src/components/MatematikPage/_shared/
+├── explorePrimitives.jsx
+├── explorePrimitives_shared.jsx
+├── explore_T1_1.jsx
+├── explore_T1_1_core.jsx
+├── explore_T1_1_assessment.jsx
+├── explore_T1_2_core.jsx
+├── explore_T1_2_assessment.jsx
+└── explore_T1_3.jsx
+```
+
+Locked rules from the executed refactor:
+
+- Split by dependency graph, never by raw line ranges.
+- Keep fewer ownership files first, then grow only when boundaries are clear.
+- Use stable public APIs before further fragmentation.
+- `explore_T1_1_assessment.jsx` may consume `module1CoreApi`.
+- `explore_T1_2_assessment.jsx` may consume `module2CoreApi`.
+- `MatematikExplore.jsx` now lazy-loads the topic-group files directly.
+- Real browser verification on the actual Matematik question flow is mandatory after each split change.
+- Layout verification must include shell background, centered content area, section-gap rhythm, and footer alignment.
+
+This is the reference architecture for future explore/topic splitting.
 
 ---
 

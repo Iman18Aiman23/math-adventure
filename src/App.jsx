@@ -194,6 +194,9 @@ const CabarMindaM2 = React.lazy(() => import('./components/MatematikPage/Tahun1/
 const SelesaikanCeritaM1 = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_NomborHingga100/SelesaikanCeritaM1'));
 const CabarMindaM1 = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_NomborHingga100/CabarMindaM1'));
 const KenaliPecahan = React.lazy(() => import('./components/MatematikPage/Tahun1/Module3_Pecahan/KenaliPecahan'));
+const JawabPecahan = React.lazy(() => import('./components/MatematikPage/Tahun1/Module3_Pecahan/JawabPecahan'));
+const LatihDiriPecahan = React.lazy(() => import('./components/MatematikPage/Tahun1/Module3_Pecahan/LatihDiriPecahan'));
+const CabarMindaPecahan = React.lazy(() => import('./components/MatematikPage/Tahun1/Module3_Pecahan/CabarMindaPecahan'));
 const PecahanModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module3_Pecahan/PecahanModule'));
 const WangModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module4_Wang/WangModule'));
 const MasaDanWaktuModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module5_MasaDanWaktu/MasaDanWaktuModule'));
@@ -641,6 +644,9 @@ export default function App() {
         if (matematikTopic === '3-data')             return <DataT3             onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === '3-kebarangkalian')   return <KebarangkalianT3   onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'kenali-pecahan')      return <KenaliPecahan      onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'selesaikan-pecahan')  return <JawabPecahan       onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'latih-diri-pecahan')  return <LatihDiriPecahan  onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'cabar-minda-pecahan') return <CabarMindaPecahan onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'pecahan-asas')       return <PecahanAsasT1      onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === '2-bahagi')           return <BahagiT2           onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === '2-ukuran-jisim-cecair') return <JisimCecairT2   onBack={() => setMatematikTopic(null)} language={language} />;

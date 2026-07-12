@@ -8,6 +8,137 @@
 
 ---
 
+## ⚠️ UI/UX RENDERING CONTRACT — Read Before Every Slice (2026-07-11)
+
+> **Why this exists:** Every new slice that bypassed this contract resulted in a white/plain
+> background, non-responsive content, or layout that didn't match previous slices. These rules
+> are **mandatory and non-negotiable** for every topic component built in this project.
+
+### CONTRACT A — Background & Shell Wiring
+
+The `MatematikTopicShell` component **automatically renders** `MatematikSceneBackground` —
+a light-mode orbit-and-grid backdrop tinted with the module's `--mt-accent` colour.
+
+**Rule 1 — Never add your own background.** Do NOT add a `background` style to the root
+`div` of an explore component. The shell provides it. Adding your own background will
+paint over or beneath the shared scene.
+
+**Rule 2 — THEME must have `accent`, `dark`, AND `cd`.** The shell injects these as CSS
+custom properties (`--mt-accent`, `--mt-dark`, `--mt-cd`). The scene background uses them
+for tinting. Missing any one breaks the tint and all `color-mix()` decorations.
+
+```js
+// ✅ Correct — all three fields present
+const THEME = {
+  dark:   '#B45309',
+  cd:     '#D97706',
+  accent: '#F59E0B',
+  // pageGradient, stageGradient, pillGradient only needed for hub cards
+};
+```
+
+**Rule 3 — Topic page wrapper (`.jsx`) must pass theme to both Shell and Explore.**
+
+```jsx
+// ✅ Correct — theme flows from page → shell → scene + explore
+<MatematikTopicShell theme={THEME} ... learn={<MatematikExplore config={...} theme={THEME} />} />
+```
+
+### CONTRACT B — Layout Inheritance Chain
+
+When `showToggle={false}`, the shell renders `.mt-shell-body-plain`:
+```css
+.mt-shell-body-plain { flex:1; min-height:0; display:flex; flex-direction:column; }
+```
+This means the immediate child of `MatematikActivityFrame` (or your explore component) **must
+fill its parent height**. The frame already does this correctly via `height:'100%'` on its
+root div. Your `renderQuestion` content must NOT set a fixed height or `overflow:hidden` at
+its top level — use `flex:1; min-height:0` to fill.
+
+**Rule 4 — `MatematikActivityFrame` root must be `height:'100%'`.**
+```jsx
+<div style={{ display:'flex', flexDirection:'column', height:'100%', minHeight:0, width:'100%' }}>
+  {/* ...frame content... */}
+</div>
+```
+The frame already does this. Any wrapping `div` in your explore component that sits
+*between* the shell and the frame must also propagate `flex:1; min-height:0`.
+
+**Rule 5 — Never wrap `MatematikActivityFrame` in a div with `overflow:hidden` or a fixed height.**
+These clips the scrollable content area inside the frame.
+
+### CONTRACT C — Responsive Sizing
+
+**Rule 6 — All sizes must use `clamp(min, Nvmin, max)`.** Never use fixed `px` for font
+sizes, padding, icon sizes, or gap values on question content. Use `vmin` (not `vw`) so the
+component scales correctly in both portrait (phone) and landscape (tablet/desktop).
+
+```css
+/* ✅ Correct */
+font-size: clamp(16px, 2.8vmin, 28px);
+padding: clamp(10px, 1.6vmin, 20px);
+gap: clamp(8px, 1.4vmin, 16px);
+
+/* ❌ Wrong — fixed px breaks desktop scaling */
+font-size: 18px;
+padding: 14px;
+```
+
+**Rule 7 — Content must fit one viewport without scrolling on tablet/desktop.**
+The `MatematikActivityFrame` manages its own scroll for phones. For the question stage area
+(`maf-section-stage`), do NOT add elements so tall they force scrolling on a 768px-tall
+screen. Use `clamp()` to shrink on smaller viewports.
+
+### CONTRACT D — The §9 Standard Spec Checklist
+
+Before marking any slice 🔍, check every box:
+
+- [ ] Topic page `.jsx` passes correct `THEME` (accent + dark + cd) to both Shell and Explore
+- [ ] Shell config: `showToggle={false}`, `showReadyCta={false}`, `emoji=""`, `titleBM=""`
+- [ ] Background is NOT overridden — scene comes from Shell automatically
+- [ ] Explore component root div: `height:'100%'`, `display:'flex'`, `flexDirection:'column'`
+- [ ] All sizes in `renderQuestion` use `clamp(min, Nvmin, max)` (vmin not vw)
+- [ ] No `overflow:hidden` wrapping `MatematikActivityFrame`
+- [ ] Pill, desc, ROBOT visual on hub card (§8.5)
+- [ ] App.jsx: lazy import + `if (matematikTopic === '...')` route added
+- [ ] `npm run build` exit 0; console clean
+
+### CONTRACT E — Layout Memory
+
+Treat this as the default visual rule for every new slice:
+
+- Keep the existing `MatematikTopicShell` background scene. Do not add a new page
+  background on the explore root or replace the shell tint.
+- Keep the content area centered inside the available shell body.
+- Keep Section 1 close to Section 2, then keep Sections 2, 3, and 4 on a consistent gap.
+- Keep the page responsive on small phones and wide screens with `clamp()` sizing and
+  `flex`-based centering, not fixed pixel spacing.
+- Keep the same header and footer behaviour as the previous module/question pages.
+- If a slice needs custom layout, it still has to inherit the same shell background and
+  width rhythm before adding any custom details.
+
+Question-page content structure is locked to this 4-section layout:
+
+- Section 1 = the question header inside the content area. It is the content header, not part of the page header.
+- Section 2 = the main visual prompt zone such as emoji, number, card, or illustration.
+- Section 3 = the answer interaction zone.
+- Section 4 = the action zone, usually the primary next button or retry button.
+
+Spacing memory:
+
+- The whole content block should stay vertically centered between the existing header and footer.
+- Section 1 must have a visible bottom gap before Section 2.
+- Sections 2, 3, and 4 should use the same baseline gap rhythm.
+- Remove extra celebration text banners like `Betul! 🎉` when they create dead space; confetti and the action button are enough.
+
+Verification memory:
+
+- Do not approve a slice from build output alone.
+- Always check the real Matematik question page in the browser, not only a harness or isolated primitive.
+- Layout verification includes background scene, content centering, spacing rhythm, and footer alignment on small and large screens.
+
+---
+
 ## 0. What the owner asked
 
 1. Restructure the Matematik modules into the granular sub-topic lists supplied.
@@ -255,7 +386,7 @@ Within every slice: build, run `npm run build`, set the §6 row to **🔍**, sum
 | Module | Belajar cards | Status | Note |
 |--------|---------------|--------|------|
 | 2 · Tambah dan Tolak | 6 (incl. leveled Latihan Tambah/Tolak) | ✅ | **Slice 2.6 Tambah Berulang & Tolak Berturut ✅ built+verified 2026-06-24:** TambahBerulangExplore, round 10 = 3 Type A (Kira Kumpulan — N groups of M emoji, answer N×M) + 2 Type B (SVG number line N forward arcs +M, answer N×M) + 2 Type C (Lengkapkan satu tempat kosong dalam ayat tambah berulang, answer M) + 2 Type D (Tolak Berturut Kumpulan — objects in N groups + repeated subtraction sentence, answer 0) + 1 Type E (SVG number line N backward arcs −M, answer 0). Generators constrained N∈{2,3,4,5}, M∈{2,3,4,5,10}, N×M≤50; invariants asserted over 20k iters. Hub card 6th: pill `TAMBAH BERULANG & TOLAK BERTURUT`, ROBOT visual. TambahBerulang.jsx (§9 showToggle false, showReadyCta false, no banner). Blue Mod-2 theme. Wired: App.jsx lazy route + MT_MODULE2_ORDER append, MatematikExplore case. Build exit 0. **2.1 Kenali Tambah ✅ verified 2026-06-22 (Claude), §17, p69–74:**** KenaliTambahExplore, round 10 = 3 Gabung Kumpulan (objects + KeypadInput) + 2 Garis Nombor (new SVG NumberTrackAdd count-on jumps) + 2 Pilih Perkataan (add-word vs sub-word, WordOptionsGrid) + 3 Lengkapkan Ayat (a+b=? / a+?=c, keypad). Addends 0–9, sums ≤18; invariants over 40k iters. New shared **KeypadInput** extracted (submit only ✓/Enter, no auto-submit). Blue Module-2 theme; KenaliTambah.jsx (§9), App route + **MT_MODULE2_ORDER + nav lookup picks the module array holding current topic** (80% gate + advance work), MatematikExplore case, hub placeholder replaced (pill `KENALI TAMBAH`). Scene bg inherits. Build exit 0. **2.2 Latihan Tambah ✅ verified 2026-06-22 (Claude), §18, p75–87:** LatihanTambahExplore — level picker (Mudah/Sederhana/Sukar, `Tukar Aras ⟲` strip) → per-level round of 10. Mudah 6 `a+b=?`(≤18)+4 which-equals-target (WordOptionsGrid, exactly 1 correct); Sederhana 6 column add (new `VerticalSum`)+4 missing-addend, ALL no-carry; Sukar 6 column+4 missing-addend, ALL need-carry; sums ≤99; KeypadInput. Invariants 40k iters × 6 gens all pass; level picker + VerticalSum + chips visually verified (headless-Edge). Wired: LatihanTambah.jsx (§9), App route + MT_MODULE2_ORDER append, MatematikExplore case, hub card `LATIHAN TAMBAH`. Cepat/timed deferred to Latih Tubi. Build exit 0; no regression. **VARIETY RETROFIT 2026-06-23 (owner: cards too samey/keypad-heavy): each level now uses 4 distinct formats — 4 new widgets Warnai (tap-all multi-select), Padankan (tap-two-sum), Bina Blok (base-ten puluh/sa builder), Ikatan Nombor (number-bond). Keypad ≤2/10. New gens invariants 40k iters pass; widgets visually verified; build exit 0.** **2.3 Kenali Tolak ✅ verified 2026-06-23 (Claude), §17 mirror:** KenaliTolakExplore, round 10 = 3 Buang Kumpulan (objects with `b` crossed-out + KeypadInput) + 2 Garis Nombor (new SVG NumberTrackSub count-BACK jumps) + 2 Pilih Perkataan (subtraction word {Baki/Beza/Tinggal/Tolak} vs addition distractor, WordOptionsGrid) + 3 Lengkapkan Ayat (a−b=? / a−?=c, keypad). a≥b enforced everywhere → baki≥0; minuend ≤9. Blue Module-2 theme; KenaliTolak.jsx (§9), App lazy route + MT_MODULE2_ORDER append, MatematikExplore case, hub card (pill `KENALI TOLAK`). Build exit 0; no regression. **2.4 Latihan Tolak ✅ verified 2026-06-23 (Claude), §18 mirror:** LatihanTolakExplore — level picker → per-level round of 10. Mudah 2 keypad `a−b=?` + 3 Warnai (beza-N, exactly 1 correct) + 3 Padankan (`{given}−?={target}`) + 2 Bond; Sederhana 2 column (new `VerticalDiff`) + 3 Bina Blok (TolakBlok) + 3 Padankan + 2 Bond; Sukar 2 column + 3 Bina Blok + 3 Bond + 2 Padankan. Sukar borrow guaranteed; all answers ≥0. **⚠️ Verifier fix:** `genSederhanaTolakS1` leaked ~15.5% borrow-required problems (bOnes unconstrained when bTens<aTens) → constrained `bOnes=randInt(0,aOnes)` so NO-borrow is now guaranteed (0 borrow / 0 negative over 300k iters). Wired: LatihanTolak.jsx (§9), App route + MT_MODULE2_ORDER append, MatematikExplore case, hub card `LATIHAN TOLAK`. Cepat/timed deferred to Latih Tubi. Build exit 0; no regression. **Polish 2026-06-23 (owner):** (1) zero/trivial answers removed across 2.3+2.4 subtraction gens (no `a−a=0`, no `b=0` no-ops; 0% over 300k iters); (2) `VerticalDiff` leading-zero grading bug fixed (`"02"`→`"2"` via parseInt); (3) **borrow scaffolding ported into `VerticalDiff` from `ColumnMathGame`** — Sukar borrow problems now gate submit until the child taps the tens digit and answers the "Pinjam dari rumah sebelah — {tens}−1=?" mini-step (strike lender + show ones as +10); single ones→tens borrow always sufficient since `bTens≤aTens−1`; no-borrow problems unaffected; also added `q.qid` reset effect (fixes stale-digit reuse on consecutive same-type Qs). Build exit 0. **2.5 Cerita Tambah & Tolak ✅ built+verified 2026-06-23 (Claude):** CeritaTambahTolakExplore, round 10 = 3× Type A (Cerita Tambah, keypad) + 3× Type B (Cerita Tolak, keypad) + 2× Type C (Kenalpasti Operasi, Tambah/Tolak MC) + 2× Type D (Padankan Ayat Matematik, 3-opt equation MC). StoryText shows blank replaced by answer after answering Type A/B. Type C guarantees 1 Add + 1 Sub per round; Type D same (wrong op + wrong answer distractors). Blue M2 theme. Wired: CeritaTambahDanTolak.jsx (§9), App lazy route + MT_MODULE2_ORDER append, MatematikExplore case, hub card 5th topic (pill `CERITA TAMBAH & TOLAK`). Build exit 0; no regression. **Slice 2.F Footer ✅ COMPLETE. MODULE 2 FULLY COMPLETE (6 Belajar + 3 footer trio).** |
-| 3 · Pecahan | 1 | ⬜ | + footer |
+| 3 · Pecahan | 1 | 🔍 | Kenali Pecahan + Selesaikan Cerita Pecahan + Latih Diri Pecahan + Cabaran Pecahan (all 4 topic cards wired via MatematikExplore with KenaliPecahanExplore, SelesaikanPecahanExplore, LatihDiriPecahanExplore, CabarMindaPecahanExplore). PecahanModule updated with active topic cards. Build passes. |
 | 4 · Wang | 3 | ⬜ | + footer |
 | 5 · Masa dan Waktu | 3 | ⬜ | + footer |
 
@@ -762,7 +893,7 @@ it in **1.7 Nilai Tempat & Nilai Digit**, not here.
 > Number patterns. Grounded in the KSSR Tahun 1 workbook (Pola Nombor, Aktiviti 1–2, pp.57–58).
 > Two distinct concepts: **pola berulang** (repeating/cyclic patterns) + **pola bilang**
 > (skip-counting arithmetic sequences, incl. naming the rule). New file
-> `PolaNomborExplore` in `explorePrimitives.jsx`; primitive key `'pola-nombor'`. Reuse the
+> `PolaNomborExplore` in `explore_T1_1.jsx`; primitive key `'pola-nombor'`. Reuse the
 > §9 `MatematikActivityFrame`, the number-options grid (1.6 `NumOptionsGrid`), the keypad
 > (1.8 `SusunanKeypadContent` pattern — keypad + external keyboard, submit ONLY via ✓/Enter,
 > NO auto-submit), and the stacked word-options grid (1.6 `WordOptionsGrid`). Header on every
@@ -806,7 +937,7 @@ it in **1.7 Nilai Tempat & Nilai Digit**, not here.
 
 > Estimate & round. Grounded in the KSSR Tahun 1 workbook (Kenali Anggaran p59 + Kenali
 > Bundar p60–62). Two concepts, 5 + 5 split. New `AnggarBundarExplore` in
-> `explorePrimitives.jsx`; primitive key `'anggar-bundar'`. Reuse §9 `MatematikActivityFrame`,
+> `explore_T1_1.jsx`; primitive key `'anggar-bundar'`. Reuse §9 `MatematikActivityFrame`,
 > `RenderObjects` (object clusters), `NumOptionsGrid` (number tiles), `WordOptionsGrid`
 > (lebih/kurang). ONE new visual: an SVG `NumberLine`. Rounding rule = nearest ten, **5 rounds
 > UP** (`Math.round(n/10)*10` — matches workbook: 25→30, 55→60, 95→100). Header = `Pembelajaran
@@ -849,7 +980,7 @@ it in **1.7 Nilai Tempat & Nilai Digit**, not here.
 
 > Intro to addition. KSSR T1 Module 2 "Tambah dan Tolak" → Kenali Tambah (Aktiviti 1–6,
 > pp.69–74). Module-2 theme = **BLUE** (accent #3B82F6, dark #1E3A8A — copy from
-> `TambahDanTolakModule`). New `KenaliTambahExplore` in `explorePrimitives.jsx`; primitive
+> `TambahDanTolakModule`). New `KenaliTambahExplore` in `explore_T1_2_core.jsx`; primitive
 > key `'kenali-tambah'`. Reuse §9 `MatematikActivityFrame`, `WordOptionsGrid`, `ObjectsGrid`/
 > `RenderObjects`, the keypad pattern (extract a shared `KeypadInput` from
 > `SusunanKeypadContent`: display slot + 3×3 keypad + ⌫/✓ + keyboard; submit ONLY ✓/Enter, NO
@@ -887,7 +1018,7 @@ it in **1.7 Nilai Tempat & Nilai Digit**, not here.
 
 > Tiered **addition practice** (the C1 combine: *Tambah Cepat + Tambah Mudah + Tambah Lagi*).
 > KSSR T1 Module 2, pp.75–87. Module-2 theme = **BLUE** (copy `TambahDanTolakModule` THEME).
-> New `LatihanTambahExplore` in `explorePrimitives.jsx`; primitive key `'latihan-tambah'`.
+> New `LatihanTambahExplore` in `explore_T1_2_core.jsx`; primitive key `'latihan-tambah'`.
 > Reuse §9 `MatematikActivityFrame`, the shared `KeypadInput` (from 2.1), `WordOptionsGrid`.
 > Header = `Latihan Tambah`. **No regression to 2.1.**
 >

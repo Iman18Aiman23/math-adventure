@@ -12,72 +12,7 @@ const THEME = {
 };
 
 const ROBOT = <MatematikTopicRobot theme={THEME} />;
-
-function FooterTrio({ language, theme }) {
-  const isBM = language === 'bm';
-  const items = [
-    { id: 'selesaikan',  icon: '🧩', title: isBM ? 'Cerita Pecahan' : 'Fraction Stories', desc: isBM ? 'Guna pecahan dalam cerita' : 'Use fractions in stories' },
-    { id: 'latih-diri',  icon: '⚡', title: isBM ? 'Latihan Pecahan' : 'Fraction Practice', desc: isBM ? 'Kenal bahagian sama besar' : 'Find equal parts' },
-    { id: 'cabar-minda', icon: '🧠', title: isBM ? 'Cabaran Pecahan' : 'Fraction Challenge', desc: isBM ? 'Soalan pecahan lebih sukar' : 'Harder fraction questions' },
-  ];
-  return (
-    <div className="mt-footer-trio">
-      <style>{`
-        .mt-footer-trio {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 16px;
-          max-width: 720px;
-          margin: 0 auto;
-        }
-        .mt-footer-trio-card {
-          background: #fff;
-          border-radius: 20px;
-          padding: 18px 14px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 6px;
-          border: 2px solid ${theme.accent}44;
-          box-shadow: 0 6px 20px -10px ${theme.dark}30;
-          opacity: 0.7;
-          filter: grayscale(0.4);
-          cursor: default;
-          pointer-events: none;
-          text-align: center;
-        }
-        .mt-footer-trio-icon { font-size: 28px; }
-        .mt-footer-trio-title {
-          font-family: 'Baloo 2', sans-serif;
-          font-weight: 800;
-          font-size: 16px;
-          color: ${theme.dark};
-          margin: 0;
-        }
-        .mt-footer-trio-desc {
-          font-family: 'Fredoka', sans-serif;
-          font-weight: 500;
-          font-size: 11px;
-          color: #5B6B7B;
-          margin: 0;
-        }
-        @media (max-width: 560px) {
-          .mt-footer-trio { grid-template-columns: 1fr; max-width: 300px; }
-        }
-      `}</style>
-      {items.map(item => (
-        <div key={item.id} className="mt-footer-trio-card">
-          <span className="mt-footer-trio-icon">{item.icon}</span>
-          <div className="mt-footer-trio-title">{item.title}</div>
-          <div className="mt-footer-trio-desc">{item.desc}</div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-const ROBOT_HALF = <MatematikTopicRobot theme={THEME} symbol="½" badge={THEME.accent} glow={THEME.accent} />;
-const ROBOT_QUARTER = <MatematikTopicRobot theme={THEME} symbol="¼" badge={THEME.accent} glow={THEME.accent} />;
+const ROBOT_HALF = <MatematikTopicRobot theme={THEME} symbol="1/2" badge={THEME.accent} glow={THEME.accent} />;
 
 const TOPICS = [
   {
@@ -89,28 +24,28 @@ const TOPICS = [
     color: THEME.accent,
   },
   {
-    id: 'placeholder-selesaikan',
-    pill: 'SEGERA HADIR',
-    title: 'Selesaikan Cerita Pecahan',
-    desc: 'Akan datang: guna pecahan dalam cerita.',
+    id: 'selesaikan-pecahan',
+    pill: 'SELESAIKAN',
+    title: 'Jawab Pecahan',
+    desc: 'Jawab soalan pecahan melalui pilihan jawapan dan lorekan gambar.',
     visual: ROBOT,
-    disabled: true,
+    color: THEME.accent,
   },
   {
-    id: 'placeholder-latih-diri',
-    pill: 'SEGERA HADIR',
-    title: 'Latih Diri Pecahan',
-    desc: 'Akan datang: latih kendiri pecahan.',
+    id: 'latih-diri-pecahan',
+    pill: 'LATIH TUBI',
+    title: 'Latih Tubi Pecahan',
+    desc: 'Kenal pasti bahagian sama besar.',
     visual: ROBOT,
-    disabled: true,
+    color: THEME.accent,
   },
   {
-    id: 'placeholder-cabar-minda',
-    pill: 'SEGERA HADIR',
-    title: 'Cabaran Pecahan',
-    desc: 'Akan datang: cabaran pecahan lebih sukar.',
+    id: 'cabar-minda-pecahan',
+    pill: 'UJIAN',
+    title: 'Ujian Pecahan',
+    desc: '30 soalan daripada Kenali Pecahan dan Jawab Pecahan.',
     visual: ROBOT,
-    disabled: true,
+    color: THEME.accent,
   },
 ];
 
@@ -126,7 +61,6 @@ export default function PecahanModule({ onSelectTopic, language = 'bm' }) {
       topics={TOPICS}
       onSelectTopic={onSelectTopic}
       language={language}
-      footer={<FooterTrio language={language} theme={THEME} />}
     />
   );
 }

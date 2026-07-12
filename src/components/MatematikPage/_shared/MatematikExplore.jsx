@@ -1,248 +1,157 @@
-import React from 'react';
-import { CompareExplore, KenaliNomborExplore, KombinasiExplore, Kenali21Hingga100Explore, NilaiTempatExplore, SusunanNomborExplore, PolaNomborExplore, AnggarBundarExplore, SelesaikanExplore, LatihDiriExplore, CabarMindaExplore, KenaliTambahExplore, LatihanTambahExplore, KenaliTolakExplore, LatihanTolakExplore, CeritaTambahTolakExplore, TambahBerulangExplore, SelesaikanM2Explore, LatihDiriM2Explore, CabarMindaM2Explore, SelesaikanCeritaM1Explore, CabarMindaM1Explore, KenaliPecahanExplore } from './explorePrimitives';
+import React, { useEffect, useState } from 'react';
 import useMtTts from './useMtTts';
+
+const PRIMITIVE_ENTRIES = {
+  compare: { exportName: 'CompareExplore', load: () => import('./explore_T1_1_core') },
+  'kenali-nombor': { exportName: 'KenaliNomborExplore', load: () => import('./explore_T1_1_core') },
+  kombinasi: { exportName: 'KombinasiExplore', load: () => import('./explore_T1_1_core') },
+  'kenali-21-100': { exportName: 'Kenali21Hingga100Explore', load: () => import('./explore_T1_1_core') },
+  'nilai-tempat': { exportName: 'NilaiTempatExplore', load: () => import('./explore_T1_1_core') },
+  'susunan-nombor': { exportName: 'SusunanNomborExplore', load: () => import('./explore_T1_1_core') },
+  'pola-nombor': { exportName: 'PolaNomborExplore', load: () => import('./explore_T1_1_core') },
+  'anggar-bundar': { exportName: 'AnggarBundarExplore', load: () => import('./explore_T1_1_core') },
+  selesaikan: { exportName: 'SelesaikanExplore', load: () => import('./explore_T1_1_assessment') },
+  'latih-diri': { exportName: 'LatihDiriExplore', load: () => import('./explore_T1_1_assessment') },
+  'cabar-minda': { exportName: 'CabarMindaExplore', load: () => import('./explore_T1_1_assessment') },
+  'selesaikan-cerita-m1': { exportName: 'SelesaikanCeritaM1Explore', load: () => import('./explore_T1_1_assessment') },
+  'cabar-minda-m1': { exportName: 'CabarMindaM1Explore', load: () => import('./explore_T1_1_assessment') },
+  'kenali-tambah': { exportName: 'KenaliTambahExplore', load: () => import('./explore_T1_2_core') },
+  'latihan-tambah': { exportName: 'LatihanTambahExplore', load: () => import('./explore_T1_2_core') },
+  'kenali-tolak': { exportName: 'KenaliTolakExplore', load: () => import('./explore_T1_2_core') },
+  'latihan-tolak': { exportName: 'LatihanTolakExplore', load: () => import('./explore_T1_2_core') },
+  'cerita-tambah-tolak': { exportName: 'CeritaTambahTolakExplore', load: () => import('./explore_T1_2_core') },
+  'tambah-berulang': { exportName: 'TambahBerulangExplore', load: () => import('./explore_T1_2_core') },
+  'selesaikan-m2': { exportName: 'SelesaikanM2Explore', load: () => import('./explore_T1_2_assessment') },
+  'latih-diri-m2': { exportName: 'LatihDiriM2Explore', load: () => import('./explore_T1_2_assessment') },
+  'cabar-minda-m2': { exportName: 'CabarMindaM2Explore', load: () => import('./explore_T1_2_assessment') },
+  'kenali-pecahan': { exportName: 'KenaliPecahanExplore', load: () => import('./explore_T1_3') },
+  'selesaikan-pecahan': { exportName: 'SelesaikanPecahanExplore', load: () => import('./explore_T1_3') },
+  'latih-diri-pecahan': { exportName: 'LatihDiriPecahanExplore', load: () => import('./explore_T1_3') },
+  'cabar-minda-pecahan': { exportName: 'CabarMindaPecahanExplore', load: () => import('./explore_T1_3') },
+};
+
+const primitiveCache = new Map();
+
+function getMessageStyles() {
+  return {
+    wrap: {
+      textAlign: 'center',
+      padding: '40px 20px',
+      fontFamily: "'Fredoka', sans-serif",
+      color: '#5B6B7B',
+    },
+    title: {
+      fontSize: '18px',
+      fontWeight: 600,
+      margin: '0 0 8px',
+    },
+    body: {
+      fontSize: '14px',
+      margin: 0,
+    },
+  };
+}
+
+function ExploreMessage({ title, body }) {
+  const styles = getMessageStyles();
+  return (
+    <div style={styles.wrap}>
+      <p style={styles.title}>{title}</p>
+      {body ? <p style={styles.body}>{body}</p> : null}
+    </div>
+  );
+}
+
+async function loadPrimitiveComponent(primitive) {
+  const entry = PRIMITIVE_ENTRIES[primitive];
+  if (!entry) return null;
+  if (!primitiveCache.has(primitive)) {
+    primitiveCache.set(
+      primitive,
+      entry.load().then((module) => module[entry.exportName] || null),
+    );
+  }
+  return primitiveCache.get(primitive);
+}
 
 /**
  * Data-driven interactive explore engine for the Belajar phase.
- * Takes a config object that specifies the primitive type and data.
- * In Slice 0 this is a scaffold — primitives are added per-topic in later slices.
+ * Loads the selected primitive on demand so each topic group can become its own chunk.
  */
 export default function MatematikExplore({ config, language, theme, onExit }) {
   const { speak, stop } = useMtTts();
+  const primitive = config?.primitive;
+  const [LoadedExplore, setLoadedExplore] = useState(null);
+  const [loadFailed, setLoadFailed] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    if (!primitive) {
+      setLoadedExplore(null);
+      setLoadFailed(false);
+      return undefined;
+    }
+
+    setLoadedExplore(null);
+    setLoadFailed(false);
+
+    loadPrimitiveComponent(primitive)
+      .then((component) => {
+        if (!cancelled) {
+          setLoadedExplore(() => component);
+          setLoadFailed(!component);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setLoadedExplore(null);
+          setLoadFailed(true);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [primitive]);
 
   if (!config) {
     return (
-      <div style={{ textAlign: 'center', padding: '40px 20px', fontFamily: "'Fredoka', sans-serif", color: '#5B6B7B' }}>
-        <p style={{ fontSize: '18px', fontWeight: 600, margin: '0 0 8px' }}>
-          {language === 'bm' ? 'Kandungan pembelajaran akan datang' : 'Learning content coming soon'}
-        </p>
-        <p style={{ fontSize: '14px', margin: 0 }}>
-          {language === 'bm' ? 'Sila tunggu kemas kini akan datang.' : 'Please wait for future updates.'}
-        </p>
-      </div>
+      <ExploreMessage
+        title={language === 'bm' ? 'Kandungan pembelajaran akan datang' : 'Learning content coming soon'}
+        body={language === 'bm' ? 'Sila tunggu kemas kini akan datang.' : 'Please wait for future updates.'}
+      />
     );
   }
 
-  const { primitive, data, scoreId, scoreStorageKey = 'mt_ld_m1_scores' } = config;
+  if (loadFailed) {
+    return (
+      <ExploreMessage
+        title={language === 'bm' ? 'Aktiviti belum tersedia' : 'Activity not available yet'}
+        body={language === 'bm' ? 'Komponen pembelajaran ini gagal dimuatkan.' : 'This learning component failed to load.'}
+      />
+    );
+  }
+
+  if (!LoadedExplore) {
+    return (
+      <ExploreMessage
+        title={language === 'bm' ? 'Memuatkan aktiviti...' : 'Loading activity...'}
+      />
+    );
+  }
+
+  const { data, scoreId, scoreStorageKey = 'mt_ld_m1_scores' } = config;
   const dataWithScore = scoreId ? { ...data, scoreId, scoreStorageKey } : data;
 
-  switch (primitive) {
-    case 'compare':
-      return (
-        <CompareExplore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-          onSpeak={speak}
-          onStop={stop}
-        />
-      );
-    case 'kenali-nombor':
-      return (
-        <KenaliNomborExplore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-        />
-      );
-    case 'kombinasi':
-      return (
-        <KombinasiExplore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-        />
-      );
-    case 'kenali-21-100':
-      return (
-        <Kenali21Hingga100Explore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-        />
-      );
-    case 'nilai-tempat':
-      return (
-        <NilaiTempatExplore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-        />
-      );
-    case 'susunan-nombor':
-      return (
-        <SusunanNomborExplore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-        />
-      );
-    case 'pola-nombor':
-      return (
-        <PolaNomborExplore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-        />
-      );
-    case 'anggar-bundar':
-      return (
-        <AnggarBundarExplore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-        />
-      );
-    case 'selesaikan':
-      return (
-        <SelesaikanExplore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-        />
-      );
-    case 'latih-diri':
-      return (
-        <LatihDiriExplore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-        />
-      );
-    case 'cabar-minda':
-      return (
-        <CabarMindaExplore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-        />
-      );
-    case 'kenali-tambah':
-      return (
-        <KenaliTambahExplore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-        />
-      );
-    case 'latihan-tambah':
-      return (
-        <LatihanTambahExplore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-        />
-      );
-    case 'kenali-tolak':
-      return (
-        <KenaliTolakExplore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-        />
-      );
-    case 'latihan-tolak':
-      return (
-        <LatihanTolakExplore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-        />
-      );
-    case 'cerita-tambah-tolak':
-      return (
-        <CeritaTambahTolakExplore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-        />
-      );
-    case 'tambah-berulang':
-      return (
-        <TambahBerulangExplore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-        />
-      );
-    case 'selesaikan-m2':
-      return (
-        <SelesaikanM2Explore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-        />
-      );
-    case 'latih-diri-m2':
-      return (
-        <LatihDiriM2Explore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-        />
-      );
-    case 'cabar-minda-m2':
-      return (
-        <CabarMindaM2Explore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-        />
-      );
-    case 'selesaikan-cerita-m1':
-      return (
-        <SelesaikanCeritaM1Explore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-        />
-      );
-    case 'cabar-minda-m1':
-      return (
-        <CabarMindaM1Explore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-        />
-      );
-    case 'kenali-pecahan':
-      return (
-        <KenaliPecahanExplore
-          data={dataWithScore}
-          language={language}
-          theme={theme}
-          onExit={onExit}
-        />
-      );
-    default:
-      return (
-        <div style={{ textAlign: 'center', padding: '40px 20px', fontFamily: "'Fredoka', sans-serif", color: '#5B6B7B' }}>
-          <p style={{ fontSize: '18px', fontWeight: 600, margin: 0 }}>
-            {language === 'bm' ? 'Sedia untuk belajar' : 'Ready to learn'}
-          </p>
-        </div>
-      );
-  }
+  return (
+    <LoadedExplore
+      data={dataWithScore}
+      language={language}
+      theme={theme}
+      onExit={onExit}
+      onSpeak={speak}
+      onStop={stop}
+    />
+  );
 }

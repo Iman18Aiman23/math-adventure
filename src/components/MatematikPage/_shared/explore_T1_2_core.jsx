@@ -2508,3 +2508,8 @@ export const T1_M2_GENERATORS = {
   'tb-sub-groups': genTbSubGroups,
   'tb-sub-line': genTbSubLine,
 };
+
+export const module2CoreApi = {
+  T1_M2_GENERATORS,
+  renderT1M2Question,
+};

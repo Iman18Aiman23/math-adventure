@@ -3,7 +3,9 @@ import confetti from 'canvas-confetti';
 import { playSound } from '../../../utils/soundManager';
 import useGamification from '../../../hooks/useGamification';
 import { pick, randInt, shuffle } from './explorePrimitives_shared';
-import { T1_M2_GENERATORS, renderT1M2Question } from './explore_T1_2_core';
+import { module2CoreApi } from './explore_T1_2_core';
+
+const { T1_M2_GENERATORS, renderT1M2Question } = module2CoreApi;
 
 /*
  * Slice 2.F — "Selesaikan M2: Roda Nombor" (Module 2 problem-solving).
