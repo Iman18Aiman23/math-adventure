@@ -7,13 +7,14 @@ const FRAC_WORDS = ['Setengah', 'Suku', 'Dua perempat', 'Tiga perempat'];
 function FractionSvg({ type, parts, shaded, size }) {
   const sz = size || 'clamp(90px, 16vmin, 160px)';
   const strok = { stroke: '#334155', strokeWidth: 3, fill: 'none' };
+  const shadeColors = ['#2563EB', '#DC2626', '#16A34A', '#D97706'];
   if (type === 'circle' && parts === 2) {
     const d = shaded > 0 ? 'M 60 10 A 50 50 0 0 0 60 110 Z' : null;
     return (
       <svg viewBox="0 0 120 120" width={sz} height={sz} style={{ display: 'block' }}>
         <circle cx="60" cy="60" r="50" {...strok} />
         <line x1="60" y1="10" x2="60" y2="110" {...strok} />
-        {d && <path d={d} fill="#A855F7" opacity="0.35" />}
+        {d && <path d={d} fill={shadeColors[0]} opacity="0.72" />}
       </svg>
     );
   }
@@ -29,7 +30,7 @@ function FractionSvg({ type, parts, shaded, size }) {
         <circle cx="60" cy="60" r="50" {...strok} />
         <line x1="60" y1="10" x2="60" y2="110" {...strok} />
         <line x1="10" y1="60" x2="110" y2="60" {...strok} />
-        {quads.slice(0, shaded).map((d, i) => <path key={i} d={d} fill="#A855F7" opacity="0.35" />)}
+        {quads.slice(0, shaded).map((d, i) => <path key={i} d={d} fill={shadeColors[i % shadeColors.length]} opacity="0.72" />)}
       </svg>
     );
   }
@@ -38,16 +39,16 @@ function FractionSvg({ type, parts, shaded, size }) {
       <svg viewBox="0 0 120 120" width={sz} height={sz} style={{ display: 'block' }}>
         <rect x="10" y="10" width="100" height="100" rx="6" {...strok} />
         <line x1="60" y1="10" x2="60" y2="110" {...strok} />
-        {shaded > 0 && <rect x="10" y="10" width="50" height="100" fill="#A855F7" opacity="0.35" rx="6" />}
+        {shaded > 0 && <rect x="10" y="10" width="50" height="100" fill={shadeColors[0]} opacity="0.72" rx="6" />}
       </svg>
     );
   }
   if (type === 'square' && parts === 4) {
     const quads = [
-      <rect key={0} x="10" y="10" width="50" height="50" fill="#A855F7" opacity="0.35" rx="3" />,
-      <rect key={1} x="60" y="10" width="50" height="50" fill="#A855F7" opacity="0.35" rx="3" />,
-      <rect key={2} x="10" y="60" width="50" height="50" fill="#A855F7" opacity="0.35" rx="3" />,
-      <rect key={3} x="60" y="60" width="50" height="50" fill="#A855F7" opacity="0.35" rx="3" />,
+      <rect key={0} x="10" y="10" width="50" height="50" fill={shadeColors[0]} opacity="0.72" rx="3" />,
+      <rect key={1} x="60" y="10" width="50" height="50" fill={shadeColors[1]} opacity="0.72" rx="3" />,
+      <rect key={2} x="10" y="60" width="50" height="50" fill={shadeColors[2]} opacity="0.72" rx="3" />,
+      <rect key={3} x="60" y="60" width="50" height="50" fill={shadeColors[3]} opacity="0.72" rx="3" />,
     ];
     return (
       <svg viewBox="0 0 120 120" width={sz} height={sz} style={{ display: 'block' }}>
@@ -887,11 +888,14 @@ export function LatihDiriPecahanExplore({ data, language, theme, onExit }) {
 }
 
 function JawabShadeFractionQuestion({ q, ctx }) {
-  const { answered, selected, handlePick, handleTouch, theme: C, autoSubmit } = ctx;
+  const { answered, isCorrect, handlePick, handleTouch, theme: C, autoSubmit } = ctx;
   const [pickedParts, setPickedParts] = React.useState([]);
   const selectedCount = pickedParts.length;
   const canSubmit = selectedCount === q.target;
-  const resultTone = answered ? (selected === 'correct' ? 'correct' : 'wrong') : null;
+  const resultTone = answered ? 'correct' : null;
+  const displayPickedParts = answered && !isCorrect
+    ? Array.from({ length: q.target }, (_, index) => index)
+    : pickedParts;
 
   React.useEffect(() => {
     setPickedParts([]);
@@ -927,7 +931,7 @@ function JawabShadeFractionQuestion({ q, ctx }) {
     }}>
       <SelectableFractionSvg
         parts={q.parts}
-        pickedParts={pickedParts}
+        pickedParts={displayPickedParts}
         onToggle={togglePart}
         disabled={answered}
         resultTone={resultTone}

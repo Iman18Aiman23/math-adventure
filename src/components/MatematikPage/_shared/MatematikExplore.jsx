@@ -28,6 +28,9 @@ const PRIMITIVE_ENTRIES = {
   'selesaikan-pecahan': { exportName: 'SelesaikanPecahanExplore', load: () => import('./explore_T1_3') },
   'latih-diri-pecahan': { exportName: 'LatihDiriPecahanExplore', load: () => import('./explore_T1_3') },
   'cabar-minda-pecahan': { exportName: 'CabarMindaPecahanExplore', load: () => import('./explore_T1_3') },
+  'kenali-nilai-wang': { exportName: 'KenaliNilaiWangExplore', load: () => import('./explore_T1_4') },
+  'tukar-wang': { exportName: 'TukarWangExplore', load: () => import('./explore_T1_4') },
+  'dapat-catat-wang': { exportName: 'DapatCatatWangExplore', load: () => import('./explore_T1_4') },
 };
 
 const primitiveCache = new Map();

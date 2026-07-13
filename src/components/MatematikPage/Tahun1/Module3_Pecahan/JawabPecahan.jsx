@@ -109,11 +109,16 @@ function JawabPecahanQuestion({ q, ctx }) {
 }
 
 function ShadeFractionQuestion({ q, ctx }) {
-  const { answered, selected, handlePick, theme: C } = ctx;
+  const { answered, isCorrect, selected, handlePick, theme: C } = ctx;
   const [pickedParts, setPickedParts] = React.useState([]);
   const selectedCount = pickedParts.length;
   const canSubmit = selectedCount === q.target;
   const resultTone = answered ? (selected === 'correct' ? 'correct' : 'wrong') : null;
+  const showCorrectAnswer = answered && !isCorrect;
+  const displayPickedParts = answered && !isCorrect
+    ? Array.from({ length: q.target }, (_, index) => index)
+    : pickedParts;
+  const displayCount = showCorrectAnswer ? q.target : selectedCount;
 
   React.useEffect(() => {
     setPickedParts([]);
@@ -146,10 +151,10 @@ function ShadeFractionQuestion({ q, ctx }) {
     }}>
       <SelectableFractionSvg
         parts={q.parts}
-        pickedParts={pickedParts}
+        pickedParts={displayPickedParts}
         onToggle={togglePart}
         disabled={answered}
-        resultTone={resultTone}
+        resultTone={answered ? 'correct' : resultTone}
       />
 
       <div style={{
@@ -159,31 +164,30 @@ function ShadeFractionQuestion({ q, ctx }) {
         color: '#1E293B',
         textAlign: 'center',
       }}>
-        {selectedCount}/{q.parts} bahagian dipilih
+        {displayCount}/{q.parts} {showCorrectAnswer ? 'jawapan betul' : 'bahagian dipilih'}
       </div>
 
-      <button
-        type="button"
-        onClick={handleSubmit}
-        disabled={answered}
-        style={{
-          minHeight: 'clamp(44px, 7vmin, 56px)',
-          padding: 'clamp(10px, 1.5vmin, 14px) clamp(22px, 3vmin, 30px)',
-          borderRadius: '999px',
-          border: 'none',
-          background: answered
-            ? '#E5E7EB'
-            : `linear-gradient(180deg, ${C?.accent || '#8B5CF6'}, ${C?.dark || '#5B21B6'})`,
-          color: answered ? '#9CA3AF' : '#fff',
-          fontFamily: "'Baloo 2', sans-serif",
-          fontWeight: 800,
-          fontSize: 'clamp(18px, 2.4vmin, 22px)',
-          cursor: answered ? 'default' : 'pointer',
-          boxShadow: answered ? '0 4px 0 #D1D5DB' : `0 4px 0 ${C?.dark || '#5B21B6'}`,
-        }}
-      >
-        Semak Jawapan
-      </button>
+      {!answered && (
+        <button
+          type="button"
+          onClick={handleSubmit}
+          style={{
+            minHeight: 'clamp(44px, 7vmin, 56px)',
+            padding: 'clamp(10px, 1.5vmin, 14px) clamp(22px, 3vmin, 30px)',
+            borderRadius: '999px',
+            border: 'none',
+            background: `linear-gradient(180deg, ${C?.accent || '#8B5CF6'}, ${C?.dark || '#5B21B6'})`,
+            color: '#fff',
+            fontFamily: "'Baloo 2', sans-serif",
+            fontWeight: 800,
+            fontSize: 'clamp(18px, 2.4vmin, 22px)',
+            cursor: 'pointer',
+            boxShadow: `0 4px 0 ${C?.dark || '#5B21B6'}`,
+          }}
+        >
+          Semak Jawapan
+        </button>
+      )}
     </div>
   );
 

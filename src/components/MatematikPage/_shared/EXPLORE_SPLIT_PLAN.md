@@ -8,7 +8,6 @@ The goal is maintainability as Matematik explore content grows. The split must f
 
 Current decisions:
 
-- Keep the public import path stable through `explorePrimitives.jsx`.
 - Split into fewer ownership files first.
 - Keep shared helpers in one shared module.
 - Only add more files when each file has a stable public API.
@@ -17,7 +16,7 @@ Current decisions:
 
 ## Why Split
 
-`explorePrimitives.jsx` had grown too large and will keep growing as more topics are added. A single large file makes it harder to:
+The old explore monolith had grown too large and would keep growing as more topics were added. A single large file made it harder to:
 
 - find the right topic component
 - review changes safely
@@ -49,14 +48,13 @@ This is the right tradeoff for scalability: better source ownership, smaller ini
 
 ```text
 src/components/MatematikPage/_shared/
-├── explorePrimitives.jsx
-├── explorePrimitives_shared.jsx
-├── explore_T1_1.jsx
-├── explore_T1_1_core.jsx
-├── explore_T1_1_assessment.jsx
-├── explore_T1_2_core.jsx
-├── explore_T1_2_assessment.jsx
-└── explore_T1_3.jsx
+|- explorePrimitives_shared.jsx
+|- explore_T1_1.jsx
+|- explore_T1_1_core.jsx
+|- explore_T1_1_assessment.jsx
+|- explore_T1_2_core.jsx
+|- explore_T1_2_assessment.jsx
+`- explore_T1_3.jsx
 ```
 
 Notes:
@@ -66,18 +64,6 @@ Notes:
 - `MatematikExplore.jsx` lazy loads the topic-group files directly.
 
 ## File Responsibilities
-
-### `explorePrimitives.jsx`
-
-Public barrel only.
-
-Responsibilities:
-
-- preserve existing imports from `MatematikExplore.jsx`
-- re-export public explore components
-- avoid adding private helper logic here
-
-Do not move calling code to import directly from topic files unless there is a clear reason.
 
 ### `explorePrimitives_shared.jsx`
 
@@ -189,13 +175,12 @@ The safe direction currently looks like this:
 
 ```text
 MatematikExplore.jsx
-  -> explorePrimitives.jsx
-    -> explorePrimitives_shared.jsx
-    -> explore_T1_1_core.jsx
-    -> explore_T1_1_assessment.jsx
-    -> explore_T1_2_core.jsx
-    -> explore_T1_2_assessment.jsx
-    -> explore_T1_3.jsx
+  -> explorePrimitives_shared.jsx
+  -> explore_T1_1_core.jsx
+  -> explore_T1_1_assessment.jsx
+  -> explore_T1_2_core.jsx
+  -> explore_T1_2_assessment.jsx
+  -> explore_T1_3.jsx
 ```
 
 Topic files may import from `explorePrimitives_shared.jsx`.

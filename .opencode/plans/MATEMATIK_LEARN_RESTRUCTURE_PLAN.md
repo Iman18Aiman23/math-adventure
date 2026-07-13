@@ -256,7 +256,7 @@ opt in.
 src/components/MatematikPage/_shared/
 ├── MatematikTopicShell.jsx     ★ owns phase state, toggle, CTA, back routing, top bar
 ├── MatematikExplore.jsx        ★ the interactive-explore engine (data-driven)
-├── explorePrimitives.jsx       ★ small reusable interactive widgets (see §3.3)
+├── explorePrimitives_shared.jsx ★ shared helpers + placeholder explore primitives
 ├── useMtTts.js                 ★ thin wrapper over the app TTS helper (ms-MY→id-* fallback)
 └── learn/                      ★ one tiny data file per topic (content only, no logic)
     ├── nombor-100.js
@@ -339,17 +339,18 @@ if (matematikTopic === 'nombor-100')
 
 ---
 
-## 3.6 explorePrimitives.jsx — Completed Split (Executed)
+## 3.6 Explore Split — Completed Split (Executed)
 
-> **Status:** ✅ Completed — the monolithic `explorePrimitives.jsx` has been split into a 5-file topic-scoped structure + 1 shared utilities file, following the dependency-based split plan in `src/components/MatematikPage/_shared/EXPLORE_SPLIT_PLAN.md`. The original file is now a thin barrel re-export (~40 lines). `MatematikExplore.jsx` required **zero changes**.
+> **Status:** ✅ Completed — the old monolithic explore file has been split into topic-scoped files plus `explorePrimitives_shared.jsx`, following the dependency-based split plan in `src/components/MatematikPage/_shared/EXPLORE_SPLIT_PLAN.md`. `MatematikExplore.jsx` now lazy-loads the split topic-group files directly, and the temporary `explorePrimitives.jsx` barrel has since been removed.
 
 ### Final File Structure
 
 ```
 src/components/MatematikPage/_shared/
-├── explorePrimitives.jsx                 ← REPLACED: barrel re-export (~40 lines)
-├── explorePrimitives_shared.jsx          ← NEW: shared utils, KeypadInput, stubs (~650 lines)
-├── explore_T1_1.jsx                      ← NEW: T1.1 Nombor Bulat hingga 100 (~3,200 lines)
+├── explorePrimitives_shared.jsx          ← shared utils, KeypadInput, stubs
+├── explore_T1_1.jsx                      ← compatibility barrel for Module 1
+├── explore_T1_1_core.jsx                 ← T1.1 learning topics
+├── explore_T1_1_assessment.jsx           ← T1.1 assessment + mixed-practice
 ├── explore_T1_2_core.jsx                 ← NEW: T1.2 core addition & subtraction learning (~2,650 lines)
 ├── explore_T1_2_assessment.jsx           ← NEW: T1.2 assessment/mixed-practice (~1,550 lines)
 └── explore_T1_3.jsx                      ← NEW: T1.3 Pecahan Asas (~350 lines)
@@ -375,7 +376,8 @@ These symbols are used across multiple topic files and exist **only once** in `_
 
 | File | Components |
 |------|------------|
-| `explore_T1_1.jsx` | CompareExplore, KenaliNomborExplore, KombinasiExplore, Kenali21Hingga100Explore, NilaiTempatExplore, SusunanNomborExplore, PolaNomborExplore, AnggarBundarExplore, SelesaikanExplore, LatihDiriExplore, CabarMindaExplore, SelesaikanCeritaM1Explore, CabarMindaM1Explore |
+| `explore_T1_1_core.jsx` | CompareExplore, KenaliNomborExplore, KombinasiExplore, Kenali21Hingga100Explore, NilaiTempatExplore, SusunanNomborExplore, PolaNomborExplore, AnggarBundarExplore |
+| `explore_T1_1_assessment.jsx` | SelesaikanExplore, LatihDiriExplore, CabarMindaExplore, SelesaikanCeritaM1Explore, CabarMindaM1Explore |
 | `explore_T1_2_core.jsx` | KenaliTambahExplore, LatihanTambahExplore, KenaliTolakExplore, LatihanTolakExplore, CeritaTambahTolakExplore, TambahBerulangExplore |
 | `explore_T1_2_assessment.jsx` | SelesaikanM2Explore, LatihDiriM2Explore, CabarMindaM2Explore |
 | `explore_T1_3.jsx` | KenaliPecahanExplore |
@@ -384,13 +386,16 @@ These symbols are used across multiple topic files and exist **only once** in `_
 
 ```
 explorePrimitives_shared.jsx  ← imported by ALL topic files
-explore_T1_1.jsx              ← independent
+explore_T1_1_core.jsx         ← independent
+explore_T1_1_assessment.jsx   ← imports module1CoreApi from explore_T1_1_core.jsx
 explore_T1_2_core.jsx         ← independent (exports components for explore_T1_2_assessment.jsx)
 explore_T1_2_assessment.jsx   ← imports from explore_T1_2_core.jsx
 explore_T1_3.jsx              ← independent
 ```
 
-**No circular dependencies.** Flow is one-way: `explore_T1_2_core.jsx` → `explore_T1_2_assessment.jsx`.
+**No circular dependencies.** Flow is one-way: explore_T1_1_core.jsx -> explore_T1_1_assessment.jsx and explore_T1_2_core.jsx -> explore_T1_2_assessment.jsx.
+
+
 
 ### Verification Checklist (All Passed)
 
@@ -415,7 +420,6 @@ Treat the notes above as historical context only. The current enforced split sha
 
 ```text
 src/components/MatematikPage/_shared/
-├── explorePrimitives.jsx
 ├── explorePrimitives_shared.jsx
 ├── explore_T1_1.jsx
 ├── explore_T1_1_core.jsx
@@ -433,6 +437,7 @@ Locked rules from the executed refactor:
 - `explore_T1_1_assessment.jsx` may consume `module1CoreApi`.
 - `explore_T1_2_assessment.jsx` may consume `module2CoreApi`.
 - `MatematikExplore.jsx` now lazy-loads the topic-group files directly.
+- The temporary `explorePrimitives.jsx` barrel is gone; shared helpers live in `explorePrimitives_shared.jsx`.
 - Real browser verification on the actual Matematik question flow is mandatory after each split change.
 - Layout verification must include shell background, centered content area, section-gap rhythm, and footer alignment.
 

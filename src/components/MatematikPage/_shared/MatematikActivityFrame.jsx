@@ -208,6 +208,22 @@ export default function MatematikActivityFrame({
           max-width: 24ch;
           text-wrap: balance;
         }
+        .maf-question-badge {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 .28em;
+          padding: .12em .48em;
+          border-radius: 999px;
+          background: rgba(255,255,255,.94);
+          border: 2px solid ${C.accent};
+          color: ${C.dark};
+          font-size: .92em;
+          line-height: 1;
+          box-shadow: 0 2px 0 rgba(15, 23, 42, 0.08);
+          vertical-align: middle;
+          white-space: nowrap;
+        }
         .maf-feedback {
           font-family: 'Baloo 2', sans-serif;
           font-weight: 800;
@@ -413,7 +429,9 @@ export default function MatematikActivityFrame({
                   <div className="maf-section-question">
                     <div className="maf-question">
                       {q.prompt}
+                      {q.promptBadge && <span className="maf-question-badge">{q.promptBadge}</span>}
                       {q.promptNumber != null && <>&nbsp;<strong style={{ fontSize: '1.3em', color: C.accent }}>{q.promptNumber}</strong>&nbsp;?</>}
+                      {q.promptBadge ? '?' : ''}
                     </div>
                   </div>
                 )}

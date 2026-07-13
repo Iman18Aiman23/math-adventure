@@ -386,8 +386,8 @@ Within every slice: build, run `npm run build`, set the §6 row to **🔍**, sum
 | Module | Belajar cards | Status | Note |
 |--------|---------------|--------|------|
 | 2 · Tambah dan Tolak | 6 (incl. leveled Latihan Tambah/Tolak) | ✅ | **Slice 2.6 Tambah Berulang & Tolak Berturut ✅ built+verified 2026-06-24:** TambahBerulangExplore, round 10 = 3 Type A (Kira Kumpulan — N groups of M emoji, answer N×M) + 2 Type B (SVG number line N forward arcs +M, answer N×M) + 2 Type C (Lengkapkan satu tempat kosong dalam ayat tambah berulang, answer M) + 2 Type D (Tolak Berturut Kumpulan — objects in N groups + repeated subtraction sentence, answer 0) + 1 Type E (SVG number line N backward arcs −M, answer 0). Generators constrained N∈{2,3,4,5}, M∈{2,3,4,5,10}, N×M≤50; invariants asserted over 20k iters. Hub card 6th: pill `TAMBAH BERULANG & TOLAK BERTURUT`, ROBOT visual. TambahBerulang.jsx (§9 showToggle false, showReadyCta false, no banner). Blue Mod-2 theme. Wired: App.jsx lazy route + MT_MODULE2_ORDER append, MatematikExplore case. Build exit 0. **2.1 Kenali Tambah ✅ verified 2026-06-22 (Claude), §17, p69–74:**** KenaliTambahExplore, round 10 = 3 Gabung Kumpulan (objects + KeypadInput) + 2 Garis Nombor (new SVG NumberTrackAdd count-on jumps) + 2 Pilih Perkataan (add-word vs sub-word, WordOptionsGrid) + 3 Lengkapkan Ayat (a+b=? / a+?=c, keypad). Addends 0–9, sums ≤18; invariants over 40k iters. New shared **KeypadInput** extracted (submit only ✓/Enter, no auto-submit). Blue Module-2 theme; KenaliTambah.jsx (§9), App route + **MT_MODULE2_ORDER + nav lookup picks the module array holding current topic** (80% gate + advance work), MatematikExplore case, hub placeholder replaced (pill `KENALI TAMBAH`). Scene bg inherits. Build exit 0. **2.2 Latihan Tambah ✅ verified 2026-06-22 (Claude), §18, p75–87:** LatihanTambahExplore — level picker (Mudah/Sederhana/Sukar, `Tukar Aras ⟲` strip) → per-level round of 10. Mudah 6 `a+b=?`(≤18)+4 which-equals-target (WordOptionsGrid, exactly 1 correct); Sederhana 6 column add (new `VerticalSum`)+4 missing-addend, ALL no-carry; Sukar 6 column+4 missing-addend, ALL need-carry; sums ≤99; KeypadInput. Invariants 40k iters × 6 gens all pass; level picker + VerticalSum + chips visually verified (headless-Edge). Wired: LatihanTambah.jsx (§9), App route + MT_MODULE2_ORDER append, MatematikExplore case, hub card `LATIHAN TAMBAH`. Cepat/timed deferred to Latih Tubi. Build exit 0; no regression. **VARIETY RETROFIT 2026-06-23 (owner: cards too samey/keypad-heavy): each level now uses 4 distinct formats — 4 new widgets Warnai (tap-all multi-select), Padankan (tap-two-sum), Bina Blok (base-ten puluh/sa builder), Ikatan Nombor (number-bond). Keypad ≤2/10. New gens invariants 40k iters pass; widgets visually verified; build exit 0.** **2.3 Kenali Tolak ✅ verified 2026-06-23 (Claude), §17 mirror:** KenaliTolakExplore, round 10 = 3 Buang Kumpulan (objects with `b` crossed-out + KeypadInput) + 2 Garis Nombor (new SVG NumberTrackSub count-BACK jumps) + 2 Pilih Perkataan (subtraction word {Baki/Beza/Tinggal/Tolak} vs addition distractor, WordOptionsGrid) + 3 Lengkapkan Ayat (a−b=? / a−?=c, keypad). a≥b enforced everywhere → baki≥0; minuend ≤9. Blue Module-2 theme; KenaliTolak.jsx (§9), App lazy route + MT_MODULE2_ORDER append, MatematikExplore case, hub card (pill `KENALI TOLAK`). Build exit 0; no regression. **2.4 Latihan Tolak ✅ verified 2026-06-23 (Claude), §18 mirror:** LatihanTolakExplore — level picker → per-level round of 10. Mudah 2 keypad `a−b=?` + 3 Warnai (beza-N, exactly 1 correct) + 3 Padankan (`{given}−?={target}`) + 2 Bond; Sederhana 2 column (new `VerticalDiff`) + 3 Bina Blok (TolakBlok) + 3 Padankan + 2 Bond; Sukar 2 column + 3 Bina Blok + 3 Bond + 2 Padankan. Sukar borrow guaranteed; all answers ≥0. **⚠️ Verifier fix:** `genSederhanaTolakS1` leaked ~15.5% borrow-required problems (bOnes unconstrained when bTens<aTens) → constrained `bOnes=randInt(0,aOnes)` so NO-borrow is now guaranteed (0 borrow / 0 negative over 300k iters). Wired: LatihanTolak.jsx (§9), App route + MT_MODULE2_ORDER append, MatematikExplore case, hub card `LATIHAN TOLAK`. Cepat/timed deferred to Latih Tubi. Build exit 0; no regression. **Polish 2026-06-23 (owner):** (1) zero/trivial answers removed across 2.3+2.4 subtraction gens (no `a−a=0`, no `b=0` no-ops; 0% over 300k iters); (2) `VerticalDiff` leading-zero grading bug fixed (`"02"`→`"2"` via parseInt); (3) **borrow scaffolding ported into `VerticalDiff` from `ColumnMathGame`** — Sukar borrow problems now gate submit until the child taps the tens digit and answers the "Pinjam dari rumah sebelah — {tens}−1=?" mini-step (strike lender + show ones as +10); single ones→tens borrow always sufficient since `bTens≤aTens−1`; no-borrow problems unaffected; also added `q.qid` reset effect (fixes stale-digit reuse on consecutive same-type Qs). Build exit 0. **2.5 Cerita Tambah & Tolak ✅ built+verified 2026-06-23 (Claude):** CeritaTambahTolakExplore, round 10 = 3× Type A (Cerita Tambah, keypad) + 3× Type B (Cerita Tolak, keypad) + 2× Type C (Kenalpasti Operasi, Tambah/Tolak MC) + 2× Type D (Padankan Ayat Matematik, 3-opt equation MC). StoryText shows blank replaced by answer after answering Type A/B. Type C guarantees 1 Add + 1 Sub per round; Type D same (wrong op + wrong answer distractors). Blue M2 theme. Wired: CeritaTambahDanTolak.jsx (§9), App lazy route + MT_MODULE2_ORDER append, MatematikExplore case, hub card 5th topic (pill `CERITA TAMBAH & TOLAK`). Build exit 0; no regression. **Slice 2.F Footer ✅ COMPLETE. MODULE 2 FULLY COMPLETE (6 Belajar + 3 footer trio).** |
-| 3 · Pecahan | 1 | 🔍 | Kenali Pecahan + Selesaikan Cerita Pecahan + Latih Diri Pecahan + Cabaran Pecahan (all 4 topic cards wired via MatematikExplore with KenaliPecahanExplore, SelesaikanPecahanExplore, LatihDiriPecahanExplore, CabarMindaPecahanExplore). PecahanModule updated with active topic cards. Build passes. |
-| 4 · Wang | 3 | ⬜ | + footer |
+| 3 · Pecahan | 1 | ✅ | **Verified 2026-07-12:** PecahanModule shows 4 live cards (Kenali Pecahan, Jawab Pecahan, Latih Tubi Pecahan, Ujian Pecahan). Runtime check on the real app passed: module hub loads, all 4 cards open from the hub, Kenali mounts via `KenaliPecahanExplore`, Jawab Pecahan mounts its custom `MatematikActivityFrame` flow, Latih Diri mounts via `LatihDiriPecahanExplore`, and Ujian reaches the 30-soalan pre-start screen via `CabarMindaPecahanExplore`. `npm run build` passes. **MODULE 3 COMPLETE (1 Belajar + 3 footer trio).** |
+| 4 · Wang | 3 | 🔍 | **Slice 4.1 verified 2026-07-12:** KenaliNilaiWangExplore is live in `explore_T1_4.jsx` with the final `Q1–Q5` rule: each session randomly picks 2 question types from `Q1` `Yang manakah {value}?`, `Q2` `Yang manakah {value}?`, `Q3` `Berapa jumlah wang ini?`, `Q4` `Mana lebih kecil?`, `Q5` `Mana lebih besar?`, then builds a 10-question round from those 2 types. `Q1/Q2` use no main card visual and 4 answer options; duplicate prompt rendering was removed so question text appears once. Money SVGs cover 5/10/20/50 sen + RM1/RM5/RM10. KenaliNilaiWang.jsx topic page (§9), WangModule live hub card, App.jsx lazy import/route/`MT_MODULE4_ORDER`, and MatematikExplore entry are all wired. Owner verified runtime correct; build passes. Remaining Module 4 cards stay pending.<br>**Slice 4.2 verified 2026-07-12:** TukarWangExplore in `explore_T1_4.jsx` uses the locked `4× Type A + 3× Type B + 3× Type C` round. Type C now shows one complete money representation on screen and asks for a different but equivalent representation, so it matches the `Pilih cara lain` spec. Uses `MatematikActivityFrame`, shared MoneyVisual, `TukarWang.jsx` (§9 shell), live WangModule card, `MatematikExplore` primitive, and App.jsx lazy route + `MT_MODULE4_ORDER`. Build exit 0. **Slice 4.2 COMPLETE.**<br>**Slice 4.3 verified 2026-07-13:** `DapatCatatWangExplore` in `explore_T1_4.jsx` keeps the locked round split `4× Type A + 3× Type B + 3× Type C`. Real-app runtime check passed on desktop and mobile from the actual Wang hub: topic opens, question screen stays single-screen (`.maf-scroll` clientHeight matched scrollHeight in both viewports), answer flow reveals feedback + `Seterusnya`, and no page exceptions fired. Shared Module 4 money labels were normalized at source to the consistent format `5 sen` / `50 sen` / `RM1` / `RM5` / `RM10` via `formatMoney()` + `DENOMS`, so recording text now matches §22.5. `DapatCatatWang.jsx` shell, WangModule live hub card, `MatematikExplore` primitive, App.jsx lazy route + `MT_MODULE4_ORDER` all remain wired. Build exit 0. **Slice 4.3 COMPLETE.** |
 | 5 · Masa dan Waktu | 3 | ⬜ | + footer |
 
 ### Open decisions
@@ -893,7 +893,7 @@ it in **1.7 Nilai Tempat & Nilai Digit**, not here.
 > Number patterns. Grounded in the KSSR Tahun 1 workbook (Pola Nombor, Aktiviti 1–2, pp.57–58).
 > Two distinct concepts: **pola berulang** (repeating/cyclic patterns) + **pola bilang**
 > (skip-counting arithmetic sequences, incl. naming the rule). New file
-> `PolaNomborExplore` in `explore_T1_1.jsx`; primitive key `'pola-nombor'`. Reuse the
+> `PolaNomborExplore` in `explore_T1_1_core.jsx`; primitive key `'pola-nombor'`. Reuse the
 > §9 `MatematikActivityFrame`, the number-options grid (1.6 `NumOptionsGrid`), the keypad
 > (1.8 `SusunanKeypadContent` pattern — keypad + external keyboard, submit ONLY via ✓/Enter,
 > NO auto-submit), and the stacked word-options grid (1.6 `WordOptionsGrid`). Header on every
@@ -937,7 +937,7 @@ it in **1.7 Nilai Tempat & Nilai Digit**, not here.
 
 > Estimate & round. Grounded in the KSSR Tahun 1 workbook (Kenali Anggaran p59 + Kenali
 > Bundar p60–62). Two concepts, 5 + 5 split. New `AnggarBundarExplore` in
-> `explore_T1_1.jsx`; primitive key `'anggar-bundar'`. Reuse §9 `MatematikActivityFrame`,
+> `explore_T1_1_core.jsx`; primitive key `'anggar-bundar'`. Reuse §9 `MatematikActivityFrame`,
 > `RenderObjects` (object clusters), `NumOptionsGrid` (number tiles), `WordOptionsGrid`
 > (lebih/kurang). ONE new visual: an SVG `NumberLine`. Rounding rule = nearest ten, **5 rounds
 > UP** (`Math.round(n/10)*10` — matches workbook: 25→30, 55→60, 95→100). Header = `Pembelajaran
@@ -1079,3 +1079,329 @@ Removed the old keypad-only M2/S2/K2 generators + content comps.
       `TambahDanTolakModule` TOPICS (pill `LATIHAN TAMBAH`, ROBOT, desc ≤10 words). Build exit 0;
       scene bg + 80% gate inherit; no regression to 2.1 or Module 1.
 - [ ] *Cepat* timed-mode toggle is **deferred** to the Latih Tubi track (do NOT build here).
+
+---
+
+## 19. Module 4 blueprint — WANG (use Modules 1–3 as the locked implementation style)
+
+> This module must follow the exact implementation discipline already proven in Modules 1–3.
+> Treat Module 1–3 as the build blueprint, not inspiration.
+
+### 19.1 Locked implementation rules for every Module 4 slice
+
+- Use the **same shell contract** as Modules 1–3:
+  - `MatematikTopicShell`
+  - `MatematikExplore` where practical
+  - `showToggle={false}`
+  - `showReadyCta={false}`
+  - empty hero title/banner fields unless the card explicitly needs a formal header
+- Use the **same responsive layout discipline** as Modules 1–3:
+  - fully responsive on phone + tablet + desktop
+  - all sizes with `clamp(min, Nvmin, max)`
+  - no content clipping
+  - no horizontal overflow
+  - single-screen question layout on tablet/desktop
+  - avoid page scroll during active questions unless completion/report state genuinely needs it
+- Use the **same interaction rhythm** as Modules 1–3:
+  - one prompt
+  - one main visual focus
+  - one answer zone
+  - one action zone
+- Use the **same answer feedback pattern**:
+  - correct = sound + confetti
+  - wrong = clear correction state
+  - no extra dead-space celebration banners
+- Use the **same score/report framing** as Modules 1–3:
+  - 10-question rounds for Belajar cards unless a spec below says otherwise
+  - footer trio uses the same hard-gated challenge style proven in Module 3
+  - `Cabar Minda` / exam must stay on a **single-screen pre-start page** with no scroll
+- Reuse existing helpers and patterns before inventing new ones:
+  - `MatematikActivityFrame`
+  - `NumOptionsGrid`
+  - `WordOptionsGrid`
+  - `KeypadInput`
+  - shared shell/topbar/theme patterns
+  - any reusable money visuals extracted cleanly from `CountingMoney.jsx`
+
+### 19.2 Source-of-truth content reference for Module 4
+
+Use these as the primary content blueprints:
+
+- `src/components/MatematikPage/Tahun1/Module1_Nombor/CountingMoney.jsx`
+- `src/components/MatematikPage/MATEMATIK.md` Tahun 1 wang scope
+
+The Year 1 money scope to preserve:
+
+- recognise Malaysian money
+- know the value of coins / notes
+- count totals
+- simple exchange / equivalent amount thinking
+- simple story problems about price, pay, and change
+
+### 19.3 Locked Module 4 card list
+
+Module 4 must be built as:
+
+1. `Kenali & Nilai Wang`
+2. `Tukar Wang`
+3. `Dapat & Catat Wang`
+4. footer trio:
+   - `Selesaikan`
+   - `Latih Diri`
+   - `Cabar Minda`
+
+### 19.4 Locked Module 4 theme
+
+Use a money-specific green theme, not the old purple placeholder:
+
+```js
+const THEME = {
+  accent: '#10B981',
+  dark: '#047857',
+  cd: '#065F46',
+};
+```
+
+Page/stage gradients may be richer, but the shell contract above still applies.
+
+---
+
+## 20. Card spec — Slice 4.1 "Kenali & Nilai Wang" (image-grounded)
+
+> Combines **Kenali Wang + Nilai Wang**. Ground this card in the old Year 1 money game
+> (`CountingMoney.jsx`) but rebuild it in the Module 1–3 style. New file:
+> `KenaliNilaiWang.jsx`. Prefer `MatematikExplore` + a dedicated money primitive or a
+> compact local `MatematikActivityFrame` implementation if that is the smaller diff.
+
+### 20.1 Learning goal
+
+The child can:
+
+- recognise common Malaysian money visuals
+- match a coin/note to its value
+- identify the total of a very small same-screen set
+
+### 20.2 Allowed denominations for Tahun 1
+
+Use a small, clean Year 1 set:
+
+- syiling: `5 sen`, `10 sen`, `20 sen`, `50 sen`
+- wang kertas / ringgit: `RM1`, `RM5`, `RM10`
+
+Keep visuals simple, countable, and readable on small screens.
+
+### 20.3 Activity formats — FIVE question types
+
+- **Q1 — Yang manakah `{nilai RM}`?**
+  - no main card visual
+  - prompt names one specific ringgit value such as `RM1.00`, `RM5.00`, or `RM10.00`
+  - show 4 answer options
+  - exactly 1 option matches that prompt value
+  - the other 3 are sen distractors
+- **Q2 — Yang manakah `{nilai sen}`?**
+  - no main card visual
+  - prompt names one specific sen value such as `5 sen`, `20 sen`, or `50 sen`
+  - show 4 answer options
+  - exactly 1 option matches that prompt value
+  - the other 3 are ringgit distractors
+- **Q3 — Kira jumlah kecil**
+  - show a very small set of 2–4 coins/notes
+  - child picks the total
+  - keep totals simple and visually countable
+- **Q4 — Mana lebih kecil?**
+  - show two money visuals or two tiny groups
+  - ask `Mana lebih kecil?`
+  - exactly one correct answer
+- **Q5 — Mana lebih besar?**
+  - show two money visuals or two tiny groups
+  - ask `Mana lebih besar?`
+  - exactly one correct answer
+
+### 20.4 Round composition
+
+Each session:
+
+- randomly choose **2 question types** from `Q1` to `Q5`
+- build a **10-question round**
+- use only those 2 chosen types for that round
+- shuffle the final round before play
+
+### 20.5 UI / layout rules
+
+- question screen must fit on one screen on tablet/desktop
+- visuals must stay large enough to recognise instantly
+- answer buttons must remain at least 44px hit area
+- no scroll during active questions
+- keep options to 2–4 only
+
+### 20.6 DoD (card-level)
+
+- [ ] Round = 10 using the random 2-type session rule above
+- [ ] Q1/Q2 use no main card visual, only 4 answer options with exactly 1 correct option
+- [ ] All money visuals are readable and distinct on mobile
+- [ ] Totals are simple and unambiguous
+- [ ] No clipped notes/coins or overflowing labels
+- [ ] Topic page follows §19.1 shell/layout contract
+- [ ] Build exit 0 and no regression to Modules 1–3
+
+---
+
+## 21. Card spec — Slice 4.2 "Tukar Wang" (image-grounded)
+
+> Focus this card on **equivalent amounts / exchange**, not story problems. New file:
+> `TukarWang.jsx`.
+
+### 21.1 Learning goal
+
+The child can see that the same value can be made with different coins/notes.
+
+### 21.2 Allowed scope
+
+Keep every amount within easy Tahun 1 mental range:
+
+- `10 sen` to `RM10`
+- use only denominations listed in §20.2
+- avoid dense arithmetic
+- the point is equivalence, not long calculation
+
+### 21.3 Activity formats — THREE types
+
+- **Type A — Padan nilai sama**
+  - show one target amount on the left
+  - child picks which option has the same value
+  - examples:
+    - `50 sen` ↔ two `20 sen` + one `10 sen`
+    - `RM 2` ↔ two `RM 1`
+- **Type B — Lengkapkan tukaran**
+  - show a partly built exchange such as:
+    - `RM5 = RM1 + RM1 + RM1 + ?`
+    - `50 sen = 20 sen + 20 sen + ?`
+  - child picks the missing denomination
+- **Type C — Pilih cara lain**
+  - show one complete amount and ask for another way to make it
+  - 3–4 options, exactly one equivalent
+
+### 21.4 Round composition
+
+10 questions total, shuffled:
+
+- 4 × Type A
+- 3 × Type B
+- 3 × Type C
+
+### 21.5 UI / layout rules
+
+- always keep the full equation/group visible on one screen
+- use compact note/coin chips, not giant banners
+- avoid long text
+- the equivalence must be visually obvious after reveal
+
+### 21.6 DoD (card-level)
+
+- [ ] Every question has exactly one valid equivalent answer
+- [ ] No hidden overflow in long money combinations
+- [ ] All active questions stay single-screen on tablet/desktop
+- [ ] Topic page follows §19.1 shell/layout contract
+- [ ] Build exit 0 and no regression
+
+---
+
+## 22. Card spec — Slice 4.3 "Dapat & Catat Wang" (image-grounded)
+
+> This card covers simple money-gain situations plus recording the amount. New file:
+> `DapatCatatWang.jsx`.
+
+### 22.1 Learning goal
+
+The child can:
+
+- see money received
+- total it correctly
+- match or record the amount
+
+### 22.2 Activity formats — THREE types
+
+- **Type A — Dapat wang, kira jumlah**
+  - show a child receiving 2–4 coins/notes
+  - child picks total value
+- **Type B — Catat jumlah**
+  - show a small set of money
+  - child records/selects the written amount
+  - prefer keypad only if it stays simple and single-screen; otherwise use options
+- **Type C — Pilih catatan yang betul**
+  - show the money set
+  - 3–4 written amount options
+  - exactly one correct
+
+### 22.3 Round composition
+
+10 questions total, shuffled:
+
+- 4 × Type A
+- 3 × Type B
+- 3 × Type C
+
+### 22.4 UI / layout rules
+
+- keep the “received money” story tiny and visual-first
+- no long paragraphs
+- if keypad is used, it must still fit one screen without pushing the footer off-screen
+- if keypad makes the layout cramped, use multiple-choice instead
+
+### 22.5 DoD (card-level)
+
+- [ ] Round = 10 with the split above
+- [ ] Recording format is consistent (`5 sen`, `50 sen`, `RM1`, `RM10`, etc.)
+- [ ] Active question layout remains single-screen on tablet/desktop
+- [ ] Topic page follows §19.1 shell/layout contract
+- [ ] Build exit 0 and no regression
+
+---
+
+## 23. Footer trio spec — Slice 4.F "Selesaikan · Latih Diri · Cabar Minda"
+
+> Build this exactly in the spirit of Module 3 and the completed Module 1/2 footer work.
+> The footer trio must feel like the same family as Modules 1–3, not a new system.
+
+### 23.1 Selesaikan Wang
+
+- Use practical money word problems
+- Keep Year 1 level only
+- Focus on:
+  - total price
+  - paying with a note
+  - simple change / baki
+- 10-question round
+- may reuse clean parts of old `CountingMoney.jsx`
+
+### 23.2 Latih Diri Wang
+
+- Fast mixed drill, lighter than `Selesaikan`
+- 10-question round
+- all questions should resolve quickly
+- prefer multiple-choice first
+- good types:
+  - identify value
+  - count total
+  - choose equivalent amount
+  - choose correct record
+
+### 23.3 Cabar Minda Wang
+
+- Use the **same formal exam format style as Module 3**
+- Pre-start screen must stay on one screen with no scroll
+- Formal header and start CTA
+- harder mixed paper from the Module 4 content pool
+- **30 questions**
+- **30-minute** pre-start copy is acceptable if the implementation mirrors Module 3
+- **80% pass gate**
+- no repeated question signatures within one exam run
+
+### 23.4 Footer DoD
+
+- [ ] all 3 footer cards are live from the Wang hub
+- [ ] `Selesaikan` works as a proper problem-solving set
+- [ ] `Latih Diri` works as a fast mixed drill
+- [ ] `Cabar Minda` matches the same formal exam style used in Module 3
+- [ ] exam intro is single-screen and non-scrolling
+- [ ] build exit 0, runtime clean
