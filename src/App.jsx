@@ -199,9 +199,12 @@ const LatihDiriPecahan = React.lazy(() => import('./components/MatematikPage/Tah
 const CabarMindaPecahan = React.lazy(() => import('./components/MatematikPage/Tahun1/Module3_Pecahan/CabarMindaPecahan'));
 const PecahanModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module3_Pecahan/PecahanModule'));
 const WangModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module4_Wang/WangModule'));
-const KenaliNilaiWang = React.lazy(() => import('./components/MatematikPage/Tahun1/Module4_Wang/KenaliNilaiWang'));
-const TukarWang       = React.lazy(() => import('./components/MatematikPage/Tahun1/Module4_Wang/TukarWang'));
-const DapatCatatWang  = React.lazy(() => import('./components/MatematikPage/Tahun1/Module4_Wang/DapatCatatWang'));
+const KenaliNilaiWang  = React.lazy(() => import('./components/MatematikPage/Tahun1/Module4_Wang/KenaliNilaiWang'));
+const TukarWang        = React.lazy(() => import('./components/MatematikPage/Tahun1/Module4_Wang/TukarWang'));
+const DapatCatatWang   = React.lazy(() => import('./components/MatematikPage/Tahun1/Module4_Wang/DapatCatatWang'));
+const SelesaikanWang   = React.lazy(() => import('./components/MatematikPage/Tahun1/Module4_Wang/SelesaikanWang'));
+const LatihDiriWang    = React.lazy(() => import('./components/MatematikPage/Tahun1/Module4_Wang/LatihDiriWang'));
+const CabarMindaWang   = React.lazy(() => import('./components/MatematikPage/Tahun1/Module4_Wang/CabarMindaWang'));
 const MasaDanWaktuModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module5_MasaDanWaktu/MasaDanWaktuModule'));
 const NomborModuleT2 = React.lazy(() => import('./components/MatematikPage/Tahun2/Module1_Nombor/NomborModule'));
 const SukatanModuleT2 = React.lazy(() => import('./components/MatematikPage/Tahun2/Module2_Sukatan/SukatanModule'));
@@ -431,7 +434,7 @@ const MT_MODULE2_DRILL_TYPES = [
 ];
 const MT_MODULE2_ORDER = [...MT_MODULE2_DRILL_TYPES.map((id) => `m2-drill-${id}`), 'm2-selesaikan', 'm2-cabar-minda'];
 const MT_MODULE3_ORDER = ['kenali-pecahan'];
-const MT_MODULE4_ORDER = ['kenali-nilai-wang', 'tukar-wang', 'dapat-catat-wang'];
+const MT_MODULE4_ORDER = ['kenali-nilai-wang', 'tukar-wang', 'dapat-catat-wang', 'selesaikan-wang', 'latih-diri-wang', 'cabar-minda-wang'];
 
 export default function App() {
   const isDesktop = useIsDesktop();
@@ -654,6 +657,9 @@ export default function App() {
         if (matematikTopic === 'kenali-nilai-wang')   return <KenaliNilaiWang   onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'tukar-wang')          return <TukarWang          onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'dapat-catat-wang')    return <DapatCatatWang     onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'selesaikan-wang')    return <SelesaikanWang     onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'latih-diri-wang')    return <LatihDiriWang      onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'cabar-minda-wang')   return <CabarMindaWang     onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'pecahan-asas')       return <PecahanAsasT1      onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === '2-bahagi')           return <BahagiT2           onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === '2-ukuran-jisim-cecair') return <JisimCecairT2   onBack={() => setMatematikTopic(null)} language={language} />;

@@ -1,5 +1,5 @@
-import React from 'react';
-import MatematikActivityFrame from './MatematikActivityFrame';
+import React, { useEffect, useRef, useState } from 'react';
+import MatematikActivityFrame, { recordActivityScore } from './MatematikActivityFrame';
 import { pick, randInt, shuffle } from './explorePrimitives_shared';
 
 function formatMoney(sen) {
@@ -54,7 +54,7 @@ function buildValueQuestion(target) {
   const options = shuffle([
     correct,
     ...shuffle(wrongPool).slice(0, 3),
-  ]).map((denom) => ({ id: denom.id, value: denom.label }));
+  ]).map((denom) => ({ id: denom.id, value: denom.label, denom }));
 
   return {
     prompt: target === 'rm' ? 'Yang manakah Wang Kertas(RM)?' : `Yang manakah ${correct.label}?`,
@@ -71,7 +71,7 @@ function buildCategoryQuestion(target) {
   const options = shuffle([
     correct,
     ...shuffle(wrongPool).slice(0, 3),
-  ]).map((denom) => ({ id: denom.id, value: denom.label }));
+  ]).map((denom) => ({ id: denom.id, value: denom.label, denom }));
 
   return {
     prompt: target === 'rm' ? 'Yang manakah wang kertas?' : 'Yang manakah syiling?',
@@ -163,7 +163,8 @@ function buildRound() {
 }
 
 function renderOptions(q, ctx) {
-  const { answered, selected, answer, handlePick } = ctx;
+  const { answered, selected, answer, handlePick, examMode } = ctx;
+  const useMoneyVisual = q.type === 'Q1' || q.type === 'Q2';
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'clamp(8px, 1.4vmin, 14px)', width: '100%', maxWidth: 360 }}>
       {q.options.map((opt) => {
@@ -173,6 +174,7 @@ function renderOptions(q, ctx) {
         if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; clr = '#fff'; txt = `${opt.value} ✓`; }
         else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; clr = '#fff'; }
         else if (answered) { bg = '#fff'; bd = '#E2E8F0'; clr = '#94A3B8'; txt = opt.value; }
+        else if (examMode && picked) { bd = '#10B981'; }
         return (
           <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={answered}
             style={{
@@ -180,6 +182,9 @@ function renderOptions(q, ctx) {
               border: 'none', borderBottom: answered ? 'none' : `4px solid ${bd}`,
               borderRadius: 'clamp(12px, 1.6vmin, 18px)',
               background: bg, color: clr,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
               fontSize: 'clamp(18px, 2.8vmin, 28px)',
               lineHeight: 1.1, whiteSpace: 'nowrap',
@@ -188,7 +193,9 @@ function renderOptions(q, ctx) {
               minHeight: 44,
             }}
           >
-            {txt}
+            {useMoneyVisual && opt.denom
+              ? <MoneyVisual denom={opt.denom} size="clamp(70px, 12vmin, 110px)" />
+              : txt}
           </button>
         );
       })}
@@ -356,10 +363,16 @@ function genTypeB() {
     { target: 100, targetLabel: 'RM1', given: ['50sen', '20sen', '20sen'], missingId: '10sen' },
     { target: 500, targetLabel: 'RM5', given: ['rm1', 'rm1', 'rm1', 'rm1'], missingId: 'rm1' },
     { target: 50, targetLabel: '50 sen', given: ['10sen', '10sen', '10sen'], missingId: '20sen' },
-    { target: 100, targetLabel: 'RM1', given: ['50sen', '20sen'], missingId: '20sen' },
+    { target: 100, targetLabel: 'RM1', given: ['50sen', '20sen', '10sen'], missingId: '20sen' },
   ];
 
-  const chosen = pick(pool);
+  const validPool = pool.filter((entry) => {
+    const givenTotal = sumItems(entry.given.map(id => findDenom(id))).valueOf();
+    const missingDenom = findDenom(entry.missingId);
+    return missingDenom && givenTotal + missingDenom.value === entry.target;
+  });
+
+  const chosen = pick(validPool.length ? validPool : pool);
   const givenItems = chosen.given.map(id => ({ ...findDenom(id) }));
   const missingDenom = findDenom(chosen.missingId);
 
@@ -387,7 +400,7 @@ function genTypeC() {
     { label: '50 sen', shown: ['20sen', '20sen', '10sen'], alt: ['10sen', '10sen', '10sen', '20sen'] },
     { label: 'RM1', shown: ['rm1'], alt: ['50sen', '50sen'] },
     { label: 'RM1', shown: ['50sen', '50sen'], alt: ['50sen', '20sen', '20sen', '10sen'] },
-    { label: 'RM1', shown: ['50sen', '20sen', '20sen', '10sen'], alt: ['rm1'] },
+    { label: 'RM1', shown: ['50sen', '20sen', '20sen', '10sen'], alt: ['50sen', '50sen'] },
     { label: 'RM2.00', shown: ['rm1', 'rm1'], alt: ['rm1', '50sen', '50sen'] },
   ];
 
@@ -401,7 +414,7 @@ function genTypeC() {
   while (wrongOpts.length < 3) {
     const items = randomInexactGroup(target);
     const t = sumItems(items);
-    if (!used.has(t) && items.length > 0) {
+    if (!used.has(t) && items.length > 1) {
       used.add(t);
       wrongOpts.push(items);
     }
@@ -438,13 +451,14 @@ function buildTukarRound() {
 }
 
 function renderTukarOptionButton(opt, ctx, size, showLabel = true) {
-  const { answered, selected, answer, handlePick } = ctx;
+  const { answered, selected, answer, handlePick, examMode } = ctx;
   const picked = selected === opt.id;
   const isAns = opt.id === answer;
   let bg = 'rgba(255,255,255,.92)', bd = '#CBD5E1', clr = '#1E293B', lbl = opt.label;
   if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; clr = '#fff'; }
   else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; clr = '#fff'; }
   else if (answered) { bg = 'rgba(255,255,255,.5)'; bd = '#E2E8F0'; clr = '#94A3B8'; }
+  else if (examMode && picked) { bd = '#10B981'; }
 
   const vSize = size || 'clamp(50px, 9vmin, 90px)';
 
@@ -832,9 +846,9 @@ function genDapatCatatTypeLedgerV2() {
     badge: pick(['Catat Jumlah', 'Buku Wang', 'Nota Duit']),
     title: `${book} ${owner}`,
     prompt: pick([
-      `${owner} mahu catat jumlah wang ini. Pilih catatan yang betul.`,
-      `Jumlah wang ${owner} perlu ditulis dalam buku. Pilih jawapan.`,
-      `Bantu ${owner} pilih catatan wang yang sepadan.`,
+      `Bantu ${owner} catat duit didalam buku wang.`,
+      `Pilih wang yang perlu disimpan oleh ${owner}.`,
+      `Bantu ${owner} catat wang yang sepadan.`,
     ]),
     notes: picked,
     answer: totalLabel,
@@ -850,7 +864,7 @@ function genDapatCatatTypeEnvelopeV2() {
     type: 'envelope',
     badge: pick(['Label Sampul', 'Simpan Duit', 'Sampul Wang']),
     title: pick([`Sampul ${owner}`, `Duit ${owner}`, `Simpanan ${owner}`]),
-    prompt: `${owner} simpan ${source} ini. Pilih label jumlah.`,
+    prompt: `Pilih wang yang perlu disimpan oleh ${owner}.`,
     sourceLabel: source,
     notes: picked,
     answer: totalLabel,
@@ -897,8 +911,8 @@ function genDapatCatatTypePayV2() {
     title: menu.place,
     prompt: pick([
       `Berapa ${menu.buyer} perlu bayar untuk membeli ${story.item}?`,
-      `${menu.buyer} pilih ${story.item}. Wang manakah bayaran tepat?`,
-      `Di ${menu.place}, ${menu.buyer} mahu membeli ${story.item}. Berapa perlu bayar?`,
+      `Berapa ${menu.buyer} perlu bayar jika mahu membeli ${story.item} di ${menu.place}.?`,
+      `Berapa ${menu.buyer} perlu bayar untuk membeli ${story.item}?`,
     ]),
     story: {
       label: pick(['Menu Harga', 'Lihat Menu', menu.place]),
@@ -957,8 +971,8 @@ function genDapatCatatTypeReceiptV2() {
     title: pick([`Resit ${story.buyer}`, story.place, 'Catat Belanja']),
     prompt: pick([
       `${story.buyer} beli ${story.a[0]} ${formatMoney(story.a[1])} dan ${story.b[0]} ${formatMoney(story.b[1])}. Catat jumlah.`,
-      `Resit menunjukkan ${story.a[0]} ${formatMoney(story.a[1])} serta ${story.b[0]} ${formatMoney(story.b[1])}. Jumlah?`,
-      `Di ${story.place}, ${story.buyer} ambil dua barang. Pilih jumlah belanja.`,
+      `Kira harga dua barang dibawah?`,
+      `${story.buyer} membeli dua barang. Pilih wang perlu dibayar.`,
     ]),
     story: {
       label: pick(['Resit Kantin', 'Resit Belanja', story.place]),
@@ -1609,6 +1623,8 @@ function renderDapatCatatWangQuestionV2(q, ctx) {
             bg = 'rgba(255,255,255,.78)';
             bd = '#E2E8F0';
             clr = '#94A3B8';
+          } else if (ctx.examMode && picked) {
+            bd = '#10B981';
           }
 
           return (
@@ -1621,8 +1637,9 @@ function renderDapatCatatWangQuestionV2(q, ctx) {
                 position: 'relative',
                 overflow: 'hidden',
                 padding: 'clamp(8px, 1.2vmin, 12px)',
-                border: `2px solid ${bd}`,
+                border: `2px solid ${ctx.examMode && picked ? '#CBD5E1' : bd}`,
                 borderBottomWidth: ctx.answered ? 2 : 5,
+                borderBottomColor: ctx.examMode && picked ? '#10B981' : bd,
                 borderRadius: '16px',
                 background: bg,
                 color: clr,
@@ -1659,4 +1676,875 @@ export function DapatCatatWangExplore({ data, language, theme, onExit }) {
       onExit={onExit}
     />
   );
+}
+
+// ── Selesaikan Wang Explore ─────────────────────────────────────────────────
+
+const BUYING_STORIES = [
+  { buyer: 'Ali', item: 'roti', price: 100 },
+  { buyer: 'Siti', item: 'air', price: 200 },
+  { buyer: 'Mia', item: 'nasi lemak', price: 300 },
+  { buyer: 'Amin', item: 'ais krim', price: 200 },
+  { buyer: 'Sara', item: 'pensel', price: 100 },
+  { buyer: 'Danish', item: 'buku', price: 400 },
+  { buyer: 'Lina', item: 'pemadam', price: 100 },
+  { buyer: 'Irfan', item: 'air kotak', price: 200 },
+  { buyer: 'Haziq', item: 'roti canai', price: 300 },
+  { buyer: 'Mohan', item: 'buah', price: 200 },
+];
+
+function genSelTotal() {
+  const a = pick(BUYING_STORIES);
+  let b = pick(BUYING_STORIES);
+  while (b.buyer === a.buyer) b = pick(BUYING_STORIES);
+  const total = a.price + b.price;
+  const totalLabel = formatMoney(total);
+  const labels = buildMoneyLabelOptionsV2(total, totalLabel, [-100, 100, -200, 200, -300, 300]);
+  return {
+    type: 'sel-total',
+    prompt: `${a.buyer} beli ${a.item} ${formatMoney(a.price)} dan ${b.item} ${formatMoney(b.price)}. Berapa jumlah?`,
+    answer: totalLabel,
+    options: labels,
+  };
+}
+
+function genSelPay() {
+  const story = pick([
+    { item: 'nasi lemak', price: 300, pay: 500 },
+    { item: 'roti', price: 100, pay: 500 },
+    { item: 'air', price: 200, pay: 500 },
+    { item: 'buku', price: 400, pay: 1000 },
+    { item: 'pensel', price: 200, pay: 500 },
+    { item: 'ais krim', price: 300, pay: 500 },
+    { item: 'air kotak', price: 200, pay: 1000 },
+    { item: 'pemadam', price: 100, pay: 500 },
+  ]);
+  const change = story.pay - story.price;
+  const changeLabel = formatMoney(change);
+  const labels = buildMoneyLabelOptionsV2(change, changeLabel, [-100, 100, -200, 200, -300, 300]);
+  return {
+    type: 'sel-pay',
+    prompt: `${story.item} ${formatMoney(story.price)}. Bayar ${formatMoney(story.pay)}. Berapa baki?`,
+    answer: changeLabel,
+    options: labels,
+  };
+}
+
+function genSelChange() {
+  const story = pick([
+    { name: 'Ali', start: 1000, item: 'buku', price: 400 },
+    { name: 'Siti', start: 500, item: 'roti', price: 100 },
+    { name: 'Mia', start: 500, item: 'air', price: 200 },
+    { name: 'Amin', start: 1000, item: 'nasi lemak', price: 300 },
+    { name: 'Sara', start: 500, item: 'ais krim', price: 200 },
+    { name: 'Danish', start: 1000, item: 'pensel', price: 200 },
+    { name: 'Lina', start: 500, item: 'pemadam', price: 100 },
+    { name: 'Irfan', start: 1000, item: 'air kotak', price: 200 },
+  ]);
+  const change = story.start - story.price;
+  const changeLabel = formatMoney(change);
+  const labels = buildMoneyLabelOptionsV2(change, changeLabel, [-100, 100, -200, 200, -300, 300]);
+  return {
+    type: 'sel-change',
+    prompt: `${story.name} ada ${formatMoney(story.start)}. Beli ${story.item} ${formatMoney(story.price)}. Berapa baki?`,
+    answer: changeLabel,
+    options: labels,
+  };
+}
+
+function genSelSave() {
+  const story = pick([
+    { name: 'Mia', start: 200, add: 300 },
+    { name: 'Amin', start: 500, add: 100 },
+    { name: 'Sara', start: 100, add: 200 },
+    { name: 'Irfan', start: 500, add: 500 },
+    { name: 'Lina', start: 100, add: 300 },
+    { name: 'Haziq', start: 200, add: 200 },
+    { name: 'Danish', start: 300, add: 200 },
+    { name: 'Siti', start: 100, add: 400 },
+  ]);
+  const total = story.start + story.add;
+  const totalLabel = formatMoney(total);
+  const labels = buildMoneyLabelOptionsV2(total, totalLabel, [-100, 100, -200, 200, -300, 300]);
+  return {
+    type: 'sel-save',
+    prompt: `${story.name} ada ${formatMoney(story.start)}. ${story.name} dapat ${formatMoney(story.add)} lagi. Berapa jumlah?`,
+    answer: totalLabel,
+    options: labels,
+  };
+}
+
+function buildSelesaikanWangRound() {
+  const qs = [];
+  for (let i = 0; i < 3; i++) qs.push(genSelTotal());
+  for (let i = 0; i < 2; i++) qs.push(genSelPay());
+  for (let i = 0; i < 3; i++) qs.push(genSelChange());
+  for (let i = 0; i < 2; i++) qs.push(genSelSave());
+  return shuffle(qs);
+}
+
+function renderSelesaikanWangQuestion(q, ctx) {
+  const { answered, selected, answer, handlePick, theme: C, examMode } = ctx;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(12px, 2vmin, 20px)', width: '100%' }}>
+      <div style={{
+        display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+        gap: 'clamp(6px, 1vmin, 12px)', width: 'min(100%, 420px)', maxWidth: 420,
+      }}>
+        {q.options.map((opt) => {
+          const picked = selected === opt.id;
+          const isAns = opt.id === q.answer;
+          let bg = '#fff', bd = '#CBD5E1', clr = '#1E293B', txt = opt.value;
+          if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; clr = '#fff'; txt = `${opt.value} ✓`; }
+          else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; clr = '#fff'; }
+          else if (answered) { bg = 'rgba(255,255,255,.78)'; bd = '#E2E8F0'; clr = '#94A3B8'; txt = opt.value; }
+          else if (examMode && picked) { bd = '#10B981'; }
+          return (
+            <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={answered}
+              style={{
+                padding: 'clamp(12px, 1.8vmin, 20px)',
+                border: 'none', borderBottom: answered ? 'none' : `4px solid ${bd}`,
+                borderRadius: 'clamp(12px, 1.6vmin, 18px)',
+                background: bg, color: clr,
+                fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
+                fontSize: 'clamp(18px, 2.8vmin, 28px)',
+                lineHeight: 1.1, whiteSpace: 'nowrap',
+                cursor: answered ? 'default' : 'pointer',
+                transition: 'all .15s ease', WebkitTapHighlightColor: 'transparent',
+                minHeight: 44,
+              }}
+            >
+              {txt}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+export function SelesaikanWangExplore({ data, language, theme, onExit }) {
+  return (
+    <MatematikActivityFrame
+      buildRound={buildSelesaikanWangRound}
+      renderQuestion={renderSelesaikanWangQuestion}
+      theme={theme}
+      onExit={onExit}
+    />
+  );
+}
+
+// ── Latih Diri Wang Explore ─────────────────────────────────────────────────
+
+function genLdIdentify() {
+  const d = pick(DENOMS);
+  const wrong = shuffle(DENOMS.filter((x) => x.id !== d.id)).slice(0, 3);
+  const all = shuffle([d, ...wrong]);
+  return {
+    type: 'ld-identify',
+    prompt: `Yang manakah ${d.label}?`,
+    answer: d.id,
+    options: all.map((x) => ({ id: x.id, value: x.label, denom: x })),
+  };
+}
+
+function genLdCountTotal() {
+  const count = randInt(2, 4);
+  const picked = [];
+  let total = 0;
+  for (let i = 0; i < count; i++) {
+    const d = pick(DENOMS);
+    if (total + d.value <= 1500) {
+      picked.push(d);
+      total += d.value;
+    } else {
+      const small = pick(DENOMS.slice(0, 4));
+      picked.push(small);
+      total += small.value;
+    }
+  }
+  const totalLabel = formatMoney(total);
+  const labels = buildMoneyLabelOptionsV2(total, totalLabel, [-10, 10, -20, 20, -50, 50]);
+  return {
+    type: 'ld-count',
+    prompt: 'Berapa jumlah wang ini?',
+    notes: picked,
+    answer: totalLabel,
+    options: labels,
+  };
+}
+
+function genLdEquivalent() {
+  const pool = [
+    { label: '50 sen', target: 50, shown: ['50sen'], alt1: ['20sen', '20sen', '10sen'], alt2: ['10sen', '10sen', '10sen', '20sen'] },
+    { label: 'RM1', target: 100, shown: ['rm1'], alt: ['50sen', '50sen'] },
+    { label: 'RM1', target: 100, shown: ['50sen', '50sen'], alt: ['50sen', '20sen', '20sen', '10sen'] },
+    { label: 'RM5', target: 500, shown: ['rm5'], alt: ['rm1', 'rm1', 'rm1', 'rm1', 'rm1'] },
+  ];
+  const chosen = pick(pool);
+  const shownItems = chosen.shown.map((id) => ({ ...findDenom(id) }));
+  const shownTotal = sumItems(shownItems);
+  const correctAlt = (chosen.alt || chosen.alt1).map((id) => ({ ...findDenom(id) }));
+  const correctTotal = sumItems(correctAlt);
+
+  const wrongOpts = [];
+  const used = new Set([shownTotal]);
+  for (let attempt = 0; attempt < 20 && wrongOpts.length < 3; attempt++) {
+    const items = randomInexactGroup(shownTotal);
+    const t = sumItems(items);
+    if (!used.has(t) && items.length > 1) {
+      used.add(t);
+      wrongOpts.push(items);
+    }
+  }
+
+  const raw = shuffle([correctAlt, ...wrongOpts]);
+  const all = raw.map((items, i) => ({ items, total: sumItems(items), idx: i }));
+  const answerIdx = all.findIndex((o) => o.total === shownTotal);
+
+  return {
+    type: 'ld-equivalent',
+    prompt: 'Yang manakah sama nilai dengan',
+    promptBadge: chosen.label,
+    shown: shownItems,
+    answer: answerIdx >= 0 ? answerIdx.toString() : '0',
+    options: all.map((o, i) => ({
+      id: i.toString(),
+      items: o.items,
+      total: o.total,
+      label: formatMoney(o.total),
+    })),
+  };
+}
+
+function genLdRecord() {
+  const { picked, total, totalLabel } = buildDapatCatatMoneySetV2(2, 3);
+  const labels = buildMoneyLabelOptionsV2(total, totalLabel, [-5, 5, -15, 15, -25, 25]);
+  return {
+    type: 'ld-record',
+    prompt: 'Catat jumlah wang ini.',
+    notes: picked,
+    answer: totalLabel,
+    options: labels,
+  };
+}
+
+function buildLatihDiriWangRound() {
+  const qs = [];
+  for (let i = 0; i < 3; i++) qs.push(genLdIdentify());
+  for (let i = 0; i < 3; i++) qs.push(genLdCountTotal());
+  for (let i = 0; i < 2; i++) qs.push(genLdEquivalent());
+  for (let i = 0; i < 2; i++) qs.push(genLdRecord());
+  return shuffle(qs);
+}
+
+function renderLatihDiriWangQuestion(q, ctx) {
+  const { answered, selected, answer, handlePick, theme: C, examMode } = ctx;
+
+  if (q.type === 'ld-identify') {
+    return (
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'clamp(8px, 1.4vmin, 14px)', width: '100%', maxWidth: 360 }}>
+        {q.options.map((opt) => {
+          const picked = selected === opt.id;
+          const isAns = opt.id === q.answer;
+          let bg = '#fff', bd = '#CBD5E1';
+          if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; }
+          else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; }
+          else if (answered) { bg = 'rgba(255,255,255,.78)'; bd = '#E2E8F0'; }
+          else if (examMode && picked) { bd = '#10B981'; }
+          return (
+            <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={answered}
+              style={{
+                padding: 'clamp(12px, 1.8vmin, 20px)',
+                border: 'none', borderBottom: answered ? 'none' : `4px solid ${bd}`,
+                borderRadius: 'clamp(12px, 1.6vmin, 18px)',
+                background: bg, color: '#1E293B',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: answered ? 'default' : 'pointer',
+                transition: 'all .15s ease', WebkitTapHighlightColor: 'transparent',
+                minHeight: 44,
+              }}
+            >
+              <MoneyVisual denom={opt.denom} size="clamp(70px, 12vmin, 110px)" />
+            </button>
+          );
+        })}
+      </div>
+    );
+  }
+
+  if (q.type === 'ld-count' || q.type === 'ld-record') {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px, 1.8vmin, 20px)', width: '100%' }}>
+        <div style={{
+          display: 'flex', flexWrap: 'wrap', justifyContent: 'center',
+          gap: 'clamp(6px, 1vmin, 12px)',
+          background: 'rgba(255,255,255,0.8)', borderRadius: 'clamp(16px, 2.2vmin, 24px)',
+          padding: 'clamp(10px, 1.6vmin, 18px)',
+          border: '1px solid #E2E8F0', maxWidth: 400,
+        }}>
+          {q.notes.map((denom, i) => (
+            <MoneyVisual key={i} denom={denom} />
+          ))}
+        </div>
+        <div style={{
+          display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: 'clamp(6px, 1vmin, 12px)', width: 'min(100%, 420px)', maxWidth: 420,
+        }}>
+          {q.options.map((opt) => {
+            const picked = selected === opt.id;
+            const isAns = opt.id === q.answer;
+            let bg = '#fff', bd = '#CBD5E1', clr = '#1E293B', txt = opt.value;
+            if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; clr = '#fff'; txt = `${opt.value} ✓`; }
+            else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; clr = '#fff'; }
+            else if (answered) { bg = 'rgba(255,255,255,.78)'; bd = '#E2E8F0'; clr = '#94A3B8'; txt = opt.value; }
+            else if (examMode && picked) { bd = '#10B981'; }
+            return (
+              <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={answered}
+                style={{
+                  padding: 'clamp(12px, 1.8vmin, 20px)',
+                  border: 'none', borderBottom: answered ? 'none' : `4px solid ${bd}`,
+                  borderRadius: 'clamp(12px, 1.6vmin, 18px)',
+                  background: bg, color: clr,
+                  fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
+                  fontSize: 'clamp(18px, 2.8vmin, 28px)',
+                  lineHeight: 1.1, whiteSpace: 'nowrap',
+                  cursor: answered ? 'default' : 'pointer',
+                  transition: 'all .15s ease', WebkitTapHighlightColor: 'transparent',
+                  minHeight: 44,
+                }}
+              >
+                {txt}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  if (q.type === 'ld-equivalent') {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px, 1.8vmin, 20px)', width: '100%' }}>
+        <div style={{
+          display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center',
+          gap: 'clamp(4px, 0.8vmin, 10px)',
+          background: 'rgba(255,255,255,.92)', borderRadius: 'clamp(14px, 2vmin, 20px)',
+          padding: 'clamp(8px, 1.4vmin, 16px)',
+          border: '1px solid #E2E8F0', maxWidth: 440,
+        }}>
+          {q.shown.map((d, i) => (
+            <MoneyVisual key={i} denom={d} size="clamp(60px, 10vmin, 100px)" />
+          ))}
+        </div>
+        <div style={{
+          display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+          gap: 'clamp(6px, 1vmin, 12px)', width: 'min(100%, 420px)', maxWidth: 420,
+        }}>
+          {q.options.map((opt) => {
+            const picked = selected === opt.id;
+            const isAns = opt.id === q.answer;
+            let bg = 'rgba(255,255,255,.92)', bd = '#CBD5E1', clr = '#1E293B';
+            if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; clr = '#fff'; }
+            else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; clr = '#fff'; }
+            else if (answered) { bg = 'rgba(255,255,255,.5)'; bd = '#E2E8F0'; clr = '#94A3B8'; }
+            else if (examMode && picked) { bd = '#10B981'; }
+            const vSize = 'clamp(50px, 9vmin, 90px)';
+            return (
+              <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={answered}
+                style={{
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 'clamp(4px, 0.6vmin, 8px)',
+                  padding: 'clamp(8px, 1.2vmin, 14px)',
+                  border: 'none', borderBottom: answered ? 'none' : `4px solid ${bd}`,
+                  borderRadius: 'clamp(12px, 1.6vmin, 18px)',
+                  background: bg, color: clr,
+                  cursor: answered ? 'default' : 'pointer',
+                  transition: 'all .15s ease', WebkitTapHighlightColor: 'transparent',
+                  minHeight: 'clamp(108px, 18vmin, 160px)', minWidth: 44, width: '100%', flex: '1 1 0',
+                }}
+              >
+                <div style={{
+                  display: 'flex', flex: '1 1 auto', width: '100%',
+                  flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center',
+                  alignContent: 'center', gap: 'clamp(2px, 0.4vmin, 4px)',
+                }}>
+                  {opt.items.map((d, j) => <MoneyVisual key={j} denom={d} size={vSize} />)}
+                </div>
+                <span style={{
+                  fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
+                  fontSize: 'clamp(14px, 2.2vmin, 22px)', lineHeight: 1.1,
+                }}>
+                  {answered && isAns ? `${opt.label} ✓` : opt.label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+export function LatihDiriWangExplore({ data, language, theme, onExit }) {
+  return (
+    <MatematikActivityFrame
+      buildRound={buildLatihDiriWangRound}
+      renderQuestion={renderLatihDiriWangQuestion}
+      theme={theme}
+      onExit={onExit}
+      showQuestionProgress
+    />
+  );
+}
+
+// ── Cabar Minda Wang Explore (formal exam, same pattern as Pecahan) ─────────
+
+const UJIAN_WANG_TOTAL_QUESTIONS = 30;
+const UJIAN_WANG_DURATION_SECONDS = 30 * 60;
+const UJIAN_WANG_PASS_MARK = Math.ceil(UJIAN_WANG_TOTAL_QUESTIONS * 0.8);
+const UJIAN_WANG_SECTIONS = [
+  { id: 'kenali', name: 'Kenali & Nilai Wang', color: '#10B981' },
+  { id: 'tukar', name: 'Tukar Wang', color: '#F59E0B' },
+  { id: 'dapat-catat', name: 'Dapat & Catat Wang', color: '#6366F1' },
+];
+
+function buildUjianWangQuestionPool() {
+  const pool = [];
+
+  // Kenali & Nilai Wang questions
+  for (let i = 0; i < 10; i++) {
+    const qTypes = [genQ1, genQ2, genQ3, genQ4, genQ5];
+    const gen = pick(qTypes);
+    pool.push({ ...gen(), topicId: 'kenali' });
+  }
+
+  // Tukar Wang questions
+  for (let i = 0; i < 10; i++) {
+    const qTypes = [genTypeA, genTypeB, genTypeC];
+    const gen = pick(qTypes);
+    pool.push({ ...gen(), topicId: 'tukar' });
+  }
+
+  // Dapat & Catat Wang questions
+  for (let i = 0; i < 10; i++) {
+    const qTypes = [genDapatCatatTypePocketV2, genDapatCatatTypeLedgerV2, genDapatCatatTypeEnvelopeV2, genDapatCatatTypePayV2, genDapatCatatTypeSaveV2, genDapatCatatTypeReceiptV2];
+    const gen = pick(qTypes);
+    pool.push({ ...gen(), topicId: 'dapat-catat' });
+  }
+
+  return shuffle(pool);
+}
+
+function getUjianWangSignature(question) {
+  const base = question.prompt || '';
+  const optStr = question.options ? question.options.map((o) => o.id || o.value).join('|') : '';
+  return `${question.type || ''}:${base}:${optStr}`;
+}
+
+function buildUjianWangRound() {
+  const selected = [];
+  const seen = new Set();
+
+  for (let attempts = 0; attempts < 30 && selected.length < UJIAN_WANG_TOTAL_QUESTIONS; attempts += 1) {
+    const candidates = shuffle(buildUjianWangQuestionPool());
+
+    for (const question of candidates) {
+      if (selected.length >= UJIAN_WANG_TOTAL_QUESTIONS) break;
+      const sig = getUjianWangSignature(question);
+      if (seen.has(sig)) continue;
+      seen.add(sig);
+      selected.push({ ...question, topicId: question.topicId || 'kenali' });
+    }
+  }
+
+  return shuffle(selected)
+    .slice(0, UJIAN_WANG_TOTAL_QUESTIONS)
+    .map((question, index) => ({ ...question, examId: `ujian-wang-${index}` }));
+}
+
+function renderUjianWangQuestion(q, ctx) {
+  // Route to existing renderers based on type patterns
+  if (q.type === 'Q1' || q.type === 'Q2') {
+    return renderOptions(q, ctx);
+  }
+  if (q.type === 'Q3') {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px, 1.8vmin, 20px)', width: '100%' }}>
+        <div style={{
+          display: 'flex', flexWrap: 'wrap', justifyContent: 'center',
+          gap: 'clamp(6px, 1vmin, 12px)',
+          background: 'rgba(255,255,255,0.8)', borderRadius: 'clamp(16px, 2.2vmin, 24px)',
+          padding: 'clamp(10px, 1.6vmin, 18px)',
+          border: '1px solid #E2E8F0', maxWidth: 400,
+        }}>
+          {q.notes.map((denom, i) => (
+            <MoneyVisual key={i} denom={denom} />
+          ))}
+        </div>
+        {renderOptions(q, ctx)}
+      </div>
+    );
+  }
+  if (q.type === 'Q4' || q.type === 'Q5') {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px, 1.8vmin, 20px)', width: '100%' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 'clamp(20px, 4vmin, 40px)', width: '100%', maxWidth: 400 }}>
+          <MoneyVisual denom={q.left} />
+          <span style={{ fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(24px, 4vmin, 40px)', color: '#CBD5E1' }}>vs</span>
+          <MoneyVisual denom={q.right} />
+        </div>
+        {renderOptions(q, ctx)}
+      </div>
+    );
+  }
+  if (q.type === 'A' || q.type === 'B' || q.type === 'C') {
+    return renderTukarWangQuestion(q, { ...ctx, theme: ctx.theme || { accent: '#10B981', dark: '#047857' } });
+  }
+  if (q.type === 'pocket' || q.type === 'ledger' || q.type === 'envelope' || q.type === 'pay' || q.type === 'save' || q.type === 'receipt') {
+    return renderDapatCatatWangQuestionV2(q, ctx);
+  }
+  if (q.type === 'ld-identify' || q.type === 'ld-count' || q.type === 'ld-record' || q.type === 'ld-equivalent') {
+    return renderLatihDiriWangQuestion(q, ctx);
+  }
+  if (q.type === 'sel-total' || q.type === 'sel-pay' || q.type === 'sel-change' || q.type === 'sel-save') {
+    return renderSelesaikanWangQuestion(q, ctx);
+  }
+  return null;
+}
+
+export function CabarMindaWangExplore({ data, language, theme, onExit }) {
+  const C = theme || {};
+  const accent = C.accent || '#10B981';
+  const dark = C.dark || '#047857';
+  const cd = C.cd || '#065F46';
+  const scoreStorageKey = data?.scoreStorageKey || 'mt_ld_m4_scores';
+  const scoreId = data?.scoreId;
+
+  const [phase, setPhase] = useState('start');
+  const [questions, setQuestions] = useState(null);
+  const [current, setCurrent] = useState(0);
+  const [answers, setAnswers] = useState(null);
+  const [selectedPerQ, setSelectedPerQ] = useState(null);
+  const [timeLeft, setTimeLeft] = useState(UJIAN_WANG_DURATION_SECONDS);
+  const [timeUsed, setTimeUsed] = useState(0);
+  const timerRef = useRef(null);
+  const recordedRef = useRef(false);
+  const answersRef = useRef(null);
+
+  useEffect(() => () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+  }, []);
+
+  function finishExam(finalAnswers, finalTimeUsed) {
+    if (!recordedRef.current) {
+      recordActivityScore(scoreStorageKey, scoreId, finalAnswers.filter(Boolean).length, finalAnswers.length);
+      recordedRef.current = true;
+    }
+    setTimeUsed(finalTimeUsed);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    setPhase('results');
+  }
+
+  function startExam() {
+    const qs = buildUjianWangRound();
+    const blankAnswers = new Array(qs.length).fill(null);
+    setQuestions(qs);
+    setAnswers(blankAnswers);
+    answersRef.current = blankAnswers;
+    setSelectedPerQ({});
+    setCurrent(0);
+    setTimeLeft(UJIAN_WANG_DURATION_SECONDS);
+    setTimeUsed(0);
+    recordedRef.current = false;
+    setPhase('exam');
+    timerRef.current = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          finishExam(answersRef.current || new Array(qs.length).fill(null), UJIAN_WANG_DURATION_SECONDS);
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+  }
+
+  function handleExamPick(value) {
+    if (!questions) return;
+    const correct = value === questions[current].answer;
+    const nextAnswers = [...answers];
+    nextAnswers[current] = correct;
+    setAnswers(nextAnswers);
+    answersRef.current = nextAnswers;
+    setSelectedPerQ((currentSelected) => ({ ...(currentSelected || {}), [current]: value }));
+  }
+
+  function handleExamNext() {
+    if (!questions) return;
+    if (answers[current] === null) return;
+    if (current + 1 >= questions.length) {
+      finishExam(answersRef.current || answers, UJIAN_WANG_DURATION_SECONDS - timeLeft);
+      return;
+    }
+    setCurrent((value) => value + 1);
+  }
+
+  if (phase === 'start') {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'transparent' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'clamp(24px, 4vmin, 48px) clamp(16px, 3vmin, 32px)', gap: 'clamp(16px, 2.6vmin, 32px)' }}>
+          <div style={{ fontSize: 'clamp(48px, 10vmin, 80px)', lineHeight: 1 }}>📝</div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: 'clamp(28px, 5vmin, 44px)', color: '#1E293B', lineHeight: 1.2 }}>
+              {language === 'bm' ? 'Ujian Wang' : 'Money Exam'}
+            </div>
+            <div style={{ fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: 'clamp(14px, 2vmin, 18px)', color: '#64748B', marginTop: 4 }}>
+              {language === 'bm' ? 'Modul 4 — Wang' : 'Module 4 — Money'}
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 'clamp(8px, 1.6vmin, 16px)', flexWrap: 'wrap', justifyContent: 'center' }}>
+            {[
+              { label: language === 'bm' ? 'Soalan: 30' : 'Questions: 30', color: accent },
+              { label: language === 'bm' ? '30 Minit' : '30 Minutes', color: '#F59E0B' },
+              { label: language === 'bm' ? `Lulus 80% (${UJIAN_WANG_PASS_MARK}/30)` : `Pass 80% (${UJIAN_WANG_PASS_MARK}/30)`, color: '#16A34A' },
+            ].map((chip) => (
+              <div key={chip.label} style={{
+                padding: '6px 16px', borderRadius: 999,
+                background: 'rgba(255,255,255,.88)',
+                border: `1.5px solid ${chip.color}44`, color: chip.color,
+                fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(13px, 1.8vmin, 17px)',
+              }}>{chip.label}</div>
+            ))}
+          </div>
+          <div style={{
+            background: 'rgba(255,255,255,.90)',
+            border: '1.5px solid #A7F3D0',
+            boxShadow: '0 12px 28px rgba(4,120,87,.10)',
+            borderRadius: 'clamp(14px, 2vmin, 20px)', padding: 'clamp(14px, 2.4vmin, 24px)',
+            maxWidth: 420, width: '100%',
+          }}>
+            <div style={{
+              fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 1.6vmin, 16px)', color: '#475569',
+              display: 'flex', flexDirection: 'column', gap: 'clamp(8px, 1.2vmin, 12px)',
+            }}>
+              <div>{language === 'bm' ? '📌 Jawab semua 30 soalan dalam 30 minit.' : '📌 Answer all 30 questions in 30 minutes.'}</div>
+              <div>{language === 'bm' ? '🎲 Soalan diambil daripada Kenali & Nilai Wang, Tukar Wang, dan Dapat & Catat Wang.' : '🎲 Questions from Know & Value Money, Exchange Money, and Get & Record Money.'}</div>
+              <div>{language === 'bm' ? '♻️ Tiada soalan yang sama diulang dalam satu ujian.' : '♻️ No repeated questions within one exam.'}</div>
+              <div>{language === 'bm' ? `🎯 Skor ${UJIAN_WANG_PASS_MARK}/30 atau lebih untuk lulus.` : `🎯 Score ${UJIAN_WANG_PASS_MARK}/30 or more to pass.`}</div>
+            </div>
+          </div>
+          <button type="button" onClick={startExam}
+            style={{
+              padding: 'clamp(14px, 2vmin, 20px) clamp(32px, 5vmin, 64px)', border: 'none', borderRadius: 999,
+              background: `linear-gradient(180deg, ${accent}, ${cd})`, color: '#fff', cursor: 'pointer', width: '100%', maxWidth: 360,
+              fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(18px, 2.8vmin, 26px)',
+              boxShadow: `0 4px 0 ${dark}, 0 14px 24px rgba(4,120,87,.24)`, WebkitTapHighlightColor: 'transparent',
+            }}>
+            {language === 'bm' ? 'Mula Ujian →' : 'Start Exam →'}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'exam' && questions) {
+    const q = questions[current];
+    const answered = answers[current] !== null;
+    const mm = Math.floor(timeLeft / 60);
+    const ss = timeLeft % 60;
+    const timerStr = `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+    const timerRed = timeLeft <= 300;
+    const examCtx = {
+      answered: false,
+      selected: selectedPerQ[current] || null,
+      answer: q.answer,
+      isCorrect: false,
+      examMode: true,
+      handlePick: handleExamPick,
+      handleNext: handleExamNext,
+      streak: 0,
+      correct: 0,
+      wrong: 0,
+      theme: { accent, dark, cd, green: '#16A34A', red: '#DC2626' },
+    };
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'transparent' }}>
+        <style>{`
+          .ujian-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; }
+          .ujian-body {
+            min-height: 100%; box-sizing: border-box;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: clamp(14px, 3vmin, 40px);
+          }
+          .ujian-content {
+            width: 100%; max-width: min(94vw, 860px);
+            display: flex; flex-direction: column; align-items: center;
+            gap: clamp(8px, 1.6vmin, 18px);
+          }
+          .ujian-prompt {
+            font-family: 'Baloo 2', sans-serif; font-weight: 800;
+            font-size: clamp(22px, 4.4vmin, 40px); color: #1E293B; text-align: center; line-height: 1.15;
+          }
+          .ujian-feedback {
+            font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: clamp(14px, 2vmin, 18px);
+            text-align: center; min-height: clamp(28px, 3.8vmin, 44px);
+            display: flex; align-items: center; justify-content: center; color: #64748B;
+          }
+          .ujian-next {
+            padding: clamp(11px, 1.5vmin, 17px) clamp(28px, 4vmin, 52px);
+            border: none; border-radius: 999px; background: ${accent}; color: #fff;
+            font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(17px, 2.6vmin, 26px);
+            cursor: pointer; box-shadow: 0 4px 0 ${cd}; transition: transform .1s ease;
+            -webkit-tap-highlight-color: transparent;
+          }
+          .ujian-next:hover:not(:disabled) { transform: translateY(-2px); }
+          .ujian-next:active:not(:disabled) { transform: translateY(2px); }
+          .ujian-next:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
+          .ujian-footer {
+            flex-shrink: 0; display: flex; align-items: center; justify-content: flex-end;
+            padding: clamp(8px, 1.2vmin, 15px) clamp(16px, 2.4vmin, 34px);
+            background: rgba(255,255,255,.85); backdrop-filter: blur(12px); border-top: 1px solid #E2E8F0;
+          }
+        `}</style>
+        <div className="ujian-scroll">
+          <div className="ujian-body">
+            <div className="ujian-content">
+              <div className="ujian-prompt">{q.prompt}</div>
+              {renderUjianWangQuestion(q, examCtx)}
+              <div className="ujian-feedback" aria-live="polite" />
+              <button className="ujian-next" type="button" onClick={handleExamNext} disabled={!answered}>
+                {current + 1 >= questions.length
+                  ? (language === 'bm' ? 'Tamat 🎉' : 'Finish 🎉')
+                  : (language === 'bm' ? 'Seterusnya →' : 'Next →')}
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="ujian-footer">
+          <span style={{ color: timerRed ? '#DC2626' : dark, fontSize: '0.85rem', fontWeight: 900, minWidth: 88, textAlign: 'right' }}>
+            ⏱ {timerStr} · {current + 1}/{questions.length}
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'results' && questions) {
+    const correctCount = answers.filter(Boolean).length;
+    const wrongCount = answers.filter((value) => value === false).length;
+    const unanswered = answers.filter((value) => value === null).length;
+    const total = questions.length;
+    const passed = correctCount >= UJIAN_WANG_PASS_MARK;
+    const usedMM = Math.floor(timeUsed / 60);
+    const usedSS = timeUsed % 60;
+    const sectionScores = UJIAN_WANG_SECTIONS.map((section) => {
+      let got = 0;
+      let totalInSection = 0;
+      questions.forEach((question, index) => {
+        if (question.topicId !== section.id) return;
+        totalInSection += 1;
+        if (answers[index] === true) got += 1;
+      });
+      return { ...section, got, totalT: totalInSection, pct: totalInSection ? got / totalInSection : 0 };
+    });
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'transparent' }}>
+        <style>{`
+          .ujian-results-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+          .ujian-results-body {
+            min-height: 100%; box-sizing: border-box;
+            display: flex; flex-direction: column; align-items: center;
+            padding: clamp(20px, 3.6vmin, 48px) clamp(16px, 3vmin, 32px);
+          }
+          .ujian-results-content {
+            width: 100%; max-width: 480px;
+            display: flex; flex-direction: column; align-items: center;
+            gap: clamp(14px, 2.4vmin, 28px);
+          }
+          .ujian-results-stats { display: flex; gap: clamp(8px, 1.4vmin, 16px); flex-wrap: wrap; justify-content: center; }
+          .ujian-results-stat {
+            padding: 5px 14px; border-radius: 999px; background: #F8FAFC; border: 1.5px solid #E2E8F0;
+            font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: clamp(12px, 1.5vmin, 15px);
+          }
+        `}</style>
+        <div className="ujian-results-scroll">
+          <div className="ujian-results-body">
+            <div className="ujian-results-content">
+              <div style={{
+                width: 'clamp(100px, 18vmin, 140px)', height: 'clamp(100px, 18vmin, 140px)', borderRadius: '50%',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, border: `3px solid ${passed ? '#16A34A' : '#DC2626'}`, background: '#F8FAFC',
+              }}>
+                <span style={{ fontSize: 'clamp(28px, 5vmin, 44px)', color: passed ? '#16A34A' : '#DC2626' }}>{correctCount}/{total}</span>
+                <span style={{ fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(11px, 1.6vmin, 15px)', color: passed ? '#16A34A' : '#DC2626' }}>
+                  {passed ? 'LULUS ✓' : 'CUBA LAGI ✕'}
+                </span>
+              </div>
+              <div className="ujian-results-stats">
+                <span className="ujian-results-stat" style={{ color: '#16A34A' }}>✓ Betul: {correctCount}</span>
+                <span className="ujian-results-stat" style={{ color: '#DC2626' }}>✕ Salah: {wrongCount}</span>
+                <span className="ujian-results-stat" style={{ color: '#1E293B' }}>⏱ {usedMM}:{String(usedSS).padStart(2, '0')}</span>
+              </div>
+              {unanswered > 0 && (
+                <div style={{ fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: 'clamp(12px, 1.5vmin, 15px)', color: '#F59E0B' }}>
+                  ⏰ {unanswered} {language === 'bm' ? 'soalan tidak dijawab' : 'questions unanswered'}
+                </div>
+              )}
+              <div style={{ width: '100%', background: '#F8FAFC', border: '1.5px solid #E2E8F0', borderRadius: 16, padding: '4px 16px', boxSizing: 'border-box' }}>
+                {sectionScores.map((section) => (
+                  <div key={section.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: 'clamp(8px, 1.2vmin, 12px) 0', borderBottom: '1px solid #E2E8F0' }}>
+                    <div style={{ width: 3, height: 28, borderRadius: 2, background: section.color, flexShrink: 0 }} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: 'clamp(12px, 1.5vmin, 15px)', color: '#334155' }}>
+                        {section.name}
+                      </div>
+                      <div style={{ width: '100%', height: 6, background: '#E2E8F0', borderRadius: 3, marginTop: 4, overflow: 'hidden' }}>
+                        <div style={{ width: `${section.pct * 100}%`, height: '100%', background: section.color, borderRadius: 3, transition: 'width 0.5s ease' }} />
+                      </div>
+                    </div>
+                    <div style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(13px, 1.6vmin, 17px)', color: section.pct >= 0.8 ? '#16A34A' : '#64748B', flexShrink: 0 }}>
+                      {section.got}/{section.totalT}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(10px, 1.6vmin, 16px)', width: '100%' }}>
+                <button type="button" onClick={() => {
+                  if (timerRef.current) {
+                    clearInterval(timerRef.current);
+                    timerRef.current = null;
+                  }
+                  setPhase('start');
+                }}
+                  style={{
+                    padding: 'clamp(12px, 1.8vmin, 18px) clamp(24px, 4vmin, 48px)', border: 'none', borderRadius: 999,
+                    background: `linear-gradient(180deg, ${accent}, ${cd})`, color: '#fff', cursor: 'pointer', width: '100%',
+                    fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.6vmin, 24px)',
+                    boxShadow: `0 4px 0 ${dark}, 0 14px 24px rgba(4,120,87,.22)`, WebkitTapHighlightColor: 'transparent',
+                  }}>
+                  ↻ {language === 'bm' ? 'Cuba Semula' : 'Try Again'}
+                </button>
+                <button type="button" onClick={onExit}
+                  style={{
+                    padding: 'clamp(12px, 1.8vmin, 18px) clamp(24px, 4vmin, 48px)',
+                    border: '1.5px solid #CBD5E1', borderRadius: 999, background: '#F8FAFC', color: '#475569', cursor: 'pointer', width: '100%',
+                    fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.6vmin, 24px)', WebkitTapHighlightColor: 'transparent',
+                  }}>
+                  ← {language === 'bm' ? 'Kembali' : 'Back'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
 }

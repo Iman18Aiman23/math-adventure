@@ -1112,15 +1112,17 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
     setSelectedPerQ(newSel);
     playSound(correct ? 'correct' : 'wrong');
     if (correct) confetti({ particleCount: 45, spread: 60, startVelocity: 32, origin: { y: 0.7 }, scalar: 0.85 });
-    setTimeout(() => {
-      if (current + 1 >= questions.length) {
-        setTimeUsed(1800 - timeLeft);
-        if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
-        setPhase('results');
-      } else {
-        setCurrent(c => c + 1);
-      }
-    }, 800);
+  };
+
+  const handleExamNext = () => {
+    if (!questions) return;
+    if (current + 1 >= questions.length) {
+      setTimeUsed(1800 - timeLeft);
+      if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+      setPhase('results');
+      return;
+    }
+    setCurrent(c => c + 1);
   };
 
   if (phase === 'start') {
@@ -1207,61 +1209,61 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'transparent' }}>
         <style>{`
-          .cm-exam-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-          .cm-exam-body {
+          .cm2-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; }
+          .cm2-body {
             min-height: 100%; box-sizing: border-box;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             padding: clamp(14px, 3vmin, 40px);
           }
-          .cm-exam-content {
+          .cm2-content {
             width: 100%; max-width: min(94vw, 860px);
             display: flex; flex-direction: column; align-items: center;
             gap: clamp(8px, 1.6vmin, 18px);
           }
-          .cm-exam-q {
+          .cm2-prompt {
             font-family: 'Baloo 2', sans-serif; font-weight: 800;
-            font-size: clamp(22px, 4.6vmin, 44px); color: #1E293B; text-align: center; line-height: 1.15;
+            font-size: clamp(22px, 4.4vmin, 40px); color: #1E293B; text-align: center; line-height: 1.15;
           }
-          .cm-exam-feedback {
-            font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(20px, 3vmin, 30px);
+          .cm2-feedback {
+            font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: clamp(14px, 2vmin, 18px);
             text-align: center; min-height: clamp(28px, 3.8vmin, 44px);
-            display: flex; align-items: center; justify-content: center;
+            display: flex; align-items: center; justify-content: center; color: #64748B;
           }
-          .cm-exam-feedback.ok { color: #16A34A; }
-          .cm-exam-feedback.no { color: #DC2626; }
+          .cm2-next {
+            padding: clamp(11px, 1.5vmin, 17px) clamp(28px, 4vmin, 52px);
+            border: none; border-radius: 999px; background: ${accent}; color: #fff;
+            font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(17px, 2.6vmin, 26px);
+            cursor: pointer; box-shadow: 0 4px 0 ${cd}; transition: transform .1s ease;
+            -webkit-tap-highlight-color: transparent;
+          }
+          .cm2-next:hover:not(:disabled) { transform: translateY(-2px); }
+          .cm2-next:active:not(:disabled) { transform: translateY(2px); }
+          .cm2-footer {
+            flex-shrink: 0; display: flex; align-items: center; justify-content: flex-end;
+            padding: clamp(8px, 1.2vmin, 15px) clamp(16px, 2.4vmin, 34px);
+            background: rgba(255,255,255,.85); backdrop-filter: blur(12px); border-top: 1px solid #E2E8F0;
+          }
         `}</style>
-        {/* Exam header */}
-        <div style={{
-          flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: 'clamp(8px, 1.2vmin, 14px) clamp(14px, 2.4vmin, 24px)',
-          background: 'rgba(255,255,255,.86)',
-          borderBottom: '1px solid rgba(147,197,253,.42)',
-        }}>
-          <div style={{
-            fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(14px, 1.8vmin, 18px)', color: '#475569',
-          }}>
-            Soalan {current + 1} / {questions.length}
-          </div>
-          <div style={{
-            fontFamily: "'Baloo 2',sans-serif", fontWeight: 800,
-            fontSize: 'clamp(18px, 2.4vmin, 24px)',
-            color: timerRed ? '#DC2626' : '#1E293B',
-            transition: 'color 0.3s ease',
-          }}>
-            ⏱ {timerStr}
-          </div>
-        </div>
-        {/* Question body */}
-        <div className="cm-exam-scroll">
-          <div className="cm-exam-body">
-            <div className="cm-exam-content">
-              {q.prompt && <div className="cm-exam-q">{q.prompt}</div>}
+        <div className="cm2-scroll">
+          <div className="cm2-body">
+            <div className="cm2-content">
+              {q.prompt && <div className="cm2-prompt">{q.prompt}</div>}
               {renderQuestionM2All(q, examCtx)}
-              <div className={`cm-exam-feedback ${answered ? (isCorrect ? 'ok' : 'no') : ''}`}>
-                {answered ? (isCorrect ? '✅ Betul!' : '❌ Salah') : ''}
+              <div className="cm2-feedback">
+                {answered ? (language === 'bm' ? 'Pilihan disimpan.' : 'Answer saved.') : ''}
               </div>
+              <button className="cm2-next" type="button" onClick={handleExamNext}>
+                {current + 1 >= questions.length
+                  ? (language === 'bm' ? 'Tamat 🎉' : 'Finish 🎉')
+                  : (language === 'bm' ? 'Seterusnya →' : 'Next →')}
+              </button>
             </div>
           </div>
+        </div>
+        <div className="cm2-footer">
+          <span style={{ color: timerRed ? '#DC2626' : dark, fontSize: '0.85rem', fontWeight: 900, minWidth: 88, textAlign: 'right' }}>
+            ⏱ {timerStr} · {current + 1}/{questions.length}
+          </span>
         </div>
       </div>
     );

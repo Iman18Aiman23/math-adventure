@@ -26,6 +26,7 @@ export default function MatematikActivityFrame({
   scoreId,
   showQuestionProgress,
 }) {
+  const safeTheme = theme || {};
   const nav = useContext(MatematikNavContext);
   const [questions, setQuestions] = useState(() => buildRound());
   const [idx, setIdx] = useState(0);
@@ -39,7 +40,8 @@ export default function MatematikActivityFrame({
   if (!q) return null;
 
   const answered = selected !== null;
-  const isCorrect = answered && selected === q.answer;
+  const answer = String(q.answer);
+  const isCorrect = answered && String(selected) === answer;
   const isLast = idx + 1 >= questions.length;
 
   const total = questions.length;
@@ -48,9 +50,9 @@ export default function MatematikActivityFrame({
   const passed = correct >= passMark;
 
   const C = {
-    accent: theme.accent || '#F59E0B',
-    dark: theme.dark || '#B45309',
-    cd: theme.cd || '#92400E',
+    accent: safeTheme.accent || '#F59E0B',
+    dark: safeTheme.dark || '#B45309',
+    cd: safeTheme.cd || '#92400E',
     green: '#16A34A',
     red: '#DC2626',
   };
@@ -58,7 +60,7 @@ export default function MatematikActivityFrame({
   const handlePick = (value) => {
     if (answered) return;
     setSelected(value);
-    if (value === q.answer) {
+    if (String(value) === answer) {
       setCorrect((c) => c + 1);
       setStreak((s) => s + 1);
       playSound('correct');
@@ -98,7 +100,7 @@ export default function MatematikActivityFrame({
   const ctx = {
     answered,
     selected,
-    answer: q.answer,
+    answer,
     isCorrect,
     handlePick,
     handleNext,

@@ -31,6 +31,9 @@ const PRIMITIVE_ENTRIES = {
   'kenali-nilai-wang': { exportName: 'KenaliNilaiWangExplore', load: () => import('./explore_T1_4') },
   'tukar-wang': { exportName: 'TukarWangExplore', load: () => import('./explore_T1_4') },
   'dapat-catat-wang': { exportName: 'DapatCatatWangExplore', load: () => import('./explore_T1_4') },
+  'selesaikan-wang': { exportName: 'SelesaikanWangExplore', load: () => import('./explore_T1_4') },
+  'latih-diri-wang': { exportName: 'LatihDiriWangExplore', load: () => import('./explore_T1_4') },
+  'cabar-minda-wang': { exportName: 'CabarMindaWangExplore', load: () => import('./explore_T1_4') },
 };
 
 const primitiveCache = new Map();
@@ -63,6 +66,27 @@ function ExploreMessage({ title, body }) {
       {body ? <p style={styles.body}>{body}</p> : null}
     </div>
   );
+}
+
+class ExploreErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.resetKey !== this.props.resetKey && this.state.hasError) {
+      this.setState({ hasError: false });
+    }
+  }
+
+  render() {
+    return this.state.hasError ? this.props.fallback : this.props.children;
+  }
 }
 
 async function loadPrimitiveComponent(primitive) {
@@ -148,13 +172,23 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
   const dataWithScore = scoreId ? { ...data, scoreId, scoreStorageKey } : data;
 
   return (
-    <LoadedExplore
-      data={dataWithScore}
-      language={language}
-      theme={theme}
-      onExit={onExit}
-      onSpeak={speak}
-      onStop={stop}
-    />
+    <ExploreErrorBoundary
+      resetKey={primitive}
+      fallback={(
+        <ExploreMessage
+          title={language === 'bm' ? 'Aktiviti belum tersedia' : 'Activity not available yet'}
+          body={language === 'bm' ? 'Komponen pembelajaran ini gagal dimuatkan.' : 'This learning component failed to load.'}
+        />
+      )}
+    >
+      <LoadedExplore
+        data={dataWithScore}
+        language={language}
+        theme={theme}
+        onExit={onExit}
+        onSpeak={speak}
+        onStop={stop}
+      />
+    </ExploreErrorBoundary>
   );
 }

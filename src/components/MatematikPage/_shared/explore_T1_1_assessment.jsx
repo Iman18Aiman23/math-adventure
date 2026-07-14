@@ -38,6 +38,7 @@ const {
   NilaiTempatPilihContent,
   PerkataanKeAngkaContent,
   pickDistinct,
+  PolaSeqTiles,
   PolaTerangContent,
   PolaTilesContent,
   roundTen,
@@ -1227,7 +1228,6 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
     const q = questions[current];
     const promptContent = renderCM1Prompt(q, accent);
     const answered = answers[current] !== null;
-    const isCompareQuestion = ['banyak', 'sedikit', 'lebih', 'kurang', 'sama-banyak'].includes(q.type);
     const mm = Math.floor(timeLeft / 60);
     const ss = timeLeft % 60;
     const timerStr = `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
@@ -1249,29 +1249,28 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'transparent' }}>
         <style>{`
-          .maf-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-          .maf-scroll-q { display: flex; flex-direction: column; }
-          .maf-body {
+          .cm1-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; }
+          .cm1-body {
             min-height: 100%; box-sizing: border-box;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             padding: clamp(14px, 3vmin, 40px);
           }
-          .maf-content {
+          .cm1-content {
             width: 100%; max-width: min(94vw, 860px);
             display: flex; flex-direction: column; align-items: center;
             gap: clamp(8px, 1.6vmin, 18px);
           }
-          .maf-question {
+          .cm1-prompt {
             font-family: 'Baloo 2', sans-serif; font-weight: 800;
             font-size: clamp(22px, 4.6vmin, 44px); color: #1E293B; text-align: center; line-height: 1.15;
           }
-          .maf-feedback {
+          .cm1-feedback {
             font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: clamp(14px, 2vmin, 18px);
             text-align: center; min-height: clamp(28px, 3.8vmin, 44px);
             display: flex; align-items: center; justify-content: center;
             color: #64748B;
           }
-          .maf-next {
+          .cm1-next {
             padding: clamp(11px, 1.5vmin, 17px) clamp(28px, 4vmin, 52px);
             border: none;
             border-radius: 999px;
@@ -1285,8 +1284,8 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
             transition: transform .1s ease;
             -webkit-tap-highlight-color: transparent;
           }
-          .maf-next:hover:not(:disabled) { transform: translateY(-2px); }
-          .maf-next:active:not(:disabled) { transform: translateY(2px); }
+          .cm1-next:hover:not(:disabled) { transform: translateY(-2px); }
+          .cm1-next:active:not(:disabled) { transform: translateY(2px); }
           .cmp-ref {
             display: flex;
             flex-direction: column;
@@ -1344,7 +1343,7 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
           .cmp-box.dim { opacity: .4; }
           .cmp-box.ok { border-color: #16A34A; background: #16A34A; color: #fff; }
           .cmp-box.no { border-color: #DC2626; background: #DC2626; color: #fff; }
-          .maf-footer {
+          .cm1-footer {
             flex-shrink: 0;
             display: flex;
             align-items: center;
@@ -1356,16 +1355,16 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
             border-top: 1px solid #E2E8F0;
           }
         `}</style>
-        <div className="maf-scroll maf-scroll-q">
-          <div className="maf-body">
-            <div className="maf-content">
-              {promptContent && <div className={isCompareQuestion ? 'cmp-question' : 'maf-question'}>{promptContent}</div>}
+        <div className="cm1-scroll">
+          <div className="cm1-body">
+            <div className="cm1-content">
+              {promptContent && <div className="cm1-prompt">{promptContent}</div>}
               {renderQuestionM1All(q, examCtx)}
-              <div className="maf-feedback">
+              <div className="cm1-feedback">
                 {answered ? (language === 'bm' ? 'Pilihan disimpan.' : 'Answer saved.') : ''}
               </div>
               {answered && (
-                <button className="maf-next" type="button" onClick={handleExamNext}>
+                <button className="cm1-next" type="button" onClick={handleExamNext}>
                   {current + 1 >= questions.length
                     ? (language === 'bm' ? 'Tamat 🎉' : 'Finish 🎉')
                     : (language === 'bm' ? 'Seterusnya →' : 'Next →')}
@@ -1374,7 +1373,7 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
             </div>
           </div>
         </div>
-        <div className="maf-footer">
+        <div className="cm1-footer">
           <span style={{ color: timerRed ? '#DC2626' : dark, fontSize: '0.85rem', fontWeight: 900, minWidth: 88, textAlign: 'right' }}>
             ⏱ {timerStr} · {current + 1}/{questions.length}
           </span>
