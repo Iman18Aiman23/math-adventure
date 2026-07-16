@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import confetti from 'canvas-confetti';
 import { playSound } from '../../../utils/soundManager';
 import useGamification from '../../../hooks/useGamification';
 import { pick, randInt, shuffle } from './explorePrimitives_shared';
+import { recordActivityScore } from './MatematikActivityFrame';
 import { module2CoreApi } from './explore_T1_2_core';
 
 const { T1_M2_GENERATORS, renderT1M2Question } = module2CoreApi;
@@ -1061,6 +1063,17 @@ const CM_SLICES = [
   { id: 'tambah-berulang', name: 'Tambah Tolak Berulang',   color: '#14B8A6', types: ['tb-add-groups','tb-add-line','tb-add-complete','tb-sub-groups','tb-sub-line'] },
 ];
 
+function optionText(q, value) {
+  const option = q?.options?.find((opt) => opt.id === value || String(opt.value) === String(value));
+  return option ? String(option.value) : String(value ?? '');
+}
+
+function correctText(q) {
+  if (q.type === 'lt-abacus') return String(q.total);
+  if (q.type === 'lt-tolak-blok') return String(q.diff);
+  return optionText(q, q.answer);
+}
+
 export function CabarMindaM2Explore({ data, language, theme, onExit }) {
   const C = theme || {};
   const accent = C.accent || '#3B82F6';
@@ -1075,6 +1088,7 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
   const [showQuestionList, setShowQuestionList] = useState(false);
   const [timeLeft, setTimeLeft] = useState(1800);
   const [timeUsed, setTimeUsed] = useState(0);
+  const [reviewMode, setReviewMode] = useState(null);
   const timerRef = useRef(null);
   const answersRef = useRef(null);
 
@@ -1083,11 +1097,11 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, []);
 
-  const finishExam = (finalTimeUsed) => {
-    const finalAnswers = answersRef.current || [];
+  const finishExam = (finalAnswers, finalTimeUsed) => {
     if (data?.scoreStorageKey && data?.scoreId && questions?.length) {
       recordActivityScore(data.scoreStorageKey, data.scoreId, finalAnswers.filter(Boolean).length, questions.length);
     }
+    setAnswers(finalAnswers);
     setTimeUsed(finalTimeUsed);
     if (timerRef.current) {
       clearInterval(timerRef.current);
@@ -1104,6 +1118,7 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
     answersRef.current = blankAnswers;
     setSelectedPerQ({});
     setShowQuestionList(false);
+    setReviewMode(null);
     setCurrent(0);
     setTimeLeft(1800);
     setTimeUsed(0);
@@ -1111,7 +1126,7 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
     timerRef.current = setInterval(() => {
       setTimeLeft(t => {
         if (t <= 1) {
-          finishExam(1800);
+          finishExam(answersRef.current || blankAnswers, 1800);
           return 0;
         }
         return t - 1;
@@ -1121,23 +1136,38 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
 
   const handleExamPick = (value) => {
     if (!questions) return;
-    const correct = value === questions[current].answer;
-    const newAnswers = [...answers];
+    const currentAnswers = answersRef.current || answers;
+    if (value === null || value === '') {
+      const newAnswers = [...currentAnswers];
+      newAnswers[current] = null;
+      setAnswers(newAnswers);
+      answersRef.current = newAnswers;
+      setSelectedPerQ((currentSelected) => ({ ...(currentSelected || {}), [current]: '' }));
+      return;
+    }
+    const q = questions[current];
+    const correct = q.type === 'lt-abacus'
+      ? Number(value) === q.total
+      : q.type === 'lt-tolak-blok'
+        ? Number(value) === q.diff
+        : value === q.answer;
+    const newAnswers = [...currentAnswers];
     newAnswers[current] = correct;
     setAnswers(newAnswers);
     answersRef.current = newAnswers;
-    setSelectedPerQ((currentSelected) => ({ ...(currentSelected || {}), [current]: value }));
+    setSelectedPerQ((currentSelected) => ({ ...(currentSelected || {}), [current]: String(value) }));
   };
 
   const handleExamNext = () => {
     if (!questions) return;
-    if (answers[current] === null) return;
+    const latestAnswers = answersRef.current || answers;
+    if (latestAnswers[current] === null) return;
     if (current + 1 >= questions.length) {
-      if (!answers.every((value) => value !== null)) {
+      if (!latestAnswers.every((value) => value !== null)) {
         setShowQuestionList(true);
         return;
       }
-      finishExam(1800 - timeLeft);
+      finishExam(latestAnswers, 1800 - timeLeft);
       return;
     }
     setCurrent(c => c + 1);
@@ -1225,7 +1255,7 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
       streak: 0,
       correct: 0,
       wrong: 0,
-      theme: { accent, dark, cd, green: '#16A34A', red: '#DC2626' },
+      theme: { accent, dark, cd, green: '#16A34A', red: '#DC2626', canChangeAnswer: true, savedAnswer: selectedPerQ[current] || '' },
     };
 
     return (
@@ -1429,6 +1459,13 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
             font-family: 'Fredoka', sans-serif; font-weight: 700;
             font-size: clamp(12px, 1.5vmin, 15px);
           }
+          button.cm-results-stat {
+            cursor: pointer;
+            min-height: 32px;
+            box-shadow: 0 3px 0 rgba(15,23,42,.08);
+            -webkit-tap-highlight-color: transparent;
+          }
+          button.cm-results-stat:active { transform: translateY(1px); box-shadow: 0 2px 0 rgba(15,23,42,.08); }
           .cm-results-table {
             width: 100%;
             background: #F8FAFC;
@@ -1442,6 +1479,58 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
           }
           .cm-results-row:last-child { border-bottom: none; }
           .cm-results-actions { display: flex; flex-direction: column; gap: clamp(10px, 1.6vmin, 16px); width: 100%; }
+          .cm-review-backdrop {
+            position: fixed; inset: 0; z-index: 2147483000;
+            background: rgba(15, 23, 42, .42);
+            display: flex; align-items: center; justify-content: center;
+            padding: 14px;
+          }
+          .cm-review-dialog {
+            width: min(680px, 100%);
+            max-height: min(760px, calc(100vh - 28px));
+            background: #F8FAFC;
+            border: 2px solid #BFDBFE;
+            border-radius: 22px;
+            box-shadow: 0 22px 60px rgba(15, 23, 42, .25);
+            overflow: hidden;
+            display: flex; flex-direction: column;
+          }
+          .cm-review-head {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            padding: 14px 16px;
+            background: #FFFFFF;
+            border-bottom: 1.5px solid #E2E8F0;
+          }
+          .cm-review-heading {
+            font-family: 'Baloo 2', sans-serif; font-weight: 900;
+            color: #1E293B; font-size: clamp(18px, 3vmin, 28px);
+          }
+          .cm-review-close {
+            border: 1.5px solid #CBD5E1; background: #F8FAFC; color: #334155;
+            border-radius: 999px; width: 38px; height: 38px; cursor: pointer;
+            font-family: 'Baloo 2', sans-serif; font-weight: 900; font-size: 22px;
+          }
+          .cm-review-list {
+            padding: 14px; overflow-y: auto; -webkit-overflow-scrolling: touch;
+            display: flex; flex-direction: column; gap: 14px;
+          }
+          .cm-review-card {
+            width: 100%; box-sizing: border-box; border-radius: 18px; padding: 12px;
+            background: #fff; border: 1.5px solid #E2E8F0;
+            font-family: 'Fredoka', sans-serif;
+          }
+          .cm-review-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+          .cm-review-title { min-width: 0; color: #1E293B; font-weight: 800; font-size: clamp(13px, 1.8vmin, 16px); }
+          .cm-review-pill { flex-shrink: 0; border-radius: 999px; padding: 3px 9px; font-weight: 800; font-size: 12px; }
+          .cm-review-question {
+            margin-top: 10px;
+            padding: 12px;
+            border-radius: 16px;
+            background: linear-gradient(180deg, #EFF6FF, #F8FAFC);
+            border: 1.5px solid #DBEAFE;
+          }
+          .cm-review-question .cm2-prompt { margin-bottom: 10px; }
+          .cm-review-answer { margin-top: 10px; display: grid; gap: 4px; font-weight: 700; font-size: clamp(12px, 1.7vmin, 15px); color: #334155; }
         `}</style>
         <div className="cm-results-scroll">
           <div className="cm-results-body">
@@ -1458,8 +1547,12 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
                 </span>
               </div>
               <div className="cm-results-stats">
-                <span className="cm-results-stat" style={{ color: '#16A34A' }}>✅ Betul: {correctCount}</span>
-                <span className="cm-results-stat" style={{ color: '#DC2626' }}>❌ Salah: {wrongCount}</span>
+                <button type="button" className="cm-results-stat" onClick={() => setReviewMode('correct')} style={{ color: '#16A34A' }}>
+                  {'\u2705'} Betul: {correctCount}
+                </button>
+                <button type="button" className="cm-results-stat" onClick={() => setReviewMode('wrong')} style={{ color: '#DC2626' }}>
+                  {'\u274C'} Salah: {wrongCount}
+                </button>
                 <span className="cm-results-stat" style={{ color: '#1E293B' }}>⏱ {usedMM}:{String(usedSS).padStart(2, '0')}</span>
               </div>
               {unanswered > 0 && (
@@ -1507,6 +1600,71 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
                   );
                 })}
               </div>
+              {reviewMode && createPortal((
+                <div className="cm-review-backdrop" role="dialog" aria-modal="true" aria-label={reviewMode === 'correct' ? 'Soalan betul' : 'Soalan salah'}>
+                  <div className="cm-review-dialog">
+                    <div className="cm-review-head">
+                      <div className="cm-review-heading">
+                        {reviewMode === 'correct' ? `${'\u2705'} Betul: ${correctCount}` : `${'\u274C'} Salah: ${wrongCount}`}
+                      </div>
+                      <button type="button" className="cm-review-close" onClick={() => setReviewMode(null)} aria-label="Tutup">×</button>
+                    </div>
+                    <div className="cm-review-list">
+                      {questions.map((question, index) => ({ question, index }))
+                        .filter(({ index }) => reviewMode === 'correct' ? answers[index] === true : answers[index] === false)
+                        .map(({ question, index }) => {
+                          const ok = answers[index] === true;
+                          const picked = selectedPerQ?.[index];
+                          const userText = picked ? optionText(question, picked) : 'Tidak dijawab';
+                          const title = LD_TYPE_LABELS[question.type]?.label || question.header || question.type;
+                          const reviewCtx = {
+                            answered: true,
+                            examMode: false,
+                            selected: picked || null,
+                            answer: question.answer,
+                            isCorrect: ok,
+                            handlePick: () => {},
+                            handleNext: () => {},
+                            streak: 0,
+                            correct: 0,
+                            wrong: 0,
+                            theme: { accent, dark, cd, green: '#16A34A', red: '#DC2626', canChangeAnswer: false, savedAnswer: picked || '' },
+                          };
+                          return (
+                            <div
+                              key={question.qid || index}
+                              className="cm-review-card"
+                              style={{ borderColor: ok ? '#86EFAC' : '#FCA5A5', background: ok ? '#F0FDF4' : '#FEF2F2' }}
+                            >
+                              <div className="cm-review-top">
+                                <div className="cm-review-title">{index + 1}. {title}</div>
+                                <span
+                                  className="cm-review-pill"
+                                  style={{ background: ok ? '#DCFCE7' : '#FEE2E2', color: ok ? '#15803D' : '#DC2626' }}
+                                >
+                                  {ok ? 'Betul' : 'Salah'}
+                                </span>
+                              </div>
+                              <div className="cm-review-question">
+                                {question.prompt && <div className="cm2-prompt">{question.prompt}</div>}
+                                {renderQuestionM2All(question, reviewCtx)}
+                              </div>
+                              <div className="cm-review-answer">
+                                <div>Jawapan anda: <span style={{ color: ok ? '#15803D' : '#DC2626' }}>{userText}</span></div>
+                                {!ok && <div>Jawapan betul: <span style={{ color: '#15803D' }}>{correctText(question)}</span></div>}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      {(reviewMode === 'correct' ? correctCount : wrongCount) === 0 && (
+                        <div className="cm-review-card" style={{ textAlign: 'center', color: '#64748B', fontWeight: 800 }}>
+                          Tiada soalan untuk dipaparkan.
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ), document.body)}
               <div className="cm-results-actions">
                 <button type="button" onClick={() => {
                   if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }

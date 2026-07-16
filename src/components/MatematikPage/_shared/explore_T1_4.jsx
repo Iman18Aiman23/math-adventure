@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import MatematikActivityFrame, { recordActivityScore } from './MatematikActivityFrame';
 import { pick, randInt, shuffle } from './explorePrimitives_shared';
 
@@ -2221,6 +2222,13 @@ function renderUjianWangQuestion(q, ctx) {
   return null;
 }
 
+function ujianWangAnswerText(q, value) {
+  const option = q?.options?.find((opt) => opt.id === value || String(opt.value) === String(value));
+  if (option?.value != null) return String(option.value);
+  if (option?.label != null) return String(option.label);
+  return String(value ?? '');
+}
+
 export function CabarMindaWangExplore({ data, language, theme, onExit }) {
   const C = theme || {};
   const accent = C.accent || '#10B981';
@@ -2235,6 +2243,7 @@ export function CabarMindaWangExplore({ data, language, theme, onExit }) {
   const [answers, setAnswers] = useState(null);
   const [selectedPerQ, setSelectedPerQ] = useState(null);
   const [showQuestionList, setShowQuestionList] = useState(false);
+  const [reviewMode, setReviewMode] = useState(null);
   const [timeLeft, setTimeLeft] = useState(UJIAN_WANG_DURATION_SECONDS);
   const [timeUsed, setTimeUsed] = useState(0);
   const timerRef = useRef(null);
@@ -2266,6 +2275,7 @@ export function CabarMindaWangExplore({ data, language, theme, onExit }) {
     answersRef.current = blankAnswers;
     setSelectedPerQ({});
     setShowQuestionList(false);
+    setReviewMode(null);
     setCurrent(0);
     setTimeLeft(UJIAN_WANG_DURATION_SECONDS);
     setTimeUsed(0);
@@ -2583,6 +2593,51 @@ export function CabarMindaWangExplore({ data, language, theme, onExit }) {
             padding: 5px 14px; border-radius: 999px; background: #F8FAFC; border: 1.5px solid #E2E8F0;
             font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: clamp(12px, 1.5vmin, 15px);
           }
+          button.ujian-results-stat { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+          button.ujian-results-stat:hover { transform: translateY(-1px); }
+          .ujian-results-stats > span.ujian-results-stat:nth-of-type(1),
+          .ujian-results-stats > span.ujian-results-stat:nth-of-type(2) { display: none; }
+          .ujian-review-backdrop {
+            position: fixed; inset: 0; z-index: 2147483000;
+            background: rgba(15, 23, 42, .42);
+            display: flex; align-items: center; justify-content: center; padding: 14px;
+          }
+          .ujian-review-dialog {
+            width: min(680px, 100%); max-height: min(760px, calc(100vh - 28px));
+            background: #F8FAFC; border: 2px solid #A7F3D0; border-radius: 22px;
+            box-shadow: 0 22px 60px rgba(15, 23, 42, .25);
+            overflow: hidden; display: flex; flex-direction: column;
+          }
+          .ujian-review-head {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            padding: 14px 16px; background: #FFFFFF; border-bottom: 1.5px solid #E2E8F0;
+          }
+          .ujian-review-heading {
+            font-family: 'Baloo 2', sans-serif; font-weight: 900;
+            color: #1E293B; font-size: clamp(18px, 3vmin, 28px);
+          }
+          .ujian-review-close {
+            border: 1.5px solid #CBD5E1; background: #F8FAFC; color: #334155;
+            border-radius: 999px; width: 38px; height: 38px; cursor: pointer;
+            font-family: 'Baloo 2', sans-serif; font-weight: 900; font-size: 22px;
+          }
+          .ujian-review-list {
+            padding: 14px; overflow-y: auto; -webkit-overflow-scrolling: touch;
+            display: flex; flex-direction: column; gap: 14px;
+          }
+          .ujian-review-card {
+            width: 100%; box-sizing: border-box; border-radius: 18px; padding: 12px;
+            background: #fff; border: 1.5px solid #E2E8F0; font-family: 'Fredoka', sans-serif;
+          }
+          .ujian-review-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+          .ujian-review-title { min-width: 0; color: #1E293B; font-weight: 800; font-size: clamp(13px, 1.8vmin, 16px); }
+          .ujian-review-pill { flex-shrink: 0; border-radius: 999px; padding: 3px 9px; font-weight: 800; font-size: 12px; }
+          .ujian-review-question {
+            margin-top: 10px; padding: 12px; border-radius: 16px;
+            background: linear-gradient(180deg, #ECFDF5, #F8FAFC); border: 1.5px solid #A7F3D0;
+          }
+          .ujian-review-question .ujian-prompt { margin-bottom: 10px; }
+          .ujian-review-answer { margin-top: 10px; display: grid; gap: 4px; font-weight: 700; font-size: clamp(12px, 1.7vmin, 15px); color: #334155; }
         `}</style>
         <div className="ujian-results-scroll">
           <div className="ujian-results-body">
@@ -2598,6 +2653,8 @@ export function CabarMindaWangExplore({ data, language, theme, onExit }) {
                 </span>
               </div>
               <div className="ujian-results-stats">
+                <button type="button" className="ujian-results-stat" onClick={() => setReviewMode('correct')} style={{ color: '#16A34A' }}>✓ Betul: {correctCount}</button>
+                <button type="button" className="ujian-results-stat" onClick={() => setReviewMode('wrong')} style={{ color: '#DC2626' }}>✕ Salah: {wrongCount}</button>
                 <span className="ujian-results-stat" style={{ color: '#16A34A' }}>✓ Betul: {correctCount}</span>
                 <span className="ujian-results-stat" style={{ color: '#DC2626' }}>✕ Salah: {wrongCount}</span>
                 <span className="ujian-results-stat" style={{ color: '#1E293B' }}>⏱ {usedMM}:{String(usedSS).padStart(2, '0')}</span>
@@ -2625,6 +2682,66 @@ export function CabarMindaWangExplore({ data, language, theme, onExit }) {
                   </div>
                 ))}
               </div>
+              {reviewMode && createPortal((
+                <div className="ujian-review-backdrop" role="dialog" aria-modal="true" aria-label={reviewMode === 'correct' ? 'Soalan betul' : 'Soalan salah'}>
+                  <div className="ujian-review-dialog">
+                    <div className="ujian-review-head">
+                      <div className="ujian-review-heading">
+                        {reviewMode === 'correct' ? `✓ Betul: ${correctCount}` : `✕ Salah: ${wrongCount}`}
+                      </div>
+                      <button type="button" className="ujian-review-close" onClick={() => setReviewMode(null)} aria-label="Tutup">×</button>
+                    </div>
+                    <div className="ujian-review-list">
+                      {questions.map((question, index) => ({ question, index }))
+                        .filter(({ index }) => reviewMode === 'correct' ? answers[index] === true : answers[index] === false)
+                        .map(({ question, index }) => {
+                          const ok = answers[index] === true;
+                          const picked = selectedPerQ?.[index];
+                          const reviewCtx = {
+                            answered: true,
+                            examMode: false,
+                            selected: picked || null,
+                            answer: question.answer,
+                            isCorrect: ok,
+                            handlePick: () => {},
+                            handleNext: () => {},
+                            streak: 0,
+                            correct: 0,
+                            wrong: 0,
+                            theme: { accent, dark, cd, green: '#16A34A', red: '#DC2626', canChangeAnswer: false, savedAnswer: picked || '' },
+                          };
+                          return (
+                            <div
+                              key={question.examId || index}
+                              className="ujian-review-card"
+                              style={{ borderColor: ok ? '#86EFAC' : '#FCA5A5', background: ok ? '#F0FDF4' : '#FEF2F2' }}
+                            >
+                              <div className="ujian-review-top">
+                                <div className="ujian-review-title">{index + 1}. {question.type}</div>
+                                <span className="ujian-review-pill" style={{ background: ok ? '#DCFCE7' : '#FEE2E2', color: ok ? '#15803D' : '#DC2626' }}>
+                                  {ok ? 'Betul' : 'Salah'}
+                                </span>
+                              </div>
+                              <div className="ujian-review-question">
+                                <div className="ujian-prompt">{question.prompt}</div>
+                                {renderUjianWangQuestion(question, reviewCtx)}
+                              </div>
+                              <div className="ujian-review-answer">
+                                <div>Jawapan anda: <span style={{ color: ok ? '#15803D' : '#DC2626' }}>{picked ? ujianWangAnswerText(question, picked) : 'Tidak dijawab'}</span></div>
+                                {!ok && <div>Jawapan betul: <span style={{ color: '#15803D' }}>{ujianWangAnswerText(question, question.answer)}</span></div>}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      {(reviewMode === 'correct' ? correctCount : wrongCount) === 0 && (
+                        <div className="ujian-review-card" style={{ textAlign: 'center', color: '#64748B', fontWeight: 800 }}>
+                          Tiada soalan untuk dipaparkan.
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ), document.body)}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(10px, 1.6vmin, 16px)', width: '100%' }}>
                 <button type="button" onClick={() => {
                   if (timerRef.current) {

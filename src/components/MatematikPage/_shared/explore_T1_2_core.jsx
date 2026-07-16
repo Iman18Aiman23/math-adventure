@@ -716,6 +716,7 @@ function buildLatihanTambahRound(level) {
  * ──────────────────────────────────────────────────────────────────────────── */
 function ColumnAddContent({ q, ctx }) {
   const { answered, isCorrect, handlePick, theme: C } = ctx;
+  const locked = answered && !C?.canChangeAnswer;
   const aStr = String(q.a), bStr = String(q.b), ansStr = String(q.total);
   const maxLen = Math.max(aStr.length, bStr.length, ansStr.length);
   const pa = aStr.padStart(maxLen, ' ').split('');
@@ -724,7 +725,8 @@ function ColumnAddContent({ q, ctx }) {
 
   // Remounted per question (key={q.qid} at the call site), so these initialise
   // fresh for every new sum — no reset effect needed.
-  const [ans, setAns] = useState(() => Array(maxLen).fill(''));
+  const savedDigits = String(C?.savedAnswer || '').padStart(maxLen, ' ').slice(-maxLen).split('');
+  const [ans, setAns] = useState(() => Array.from({ length: maxLen }, (_, i) => savedDigits[i]?.trim() || ''));
   const [carry, setCarry] = useState(() => Array(maxLen).fill(''));
   const [activeIdx, setActiveIdx] = useState(maxLen - 1);
   const [activeCarry, setActiveCarry] = useState(-1);
@@ -757,7 +759,7 @@ function ColumnAddContent({ q, ctx }) {
   const focusCarry = (k) => { setActiveCarry(k); carryRefs.current[k]?.focus(); };
 
   const onAns = (k, v) => {
-    if (answered) return;
+    if (locked) return;
     const d = v.replace(/[^0-9]/g, '').slice(-1);
     setAns(prev => { const n = [...prev]; n[k] = d; return n; });
     if (d && k > 0) {
@@ -774,19 +776,19 @@ function ColumnAddContent({ q, ctx }) {
     else if (e.key === 'Backspace' && !ans[k] && k < maxLen - 1) { e.preventDefault(); focusIdx(k + 1); }
   };
   const onCarry = (k, v) => {
-    if (answered) return;
+    if (locked) return;
     const d = v.replace(/[^0-9]/g, '').slice(-1);
     setCarry(prev => { const n = [...prev]; n[k] = d; return n; });
     // After recording the carry above column k, drop down to its answer box.
     if (d) focusIdx(k);
   };
-  const submit = () => { if (!answered && filled) handlePick(ans.join('')); };
+  const submit = () => { if (!locked && filled) handlePick(ans.join('')); };
 
   const CW = 'clamp(54px, 11vmin, 78px)';     // column width
   const FS = 'clamp(34px, 6.8vmin, 58px)';    // digit font size
 
   const boxStyle = (k) => {
-    const active = !answered && activeIdx === k;
+    const active = !locked && activeIdx === k;
     let borderColor = active ? '#3B82F6' : '#93C5FD';
     let color = '#1E293B';
     let bg = '#fff';
@@ -822,7 +824,7 @@ function ColumnAddContent({ q, ctx }) {
             <span />
             {target.map((_, k) => (carryFlags[k] ? (
               <input key={`c${k}`} ref={el => { carryRefs.current[k] = el; }}
-                type="text" inputMode="numeric" maxLength={1} value={carry[k]} disabled={answered}
+                type="text" inputMode="numeric" maxLength={1} value={carry[k]} disabled={locked}
                 onChange={e => onCarry(k, e.target.value)} onFocus={() => setActiveCarry(k)} onBlur={() => setActiveCarry(-1)}
                 aria-label="bawa"
                 style={{
@@ -853,14 +855,14 @@ function ColumnAddContent({ q, ctx }) {
         <span />
         {target.map((_, k) => (
           <input key={`ans${k}`} ref={el => { ansRefs.current[k] = el; }}
-            type="text" inputMode="numeric" maxLength={1} value={ans[k]} disabled={answered}
+            type="text" inputMode="numeric" maxLength={1} value={ans[k]} disabled={locked}
             onChange={e => onAns(k, e.target.value)} onKeyDown={e => onAnsKey(k, e)} onFocus={() => setActiveIdx(k)}
             aria-label="jawapan" style={boxStyle(k)} />
         ))}
       </div>
 
-      {!answered && <SemakButton disabled={!filled} onClick={submit} />}
-      {answered && !isCorrect && (
+      {!locked && <SemakButton disabled={!filled} onClick={submit} />}
+      {answered && !isCorrect && !C?.canChangeAnswer && (
         <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, color: '#64748B', fontSize: 'clamp(13px, 2vmin, 18px)' }}>
           Jawapan: <b style={{ color: C.green }}>{q.total}</b>
         </div>
@@ -941,7 +943,8 @@ const SIMPLE_SHAPES = [
 ];
 
 function WarnaiContent({ q, ctx }) {
-  const { answered, selected, answer, handlePick } = ctx;
+  const { answered, selected, answer, handlePick, theme: C } = ctx;
+  const locked = answered && !C?.canChangeAnswer;
   const [pourProgress, setPourProgress] = useState(0);
   const rafRef = useRef(null);
 
@@ -1011,19 +1014,20 @@ function WarnaiContent({ q, ctx }) {
         {q.options.map((opt, idx) => {
           const isCorrectAns = opt.id === answer;
           const isPicked = selected === opt.id;
+          const isSavedPick = !answered && isPicked;
           const isWrongPick = answered && isPicked && !isCorrectAns;
           const isRightPick = answered && isCorrectAns;
           const c = BOX_COLORS[idx % BOX_COLORS.length];
           const splatPath = optionShapes[idx % optionShapes.length];
           const gradId = `pw${q.qid}_${idx}`;
-          const progress = isRightPick ? pourProgress : 0;
+          const progress = isRightPick ? pourProgress : isSavedPick ? 1 : 0;
           return (
             <button key={opt.id} type="button"
               className="pw-btn"
-              onClick={() => handlePick(opt.id)} disabled={answered}
+              onClick={() => handlePick(opt.id)} disabled={locked}
               style={{
-                color: isRightPick ? '#fff' : '#1E293B',
-                textShadow: isRightPick ? '0 2px 12px rgba(0,0,0,0.35)' : 'none',
+                color: isRightPick || isSavedPick ? '#fff' : '#1E293B',
+                textShadow: isRightPick || isSavedPick ? '0 2px 12px rgba(0,0,0,0.35)' : 'none',
                 animation: isWrongPick
                   ? 'pwShake 0.4s ease'
                   : `pwBounceIn 0.45s cubic-bezier(.34,1.56,.64,1) ${idx * 0.08}s both`,
@@ -1039,14 +1043,14 @@ function WarnaiContent({ q, ctx }) {
                   </linearGradient>
                 </defs>
                 <path d={splatPath}
-                  fill={isRightPick ? `url(#${gradId})` : 'rgba(0,0,0,0.03)'}
-                  stroke={isWrongPick ? '#DC2626' : isRightPick ? 'transparent' : c.border}
+                  fill={isRightPick || isSavedPick ? `url(#${gradId})` : 'rgba(0,0,0,0.03)'}
+                  stroke={isWrongPick ? '#DC2626' : (isRightPick || isSavedPick) ? 'transparent' : c.border}
                   strokeWidth="3"
                   strokeDasharray={!isRightPick && !isWrongPick ? '8,6' : 'none'}
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
-                {isRightPick && (
+                {(isRightPick || isSavedPick) && (
                   <path d={splatPath} fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 )}
               </svg>
@@ -1110,12 +1114,18 @@ function PadankanContent({ q, ctx }) {
 
 // Abacus / base-ten build — tap +/− to make the sum with puluh & sa blocks.
 function AbacusBuildContent({ q, ctx }) {
-  const { answered, handlePick } = ctx;
-  const [tens, setTens] = useState(0);
-  const [ones, setOnes] = useState(0);
-  useEffect(() => { setTens(0); setOnes(0); }, [q.qid]);
+  const { answered, handlePick, theme: C } = ctx;
+  const locked = answered && !C?.canChangeAnswer;
+  const savedBuilt = Number(C?.savedAnswer || 0);
+  const [tens, setTens] = useState(() => Math.floor(savedBuilt / 10));
+  const [ones, setOnes] = useState(() => savedBuilt % 10);
+  useEffect(() => {
+    const value = Number(C?.savedAnswer || 0);
+    setTens(Math.floor(value / 10));
+    setOnes(value % 10);
+  }, [q.qid, C?.savedAnswer]);
   const built = tens * 10 + ones;
-  const submit = () => { if (!answered) handlePick(built === q.total ? 'ok' : 'no'); };
+  const submit = () => { if (!locked) handlePick(C?.canChangeAnswer ? String(built) : (built === q.total ? 'ok' : 'no')); };
   const col = (label, val, set, color, isTen) => (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
       <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 2vmin, 18px)', color: '#64748B' }}>{label}</div>
@@ -1132,7 +1142,7 @@ function AbacusBuildContent({ q, ctx }) {
             : { width: 'clamp(14px, 3vmin, 22px)', height: 'clamp(14px, 3vmin, 22px)', background: color, borderRadius: 4 }} />
         ))}
       </div>
-      {!answered && (
+      {!locked && (
         <div style={{ display: 'flex', gap: 6 }}>
           <button type="button" onClick={() => set(Math.max(0, val - 1))} style={abBtn('#EF4444')}>−</button>
           <button type="button" onClick={() => set(Math.min(9, val + 1))} style={abBtn('#3B82F6')}>+</button>
@@ -1150,12 +1160,12 @@ function AbacusBuildContent({ q, ctx }) {
         fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(30px, 5.4vmin, 48px)',
         color: answered ? (built === q.total ? '#4ADE80' : '#F87171') : '#1E293B',
       }}>{q.a} + {q.b} = {built}</div>
-      {answered && built !== q.total && (
+      {answered && built !== q.total && !C?.canChangeAnswer && (
         <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, color: '#64748B', fontSize: 'clamp(13px, 2vmin, 18px)' }}>
           Jawapan: <b style={{ color: '#4ADE80' }}>{q.total}</b>
         </div>
       )}
-      {!answered && <SemakButton disabled={false} onClick={submit} />}
+      {!locked && <SemakButton disabled={false} onClick={submit} />}
     </div>
   );
 }
@@ -1483,6 +1493,7 @@ function buildLatihanTolakRound(level) {
 /* ── VerticalDiff: column subtraction (no carry row) ── */
 function VerticalDiffContent({ q, ctx }) {
   const { answered, isCorrect, handlePick, theme: C } = ctx;
+  const locked = answered && !C?.canChangeAnswer;
   const aStr = String(q.a), bStr = String(q.b), ansStr = String(q.diff);
   const maxLen = Math.max(aStr.length, bStr.length, ansStr.length);
   const pa = aStr.padStart(maxLen, ' ').split('');
@@ -1496,7 +1507,8 @@ function VerticalDiffContent({ q, ctx }) {
   // A borrow is needed when the ones digit on top is smaller than the bottom.
   const borrowProblem = maxLen === 2 && pa[0] !== ' ' && onesAval < onesBval;
 
-  const [ans, setAns] = useState(() => Array(maxLen).fill(''));
+  const savedDigits = String(C?.savedAnswer || '').padStart(maxLen, ' ').slice(-maxLen).split('');
+  const [ans, setAns] = useState(() => Array.from({ length: maxLen }, (_, i) => savedDigits[i]?.trim() || ''));
   const [activeIdx, setActiveIdx] = useState(maxLen - 1);
   const [borrowed, setBorrowed] = useState(false);
   const [borrowOpen, setBorrowOpen] = useState(false);
@@ -1510,19 +1522,20 @@ function VerticalDiffContent({ q, ctx }) {
   // Reset everything when the question changes (component instance is reused
   // for consecutive same-type questions — useState initialisers don't re-run).
   useEffect(() => {
-    setAns(Array(maxLen).fill(''));
+    const digits = String(C?.savedAnswer || '').padStart(maxLen, ' ').slice(-maxLen).split('');
+    setAns(Array.from({ length: maxLen }, (_, i) => digits[i]?.trim() || ''));
     setActiveIdx(maxLen - 1);
     setBorrowed(false);
     setBorrowOpen(false);
     setBorrowInput('');
     setBorrowWrong(false);
     setLockMsg('');
-  }, [q.qid]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [q.qid, C?.savedAnswer]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const focusIdx = (k) => { setActiveIdx(k); ansRefs.current[k]?.focus(); };
 
   const onAns = (k, v) => {
-    if (answered) return;
+    if (locked) return;
     const d = v.replace(/[^0-9]/g, '').slice(-1);
     setAns(prev => { const n = [...prev]; n[k] = d; return n; });
     if (d && k > 0) focusIdx(k - 1);
@@ -1539,7 +1552,7 @@ function VerticalDiffContent({ q, ctx }) {
   // q.answer ("2"). Gate on the borrow first: you can't subtract a column whose
   // top digit is too small until you've regrouped (borrowed) — like ColumnMathGame.
   const submit = () => {
-    if (answered || !filled) return;
+    if (locked || !filled) return;
     if (needsBorrow) {
       setLockMsg(`${onesAval} terlalu kecil untuk tolak ${onesBval}. Pinjam dari rumah sebelah dahulu!`);
       return;
@@ -1563,7 +1576,7 @@ function VerticalDiffContent({ q, ctx }) {
   const FS = 'clamp(34px, 6.8vmin, 58px)';
 
   const boxStyle = (k) => {
-    const active = !answered && activeIdx === k;
+    const active = !locked && activeIdx === k;
     let borderColor = active ? '#3B82F6' : '#93C5FD';
     let color = '#1E293B';
     let bg = '#fff';
@@ -1599,7 +1612,7 @@ function VerticalDiffContent({ q, ctx }) {
       // Borrower (ones): now worth ten more.
       return <span key={`a${k}`} style={{ fontSize: FS, color: '#2563EB', lineHeight: 1.1, fontWeight: 900 }}>{onesAval + 10}</span>;
     }
-    if (needsBorrow && !answered && k === 0) {
+    if (needsBorrow && !locked && k === 0) {
       return (
         <span key={`a${k}`} role="button" tabIndex={0}
           onClick={() => { setBorrowOpen(true); setLockMsg(''); }}
@@ -1634,14 +1647,14 @@ function VerticalDiffContent({ q, ctx }) {
         <span />
         {target.map((_, k) => (
           <input key={`ans${k}`} ref={el => { ansRefs.current[k] = el; }}
-            type="text" inputMode="numeric" maxLength={1} value={ans[k]} disabled={answered}
+            type="text" inputMode="numeric" maxLength={1} value={ans[k]} disabled={locked}
             onChange={e => onAns(k, e.target.value)} onKeyDown={e => onAnsKey(k, e)} onFocus={() => setActiveIdx(k)}
             aria-label="jawapan" style={boxStyle(k)} />
         ))}
       </div>
 
       {/* Borrow ("Pinjam dari rumah sebelah") mini-step — only for borrow problems. */}
-      {borrowOpen && !answered && (
+      {borrowOpen && !locked && (
         <div style={{
           background: '#FFF7ED', border: '2px solid #FED7AA', borderRadius: 'clamp(14px, 2vmin, 20px)',
           padding: 'clamp(12px, 2vmin, 18px)', display: 'flex', flexDirection: 'column', alignItems: 'center',
@@ -1674,15 +1687,15 @@ function VerticalDiffContent({ q, ctx }) {
         </div>
       )}
 
-      {!answered && <SemakButton disabled={!filled} onClick={submit} />}
+      {!locked && <SemakButton disabled={!filled} onClick={submit} />}
 
-      {lockMsg && !answered && (
+      {lockMsg && !locked && (
         <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, color: '#B45309', textAlign: 'center', fontSize: 'clamp(12px, 2vmin, 17px)', maxWidth: 360 }}>
           {lockMsg}
         </div>
       )}
 
-      {answered && !isCorrect && (
+      {answered && !isCorrect && !C?.canChangeAnswer && (
         <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, color: '#64748B', fontSize: 'clamp(13px, 2vmin, 18px)' }}>
           Jawapan: <b style={{ color: C.green }}>{q.diff}</b>
         </div>
@@ -1693,12 +1706,18 @@ function VerticalDiffContent({ q, ctx }) {
 
 /* ── Tolak Blok: build difference with base-ten blocks ── */
 function TolakBlokContent({ q, ctx }) {
-  const { answered, handlePick } = ctx;
-  const [tens, setTens] = useState(0);
-  const [ones, setOnes] = useState(0);
-  useEffect(() => { setTens(0); setOnes(0); }, [q.qid]);
+  const { answered, handlePick, theme: C } = ctx;
+  const locked = answered && !C?.canChangeAnswer;
+  const savedBuilt = Number(C?.savedAnswer || 0);
+  const [tens, setTens] = useState(() => Math.floor(savedBuilt / 10));
+  const [ones, setOnes] = useState(() => savedBuilt % 10);
+  useEffect(() => {
+    const value = Number(C?.savedAnswer || 0);
+    setTens(Math.floor(value / 10));
+    setOnes(value % 10);
+  }, [q.qid, C?.savedAnswer]);
   const built = tens * 10 + ones;
-  const submit = () => { if (!answered) handlePick(built === q.diff ? 'ok' : 'no'); };
+  const submit = () => { if (!locked) handlePick(C?.canChangeAnswer ? String(built) : (built === q.diff ? 'ok' : 'no')); };
   const col = (label, val, set, color, isTen) => (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
       <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 2vmin, 18px)', color: '#64748B' }}>{label}</div>
@@ -1713,7 +1732,7 @@ function TolakBlokContent({ q, ctx }) {
             : { width: 'clamp(14px, 3vmin, 22px)', height: 'clamp(14px, 3vmin, 22px)', background: color, borderRadius: 4 }} />
         ))}
       </div>
-      {!answered && (
+      {!locked && (
         <div style={{ display: 'flex', gap: 6 }}>
           <button type="button" onClick={() => set(Math.max(0, val - 1))} style={abBtn('#EF4444')}>−</button>
           <button type="button" onClick={() => set(Math.min(9, val + 1))} style={abBtn('#3B82F6')}>+</button>
@@ -1731,12 +1750,12 @@ function TolakBlokContent({ q, ctx }) {
         fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(30px, 5.4vmin, 48px)',
         color: answered ? (built === q.diff ? '#4ADE80' : '#F87171') : '#1E293B',
       }}>{q.a} − {q.b} = {built}</div>
-      {answered && built !== q.diff && (
+      {answered && built !== q.diff && !C?.canChangeAnswer && (
         <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, color: '#64748B', fontSize: 'clamp(13px, 2vmin, 18px)' }}>
           Jawapan: <b style={{ color: '#4ADE80' }}>{q.diff}</b>
         </div>
       )}
-      {!answered && <SemakButton disabled={false} onClick={submit} />}
+      {!locked && <SemakButton disabled={false} onClick={submit} />}
     </div>
   );
 }
@@ -2045,6 +2064,7 @@ function CeritaKeypadContent({ q, ctx }) {
 
 function CeritaOperasiContent({ q, ctx }) {
   const { answered, selected, answer, handlePick } = ctx;
+  const locked = answered && !ctx.theme?.canChangeAnswer;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px,1.8vmin,20px)', width: '100%' }}>
       {/* Story card — amber/book tone */}
@@ -2058,7 +2078,11 @@ function CeritaOperasiContent({ q, ctx }) {
           const wasSelected = selected === opt.id;
           const isCorrectOpt = opt.id === answer;
           let bg, border, dotColor;
-          if (!answered) {
+          if (!answered && wasSelected) {
+            bg = isAdd ? '#DCFCE7' : '#FFEDD5';
+            border = isAdd ? '#16A34A' : '#F97316';
+            dotColor = isAdd ? '#16A34A' : '#EA580C';
+          } else if (!answered) {
             bg = isAdd ? '#F0FDF4' : '#FFF7ED';
             border = isAdd ? '#86EFAC' : '#FED7AA';
             dotColor = isAdd ? '#16A34A' : '#EA580C';
@@ -2071,8 +2095,8 @@ function CeritaOperasiContent({ q, ctx }) {
             : wasSelected ? (isCorrectOpt ? opt.value + ' ✓' : opt.value + ' ✗')
             : isCorrectOpt ? opt.value + ' ✓' : opt.value;
           return (
-            <div key={opt.id} onClick={() => !answered && handlePick(opt.id)}
-              style={{ background: bg, border: `3px solid ${border}`, borderRadius: 'clamp(16px,2.5vmin,24px)', padding: 'clamp(14px,2.2vmin,22px) clamp(12px,1.8vmin,18px)', cursor: answered ? 'default' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(6px,1vmin,10px)', flex: 1 }}>
+            <div key={opt.id} onClick={() => !locked && handlePick(opt.id)}
+              style={{ background: bg, border: `3px solid ${border}`, borderRadius: 'clamp(16px,2.5vmin,24px)', padding: 'clamp(14px,2.2vmin,22px) clamp(12px,1.8vmin,18px)', cursor: locked ? 'default' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(6px,1vmin,10px)', flex: 1 }}>
               <div style={{ width: 'clamp(46px,7.5vmin,64px)', height: 'clamp(46px,7.5vmin,64px)', background: dotColor, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(26px,4.5vmin,40px)', color: 'white', lineHeight: 1 }}>{sym}</div>
               <div style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px,2.6vmin,26px)', color: dotColor, textAlign: 'center' }}>{label}</div>
             </div>
@@ -2085,6 +2109,7 @@ function CeritaOperasiContent({ q, ctx }) {
 
 function CeritaAyatContent({ q, ctx }) {
   const { answered, selected, answer, handlePick } = ctx;
+  const locked = answered && !ctx.theme?.canChangeAnswer;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px,1.8vmin,20px)', width: '100%' }}>
       {/* Story card — blue tone */}
@@ -2097,14 +2122,15 @@ function CeritaAyatContent({ q, ctx }) {
           const wasSelected = selected === opt.id;
           const isCorrectOpt = opt.id === answer;
           let bg, border, color, icon;
-          if (!answered)                           { bg = 'white';    border = '#CBD5E1'; color = '#1E3A8A'; }
+          if (!answered && wasSelected)            { bg = '#DBEAFE';  border = '#3B82F6'; color = '#1E3A8A'; }
+          else if (!answered)                      { bg = 'white';    border = '#CBD5E1'; color = '#1E3A8A'; }
           else if (wasSelected && isCorrectOpt)    { bg = '#DCFCE7';  border = '#16A34A'; color = '#14532D'; icon = '✓'; }
           else if (wasSelected && !isCorrectOpt)   { bg = '#FEF2F2';  border = '#DC2626'; color = '#7F1D1D'; icon = '✗'; }
           else if (!wasSelected && isCorrectOpt)   { bg = '#DCFCE7';  border = '#16A34A'; color = '#14532D'; icon = '✓'; }
           else                                     { bg = '#F8FAFC';  border = '#E2E8F0'; color = '#94A3B8'; }
           return (
-            <div key={opt.id} onClick={() => !answered && handlePick(opt.id)}
-              style={{ background: bg, border: `3px solid ${border}`, borderRadius: '50px', padding: 'clamp(12px,2vmin,18px) clamp(20px,3vmin,30px)', cursor: answered ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: !answered ? '0 2px 8px rgba(0,0,0,0.06)' : 'none' }}>
+            <div key={opt.id} onClick={() => !locked && handlePick(opt.id)}
+              style={{ background: bg, border: `3px solid ${border}`, borderRadius: '50px', padding: 'clamp(12px,2vmin,18px) clamp(20px,3vmin,30px)', cursor: locked ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: !locked ? '0 2px 8px rgba(0,0,0,0.06)' : 'none' }}>
               <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(18px,3vmin,28px)', color, flex: 1, textAlign: 'center' }}>{opt.value}</span>
               {icon && (
                 <div style={{ width: 'clamp(26px,4vmin,36px)', height: 'clamp(26px,4vmin,36px)', borderRadius: '50%', background: isCorrectOpt ? '#16A34A' : '#DC2626', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(13px,2.1vmin,19px)', flexShrink: 0, marginLeft: 8 }}>{icon}</div>

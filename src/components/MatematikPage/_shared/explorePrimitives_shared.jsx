@@ -132,6 +132,7 @@ export function EmptyTray({ height, compact }) {
 
 export function NumOptionsGrid({ options, answered, selected, answer, handlePick, theme: C }) {
   const cols = Math.min(options.length, 4);
+  const locked = answered && !C?.canChangeAnswer;
   return (
     <div style={{
       display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`,
@@ -149,7 +150,7 @@ export function NumOptionsGrid({ options, answered, selected, answer, handlePick
         else if (picked) { bg = `${C?.accent || '#8B5CF6'}40`; bd = C?.accent || '#8B5CF6'; clr = C?.dark || C?.accent || '#5B21B6'; txt = opt.value; anim = 'none'; }
         else { bg = '#fff'; bd = '#CBD5E1'; clr = '#1E293B'; txt = opt.value; anim = 'none'; }
         return (
-          <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={answered}
+          <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={locked}
             style={{
               padding: 'clamp(10px, 1.6vmin, 18px)',
               border: 'none',
@@ -160,7 +161,7 @@ export function NumOptionsGrid({ options, answered, selected, answer, handlePick
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
               fontSize: answered && (isAns || picked) ? 'clamp(24px, 4vmin, 40px)' : 'clamp(24px, 4vmin, 40px)',
               lineHeight: 1.1, whiteSpace: 'nowrap',
-              cursor: answered ? 'default' : 'pointer',
+              cursor: locked ? 'default' : 'pointer',
               transition: 'all .15s ease', WebkitTapHighlightColor: 'transparent',
               minHeight: 44, minWidth: 44,
               animation: anim,
@@ -189,6 +190,7 @@ export function numToBM(n) {
 }
 
 export function WordOptionsGrid({ options, answered, selected, answer, handlePick, theme: C, columns = 1, plain = false }) {
+  const locked = answered && !C?.canChangeAnswer;
   return (
     <div style={{
       display: columns > 1 ? 'grid' : 'flex',
@@ -237,7 +239,7 @@ export function WordOptionsGrid({ options, answered, selected, answer, handlePic
         return (
           <button key={opt.id} type="button"
             className={warnai ? 'warnai-opt' : undefined}
-            onClick={() => handlePick(opt.id)} disabled={answered}
+            onClick={() => handlePick(opt.id)} disabled={locked}
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               gap: 'clamp(8px, 1.4vmin, 12px)',
@@ -251,7 +253,7 @@ export function WordOptionsGrid({ options, answered, selected, answer, handlePic
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
               fontSize: answered && (isAns || picked) ? 'clamp(24px, 4vmin, 40px)' : 'clamp(16px, 2.6vmin, 26px)',
               lineHeight: 1.2, whiteSpace: 'nowrap', textAlign: 'center',
-              cursor: answered ? 'default' : 'pointer',
+              cursor: locked ? 'default' : 'pointer',
               transition: 'all .15s ease', WebkitTapHighlightColor: 'transparent',
               minHeight: 44, width: '100%',
               animation: anim,
@@ -268,23 +270,28 @@ export function WordOptionsGrid({ options, answered, selected, answer, handlePic
 
 
 export function KeypadInput({ answered, isCorrect, handlePick, answer, theme: C, qid, maxLength = 2 }) {
-  const [input, setInput] = useState('');
-  useEffect(() => { setInput(''); }, [qid]);
+  const [input, setInput] = useState(C?.savedAnswer || '');
+  useEffect(() => { setInput(C?.savedAnswer || ''); }, [qid, C?.savedAnswer]);
+  const locked = answered && !C?.canChangeAnswer;
 
-  const press = (d) => { if (!answered && input.length < maxLength) setInput(input + d); };
-  const back = () => { if (!answered) setInput(input.slice(0, -1)); };
-  const submit = () => { if (!answered && input !== '') handlePick(input); };
+  const setExamInput = (next) => {
+    setInput(next);
+    if (C?.canChangeAnswer) handlePick(next || null);
+  };
+  const press = (d) => { if (!locked && input.length < maxLength) setExamInput(input + d); };
+  const back = () => { if (!locked) setExamInput(input.slice(0, -1)); };
+  const submit = () => { if (!locked && input !== '') handlePick(input); };
 
   useEffect(() => {
     const onKey = (e) => {
-      if (answered) return;
+      if (locked) return;
       if (/^[0-9]$/.test(e.key)) { e.preventDefault(); press(e.key); }
       else if (e.key === 'Backspace') { e.preventDefault(); back(); }
       else if (e.key === 'Enter') { e.preventDefault(); if (input !== '') handlePick(input); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [answered, input, handlePick]);
+  }, [locked, input, handlePick]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(8px, 1.3vmin, 14px)', width: '100%' }}>
@@ -292,7 +299,7 @@ export function KeypadInput({ answered, isCorrect, handlePick, answer, theme: C,
         .kp-btn { transition: all 0.08s ease; -webkit-tap-highlight-color: transparent; }
         .kp-btn:active { transform: translateY(4px); border-bottom-width: 0 !important; }
       `}</style>
-      <div className={!answered ? 'snk-input-ready' : ''} style={{
+      <div className={!locked ? 'snk-input-ready' : ''} style={{
         minWidth: 'clamp(80px, 20vmin, 160px)', minHeight: 'clamp(42px, 7vmin, 64px)',
         border: `3px solid ${answered ? (isCorrect ? C.green : C.red) : '#CBD5E1'}`,
         borderRadius: 'clamp(12px, 1.6vmin, 18px)', background: '#F9FAFB',
@@ -303,12 +310,12 @@ export function KeypadInput({ answered, isCorrect, handlePick, answer, theme: C,
       }}>
         {input || '?'}
       </div>
-      {answered && !isCorrect && (
+      {answered && !isCorrect && !C?.canChangeAnswer && (
         <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(14px, 2.2vmin, 20px)', color: '#64748B' }}>
           Jawapan: <b style={{ color: C.green }}>{answer}</b>
         </div>
       )}
-      {!answered && (
+      {!locked && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(5px, 1vmin, 10px)', width: '100%', maxWidth: 'clamp(260px, 50vmin, 420px)' }}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
             <button key={d} type="button" className="kp-btn" onClick={() => press(String(d))}

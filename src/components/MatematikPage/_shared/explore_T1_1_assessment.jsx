@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import confetti from 'canvas-confetti';
 import { playSound } from '../../../utils/soundManager';
 import MatematikActivityFrame, { recordActivityScore } from './MatematikActivityFrame';
@@ -1105,6 +1106,13 @@ function renderCM1Prompt(q, accent) {
   return q?.prompt || null;
 }
 
+function cm1AnswerText(q, value) {
+  const option = q?.options?.find((opt) => opt.id === value || String(opt.value) === String(value));
+  if (option?.value != null) return String(option.value);
+  if ((value === 'a' || value === 'b') && q?.[value] != null) return String(q[value]);
+  return String(value ?? '');
+}
+
 export function CabarMindaM1Explore({ data, language, theme, onExit }) {
   const C = theme || {};
   const accent = C.accent || '#16A34A';
@@ -1117,6 +1125,7 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
   const [answers, setAnswers] = useState(null);
   const [selectedPerQ, setSelectedPerQ] = useState(null);
   const [showQuestionList, setShowQuestionList] = useState(false);
+  const [reviewMode, setReviewMode] = useState(null);
   const [timeLeft, setTimeLeft] = useState(CM1_DURATION_SECONDS);
   const [timeUsed, setTimeUsed] = useState(0);
   const timerRef = useRef(null);
@@ -1147,6 +1156,7 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
     answersRef.current = blankAnswers;
     setSelectedPerQ({});
     setShowQuestionList(false);
+    setReviewMode(null);
     setCurrent(0);
     setTimeLeft(CM1_DURATION_SECONDS);
     setTimeUsed(0);
@@ -1547,6 +1557,53 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
             font-family: 'Fredoka', sans-serif; font-weight: 700;
             font-size: clamp(12px, 1.5vmin, 15px);
           }
+          button.cm1-results-stat { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+          button.cm1-results-stat:hover { transform: translateY(-1px); }
+          .cm1-results-stats > span.cm1-results-stat:nth-of-type(1),
+          .cm1-results-stats > span.cm1-results-stat:nth-of-type(2) { display: none; }
+          .cm1-review-backdrop {
+            position: fixed; inset: 0; z-index: 2147483000;
+            background: rgba(15, 23, 42, .42);
+            display: flex; align-items: center; justify-content: center;
+            padding: 14px;
+          }
+          .cm1-review-dialog {
+            width: min(680px, 100%);
+            max-height: min(760px, calc(100vh - 28px));
+            background: #F8FAFC; border: 2px solid #BBF7D0; border-radius: 22px;
+            box-shadow: 0 22px 60px rgba(15, 23, 42, .25);
+            overflow: hidden; display: flex; flex-direction: column;
+          }
+          .cm1-review-head {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            padding: 14px 16px; background: #FFFFFF; border-bottom: 1.5px solid #E2E8F0;
+          }
+          .cm1-review-heading {
+            font-family: 'Baloo 2', sans-serif; font-weight: 900;
+            color: #1E293B; font-size: clamp(18px, 3vmin, 28px);
+          }
+          .cm1-review-close {
+            border: 1.5px solid #CBD5E1; background: #F8FAFC; color: #334155;
+            border-radius: 999px; width: 38px; height: 38px; cursor: pointer;
+            font-family: 'Baloo 2', sans-serif; font-weight: 900; font-size: 22px;
+          }
+          .cm1-review-list {
+            padding: 14px; overflow-y: auto; -webkit-overflow-scrolling: touch;
+            display: flex; flex-direction: column; gap: 14px;
+          }
+          .cm1-review-card {
+            width: 100%; box-sizing: border-box; border-radius: 18px; padding: 12px;
+            background: #fff; border: 1.5px solid #E2E8F0; font-family: 'Fredoka', sans-serif;
+          }
+          .cm1-review-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+          .cm1-review-title { min-width: 0; color: #1E293B; font-weight: 800; font-size: clamp(13px, 1.8vmin, 16px); }
+          .cm1-review-pill { flex-shrink: 0; border-radius: 999px; padding: 3px 9px; font-weight: 800; font-size: 12px; }
+          .cm1-review-question {
+            margin-top: 10px; padding: 12px; border-radius: 16px;
+            background: linear-gradient(180deg, #F0FDF4, #F8FAFC); border: 1.5px solid #BBF7D0;
+          }
+          .cm1-review-question .cm1-prompt { margin-bottom: 10px; }
+          .cm1-review-answer { margin-top: 10px; display: grid; gap: 4px; font-weight: 700; font-size: clamp(12px, 1.7vmin, 15px); color: #334155; }
         `}</style>
         <div className="cm1-results-scroll">
           <div className="cm1-results-body">
@@ -1560,6 +1617,8 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
                 </span>
               </div>
               <div className="cm1-results-stats">
+                <button type="button" className="cm1-results-stat" onClick={() => setReviewMode('correct')} style={{ color: '#16A34A' }}>✅ Betul: {correctCount}</button>
+                <button type="button" className="cm1-results-stat" onClick={() => setReviewMode('wrong')} style={{ color: '#DC2626' }}>❌ Salah: {wrongCount}</button>
                 <span className="cm1-results-stat" style={{ color: '#16A34A' }}>✅ Betul: {correctCount}</span>
                 <span className="cm1-results-stat" style={{ color: '#DC2626' }}>❌ Salah: {wrongCount}</span>
                 <span className="cm1-results-stat" style={{ color: '#1E293B' }}>⏱ {usedMM}:{String(usedSS).padStart(2, '0')}</span>
@@ -1593,6 +1652,67 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
                   );
                 })}
               </div>
+              {reviewMode && createPortal((
+                <div className="cm1-review-backdrop" role="dialog" aria-modal="true" aria-label={reviewMode === 'correct' ? 'Soalan betul' : 'Soalan salah'}>
+                  <div className="cm1-review-dialog">
+                    <div className="cm1-review-head">
+                      <div className="cm1-review-heading">
+                        {reviewMode === 'correct' ? `✅ Betul: ${correctCount}` : `❌ Salah: ${wrongCount}`}
+                      </div>
+                      <button type="button" className="cm1-review-close" onClick={() => setReviewMode(null)} aria-label="Tutup">×</button>
+                    </div>
+                    <div className="cm1-review-list">
+                      {questions.map((question, index) => ({ question, index }))
+                        .filter(({ index }) => reviewMode === 'correct' ? answers[index] === true : answers[index] === false)
+                        .map(({ question, index }) => {
+                          const ok = answers[index] === true;
+                          const picked = selectedPerQ?.[index];
+                          const promptContent = renderCM1Prompt(question, accent);
+                          const reviewCtx = {
+                            answered: true,
+                            examMode: false,
+                            selected: picked || null,
+                            answer: question.answer,
+                            isCorrect: ok,
+                            handlePick: () => {},
+                            handleNext: () => {},
+                            streak: 0,
+                            correct: 0,
+                            wrong: 0,
+                            theme: { accent, dark, cd, green: '#16A34A', red: '#DC2626', canChangeAnswer: false, savedAnswer: picked || '' },
+                          };
+                          return (
+                            <div
+                              key={question.examId || question.qid || index}
+                              className="cm1-review-card"
+                              style={{ borderColor: ok ? '#86EFAC' : '#FCA5A5', background: ok ? '#F0FDF4' : '#FEF2F2' }}
+                            >
+                              <div className="cm1-review-top">
+                                <div className="cm1-review-title">{index + 1}. {question.header || question.type}</div>
+                                <span className="cm1-review-pill" style={{ background: ok ? '#DCFCE7' : '#FEE2E2', color: ok ? '#15803D' : '#DC2626' }}>
+                                  {ok ? 'Betul' : 'Salah'}
+                                </span>
+                              </div>
+                              <div className="cm1-review-question">
+                                {promptContent && <div className="cm1-prompt">{promptContent}</div>}
+                                {renderQuestionM1All(question, reviewCtx)}
+                              </div>
+                              <div className="cm1-review-answer">
+                                <div>Jawapan anda: <span style={{ color: ok ? '#15803D' : '#DC2626' }}>{picked ? cm1AnswerText(question, picked) : 'Tidak dijawab'}</span></div>
+                                {!ok && <div>Jawapan betul: <span style={{ color: '#15803D' }}>{cm1AnswerText(question, question.answer)}</span></div>}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      {(reviewMode === 'correct' ? correctCount : wrongCount) === 0 && (
+                        <div className="cm1-review-card" style={{ textAlign: 'center', color: '#64748B', fontWeight: 800 }}>
+                          Tiada soalan untuk dipaparkan.
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ), document.body)}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(10px, 1.6vmin, 16px)', width: '100%' }}>
                 <button type="button" onClick={() => {
                   if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
