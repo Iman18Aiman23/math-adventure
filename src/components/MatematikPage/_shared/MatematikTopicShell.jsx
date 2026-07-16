@@ -559,7 +559,16 @@ export default function MatematikTopicShell({
           box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 0 0 3px color-mix(in srgb, var(--mt-accent) 16%, transparent), 0 24px 52px rgba(3,7,20,.36) !important;
         }
         .mt-topic-shell .cmp-panel.picked {
-          border-color: color-mix(in srgb, var(--mt-accent) 55%, #DCE8F4) !important;
+          background: rgba(34,197,94,.12) !important;
+          border-color: #16A34A !important;
+          border-bottom-color: #16A34A !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 0 0 4px rgba(22,163,74,.24), 0 24px 52px rgba(3,7,20,.34) !important;
+        }
+        .mt-topic-shell .kog-option.picked {
+          background: rgba(34,197,94,.12) !important;
+          border-color: #16A34A !important;
+          border-bottom-color: #16A34A !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 0 0 4px rgba(22,163,74,.24), 0 24px 52px rgba(3,7,20,.34) !important;
         }
         .mt-topic-shell .cmp-panel.is-correct,
         .mt-topic-shell .kog-option.is-correct {

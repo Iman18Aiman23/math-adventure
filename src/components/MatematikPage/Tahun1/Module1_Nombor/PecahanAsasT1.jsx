@@ -12,7 +12,7 @@ const FRACTIONS = [
   { num: 3, den: 4, label: '3/4' },
 ];
 
-function CircleFraction({ num, den, size = 150, color = '#8B5CF6' }) {
+function CircleFraction({ num, den, size = 150, color = '#16A34A' }) {
   const cx = size / 2;
   const cy = size / 2;
   const r = size * 0.4;
@@ -29,7 +29,7 @@ function CircleFraction({ num, den, size = 150, color = '#8B5CF6' }) {
     const largeArc = (endAngle - startAngle) > 180 ? 1 : 0;
     const path = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`;
     slices.push(
-      <path key={i} d={path} fill={i < num ? color : '#FFF'} stroke="#6D28D9" strokeWidth="2" />
+      <path key={i} d={path} fill={i < num ? color : '#FFF'} stroke="#15803D" strokeWidth="2" />
     );
   }
   return <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size}>{slices}</svg>;
@@ -177,7 +177,7 @@ export default function PecahanAsasT1({ onBack, language = 'bm' }) {
 
   if (!gameStarted) {
     return (
-      <div style={{ minHeight: '100%', background: 'linear-gradient(135deg,#F3E8FF 0%,#C4B5FD 50%,#6D28D9 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+      <div style={{ minHeight: '100%', background: 'linear-gradient(135deg,#F7FEE7 0%,#DCFCE7 55%,#86EFAC 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
         <BackButton onClick={onBack} />
         <div style={{ fontSize: '5rem', marginBottom: '1rem' }}>🔢</div>
         <h1 style={{ fontFamily: "'Baloo 2',sans-serif", color: '#FFF', fontSize: '2.8rem', marginBottom: '0.5rem', textShadow: '0 2px 8px rgba(0,0,0,0.15)', textAlign: 'center' }}>
@@ -187,7 +187,7 @@ export default function PecahanAsasT1({ onBack, language = 'bm' }) {
           {language === 'bm' ? 'Belajar pecahan 1/2, 1/3, 1/4 dan banyak lagi!' : 'Learn fractions 1/2, 1/3, 1/4 and more!'}
         </p>
         <button onClick={() => setGameStarted(true)}
-          style={{ padding: '1rem 3rem', background: '#FFF', color: '#6D28D9', border: 'none', borderRadius: '16px', fontSize: '1.5rem', cursor: 'pointer', fontWeight: 800, fontFamily: "'Baloo 2',sans-serif", boxShadow: '0 6px 20px rgba(109,40,217,0.3)', transition: 'transform 0.15s' }}>
+          style={{ padding: '1rem 3rem', background: '#FFF', color: '#15803D', border: 'none', borderRadius: '16px', fontSize: '1.5rem', cursor: 'pointer', fontWeight: 800, fontFamily: "'Baloo 2',sans-serif", boxShadow: '0 6px 20px rgba(34,197,94,0.18)', transition: 'transform 0.15s' }}>
           {language === 'bm' ? 'Mula 🎯' : 'Start 🎯'}
         </button>
       </div>
@@ -196,7 +196,7 @@ export default function PecahanAsasT1({ onBack, language = 'bm' }) {
 
   if (isDone) {
     return (
-      <div style={{ minHeight: '100%', background: 'linear-gradient(135deg,#F3E8FF 0%,#C4B5FD 50%,#6D28D9 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+      <div style={{ minHeight: '100%', background: 'linear-gradient(135deg,#F7FEE7 0%,#DCFCE7 55%,#86EFAC 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
         <BackButton onClick={onBack} />
         <div style={{ fontSize: '5rem', marginBottom: '1rem' }}>🏆</div>
         <h2 style={{ fontFamily: "'Baloo 2',sans-serif", color: '#FFF', fontSize: '2rem', marginBottom: '0.5rem', textShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
@@ -206,7 +206,7 @@ export default function PecahanAsasT1({ onBack, language = 'bm' }) {
           {language === 'bm' ? 'Markah: ' : 'Score: '}<strong>{score}</strong>/{TOTAL_QUESTIONS * 10}
         </p>
         <div style={{ background: 'rgba(255,255,255,0.95)', borderRadius: '16px', padding: '1.25rem', marginBottom: '2rem', maxWidth: '400px', width: '100%', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
-          <h3 style={{ fontFamily: "'Baloo 2',sans-serif", color: '#6D28D9', fontSize: '1rem', marginBottom: '0.8rem', textAlign: 'center' }}>
+          <h3 style={{ fontFamily: "'Baloo 2',sans-serif", color: '#15803D', fontSize: '1rem', marginBottom: '0.8rem', textAlign: 'center' }}>
             {language === 'bm' ? 'Keputusan Setiap Jenis' : 'Results by Type'}
           </h3>
           {['kenali', 'banding', 'warna'].map(type => {
@@ -233,10 +233,10 @@ export default function PecahanAsasT1({ onBack, language = 'bm' }) {
           })}
         </div>
         <div style={{ display: 'flex', gap: '1rem' }}>
-          <button onClick={handleResetGame} style={{ padding: '0.75rem 1.5rem', background: 'rgba(255,255,255,0.8)', color: '#6D28D9', border: 'none', borderRadius: '12px', fontSize: '1rem', cursor: 'pointer', fontWeight: 700, fontFamily: "'Baloo 2',sans-serif" }}>
+          <button onClick={handleResetGame} style={{ padding: '0.75rem 1.5rem', background: 'rgba(255,255,255,0.8)', color: '#15803D', border: 'none', borderRadius: '12px', fontSize: '1rem', cursor: 'pointer', fontWeight: 700, fontFamily: "'Baloo 2',sans-serif" }}>
             {language === 'bm' ? 'Cuba Lagi' : 'Play Again'}
           </button>
-          <button onClick={onBack} style={{ padding: '0.75rem 1.5rem', background: '#FFF', color: '#6D28D9', border: 'none', borderRadius: '12px', fontSize: '1rem', cursor: 'pointer', fontWeight: 700, fontFamily: "'Baloo 2',sans-serif" }}>
+          <button onClick={onBack} style={{ padding: '0.75rem 1.5rem', background: '#FFF', color: '#15803D', border: 'none', borderRadius: '12px', fontSize: '1rem', cursor: 'pointer', fontWeight: 700, fontFamily: "'Baloo 2',sans-serif" }}>
             {language === 'bm' ? 'Kembali' : 'Back'}
           </button>
         </div>
@@ -245,7 +245,7 @@ export default function PecahanAsasT1({ onBack, language = 'bm' }) {
   }
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg,#F3E8FF 0%,#C4B5FD 50%,#6D28D9 100%)', overflow: 'hidden' }}>
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg,#F7FEE7 0%,#DCFCE7 55%,#86EFAC 100%)', overflow: 'hidden' }}>
       <BackButton onClick={onBack} />
       <div style={{ flexShrink: 0, padding: '3.5rem 1rem 0.75rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
         <div style={{ textAlign: 'center', marginBottom: '0.85rem' }}>
@@ -264,33 +264,33 @@ export default function PecahanAsasT1({ onBack, language = 'bm' }) {
         </div>
       </div>
       <div style={{ flex: 1, overflowY: 'auto', padding: '0.75rem 1rem 1rem', maxWidth: '600px', width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
-        <div style={{ background: '#FFF', borderRadius: '16px', border: '2px solid #8B5CF6', padding: '1.1rem 1.25rem', marginBottom: '1rem', boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}>
-          <div style={{ display: 'inline-block', background: '#F3E8FF', color: '#6D28D9', padding: '0.3rem 0.7rem', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 700, fontFamily: "'Baloo 2',sans-serif", marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+        <div style={{ background: '#FFF', borderRadius: '16px', border: '2px solid #16A34A', padding: '1.1rem 1.25rem', marginBottom: '1rem', boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}>
+          <div style={{ display: 'inline-block', background: '#F0FDF4', color: '#15803D', padding: '0.3rem 0.7rem', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 700, fontFamily: "'Baloo 2',sans-serif", marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
             {question.type === 'kenali' && '🔍 Kenali Pecahan'}
             {question.type === 'banding' && '⚖️ Bandingkan'}
             {question.type === 'warna' && '🎨 Warna'}
           </div>
 
           {question.type === 'kenali' && (
-            <div style={{ background: '#F5F3FF', borderRadius: '12px', padding: '1.5rem 1rem', marginBottom: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '0.5rem' }}>
-              <CircleFraction num={question.fraction.num} den={question.fraction.den} color="#8B5CF6" />
-              <div style={{ fontFamily: "'Baloo 2',sans-serif", fontSize: '1.5rem', fontWeight: 800, color: '#6D28D9' }}>? / {question.fraction.den}</div>
+            <div style={{ background: '#F0FDF4', borderRadius: '12px', padding: '1.5rem 1rem', marginBottom: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '0.5rem' }}>
+              <CircleFraction num={question.fraction.num} den={question.fraction.den} color="#16A34A" />
+              <div style={{ fontFamily: "'Baloo 2',sans-serif", fontSize: '1.5rem', fontWeight: 800, color: '#15803D' }}>? / {question.fraction.den}</div>
             </div>
           )}
 
           {question.type === 'banding' && (
-            <div style={{ background: '#F5F3FF', borderRadius: '12px', padding: '1.5rem 1rem', marginBottom: '1rem' }}>
+            <div style={{ background: '#F0FDF4', borderRadius: '12px', padding: '1.5rem 1rem', marginBottom: '1rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                 <div style={{ textAlign: 'center' }}>
-                  <CircleFraction num={question.fractions[0].num} den={question.fractions[0].den} size={120} color="#8B5CF6" />
-                  <div style={{ marginTop: '0.5rem', fontFamily: "'Baloo 2',sans-serif", fontWeight: 700, color: '#6D28D9', fontSize: '1.5rem' }}>
+                  <CircleFraction num={question.fractions[0].num} den={question.fractions[0].den} size={120} color="#16A34A" />
+                  <div style={{ marginTop: '0.5rem', fontFamily: "'Baloo 2',sans-serif", fontWeight: 700, color: '#15803D', fontSize: '1.5rem' }}>
                     {question.fractions[0].label}
                   </div>
                 </div>
-                <div style={{ fontSize: '2rem', fontWeight: 700, color: '#6D28D9' }}>vs</div>
+                <div style={{ fontSize: '2rem', fontWeight: 700, color: '#15803D' }}>vs</div>
                 <div style={{ textAlign: 'center' }}>
-                  <CircleFraction num={question.fractions[1].num} den={question.fractions[1].den} size={120} color="#7C3AED" />
-                  <div style={{ marginTop: '0.5rem', fontFamily: "'Baloo 2',sans-serif", fontWeight: 700, color: '#7C3AED', fontSize: '1.5rem' }}>
+                  <CircleFraction num={question.fractions[1].num} den={question.fractions[1].den} size={120} color="#15803D" />
+                  <div style={{ marginTop: '0.5rem', fontFamily: "'Baloo 2',sans-serif", fontWeight: 700, color: '#15803D', fontSize: '1.5rem' }}>
                     {question.fractions[1].label}
                   </div>
                 </div>
@@ -299,13 +299,13 @@ export default function PecahanAsasT1({ onBack, language = 'bm' }) {
           )}
 
           {question.type === 'warna' && (
-            <div style={{ background: '#F5F3FF', borderRadius: '12px', padding: '1.5rem 1rem', marginBottom: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '0.5rem' }}>
-              <CircleFraction num={0} den={question.fraction.den} color="#8B5CF6" />
-              <div style={{ fontFamily: "'Baloo 2',sans-serif", fontSize: '1.5rem', fontWeight: 800, color: '#6D28D9' }}>0 / {question.fraction.den}</div>
+            <div style={{ background: '#F0FDF4', borderRadius: '12px', padding: '1.5rem 1rem', marginBottom: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '0.5rem' }}>
+              <CircleFraction num={0} den={question.fraction.den} color="#16A34A" />
+              <div style={{ fontFamily: "'Baloo 2',sans-serif", fontSize: '1.5rem', fontWeight: 800, color: '#15803D' }}>0 / {question.fraction.den}</div>
             </div>
           )}
 
-          <div style={{ background: '#F5F3FF', borderLeft: '4px solid #8B5CF6', padding: '0.9rem 1rem', marginBottom: '1rem', borderRadius: '8px' }}>
+          <div style={{ background: '#F0FDF4', borderLeft: '4px solid #16A34A', padding: '0.9rem 1rem', marginBottom: '1rem', borderRadius: '8px' }}>
             <p style={{ fontFamily: "'Fredoka',sans-serif", fontSize: '1rem', color: '#333', margin: '0', fontWeight: 600, lineHeight: 1.5 }}>
               {language === 'bm' ? question.question_bm : question.question_eng}
             </p>
@@ -340,13 +340,13 @@ export default function PecahanAsasT1({ onBack, language = 'bm' }) {
         </div>
       </div>
 
-      <div style={{ flexShrink: 0, background: 'linear-gradient(135deg,#F3E8FF 0%,#C4B5FD 50%,#6D28D9 100%)', borderTop: '2px solid rgba(255,255,255,0.25)', padding: '0.75rem 1rem', display: 'flex', gap: '0.75rem' }}>
-        <button onClick={handleResetQuestion} style={{ flex: 1, padding: '0.75rem', background: 'rgba(255,255,255,0.8)', color: '#6D28D9', border: 'none', borderRadius: '12px', cursor: 'pointer', fontWeight: 700, fontFamily: "'Baloo 2',sans-serif", display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
+      <div style={{ flexShrink: 0, background: 'linear-gradient(135deg,#F7FEE7 0%,#DCFCE7 55%,#86EFAC 100%)', borderTop: '2px solid rgba(255,255,255,0.25)', padding: '0.75rem 1rem', display: 'flex', gap: '0.75rem' }}>
+        <button onClick={handleResetQuestion} style={{ flex: 1, padding: '0.75rem', background: 'rgba(255,255,255,0.8)', color: '#15803D', border: 'none', borderRadius: '12px', cursor: 'pointer', fontWeight: 700, fontFamily: "'Baloo 2',sans-serif", display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
           <RefreshCw size={16} />
           {language === 'bm' ? 'Semula' : 'Reset'}
         </button>
         <button onClick={handleNext} disabled={!isAnswered}
-          style={{ flex: 1, padding: '0.75rem', background: isAnswered ? '#FFF' : 'rgba(255,255,255,0.4)', color: isAnswered ? '#6D28D9' : 'rgba(255,255,255,0.5)', border: 'none', borderRadius: '12px', cursor: isAnswered ? 'pointer' : 'not-allowed', fontWeight: 800, fontFamily: "'Baloo 2',sans-serif", fontSize: '1rem', boxShadow: isAnswered ? '0 4px 0 rgba(0,0,0,0.1)' : 'none', transition: 'background 0.2s' }}>
+          style={{ flex: 1, padding: '0.75rem', background: isAnswered ? '#FFF' : 'rgba(255,255,255,0.4)', color: isAnswered ? '#15803D' : 'rgba(255,255,255,0.5)', border: 'none', borderRadius: '12px', cursor: isAnswered ? 'pointer' : 'not-allowed', fontWeight: 800, fontFamily: "'Baloo 2',sans-serif", fontSize: '1rem', boxShadow: isAnswered ? '0 4px 0 rgba(0,0,0,0.1)' : 'none', transition: 'background 0.2s' }}>
           {qIdx < TOTAL_QUESTIONS - 1
             ? (language === 'bm' ? 'Soalan Seterusnya →' : 'Next Question →')
             : (language === 'bm' ? 'Selesai ✓' : 'Finish ✓')}

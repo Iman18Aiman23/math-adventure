@@ -3,20 +3,24 @@ import Tahun1ModuleHubLayout from '../../../PendidikanIslamPage/Tahun1/Tahun1Mod
 import MatematikTopicRobot from '../../MatematikTopicRobot';
 
 const THEME = {
-  pageGradient: 'transparent',
-  dark: '#6D28D9',
-  cd: '#6D28D9',
-  accent: '#8B5CF6',
-  stageGradient: 'transparent',
-  pillGradient: 'linear-gradient(180deg,#8B5CF6,#6D28D9)',
+  pageGradient: 'linear-gradient(180deg,#F7FEE7 0%,#DCFCE7 55%,#86EFAC 100%)',
+  dark: '#15803D',
+  cd: '#16A34A',
+  accent: '#22C55E',
+  stageGradient: 'radial-gradient(ellipse at 50% 32%,#F7FEE7 0%,#BBF7D0 58%,#86EFAC 100%)',
+  pillGradient: 'linear-gradient(180deg,#86EFAC,#22C55E)',
 };
 
-const TOPIC_COLORS = ['#8B5CF6', '#8B5CF6', '#8B5CF6', '#8B5CF6', '#8B5CF6'];
+const TOPIC_COLORS = ['#16A34A', '#16A34A', '#16A34A', '#16A34A', '#16A34A', '#16A34A', '#16A34A', '#16A34A'];
 const robotFor = (symbol, color = THEME.accent) => (
   <MatematikTopicRobot theme={THEME} badge={color} glow={color} symbol={symbol} />
 );
 
 const SCORE_KEY = 'mt_ld_m1_scores';
+const ACTION_TOTALS = {
+  'selesaikan-cerita-m1': 15,
+  'cabar-minda-m1': 30,
+};
 
 function loadScores() {
   if (typeof localStorage === 'undefined') return {};
@@ -25,12 +29,13 @@ function loadScores() {
 }
 
 function actionScore(actionId, scores) {
+  const total = ACTION_TOTALS[actionId] || 10;
   const score = scores[actionId];
-  if (!score) return { status: 'unplayed', label: 'Score 0/10' };
-  const score10 = Math.max(0, Math.min(10, Math.round((score.best / score.total) * 10)));
+  if (!score) return { status: 'unplayed', label: `Score 0/${total}` };
+  const best = Math.max(0, Math.min(total, score.best || 0));
   return {
     status: score.passed ? 'passed' : 'failed',
-    label: `Score ${score10}/10`,
+    label: `Score ${best}/${total}`,
   };
 }
 

@@ -3,16 +3,17 @@ import MatematikTopicShell from '../../_shared/MatematikTopicShell';
 import MatematikExplore from '../../_shared/MatematikExplore';
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#F5F3FF 0%,#C4B5FD 50%,#7C3AED 100%)',
-  dark: '#5B21B6',
-  cd: '#7C3AED',
-  accent: '#8B5CF6',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#EDE9FE 0%,#A78BFA 55%,#7C3AED 100%)',
-  pillGradient: 'linear-gradient(180deg,#8B5CF6,#7C3AED)',
+  pageGradient: 'linear-gradient(180deg,#F7FEE7 0%,#DCFCE7 55%,#86EFAC 100%)',
+  dark: '#15803D',
+  cd: '#16A34A',
+  accent: '#22C55E',
+  stageGradient: 'radial-gradient(ellipse at 50% 32%,#F7FEE7 0%,#BBF7D0 58%,#86EFAC 100%)',
+  pillGradient: 'linear-gradient(180deg,#86EFAC,#22C55E)',
 };
 
 const EXPLORE_CONFIG = {
   primitive: 'cabar-minda-m1',
+  scoreId: 'cabar-minda-m1',
 };
 
 export default function CabarMindaM1({ onBack, language = 'bm' }) {

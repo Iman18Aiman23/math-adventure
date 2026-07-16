@@ -1243,22 +1243,19 @@ export default function Tahun1ModuleHubLayout({
       <div className={`pi-mhub-page${isDashboard ? ' has-dashboard' : ''}`}>
         {isDashboard ? (
           <div className="pi-mhub-dashboard">
-            <section className="pi-mhub-hero" aria-labelledby="pi-mhub-title">
-              <div className="pi-mhub-hero-copy">
-                <span className="pi-mhub-hero-kicker">
-                  {language === 'bm' ? `Modul ${moduleNum}` : `Module ${moduleNum}`}
-                </span>
-                <h1 id="pi-mhub-title">{language === 'bm' ? moduleName : moduleNameEn}</h1>
-                <p className="pi-mhub-hero-lead">
-                  {dashboardLead || (language === 'bm'
-                    ? 'Pelajari konsep melalui aktiviti interaktif yang menyeronokkan.'
-                    : 'Learn with focused interactive practice.')}
-                </p>
+            <div className="pi-mhub-banner" style={{ '--c': theme.accent, '--cd': theme.cd || theme.dark }}>
+              <div className="pi-mhub-banner-badge">{moduleNum}</div>
+              <div className="pi-mhub-banner-text">
+                <div className="pi-mhub-banner-kicker">
+                  {language === 'bm'
+                    ? `Modul ${moduleNum} · Unit Pembelajaran`
+                    : `Module ${moduleNum} · Learning Unit`}
+                </div>
+                <div className="pi-mhub-banner-name">
+                  {language === 'bm' ? moduleName : moduleNameEn}
+                </div>
               </div>
-              <span className="pi-mhub-unit-badge" aria-label={language === 'bm' ? `Modul ${moduleNum}` : `Module ${moduleNum}`}>
-                {moduleNum}
-              </span>
-            </section>
+            </div>
 
             <div className="pi-mhub-sections">
               {topics.map((t) => {
@@ -1354,6 +1351,7 @@ export default function Tahun1ModuleHubLayout({
           </div>
         ) : headerVariant === 'banner' ? (
           <div className="pi-mhub-banner" style={{ '--c': theme.accent, '--cd': theme.cd || theme.dark }}>
+            <div className="pi-mhub-banner-badge">{moduleNum}</div>
             <div className="pi-mhub-banner-text">
               <div className="pi-mhub-banner-kicker">
                 {language === 'bm'
@@ -1364,7 +1362,6 @@ export default function Tahun1ModuleHubLayout({
                 {language === 'bm' ? moduleName : moduleNameEn}
               </div>
             </div>
-            <div className="pi-mhub-banner-badge">{moduleNum}</div>
           </div>
         ) : (
           <>

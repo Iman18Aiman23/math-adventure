@@ -3,18 +3,22 @@ import Tahun1ModuleHubLayout from '../../../PendidikanIslamPage/Tahun1/Tahun1Mod
 import MatematikTopicRobot from '../../MatematikTopicRobot';
 
 const THEME = {
-  pageGradient: 'transparent',
-  dark: '#6D28D9',
-  cd: '#6D28D9',
-  accent: '#8B5CF6',
-  stageGradient: 'transparent',
-  pillGradient: 'linear-gradient(180deg,#8B5CF6,#6D28D9)',
+  pageGradient: 'linear-gradient(180deg,#F7FEE7 0%,#DCFCE7 55%,#86EFAC 100%)',
+  dark: '#15803D',
+  cd: '#16A34A',
+  accent: '#22C55E',
+  stageGradient: 'radial-gradient(ellipse at 50% 32%,#F7FEE7 0%,#BBF7D0 58%,#86EFAC 100%)',
+  pillGradient: 'linear-gradient(180deg,#86EFAC,#22C55E)',
 };
 
-const TOPIC_COLORS = ['#8B5CF6', '#8B5CF6', '#8B5CF6', '#8B5CF6', '#8B5CF6', '#8B5CF6', '#8B5CF6', '#8B5CF6'];
+const TOPIC_COLORS = ['#16A34A', '#16A34A', '#16A34A', '#16A34A', '#16A34A', '#16A34A', '#16A34A', '#16A34A'];
 const robot = (symbol, color = THEME.accent) => <MatematikTopicRobot theme={THEME} symbol={symbol} badge={color} glow={color} />;
 const drill = (id) => `m2-drill-${id}`;
 const SCORE_KEY = 'mt_ld_m2_scores';
+const ACTION_TOTALS = {
+  'm2-selesaikan': 6,
+  'm2-cabar-minda': 31,
+};
 
 function loadScores() {
   if (typeof localStorage === 'undefined') return {};
@@ -24,13 +28,17 @@ function loadScores() {
 
 function actionScore(actionId, scores) {
   const typeId = actionId.replace('m2-drill-', '');
+  const rawTotal = ACTION_TOTALS[actionId];
+  const total = rawTotal || 10;
   const score = scores[typeId];
-  if (!score) return { status: 'unplayed', label: 'Score 0/10' };
-  const score10 = Math.max(0, Math.min(10, Math.round((score.best / score.total) * 10)));
+  if (!score) return { status: 'unplayed', label: `Score 0/${total}` };
+  const best = rawTotal
+    ? Math.max(0, Math.min(total, score.best || 0))
+    : Math.max(0, Math.min(10, Math.round(((score.best || 0) / (score.total || 10)) * 10)));
   const status = score.passed ? 'passed' : 'failed';
   return {
     status,
-    label: `Score ${score10}/10`,
+    label: `Score ${best}/${total}`,
   };
 }
 
@@ -127,22 +135,16 @@ const TOPICS = [
     ],
   },
   {
-    id: 'm2-selesaikan',
+    id: 'm2-cabaran',
     pill: 'CABARAN',
-    title: 'Selesaikan Cerita',
-    desc: 'Selesaikan enam soalan cerita pada roda nombor.',
+    title: 'Latihan dan cabaran',
+    desc: 'Selesaikan cerita dan uji semua kemahiran tambah dan tolak.',
     visual: robot('?', TOPIC_COLORS[6]),
     color: TOPIC_COLORS[6],
-    icon: 'trophy',
-  },
-  {
-    id: 'm2-cabar-minda',
-    pill: 'CABARAN',
-    title: 'Cabaran Campur',
-    desc: 'Uji semua kemahiran tambah dan tolak dalam satu cabaran.',
-    color: TOPIC_COLORS[7],
-    visual: robot('★', TOPIC_COLORS[7]),
-    icon: 'sparkles',
+    actions: [
+      { id: 'm2-selesaikan', label: 'Selesaikan Cerita', icon: 'book' },
+      { id: 'm2-cabar-minda', label: 'Ujian Campur', icon: 'trophy' },
+    ],
   },
 ];
 

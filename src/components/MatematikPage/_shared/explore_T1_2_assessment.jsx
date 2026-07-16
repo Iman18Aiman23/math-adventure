@@ -90,6 +90,7 @@ export function SelesaikanM2Explore({ data, language, theme, onExit }) {
     if (allSolved && !complete) {
       const t = setTimeout(() => {
         setComplete(true);
+        recordActivityScore(data?.scoreStorageKey, data?.scoreId, 6, 6);
         playSound('streak');
         confetti({ particleCount: 200, spread: 160, origin: { y: 0.4 } });
         setTimeout(() => confetti({ particleCount: 140, spread: 120, startVelocity: 45, origin: { y: 0.55 } }), 250);
@@ -427,7 +428,7 @@ const LD_SECTIONS = [
   { id: 'latihan-tambah',  name: 'Latihan Tambah',         color: '#6366F1', types: ['lt-mudah-m1','lt-warnai','lt-padankan','lt-bond','lt-abacus','lt-sederhana-s1','lt-sukar-k1'] },
   { id: 'kenali-tolak',    name: 'Kenali Tolak',            color: '#EF4444', types: ['kt-buang','kt-garis-sub','kt-perkataan-tolak','kt-ayat-tolak'] },
   { id: 'latihan-tolak',   name: 'Latihan Tolak',           color: '#F97316', types: ['lt-tolak-mudah-m1','lt-tolak-warnai','lt-tolak-padankan','lt-tolak-bond','lt-tolak-blok','lt-tolak-sederhana-s1','lt-tolak-sukar-k1'] },
-  { id: 'cerita',          name: 'Cerita Tambah & Tolak',   color: '#F59E0B', types: ['ctt-tambah','ctt-tolak','ctt-operasi','ctt-ayat'] },
+  { id: 'cerita',          name: 'Cerita Tambah & Tolak',   color: '#16A34A', types: ['ctt-tambah','ctt-tolak','ctt-operasi','ctt-ayat'] },
   { id: 'tambah-berulang', name: 'Tambah Tolak Berulang',   color: '#14B8A6', types: ['tb-add-groups','tb-add-line','tb-add-complete','tb-sub-groups','tb-sub-line'] },
 ];
 
@@ -1056,7 +1057,7 @@ const CM_SLICES = [
   { id: 'latihan-tambah',  name: 'Latihan Tambah',         color: '#6366F1', types: ['lt-mudah-m1','lt-warnai','lt-padankan','lt-bond','lt-abacus','lt-sederhana-s1','lt-sukar-k1'] },
   { id: 'kenali-tolak',    name: 'Kenali Tolak',            color: '#EF4444', types: ['kt-buang','kt-garis-sub','kt-perkataan-tolak','kt-ayat-tolak'] },
   { id: 'latihan-tolak',   name: 'Latihan Tolak',           color: '#F97316', types: ['lt-tolak-mudah-m1','lt-tolak-warnai','lt-tolak-padankan','lt-tolak-bond','lt-tolak-blok','lt-tolak-sederhana-s1','lt-tolak-sukar-k1'] },
-  { id: 'cerita',          name: 'Cerita Tambah & Tolak',   color: '#F59E0B', types: ['ctt-tambah','ctt-tolak','ctt-operasi','ctt-ayat'] },
+  { id: 'cerita',          name: 'Cerita Tambah & Tolak',   color: '#16A34A', types: ['ctt-tambah','ctt-tolak','ctt-operasi','ctt-ayat'] },
   { id: 'tambah-berulang', name: 'Tambah Tolak Berulang',   color: '#14B8A6', types: ['tb-add-groups','tb-add-line','tb-add-complete','tb-sub-groups','tb-sub-line'] },
 ];
 
@@ -1071,30 +1072,46 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState(null);
   const [selectedPerQ, setSelectedPerQ] = useState(null);
+  const [showQuestionList, setShowQuestionList] = useState(false);
   const [timeLeft, setTimeLeft] = useState(1800);
   const [timeUsed, setTimeUsed] = useState(0);
   const timerRef = useRef(null);
+  const answersRef = useRef(null);
 
   // Cleanup timer on unmount
   useEffect(() => {
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, []);
 
+  const finishExam = (finalTimeUsed) => {
+    const finalAnswers = answersRef.current || [];
+    if (data?.scoreStorageKey && data?.scoreId && questions?.length) {
+      recordActivityScore(data.scoreStorageKey, data.scoreId, finalAnswers.filter(Boolean).length, questions.length);
+    }
+    setTimeUsed(finalTimeUsed);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    setPhase('results');
+  };
+
   const startExam = () => {
     const qs = buildCabarMindaM2Round();
+    const blankAnswers = new Array(qs.length).fill(null);
     setQuestions(qs);
-    setAnswers(new Array(qs.length).fill(null));
+    setAnswers(blankAnswers);
+    answersRef.current = blankAnswers;
     setSelectedPerQ({});
+    setShowQuestionList(false);
     setCurrent(0);
     setTimeLeft(1800);
+    setTimeUsed(0);
     setPhase('exam');
     timerRef.current = setInterval(() => {
       setTimeLeft(t => {
         if (t <= 1) {
-          clearInterval(timerRef.current);
-          timerRef.current = null;
-          setTimeUsed(1800);
-          setPhase('results');
+          finishExam(1800);
           return 0;
         }
         return t - 1;
@@ -1103,23 +1120,24 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
   };
 
   const handleExamPick = (value) => {
-    if (!questions || answers[current] !== null) return;
+    if (!questions) return;
     const correct = value === questions[current].answer;
     const newAnswers = [...answers];
     newAnswers[current] = correct;
     setAnswers(newAnswers);
-    const newSel = { ...selectedPerQ, [current]: value };
-    setSelectedPerQ(newSel);
-    playSound(correct ? 'correct' : 'wrong');
-    if (correct) confetti({ particleCount: 45, spread: 60, startVelocity: 32, origin: { y: 0.7 }, scalar: 0.85 });
+    answersRef.current = newAnswers;
+    setSelectedPerQ((currentSelected) => ({ ...(currentSelected || {}), [current]: value }));
   };
 
   const handleExamNext = () => {
     if (!questions) return;
+    if (answers[current] === null) return;
     if (current + 1 >= questions.length) {
-      setTimeUsed(1800 - timeLeft);
-      if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
-      setPhase('results');
+      if (!answers.every((value) => value !== null)) {
+        setShowQuestionList(true);
+        return;
+      }
+      finishExam(1800 - timeLeft);
       return;
     }
     setCurrent(c => c + 1);
@@ -1141,7 +1159,7 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
           <div style={{ display: 'flex', gap: 'clamp(8px, 1.6vmin, 16px)', flexWrap: 'wrap', justifyContent: 'center' }}>
             {[
               { label: '31 Soalan', color: '#3B82F6' },
-              { label: '30 Minit', color: '#F59E0B' },
+              { label: '30 Minit', color: '#16A34A' },
               { label: 'Lulus 80% (25/31)', color: '#16A34A' },
             ].map(chip => (
               <div key={chip.label} style={{
@@ -1185,84 +1203,179 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
   if (phase === 'exam' && questions) {
     const q = questions[current];
     const answered = answers[current] !== null;
-    const isCorrect = answers[current] === true;
+    const answeredCount = answers.filter((value) => value !== null).length;
     const mm = Math.floor(timeLeft / 60);
     const ss = timeLeft % 60;
     const timerStr = `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
     const timerRed = timeLeft <= 300;
-    const correctCount = answers.filter(Boolean).length;
-    const wrongCount = answers.filter(a => a === false).length;
+    const allAnswered = answeredCount === questions.length;
+    const isLastQuestion = current + 1 >= questions.length;
+    const nextLabel = isLastQuestion && allAnswered
+      ? (language === 'bm' ? 'Tamat' : 'Finish')
+      : (language === 'bm' ? 'Seterusnya ->' : 'Next ->');
 
     const examCtx = {
-      answered,
+      answered: false,
       selected: selectedPerQ[current] || null,
       answer: q.answer,
-      isCorrect,
+      isCorrect: false,
+      examMode: true,
       handlePick: handleExamPick,
-      handleNext: () => {},
+      handleNext: handleExamNext,
       streak: 0,
-      correct: correctCount,
-      wrong: wrongCount,
+      correct: 0,
+      wrong: 0,
       theme: { accent, dark, cd, green: '#16A34A', red: '#DC2626' },
     };
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'transparent' }}>
         <style>{`
-          .cm2-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; }
+          .cm2-scroll { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
           .cm2-body {
             min-height: 100%; box-sizing: border-box;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding: clamp(14px, 3vmin, 40px);
+            padding: clamp(6px, 1.1vmin, 12px) clamp(10px, 1.6vmin, 20px);
           }
           .cm2-content {
             width: 100%; max-width: min(94vw, 860px);
             display: flex; flex-direction: column; align-items: center;
-            gap: clamp(8px, 1.6vmin, 18px);
+            gap: clamp(4px, .9vmin, 9px);
           }
           .cm2-prompt {
             font-family: 'Baloo 2', sans-serif; font-weight: 800;
-            font-size: clamp(22px, 4.4vmin, 40px); color: #1E293B; text-align: center; line-height: 1.15;
+            font-size: clamp(18px, 3.4vmin, 32px); color: #1E293B; text-align: center; line-height: 1.08;
           }
           .cm2-feedback {
             font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: clamp(14px, 2vmin, 18px);
-            text-align: center; min-height: clamp(28px, 3.8vmin, 44px);
+            text-align: center; min-height: 0; height: 0; overflow: hidden;
             display: flex; align-items: center; justify-content: center; color: #64748B;
           }
           .cm2-next {
-            padding: clamp(11px, 1.5vmin, 17px) clamp(28px, 4vmin, 52px);
+            padding: clamp(8px, 1.1vmin, 13px) clamp(24px, 3.4vmin, 44px);
             border: none; border-radius: 999px; background: ${accent}; color: #fff;
-            font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(17px, 2.6vmin, 26px);
+            font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(16px, 2.2vmin, 22px);
             cursor: pointer; box-shadow: 0 4px 0 ${cd}; transition: transform .1s ease;
             -webkit-tap-highlight-color: transparent;
           }
           .cm2-next:hover:not(:disabled) { transform: translateY(-2px); }
           .cm2-next:active:not(:disabled) { transform: translateY(2px); }
+          .cm2-next:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
+          .ujian-map-overlay {
+            position: fixed; inset: 0; z-index: 80;
+            display: grid; place-items: center; padding: 16px;
+            background: rgba(15,23,42,.32); backdrop-filter: blur(10px);
+          }
+          .ujian-map-dialog {
+            width: min(92vw, 440px); max-height: calc(100dvh - 32px); overflow: hidden;
+            border: 1.5px solid #D1FAE5; border-radius: 24px; background: rgba(255,255,255,.98);
+            box-shadow: 0 24px 70px rgba(15,23,42,.24); padding: 14px;
+          }
+          .ujian-map-head {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            margin-bottom: 12px;
+          }
+          .ujian-map-title {
+            font-family: 'Baloo 2', sans-serif; font-weight: 900; color: #1E293B;
+            font-size: clamp(17px, 4.2vw, 22px); line-height: 1;
+          }
+          .ujian-map-close {
+            width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid #A7F3D0;
+            background: #ECFDF5; color: ${dark}; cursor: pointer;
+            font-family: 'Baloo 2', sans-serif; font-weight: 900; font-size: 20px;
+          }
+          .ujian-map {
+            display: grid; grid-template-columns: repeat(6, 1fr); gap: 7px;
+          }
+          .ujian-map-btn {
+            min-width: 0; height: clamp(40px, 8.2dvh, 58px); border-radius: 12px; cursor: pointer;
+            font-family: 'Baloo 2', sans-serif; font-weight: 900; font-size: 15px;
+            transition: transform .12s ease, border-color .12s ease, background .12s ease;
+            -webkit-tap-highlight-color: transparent;
+          }
+          .ujian-map-btn:hover { transform: translateY(-1px); }
+          .ujian-map-toggle {
+            border: 1.5px solid #A7F3D0; border-radius: 999px; background: #ECFDF5; color: ${dark};
+            padding: 8px 14px; font-family: 'Baloo 2', sans-serif; font-weight: 900; font-size: 15px;
+            cursor: pointer; -webkit-tap-highlight-color: transparent; box-sizing: border-box;
+            max-width: 58%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+          }
           .cm2-footer {
-            flex-shrink: 0; display: flex; align-items: center; justify-content: flex-end;
+            flex-shrink: 0; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px;
             padding: clamp(8px, 1.2vmin, 15px) clamp(16px, 2.4vmin, 34px);
             background: rgba(255,255,255,.85); backdrop-filter: blur(12px); border-top: 1px solid #E2E8F0;
+            box-sizing: border-box; width: 100%; overflow: hidden;
+          }
+          .ujian-timer { white-space: nowrap; flex-shrink: 0; }
+          @media (max-width: 520px) {
+            .ujian-map-overlay { padding: 12px; }
+            .ujian-map-dialog { width: min(94vw, 380px); padding: 12px; border-radius: 22px; }
+            .ujian-map { gap: 6px; }
           }
         `}</style>
+        {showQuestionList && (
+          <div
+            className="ujian-map-overlay"
+            role="dialog"
+            aria-modal="true"
+            aria-label={language === 'bm' ? 'Senarai soalan' : 'Question list'}
+            onClick={() => setShowQuestionList(false)}
+          >
+            <div className="ujian-map-dialog" onClick={(event) => event.stopPropagation()}>
+              <div className="ujian-map-head">
+                <div className="ujian-map-title">
+                  {language === 'bm' ? `Soalan ${answeredCount}/${questions.length}` : `Questions ${answeredCount}/${questions.length}`}
+                </div>
+                <button type="button" className="ujian-map-close" onClick={() => setShowQuestionList(false)} aria-label={language === 'bm' ? 'Tutup' : 'Close'}>
+                  x
+                </button>
+              </div>
+              <div className="ujian-map">
+                {questions.map((question, index) => {
+                  const isCurrent = index === current;
+                  const isAnswered = answers[index] !== null;
+                  return (
+                    <button
+                      key={question.qid || index}
+                      type="button"
+                      className="ujian-map-btn"
+                      onClick={() => {
+                        setCurrent(index);
+                        setShowQuestionList(false);
+                      }}
+                      style={{
+                        border: isCurrent ? `3px solid ${dark}` : `1.5px solid ${isAnswered ? '#86EFAC' : '#CBD5E1'}`,
+                        background: isAnswered ? '#DCFCE7' : '#FFFFFF',
+                        color: isAnswered ? '#15803D' : '#475569',
+                      }}
+                      aria-label={`${language === 'bm' ? 'Soalan' : 'Question'} ${index + 1}`}
+                    >
+                      {index + 1}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
         <div className="cm2-scroll">
           <div className="cm2-body">
             <div className="cm2-content">
               {q.prompt && <div className="cm2-prompt">{q.prompt}</div>}
               {renderQuestionM2All(q, examCtx)}
-              <div className="cm2-feedback">
-                {answered ? (language === 'bm' ? 'Pilihan disimpan.' : 'Answer saved.') : ''}
-              </div>
-              <button className="cm2-next" type="button" onClick={handleExamNext}>
-                {current + 1 >= questions.length
-                  ? (language === 'bm' ? 'Tamat 🎉' : 'Finish 🎉')
-                  : (language === 'bm' ? 'Seterusnya →' : 'Next →')}
+              <div className="cm2-feedback" aria-live="polite" />
+              <button className="cm2-next" type="button" onClick={handleExamNext} disabled={!answered}>
+                {nextLabel}
               </button>
             </div>
           </div>
         </div>
         <div className="cm2-footer">
-          <span style={{ color: timerRed ? '#DC2626' : dark, fontSize: '0.85rem', fontWeight: 900, minWidth: 88, textAlign: 'right' }}>
-            ⏱ {timerStr} · {current + 1}/{questions.length}
+          <button type="button" className="ujian-map-toggle" onClick={() => setShowQuestionList((value) => !value)}>
+            {language === 'bm' ? `Soalan ${answeredCount}/${questions.length}` : `Questions ${answeredCount}/${questions.length}`}
+          </button>
+          <span className="ujian-timer" style={{ color: timerRed ? '#DC2626' : dark, fontSize: '0.85rem', fontWeight: 900, minWidth: 88, textAlign: 'right' }}>
+            {timerStr}
           </span>
         </div>
       </div>
@@ -1352,7 +1465,7 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
               {unanswered > 0 && (
                 <div style={{
                   fontFamily: "'Fredoka',sans-serif", fontWeight: 600,
-                  fontSize: 'clamp(12px, 1.5vmin, 15px)', color: '#F59E0B',
+                  fontSize: 'clamp(12px, 1.5vmin, 15px)', color: '#16A34A',
                 }}>
                   ⏰ {unanswered} soalan tidak dijawab
                 </div>

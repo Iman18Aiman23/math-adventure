@@ -137,6 +137,27 @@ Verification memory:
 - Always check the real Matematik question page in the browser, not only a harness or isolated primitive.
 - Layout verification includes background scene, content centering, spacing rhythm, and footer alignment on small and large screens.
 
+### CONTRACT F — Ujian Page Standard (copy Ujian Wang)
+
+Every module-level **Ujian / Cabar Minda** page must use the completed **Ujian Wang**
+layout and behaviour as the reference. Keep one shared exam pattern across modules.
+
+Required behaviour:
+
+- Active exam questions stay in one screen without internal page scrolling on phone, tablet,
+  and desktop. Use compact `examMode` sizing for tall visual question scenes.
+- User cannot go next until the current question is answered.
+- Footer never changes to a column: **left** = `Soalan answered/total` button, **right** =
+  timer only. No `Hantar lengkap` button. No duplicate `n/total` in the timer.
+- `Soalan answered/total` opens a fixed question-map dialog that fits one viewport without
+  scrolling. It shows every question number, answered/current state, and allows jumping to
+  any question to edit before submit.
+- The main action button shows `Tamat` / `Finish` only when the user is on the last question
+  and all questions are answered. If the last question is reached early, keep the normal
+  next label and open the question-map dialog instead of submitting.
+- Ujian banks must come only from that module's completed Belajar/Selesaikan question
+  banks. Do not pull from drill-only `Latih Diri` generators unless explicitly requested.
+
 ---
 
 ## 0. What the owner asked
@@ -1388,20 +1409,33 @@ The child can:
 
 ### 23.3 Cabar Minda Wang
 
-- Use the **same formal exam format style as Module 3**
-- Pre-start screen must stay on one screen with no scroll
+- Use the **same formal exam format style as the completed Ujian Wang reference** (see
+  CONTRACT F)
+- Pre-start and active exam screens must stay on one screen with no scroll
 - Formal header and start CTA
-- harder mixed paper from the Module 4 content pool
+- harder mixed paper from the Module 4 content pool only:
+  - `Kenali & Nilai Wang`
+  - `Tukar Wang`
+  - `Dapat & Catat Wang`
+  - `Selesaikan Wang`
+- do not include `Latih Diri Wang`-only question generators in Ujian Wang
 - **30 questions**
 - **30-minute** pre-start copy is acceptable if the implementation mirrors Module 3
 - **80% pass gate**
 - no repeated question signatures within one exam run
+- footer = `Soalan answered/30` question-map button on the left and timer only on the right
+- question-map dialog lets the user jump to any question and edit before submit
+- `Tamat` appears only after all 30 questions are answered
 
 ### 23.4 Footer DoD
 
 - [ ] all 3 footer cards are live from the Wang hub
 - [ ] `Selesaikan` works as a proper problem-solving set
 - [ ] `Latih Diri` works as a fast mixed drill
-- [ ] `Cabar Minda` matches the same formal exam style used in Module 3
-- [ ] exam intro is single-screen and non-scrolling
+- [ ] `Cabar Minda` matches CONTRACT F / Ujian Wang formal exam behaviour
+- [ ] exam intro and active questions are single-screen and non-scrolling
+- [ ] exam footer is one row: `Soalan answered/30` dialog button left, timer-only right
+- [ ] `Tamat` is shown only after all 30 questions are answered
+- [ ] Ujian Wang bank uses only Kenali & Nilai Wang, Tukar Wang, Dapat & Catat Wang, and
+      Selesaikan Wang sources
 - [ ] build exit 0, runtime clean

@@ -80,7 +80,7 @@ function NumberTrackAdd({ a, b, total, correct, answered }) {
         let dot = '#CBD5E1', txt = '#475569';
         if (isStart) { dot = '#3B82F6'; txt = '#1E3A8A'; }
         if (isLanding) {
-          if (correct) { dot = '#16A34A'; txt = '#166534'; }
+          if (correct) { dot = '#16A34A'; txt = '#15803D'; }
           else if (answered) { dot = '#1D4ED8'; txt = '#1E3A8A'; }
           else { dot = '#F59E0B'; txt = '#B45309'; }
         }
@@ -326,7 +326,7 @@ function NumberTrackSub({ a, b, baki, correct, answered }) {
         let dot = '#CBD5E1', txt = '#475569';
         if (isStart) { dot = '#3B82F6'; txt = '#1E3A8A'; }
         if (isLanding) {
-          if (correct) { dot = '#16A34A'; txt = '#166534'; }
+          if (correct) { dot = '#16A34A'; txt = '#15803D'; }
           else if (answered) { dot = '#1D4ED8'; txt = '#1E3A8A'; }
           else { dot = '#F59E0B'; txt = '#B45309'; }
         }
@@ -2276,7 +2276,7 @@ function NumberLineAdd({ N, M, total, answered, correct }) {
         const val = i * M, isSt = i === 0, isLa = i === N;
         let dot = '#CBD5E1', txt = '#475569';
         if (isSt) { dot = '#3B82F6'; txt = '#1E3A8A'; }
-        if (isLa) { if (correct) { dot = '#16A34A'; txt = '#166534'; } else if (answered) { dot = '#1D4ED8'; txt = '#1E3A8A'; } else { dot = '#F59E0B'; txt = '#B45309'; } }
+        if (isLa) { if (correct) { dot = '#16A34A'; txt = '#15803D'; } else if (answered) { dot = '#1D4ED8'; txt = '#1E3A8A'; } else { dot = '#F59E0B'; txt = '#B45309'; } }
         return <g key={`t${i}`}>
           <line x1={x(i)} y1={AX - 8} x2={x(i)} y2={AX + 8} stroke={dot} strokeWidth={isSt || isLa ? 3 : 2} />
           <text x={x(i)} y={AX + 26} fontFamily="'Baloo 2',sans-serif" fontWeight={isSt || isLa ? 900 : 600} fontSize={isSt || isLa ? 18 : 13} fill={txt} textAnchor="middle">{isLa && !answered ? '?' : val}</text>
@@ -2306,7 +2306,7 @@ function NumberLineSub({ N, M, total, remainder = 0, answered, correct }) {
         const isSt = i === N, isLa = i === 0;
         let dot = '#CBD5E1', txt = '#475569';
         if (isSt) { dot = '#3B82F6'; txt = '#1E3A8A'; }
-        if (isLa) { if (correct) { dot = '#16A34A'; txt = '#166534'; } else if (answered) { dot = '#1D4ED8'; txt = '#1E3A8A'; } else { dot = '#F59E0B'; txt = '#B45309'; } }
+        if (isLa) { if (correct) { dot = '#16A34A'; txt = '#15803D'; } else if (answered) { dot = '#1D4ED8'; txt = '#1E3A8A'; } else { dot = '#F59E0B'; txt = '#B45309'; } }
         return <g key={`t${i}`}>
           <line x1={x(i)} y1={AX - 8} x2={x(i)} y2={AX + 8} stroke={dot} strokeWidth={isSt || isLa ? 3 : 2} />
           <text x={x(i)} y={AX + 26} fontFamily="'Baloo 2',sans-serif" fontWeight={isSt || isLa ? 900 : 600} fontSize={isSt || isLa ? 18 : 13} fill={txt} textAnchor="middle">{isLa && !answered ? '?' : val}</text>
@@ -2382,11 +2382,11 @@ function TbSubGroupsContent({ q, ctx }) {
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(14px, 2.4vmin, 28px)', width: '100%' }}>
       <GroupsGrid icon={q.icon} groups={q.N} count={q.M} />
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: 'clamp(4px, 0.8vmin, 8px)' }}>
-        <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: 'clamp(22px, 4vmin, 36px)', color: '#FFFFFF' }}>{q.total}</span>
+        <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: 'clamp(22px, 4vmin, 36px)', color: '#1E293B' }}>{q.total}</span>
         {Array.from({ length: q.N }).map((_, i) => (
           <React.Fragment key={i}>
             <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 3vmin, 26px)', color: '#FF6B6B' }}>−</span>
-            <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: 'clamp(22px, 4vmin, 36px)', color: '#FFFFFF' }}>{q.M}</span>
+            <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: 'clamp(22px, 4vmin, 36px)', color: '#1E293B' }}>{q.M}</span>
           </React.Fragment>
         ))}
         <span style={{ fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 3vmin, 26px)', color: '#B6C2D9' }}>=</span>

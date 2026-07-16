@@ -181,9 +181,9 @@ export function CompareExplore({ data, language, theme, onExit }) {
         aria-label={side === 'a' ? 'Kumpulan pertama' : 'Kumpulan kedua'}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handlePick(side); } }}
         style={{
-          background: '#fff',
-          border: answered ? `2px solid ${picked && !isAns ? '#EF4444' : '#22C55E'}` : '2px solid #E2E8F0',
-          borderBottom: `4px solid ${answered ? (picked && !isAns ? '#EF4444' : '#22C55E') : '#CBD5E1'}`,
+          background: picked && !answered ? 'rgba(34,197,94,.12)' : '#fff',
+          border: answered ? `2px solid ${picked && !isAns ? '#EF4444' : '#22C55E'}` : `2px solid ${picked ? '#16A34A' : '#E2E8F0'}`,
+          borderBottom: `4px solid ${answered ? (picked && !isAns ? '#EF4444' : '#22C55E') : (picked ? '#16A34A' : '#CBD5E1')}`,
           color: '#334155',
         }}
       >
@@ -628,7 +628,7 @@ function BilangContent({ q, ctx }) {
           const label = `${opt.value}`;
           if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; clr = '#fff'; txt = label + ' ✓'; anim = 'snkBounce .5s ease'; }
           else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; clr = '#fff'; txt = label + ' ✗'; anim = 'shakeError .35s ease'; }
-          else if (picked) { bg = `${C?.accent || '#8B5CF6'}40`; bd = C?.accent || '#8B5CF6'; clr = C?.dark || C?.accent || '#5B21B6'; txt = label; anim = 'none'; }
+          else if (picked) { bg = 'rgba(34,197,94,.12)'; bd = '#16A34A'; clr = '#15803D'; txt = label; anim = 'none'; }
           else { bg = '#fff'; bd = '#E2E8F0'; clr = '#1E293B'; txt = label; anim = 'none'; }
           return (
             <button key={opt.id} className="kog-answer-btn" type="button" onClick={() => handlePick(opt.id)} disabled={answered}
@@ -709,11 +709,11 @@ function KenalContent({ q, ctx }) {
         let bg, bd, anim;
         if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; anim = 'snkBounce .5s ease'; }
         else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; anim = 'shakeError .35s ease'; }
-        else if (picked) { bg = `${C?.accent || '#8B5CF6'}40`; bd = C?.accent || '#8B5CF6'; anim = 'none'; }
+        else if (picked) { bg = 'rgba(34,197,94,.12)'; bd = '#16A34A'; anim = 'none'; }
         else { bg = '#fff'; bd = '#CBD5E1'; anim = 'none'; }
         return (
           <div key={group.id}
-            className={`kog-option${answered && isAns ? ' is-correct' : ''}${answered && picked && !isAns ? ' is-wrong' : ''}`}
+            className={`kog-option${picked ? ' picked' : ''}${answered && isAns ? ' is-correct' : ''}${answered && picked && !isAns ? ' is-wrong' : ''}`}
             onClick={() => handlePick(group.id)}
             role="button" tabIndex={0}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handlePick(group.id); } }}
@@ -765,11 +765,11 @@ function SifarContent({ q, ctx }) {
         let bg, bd, anim;
         if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; anim = 'snkBounce .5s ease'; }
         else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; anim = 'shakeError .35s ease'; }
-        else if (picked) { bg = `${C?.accent || '#8B5CF6'}40`; bd = C?.accent || '#8B5CF6'; anim = 'none'; }
+        else if (picked) { bg = 'rgba(34,197,94,.12)'; bd = '#16A34A'; anim = 'none'; }
         else { bg = '#fff'; bd = '#CBD5E1'; anim = 'none'; }
         return (
           <div key={group.id}
-            className={`kog-option${answered && isAns ? ' is-correct' : ''}${answered && picked && !isAns ? ' is-wrong' : ''}`}
+            className={`kog-option${picked ? ' picked' : ''}${answered && isAns ? ' is-correct' : ''}${answered && picked && !isAns ? ' is-wrong' : ''}`}
             onClick={() => handlePick(group.id)}
             role="button" tabIndex={0}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handlePick(group.id); } }}
@@ -801,7 +801,8 @@ function SifarContent({ q, ctx }) {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
               fontSize: 'clamp(18px, 2.8vmin, 28px)',
-              color: '#fff', textShadow: '0 1px 2px rgba(0,0,0,.34)',
+              color: answered ? '#fff' : '#1E293B',
+              textShadow: answered ? '0 1px 2px rgba(0,0,0,.34)' : 'none',
               transition: 'all .15s ease',
             }}>
               {answered ? (isAns ? '✓' : picked ? '✗' : '') : group.count}
@@ -1692,7 +1693,7 @@ function NilaiTempatPilihContent({ q, ctx }) {
           let bg, bd, clr, txt, anim;
           if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; clr = '#fff'; txt = `${opt.value} ✓`; anim = 'snkBounce .5s ease'; }
           else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; clr = '#fff'; txt = `${opt.value} ✗`; anim = 'shakeError .35s ease'; }
-          else if (picked) { bg = `${C?.accent || '#8B5CF6'}40`; bd = C?.accent || '#8B5CF6'; clr = C?.dark || C?.accent || '#5B21B6'; txt = opt.value; anim = 'none'; }
+          else if (picked) { bg = 'rgba(34,197,94,.12)'; bd = '#16A34A'; clr = '#15803D'; txt = opt.value; anim = 'none'; }
           else { bg = '#fff'; bd = '#CBD5E1'; clr = '#1E293B'; txt = opt.value; anim = 'none'; }
           return (
             <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={answered}

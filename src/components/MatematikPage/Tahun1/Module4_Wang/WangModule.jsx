@@ -3,12 +3,12 @@ import Tahun1ModuleHubLayout from '../../../PendidikanIslamPage/Tahun1/Tahun1Mod
 import MatematikTopicRobot from '../../MatematikTopicRobot';
 
 const THEME = {
-  pageGradient: 'transparent',
-  dark: '#047857',
-  cd: '#047857',
-  accent: '#10B981',
-  stageGradient: 'transparent',
-  pillGradient: 'linear-gradient(180deg,#10B981,#047857)',
+  pageGradient: 'linear-gradient(180deg,#F7FEE7 0%,#DCFCE7 55%,#86EFAC 100%)',
+  dark: '#15803D',
+  cd: '#16A34A',
+  accent: '#22C55E',
+  stageGradient: 'radial-gradient(ellipse at 50% 32%,#F7FEE7 0%,#BBF7D0 58%,#86EFAC 100%)',
+  pillGradient: 'linear-gradient(180deg,#86EFAC,#22C55E)',
 };
 
 const ROBOT = <MatematikTopicRobot theme={THEME} />;
@@ -46,7 +46,7 @@ const TOPICS = [
   {
     id: 'latih-diri-wang',
     pill: 'LATIH DIRI',
-    title: 'Latih Diri Wang',
+    title: 'Latih Tubi Wang',
     desc: 'Latihan pantas kenal, hitung dan tukar wang.',
     visual: ROBOT,
     color: THEME.accent,

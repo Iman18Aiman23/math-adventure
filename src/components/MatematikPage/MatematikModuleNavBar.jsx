@@ -3,11 +3,11 @@ import { playHoverSound } from '../../utils/soundManager';
 import StatsBar from '../_shared/StatsBar';
 
 export const MT_MODULES_T1 = [
-  { id: 'nombor-hingga-100', num: 1, labelBM: 'Nombor Hingga 100', labelEN: 'Numbers to 100', c: '#8B5CF6', cd: '#6D28D9', pg: 'transparent' },
-  { id: 'tambah-dan-tolak', num: 2, labelBM: 'Tambah dan Tolak', labelEN: 'Addition & Subtraction', c: '#8B5CF6', cd: '#6D28D9', pg: 'transparent' },
-  { id: 'pecahan', num: 3, labelBM: 'Pecahan', labelEN: 'Fractions', c: '#8B5CF6', cd: '#6D28D9', pg: 'transparent' },
-  { id: 'wang', num: 4, labelBM: 'Wang', labelEN: 'Money', c: '#8B5CF6', cd: '#6D28D9', pg: 'transparent' },
-  { id: 'masa-dan-waktu', num: 5, labelBM: 'Masa dan Waktu', labelEN: 'Time', c: '#8B5CF6', cd: '#6D28D9', pg: 'transparent' },
+  { id: 'nombor-hingga-100', num: 1, labelBM: 'Nombor Hingga 100', labelEN: 'Numbers to 100', c: '#22C55E', cd: '#16A34A', pg: 'transparent' },
+  { id: 'tambah-dan-tolak', num: 2, labelBM: 'Tambah dan Tolak', labelEN: 'Addition & Subtraction', c: '#22C55E', cd: '#16A34A', pg: 'transparent' },
+  { id: 'pecahan', num: 3, labelBM: 'Pecahan', labelEN: 'Fractions', c: '#22C55E', cd: '#16A34A', pg: 'transparent' },
+  { id: 'wang', num: 4, labelBM: 'Wang', labelEN: 'Money', c: '#22C55E', cd: '#16A34A', pg: 'transparent' },
+  { id: 'masa-dan-waktu', num: 5, labelBM: 'Masa dan Waktu', labelEN: 'Time', c: '#22C55E', cd: '#16A34A', pg: 'transparent' },
 ];
 
 const MT_MODULES_T2T3 = [

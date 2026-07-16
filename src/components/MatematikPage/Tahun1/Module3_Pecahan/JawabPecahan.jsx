@@ -3,12 +3,12 @@ import MatematikTopicShell from '../../_shared/MatematikTopicShell';
 import MatematikActivityFrame from '../../_shared/MatematikActivityFrame';
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#F5F3FF 0%,#EDE9FE 50%,#DDD6FE 100%)',
-  dark: '#6D28D9',
-  cd: '#5B21B6',
-  accent: '#8B5CF6',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#F5F3FF 0%,#EDE9FE 55%,#DDD6FE 100%)',
-  pillGradient: 'linear-gradient(180deg,#8B5CF6,#6D28D9)',
+  pageGradient: 'linear-gradient(180deg,#F7FEE7 0%,#DCFCE7 55%,#86EFAC 100%)',
+  dark: '#15803D',
+  cd: '#16A34A',
+  accent: '#22C55E',
+  stageGradient: 'radial-gradient(ellipse at 50% 32%,#F7FEE7 0%,#BBF7D0 58%,#86EFAC 100%)',
+  pillGradient: 'linear-gradient(180deg,#86EFAC,#22C55E)',
 };
 
 const FRACTION_SET = [
@@ -176,13 +176,13 @@ function ShadeFractionQuestion({ q, ctx }) {
             padding: 'clamp(10px, 1.5vmin, 14px) clamp(22px, 3vmin, 30px)',
             borderRadius: '999px',
             border: 'none',
-            background: `linear-gradient(180deg, ${C?.accent || '#8B5CF6'}, ${C?.dark || '#5B21B6'})`,
+            background: `linear-gradient(180deg, ${C?.accent || '#16A34A'}, ${C?.dark || '#15803D'})`,
             color: '#fff',
             fontFamily: "'Baloo 2', sans-serif",
             fontWeight: 800,
             fontSize: 'clamp(18px, 2.4vmin, 22px)',
             cursor: 'pointer',
-            boxShadow: `0 4px 0 ${C?.dark || '#5B21B6'}`,
+            boxShadow: `0 4px 0 ${C?.dark || '#15803D'}`,
           }}
         >
           Semak Jawapan
@@ -232,9 +232,9 @@ function LabelFractionQuestion({ q, ctx }) {
             bd = '#DC2626';
             clr = '#fff';
           } else if (picked) {
-            bg = `${C?.accent || '#8B5CF6'}18`;
-            bd = C?.accent || '#8B5CF6';
-            clr = C?.dark || '#5B21B6';
+            bg = `${C?.accent || '#16A34A'}18`;
+            bd = C?.accent || '#16A34A';
+            clr = C?.dark || '#15803D';
           }
 
           return (
@@ -293,7 +293,7 @@ function StaticFractionSvg({ parts, shaded }) {
         <path
           key={index}
           d={path}
-          fill={index < shaded ? '#A855F7' : '#FFFFFF'}
+          fill={index < shaded ? '#16A34A' : '#FFFFFF'}
           opacity={index < shaded ? '0.42' : '1'}
           stroke={stroke}
           strokeWidth="2"
@@ -327,7 +327,7 @@ function SelectableFractionSvg({ parts, pickedParts, onToggle, disabled, resultT
             ? '#22C55E'
             : resultTone === 'wrong'
               ? '#EF4444'
-              : '#A855F7'
+              : '#16A34A'
           : '#FFFFFF';
         const opacity = active ? (resultTone ? '0.56' : '0.42') : '1';
         return (

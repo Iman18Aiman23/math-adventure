@@ -3,12 +3,12 @@ import MatematikTopicShell from '../../_shared/MatematikTopicShell';
 import MatematikExplore from '../../_shared/MatematikExplore';
 
 const THEME = {
-  pageGradient: 'radial-gradient(ellipse at 18% 12%,rgba(124,77,238,.38),transparent 55%),radial-gradient(ellipse at 86% 22%,rgba(255,79,216,.22),transparent 50%),linear-gradient(160deg,#0A0826 0%,#0E0A2E 100%)',
-  dark: '#7C4DEE',
-  cd: '#5B21B6',
-  accent: '#2DE2E6',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,rgba(45,226,230,.18) 0%,rgba(20,18,52,.7) 55%,#08061E 100%)',
-  pillGradient: 'linear-gradient(135deg,#2DE2E6,#FF4FD8)',
+  pageGradient: 'linear-gradient(180deg,#F7FEE7 0%,#DCFCE7 55%,#86EFAC 100%)',
+  dark: '#15803D',
+  cd: '#16A34A',
+  accent: '#22C55E',
+  stageGradient: 'radial-gradient(ellipse at 50% 32%,#F7FEE7 0%,#BBF7D0 58%,#86EFAC 100%)',
+  pillGradient: 'linear-gradient(180deg,#86EFAC,#22C55E)',
 };
 
 const EXPLORE_CONFIG = {

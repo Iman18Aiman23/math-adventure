@@ -3,16 +3,18 @@ import MatematikTopicShell from '../../_shared/MatematikTopicShell';
 import MatematikExplore from '../../_shared/MatematikExplore';
 
 const THEME = {
-  pageGradient: 'linear-gradient(180deg,#EFF6FF 0%,#93C5FD 50%,#1D4ED8 100%)',
-  dark: '#1E3A8A',
-  cd: '#1D4ED8',
-  accent: '#3B82F6',
-  stageGradient: 'radial-gradient(ellipse at 50% 32%,#DBEAFE 0%,#60A5FA 55%,#1D4ED8 100%)',
-  pillGradient: 'linear-gradient(180deg,#3B82F6,#1D4ED8)',
+  pageGradient: 'linear-gradient(180deg,#F7FEE7 0%,#DCFCE7 55%,#86EFAC 100%)',
+  dark: '#15803D',
+  cd: '#16A34A',
+  accent: '#22C55E',
+  stageGradient: 'radial-gradient(ellipse at 50% 32%,#F7FEE7 0%,#BBF7D0 58%,#86EFAC 100%)',
+  pillGradient: 'linear-gradient(180deg,#86EFAC,#22C55E)',
 };
 
 const EXPLORE_CONFIG = {
   primitive: 'selesaikan-m2',
+  scoreStorageKey: 'mt_ld_m2_scores',
+  scoreId: 'm2-selesaikan',
 };
 
 export default function SelesaikanM2({ onBack, language = 'bm' }) {

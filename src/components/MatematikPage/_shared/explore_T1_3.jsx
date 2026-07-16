@@ -7,7 +7,7 @@ const FRAC_WORDS = ['Setengah', 'Suku', 'Dua perempat', 'Tiga perempat'];
 function FractionSvg({ type, parts, shaded, size }) {
   const sz = size || 'clamp(90px, 16vmin, 160px)';
   const strok = { stroke: '#334155', strokeWidth: 3, fill: 'none' };
-  const shadeColors = ['#2563EB', '#DC2626', '#16A34A', '#D97706'];
+  const shadeColors = ['#16A34A', '#22C55E', '#15803D', '#86EFAC'];
   if (type === 'circle' && parts === 2) {
     const d = shaded > 0 ? 'M 60 10 A 50 50 0 0 0 60 110 Z' : null;
     return (
@@ -64,7 +64,7 @@ function FractionSvg({ type, parts, shaded, size }) {
 
 function EqualSvg({ type, size }) {
   const sz = size || 'clamp(90px, 18vmin, 180px)';
-  const s = { stroke: '#6D28D9', strokeWidth: 3, fill: 'none' };
+  const s = { stroke: '#15803D', strokeWidth: 3, fill: 'none' };
   if (type === 'circle') {
     return (
       <svg viewBox="0 0 120 120" width={sz} height={sz} style={{ display: 'block' }}>
@@ -72,7 +72,7 @@ function EqualSvg({ type, size }) {
         {/* Equal halves — line dead center */}
         <line x1="60" y1="10" x2="60" y2="110" {...s} />
         {/* Shading on left half */}
-        <path d="M 60 10 A 50 50 0 0 0 60 110 Z" fill="#A855F7" opacity="0.25" />
+        <path d="M 60 10 A 50 50 0 0 0 60 110 Z" fill="#16A34A" opacity="0.25" />
       </svg>
     );
   }
@@ -80,7 +80,7 @@ function EqualSvg({ type, size }) {
     <svg viewBox="0 0 120 120" width={sz} height={sz} style={{ display: 'block' }}>
       <rect x="10" y="10" width="100" height="100" rx="6" {...s} />
       <line x1="60" y1="10" x2="60" y2="110" {...s} />
-      <rect x="10" y="10" width="50" height="100" fill="#A855F7" opacity="0.25" rx="6" />
+      <rect x="10" y="10" width="50" height="100" fill="#16A34A" opacity="0.25" rx="6" />
     </svg>
   );
 }
@@ -95,7 +95,7 @@ function UnequalSvg({ type, size }) {
         <circle cx="60" cy="60" r="50" {...s} />
         {/* Very off-center line — x=35, only ~15% from left */}
         <line x1="35" y1="17" x2="35" y2="103" {...s} />
-        <path d="M 35 17 A 50 50 0 0 0 35 103 Z" fill="#94A3B8" opacity="0.18" />
+        <path d="M 35 17 A 50 50 0 0 0 35 103 Z" fill="#16A34A" opacity="0.18" />
       </svg>
     );
   }
@@ -104,7 +104,7 @@ function UnequalSvg({ type, size }) {
       <rect x="10" y="10" width="100" height="100" rx="6" {...s} />
       {/* Very off-center line — x=35 */}
       <line x1="35" y1="10" x2="35" y2="110" {...s} />
-      <rect x="10" y="10" width="25" height="100" fill="#94A3B8" opacity="0.18" rx="6" />
+      <rect x="10" y="10" width="25" height="100" fill="#16A34A" opacity="0.18" rx="6" />
     </svg>
   );
 }
@@ -247,7 +247,7 @@ function SamaBesarContent({ q, ctx }) {
         let bg, bd;
         if (answered && isAns) { bg = 'linear-gradient(135deg,#F0FFF4,#DCFCE7)'; bd = '#16A34A'; }
         else if (answered && picked) { bg = 'linear-gradient(135deg,#FFF5F5,#FEE2E2)'; bd = '#EF4444'; }
-        else if (picked) { bg = 'linear-gradient(135deg,#F5F3FF,#EDE9FE)'; bd = C?.accent || '#8B5CF6'; }
+        else if (picked) { bg = 'linear-gradient(135deg,#F0FDF4,#DCFCE7)'; bd = C?.accent || '#16A34A'; }
         else { bg = 'rgba(255,255,255,0.92)'; bd = '#E2E8F0'; }
         return (
           <div key={opt.id} onClick={() => handlePick(opt.id)} role="button" tabIndex={0}
@@ -312,7 +312,7 @@ function NamakanContent({ q, ctx }) {
           let bg, bd, clr, txt;
           if (answered && isAns) { bg = 'linear-gradient(135deg,#22C55E,#16A34A)'; bd = '#16A34A'; clr = '#fff'; txt = `${opt.value} ✓`; }
           else if (answered && picked) { bg = 'linear-gradient(135deg,#EF4444,#DC2626)'; bd = '#DC2626'; clr = '#fff'; txt = `${opt.value} ✗`; }
-          else if (picked) { bg = `${C?.accent || '#8B5CF6'}18`; bd = C?.accent || '#8B5CF6'; clr = C?.dark || '#5B21B6'; txt = opt.value; }
+          else if (picked) { bg = `${C?.accent || '#16A34A'}18`; bd = C?.accent || '#16A34A'; clr = C?.dark || '#15803D'; txt = opt.value; }
           else { bg = 'rgba(255,255,255,0.92)'; bd = '#E2E8F0'; clr = '#1E293B'; txt = opt.value; }
           return (
             <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={answered}
@@ -356,7 +356,7 @@ function PilihGambarContent({ q, ctx }) {
         let bg, bd;
         if (answered && isAns) { bg = 'linear-gradient(135deg,#F0FFF4,#DCFCE7)'; bd = '#16A34A'; }
         else if (answered && picked) { bg = 'linear-gradient(135deg,#FFF5F5,#FEE2E2)'; bd = '#EF4444'; }
-        else if (picked) { bg = 'linear-gradient(135deg,#F5F3FF,#EDE9FE)'; bd = C?.accent || '#8B5CF6'; }
+        else if (picked) { bg = 'linear-gradient(135deg,#F0FDF4,#DCFCE7)'; bd = C?.accent || '#16A34A'; }
         else { bg = 'rgba(255,255,255,0.92)'; bd = '#E2E8F0'; }
         return (
           <div key={opt.id} onClick={() => handlePick(opt.id)} role="button" tabIndex={0}
@@ -367,7 +367,7 @@ function PilihGambarContent({ q, ctx }) {
               background: bg, border: `2.5px solid ${bd}`,
               borderRadius: 'clamp(12px, 1.8vmin, 22px)',
               boxShadow: answered && isAns
-                ? '0 0 0 4px rgba(22,163,74,.2), 0 10px 28px rgba(22,163,74,.14)'
+                ? '0 0 0 4px rgba(22,163,74,.2), 0 10px 28px rgba(34,197,94,.12)'
                 : answered && picked
                   ? '0 0 0 4px rgba(239,68,68,.2)'
                   : '0 6px 20px rgba(15,23,42,.10)',
@@ -523,7 +523,7 @@ function SelCompareContent({ q, ctx }) {
         let bg, bd;
         if (answered && isAns) { bg = 'linear-gradient(135deg,#F0FFF4,#DCFCE7)'; bd = '#16A34A'; }
         else if (answered && picked) { bg = 'linear-gradient(135deg,#FFF5F5,#FEE2E2)'; bd = '#EF4444'; }
-        else if (picked) { bg = 'linear-gradient(135deg,#F5F3FF,#EDE9FE)'; bd = C?.accent || '#8B5CF6'; }
+        else if (picked) { bg = 'linear-gradient(135deg,#F0FDF4,#DCFCE7)'; bd = C?.accent || '#16A34A'; }
         else { bg = 'rgba(255,255,255,0.92)'; bd = '#E2E8F0'; }
         return (
           <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={answered}
@@ -591,7 +591,7 @@ function SelKeypadContent({ q, ctx }) {
         <span style={{
           minWidth: 'clamp(60px, 10vmin, 100px)',
           background: answered ? (displayValue === answer ? 'linear-gradient(135deg,#22C55E,#16A34A)' : 'linear-gradient(135deg,#EF4444,#DC2626)') : 'rgba(255,255,255,0.92)',
-          border: `3px solid ${answered ? (displayValue === answer ? '#16A34A' : '#EF4444') : C?.accent || '#8B5CF6'}`,
+          border: `3px solid ${answered ? (displayValue === answer ? '#16A34A' : '#EF4444') : C?.accent || '#16A34A'}`,
           borderRadius: 'clamp(12px, 2vmin, 20px)',
           padding: 'clamp(8px, 1.4vmin, 16px)',
           color: answered ? '#fff' : '#1E293B',
@@ -623,7 +623,7 @@ function SelNamakanContent({ q, ctx }) {
           let bg, bd, clr, txt;
           if (answered && isAns) { bg = 'linear-gradient(135deg,#22C55E,#16A34A)'; bd = '#16A34A'; clr = '#fff'; txt = `${opt.value} ✓`; }
           else if (answered && picked) { bg = 'linear-gradient(135deg,#EF4444,#DC2626)'; bd = '#DC2626'; clr = '#fff'; txt = `${opt.value} ✗`; }
-          else if (picked) { bg = `${C?.accent || '#8B5CF6'}18`; bd = C?.accent || '#8B5CF6'; clr = C?.dark || '#5B21B6'; txt = opt.value; }
+          else if (picked) { bg = `${C?.accent || '#16A34A'}18`; bd = C?.accent || '#16A34A'; clr = C?.dark || '#15803D'; txt = opt.value; }
           else { bg = 'rgba(255,255,255,0.92)'; bd = '#E2E8F0'; clr = '#1E293B'; txt = opt.value; }
           return (
             <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={answered}
@@ -671,7 +671,7 @@ function SelStoryContent({ q, ctx }) {
           let bg, bd, clr, txt;
           if (answered && isAns) { bg = 'linear-gradient(135deg,#22C55E,#16A34A)'; bd = '#16A34A'; clr = '#fff'; txt = `${opt.value} (Betul)`; }
           else if (answered && picked) { bg = 'linear-gradient(135deg,#EF4444,#DC2626)'; bd = '#DC2626'; clr = '#fff'; txt = `${opt.value} (Salah)`; }
-          else if (picked) { bg = `${C?.accent || '#8B5CF6'}18`; bd = C?.accent || '#8B5CF6'; clr = C?.dark || '#5B21B6'; txt = opt.value; }
+          else if (picked) { bg = `${C?.accent || '#16A34A'}18`; bd = C?.accent || '#16A34A'; clr = C?.dark || '#15803D'; txt = opt.value; }
           else { bg = 'rgba(255,255,255,0.92)'; bd = '#E2E8F0'; clr = '#1E293B'; txt = opt.value; }
           return (
             <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={answered}
@@ -956,13 +956,13 @@ function JawabShadeFractionQuestion({ q, ctx }) {
             padding: 'clamp(10px, 1.5vmin, 14px) clamp(22px, 3vmin, 30px)',
             borderRadius: '999px',
             border: 'none',
-            background: `linear-gradient(180deg, ${C?.accent || '#8B5CF6'}, ${C?.dark || '#5B21B6'})`,
+            background: `linear-gradient(180deg, ${C?.accent || '#16A34A'}, ${C?.dark || '#15803D'})`,
             color: '#fff',
             fontFamily: "'Baloo 2', sans-serif",
             fontWeight: 800,
             fontSize: 'clamp(18px, 2.4vmin, 22px)',
             cursor: 'pointer',
-            boxShadow: `0 4px 0 ${C?.dark || '#5B21B6'}`,
+            boxShadow: `0 4px 0 ${C?.dark || '#15803D'}`,
           }}
         >
           Semak Jawapan
@@ -1011,9 +1011,9 @@ function JawabLabelFractionQuestion({ q, ctx }) {
             bd = '#DC2626';
             clr = '#fff';
           } else if (picked) {
-            bg = `${C?.accent || '#8B5CF6'}18`;
-            bd = C?.accent || '#8B5CF6';
-            clr = C?.dark || '#5B21B6';
+            bg = `${C?.accent || '#16A34A'}18`;
+            bd = C?.accent || '#16A34A';
+            clr = C?.dark || '#15803D';
           }
 
           return (
@@ -1072,7 +1072,7 @@ function StaticFractionSvg({ parts, shaded }) {
         <path
           key={index}
           d={path}
-          fill={index < shaded ? '#A855F7' : '#FFFFFF'}
+          fill={index < shaded ? '#16A34A' : '#FFFFFF'}
           opacity={index < shaded ? '0.42' : '1'}
           stroke={stroke}
           strokeWidth="2"
@@ -1106,7 +1106,7 @@ function SelectableFractionSvg({ parts, pickedParts, onToggle, disabled, resultT
             ? '#22C55E'
             : resultTone === 'wrong'
               ? '#EF4444'
-              : '#A855F7'
+              : '#16A34A'
           : '#FFFFFF';
         const opacity = active ? (resultTone ? '0.56' : '0.42') : '1';
         return (
@@ -1149,7 +1149,7 @@ function LdNamakanContent({ q, ctx }) {
           let bg, bd, clr, txt;
           if (answered && isAns) { bg = 'linear-gradient(135deg,#22C55E,#16A34A)'; bd = '#16A34A'; clr = '#fff'; txt = `${opt.value} ✓`; }
           else if (answered && picked) { bg = 'linear-gradient(135deg,#EF4444,#DC2626)'; bd = '#DC2626'; clr = '#fff'; txt = `${opt.value} ✗`; }
-          else if (picked) { bg = `${C?.accent || '#8B5CF6'}18`; bd = C?.accent || '#8B5CF6'; clr = C?.dark || '#5B21B6'; txt = opt.value; }
+          else if (picked) { bg = `${C?.accent || '#16A34A'}18`; bd = C?.accent || '#16A34A'; clr = C?.dark || '#15803D'; txt = opt.value; }
           else { bg = 'rgba(255,255,255,0.92)'; bd = '#E2E8F0'; clr = '#1E293B'; txt = opt.value; }
           return (
             <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={answered}
@@ -1193,7 +1193,7 @@ function LdPilihGambarContent({ q, ctx }) {
         let bg, bd;
         if (answered && isAns) { bg = 'linear-gradient(135deg,#F0FFF4,#DCFCE7)'; bd = '#16A34A'; }
         else if (answered && picked) { bg = 'linear-gradient(135deg,#FFF5F5,#FEE2E2)'; bd = '#EF4444'; }
-        else if (picked) { bg = 'linear-gradient(135deg,#F5F3FF,#EDE9FE)'; bd = C?.accent || '#8B5CF6'; }
+        else if (picked) { bg = 'linear-gradient(135deg,#F0FDF4,#DCFCE7)'; bd = C?.accent || '#16A34A'; }
         else { bg = 'rgba(255,255,255,0.92)'; bd = '#E2E8F0'; }
         return (
           <div key={opt.id} onClick={() => handlePick(opt.id)} role="button" tabIndex={0}
@@ -1204,7 +1204,7 @@ function LdPilihGambarContent({ q, ctx }) {
               background: bg, border: `2.5px solid ${bd}`,
               borderRadius: 'clamp(12px, 1.8vmin, 22px)',
               boxShadow: answered && isAns
-                ? '0 0 0 4px rgba(22,163,74,.2), 0 10px 28px rgba(22,163,74,.14)'
+                ? '0 0 0 4px rgba(22,163,74,.2), 0 10px 28px rgba(34,197,94,.12)'
                 : answered && picked
                   ? '0 0 0 4px rgba(239,68,68,.2)'
                   : '0 6px 20px rgba(15,23,42,.10)',
@@ -1238,7 +1238,7 @@ function LdSamaBesarContent({ q, ctx }) {
         let bg, bd;
         if (answered && isAns) { bg = 'linear-gradient(135deg,#F0FFF4,#DCFCE7)'; bd = '#16A34A'; }
         else if (answered && picked) { bg = 'linear-gradient(135deg,#FFF5F5,#FEE2E2)'; bd = '#EF4444'; }
-        else if (picked) { bg = 'linear-gradient(135deg,#F5F3FF,#EDE9FE)'; bd = C?.accent || '#8B5CF6'; }
+        else if (picked) { bg = 'linear-gradient(135deg,#F0FDF4,#DCFCE7)'; bd = C?.accent || '#16A34A'; }
         else { bg = 'rgba(255,255,255,0.92)'; bd = '#E2E8F0'; }
         return (
           <div key={opt.id} onClick={() => handlePick(opt.id)} role="button" tabIndex={0}
@@ -1286,7 +1286,7 @@ const UJIAN_PECAHAN_TOTAL_QUESTIONS = 30;
 const UJIAN_PECAHAN_DURATION_SECONDS = 30 * 60;
 const UJIAN_PECAHAN_PASS_MARK = Math.ceil(UJIAN_PECAHAN_TOTAL_QUESTIONS * 0.8);
 const UJIAN_PECAHAN_SECTIONS = [
-  { id: 'kenali', name: 'Kenali Pecahan', color: '#8B5CF6' },
+  { id: 'kenali', name: 'Kenali Pecahan', color: '#16A34A' },
   { id: 'jawab', name: 'Jawab Pecahan', color: '#16A34A' },
 ];
 
@@ -1332,9 +1332,9 @@ function buildUjianPecahanRound() {
 
 export function CabarMindaPecahanExplore({ data, language, theme, onExit }) {
   const C = theme || {};
-  const accent = C.accent || '#8B5CF6';
-  const dark = C.dark || '#6D28D9';
-  const cd = C.cd || '#5B21B6';
+  const accent = C.accent || '#16A34A';
+  const dark = C.dark || '#15803D';
+  const cd = C.cd || '#15803D';
   const scoreStorageKey = data?.scoreStorageKey || 'mt_ld_m3_scores';
   const scoreId = data?.scoreId;
 
@@ -1344,6 +1344,7 @@ export function CabarMindaPecahanExplore({ data, language, theme, onExit }) {
   const [answers, setAnswers] = useState(null);
   const [selectedPerQ, setSelectedPerQ] = useState(null);
   const [touchedPerQ, setTouchedPerQ] = useState(null);
+  const [showQuestionList, setShowQuestionList] = useState(false);
   const [timeLeft, setTimeLeft] = useState(UJIAN_PECAHAN_DURATION_SECONDS);
   const [timeUsed, setTimeUsed] = useState(0);
   const timerRef = useRef(null);
@@ -1375,6 +1376,7 @@ export function CabarMindaPecahanExplore({ data, language, theme, onExit }) {
     answersRef.current = blankAnswers;
     setSelectedPerQ({});
     setTouchedPerQ({});
+    setShowQuestionList(false);
     setCurrent(0);
     setTimeLeft(UJIAN_PECAHAN_DURATION_SECONDS);
     setTimeUsed(0);
@@ -1410,8 +1412,13 @@ export function CabarMindaPecahanExplore({ data, language, theme, onExit }) {
 
   function handleExamNext() {
     if (!questions) return;
+    if (answers[current] === null) return;
     if (current + 1 >= questions.length) {
-      finishExam(answers, UJIAN_PECAHAN_DURATION_SECONDS - timeLeft);
+      if (!answers.every((value) => value !== null)) {
+        setShowQuestionList(true);
+        return;
+      }
+      finishExam(answersRef.current || answers, UJIAN_PECAHAN_DURATION_SECONDS - timeLeft);
       return;
     }
     setCurrent((value) => value + 1);
@@ -1433,7 +1440,7 @@ export function CabarMindaPecahanExplore({ data, language, theme, onExit }) {
           <div style={{ display: 'flex', gap: 'clamp(8px, 1.6vmin, 16px)', flexWrap: 'wrap', justifyContent: 'center' }}>
             {[
               { label: language === 'bm' ? 'Soalan: 30' : 'Questions: 30', color: accent },
-              { label: language === 'bm' ? '30 Minit' : '30 Minutes', color: '#F59E0B' },
+              { label: language === 'bm' ? '30 Minit' : '30 Minutes', color: '#16A34A' },
               { label: language === 'bm' ? `Lulus 80% (${UJIAN_PECAHAN_PASS_MARK}/30)` : `Pass 80% (${UJIAN_PECAHAN_PASS_MARK}/30)`, color: '#16A34A' },
             ].map((chip) => (
               <div key={chip.label} style={{
@@ -1446,7 +1453,7 @@ export function CabarMindaPecahanExplore({ data, language, theme, onExit }) {
           </div>
           <div style={{
             background: 'rgba(255,255,255,.90)',
-            border: '1.5px solid #DDD6FE',
+            border: '1.5px solid #BBF7D0',
             boxShadow: '0 12px 28px rgba(91,33,182,.10)',
             borderRadius: 'clamp(14px, 2vmin, 20px)', padding: 'clamp(14px, 2.4vmin, 24px)',
             maxWidth: 420, width: '100%',
@@ -1478,15 +1485,22 @@ export function CabarMindaPecahanExplore({ data, language, theme, onExit }) {
   if (phase === 'exam' && questions) {
     const q = questions[current];
     const answered = answers[current] !== null;
+    const answeredCount = answers.filter((value) => value !== null).length;
     const mm = Math.floor(timeLeft / 60);
     const ss = timeLeft % 60;
     const timerStr = `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
     const timerRed = timeLeft <= 300;
+    const allAnswered = answeredCount === questions.length;
+    const isLastQuestion = current + 1 >= questions.length;
+    const nextLabel = isLastQuestion && allAnswered
+      ? (language === 'bm' ? 'Tamat' : 'Finish')
+      : (language === 'bm' ? 'Seterusnya ->' : 'Next ->');
     const examCtx = {
       answered: false,
       selected: selectedPerQ[current] || null,
       answer: q.answer,
       isCorrect: false,
+      examMode: true,
       handlePick: handleExamPick,
       handleNext: handleExamNext,
       handleTouch: handleExamTouch,
@@ -1499,60 +1513,151 @@ export function CabarMindaPecahanExplore({ data, language, theme, onExit }) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'transparent' }}>
         <style>{`
-          .ujian-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; }
+          .ujian-scroll { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
           .ujian-body {
             min-height: 100%; box-sizing: border-box;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding: clamp(14px, 3vmin, 40px);
+            padding: clamp(6px, 1.1vmin, 12px) clamp(10px, 1.6vmin, 20px);
           }
           .ujian-content {
             width: 100%; max-width: min(94vw, 860px);
             display: flex; flex-direction: column; align-items: center;
-            gap: clamp(8px, 1.6vmin, 18px);
+            gap: clamp(4px, .9vmin, 9px);
           }
           .ujian-prompt {
             font-family: 'Baloo 2', sans-serif; font-weight: 800;
-            font-size: clamp(22px, 4.4vmin, 40px); color: #1E293B; text-align: center; line-height: 1.15;
+            font-size: clamp(18px, 3.4vmin, 32px); color: #1E293B; text-align: center; line-height: 1.08;
           }
           .ujian-feedback {
             font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: clamp(14px, 2vmin, 18px);
-            text-align: center; min-height: clamp(28px, 3.8vmin, 44px);
+            text-align: center; min-height: 0; height: 0; overflow: hidden;
             display: flex; align-items: center; justify-content: center; color: #64748B;
           }
           .ujian-next {
-            padding: clamp(11px, 1.5vmin, 17px) clamp(28px, 4vmin, 52px);
+            padding: clamp(8px, 1.1vmin, 13px) clamp(24px, 3.4vmin, 44px);
             border: none; border-radius: 999px; background: ${accent}; color: #fff;
-            font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(17px, 2.6vmin, 26px);
+            font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(16px, 2.2vmin, 22px);
             cursor: pointer; box-shadow: 0 4px 0 ${cd}; transition: transform .1s ease;
             -webkit-tap-highlight-color: transparent;
           }
           .ujian-next:hover:not(:disabled) { transform: translateY(-2px); }
           .ujian-next:active:not(:disabled) { transform: translateY(2px); }
+          .ujian-next:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
+          .ujian-map-overlay {
+            position: fixed; inset: 0; z-index: 80;
+            display: grid; place-items: center; padding: 16px;
+            background: rgba(15,23,42,.32); backdrop-filter: blur(10px);
+          }
+          .ujian-map-dialog {
+            width: min(92vw, 440px); max-height: calc(100dvh - 32px); overflow: hidden;
+            border: 1.5px solid #D1FAE5; border-radius: 24px; background: rgba(255,255,255,.98);
+            box-shadow: 0 24px 70px rgba(15,23,42,.24); padding: 14px;
+          }
+          .ujian-map-head {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            margin-bottom: 12px;
+          }
+          .ujian-map-title {
+            font-family: 'Baloo 2', sans-serif; font-weight: 900; color: #1E293B;
+            font-size: clamp(17px, 4.2vw, 22px); line-height: 1;
+          }
+          .ujian-map-close {
+            width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid #A7F3D0;
+            background: #ECFDF5; color: ${dark}; cursor: pointer;
+            font-family: 'Baloo 2', sans-serif; font-weight: 900; font-size: 20px;
+          }
+          .ujian-map {
+            display: grid; grid-template-columns: repeat(6, 1fr); gap: 7px;
+          }
+          .ujian-map-btn {
+            min-width: 0; height: clamp(40px, 8.2dvh, 58px); border-radius: 12px; cursor: pointer;
+            font-family: 'Baloo 2', sans-serif; font-weight: 900; font-size: 15px;
+            transition: transform .12s ease, border-color .12s ease, background .12s ease;
+            -webkit-tap-highlight-color: transparent;
+          }
+          .ujian-map-btn:hover { transform: translateY(-1px); }
+          .ujian-map-toggle {
+            border: 1.5px solid #A7F3D0; border-radius: 999px; background: #ECFDF5; color: ${dark};
+            padding: 8px 14px; font-family: 'Baloo 2', sans-serif; font-weight: 900; font-size: 15px;
+            cursor: pointer; -webkit-tap-highlight-color: transparent; box-sizing: border-box;
+            max-width: 58%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+          }
           .ujian-footer {
-            flex-shrink: 0; display: flex; align-items: center; justify-content: flex-end;
+            flex-shrink: 0; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px;
             padding: clamp(8px, 1.2vmin, 15px) clamp(16px, 2.4vmin, 34px);
             background: rgba(255,255,255,.85); backdrop-filter: blur(12px); border-top: 1px solid #E2E8F0;
+            box-sizing: border-box; width: 100%; overflow: hidden;
+          }
+          .ujian-timer { white-space: nowrap; flex-shrink: 0; }
+          @media (max-width: 520px) {
+            .ujian-map-overlay { padding: 12px; }
+            .ujian-map-dialog { width: min(94vw, 380px); padding: 12px; border-radius: 22px; }
+            .ujian-map { gap: 6px; }
           }
         `}</style>
+        {showQuestionList && (
+          <div
+            className="ujian-map-overlay"
+            role="dialog"
+            aria-modal="true"
+            aria-label={language === 'bm' ? 'Senarai soalan' : 'Question list'}
+            onClick={() => setShowQuestionList(false)}
+          >
+            <div className="ujian-map-dialog" onClick={(event) => event.stopPropagation()}>
+              <div className="ujian-map-head">
+                <div className="ujian-map-title">
+                  {language === 'bm' ? `Soalan ${answeredCount}/${questions.length}` : `Questions ${answeredCount}/${questions.length}`}
+                </div>
+                <button type="button" className="ujian-map-close" onClick={() => setShowQuestionList(false)} aria-label={language === 'bm' ? 'Tutup' : 'Close'}>
+                  x
+                </button>
+              </div>
+              <div className="ujian-map">
+                {questions.map((question, index) => {
+                  const isCurrent = index === current;
+                  const isAnswered = answers[index] !== null;
+                  return (
+                    <button
+                      key={question.examId || index}
+                      type="button"
+                      className="ujian-map-btn"
+                      onClick={() => {
+                        setCurrent(index);
+                        setShowQuestionList(false);
+                      }}
+                      style={{
+                        border: isCurrent ? `3px solid ${dark}` : `1.5px solid ${isAnswered ? '#86EFAC' : '#CBD5E1'}`,
+                        background: isAnswered ? '#DCFCE7' : '#FFFFFF',
+                        color: isAnswered ? '#15803D' : '#475569',
+                      }}
+                      aria-label={`${language === 'bm' ? 'Soalan' : 'Question'} ${index + 1}`}
+                    >
+                      {index + 1}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
         <div className="ujian-scroll">
           <div className="ujian-body">
             <div className="ujian-content">
               <div className="ujian-prompt">{q.prompt}</div>
               {renderUjianPecahanQuestion(q, examCtx)}
-              <div className="ujian-feedback">
-                {touchedPerQ?.[current] ? (language === 'bm' ? 'Pilihan disimpan.' : 'Answer saved.') : ''}
-              </div>
-              <button className="ujian-next" type="button" onClick={handleExamNext}>
-                {current + 1 >= questions.length
-                  ? (language === 'bm' ? 'Tamat 🎉' : 'Finish 🎉')
-                  : (language === 'bm' ? 'Seterusnya →' : 'Next →')}
+              <div className="ujian-feedback" aria-live="polite" />
+              <button className="ujian-next" type="button" onClick={handleExamNext} disabled={!answered}>
+                {nextLabel}
               </button>
             </div>
           </div>
         </div>
         <div className="ujian-footer">
-          <span style={{ color: timerRed ? '#DC2626' : dark, fontSize: '0.85rem', fontWeight: 900, minWidth: 88, textAlign: 'right' }}>
-            ⏱ {timerStr} · {current + 1}/{questions.length}
+          <button type="button" className="ujian-map-toggle" onClick={() => setShowQuestionList((value) => !value)}>
+            {language === 'bm' ? `Soalan ${answeredCount}/${questions.length}` : `Questions ${answeredCount}/${questions.length}`}
+          </button>
+          <span className="ujian-timer" style={{ color: timerRed ? '#DC2626' : dark, fontSize: '0.85rem', fontWeight: 900, minWidth: 88, textAlign: 'right' }}>
+            {timerStr}
           </span>
         </div>
       </div>
@@ -1617,7 +1722,7 @@ export function CabarMindaPecahanExplore({ data, language, theme, onExit }) {
                 <span className="ujian-results-stat" style={{ color: '#1E293B' }}>⏱ {usedMM}:{String(usedSS).padStart(2, '0')}</span>
               </div>
               {unanswered > 0 && (
-                <div style={{ fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: 'clamp(12px, 1.5vmin, 15px)', color: '#F59E0B' }}>
+                <div style={{ fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: 'clamp(12px, 1.5vmin, 15px)', color: '#16A34A' }}>
                   ⏰ {unanswered} {language === 'bm' ? 'soalan tidak dijawab' : 'questions unanswered'}
                 </div>
               )}

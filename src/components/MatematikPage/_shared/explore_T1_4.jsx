@@ -1552,7 +1552,9 @@ function renderDapatCatatStorySceneV2(q, C, answered) {
 function renderDapatCatatWangQuestionV2(q, ctx) {
   const { theme: C } = ctx;
   const noteCount = q.notes?.length || 0;
-  const noteSize = q.type === 'envelope'
+  const noteSize = ctx.examMode
+    ? (noteCount >= 3 ? 'clamp(40px, 8vmin, 58px)' : 'clamp(46px, 9vmin, 66px)')
+    : q.type === 'envelope'
     ? (noteCount >= 3 ? 'clamp(76px, 13vmin, 88px)' : 'clamp(82px, 14vmin, 96px)')
     : q.type === 'ledger'
       ? (noteCount >= 3 ? 'clamp(68px, 12vmin, 84px)' : 'clamp(74px, 13vmin, 92px)')
@@ -1930,15 +1932,12 @@ function genLdRecord() {
 }
 
 function buildLatihDiriWangRound() {
-  const qs = [];
-  for (let i = 0; i < 3; i++) qs.push(genLdIdentify());
-  for (let i = 0; i < 3; i++) qs.push(genLdCountTotal());
-  for (let i = 0; i < 2; i++) qs.push(genLdEquivalent());
-  for (let i = 0; i < 2; i++) qs.push(genLdRecord());
-  return shuffle(qs);
+  return buildUjianWangRound().slice(0, 12);
 }
 
 function renderLatihDiriWangQuestion(q, ctx) {
+  if (!q.type?.startsWith('ld-')) return renderUjianWangQuestion(q, ctx);
+
   const { answered, selected, answer, handlePick, theme: C, examMode } = ctx;
 
   if (q.type === 'ld-identify') {
@@ -2108,30 +2107,38 @@ const UJIAN_WANG_SECTIONS = [
   { id: 'kenali', name: 'Kenali & Nilai Wang', color: '#10B981' },
   { id: 'tukar', name: 'Tukar Wang', color: '#F59E0B' },
   { id: 'dapat-catat', name: 'Dapat & Catat Wang', color: '#6366F1' },
+  { id: 'selesaikan', name: 'Selesaikan Wang', color: '#F97316' },
 ];
 
 function buildUjianWangQuestionPool() {
   const pool = [];
 
   // Kenali & Nilai Wang questions
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 8; i++) {
     const qTypes = [genQ1, genQ2, genQ3, genQ4, genQ5];
     const gen = pick(qTypes);
     pool.push({ ...gen(), topicId: 'kenali' });
   }
 
   // Tukar Wang questions
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 7; i++) {
     const qTypes = [genTypeA, genTypeB, genTypeC];
     const gen = pick(qTypes);
     pool.push({ ...gen(), topicId: 'tukar' });
   }
 
   // Dapat & Catat Wang questions
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 8; i++) {
     const qTypes = [genDapatCatatTypePocketV2, genDapatCatatTypeLedgerV2, genDapatCatatTypeEnvelopeV2, genDapatCatatTypePayV2, genDapatCatatTypeSaveV2, genDapatCatatTypeReceiptV2];
     const gen = pick(qTypes);
     pool.push({ ...gen(), topicId: 'dapat-catat' });
+  }
+
+  // Selesaikan Wang questions
+  for (let i = 0; i < 7; i++) {
+    const qTypes = [genSelTotal, genSelPay, genSelChange, genSelSave];
+    const gen = pick(qTypes);
+    pool.push({ ...gen(), topicId: 'selesaikan' });
   }
 
   return shuffle(pool);
@@ -2227,6 +2234,7 @@ export function CabarMindaWangExplore({ data, language, theme, onExit }) {
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState(null);
   const [selectedPerQ, setSelectedPerQ] = useState(null);
+  const [showQuestionList, setShowQuestionList] = useState(false);
   const [timeLeft, setTimeLeft] = useState(UJIAN_WANG_DURATION_SECONDS);
   const [timeUsed, setTimeUsed] = useState(0);
   const timerRef = useRef(null);
@@ -2257,6 +2265,7 @@ export function CabarMindaWangExplore({ data, language, theme, onExit }) {
     setAnswers(blankAnswers);
     answersRef.current = blankAnswers;
     setSelectedPerQ({});
+    setShowQuestionList(false);
     setCurrent(0);
     setTimeLeft(UJIAN_WANG_DURATION_SECONDS);
     setTimeUsed(0);
@@ -2287,6 +2296,10 @@ export function CabarMindaWangExplore({ data, language, theme, onExit }) {
     if (!questions) return;
     if (answers[current] === null) return;
     if (current + 1 >= questions.length) {
+      if (!answers.every((value) => value !== null)) {
+        setShowQuestionList(true);
+        return;
+      }
       finishExam(answersRef.current || answers, UJIAN_WANG_DURATION_SECONDS - timeLeft);
       return;
     }
@@ -2332,7 +2345,7 @@ export function CabarMindaWangExplore({ data, language, theme, onExit }) {
               display: 'flex', flexDirection: 'column', gap: 'clamp(8px, 1.2vmin, 12px)',
             }}>
               <div>{language === 'bm' ? '📌 Jawab semua 30 soalan dalam 30 minit.' : '📌 Answer all 30 questions in 30 minutes.'}</div>
-              <div>{language === 'bm' ? '🎲 Soalan diambil daripada Kenali & Nilai Wang, Tukar Wang, dan Dapat & Catat Wang.' : '🎲 Questions from Know & Value Money, Exchange Money, and Get & Record Money.'}</div>
+              <div>{language === 'bm' ? 'Soalan diambil daripada Kenali & Nilai Wang, Tukar Wang, Dapat & Catat Wang, dan Selesaikan Wang.' : 'Questions from Know & Value Money, Exchange Money, Get & Record Money, and Solve Money.'}</div>
               <div>{language === 'bm' ? '♻️ Tiada soalan yang sama diulang dalam satu ujian.' : '♻️ No repeated questions within one exam.'}</div>
               <div>{language === 'bm' ? `🎯 Skor ${UJIAN_WANG_PASS_MARK}/30 atau lebih untuk lulus.` : `🎯 Score ${UJIAN_WANG_PASS_MARK}/30 or more to pass.`}</div>
             </div>
@@ -2354,10 +2367,16 @@ export function CabarMindaWangExplore({ data, language, theme, onExit }) {
   if (phase === 'exam' && questions) {
     const q = questions[current];
     const answered = answers[current] !== null;
+    const answeredCount = answers.filter((value) => value !== null).length;
     const mm = Math.floor(timeLeft / 60);
     const ss = timeLeft % 60;
     const timerStr = `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
     const timerRed = timeLeft <= 300;
+    const allAnswered = answeredCount === questions.length;
+    const isLastQuestion = current + 1 >= questions.length;
+    const nextLabel = isLastQuestion && allAnswered
+      ? (language === 'bm' ? 'Tamat' : 'Finish')
+      : (language === 'bm' ? 'Seterusnya ->' : 'Next ->');
     const examCtx = {
       answered: false,
       selected: selectedPerQ[current] || null,
@@ -2375,42 +2394,133 @@ export function CabarMindaWangExplore({ data, language, theme, onExit }) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'transparent' }}>
         <style>{`
-          .ujian-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; }
+        .ujian-scroll { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
           .ujian-body {
             min-height: 100%; box-sizing: border-box;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding: clamp(14px, 3vmin, 40px);
+            padding: clamp(6px, 1.1vmin, 12px) clamp(10px, 1.6vmin, 20px);
           }
           .ujian-content {
             width: 100%; max-width: min(94vw, 860px);
             display: flex; flex-direction: column; align-items: center;
-            gap: clamp(8px, 1.6vmin, 18px);
+            gap: clamp(4px, .9vmin, 9px);
           }
           .ujian-prompt {
             font-family: 'Baloo 2', sans-serif; font-weight: 800;
-            font-size: clamp(22px, 4.4vmin, 40px); color: #1E293B; text-align: center; line-height: 1.15;
+            font-size: clamp(18px, 3.4vmin, 32px); color: #1E293B; text-align: center; line-height: 1.08;
           }
           .ujian-feedback {
             font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: clamp(14px, 2vmin, 18px);
-            text-align: center; min-height: clamp(28px, 3.8vmin, 44px);
+            text-align: center; min-height: 0; height: 0; overflow: hidden;
             display: flex; align-items: center; justify-content: center; color: #64748B;
           }
           .ujian-next {
-            padding: clamp(11px, 1.5vmin, 17px) clamp(28px, 4vmin, 52px);
+            padding: clamp(8px, 1.1vmin, 13px) clamp(24px, 3.4vmin, 44px);
             border: none; border-radius: 999px; background: ${accent}; color: #fff;
-            font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(17px, 2.6vmin, 26px);
+            font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(16px, 2.2vmin, 22px);
             cursor: pointer; box-shadow: 0 4px 0 ${cd}; transition: transform .1s ease;
             -webkit-tap-highlight-color: transparent;
           }
           .ujian-next:hover:not(:disabled) { transform: translateY(-2px); }
           .ujian-next:active:not(:disabled) { transform: translateY(2px); }
           .ujian-next:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
+          .ujian-map-overlay {
+            position: fixed; inset: 0; z-index: 80;
+            display: grid; place-items: center; padding: 16px;
+            background: rgba(15,23,42,.32); backdrop-filter: blur(10px);
+          }
+          .ujian-map-dialog {
+            width: min(92vw, 440px); max-height: calc(100dvh - 32px); overflow: hidden;
+            border: 1.5px solid #D1FAE5; border-radius: 24px; background: rgba(255,255,255,.98);
+            box-shadow: 0 24px 70px rgba(15,23,42,.24); padding: 14px;
+          }
+          .ujian-map-head {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            margin-bottom: 12px;
+          }
+          .ujian-map-title {
+            font-family: 'Baloo 2', sans-serif; font-weight: 900; color: #1E293B;
+            font-size: clamp(17px, 4.2vw, 22px); line-height: 1;
+          }
+          .ujian-map-close {
+            width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid #A7F3D0;
+            background: #ECFDF5; color: ${dark}; cursor: pointer;
+            font-family: 'Baloo 2', sans-serif; font-weight: 900; font-size: 20px;
+          }
+          .ujian-map {
+            display: grid; grid-template-columns: repeat(6, 1fr); gap: 7px;
+          }
+          .ujian-map-btn {
+            min-width: 0; height: clamp(40px, 8.2dvh, 58px); border-radius: 12px; cursor: pointer;
+            font-family: 'Baloo 2', sans-serif; font-weight: 900; font-size: 15px;
+            transition: transform .12s ease, border-color .12s ease, background .12s ease;
+            -webkit-tap-highlight-color: transparent;
+          }
+          .ujian-map-btn:hover { transform: translateY(-1px); }
+          .ujian-map-toggle {
+            border: 1.5px solid #A7F3D0; border-radius: 999px; background: #ECFDF5; color: ${dark};
+            padding: 8px 14px; font-family: 'Baloo 2', sans-serif; font-weight: 900; font-size: 15px;
+            cursor: pointer; -webkit-tap-highlight-color: transparent; box-sizing: border-box;
+            max-width: 58%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+          }
           .ujian-footer {
-            flex-shrink: 0; display: flex; align-items: center; justify-content: flex-end;
+            flex-shrink: 0; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px;
             padding: clamp(8px, 1.2vmin, 15px) clamp(16px, 2.4vmin, 34px);
             background: rgba(255,255,255,.85); backdrop-filter: blur(12px); border-top: 1px solid #E2E8F0;
+            box-sizing: border-box; width: 100%; overflow: hidden;
+          }
+          .ujian-timer { white-space: nowrap; flex-shrink: 0; }
+          @media (max-width: 520px) {
+            .ujian-map-overlay { padding: 12px; }
+            .ujian-map-dialog { width: min(94vw, 380px); padding: 12px; border-radius: 22px; }
+            .ujian-map { gap: 6px; }
           }
         `}</style>
+        {showQuestionList && (
+          <div
+            className="ujian-map-overlay"
+            role="dialog"
+            aria-modal="true"
+            aria-label={language === 'bm' ? 'Senarai soalan' : 'Question list'}
+            onClick={() => setShowQuestionList(false)}
+          >
+            <div className="ujian-map-dialog" onClick={(event) => event.stopPropagation()}>
+              <div className="ujian-map-head">
+                <div className="ujian-map-title">
+                  {language === 'bm' ? `Soalan ${answeredCount}/${questions.length}` : `Questions ${answeredCount}/${questions.length}`}
+                </div>
+                <button type="button" className="ujian-map-close" onClick={() => setShowQuestionList(false)} aria-label={language === 'bm' ? 'Tutup' : 'Close'}>
+                  x
+                </button>
+              </div>
+              <div className="ujian-map">
+                {questions.map((question, index) => {
+                  const isCurrent = index === current;
+                  const isAnswered = answers[index] !== null;
+                  return (
+                    <button
+                      key={question.examId || index}
+                      type="button"
+                      className="ujian-map-btn"
+                      onClick={() => {
+                        setCurrent(index);
+                        setShowQuestionList(false);
+                      }}
+                      style={{
+                        border: isCurrent ? `3px solid ${dark}` : `1.5px solid ${isAnswered ? '#86EFAC' : '#CBD5E1'}`,
+                        background: isAnswered ? '#DCFCE7' : '#FFFFFF',
+                        color: isAnswered ? '#15803D' : '#475569',
+                      }}
+                      aria-label={`${language === 'bm' ? 'Soalan' : 'Question'} ${index + 1}`}
+                    >
+                      {index + 1}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
         <div className="ujian-scroll">
           <div className="ujian-body">
             <div className="ujian-content">
@@ -2418,16 +2528,17 @@ export function CabarMindaWangExplore({ data, language, theme, onExit }) {
               {renderUjianWangQuestion(q, examCtx)}
               <div className="ujian-feedback" aria-live="polite" />
               <button className="ujian-next" type="button" onClick={handleExamNext} disabled={!answered}>
-                {current + 1 >= questions.length
-                  ? (language === 'bm' ? 'Tamat 🎉' : 'Finish 🎉')
-                  : (language === 'bm' ? 'Seterusnya →' : 'Next →')}
+                {nextLabel}
               </button>
             </div>
           </div>
         </div>
         <div className="ujian-footer">
-          <span style={{ color: timerRed ? '#DC2626' : dark, fontSize: '0.85rem', fontWeight: 900, minWidth: 88, textAlign: 'right' }}>
-            ⏱ {timerStr} · {current + 1}/{questions.length}
+          <button type="button" className="ujian-map-toggle" onClick={() => setShowQuestionList((value) => !value)}>
+            {language === 'bm' ? `Soalan ${answeredCount}/${questions.length}` : `Questions ${answeredCount}/${questions.length}`}
+          </button>
+          <span className="ujian-timer" style={{ color: timerRed ? '#DC2626' : dark, fontSize: '0.85rem', fontWeight: 900, minWidth: 88, textAlign: 'right' }}>
+            {timerStr}
           </span>
         </div>
       </div>

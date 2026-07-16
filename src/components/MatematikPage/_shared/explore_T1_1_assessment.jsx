@@ -529,13 +529,13 @@ function SCPickContent({ q, ctx }) {
         if (answered && isAns) { bg = '#22C55E'; bd = '#16A34A'; clr = '#fff'; txt = `${opt.value} ✓`; anim = 'snkBounce .5s ease'; }
         else if (answered && picked) { bg = '#EF4444'; bd = '#DC2626'; clr = '#fff'; txt = `${opt.value} ✗`; anim = 'shakeError .35s ease'; }
         else if (answered) { bg = '#E5E7EB'; bd = '#9CA3AF'; clr = '#9CA3AF'; txt = opt.value; anim = 'none'; }
-        else if (picked) { bg = C?.accent || '#8B5CF6'; bd = '#fff'; clr = '#fff'; txt = `✓ ${opt.value}`; anim = 'none'; }
+        else if (picked) { bg = 'rgba(34,197,94,.12)'; bd = '#16A34A'; clr = '#15803D'; txt = `✓ ${opt.value}`; anim = 'none'; }
         else { bg = c.bg; bd = c.border; clr = '#fff'; txt = opt.value; anim = 'none'; }
         return (
           <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={answered}
             style={{
               padding: 'clamp(10px, 1.6vmin, 18px)',
-              border: picked && !answered ? `2px solid #fff` : 'none',
+              border: picked && !answered ? '2px solid #16A34A' : 'none',
               borderBottom: answered ? 'none' : `4px solid ${bd}`,
               borderRadius: 'clamp(12px, 1.6vmin, 18px)',
               background: bg,
@@ -826,7 +826,7 @@ function CM1SelPickContent({ q, ctx }) {
         if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; clr = '#fff'; txt = `${opt.value} ✓`; anim = 'snkBounce .5s ease'; }
         else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; clr = '#fff'; txt = `${opt.value} ✗`; anim = 'shakeError .35s ease'; }
         else if (answered) { bg = '#fff'; bd = '#E2E8F0'; clr = '#94A3B8'; txt = opt.value; anim = 'none'; }
-        else if (picked) { bg = `${C?.accent || '#8B5CF6'}40`; bd = C?.accent || '#8B5CF6'; clr = C?.dark || C?.accent || '#5B21B6'; txt = opt.value; anim = 'none'; }
+        else if (picked) { bg = 'rgba(34,197,94,.12)'; bd = '#16A34A'; clr = '#15803D'; txt = opt.value; anim = 'none'; }
         else { bg = '#fff'; bd = '#CBD5E1'; clr = '#1E293B'; txt = opt.value; anim = 'none'; }
         return (
           <button key={opt.id} type="button" disabled={answered}
@@ -886,7 +886,7 @@ function CM1PolaTilesContent({ q, ctx }) {
           if (answered) {
             if (isAnswer) { bg = '#DCFCE7'; border = '#22C55E'; txt = '#16A34A'; }
             else if (isSelected) { bg = '#FEE2E2'; border = '#EF4444'; txt = '#DC2626'; }
-          } else if (isSelected) { bg = `${C?.accent}50`; border = C?.accent; txt = C?.accent; }
+          } else if (isSelected) { bg = 'rgba(34,197,94,.12)'; border = '#16A34A'; txt = '#15803D'; }
           return (
             <button key={opt.id} type="button" disabled={answered}
               onClick={() => handlePick(opt.id)}
@@ -920,8 +920,9 @@ function CM1BandingObjectsContent({ q, ctx }) {
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (!answered) handlePick(side); } }}
         style={{
           flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px, 1.6vmin, 18px)',
-          background: '#fff', border: answered ? `2px solid ${picked && !isAns ? '#EF4444' : '#22C55E'}` : '2px solid #E2E8F0',
-          borderBottom: `4px solid ${answered ? (picked && !isAns ? '#EF4444' : '#22C55E') : '#CBD5E1'}`,
+          background: picked && !answered ? 'rgba(34,197,94,.12)' : '#fff',
+          border: answered ? `2px solid ${picked && !isAns ? '#EF4444' : '#22C55E'}` : `2px solid ${picked ? '#16A34A' : '#E2E8F0'}`,
+          borderBottom: `4px solid ${answered ? (picked && !isAns ? '#EF4444' : '#22C55E') : (picked ? '#16A34A' : '#CBD5E1')}`,
           borderRadius: 'clamp(18px, 2vmin, 26px)', padding: 'clamp(12px, 2vmin, 28px) clamp(8px, 1.4vmin, 20px)',
           cursor: answered ? 'default' : 'pointer', transition: 'all .15s ease',
           minHeight: 'clamp(130px, 24vmin, 300px)', justifyContent: 'space-between',
@@ -975,13 +976,13 @@ const CM1_PASS_MARK = Math.ceil(CM1_TOTAL_QUESTIONS * 0.8);
 
 const CM1_SLICES = [
   { id: 'banding-banyak-sedikit', name: 'Banding Banyak Sedikit', color: '#EC4899' },
-  { id: 'kenali-0-10', name: 'Kenali 0 Hingga 10', color: '#F59E0B' },
-  { id: 'kenali-11-20', name: 'Kenali 11 Hingga 20', color: '#D97706' },
-  { id: 'kenali-21-100', name: 'Kenali 21 Hingga 100', color: '#8B5CF6' },
-  { id: 'nilai-tempat', name: 'Nilai Tempat', color: '#7C3AED' },
-  { id: 'susunan-nombor', name: 'Susunan Nombor', color: '#5B21B6' },
-  { id: 'pola-nombor', name: 'Pola Nombor', color: '#6D28D9' },
-  { id: 'anggar-bundar', name: 'Anggar dan Bundar', color: '#A78BFA' },
+  { id: 'kenali-0-10', name: 'Kenali 0 Hingga 10', color: '#16A34A' },
+  { id: 'kenali-11-20', name: 'Kenali 11 Hingga 20', color: '#15803D' },
+  { id: 'kenali-21-100', name: 'Kenali 21 Hingga 100', color: '#16A34A' },
+  { id: 'nilai-tempat', name: 'Nilai Tempat', color: '#15803D' },
+  { id: 'susunan-nombor', name: 'Susunan Nombor', color: '#15803D' },
+  { id: 'pola-nombor', name: 'Pola Nombor', color: '#15803D' },
+  { id: 'anggar-bundar', name: 'Anggar dan Bundar', color: '#86EFAC' },
   { id: 'kombinasi-nombor', name: 'Kombinasi Nombor', color: '#3B0764' },
   { id: 'selesaikan', name: 'Selesaikan', color: '#14B8A6' },
   { id: 'selesaikan-cerita-m1', name: 'Selesaikan Cerita', color: '#2563EB' },
@@ -1030,9 +1031,9 @@ function CM1CompareContent({ q, ctx }) {
           }
         }}
         style={{
-          background: picked && !answered ? `${C?.accent || '#8B5CF6'}50` : '#fff',
-          border: answered ? `2px solid ${picked && !isAns ? C.red : C.green}` : `2px solid ${picked ? (C?.accent || '#8B5CF6') : '#E2E8F0'}`,
-          borderBottom: `4px solid ${answered ? (picked && !isAns ? C.red : C.green) : (picked ? (C?.accent || '#8B5CF6') : '#CBD5E1')}`,
+          background: picked && !answered ? 'rgba(34,197,94,.12)' : '#fff',
+          border: answered ? `2px solid ${picked && !isAns ? C.red : C.green}` : `2px solid ${picked ? C.green : '#E2E8F0'}`,
+          borderBottom: `4px solid ${answered ? (picked && !isAns ? C.red : C.green) : (picked ? C.green : '#CBD5E1')}`,
           color: '#334155',
         }}
       >
@@ -1106,38 +1107,54 @@ function renderCM1Prompt(q, accent) {
 
 export function CabarMindaM1Explore({ data, language, theme, onExit }) {
   const C = theme || {};
-  const accent = C.accent || '#8B5CF6';
-  const dark = C.dark || '#5B21B6';
-  const cd = C.cd || '#7C3AED';
+  const accent = C.accent || '#16A34A';
+  const dark = C.dark || '#15803D';
+  const cd = C.cd || '#15803D';
 
   const [phase, setPhase] = useState('start');
   const [questions, setQuestions] = useState(null);
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState(null);
   const [selectedPerQ, setSelectedPerQ] = useState(null);
+  const [showQuestionList, setShowQuestionList] = useState(false);
   const [timeLeft, setTimeLeft] = useState(CM1_DURATION_SECONDS);
   const [timeUsed, setTimeUsed] = useState(0);
   const timerRef = useRef(null);
+  const answersRef = useRef(null);
 
   useEffect(() => {
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, []);
 
+  const finishExam = (finalTimeUsed) => {
+    const finalAnswers = answersRef.current || [];
+    if (data?.scoreStorageKey && data?.scoreId && questions?.length) {
+      recordActivityScore(data.scoreStorageKey, data.scoreId, finalAnswers.filter(Boolean).length, questions.length);
+    }
+    setTimeUsed(finalTimeUsed);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    setPhase('results');
+  };
+
   const startExam = () => {
     const qs = buildCabarMindaM1Round();
+    const blankAnswers = new Array(qs.length).fill(null);
     setQuestions(qs);
-    setAnswers(new Array(qs.length).fill(null));
+    setAnswers(blankAnswers);
+    answersRef.current = blankAnswers;
     setSelectedPerQ({});
+    setShowQuestionList(false);
     setCurrent(0);
     setTimeLeft(CM1_DURATION_SECONDS);
+    setTimeUsed(0);
     setPhase('exam');
     timerRef.current = setInterval(() => {
       setTimeLeft(t => {
         if (t <= 1) {
-          clearInterval(timerRef.current);
-          timerRef.current = null;
-          setTimeUsed(CM1_DURATION_SECONDS);
-          setPhase('results');
+          finishExam(CM1_DURATION_SECONDS);
           return 0;
         }
         return t - 1;
@@ -1151,16 +1168,18 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
     const newAnswers = [...answers];
     newAnswers[current] = correct;
     setAnswers(newAnswers);
-    const newSel = { ...selectedPerQ, [current]: value };
-    setSelectedPerQ(newSel);
+    answersRef.current = newAnswers;
+    setSelectedPerQ((currentSelected) => ({ ...(currentSelected || {}), [current]: value }));
   };
 
   const handleExamNext = () => {
     if (!questions || answers[current] === null) return;
     if (current + 1 >= questions.length) {
-      setTimeUsed(CM1_DURATION_SECONDS - timeLeft);
-      if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
-      setPhase('results');
+      if (!answers.every((value) => value !== null)) {
+        setShowQuestionList(true);
+        return;
+      }
+      finishExam(CM1_DURATION_SECONDS - timeLeft);
       return;
     }
     setCurrent(c => c + 1);
@@ -1182,7 +1201,7 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
           <div style={{ display: 'flex', gap: 'clamp(8px, 1.6vmin, 16px)', flexWrap: 'wrap', justifyContent: 'center' }}>
             {[
               { label: language === 'bm' ? 'Soalan: 30' : 'Questions: 30', color: accent },
-              { label: language === 'bm' ? '30 Minit' : '30 Minutes', color: '#F59E0B' },
+              { label: language === 'bm' ? '30 Minit' : '30 Minutes', color: '#16A34A' },
               { label: language === 'bm' ? `Lulus 80% (${CM1_PASS_MARK}/30)` : `Pass 80% (${CM1_PASS_MARK}/30)`, color: '#16A34A' },
             ].map(chip => (
               <div key={chip.label} style={{
@@ -1195,7 +1214,7 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
           </div>
           <div style={{
             background: 'rgba(255,255,255,.90)',
-            border: '1.5px solid #DDD6FE',
+            border: '1.5px solid #BBF7D0',
             boxShadow: '0 12px 28px rgba(91,33,182,.10)',
             borderRadius: 'clamp(14px, 2vmin, 20px)', padding: 'clamp(14px, 2.4vmin, 24px)',
             maxWidth: 420, width: '100%',
@@ -1228,16 +1247,23 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
     const q = questions[current];
     const promptContent = renderCM1Prompt(q, accent);
     const answered = answers[current] !== null;
+    const answeredCount = answers.filter((value) => value !== null).length;
     const mm = Math.floor(timeLeft / 60);
     const ss = timeLeft % 60;
     const timerStr = `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
     const timerRed = timeLeft <= 300;
+    const allAnswered = answeredCount === questions.length;
+    const isLastQuestion = current + 1 >= questions.length;
+    const nextLabel = isLastQuestion && allAnswered
+      ? (language === 'bm' ? 'Tamat' : 'Finish')
+      : (language === 'bm' ? 'Seterusnya ->' : 'Next ->');
 
     const examCtx = {
       answered: false,
       selected: selectedPerQ[current] || null,
       answer: q.answer,
       isCorrect: false,
+      examMode: true,
       handlePick: handleExamPick,
       handleNext: handleExamNext,
       streak: 0,
@@ -1249,36 +1275,36 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'transparent' }}>
         <style>{`
-          .cm1-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; }
+          .cm1-scroll { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
           .cm1-body {
             min-height: 100%; box-sizing: border-box;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding: clamp(14px, 3vmin, 40px);
+            padding: clamp(6px, 1.1vmin, 12px) clamp(10px, 1.6vmin, 20px);
           }
           .cm1-content {
             width: 100%; max-width: min(94vw, 860px);
             display: flex; flex-direction: column; align-items: center;
-            gap: clamp(8px, 1.6vmin, 18px);
+            gap: clamp(4px, .9vmin, 9px);
           }
           .cm1-prompt {
             font-family: 'Baloo 2', sans-serif; font-weight: 800;
-            font-size: clamp(22px, 4.6vmin, 44px); color: #1E293B; text-align: center; line-height: 1.15;
+            font-size: clamp(18px, 3.4vmin, 32px); color: #1E293B; text-align: center; line-height: 1.08;
           }
           .cm1-feedback {
             font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: clamp(14px, 2vmin, 18px);
-            text-align: center; min-height: clamp(28px, 3.8vmin, 44px);
+            text-align: center; min-height: 0; height: 0; overflow: hidden;
             display: flex; align-items: center; justify-content: center;
             color: #64748B;
           }
           .cm1-next {
-            padding: clamp(11px, 1.5vmin, 17px) clamp(28px, 4vmin, 52px);
+            padding: clamp(8px, 1.1vmin, 13px) clamp(24px, 3.4vmin, 44px);
             border: none;
             border-radius: 999px;
             background: ${accent};
             color: #fff;
             font-family: 'Baloo 2', sans-serif;
             font-weight: 800;
-            font-size: clamp(17px, 2.6vmin, 26px);
+            font-size: clamp(16px, 2.2vmin, 22px);
             cursor: pointer;
             box-shadow: 0 4px 0 ${cd};
             transition: transform .1s ease;
@@ -1286,6 +1312,46 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
           }
           .cm1-next:hover:not(:disabled) { transform: translateY(-2px); }
           .cm1-next:active:not(:disabled) { transform: translateY(2px); }
+          .cm1-next:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
+          .ujian-map-overlay {
+            position: fixed; inset: 0; z-index: 80;
+            display: grid; place-items: center; padding: 16px;
+            background: rgba(15,23,42,.32); backdrop-filter: blur(10px);
+          }
+          .ujian-map-dialog {
+            width: min(92vw, 440px); max-height: calc(100dvh - 32px); overflow: hidden;
+            border: 1.5px solid #D1FAE5; border-radius: 24px; background: rgba(255,255,255,.98);
+            box-shadow: 0 24px 70px rgba(15,23,42,.24); padding: 14px;
+          }
+          .ujian-map-head {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            margin-bottom: 12px;
+          }
+          .ujian-map-title {
+            font-family: 'Baloo 2', sans-serif; font-weight: 900; color: #1E293B;
+            font-size: clamp(17px, 4.2vw, 22px); line-height: 1;
+          }
+          .ujian-map-close {
+            width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid #A7F3D0;
+            background: #ECFDF5; color: ${dark}; cursor: pointer;
+            font-family: 'Baloo 2', sans-serif; font-weight: 900; font-size: 20px;
+          }
+          .ujian-map {
+            display: grid; grid-template-columns: repeat(6, 1fr); gap: 7px;
+          }
+          .ujian-map-btn {
+            min-width: 0; height: clamp(40px, 8.2dvh, 58px); border-radius: 12px; cursor: pointer;
+            font-family: 'Baloo 2', sans-serif; font-weight: 900; font-size: 15px;
+            transition: transform .12s ease, border-color .12s ease, background .12s ease;
+            -webkit-tap-highlight-color: transparent;
+          }
+          .ujian-map-btn:hover { transform: translateY(-1px); }
+          .ujian-map-toggle {
+            border: 1.5px solid #A7F3D0; border-radius: 999px; background: #ECFDF5; color: ${dark};
+            padding: 8px 14px; font-family: 'Baloo 2', sans-serif; font-weight: 900; font-size: 15px;
+            cursor: pointer; -webkit-tap-highlight-color: transparent; box-sizing: border-box;
+            max-width: 58%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+          }
           .cmp-ref {
             display: flex;
             flex-direction: column;
@@ -1347,35 +1413,86 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
             flex-shrink: 0;
             display: flex;
             align-items: center;
-            justify-content: flex-end;
+            justify-content: space-between;
             gap: 10px;
             padding: clamp(8px, 1.2vmin, 15px) clamp(16px, 2.4vmin, 34px);
             background: rgba(255,255,255,.85);
             backdrop-filter: blur(12px);
             border-top: 1px solid #E2E8F0;
+            box-sizing: border-box;
+            width: 100%;
+            overflow: hidden;
+          }
+          .ujian-timer { white-space: nowrap; flex-shrink: 0; }
+          @media (max-width: 520px) {
+            .ujian-map-overlay { padding: 12px; }
+            .ujian-map-dialog { width: min(94vw, 380px); padding: 12px; border-radius: 22px; }
+            .ujian-map { gap: 6px; }
           }
         `}</style>
+        {showQuestionList && (
+          <div
+            className="ujian-map-overlay"
+            role="dialog"
+            aria-modal="true"
+            aria-label={language === 'bm' ? 'Senarai soalan' : 'Question list'}
+            onClick={() => setShowQuestionList(false)}
+          >
+            <div className="ujian-map-dialog" onClick={(event) => event.stopPropagation()}>
+              <div className="ujian-map-head">
+                <div className="ujian-map-title">
+                  {language === 'bm' ? `Soalan ${answeredCount}/${questions.length}` : `Questions ${answeredCount}/${questions.length}`}
+                </div>
+                <button type="button" className="ujian-map-close" onClick={() => setShowQuestionList(false)} aria-label={language === 'bm' ? 'Tutup' : 'Close'}>
+                  x
+                </button>
+              </div>
+              <div className="ujian-map">
+                {questions.map((question, index) => {
+                  const isCurrent = index === current;
+                  const isAnswered = answers[index] !== null;
+                  return (
+                    <button
+                      key={question.examId || question.qid || index}
+                      type="button"
+                      className="ujian-map-btn"
+                      onClick={() => {
+                        setCurrent(index);
+                        setShowQuestionList(false);
+                      }}
+                      style={{
+                        border: isCurrent ? `3px solid ${dark}` : `1.5px solid ${isAnswered ? '#86EFAC' : '#CBD5E1'}`,
+                        background: isAnswered ? '#DCFCE7' : '#FFFFFF',
+                        color: isAnswered ? '#15803D' : '#475569',
+                      }}
+                      aria-label={`${language === 'bm' ? 'Soalan' : 'Question'} ${index + 1}`}
+                    >
+                      {index + 1}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
         <div className="cm1-scroll">
           <div className="cm1-body">
             <div className="cm1-content">
               {promptContent && <div className="cm1-prompt">{promptContent}</div>}
               {renderQuestionM1All(q, examCtx)}
-              <div className="cm1-feedback">
-                {answered ? (language === 'bm' ? 'Pilihan disimpan.' : 'Answer saved.') : ''}
-              </div>
-              {answered && (
-                <button className="cm1-next" type="button" onClick={handleExamNext}>
-                  {current + 1 >= questions.length
-                    ? (language === 'bm' ? 'Tamat 🎉' : 'Finish 🎉')
-                    : (language === 'bm' ? 'Seterusnya →' : 'Next →')}
-                </button>
-              )}
+              <div className="cm1-feedback" aria-live="polite" />
+              <button className="cm1-next" type="button" onClick={handleExamNext} disabled={!answered}>
+                {nextLabel}
+              </button>
             </div>
           </div>
         </div>
         <div className="cm1-footer">
-          <span style={{ color: timerRed ? '#DC2626' : dark, fontSize: '0.85rem', fontWeight: 900, minWidth: 88, textAlign: 'right' }}>
-            ⏱ {timerStr} · {current + 1}/{questions.length}
+          <button type="button" className="ujian-map-toggle" onClick={() => setShowQuestionList((value) => !value)}>
+            {language === 'bm' ? `Soalan ${answeredCount}/${questions.length}` : `Questions ${answeredCount}/${questions.length}`}
+          </button>
+          <span className="ujian-timer" style={{ color: timerRed ? '#DC2626' : dark, fontSize: '0.85rem', fontWeight: 900, minWidth: 88, textAlign: 'right' }}>
+            {timerStr}
           </span>
         </div>
       </div>
@@ -1448,7 +1565,7 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
                 <span className="cm1-results-stat" style={{ color: '#1E293B' }}>⏱ {usedMM}:{String(usedSS).padStart(2, '0')}</span>
               </div>
               {unanswered > 0 && (
-                <div style={{ fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: 'clamp(12px, 1.5vmin, 15px)', color: '#F59E0B' }}>
+                <div style={{ fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: 'clamp(12px, 1.5vmin, 15px)', color: '#16A34A' }}>
                   ⏰ {unanswered} {language === 'bm' ? 'soalan tidak dijawab' : 'questions unanswered'}
                 </div>
               )}
@@ -1512,6 +1629,6 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
 
 /* ════════════════════════════════════════════════════════════════════════
  * Shared KeypadInput — extracted from SusunanKeypadContent.
- * Display slot + 3×3 keypad (1–9, 0, ⌫, ✓) + external‑keyboard listener.
- * Submit ONLY via ✓ or Enter (NO auto‑submit). Resets on qid change.
+ * Display slot + 3×3 keypad (1–9, 0, ⌫, ✓) + external-keyboard listener.
+ * Submit ONLY via ✓ or Enter (NO auto-submit). Resets on qid change.
  * ════════════════════════════════════════════════════════════════════════ */

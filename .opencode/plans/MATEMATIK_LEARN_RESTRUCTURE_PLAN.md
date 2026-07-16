@@ -159,6 +159,30 @@ Verification memory:
 - Always check the real Matematik question page in the browser, not only an isolated harness.
 - Layout verification includes background scene, content centering, spacing rhythm, and footer alignment on small and large screens.
 
+### CONTRACT F — Ujian Page Standard (copy Ujian Wang)
+
+Every module-level **Ujian / Cabar Minda** page must reuse the completed **Ujian Wang**
+interaction and layout pattern. Do not invent a new exam chrome per module.
+
+Required behaviour:
+
+- Active exam questions must fit in one screen without internal page scrolling on all target
+  screen sizes; use compact `examMode` sizing for tall visual question types.
+- User cannot go next until the current question is answered.
+- Footer is always one row: **left** = `Soalan answered/total` button, **right** = timer only.
+  Do not show a separate `Hantar lengkap` button. Do not duplicate `n/total` beside the timer.
+- The `Soalan answered/total` button opens a fixed, single-screen question-map dialog.
+  The dialog shows all question numbers, highlights current/answered state, and lets the
+  user jump to any question to edit the answer before submit.
+- The question-map dialog must fit one viewport without scrolling.
+- The main action button shows `Tamat` / `Finish` only when the user is on the last question
+  **and** every question has been answered. If the last question is reached while some
+  questions are unanswered, keep the normal next label and open the question-map dialog
+  instead of submitting.
+- Ujian question banks must be built only from that module's completed learning/problem
+  banks. Do not pull from a drill-only `Latih Diri` generator unless the owner explicitly
+  asks for that module.
+
 ---
 
 ## 0. How to read & use this plan (build agents MUST read first)

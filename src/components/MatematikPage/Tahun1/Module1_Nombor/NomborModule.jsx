@@ -3,12 +3,12 @@ import Tahun1ModuleHubLayout from '../../../PendidikanIslamPage/Tahun1/Tahun1Mod
 import MatematikTopicRobot from '../../MatematikTopicRobot';
 
 const THEME = {
-  pageGradient: 'transparent',
-  dark: '#6D28D9',
-  cd: '#6D28D9',
-  accent: '#8B5CF6',
-  stageGradient: 'transparent',
-  pillGradient: 'linear-gradient(180deg,#8B5CF6,#6D28D9)',
+  pageGradient: 'linear-gradient(180deg,#F7FEE7 0%,#DCFCE7 55%,#86EFAC 100%)',
+  dark: '#15803D',
+  cd: '#16A34A',
+  accent: '#22C55E',
+  stageGradient: 'radial-gradient(ellipse at 50% 32%,#F7FEE7 0%,#BBF7D0 58%,#86EFAC 100%)',
+  pillGradient: 'linear-gradient(180deg,#86EFAC,#22C55E)',
 };
 
 // Shared robot icon — recolours from THEME so every topic in this module matches.
@@ -43,7 +43,7 @@ const TOPICS = [
     pill: 'TOPIK 1.3',
     title: 'Separuh dan Suku',
     desc: 'Kenali bahagian sama besar seperti separuh, suku dan tiga suku.',
-    visual: robot('½', '#8B5CF6', '#8B5CF6'),
+    visual: robot('1/2', '#16A34A', '#16A34A'),
   },
   {
     id: 'wang-t1',
