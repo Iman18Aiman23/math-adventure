@@ -98,6 +98,11 @@ Before marking any slice 🔍, check every box:
 - [ ] Background is NOT overridden — scene comes from Shell automatically
 - [ ] Explore component root div: `height:'100%'`, `display:'flex'`, `flexDirection:'column'`
 - [ ] All sizes in `renderQuestion` use `clamp(min, Nvmin, max)` (vmin not vw)
+- [ ] Every question page uses `QuestionIssueReportButton`; hidden before submit, shown below
+      the primary action after answer submit, red `Report`, popup textarea, saved via
+      `questionIssueReportStore.js` localStorage adapter.
+- [ ] If this slice introduces a new question data/visual format, update
+      `QuestionIssueReportsPage.jsx` so admin can view that report as a readable question preview.
 - [ ] No `overflow:hidden` wrapping `MatematikActivityFrame`
 - [ ] Pill, desc, ROBOT visual on hub card (§8.5)
 - [ ] App.jsx: lazy import + `if (matematikTopic === '...')` route added
@@ -122,7 +127,8 @@ Question-page content structure is locked to this 4-section layout:
 - Section 1 = the question header inside the content area. It is the content header, not part of the page header.
 - Section 2 = the main visual prompt zone such as emoji, number, card, or illustration.
 - Section 3 = the answer interaction zone.
-- Section 4 = the action zone, usually the primary next button or retry button.
+- Section 4 = the action zone, usually the primary next button or retry button, followed by
+  the red `Report` button after the answer is submitted.
 
 Spacing memory:
 
@@ -167,6 +173,105 @@ Required behaviour:
   `Jawapan anda` and `Jawapan betul`.
 - Review popups must use a portal or equivalent fixed overlay with a very high z-index
   (higher than the back button, stats bar, footer, and question-map dialog).
+
+### CONTRACT G — Matematik Tahun 1 page standard (apply to every new slice)
+
+Every new Tahun 1 module, topic, footer card, and exam page must follow the same standard
+below. Do not create a one-off layout unless the owner explicitly approves it.
+
+#### G1 — Tahun 1 navigation and module setting
+
+- Tahun 1 uses the owner-approved 5-module structure:
+  1. `Nombor Hingga 100`
+  2. `Tambah dan Tolak`
+  3. `Pecahan`
+  4. `Wang`
+  5. `Masa dan Waktu`
+- Each module page uses `MatematikModulePage` + `MatematikModuleNavBar`; do not bypass the
+  shared module wrapper.
+- Each module has content cards first, followed by the fixed footer trio:
+  `Selesaikan`, `Latih Diri`, `Cabar Minda`.
+- Hub cards must keep the shared card standard: robot visual, uppercase pill, short title,
+  description <= 10 words, clear disabled state only when content is not built.
+- Any new topic route must be lazy-loaded in `App.jsx` and return to the module hub via
+  the existing `onBack` state-driven navigation.
+
+#### G2 — Topic/question page structure
+
+Every active question page follows the same four-part structure:
+
+1. Question header inside the content area.
+2. Main visual prompt zone.
+3. Answer interaction zone.
+4. Action zone: primary next/retry/finish button, then red `Report` after answer submit.
+
+Required settings:
+
+- Use `MatematikTopicShell` with `showToggle={false}`, `showReadyCta={false}`, `emoji=""`,
+  and `titleBM=""` unless a slice spec explicitly says otherwise.
+- Pass the same `THEME` to both shell and explore/content component.
+- Use `MatematikActivityFrame` for question flow whenever possible.
+- Keep the shared shell background; do not set a competing root background.
+- Keep feedback compact: correct sound + confetti, wrong correction state, no large
+  success/wrong banners that create dead space.
+- `QuestionIssueReportButton` is mandatory on every question page. It stays hidden before
+  submit, appears below the primary action after submit, opens a textarea dialog, saves via
+  `questionIssueReportStore.js`, and changes to submitted text after save.
+- If a new question data or visual format is added, update
+  `QuestionIssueReportsPage.jsx` in the same slice so admin can preview it properly.
+
+#### G3 — Responsive and no-scroll rule
+
+- Active learning/question/exam screens must fit one viewport on tablet and desktop
+  heights around 768px. Single page without scrolling is the default.
+- Phone layouts may use the frame's internal scroll only when the content genuinely cannot
+  fit, but no important footer/action button may be hidden.
+- Use `clamp(min, Nvmin, max)` for question content fonts, gaps, padding, icon sizes, cards,
+  and visuals. Use `vmin`, not `vw`, for scaling.
+- Root and intermediate wrappers must propagate `display:flex`, `flex-direction:column`,
+  `height:100%`, `flex:1`, and `min-height:0` as needed.
+- Do not wrap `MatematikActivityFrame` in fixed-height or `overflow:hidden` containers.
+- Tap targets must be at least 44px high/wide.
+- No horizontal overflow on mobile; long labels must wrap or shrink within their container.
+
+#### G4 — Footer trio behaviour
+
+- `Selesaikan`: module problem-solving set; usually 10 questions; uses only the module's
+  completed content banks.
+- `Latih Diri`: faster practice/drill for the same module; lighter than exam; may use timed
+  or tiered logic only when that module's spec says so.
+- `Cabar Minda`: formal module exam/challenge; must follow CONTRACT F exactly.
+- Footer cards must share the same shell, theme, report button, responsive sizing, and
+  single-page active-question rule as normal topic pages.
+
+#### G5 — Exam page contents and behaviour
+
+Every `Cabar Minda` / module exam page must include:
+
+- A compact pre-start page with module title, clear exam summary, pass gate, question count,
+  timer, and a single start CTA. This page should fit one viewport.
+- Active exam page with the same question UI style as the learning/problem pages.
+- Header/top controls kept minimal; no duplicate progress labels.
+- Footer row: left `Soalan answered/total` question-map button, right timer only.
+- Question-map dialog: fixed overlay, all question numbers, current/answered states, jump to
+  any question, fits one viewport without scrolling.
+- Answer rule: user must answer before moving next.
+- Submit rule: `Tamat` appears only on the last question after every question is answered.
+- Results page: score, pass/fail state, retry/exit actions, and clickable `Betul` / `Salah`
+  review buttons.
+- Review dialogs must render each question in the same visual format used during the exam,
+  not raw JSON or array data.
+
+#### G6 — Build/verification rule
+
+Before any new slice is marked pending verification:
+
+- Browser-check the real Matematik Tahun 1 route, not only a harness.
+- Verify mobile, tablet/desktop height, and wide desktop.
+- Confirm active question/exam pages are single-screen where required.
+- Confirm Report button appears only after answer submit and the admin viewer can preview
+  the saved question.
+- Run `npm run build` successfully.
 
 ---
 
@@ -419,7 +524,7 @@ Within every slice: build, run `npm run build`, set the §6 row to **🔍**, sum
 | 2 · Tambah dan Tolak | 6 (incl. leveled Latihan Tambah/Tolak) | ✅ | **Slice 2.6 Tambah Berulang & Tolak Berturut ✅ built+verified 2026-06-24:** TambahBerulangExplore, round 10 = 3 Type A (Kira Kumpulan — N groups of M emoji, answer N×M) + 2 Type B (SVG number line N forward arcs +M, answer N×M) + 2 Type C (Lengkapkan satu tempat kosong dalam ayat tambah berulang, answer M) + 2 Type D (Tolak Berturut Kumpulan — objects in N groups + repeated subtraction sentence, answer 0) + 1 Type E (SVG number line N backward arcs −M, answer 0). Generators constrained N∈{2,3,4,5}, M∈{2,3,4,5,10}, N×M≤50; invariants asserted over 20k iters. Hub card 6th: pill `TAMBAH BERULANG & TOLAK BERTURUT`, ROBOT visual. TambahBerulang.jsx (§9 showToggle false, showReadyCta false, no banner). Blue Mod-2 theme. Wired: App.jsx lazy route + MT_MODULE2_ORDER append, MatematikExplore case. Build exit 0. **2.1 Kenali Tambah ✅ verified 2026-06-22 (Claude), §17, p69–74:**** KenaliTambahExplore, round 10 = 3 Gabung Kumpulan (objects + KeypadInput) + 2 Garis Nombor (new SVG NumberTrackAdd count-on jumps) + 2 Pilih Perkataan (add-word vs sub-word, WordOptionsGrid) + 3 Lengkapkan Ayat (a+b=? / a+?=c, keypad). Addends 0–9, sums ≤18; invariants over 40k iters. New shared **KeypadInput** extracted (submit only ✓/Enter, no auto-submit). Blue Module-2 theme; KenaliTambah.jsx (§9), App route + **MT_MODULE2_ORDER + nav lookup picks the module array holding current topic** (80% gate + advance work), MatematikExplore case, hub placeholder replaced (pill `KENALI TAMBAH`). Scene bg inherits. Build exit 0. **2.2 Latihan Tambah ✅ verified 2026-06-22 (Claude), §18, p75–87:** LatihanTambahExplore — level picker (Mudah/Sederhana/Sukar, `Tukar Aras ⟲` strip) → per-level round of 10. Mudah 6 `a+b=?`(≤18)+4 which-equals-target (WordOptionsGrid, exactly 1 correct); Sederhana 6 column add (new `VerticalSum`)+4 missing-addend, ALL no-carry; Sukar 6 column+4 missing-addend, ALL need-carry; sums ≤99; KeypadInput. Invariants 40k iters × 6 gens all pass; level picker + VerticalSum + chips visually verified (headless-Edge). Wired: LatihanTambah.jsx (§9), App route + MT_MODULE2_ORDER append, MatematikExplore case, hub card `LATIHAN TAMBAH`. Cepat/timed deferred to Latih Tubi. Build exit 0; no regression. **VARIETY RETROFIT 2026-06-23 (owner: cards too samey/keypad-heavy): each level now uses 4 distinct formats — 4 new widgets Warnai (tap-all multi-select), Padankan (tap-two-sum), Bina Blok (base-ten puluh/sa builder), Ikatan Nombor (number-bond). Keypad ≤2/10. New gens invariants 40k iters pass; widgets visually verified; build exit 0.** **2.3 Kenali Tolak ✅ verified 2026-06-23 (Claude), §17 mirror:** KenaliTolakExplore, round 10 = 3 Buang Kumpulan (objects with `b` crossed-out + KeypadInput) + 2 Garis Nombor (new SVG NumberTrackSub count-BACK jumps) + 2 Pilih Perkataan (subtraction word {Baki/Beza/Tinggal/Tolak} vs addition distractor, WordOptionsGrid) + 3 Lengkapkan Ayat (a−b=? / a−?=c, keypad). a≥b enforced everywhere → baki≥0; minuend ≤9. Blue Module-2 theme; KenaliTolak.jsx (§9), App lazy route + MT_MODULE2_ORDER append, MatematikExplore case, hub card (pill `KENALI TOLAK`). Build exit 0; no regression. **2.4 Latihan Tolak ✅ verified 2026-06-23 (Claude), §18 mirror:** LatihanTolakExplore — level picker → per-level round of 10. Mudah 2 keypad `a−b=?` + 3 Warnai (beza-N, exactly 1 correct) + 3 Padankan (`{given}−?={target}`) + 2 Bond; Sederhana 2 column (new `VerticalDiff`) + 3 Bina Blok (TolakBlok) + 3 Padankan + 2 Bond; Sukar 2 column + 3 Bina Blok + 3 Bond + 2 Padankan. Sukar borrow guaranteed; all answers ≥0. **⚠️ Verifier fix:** `genSederhanaTolakS1` leaked ~15.5% borrow-required problems (bOnes unconstrained when bTens<aTens) → constrained `bOnes=randInt(0,aOnes)` so NO-borrow is now guaranteed (0 borrow / 0 negative over 300k iters). Wired: LatihanTolak.jsx (§9), App route + MT_MODULE2_ORDER append, MatematikExplore case, hub card `LATIHAN TOLAK`. Cepat/timed deferred to Latih Tubi. Build exit 0; no regression. **Polish 2026-06-23 (owner):** (1) zero/trivial answers removed across 2.3+2.4 subtraction gens (no `a−a=0`, no `b=0` no-ops; 0% over 300k iters); (2) `VerticalDiff` leading-zero grading bug fixed (`"02"`→`"2"` via parseInt); (3) **borrow scaffolding ported into `VerticalDiff` from `ColumnMathGame`** — Sukar borrow problems now gate submit until the child taps the tens digit and answers the "Pinjam dari rumah sebelah — {tens}−1=?" mini-step (strike lender + show ones as +10); single ones→tens borrow always sufficient since `bTens≤aTens−1`; no-borrow problems unaffected; also added `q.qid` reset effect (fixes stale-digit reuse on consecutive same-type Qs). Build exit 0. **2.5 Cerita Tambah & Tolak ✅ built+verified 2026-06-23 (Claude):** CeritaTambahTolakExplore, round 10 = 3× Type A (Cerita Tambah, keypad) + 3× Type B (Cerita Tolak, keypad) + 2× Type C (Kenalpasti Operasi, Tambah/Tolak MC) + 2× Type D (Padankan Ayat Matematik, 3-opt equation MC). StoryText shows blank replaced by answer after answering Type A/B. Type C guarantees 1 Add + 1 Sub per round; Type D same (wrong op + wrong answer distractors). Blue M2 theme. Wired: CeritaTambahDanTolak.jsx (§9), App lazy route + MT_MODULE2_ORDER append, MatematikExplore case, hub card 5th topic (pill `CERITA TAMBAH & TOLAK`). Build exit 0; no regression. **Slice 2.F Footer ✅ COMPLETE. MODULE 2 FULLY COMPLETE (6 Belajar + 3 footer trio).** |
 | 3 · Pecahan | 1 | ✅ | **Verified 2026-07-12:** PecahanModule shows 4 live cards (Kenali Pecahan, Jawab Pecahan, Latih Tubi Pecahan, Ujian Pecahan). Runtime check on the real app passed: module hub loads, all 4 cards open from the hub, Kenali mounts via `KenaliPecahanExplore`, Jawab Pecahan mounts its custom `MatematikActivityFrame` flow, Latih Diri mounts via `LatihDiriPecahanExplore`, and Ujian reaches the 30-soalan pre-start screen via `CabarMindaPecahanExplore`. `npm run build` passes. **MODULE 3 COMPLETE (1 Belajar + 3 footer trio).** |
 | 4 · Wang | 3 | ✅ | **Slice 4.1 verified 2026-07-12:** KenaliNilaiWangExplore is live in `explore_T1_4.jsx` with the final `Q1–Q5` rule: each session randomly picks 2 question types from `Q1` `Yang manakah {value}?`, `Q2` `Yang manakah {value}?`, `Q3` `Berapa jumlah wang ini?`, `Q4` `Mana lebih kecil?`, `Q5` `Mana lebih besar?`, then builds a 10-question round from those 2 types. `Q1/Q2` use no main card visual and 4 answer options; duplicate prompt rendering was removed so question text appears once. Money SVGs cover 5/10/20/50 sen + RM1/RM5/RM10. KenaliNilaiWang.jsx topic page (§9), WangModule live hub card, App.jsx lazy import/route/`MT_MODULE4_ORDER`, and MatematikExplore entry are all wired. Owner verified runtime correct; build passes. Remaining Module 4 cards stay pending.<br>**Slice 4.2 verified 2026-07-12:** TukarWangExplore in `explore_T1_4.jsx` uses the locked `4× Type A + 3× Type B + 3× Type C` round. Type C now shows one complete money representation on screen and asks for a different but equivalent representation, so it matches the `Pilih cara lain` spec. Uses `MatematikActivityFrame`, shared MoneyVisual, `TukarWang.jsx` (§9 shell), live WangModule card, `MatematikExplore` primitive, and App.jsx lazy route + `MT_MODULE4_ORDER`. Build exit 0. **Slice 4.2 COMPLETE.**<br>**Slice 4.3 verified 2026-07-13:** `DapatCatatWangExplore` in `explore_T1_4.jsx` keeps the locked round split `4× Type A + 3× Type B + 3× Type C`. Real-app runtime check passed on desktop and mobile from the actual Wang hub: topic opens, question screen stays single-screen (`.maf-scroll` clientHeight matched scrollHeight in both viewports), answer flow reveals feedback + `Seterusnya`, and no page exceptions fired. Shared Module 4 money labels were normalized at source to the consistent format `5 sen` / `50 sen` / `RM1` / `RM5` / `RM10` via `formatMoney()` + `DENOMS`, so recording text now matches §22.5. `DapatCatatWang.jsx` shell, WangModule live hub card, `MatematikExplore` primitive, App.jsx lazy route + `MT_MODULE4_ORDER` all remain wired. Build exit 0. **Slice 4.3 COMPLETE.**<br>**Slice 4.F built 2026-07-14:** SelesaikanWang, LatihDiriWang, CabarMindaWang shell pages created in `Module4_Wang/`. Explore exports in `explore_T1_4.jsx` (SelesaikanWangExplore, LatihDiriWangExplore, CabarMindaWangExplore). Primitive entries in `MatematikExplore.jsx`. Lazy imports + routes + `MT_MODULE4_ORDER` in `App.jsx`. WangModule hub cards replaced from disabled placeholders to active footer cards (selesaikan-wang, latih-diri-wang, cabar-minda-wang). Build exit 0 (3 new chunks generated). **Slice 4.F verified 2026-07-14:** Runtime smoke passed from the real Wang hub on desktop (1094x768) and mobile (390x844): Selesaikan Wang and Latih Diri Wang load active question screens with no overflow, Ujian Wang intro is single-screen/non-scrolling, Mula Ujian enters question 1/30, no error boundary or page exceptions. Build exit 0 after fixing the missing React hook imports in `explore_T1_4.jsx`. **Slice 4.F COMPLETE.** |
-| 5 · Masa dan Waktu | 3 | ⬜ | + footer |
+| 5 · Masa dan Waktu | 3 | 🔍 | **Slice 5.F built 2026-07-18:** SelesaikanMasa, LatihDiriMasa, CabarMindaMasa shell pages created in `Module5_MasaDanWaktu/`. Explore exports added in `explore_T1_5.jsx` (SelesaikanMasaExplore, LatihDiriMasaExplore, CabarMindaMasaExplore). Primitive entries in `MatematikExplore.jsx`. Lazy imports + routes + `MT_MODULE5_ORDER` in `App.jsx`. MasaDanWaktuModule footer trio replaced with active hub cards (selesaikan-masa, latih-diri-masa, cabar-minda-masa); unfinished content card remains disabled. Build exit 0. Runtime visual smoke not completed because local Playwright is absent and headless Edge remote debugging did not stay reachable. |
 
 ### Open decisions
 
@@ -484,6 +589,8 @@ Indonesian text).
 - Tap a group/box → marks it: correct box → green ✓, wrong box → red ✗ (and the correct
   one shows green ✓). Feedback line: **"Betul! 🎉"** / **"Cuba lagi"**.
 - **"Seterusnya →"** button advances to the next question (enabled only after answering).
+- **"Report"** button appears only after the answer is submitted, sits below **"Seterusnya →"**,
+  opens an issue-description dialog, then changes to **"Report Submitted"** after submit.
 
 **Five question types** (the prompts the owner specified):
 

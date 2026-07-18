@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import MatematikActivityFrame, { recordActivityScore } from './MatematikActivityFrame';
+import QuestionIssueReportButton from './QuestionIssueReportButton';
 import { pick, randInt, shuffle } from './explorePrimitives_shared';
 
 function formatMoney(sen) {
@@ -2540,6 +2541,16 @@ export function CabarMindaWangExplore({ data, language, theme, onExit }) {
               <button className="ujian-next" type="button" onClick={handleExamNext} disabled={!answered}>
                 {nextLabel}
               </button>
+              <QuestionIssueReportButton
+                language={language}
+                question={q}
+                questionIndex={current}
+                totalQuestions={questions.length}
+                selected={answers[current]}
+                answered={answered}
+                scoreId={scoreId}
+                source="T1M4Exam"
+              />
             </div>
           </div>
         </div>

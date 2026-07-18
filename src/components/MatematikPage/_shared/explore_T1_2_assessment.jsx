@@ -5,6 +5,7 @@ import { playSound } from '../../../utils/soundManager';
 import useGamification from '../../../hooks/useGamification';
 import { pick, randInt, shuffle } from './explorePrimitives_shared';
 import { recordActivityScore } from './MatematikActivityFrame';
+import QuestionIssueReportButton from './QuestionIssueReportButton';
 import { module2CoreApi } from './explore_T1_2_core';
 
 const { T1_M2_GENERATORS, renderT1M2Question } = module2CoreApi;
@@ -850,14 +851,16 @@ export function LatihDiriM2Explore({ data, language, theme, onExit }) {
   return (
     <M2DrillScreen
       selectedType={selectedType}
+      language={language}
       theme={theme}
       onBackToPicker={initialType ? onExit : () => setSelectedType(null)}
       onScoreRecord={handleScoreRecord}
+      scoreId={data?.scoreId}
     />
   );
 }
 
-function M2DrillScreen({ selectedType, theme, onBackToPicker, onScoreRecord }) {
+function M2DrillScreen({ selectedType, language, theme, onBackToPicker, onScoreRecord, scoreId }) {
   const C = theme || {};
   const accent = C.accent || '#3B82F6';
   const dark = C.dark || '#1E3A8A';
@@ -1011,9 +1014,21 @@ function M2DrillScreen({ selectedType, theme, onBackToPicker, onScoreRecord }) {
                   {answered ? (isCorrect ? 'Betul! 🎉' : 'Cuba lagi') : ''}
                 </div>
                 {answered && (
+                  <>
                   <button className="ld-drill-next" type="button" onClick={handleNext}>
                     {isLast ? 'Tamat 🎉' : 'Seterusnya →'}
                   </button>
+                  <QuestionIssueReportButton
+                    language={language}
+                    question={q}
+                    questionIndex={idx}
+                    totalQuestions={questions.length}
+                    selected={selected}
+                    answered={answered}
+                    scoreId={scoreId}
+                    source="T1M2Drill"
+                  />
+                  </>
                 )}
               </div>
             </div>
@@ -1397,6 +1412,16 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
               <button className="cm2-next" type="button" onClick={handleExamNext} disabled={!answered}>
                 {nextLabel}
               </button>
+              <QuestionIssueReportButton
+                language={language}
+                question={q}
+                questionIndex={current}
+                totalQuestions={questions.length}
+                selected={answers[current]}
+                answered={answered}
+                scoreId={data?.scoreId}
+                source="T1M2Exam"
+              />
             </div>
           </div>
         </div>

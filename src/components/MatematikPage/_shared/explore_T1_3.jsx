@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import MatematikActivityFrame, { recordActivityScore } from './MatematikActivityFrame';
+import QuestionIssueReportButton from './QuestionIssueReportButton';
 import { pick, randInt, shuffle } from './explorePrimitives_shared';
 
 const FRAC_WORDS = ['Setengah', 'Suku', 'Dua perempat', 'Tiga perempat'];
@@ -1661,6 +1662,16 @@ export function CabarMindaPecahanExplore({ data, language, theme, onExit }) {
               <button className="ujian-next" type="button" onClick={handleExamNext} disabled={!answered}>
                 {nextLabel}
               </button>
+              <QuestionIssueReportButton
+                language={language}
+                question={q}
+                questionIndex={current}
+                totalQuestions={questions.length}
+                selected={answers[current]}
+                answered={answered}
+                scoreId={scoreId}
+                source="T1M3Exam"
+              />
             </div>
           </div>
         </div>

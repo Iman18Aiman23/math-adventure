@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { GraduationCap, Trophy, Medal, User, Settings, Star, Heart, Gem } from 'lucide-react';
+import { GraduationCap, Trophy, Medal, User, Settings, Star, Heart, Gem, Flag } from 'lucide-react';
 import { getGameData } from '../utils/gameStatsManager';
 
 const getSidebarStyles = () => `
@@ -160,7 +160,7 @@ const SIDEBAR_TABS = [
 
 export default function DesktopSidebar({
   activeTab, onTabChange, language, onToggleLanguage,
-  playerName, gameState, onHome,
+  playerName, gameState, onHome, onOpenReports,
   theme, onThemeChange, themes,
 }) {
   const [hearts, setHearts] = useState(3);
@@ -340,6 +340,19 @@ export default function DesktopSidebar({
                 </div>
               )}
             </div>
+          )}
+
+          {onOpenReports && (
+            <button
+              className="sidebar-item"
+              onClick={onOpenReports}
+              style={{ gap: '1rem', width: '100%' }}
+            >
+              <span className="sidebar-item-icon">
+                <Flag size={24} strokeWidth={2.4} />
+              </span>
+              <span>Reports</span>
+            </button>
           )}
         </nav>
 

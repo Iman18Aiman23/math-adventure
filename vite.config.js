@@ -9,4 +9,16 @@ export default defineConfig({
   plugins: [react()],
   base: '/math-adventure/',
   server: { host: true },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom', 'react-dom/client'],
+          jspdf: ['jspdf'],
+          html2canvas: ['html2canvas'],
+          icons: ['lucide-react'],
+        },
+      },
+    },
+  },
 })

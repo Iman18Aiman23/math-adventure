@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import confetti from 'canvas-confetti';
 import { playSound } from '../../../utils/soundManager';
 import { MatematikNavContext } from './MatematikNavContext';
+import QuestionIssueReportButton from './QuestionIssueReportButton';
 
 const PASS_RATIO = 0.8; // 80% needed to unlock "Topik Seterusnya →"
 
@@ -25,6 +26,7 @@ export default function MatematikActivityFrame({
   scoreStorageKey,
   scoreId,
   showQuestionProgress,
+  language = 'bm',
 }) {
   const safeTheme = theme || {};
   const nav = useContext(MatematikNavContext);
@@ -196,8 +198,10 @@ export default function MatematikActivityFrame({
         .maf-action-row {
           width: 100%;
           display: flex;
+          flex-direction: column;
           justify-content: center;
           align-items: center;
+          gap: 8px;
         }
         .maf-question {
           font-family: 'Baloo 2', sans-serif;
@@ -449,6 +453,16 @@ export default function MatematikActivityFrame({
                       <button className="maf-next" type="button" onClick={handleNext}>
                         {isLast ? 'Tamat 🎉' : 'Seterusnya →'}
                       </button>
+                      <QuestionIssueReportButton
+                        language={language}
+                        question={q}
+                        questionIndex={idx}
+                        totalQuestions={questions.length}
+                        selected={selected}
+                        answered={answered}
+                        scoreId={scoreId}
+                        source="MatematikActivityFrame"
+                      />
                     </div>
                   )}
                 </div>

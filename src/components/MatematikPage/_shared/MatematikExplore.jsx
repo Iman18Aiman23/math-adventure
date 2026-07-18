@@ -34,6 +34,12 @@ const PRIMITIVE_ENTRIES = {
   'selesaikan-wang': { exportName: 'SelesaikanWangExplore', load: () => import('./explore_T1_4') },
   'latih-diri-wang': { exportName: 'LatihDiriWangExplore', load: () => import('./explore_T1_4') },
   'cabar-minda-wang': { exportName: 'CabarMindaWangExplore', load: () => import('./explore_T1_4') },
+  'mengenali-bulan': { exportName: 'MengenaliBulanExplore', load: () => import('./explore_T1_5') },
+  'mengenali-hari': { exportName: 'MengenaliHariExplore', load: () => import('./explore_T1_5') },
+  'mengenali-masa': { exportName: 'MengenaliMasaExplore', load: () => import('./explore_T1_5') },
+  'selesaikan-masa': { exportName: 'SelesaikanMasaExplore', load: () => import('./explore_T1_5') },
+  'latih-diri-masa': { exportName: 'LatihDiriMasaExplore', load: () => import('./explore_T1_5') },
+  'cabar-minda-masa': { exportName: 'CabarMindaMasaExplore', load: () => import('./explore_T1_5') },
 };
 
 const primitiveCache = new Map();

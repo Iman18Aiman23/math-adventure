@@ -134,11 +134,22 @@ export function NumOptionsGrid({ options, answered, selected, answer, handlePick
   const cols = Math.min(options.length, 4);
   const locked = answered && !C?.canChangeAnswer;
   return (
-    <div style={{
+    <div className="mt-num-options-grid" style={{
       display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`,
       gap: 'clamp(8px, 1.4vmin, 16px)',
       width: '100%', maxWidth: cols <= 3 ? 360 : 400,
     }}>
+      <style>{`
+        @media (max-width: 430px) {
+          .mt-num-options-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            max-width: min(100%, 320px) !important;
+          }
+          .mt-num-options-grid button {
+            font-size: clamp(20px, 6vw, 32px) !important;
+          }
+        }
+      `}</style>
       {options.map((opt, idx) => {
         const picked = selected === opt.id;
         const isAns = opt.id === answer;
@@ -320,7 +331,7 @@ export function KeypadInput({ answered, isCorrect, handlePick, answer, theme: C,
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
             <button key={d} type="button" className="kp-btn" onClick={() => press(String(d))}
               style={{
-                minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
+                minHeight: 'clamp(44px, 6vmin, 54px)', border: 'none',
                 borderBottom: '4px solid #2563EB', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
                 background: '#3B82F6', color: '#fff', cursor: 'pointer',
                 fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
@@ -329,15 +340,15 @@ export function KeypadInput({ answered, isCorrect, handlePick, answer, theme: C,
           ))}
           <button type="button" className="kp-btn" onClick={back}
             style={{
-              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
+              minHeight: 'clamp(44px, 6vmin, 54px)', border: 'none',
               borderBottom: '4px solid #DC2626', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: '#EF4444', color: '#fff', cursor: 'pointer',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-              fontSize: 'clamp(16px, 2.6vmin, 22px)',
+              fontSize: 'clamp(16px, 2.6vmin, 24px)',
             }}>Padam</button>
           <button type="button" className="kp-btn" onClick={() => press('0')}
             style={{
-              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
+              minHeight: 'clamp(44px, 6vmin, 54px)', border: 'none',
               borderBottom: '4px solid #2563EB', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: '#3B82F6', color: '#fff', cursor: 'pointer',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
@@ -345,13 +356,13 @@ export function KeypadInput({ answered, isCorrect, handlePick, answer, theme: C,
             }}>0</button>
           <button type="button" className="kp-btn" onClick={submit} disabled={input === ''}
             style={{
-              minHeight: 'clamp(44px, 6vmin, 50px)', border: 'none',
+              minHeight: 'clamp(44px, 6vmin, 54px)', border: 'none',
               borderBottom: input === '' ? '4px solid #D1D5DB' : '4px solid #16A34A',
               borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: input === '' ? '#E5E7EB' : '#22C55E',
               color: input === '' ? '#9CA3AF' : '#fff', cursor: input === '' ? 'not-allowed' : 'pointer',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-              fontSize: 'clamp(16px, 2.6vmin, 22px)',
+              fontSize: 'clamp(16px, 2.6vmin, 24px)',
             }}>Semak</button>
         </div>
       )}

@@ -12,82 +12,74 @@ const THEME = {
 };
 
 const ROBOT = <MatematikTopicRobot theme={THEME} />;
+const SCORE_KEY = 'mt_ld_m5_scores';
 
-function FooterTrio({ language, theme }) {
-  const isBM = language === 'bm';
-  const items = [
-    { id: 'selesaikan',  icon: '🧩', title: isBM ? 'Cerita Masa' : 'Time Stories', desc: isBM ? 'Guna masa dalam cerita' : 'Use time in stories' },
-    { id: 'latih-diri',  icon: '⚡', title: isBM ? 'Latihan Jam' : 'Clock Practice', desc: isBM ? 'Baca waktu ikut tahap' : 'Read time by level' },
-    { id: 'cabar-minda', icon: '🧠', title: isBM ? 'Cabaran Masa' : 'Time Challenge', desc: isBM ? 'Soalan masa lebih sukar' : 'Harder time questions' },
-  ];
-  return (
-    <div className="mt-footer-trio">
-      <style>{`
-        .mt-footer-trio {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 16px;
-          max-width: 720px;
-          margin: 0 auto;
-        }
-        .mt-footer-trio-card {
-          background: #fff;
-          border-radius: 20px;
-          padding: 18px 14px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 6px;
-          border: 2px solid ${theme.accent}44;
-          box-shadow: 0 6px 20px -10px ${theme.dark}30;
-          opacity: 0.7;
-          filter: grayscale(0.4);
-          cursor: default;
-          pointer-events: none;
-          text-align: center;
-        }
-        .mt-footer-trio-icon { font-size: 28px; }
-        .mt-footer-trio-title {
-          font-family: 'Baloo 2', sans-serif;
-          font-weight: 800;
-          font-size: 16px;
-          color: ${theme.dark};
-          margin: 0;
-        }
-        .mt-footer-trio-desc {
-          font-family: 'Fredoka', sans-serif;
-          font-weight: 500;
-          font-size: 11px;
-          color: #5B6B7B;
-          margin: 0;
-        }
-        @media (max-width: 560px) {
-          .mt-footer-trio { grid-template-columns: 1fr; max-width: 300px; }
-        }
-      `}</style>
-      {items.map(item => (
-        <div key={item.id} className="mt-footer-trio-card">
-          <span className="mt-footer-trio-icon">{item.icon}</span>
-          <div className="mt-footer-trio-title">{item.title}</div>
-          <div className="mt-footer-trio-desc">{item.desc}</div>
-        </div>
-      ))}
-    </div>
-  );
+function loadScores() {
+  if (typeof localStorage === 'undefined') return {};
+  try { return JSON.parse(localStorage.getItem(SCORE_KEY) || '{}'); }
+  catch { return {}; }
+}
+
+function actionScore(actionId, scores) {
+  const score = scores[actionId];
+  if (!score) return { status: 'unplayed', label: 'Score 0/10' };
+  const best = Math.max(0, Math.min(10, score.best || 0));
+  return {
+    status: score.passed ? 'passed' : 'failed',
+    label: `Score ${best}/10`,
+  };
 }
 
 const TOPICS = [
   {
-    id: 'placeholder-1',
-    pill: 'SEGERA HADIR',
-    title: 'Baca Masa',
-    desc: 'Akan datang: baca jam, hari dan urutan waktu harian.',
+    id: 'm5-bulan-hari-masa',
+    pill: 'TOPIK 5.1',
+    title: 'Bulan, Hari dan Masa',
+    desc: 'Kenali nama bulan, urutan hari dan baca masa pada jam.',
     visual: ROBOT,
-    disabled: true,
+    color: THEME.accent,
+    actions: [
+      { id: 'mengenali-bulan', label: 'Mengenali Bulan', icon: 'type' },
+      { id: 'mengenali-hari', label: 'Mengenali Hari', icon: 'repeat' },
+      { id: 'mengenali-masa', label: 'Mengenali Masa', icon: 'calculator' },
+    ],
+  },
+  {
+    id: 'selesaikan-masa',
+    pill: 'SELESAIKAN',
+    title: 'Selesaikan Masa',
+    desc: 'Selesaikan cerita masa harian.',
+    visual: ROBOT,
+    color: THEME.accent,
+  },
+  {
+    id: 'latih-diri-masa',
+    pill: 'LATIH DIRI',
+    title: 'Latih Tubi Masa',
+    desc: 'Latihan pantas jam, hari dan bulan.',
+    visual: ROBOT,
+    color: THEME.accent,
+  },
+  {
+    id: 'cabar-minda-masa',
+    pill: 'CABAR MINDA',
+    title: 'Ujian Masa',
+    desc: '30 soalan cabaran masa.',
+    visual: ROBOT,
+    color: THEME.accent,
   },
 ];
 
 export default function MasaDanWaktuModule({ onSelectTopic, language = 'bm' }) {
+  const scores = React.useMemo(loadScores, []);
+  const topics = React.useMemo(() => TOPICS.map((topic) => ({
+    ...topic,
+    actions: topic.actions?.map((action) => ({
+      ...action,
+      score: actionScore(action.id, scores),
+    })),
+  })), [scores]);
+
   return (
     <Tahun1ModuleHubLayout
       moduleNum={5}
@@ -96,10 +88,9 @@ export default function MasaDanWaktuModule({ onSelectTopic, language = 'bm' }) {
       theme={THEME}
       headerVariant="banner"
       bareStage
-      topics={TOPICS}
+      topics={topics}
       onSelectTopic={onSelectTopic}
       language={language}
-      footer={<FooterTrio language={language} theme={THEME} />}
     />
   );
 }

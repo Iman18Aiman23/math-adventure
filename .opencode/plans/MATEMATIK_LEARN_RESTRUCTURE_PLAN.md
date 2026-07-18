@@ -121,6 +121,11 @@ Before marking any slice 🔍, verify every item:
 - [ ] **Explore root div:** `display:'flex'`, `flexDirection:'column'`, `height:'100%'`, `minHeight:0`
 - [ ] **No fixed-height wrappers** around `MatematikActivityFrame`
 - [ ] **All sizes** in question content use `clamp(min, Nvmin, max)` (vmin)
+- [ ] **Report button:** every question page uses `QuestionIssueReportButton`; hidden before submit,
+      shown below the primary action after answer submit, red `Report`, popup textarea, saved via
+      `questionIssueReportStore.js` localStorage adapter.
+- [ ] **Report viewer:** if the slice introduces a new question data/visual format, update
+      `QuestionIssueReportsPage.jsx` so admin can view that report as a readable question preview.
 - [ ] **Hub card:** ROBOT visual, UPPERCASE pill, desc ≤10 words, NOT disabled
 - [ ] **App.jsx:** lazy import + `if (matematikTopic === '...')` route added
 - [ ] **`npm run build` exit 0**; no console errors
@@ -144,7 +149,8 @@ Question-page content structure is locked to this 4-section layout:
 - Section 1 = the question header inside the content area. It is the content header, not part of the page header.
 - Section 2 = the main visual prompt zone such as emoji, number, card, or illustration.
 - Section 3 = the answer interaction zone.
-- Section 4 = the action zone, usually the primary next button or retry button.
+- Section 4 = the action zone, usually the primary next button or retry button, followed by
+  the red `Report` button after the answer is submitted.
 
 Spacing memory:
 
@@ -192,6 +198,105 @@ Required behaviour:
   `Jawapan anda` and `Jawapan betul`.
 - Review popups must use a portal or equivalent fixed overlay with a very high z-index
   (higher than the back button, stats bar, footer, and question-map dialog).
+
+### CONTRACT G — Matematik Tahun 1 page standard (apply to every new slice)
+
+Every new Tahun 1 module, topic, footer card, and exam page must follow the same standard
+below. Do not create a one-off layout unless the owner explicitly approves it.
+
+#### G1 — Tahun 1 navigation and module setting
+
+- Tahun 1 uses the owner-approved 5-module structure:
+  1. `Nombor Hingga 100`
+  2. `Tambah dan Tolak`
+  3. `Pecahan`
+  4. `Wang`
+  5. `Masa dan Waktu`
+- Each module page uses `MatematikModulePage` + `MatematikModuleNavBar`; do not bypass the
+  shared module wrapper.
+- Each module has content cards first, followed by the fixed footer trio:
+  `Selesaikan`, `Latih Diri`, `Cabar Minda`.
+- Hub cards must keep the shared card standard: robot visual, uppercase pill, short title,
+  description <= 10 words, clear disabled state only when content is not built.
+- Any new topic route must be lazy-loaded in `App.jsx` and return to the module hub via
+  the existing `onBack` state-driven navigation.
+
+#### G2 — Topic/question page structure
+
+Every active question page follows the same four-part structure:
+
+1. Question header inside the content area.
+2. Main visual prompt zone.
+3. Answer interaction zone.
+4. Action zone: primary next/retry/finish button, then red `Report` after answer submit.
+
+Required settings:
+
+- Use `MatematikTopicShell` with `showToggle={false}`, `showReadyCta={false}`, `emoji=""`,
+  and `titleBM=""` unless a slice spec explicitly says otherwise.
+- Pass the same `THEME` to both shell and explore/content component.
+- Use `MatematikActivityFrame` for question flow whenever possible.
+- Keep the shared shell background; do not set a competing root background.
+- Keep feedback compact: correct sound + confetti, wrong correction state, no large
+  success/wrong banners that create dead space.
+- `QuestionIssueReportButton` is mandatory on every question page. It stays hidden before
+  submit, appears below the primary action after submit, opens a textarea dialog, saves via
+  `questionIssueReportStore.js`, and changes to submitted text after save.
+- If a new question data or visual format is added, update
+  `QuestionIssueReportsPage.jsx` in the same slice so admin can preview it properly.
+
+#### G3 — Responsive and no-scroll rule
+
+- Active learning/question/exam screens must fit one viewport on tablet and desktop
+  heights around 768px. Single page without scrolling is the default.
+- Phone layouts may use the frame's internal scroll only when the content genuinely cannot
+  fit, but no important footer/action button may be hidden.
+- Use `clamp(min, Nvmin, max)` for question content fonts, gaps, padding, icon sizes, cards,
+  and visuals. Use `vmin`, not `vw`, for scaling.
+- Root and intermediate wrappers must propagate `display:flex`, `flex-direction:column`,
+  `height:100%`, `flex:1`, and `min-height:0` as needed.
+- Do not wrap `MatematikActivityFrame` in fixed-height or `overflow:hidden` containers.
+- Tap targets must be at least 44px high/wide.
+- No horizontal overflow on mobile; long labels must wrap or shrink within their container.
+
+#### G4 — Footer trio behaviour
+
+- `Selesaikan`: module problem-solving set; usually 10 questions; uses only the module's
+  completed content banks.
+- `Latih Diri`: faster practice/drill for the same module; lighter than exam; may use timed
+  or tiered logic only when that module's spec says so.
+- `Cabar Minda`: formal module exam/challenge; must follow CONTRACT F exactly.
+- Footer cards must share the same shell, theme, report button, responsive sizing, and
+  single-page active-question rule as normal topic pages.
+
+#### G5 — Exam page contents and behaviour
+
+Every `Cabar Minda` / module exam page must include:
+
+- A compact pre-start page with module title, clear exam summary, pass gate, question count,
+  timer, and a single start CTA. This page should fit one viewport.
+- Active exam page with the same question UI style as the learning/problem pages.
+- Header/top controls kept minimal; no duplicate progress labels.
+- Footer row: left `Soalan answered/total` question-map button, right timer only.
+- Question-map dialog: fixed overlay, all question numbers, current/answered states, jump to
+  any question, fits one viewport without scrolling.
+- Answer rule: user must answer before moving next.
+- Submit rule: `Tamat` appears only on the last question after every question is answered.
+- Results page: score, pass/fail state, retry/exit actions, and clickable `Betul` / `Salah`
+  review buttons.
+- Review dialogs must render each question in the same visual format used during the exam,
+  not raw JSON or array data.
+
+#### G6 — Build/verification rule
+
+Before any new slice is marked pending verification:
+
+- Browser-check the real Matematik Tahun 1 route, not only a harness.
+- Verify mobile, tablet/desktop height, and wide desktop.
+- Confirm active question/exam pages are single-screen where required.
+- Confirm Report button appears only after answer submit and the admin viewer can preview
+  the saved question.
+- Run `npm run build` successfully.
 
 ---
 

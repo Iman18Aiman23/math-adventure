@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import confetti from 'canvas-confetti';
 import { playSound } from '../../../utils/soundManager';
 import MatematikActivityFrame, { recordActivityScore } from './MatematikActivityFrame';
+import QuestionIssueReportButton from './QuestionIssueReportButton';
 import { BOX_COLORS, NumOptionsGrid, ObjectsGrid, numToBM, pick, randInt, shuffle } from './explorePrimitives_shared';
 import { module1CoreApi } from './explore_T1_1_core';
 /* ════════════════════════════════════════════════════════════════════════
@@ -1527,6 +1528,16 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
               <button className="cm1-next" type="button" onClick={handleExamNext} disabled={!answered}>
                 {nextLabel}
               </button>
+              <QuestionIssueReportButton
+                language={language}
+                question={q}
+                questionIndex={current}
+                totalQuestions={questions.length}
+                selected={answers[current]}
+                answered={answered}
+                scoreId={data?.scoreId}
+                source="T1M1Exam"
+              />
             </div>
           </div>
         </div>

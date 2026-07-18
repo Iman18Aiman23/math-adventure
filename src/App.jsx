@@ -124,6 +124,7 @@ const PecahanAsasT1 = React.lazy(() => import('./components/MatematikPage/Tahun1
 const ProfileHome = React.lazy(() => import('./components/Profile/ProfileHome'));
 const PendidikanIslamHomePage = React.lazy(() => import('./components/PendidikanIslamPage/PendidikanIslamHomePage'));
 const MatematikHomePage = React.lazy(() => import('./components/MatematikPage/MatematikHomePage'));
+const QuestionIssueReportsPage = React.lazy(() => import('./components/MatematikPage/QuestionIssueReportsPage'));
 const BahasaMelayuHomePage = React.lazy(() => import('./components/BahasaMelayuPage/BahasaMelayuHomePage'));
 const BahasaMelayuModulePage = React.lazy(() => import('./components/BahasaMelayuPage/BahasaMelayuModulePage'));
 const BMModuleHubLayout = React.lazy(() => import('./components/BahasaMelayuPage/_shared/BMModuleHubLayout'));
@@ -206,6 +207,12 @@ const SelesaikanWang   = React.lazy(() => import('./components/MatematikPage/Tah
 const LatihDiriWang    = React.lazy(() => import('./components/MatematikPage/Tahun1/Module4_Wang/LatihDiriWang'));
 const CabarMindaWang   = React.lazy(() => import('./components/MatematikPage/Tahun1/Module4_Wang/CabarMindaWang'));
 const MasaDanWaktuModule = React.lazy(() => import('./components/MatematikPage/Tahun1/Module5_MasaDanWaktu/MasaDanWaktuModule'));
+const MengenaliBulan   = React.lazy(() => import('./components/MatematikPage/Tahun1/Module5_MasaDanWaktu/MengenaliBulan'));
+const MengenaliHari    = React.lazy(() => import('./components/MatematikPage/Tahun1/Module5_MasaDanWaktu/MengenaliHari'));
+const MengenaliMasa    = React.lazy(() => import('./components/MatematikPage/Tahun1/Module5_MasaDanWaktu/MengenaliMasa'));
+const SelesaikanMasa   = React.lazy(() => import('./components/MatematikPage/Tahun1/Module5_MasaDanWaktu/SelesaikanMasa'));
+const LatihDiriMasa    = React.lazy(() => import('./components/MatematikPage/Tahun1/Module5_MasaDanWaktu/LatihDiriMasa'));
+const CabarMindaMasa   = React.lazy(() => import('./components/MatematikPage/Tahun1/Module5_MasaDanWaktu/CabarMindaMasa'));
 const NomborModuleT2 = React.lazy(() => import('./components/MatematikPage/Tahun2/Module1_Nombor/NomborModule'));
 const SukatanModuleT2 = React.lazy(() => import('./components/MatematikPage/Tahun2/Module2_Sukatan/SukatanModule'));
 const StatistikModuleT2 = React.lazy(() => import('./components/MatematikPage/Tahun2/Module3_Statistik/StatistikModule'));
@@ -419,7 +426,7 @@ function ProgressWrapper({ topicId, onBack, children }) {
 const MT_MODULE1_ORDER = [
   'banding-banyak-sedikit', 'kenali-0-10', 'kenali-11-20', 'tulis-0-20',
   'kombinasi-nombor', 'kenali-21-100', 'nilai-tempat', 'susunan-nombor',
-  'pola-nombor', 'anggar-bundar', 'selesaikan', 'latih-diri', 'cabar-minda',
+  'pola-nombor', 'anggar-bundar', 'selesaikan', 'selesaikan-cerita-m1', 'cabar-minda-m1',
 ];
 
 // Ordered Matematik T1 Module-2 topics. New arrays are added per module; the nav
@@ -433,8 +440,9 @@ const MT_MODULE2_DRILL_TYPES = [
   'tb-add-groups', 'tb-add-line', 'tb-add-complete', 'tb-sub-groups', 'tb-sub-line',
 ];
 const MT_MODULE2_ORDER = [...MT_MODULE2_DRILL_TYPES.map((id) => `m2-drill-${id}`), 'm2-selesaikan', 'm2-cabar-minda'];
-const MT_MODULE3_ORDER = ['kenali-pecahan'];
+const MT_MODULE3_ORDER = ['kenali-pecahan', 'selesaikan-pecahan', 'latih-diri-pecahan', 'cabar-minda-pecahan'];
 const MT_MODULE4_ORDER = ['kenali-nilai-wang', 'tukar-wang', 'dapat-catat-wang', 'selesaikan-wang', 'latih-diri-wang', 'cabar-minda-wang'];
+const MT_MODULE5_ORDER = ['mengenali-bulan', 'mengenali-hari', 'mengenali-masa', 'selesaikan-masa', 'latih-diri-masa', 'cabar-minda-masa'];
 
 export default function App() {
   const isDesktop = useIsDesktop();
@@ -660,6 +668,12 @@ export default function App() {
         if (matematikTopic === 'selesaikan-wang')    return <SelesaikanWang     onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'latih-diri-wang')    return <LatihDiriWang      onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'cabar-minda-wang')   return <CabarMindaWang     onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'mengenali-bulan')    return <MengenaliBulan     onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'mengenali-hari')     return <MengenaliHari      onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'mengenali-masa')     return <MengenaliMasa      onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'selesaikan-masa')    return <SelesaikanMasa     onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'latih-diri-masa')    return <LatihDiriMasa      onBack={() => setMatematikTopic(null)} language={language} />;
+        if (matematikTopic === 'cabar-minda-masa')   return <CabarMindaMasa     onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'pecahan-asas')       return <PecahanAsasT1      onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === '2-bahagi')           return <BahagiT2           onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === '2-ukuran-jisim-cecair') return <JisimCecairT2   onBack={() => setMatematikTopic(null)} language={language} />;
@@ -700,6 +714,15 @@ export default function App() {
           <Suspense fallback={<LoadingSpinner />}>
             <MatematikHomePage onBack={handleBackToHome} language={language}
               onSelectYear={(y) => navigate(() => { setMatematikYear(y); setMatematikModule(y === 1 ? 'nombor-hingga-100' : y === 2 ? '2-nombor' : '3-nombor'); })} />
+          </Suspense>
+        );
+      case 'matematik-reports':
+        return (
+          <Suspense fallback={<LoadingSpinner />}>
+            <QuestionIssueReportsPage
+              language={language}
+              onBack={() => navigate(() => setCurrentSubject('matematik-kssr'))}
+            />
           </Suspense>
         );
       case 'pendidikan-islam-v1':
@@ -1516,7 +1539,7 @@ export default function App() {
     }
   };
 
-  const MT_ORDERS = [MT_MODULE1_ORDER, MT_MODULE2_ORDER, MT_MODULE3_ORDER, MT_MODULE4_ORDER];
+  const MT_ORDERS = [MT_MODULE1_ORDER, MT_MODULE2_ORDER, MT_MODULE3_ORDER, MT_MODULE4_ORDER, MT_MODULE5_ORDER];
   const mtOrder = MT_ORDERS.find(o => o.includes(matematikTopic)) || [];
   const mtIdx = mtOrder.indexOf(matematikTopic);
   const matematikNav = {
@@ -1538,6 +1561,7 @@ export default function App() {
             playerName={playerName}
             gameState={gameState}
             onHome={handleBackToHome}
+            onOpenReports={() => navigate(() => setCurrentSubject('matematik-reports'))}
             theme={THEMES[currentTheme]}
             onThemeChange={setCurrentTheme}
             themes={THEMES}

@@ -3,6 +3,7 @@ import confetti from 'canvas-confetti';
 import { playSound } from '../../../utils/soundManager';
 import MatematikActivityFrame, { recordActivityScore } from './MatematikActivityFrame';
 import { MatematikNavContext } from './MatematikNavContext';
+import QuestionIssueReportButton from './QuestionIssueReportButton';
 import { BOX_COLORS, EmptyTray, NumOptionsGrid, ObjectsGrid, SPLATTER_PATHS, WordOptionsGrid, numToBM, pick, randInt, shuffle } from './explorePrimitives_shared';
 
 /* ── CompareExplore ──────────────────────────────────────────────────────────
@@ -285,8 +286,10 @@ export function CompareExplore({ data, language, theme, onExit }) {
         .cmp-action-row {
           width: 100%;
           display: flex;
+          flex-direction: column;
           justify-content: center;
           align-items: center;
+          gap: 8px;
         }
 
         .cmp-next {
@@ -415,6 +418,15 @@ export function CompareExplore({ data, language, theme, onExit }) {
                     <button className="cmp-next" type="button" onClick={handleNext}>
                       {isLast ? 'Tamat' : 'Seterusnya >'}
                     </button>
+                    <QuestionIssueReportButton
+                      question={q}
+                      questionIndex={idx}
+                      totalQuestions={questions.length}
+                      selected={selected}
+                      answered={answered}
+                      scoreId={data?.scoreId}
+                      source="T1M1Compare"
+                    />
                   </div>
                 )}
               </div>
@@ -829,6 +841,7 @@ export function KenaliNomborExplore({ data, language, theme, onExit }) {
       onExit={onExit}
       scoreStorageKey={data?.scoreStorageKey}
       scoreId={data?.scoreId}
+      language={language}
     />
   );
 }
@@ -997,6 +1010,7 @@ export function KombinasiExplore({ data, language, theme, onExit }) {
       onExit={onExit}
       scoreStorageKey={data?.scoreStorageKey}
       scoreId={data?.scoreId}
+      language={language}
     />
   );
 }
@@ -1425,6 +1439,7 @@ export function Kenali21Hingga100Explore({ data, language, theme, onExit }) {
       onExit={onExit}
       scoreStorageKey={data?.scoreStorageKey}
       scoreId={data?.scoreId}
+      language={language}
     />
   );
 }
@@ -1632,51 +1647,49 @@ function IsiNilaiTempatContent({ q, ctx }) {
       {!locked && (
         <div style={{
           display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: 'clamp(3px, 0.6vmin, 8px)', width: '100%', maxWidth: 280,
-          flex: 1, minHeight: 0,
-          alignContent: 'stretch',
+          gap: 'clamp(5px, 1vmin, 10px)', width: '100%', maxWidth: 'clamp(260px, 50vmin, 420px)',
         }}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
             <button key={d} type="button" className="btk-kp-btn" onClick={() => pressDigit(String(d))}
               style={{
                 border: 'none',
-                borderBottom: '3px solid #2563EB', borderRadius: 'clamp(10px, 1.2vmin, 14px)',
+                borderBottom: '4px solid #2563EB', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
                 background: '#3B82F6', color: '#fff', cursor: 'pointer',
                 fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-                fontSize: 'clamp(16px, 2.8vmin, 26px)',
-                minHeight: 0, height: '100%',
+                fontSize: 'clamp(20px, 3.4vmin, 30px)',
+                minHeight: 'clamp(44px, 6vmin, 54px)',
               }}>{d}</button>
           ))}
           <button type="button" className="btk-kp-btn" onClick={pressBack}
             style={{
               border: 'none',
-              borderBottom: '3px solid #DC2626', borderRadius: 'clamp(10px, 1.2vmin, 14px)',
+              borderBottom: '4px solid #DC2626', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: '#EF4444', color: '#fff', cursor: 'pointer',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-              fontSize: 'clamp(13px, 2.2vmin, 20px)',
-              minHeight: 0, height: '100%',
+              fontSize: 'clamp(16px, 2.6vmin, 24px)',
+              minHeight: 'clamp(44px, 6vmin, 54px)',
             }}>Padam</button>
           <button type="button" className="btk-kp-btn" onClick={() => pressDigit('0')}
             style={{
               border: 'none',
-              borderBottom: '3px solid #2563EB', borderRadius: 'clamp(10px, 1.2vmin, 14px)',
+              borderBottom: '4px solid #2563EB', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: '#3B82F6', color: '#fff', cursor: 'pointer',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-              fontSize: 'clamp(16px, 2.8vmin, 26px)',
-              minHeight: 0, height: '100%',
+              fontSize: 'clamp(20px, 3.4vmin, 30px)',
+              minHeight: 'clamp(44px, 6vmin, 54px)',
             }}>0</button>
           <button type="button" className="btk-kp-btn" onClick={() => { if (allFilled) handlePick(submitValue); }}
             disabled={!allFilled}
             style={{
               border: 'none',
-              borderBottom: allFilled ? '3px solid #16A34A' : '3px solid #D1D5DB',
-              borderRadius: 'clamp(10px, 1.2vmin, 14px)',
+              borderBottom: allFilled ? '4px solid #16A34A' : '4px solid #D1D5DB',
+              borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: allFilled ? '#22C55E' : '#E5E7EB',
               color: '#fff',
               cursor: allFilled ? 'pointer' : 'not-allowed',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-              fontSize: 'clamp(13px, 2.2vmin, 20px)',
-              minHeight: 0, height: '100%',
+              fontSize: 'clamp(16px, 2.6vmin, 24px)',
+              minHeight: 'clamp(44px, 6vmin, 54px)',
             }}>Semak</button>
         </div>
       )}
@@ -1756,6 +1769,7 @@ export function NilaiTempatExplore({ data, language, theme, onExit }) {
       onExit={onExit}
       scoreStorageKey={data?.scoreStorageKey}
       scoreId={data?.scoreId}
+      language={language}
     />
   );
 }
@@ -2347,6 +2361,7 @@ export function SusunanNomborExplore({ data, language, theme, onExit }) {
       onExit={onExit}
       scoreStorageKey={data?.scoreStorageKey}
       scoreId={data?.scoreId}
+      language={language}
     />
   );
 }
@@ -2528,6 +2543,7 @@ export function PolaNomborExplore({ data, language, theme, onExit }) {
       onExit={onExit}
       scoreStorageKey={data?.scoreStorageKey}
       scoreId={data?.scoreId}
+      language={language}
     />
   );
 }
@@ -2647,13 +2663,34 @@ function NumberLine({ low, high, mark }) {
 
 function AnggarObjectsContent({ q, ctx, word }) {
   const { answered, selected, answer, handlePick, theme: C } = ctx;
+  const isCountCard = q.type === 'anggar-terbaik';
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(14px, 2.4vmin, 28px)', width: '100%' }}>
       <div style={{
-        padding: 'clamp(10px, 1.8vmin, 20px)', borderRadius: 'clamp(16px, 2vmin, 24px)',
-        background: '#F8FAFC', border: '2px solid #E2E8F0', maxWidth: '90%',
+        minWidth: isCountCard ? 'clamp(120px, 28vmin, 190px)' : undefined,
+        minHeight: isCountCard ? 'clamp(96px, 22vmin, 150px)' : undefined,
+        padding: isCountCard ? 'clamp(18px, 3vmin, 30px)' : 'clamp(10px, 1.8vmin, 20px)',
+        borderRadius: 'clamp(16px, 2vmin, 24px)',
+        background: isCountCard ? '#ECFEFF' : '#F8FAFC',
+        border: isCountCard ? '3px solid #67E8F9' : '2px solid #E2E8F0',
+        boxShadow: isCountCard ? '0 8px 0 #A5F3FC, 0 18px 34px rgba(14,116,144,.12)' : undefined,
+        maxWidth: '90%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}>
-        <RenderObjects icon={q.icon} count={q.count} compact />
+        {isCountCard ? (
+          <span style={{
+            fontFamily: "'Baloo 2', sans-serif",
+            fontWeight: 900,
+            fontSize: 'clamp(52px, 13vmin, 98px)',
+            lineHeight: 1,
+            color: C?.accent || '#0891B2',
+            textShadow: '0 3px 0 rgba(255,255,255,.85)',
+          }}>{q.count}</span>
+        ) : (
+          <RenderObjects icon={q.icon} count={q.count} compact />
+        )}
       </div>
       {word
         ? <WordOptionsGrid options={q.options} answered={answered} selected={selected} answer={answer} handlePick={handlePick} theme={C} />
@@ -2701,6 +2738,7 @@ export function AnggarBundarExplore({ data, language, theme, onExit }) {
       onExit={onExit}
       scoreStorageKey={data?.scoreStorageKey}
       scoreId={data?.scoreId}
+      language={language}
     />
   );
 }
