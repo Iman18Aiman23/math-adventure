@@ -1174,18 +1174,34 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
 
   const handleExamPick = (value) => {
     if (!questions) return;
-    const correct = value === questions[current].answer;
-    const newAnswers = [...answers];
+    const payload = value && typeof value === 'object' && !Array.isArray(value) && Object.prototype.hasOwnProperty.call(value, 'value')
+      ? value
+      : { value, savedAnswer: value };
+    const pickedValue = payload.value;
+    const savedAnswer = payload.savedAnswer ?? pickedValue;
+    const currentAnswers = answersRef.current || answers;
+    if (pickedValue === null || pickedValue === '') {
+      const newAnswers = [...currentAnswers];
+      newAnswers[current] = null;
+      setAnswers(newAnswers);
+      answersRef.current = newAnswers;
+      setSelectedPerQ((currentSelected) => ({ ...(currentSelected || {}), [current]: savedAnswer || '' }));
+      return;
+    }
+    const correct = pickedValue === questions[current].answer;
+    const newAnswers = [...currentAnswers];
     newAnswers[current] = correct;
     setAnswers(newAnswers);
     answersRef.current = newAnswers;
-    setSelectedPerQ((currentSelected) => ({ ...(currentSelected || {}), [current]: value }));
+    setSelectedPerQ((currentSelected) => ({ ...(currentSelected || {}), [current]: savedAnswer }));
   };
 
   const handleExamNext = () => {
-    if (!questions || answers[current] === null) return;
+    if (!questions) return;
+    const latestAnswers = answersRef.current || answers;
+    if (latestAnswers[current] === null) return;
     if (current + 1 >= questions.length) {
-      if (!answers.every((value) => value !== null)) {
+      if (!latestAnswers.every((value) => value !== null)) {
         setShowQuestionList(true);
         return;
       }
@@ -1267,10 +1283,16 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
     const nextLabel = isLastQuestion && allAnswered
       ? (language === 'bm' ? 'Tamat' : 'Finish')
       : (language === 'bm' ? 'Seterusnya ->' : 'Next ->');
+    const savedAnswer = selectedPerQ[current] || '';
+    const selectedValue = Array.isArray(savedAnswer)
+      ? null
+      : savedAnswer && typeof savedAnswer === 'object'
+        ? savedAnswer.value || null
+        : savedAnswer || null;
 
     const examCtx = {
       answered: false,
-      selected: selectedPerQ[current] || null,
+      selected: selectedValue,
       answer: q.answer,
       isCorrect: false,
       examMode: true,
@@ -1279,7 +1301,7 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
       streak: 0,
       correct: 0,
       wrong: 0,
-      theme: { accent, dark, cd, green: '#16A34A', red: '#DC2626' },
+      theme: { accent, dark, cd, green: '#16A34A', red: '#DC2626', canChangeAnswer: true, savedAnswer },
     };
 
     return (
@@ -1289,16 +1311,27 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
           .cm1-body {
             min-height: 100%; box-sizing: border-box;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding: clamp(6px, 1.1vmin, 12px) clamp(10px, 1.6vmin, 20px);
+            padding: clamp(12px, 2.2vmin, 24px) clamp(10px, 1.6vmin, 20px);
           }
           .cm1-content {
             width: 100%; max-width: min(94vw, 860px);
             display: flex; flex-direction: column; align-items: center;
-            gap: clamp(4px, .9vmin, 9px);
+            gap: 0;
           }
           .cm1-prompt {
             font-family: 'Baloo 2', sans-serif; font-weight: 800;
-            font-size: clamp(18px, 3.4vmin, 32px); color: #1E293B; text-align: center; line-height: 1.08;
+            font-size: clamp(18px, 3.1vmin, 30px); color: #1E293B; text-align: center; line-height: 1.16;
+            margin-bottom: clamp(18px, 3.6vmin, 36px);
+            max-width: min(92vw, 760px);
+          }
+          .cm1-question-stage {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: clamp(68px, 16vmin, 150px);
+            margin-bottom: clamp(18px, 3.2vmin, 34px);
           }
           .cm1-feedback {
             font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: clamp(14px, 2vmin, 18px);
@@ -1489,7 +1522,7 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
           <div className="cm1-body">
             <div className="cm1-content">
               {promptContent && <div className="cm1-prompt">{promptContent}</div>}
-              {renderQuestionM1All(q, examCtx)}
+              <div className="cm1-question-stage">{renderQuestionM1All(q, examCtx)}</div>
               <div className="cm1-feedback" aria-live="polite" />
               <button className="cm1-next" type="button" onClick={handleExamNext} disabled={!answered}>
                 {nextLabel}

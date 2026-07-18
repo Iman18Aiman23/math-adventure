@@ -1217,25 +1217,30 @@ function AngkaKePerkataanContent({ q, ctx }) {
 // frame's handlePick(typedString) → checked against q.answer (String(n)).
 function TulisAngkaContent({ q, ctx }) {
   const { answered, isCorrect, handlePick, theme: C } = ctx;
-  const [input, setInput] = useState('');
-  useEffect(() => { setInput(''); }, [q.qid]);
+  const locked = answered && !C?.canChangeAnswer;
+  const [input, setInput] = useState(C?.savedAnswer || '');
+  useEffect(() => { setInput(C?.savedAnswer || ''); }, [q.qid, C?.savedAnswer]);
 
-  const press = (d) => { if (!answered && input.length < 3) setInput(input + d); };
-  const back = () => { if (!answered) setInput(input.slice(0, -1)); };
-  const submit = () => { if (!answered && input !== '') handlePick(input); };
+  const setExamInput = (next) => {
+    setInput(next);
+    if (C?.canChangeAnswer) handlePick({ value: next || null, savedAnswer: next });
+  };
+  const press = (d) => { if (!locked && input.length < 3) setExamInput(input + d); };
+  const back = () => { if (!locked) setExamInput(input.slice(0, -1)); };
+  const submit = () => { if (!locked && input !== '') handlePick(input); };
 
   // Also accept a physical / external keyboard (digits, Backspace, Enter) — the
   // on-screen keypad stays for touch / small devices.
   useEffect(() => {
     const onKey = (e) => {
-      if (answered) return;
-      if (/^[0-9]$/.test(e.key)) { e.preventDefault(); setInput(prev => (prev.length < 3 ? prev + e.key : prev)); }
-      else if (e.key === 'Backspace') { e.preventDefault(); setInput(prev => prev.slice(0, -1)); }
+      if (locked) return;
+      if (/^[0-9]$/.test(e.key)) { e.preventDefault(); setExamInput(input.length < 3 ? input + e.key : input); }
+      else if (e.key === 'Backspace') { e.preventDefault(); setExamInput(input.slice(0, -1)); }
       else if (e.key === 'Enter') { e.preventDefault(); if (input !== '') handlePick(input); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [answered, input, handlePick]);
+  }, [locked, input, handlePick]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px, 1.8vmin, 20px)', width: '100%' }}>
@@ -1261,7 +1266,7 @@ function TulisAngkaContent({ q, ctx }) {
         {q.word}
       </div>
       <input type="text" inputMode="numeric" className="tak-input-box"
-        value={answered ? q.answer : input}
+        value={answered && !C?.canChangeAnswer ? q.answer : input}
         style={{
           width: 120, height: 54, boxSizing: 'border-box',
           border: `3px solid ${answered ? (isCorrect ? C.green : C.red) : '#CBD5E1'}`,
@@ -1272,12 +1277,12 @@ function TulisAngkaContent({ q, ctx }) {
           color: answered ? (isCorrect ? C.green : C.red) : (input ? '#334155' : '#CBD5E1'),
           caretColor: '#475569', padding: 0, margin: 0,
         }} />
-      {answered && !isCorrect && (
+      {answered && !isCorrect && !C?.canChangeAnswer && (
         <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(14px, 2.2vmin, 20px)', color: '#64748B' }}>
           Jawapan: <b style={{ color: C.green }}>{q.answer}</b>
         </div>
       )}
-      {!answered && (
+      {!locked && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(5px, 1vmin, 10px)', width: '100%', maxWidth: 'clamp(260px, 50vmin, 420px)' }}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
             <button key={d} type="button" className="tak-kp-btn" onClick={() => press(String(d))}
@@ -1326,22 +1331,28 @@ function TulisAngkaContent({ q, ctx }) {
 // When all parts are placed, the assembled string is submitted via handlePick.
 function SusunPerkataanContent({ q, ctx }) {
   const { answered, isCorrect, handlePick, theme: C } = ctx;
-  const [placed, setPlaced] = useState([]);   // tile ids in tap order
-  useEffect(() => { setPlaced([]); }, [q.qid]);
+  const locked = answered && !C?.canChangeAnswer;
+  const savedPlaced = Array.isArray(C?.savedAnswer) ? C.savedAnswer.filter(id => q.parts.some(t => t.id === id)) : [];
+  const [placed, setPlaced] = useState(savedPlaced);   // tile ids in tap order
+  useEffect(() => { setPlaced(savedPlaced); }, [q.qid, C?.savedAnswer]);
 
   const wordById = {};
   q.parts.forEach(t => { wordById[t.id] = t.word; });
   const placedSet = new Set(placed);
 
   const tap = (id) => {
-    if (answered || placedSet.has(id)) return;
+    if (locked || placedSet.has(id)) return;
     const next = [...placed, id];
     setPlaced(next);
-    if (next.length === q.parts.length) {
-      handlePick(next.map(i => wordById[i]).join(' '));
-    }
+    const value = next.length === q.parts.length ? next.map(i => wordById[i]).join(' ') : null;
+    handlePick(C?.canChangeAnswer ? { value, savedAnswer: next } : value);
   };
-  const removeAt = (idx) => { if (!answered) setPlaced(placed.filter((_, i) => i !== idx)); };
+  const removeAt = (idx) => {
+    if (locked) return;
+    const next = placed.filter((_, i) => i !== idx);
+    setPlaced(next);
+    if (C?.canChangeAnswer) handlePick({ value: null, savedAnswer: next });
+  };
 
   const colorBox = (id, faded = false) => {
     const c = BOX_COLORS[id % BOX_COLORS.length];
@@ -1376,18 +1387,18 @@ function SusunPerkataanContent({ q, ctx }) {
         {placed.length === 0
           ? <span style={{ color: '#94A3B8', fontFamily: "'Fredoka', sans-serif", fontWeight: 600, fontSize: 'clamp(14px, 2.2vmin, 18px)' }}>👆 Susun perkataan di sini</span>
           : placed.map((id, idx) => (
-              <button key={idx} type="button" onClick={() => removeAt(idx)} disabled={answered}
-                style={{ ...colorBox(id), borderBottom: answered ? 'none' : `4px solid ${BOX_COLORS[id % BOX_COLORS.length].border}`, cursor: answered ? 'default' : 'pointer' }}>
+              <button key={idx} type="button" onClick={() => removeAt(idx)} disabled={locked}
+                style={{ ...colorBox(id), borderBottom: locked ? 'none' : `4px solid ${BOX_COLORS[id % BOX_COLORS.length].border}`, cursor: locked ? 'default' : 'pointer' }}>
                 {wordById[id]}
               </button>
             ))}
       </div>
-      {answered && !isCorrect && (
+      {answered && !isCorrect && !C?.canChangeAnswer && (
         <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(14px, 2.2vmin, 20px)', color: '#64748B', background: '#F8FAFC', padding: '8px 18px', borderRadius: 12, border: '1px solid #E2E8F0' }}>
           Jawapan: <b style={{ color: C.green }}>{q.answer}</b>
         </div>
       )}
-      {!answered && (
+      {!locked && (
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 'clamp(8px, 1.6vmin, 14px)', width: '100%', maxWidth: 440 }}>
           {q.parts.map((t) => (
             <button key={t.id} type="button" onClick={() => tap(t.id)} disabled={placedSet.has(t.id)} style={colorBox(t.id, placedSet.has(t.id))}>
@@ -1472,6 +1483,7 @@ function buildNilaiTempatRound() {
 
 function IsiNilaiTempatContent({ q, ctx }) {
   const { answered, isCorrect, handlePick, theme: C } = ctx;
+  const locked = answered && !C?.canChangeAnswer;
   const numDigits = q.digits.length;
   const placeData = numDigits === 3
     ? [
@@ -1484,35 +1496,44 @@ function IsiNilaiTempatContent({ q, ctx }) {
         { key: 'sa', label: 'Sa', multiplier: 1 },
       ];
 
-  const [vals, setVals] = useState(placeData.map(() => ''));
+  const savedVals = Array.isArray(C?.savedAnswer)
+    ? placeData.map((_, i) => C.savedAnswer[i] || '')
+    : placeData.map((_, i) => String(C?.savedAnswer || '')[i] || '');
+  const [vals, setVals] = useState(savedVals);
   const [activeIdx, setActiveIdx] = useState(0);
 
   useEffect(() => {
-    setVals(placeData.map(() => ''));
-    setActiveIdx(0);
-  }, [q.qid]);
+    const firstEmptyIdx = savedVals.findIndex((value) => value === '');
+    setVals(savedVals);
+    setActiveIdx(firstEmptyIdx >= 0 ? firstEmptyIdx : Math.max(0, placeData.length - 1));
+  }, [q.qid, C?.savedAnswer]);
+
+  const saveVals = (next) => {
+    if (C?.canChangeAnswer) {
+      const value = next.every(v => v !== '') ? next.join('') : null;
+      handlePick({ value, savedAnswer: next });
+    }
+  };
 
   const pressDigit = (d) => {
-    if (answered) return;
-    setVals(prev => {
-      const next = [...prev];
-      next[activeIdx] = d;
-      return next;
-    });
+    if (locked) return;
+    const next = [...vals];
+    next[activeIdx] = d;
+    setVals(next);
+    saveVals(next);
     if (activeIdx < placeData.length - 1) {
       setActiveIdx(activeIdx + 1);
     }
   };
 
   const pressBack = () => {
-    if (answered) return;
+    if (locked) return;
     const lastFilled = vals.reduce((last, v, i) => v !== '' ? i : last, -1);
     if (lastFilled >= 0) {
-      setVals(prev => {
-        const next = [...prev];
-        next[lastFilled] = '';
-        return next;
-      });
+      const next = [...vals];
+      next[lastFilled] = '';
+      setVals(next);
+      saveVals(next);
       setActiveIdx(lastFilled);
     }
   };
@@ -1522,7 +1543,7 @@ function IsiNilaiTempatContent({ q, ctx }) {
 
   useEffect(() => {
     const onKey = (e) => {
-      if (answered) return;
+      if (locked) return;
       if (/^[0-9]$/.test(e.key)) { e.preventDefault(); pressDigit(e.key); }
       else if (e.key === 'Backspace') { e.preventDefault(); pressBack(); }
       else if (e.key === 'Enter') {
@@ -1532,7 +1553,7 @@ function IsiNilaiTempatContent({ q, ctx }) {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [answered, activeIdx, vals, allFilled, submitValue, handlePick]);
+  }, [locked, activeIdx, vals, allFilled, submitValue, handlePick]);
 
   const boxStyle = (idx) => ({
     width: 'clamp(56px, 10vmin, 84px)',
@@ -1551,7 +1572,7 @@ function IsiNilaiTempatContent({ q, ctx }) {
     fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
     fontSize: 'clamp(18px, 3.6vmin, 32px)',
     color: answered ? '#fff' : (vals[idx] !== '' ? '#334155' : '#9CA3AF'),
-    cursor: answered ? 'default' : 'pointer',
+    cursor: locked ? 'default' : 'pointer',
     transition: 'all .15s ease', WebkitTapHighlightColor: 'transparent',
   });
 
@@ -1592,13 +1613,13 @@ function IsiNilaiTempatContent({ q, ctx }) {
         {placeData.map((p, idx) => (
           <div key={p.key} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(3px, 0.5vmin, 6px)' }}>
             <span style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(11px, 1.8vmin, 16px)', color: '#64748B' }}>{p.label}</span>
-            <div onClick={() => { if (!answered) setActiveIdx(idx); }} style={boxStyle(idx)}>
+            <div onClick={() => { if (!locked) setActiveIdx(idx); }} style={boxStyle(idx)}>
               {displayValue(idx)}
             </div>
           </div>
         ))}
       </div>
-      {answered && !isCorrect && (
+      {answered && !isCorrect && !C?.canChangeAnswer && (
         <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(12px, 1.8vmin, 18px)', color: '#64748B', textAlign: 'center' }}>
           Jawapan: {
             placeData.map((p, i) => {
@@ -1608,7 +1629,7 @@ function IsiNilaiTempatContent({ q, ctx }) {
           }
         </div>
       )}
-      {!answered && (
+      {!locked && (
         <div style={{
           display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
           gap: 'clamp(3px, 0.6vmin, 8px)', width: '100%', maxWidth: 280,
@@ -1897,24 +1918,28 @@ function buildSusunanRound() {
 // ── Susun Content (tap-to-order number tiles) ──
 function SusunOrderContent({ q, ctx }) {
   const { answered, isCorrect, handlePick, theme: C } = ctx;
-  const [placed, setPlaced] = useState([]);
-  useEffect(() => { setPlaced([]); }, [q.qid]);
+  const locked = answered && !C?.canChangeAnswer;
+  const savedPlaced = Array.isArray(C?.savedAnswer) ? C.savedAnswer.filter(id => q.tiles.some(t => t.id === id)) : [];
+  const [placed, setPlaced] = useState(savedPlaced);
+  useEffect(() => { setPlaced(savedPlaced); }, [q.qid, C?.savedAnswer]);
 
   const valueById = {};
   q.tiles.forEach(t => { valueById[t.id] = t.value; });
   const placedSet = new Set(placed);
 
   const tap = (id) => {
-    if (answered || placedSet.has(id)) return;
+    if (locked || placedSet.has(id)) return;
     const next = [...placed, id];
     setPlaced(next);
-    if (next.length === q.tiles.length) {
-      handlePick(next.map(i => valueById[i]).join(','));
-    }
+    const value = next.length === q.tiles.length ? next.map(i => valueById[i]).join(',') : null;
+    handlePick(C?.canChangeAnswer ? { value, savedAnswer: next } : value);
   };
 
   const removeAt = (idx) => {
-    if (!answered) setPlaced(placed.filter((_, i) => i !== idx));
+    if (locked) return;
+    const next = placed.filter((_, i) => i !== idx);
+    setPlaced(next);
+    if (C?.canChangeAnswer) handlePick({ value: null, savedAnswer: next });
   };
 
   const colorBox = (id, faded = false) => {
@@ -1946,18 +1971,18 @@ function SusunOrderContent({ q, ctx }) {
         {placed.length === 0
           ? <span style={{ color: '#94A3B8', fontFamily: "'Fredoka', sans-serif", fontWeight: 600, fontSize: 'clamp(14px, 2.2vmin, 18px)' }}>👆 Susun nombor di sini</span>
           : placed.map((id, idx) => (
-              <button key={idx} type="button" onClick={() => removeAt(idx)} disabled={answered}
-                style={{ ...colorBox(id), borderBottom: answered ? 'none' : `4px solid ${BOX_COLORS[id % BOX_COLORS.length].border}`, cursor: answered ? 'default' : 'pointer' }}>
+              <button key={idx} type="button" onClick={() => removeAt(idx)} disabled={locked}
+                style={{ ...colorBox(id), borderBottom: locked ? 'none' : `4px solid ${BOX_COLORS[id % BOX_COLORS.length].border}`, cursor: locked ? 'default' : 'pointer' }}>
                 {valueById[id]}
               </button>
             ))}
       </div>
-      {answered && !isCorrect && (
+      {answered && !isCorrect && !C?.canChangeAnswer && (
         <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(14px, 2.2vmin, 20px)', color: '#64748B', background: '#F8FAFC', padding: '8px 18px', borderRadius: 12, border: '1px solid #E2E8F0' }}>
           Jawapan: <b style={{ color: C.green }}>{q.correct.join(', ')}</b>
         </div>
       )}
-      {!answered && (
+      {!locked && (
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 'clamp(8px, 1.6vmin, 14px)', width: '100%', maxWidth: 440 }}>
           {q.tiles.map(t => (
             <button key={t.id} type="button" onClick={() => tap(t.id)} disabled={placedSet.has(t.id)} style={colorBox(t.id, placedSet.has(t.id))}>
@@ -1973,24 +1998,29 @@ function SusunOrderContent({ q, ctx }) {
 // ── Jiran & Lengkapkan Content (keypad + keyboard, ✓/Enter) ──
 function SusunanKeypadContent({ q, ctx }) {
   const { answered, isCorrect, handlePick, theme: C } = ctx;
-  const [input, setInput] = useState('');
+  const locked = answered && !C?.canChangeAnswer;
+  const [input, setInput] = useState(C?.savedAnswer || '');
   const [shakeWrong, setShakeWrong] = useState(false);
-  useEffect(() => { setInput(''); setShakeWrong(false); }, [q.qid]);
+  useEffect(() => { setInput(C?.savedAnswer || ''); setShakeWrong(false); }, [q.qid, C?.savedAnswer]);
 
-  const press = (d) => { if (!answered && input.length < 3) setInput(input + d); };
-  const back = () => { if (!answered) setInput(input.slice(0, -1)); };
-  const submit = () => { if (!answered && input !== '') handlePick(input); };
+  const setExamInput = (next) => {
+    setInput(next);
+    if (C?.canChangeAnswer) handlePick(next || null);
+  };
+  const press = (d) => { if (!locked && input.length < 3) setExamInput(input + d); };
+  const back = () => { if (!locked) setExamInput(input.slice(0, -1)); };
+  const submit = () => { if (!locked && input !== '') handlePick(input); };
 
   useEffect(() => {
     const onKey = (e) => {
-      if (answered) return;
-      if (/^[0-9]$/.test(e.key)) { e.preventDefault(); setInput(prev => (prev.length < 3 ? prev + e.key : prev)); }
-      else if (e.key === 'Backspace') { e.preventDefault(); setInput(prev => prev.slice(0, -1)); }
+      if (locked) return;
+      if (/^[0-9]$/.test(e.key)) { e.preventDefault(); setExamInput(input.length < 3 ? input + e.key : input); }
+      else if (e.key === 'Backspace') { e.preventDefault(); setExamInput(input.slice(0, -1)); }
       else if (e.key === 'Enter') { e.preventDefault(); if (input !== '') handlePick(input); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [answered, input, handlePick]);
+  }, [locked, input, handlePick]);
 
   useEffect(() => {
     if (answered && !isCorrect) {
@@ -2094,7 +2124,7 @@ function SusunanKeypadContent({ q, ctx }) {
         }}>{q.display}</div>
       )}
       <input type="text" inputMode="numeric" className="snk-input-box"
-        value={answered ? q.answer : input}
+        value={answered && !C?.canChangeAnswer ? q.answer : input}
         style={{
           width: 120, height: 54, boxSizing: 'border-box',
           border: `3px solid ${answered ? (isCorrect ? C.green : C.red) : '#CBD5E1'}`,
@@ -2105,12 +2135,12 @@ function SusunanKeypadContent({ q, ctx }) {
           color: answered ? (isCorrect ? C.green : C.red) : (input ? '#334155' : '#CBD5E1'),
           caretColor: '#475569', padding: 0, margin: 0,
         }} />
-      {answered && !isCorrect && (
+      {answered && !isCorrect && !C?.canChangeAnswer && (
         <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(14px, 2.2vmin, 20px)', color: '#64748B' }}>
           Jawapan: <b style={{ color: C.green }}>{q.answer}</b>
         </div>
       )}
-      {!answered && (
+      {!locked && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(5px, 1vmin, 10px)', width: '100%', maxWidth: 'clamp(260px, 50vmin, 420px)' }}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
             <button key={d} type="button" className="snk-kp-btn" onClick={() => press(String(d))}
@@ -2156,19 +2186,24 @@ function SusunanKeypadContent({ q, ctx }) {
 
 // ── Sambung Titik Content (interactive SVG dot-to-dot) ──
 function SambungTitikContent({ q, ctx }) {
-  const { answered, handlePick, handleNext } = ctx;
-  const [connected, setConnected] = useState([0]);
+  const { answered, handlePick, handleNext, theme: C } = ctx;
+  const locked = answered && !C?.canChangeAnswer;
+  const savedConnected = Array.isArray(C?.savedAnswer)
+    ? C.savedAnswer.filter(idx => Number.isInteger(idx) && idx >= 0 && idx < q.shape.pts.length)
+    : [0];
+  const [connected, setConnected] = useState(savedConnected.length ? savedConnected : [0]);
   const [wrongFlash, setWrongFlash] = useState(null);
   const nextIdx = connected.length;
   const shape = q.shape;
   const pts = shape.pts;
   const done = connected.length === pts.length;
 
-  useEffect(() => { setConnected([0]); setWrongFlash(null); }, [q.qid]);
+  useEffect(() => { setConnected(savedConnected.length ? savedConnected : [0]); setWrongFlash(null); }, [q.qid, C?.savedAnswer]);
 
   useEffect(() => {
     if (done) {
-      handlePick('done');
+      handlePick(C?.canChangeAnswer ? { value: 'done', savedAnswer: connected } : 'done');
+      if (C?.canChangeAnswer) return undefined;
       const t = setTimeout(() => handleNext?.(), 1500);
       return () => clearTimeout(t);
     }
@@ -2182,9 +2217,11 @@ function SambungTitikContent({ q, ctx }) {
   }, [wrongFlash]);
 
   const tapDot = (idx) => {
-    if (answered || done) return;
+    if (locked || done) return;
     if (idx === nextIdx) {
-      setConnected([...connected, idx]);
+      const next = [...connected, idx];
+      setConnected(next);
+      handlePick({ value: next.length === pts.length ? 'done' : null, savedAnswer: next });
       setWrongFlash(null);
     } else {
       setWrongFlash(idx);
@@ -2254,8 +2291,8 @@ function SambungTitikContent({ q, ctx }) {
         {pts.map((p, i) => {
           const isConnected = connected.includes(i);
           const isWrong = wrongFlash === i;
-          const isTarget = i === nextIdx && !done && !answered;
-          const isClickable = !answered && !done && !isConnected;
+          const isTarget = i === nextIdx && !done && !locked;
+          const isClickable = !locked && !done && !isConnected;
           const dx = p.x - cx;
           const dy = p.y - cy;
           const len = Math.sqrt(dx*dx + dy*dy) || 1;
@@ -2457,10 +2494,13 @@ function PolaSeqTiles({ cells, answerVal, ctx }) {
 
 function PolaTilesContent({ q, ctx }) {
   const { answered, selected, answer, handlePick, theme: C } = ctx;
+  const quietExamMode = C?.canChangeAnswer;
+  const quietCtx = quietExamMode ? { ...ctx, answered: false, isCorrect: false } : ctx;
+  const optionAnswered = quietExamMode ? false : answered;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(14px, 2.4vmin, 28px)', width: '100%' }}>
-      <PolaSeqTiles cells={q.cells} answerVal={q.answerVal} ctx={ctx} />
-      <NumOptionsGrid options={q.options} answered={answered} selected={selected} answer={answer} handlePick={handlePick} theme={C} />
+      <PolaSeqTiles cells={q.cells} answerVal={q.answerVal} ctx={quietCtx} />
+      <NumOptionsGrid options={q.options} answered={optionAnswered} selected={selected} answer={answer} handlePick={handlePick} theme={C} />
     </div>
   );
 }

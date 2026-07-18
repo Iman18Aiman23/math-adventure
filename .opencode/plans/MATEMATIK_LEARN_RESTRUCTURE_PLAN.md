@@ -182,6 +182,16 @@ Required behaviour:
 - Ujian question banks must be built only from that module's completed learning/problem
   banks. Do not pull from a drill-only `Latih Diri` generator unless the owner explicitly
   asks for that module.
+- Results page review is mandatory. `✅ Betul: {n}` and `❌ Salah: {n}` are buttons, not
+  static chips. `Betul` opens a popup listing all correct questions; `Salah` opens a popup
+  listing all wrong questions.
+- Each review popup must render each question with the same Ujian/Cabar Minda question UI
+  used during the exam, including prompt text, cards, emoji-style visuals, money/fraction
+  visuals, keypad/long-method/math layouts, and other custom question content.
+- Correct-question review shows `Jawapan anda`. Wrong-question review shows both
+  `Jawapan anda` and `Jawapan betul`.
+- Review popups must use a portal or equivalent fixed overlay with a very high z-index
+  (higher than the back button, stats bar, footer, and question-map dialog).
 
 ---
 
