@@ -57,6 +57,7 @@ export default function PecahanModule({ onSelectTopic, language = 'bm' }) {
       moduleNameEn="Fractions"
       theme={THEME}
       headerVariant="banner"
+      layoutVariant="dashboard"
       bareStage
       topics={TOPICS}
       onSelectTopic={onSelectTopic}

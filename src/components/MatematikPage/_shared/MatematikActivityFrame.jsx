@@ -112,6 +112,22 @@ export default function MatematikActivityFrame({
     theme: C,
   };
 
+  const renderPrompt = () => {
+    if (!Array.isArray(q.promptParts)) return q.prompt;
+    return q.promptParts.map((part, i) => {
+      const text = String(part?.text ?? part).trim();
+      const space = i > 0 && !/^[?.!,;:]/.test(text) ? ' ' : '';
+      return (
+        <React.Fragment key={i}>
+          {space}
+          {part?.focus
+            ? <strong style={{ color: C.accent, fontWeight: 900, whiteSpace: 'nowrap' }}>{text}</strong>
+            : text}
+        </React.Fragment>
+      );
+    });
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%' }}>
       <style>{`
@@ -211,8 +227,21 @@ export default function MatematikActivityFrame({
           text-align: center;
           line-height: 1.15;
           margin: 0;
-          max-width: 24ch;
-          text-wrap: balance;
+          width: 100%;
+          max-width: min(100%, 760px);
+          text-wrap: normal;
+        }
+        .maf-result-title { text-align: center; }
+        .maf-question.maf-question-inline {
+          display: block !important;
+          align-items: initial !important;
+          justify-content: initial !important;
+          white-space: normal !important;
+          text-wrap: normal !important;
+          word-break: normal;
+          overflow-wrap: normal;
+          font-size: clamp(16px, 3.2vmin, 30px);
+          text-align: center;
         }
         .maf-question-badge {
           display: inline-flex;
@@ -358,7 +387,7 @@ export default function MatematikActivityFrame({
           }
           .maf-question {
             font-size: clamp(15px, 2.8vh, 24px);
-            max-width: 20ch;
+            max-width: 100%;
             line-height: 1.08;
           }
           .maf-feedback {
@@ -433,8 +462,8 @@ export default function MatematikActivityFrame({
               <div className="maf-content-area">
                 {q.prompt && (
                   <div className="maf-section-question">
-                    <div className="maf-question">
-                      {q.prompt}
+                    <div className={`maf-question${Array.isArray(q.promptParts) ? ' maf-question-inline' : ''}`}>
+                      {renderPrompt()}
                       {q.promptBadge && <span className="maf-question-badge">{q.promptBadge}</span>}
                       {q.promptNumber != null && <>&nbsp;<strong style={{ fontSize: '1.3em', color: C.accent }}>{q.promptNumber}</strong>&nbsp;?</>}
                       {q.promptBadge ? '?' : ''}

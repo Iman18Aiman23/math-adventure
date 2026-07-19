@@ -8,6 +8,7 @@ export const MT_MODULES_T1 = [
   { id: 'pecahan', num: 3, labelBM: 'Pecahan', labelEN: 'Fractions', c: '#22C55E', cd: '#16A34A', pg: 'transparent' },
   { id: 'wang', num: 4, labelBM: 'Wang', labelEN: 'Money', c: '#22C55E', cd: '#16A34A', pg: 'transparent' },
   { id: 'masa-dan-waktu', num: 5, labelBM: 'Masa dan Waktu', labelEN: 'Time', c: '#22C55E', cd: '#16A34A', pg: 'transparent' },
+  { id: 'ukuran', num: 6, labelBM: 'Panjang, Jisim & Cecair', labelEN: 'Length, Mass & Volume', c: '#22C55E', cd: '#16A34A', pg: 'transparent' },
 ];
 
 const MT_MODULES_T2T3 = [
@@ -514,7 +515,7 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           .mt-mnav { padding: 10px; gap: 8px; }
           .mt-mnav-tab-wrap {
             display: grid;
-            grid-template-columns: repeat(${tabCount === 5 ? 3 : 3}, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             column-gap: 8px;
             row-gap: 10px;
             width: 100%;

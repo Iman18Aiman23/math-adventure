@@ -21,12 +21,13 @@ function loadScores() {
 }
 
 function actionScore(actionId, scores) {
+  const total = actionId === 'latih-diri-masa' ? 15 : actionId === 'cabar-minda-masa' ? 30 : 10;
   const score = scores[actionId];
-  if (!score) return { status: 'unplayed', label: 'Score 0/10' };
-  const best = Math.max(0, Math.min(10, score.best || 0));
+  if (!score) return { status: 'unplayed', label: `Score 0/${total}` };
+  const best = Math.max(0, Math.min(total, score.best || 0));
   return {
     status: score.passed ? 'passed' : 'failed',
-    label: `Score ${best}/10`,
+    label: `Score ${best}/${total}`,
   };
 }
 
@@ -34,7 +35,7 @@ const TOPICS = [
   {
     id: 'm5-bulan-hari-masa',
     pill: 'TOPIK 5.1',
-    title: 'Bulan, Hari dan Masa',
+    title: 'Mengenali Masa dan Waktu',
     desc: 'Kenali nama bulan, urutan hari dan baca masa pada jam.',
     visual: ROBOT,
     color: THEME.accent,
@@ -47,24 +48,29 @@ const TOPICS = [
   {
     id: 'selesaikan-masa',
     pill: 'SELESAIKAN',
-    title: 'Selesaikan Masa',
-    desc: 'Selesaikan cerita masa harian.',
+    title: 'Selesaikan',
+    desc: 'Selesaikan latihan masa dan waktu.',
     visual: ROBOT,
     color: THEME.accent,
+    actions: [
+      { id: 'selesaikan-masa', label: 'Masa', icon: 'calculator' },
+      { id: 'selesaikan-waktu', label: 'Waktu', icon: 'calculator' },
+      { id: 'selesaikan-bulan', label: 'Bulan', icon: 'calculator' },
+    ],
   },
   {
     id: 'latih-diri-masa',
     pill: 'LATIH DIRI',
-    title: 'Latih Tubi Masa',
+    title: 'Latih Tubi',
     desc: 'Latihan pantas jam, hari dan bulan.',
     visual: ROBOT,
     color: THEME.accent,
   },
   {
     id: 'cabar-minda-masa',
-    pill: 'CABAR MINDA',
-    title: 'Ujian Masa',
-    desc: '30 soalan cabaran masa.',
+    pill: 'UJIAN',
+    title: 'Ujian',
+    desc: '30 soalan daripada Mengenali dan Selesaikan.',
     visual: ROBOT,
     color: THEME.accent,
   },
@@ -76,7 +82,7 @@ export default function MasaDanWaktuModule({ onSelectTopic, language = 'bm' }) {
     ...topic,
     actions: topic.actions?.map((action) => ({
       ...action,
-      score: actionScore(action.id, scores),
+      score: action.disabled ? undefined : actionScore(action.id, scores),
     })),
   })), [scores]);
 
@@ -87,6 +93,7 @@ export default function MasaDanWaktuModule({ onSelectTopic, language = 'bm' }) {
       moduleNameEn="Time"
       theme={THEME}
       headerVariant="banner"
+      layoutVariant="dashboard"
       bareStage
       topics={topics}
       onSelectTopic={onSelectTopic}

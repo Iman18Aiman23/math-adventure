@@ -69,6 +69,7 @@ export default function WangModule({ onSelectTopic, language = 'bm' }) {
       moduleNameEn="Money"
       theme={THEME}
       headerVariant="banner"
+      layoutVariant="dashboard"
       bareStage
       topics={TOPICS}
       onSelectTopic={onSelectTopic}

@@ -1,7 +1,7 @@
 # 📐 Matematik Tahun 1 — Sub-Topic Re-Modularization + Combination Plan
 
 > **Type:** Planning / build guideline (no code is written by this document)
-> **Date:** 2026-06-20 · **Scope:** Tahun 1 (5 modules as supplied by owner)
+> **Date:** 2026-06-20 · **Scope:** Tahun 1 (updated to 7 modules from owner reference)
 > **Build model:** Incremental, ONE slice at a time. Build agents **STOP** after each
 > slice and mark it **🔍 Pending Verification**; the owner verifies → **✅ Completed**.
 > **Status key:** ⬜ Not started · 🔄 In progress · 🔍 Pending verification · ✅ Completed
@@ -181,12 +181,14 @@ below. Do not create a one-off layout unless the owner explicitly approves it.
 
 #### G1 — Tahun 1 navigation and module setting
 
-- Tahun 1 uses the owner-approved 5-module structure:
+- Tahun 1 uses the owner-approved 7-module structure:
   1. `Nombor Hingga 100`
   2. `Tambah dan Tolak`
   3. `Pecahan`
   4. `Wang`
   5. `Masa dan Waktu`
+  6. `Panjang, Jisim dan Isi Padu Cecair`
+  7. `Bentuk`
 - Each module page uses `MatematikModulePage` + `MatematikModuleNavBar`; do not bypass the
   shared module wrapper.
 - Each module has content cards first, followed by the fixed footer trio:
@@ -399,6 +401,38 @@ Only one content card + the footer trio. (Confirms the trio is universal.)
 
 **Resulting cards (3):** Kenali Waktu · Baca, Sebut & Tulis Waktu · Hari, Minggu & Bulan.
 
+### Module 6 — PANJANG, JISIM DAN ISI PADU CECAIR  (6 content cards → 6)
+
+The owner reference lists these content cards in order:
+
+1. `Kenali & Ukur Objek`
+2. `Ukur dan Banding Panjang Objek`
+3. `Kenali Jisim Objek`
+4. `Timbang dan Banding Jisim Objek`
+5. `Kenali Isi Padu Cecair`
+6. `Sukat dan Banding Isi Padu Cecair`
+
+No combination is proposed yet. The length, mass, and liquid-volume activities
+remain separate until their question banks are reviewed. The fixed footer remains
+`Selesaikan` · `Latih Diri` · `Cabar Minda`.
+
+### Module 7 — BENTUK  (8 content cards → 8)
+
+The owner reference lists these content cards in order:
+
+1. `Bentuk 3D`
+2. `Kenali Bentuk 3D`
+3. `Pola Bentuk 3D`
+4. `Bina Model`
+5. `Bentuk 2D`
+6. `Kenali Bentuk 2D`
+7. `Pola Bentuk 2D`
+8. `Buat Corak`
+
+No combination is proposed yet. 2D and 3D activities remain separate, as do
+recognition, patterns, model-building, and creating patterns. The fixed footer
+remains `Selesaikan` · `Latih Diri` · `Cabar Minda`.
+
 ---
 
 ## 3. Proposed final Tahun 1 structure (after combinations)
@@ -412,6 +446,8 @@ Each module = **Belajar cards** + the fixed **footer trio**.
 | **3. Pecahan** | Kenali Pecahan | Selesaikan · Latih Diri · Cabar Minda |
 | **4. Wang** | Kenali & Nilai Wang · Tukar Wang · Dapat & Catat Wang | Selesaikan · Latih Diri · Cabar Minda |
 | **5. Masa dan Waktu** | Kenali Waktu · Baca, Sebut & Tulis Waktu · Hari, Minggu & Bulan | Selesaikan · Latih Diri · Cabar Minda |
+| **6. Panjang, Jisim dan Isi Padu Cecair** | Kenali & Ukur Objek · Ukur dan Banding Panjang Objek · Kenali Jisim Objek · Timbang dan Banding Jisim Objek · Kenali Isi Padu Cecair · Sukat dan Banding Isi Padu Cecair | Selesaikan · Latih Diri · Cabar Minda |
+| **7. Bentuk** | Bentuk 3D · Kenali Bentuk 3D · Pola Bentuk 3D · Bina Model · Bentuk 2D · Kenali Bentuk 2D · Pola Bentuk 2D · Buat Corak | Selesaikan · Latih Diri · Cabar Minda |
 
 **Card-count reduction from combinations:**
 
@@ -422,7 +458,9 @@ Each module = **Belajar cards** + the fixed **footer trio**.
 | 3 Pecahan | 1 | 1 | 0 |
 | 4 Wang | 4 | 3 | −1 |
 | 5 Masa dan Waktu | 4 | 3 | −1 |
-| **Total** | **34** | **23** | **−11** |
+| 6 Panjang, Jisim dan Isi Padu Cecair | 6 | 6 | 0 |
+| 7 Bentuk | 8 | 8 | 0 |
+| **Total** | **48** | **37** | **−11** |
 
 (Plus the 3-card footer trio per module, unchanged.)
 
@@ -430,18 +468,19 @@ Each module = **Belajar cards** + the fixed **footer trio**.
 
 ## 4. How this maps onto the existing Matematik architecture
 
-- **Modules:** ✅ **Owner: these 5 modules are the complete new Tahun 1 tab layout,
-  replacing today's Nombor / Sukatan / Statistik.** So the T1 nav becomes **5 tabs**:
-  Nombor Hingga 100 · Tambah dan Tolak · Pecahan · Wang · Masa dan Waktu. The old
+- **Modules:** ✅ **Owner update: these 7 modules are the new Tahun 1 tab layout,
+  replacing today's Nombor / Sukatan / Statistik.** So the T1 nav becomes **7 tabs**:
+  Nombor Hingga 100 · Tambah dan Tolak · Pecahan · Wang · Masa dan Waktu · Panjang,
+  Jisim dan Isi Padu Cecair · Bentuk. The old
   Nombor & Operasi splits into the first four; **Masa** is pulled out of Sukatan into its
   own tab. `MatematikModuleNavBar` `MT_MODULES`, the `MatematikHomePage` "N Modul" meta,
-  the colour system (5 module colours), and the mobile tab grid (5 tabs → e.g. 3+2 or
+  the colour system (7 module colours), and the mobile tab grid (7 tabs with responsive
+  wrapping/scroll),
   scroll) all change. *(T2/T3 keep their current tabs until they get the same treatment.)*
 
-  > ✅ **COVERAGE — owner decision (2026-06-20): DROP them.** Tahun 1 is intentionally just
-  > these 5 modules. The old T1 **Ukuran** (`UkurPanjang`, `Jisim`, `IsiPaduCecair`),
-  > **Ruang/Bentuk** (`Bentuk3D`), and **Statistik/Piktograf** (`BacaPictograph`) are
-  > **removed from the Tahun 1 Matematik-KSSR nav and topic routing**.
+  > ✅ **COVERAGE — owner update:** T1 `Ukuran` becomes Module 6 and T1 `Ruang/Bentuk`
+  > becomes Module 7. `Statistik/Piktograf` (`BacaPictograph`) remains removed from
+  > the new Tahun 1 Matematik-KSSR nav and topic routing.
   >
   > **DO NOT DELETE the game files.** Those components are still used by the age-group
   > `'math'` routes (Grade 1 screens reference them via CURRICULUM data IDs). The build
@@ -469,7 +508,8 @@ different module.
 
 1. **Slice 0 — Nav foundation + shared shell.**
    - Rebuild `MT_MODULES` → the **5 new tabs** (Nombor Hingga 100 · Tambah dan Tolak ·
-     Pecahan · Wang · Masa dan Waktu), with 5 module colours and a phone-friendly tab grid.
+     Pecahan · Wang · Masa dan Waktu · Panjang, Jisim dan Isi Padu Cecair · Bentuk),
+     with 7 module colours and a phone-friendly tab grid.
    - **Drop** old T1 Ukuran/Ruang/Statistik from the T1 nav + their `matematik-kssr` T1
      topic routes (`ukuran-t1-*`, `ruang-t1`, `data-t1`). **Do not delete files** (§4).
    - Update `MatematikHomePage` meta → "5 Modul".
@@ -490,7 +530,20 @@ Within every slice: build, run `npm run build`, set the §6 row to **🔍**, sum
 
 ---
 
+## Current implementation status (2026-07-19)
+
+The active Module 5 implementation now includes `Mengenali Masa dan Waktu`,
+`Selesaikan` (`Masa`, `Waktu`, `Bulan`), `Latih Tubi`, and `Ujian`. The footer
+activities, 30-question Ujian flow, correct score totals, report previews, and
+current question exclusions are implemented and build-verified. The original
+combined-card names in §3 remain planning history; the active UI uses the
+owner-approved subtopic structure.
+
 ## 6. Status Board
+
+**Status correction:** Module 5 `Masa dan Waktu` is **Completed** as of
+2026-07-19. Its active implementation uses the owner-approved `Mengenali Masa
+dan Waktu` and `Selesaikan` subtopics, plus working `Latih Tubi` and `Ujian`.
 
 > Agent sets row to **🔍** + note; owner promotes to **✅**. "Cards" = combined Belajar
 > cards (footer trio assumed in every module).
@@ -524,7 +577,9 @@ Within every slice: build, run `npm run build`, set the §6 row to **🔍**, sum
 | 2 · Tambah dan Tolak | 6 (incl. leveled Latihan Tambah/Tolak) | ✅ | **Slice 2.6 Tambah Berulang & Tolak Berturut ✅ built+verified 2026-06-24:** TambahBerulangExplore, round 10 = 3 Type A (Kira Kumpulan — N groups of M emoji, answer N×M) + 2 Type B (SVG number line N forward arcs +M, answer N×M) + 2 Type C (Lengkapkan satu tempat kosong dalam ayat tambah berulang, answer M) + 2 Type D (Tolak Berturut Kumpulan — objects in N groups + repeated subtraction sentence, answer 0) + 1 Type E (SVG number line N backward arcs −M, answer 0). Generators constrained N∈{2,3,4,5}, M∈{2,3,4,5,10}, N×M≤50; invariants asserted over 20k iters. Hub card 6th: pill `TAMBAH BERULANG & TOLAK BERTURUT`, ROBOT visual. TambahBerulang.jsx (§9 showToggle false, showReadyCta false, no banner). Blue Mod-2 theme. Wired: App.jsx lazy route + MT_MODULE2_ORDER append, MatematikExplore case. Build exit 0. **2.1 Kenali Tambah ✅ verified 2026-06-22 (Claude), §17, p69–74:**** KenaliTambahExplore, round 10 = 3 Gabung Kumpulan (objects + KeypadInput) + 2 Garis Nombor (new SVG NumberTrackAdd count-on jumps) + 2 Pilih Perkataan (add-word vs sub-word, WordOptionsGrid) + 3 Lengkapkan Ayat (a+b=? / a+?=c, keypad). Addends 0–9, sums ≤18; invariants over 40k iters. New shared **KeypadInput** extracted (submit only ✓/Enter, no auto-submit). Blue Module-2 theme; KenaliTambah.jsx (§9), App route + **MT_MODULE2_ORDER + nav lookup picks the module array holding current topic** (80% gate + advance work), MatematikExplore case, hub placeholder replaced (pill `KENALI TAMBAH`). Scene bg inherits. Build exit 0. **2.2 Latihan Tambah ✅ verified 2026-06-22 (Claude), §18, p75–87:** LatihanTambahExplore — level picker (Mudah/Sederhana/Sukar, `Tukar Aras ⟲` strip) → per-level round of 10. Mudah 6 `a+b=?`(≤18)+4 which-equals-target (WordOptionsGrid, exactly 1 correct); Sederhana 6 column add (new `VerticalSum`)+4 missing-addend, ALL no-carry; Sukar 6 column+4 missing-addend, ALL need-carry; sums ≤99; KeypadInput. Invariants 40k iters × 6 gens all pass; level picker + VerticalSum + chips visually verified (headless-Edge). Wired: LatihanTambah.jsx (§9), App route + MT_MODULE2_ORDER append, MatematikExplore case, hub card `LATIHAN TAMBAH`. Cepat/timed deferred to Latih Tubi. Build exit 0; no regression. **VARIETY RETROFIT 2026-06-23 (owner: cards too samey/keypad-heavy): each level now uses 4 distinct formats — 4 new widgets Warnai (tap-all multi-select), Padankan (tap-two-sum), Bina Blok (base-ten puluh/sa builder), Ikatan Nombor (number-bond). Keypad ≤2/10. New gens invariants 40k iters pass; widgets visually verified; build exit 0.** **2.3 Kenali Tolak ✅ verified 2026-06-23 (Claude), §17 mirror:** KenaliTolakExplore, round 10 = 3 Buang Kumpulan (objects with `b` crossed-out + KeypadInput) + 2 Garis Nombor (new SVG NumberTrackSub count-BACK jumps) + 2 Pilih Perkataan (subtraction word {Baki/Beza/Tinggal/Tolak} vs addition distractor, WordOptionsGrid) + 3 Lengkapkan Ayat (a−b=? / a−?=c, keypad). a≥b enforced everywhere → baki≥0; minuend ≤9. Blue Module-2 theme; KenaliTolak.jsx (§9), App lazy route + MT_MODULE2_ORDER append, MatematikExplore case, hub card (pill `KENALI TOLAK`). Build exit 0; no regression. **2.4 Latihan Tolak ✅ verified 2026-06-23 (Claude), §18 mirror:** LatihanTolakExplore — level picker → per-level round of 10. Mudah 2 keypad `a−b=?` + 3 Warnai (beza-N, exactly 1 correct) + 3 Padankan (`{given}−?={target}`) + 2 Bond; Sederhana 2 column (new `VerticalDiff`) + 3 Bina Blok (TolakBlok) + 3 Padankan + 2 Bond; Sukar 2 column + 3 Bina Blok + 3 Bond + 2 Padankan. Sukar borrow guaranteed; all answers ≥0. **⚠️ Verifier fix:** `genSederhanaTolakS1` leaked ~15.5% borrow-required problems (bOnes unconstrained when bTens<aTens) → constrained `bOnes=randInt(0,aOnes)` so NO-borrow is now guaranteed (0 borrow / 0 negative over 300k iters). Wired: LatihanTolak.jsx (§9), App route + MT_MODULE2_ORDER append, MatematikExplore case, hub card `LATIHAN TOLAK`. Cepat/timed deferred to Latih Tubi. Build exit 0; no regression. **Polish 2026-06-23 (owner):** (1) zero/trivial answers removed across 2.3+2.4 subtraction gens (no `a−a=0`, no `b=0` no-ops; 0% over 300k iters); (2) `VerticalDiff` leading-zero grading bug fixed (`"02"`→`"2"` via parseInt); (3) **borrow scaffolding ported into `VerticalDiff` from `ColumnMathGame`** — Sukar borrow problems now gate submit until the child taps the tens digit and answers the "Pinjam dari rumah sebelah — {tens}−1=?" mini-step (strike lender + show ones as +10); single ones→tens borrow always sufficient since `bTens≤aTens−1`; no-borrow problems unaffected; also added `q.qid` reset effect (fixes stale-digit reuse on consecutive same-type Qs). Build exit 0. **2.5 Cerita Tambah & Tolak ✅ built+verified 2026-06-23 (Claude):** CeritaTambahTolakExplore, round 10 = 3× Type A (Cerita Tambah, keypad) + 3× Type B (Cerita Tolak, keypad) + 2× Type C (Kenalpasti Operasi, Tambah/Tolak MC) + 2× Type D (Padankan Ayat Matematik, 3-opt equation MC). StoryText shows blank replaced by answer after answering Type A/B. Type C guarantees 1 Add + 1 Sub per round; Type D same (wrong op + wrong answer distractors). Blue M2 theme. Wired: CeritaTambahDanTolak.jsx (§9), App lazy route + MT_MODULE2_ORDER append, MatematikExplore case, hub card 5th topic (pill `CERITA TAMBAH & TOLAK`). Build exit 0; no regression. **Slice 2.F Footer ✅ COMPLETE. MODULE 2 FULLY COMPLETE (6 Belajar + 3 footer trio).** |
 | 3 · Pecahan | 1 | ✅ | **Verified 2026-07-12:** PecahanModule shows 4 live cards (Kenali Pecahan, Jawab Pecahan, Latih Tubi Pecahan, Ujian Pecahan). Runtime check on the real app passed: module hub loads, all 4 cards open from the hub, Kenali mounts via `KenaliPecahanExplore`, Jawab Pecahan mounts its custom `MatematikActivityFrame` flow, Latih Diri mounts via `LatihDiriPecahanExplore`, and Ujian reaches the 30-soalan pre-start screen via `CabarMindaPecahanExplore`. `npm run build` passes. **MODULE 3 COMPLETE (1 Belajar + 3 footer trio).** |
 | 4 · Wang | 3 | ✅ | **Slice 4.1 verified 2026-07-12:** KenaliNilaiWangExplore is live in `explore_T1_4.jsx` with the final `Q1–Q5` rule: each session randomly picks 2 question types from `Q1` `Yang manakah {value}?`, `Q2` `Yang manakah {value}?`, `Q3` `Berapa jumlah wang ini?`, `Q4` `Mana lebih kecil?`, `Q5` `Mana lebih besar?`, then builds a 10-question round from those 2 types. `Q1/Q2` use no main card visual and 4 answer options; duplicate prompt rendering was removed so question text appears once. Money SVGs cover 5/10/20/50 sen + RM1/RM5/RM10. KenaliNilaiWang.jsx topic page (§9), WangModule live hub card, App.jsx lazy import/route/`MT_MODULE4_ORDER`, and MatematikExplore entry are all wired. Owner verified runtime correct; build passes. Remaining Module 4 cards stay pending.<br>**Slice 4.2 verified 2026-07-12:** TukarWangExplore in `explore_T1_4.jsx` uses the locked `4× Type A + 3× Type B + 3× Type C` round. Type C now shows one complete money representation on screen and asks for a different but equivalent representation, so it matches the `Pilih cara lain` spec. Uses `MatematikActivityFrame`, shared MoneyVisual, `TukarWang.jsx` (§9 shell), live WangModule card, `MatematikExplore` primitive, and App.jsx lazy route + `MT_MODULE4_ORDER`. Build exit 0. **Slice 4.2 COMPLETE.**<br>**Slice 4.3 verified 2026-07-13:** `DapatCatatWangExplore` in `explore_T1_4.jsx` keeps the locked round split `4× Type A + 3× Type B + 3× Type C`. Real-app runtime check passed on desktop and mobile from the actual Wang hub: topic opens, question screen stays single-screen (`.maf-scroll` clientHeight matched scrollHeight in both viewports), answer flow reveals feedback + `Seterusnya`, and no page exceptions fired. Shared Module 4 money labels were normalized at source to the consistent format `5 sen` / `50 sen` / `RM1` / `RM5` / `RM10` via `formatMoney()` + `DENOMS`, so recording text now matches §22.5. `DapatCatatWang.jsx` shell, WangModule live hub card, `MatematikExplore` primitive, App.jsx lazy route + `MT_MODULE4_ORDER` all remain wired. Build exit 0. **Slice 4.3 COMPLETE.**<br>**Slice 4.F built 2026-07-14:** SelesaikanWang, LatihDiriWang, CabarMindaWang shell pages created in `Module4_Wang/`. Explore exports in `explore_T1_4.jsx` (SelesaikanWangExplore, LatihDiriWangExplore, CabarMindaWangExplore). Primitive entries in `MatematikExplore.jsx`. Lazy imports + routes + `MT_MODULE4_ORDER` in `App.jsx`. WangModule hub cards replaced from disabled placeholders to active footer cards (selesaikan-wang, latih-diri-wang, cabar-minda-wang). Build exit 0 (3 new chunks generated). **Slice 4.F verified 2026-07-14:** Runtime smoke passed from the real Wang hub on desktop (1094x768) and mobile (390x844): Selesaikan Wang and Latih Diri Wang load active question screens with no overflow, Ujian Wang intro is single-screen/non-scrolling, Mula Ujian enters question 1/30, no error boundary or page exceptions. Build exit 0 after fixing the missing React hook imports in `explore_T1_4.jsx`. **Slice 4.F COMPLETE.** |
-| 5 · Masa dan Waktu | 3 | 🔍 | **Slice 5.F built 2026-07-18:** SelesaikanMasa, LatihDiriMasa, CabarMindaMasa shell pages created in `Module5_MasaDanWaktu/`. Explore exports added in `explore_T1_5.jsx` (SelesaikanMasaExplore, LatihDiriMasaExplore, CabarMindaMasaExplore). Primitive entries in `MatematikExplore.jsx`. Lazy imports + routes + `MT_MODULE5_ORDER` in `App.jsx`. MasaDanWaktuModule footer trio replaced with active hub cards (selesaikan-masa, latih-diri-masa, cabar-minda-masa); unfinished content card remains disabled. Build exit 0. Runtime visual smoke not completed because local Playwright is absent and headless Edge remote debugging did not stay reachable. |
+| 5-current | Masa dan Waktu | ✅ | **Supersedes the historical 5.F row above:** active `Mengenali Masa dan Waktu`, `Selesaikan` (`Masa`, `Waktu`, `Bulan`), `Latih Tubi`, and 30-question `Ujian` are implemented. Build and `git diff --check` pass. |
+| 6 | Panjang, Jisim dan Isi Padu Cecair | ⬜ | Planning added from owner reference image; 6 content cards plus footer trio. Implementation pending. |
+| 7 | Bentuk | ⬜ | Planning added from owner reference image; 8 content cards plus footer trio. Implementation pending. |
 
 ### Open decisions
 
@@ -534,8 +589,8 @@ Within every slice: build, run `npm run build`, set the §6 row to **🔍**, sum
 3. ✅ **§1.3 scope** — T1 now; T2 & T3 same treatment later.
 4. ✅ **Module 2 C3** — combined (Tambah Berulang & Tolak Berturut). Module 1: keep Susunan
    separate; merge Banyak/Sedikit with Lebih/Kurang.
-5. ✅ **§4 module set** — 5 modules **replace** today's Nombor/Sukatan/Statistik (T1 nav =
-   5 tabs).
+5. ✅ **§4 module set** — 7 modules **replace** today's Nombor/Sukatan/Statistik (T1 nav =
+   7 tabs). Modules 6 and 7 were added from the owner reference image on 2026-07-19.
 6. ✅ **§4 coverage** — **DROP** the old T1 Ukuran / Ruang/Bentuk / Statistik from the T1
    nav + topic routing. **Files are NOT deleted** (still used by age-group `'math'`
    routes). All open decisions resolved — plan is build-ready.

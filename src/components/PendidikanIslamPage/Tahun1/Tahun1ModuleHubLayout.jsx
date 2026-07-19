@@ -383,6 +383,17 @@ export default function Tahun1ModuleHubLayout({
           border-color: color-mix(in srgb, ${theme.accent} 50%, #BFD7FF);
           background: #FFFFFF;
         }
+        .pi-mhub-action:disabled {
+          opacity: .5;
+          cursor: default;
+          filter: grayscale(.45);
+        }
+        .pi-mhub-action:disabled:hover,
+        .pi-mhub-action:disabled:active {
+          transform: none;
+          border-color: color-mix(in srgb, ${theme.accent} 22%, #DCEBFF);
+          background: #F8FAFC;
+        }
         .pi-mhub-action:active {
           transform: translateY(1px);
         }
@@ -631,6 +642,17 @@ export default function Tahun1ModuleHubLayout({
           transform: translateY(-2px) scale(1.02);
           border-color: color-mix(in srgb, var(--topic-accent, #2563EB) 52%, #D8E6FA);
           border-left-color: var(--topic-accent, #2563EB);
+        }
+        .pi-mhub-lesson-button:disabled {
+          opacity: .5;
+          cursor: default;
+          filter: grayscale(.45);
+        }
+        .pi-mhub-lesson-button:disabled:hover,
+        .pi-mhub-lesson-button:disabled:active {
+          transform: none;
+          border-color: #D8E6FA;
+          border-left-color: #D8E6FA;
         }
         .pi-mhub-lesson-button:active { transform: translateY(1px) scale(.99); }
         .pi-mhub-lesson-button--no-score {
@@ -1300,8 +1322,9 @@ export default function Tahun1ModuleHubLayout({
                                   key={action.id}
                                   type="button"
                                   className="pi-mhub-lesson-button pi-mhub-lesson-button--no-score"
+                                  disabled={action.disabled}
                                   style={{ '--topic-accent': t.color || theme.accent }}
-                                  onClick={() => onSelectTopic?.(action.id)}
+                                  onClick={() => { if (!action.disabled) onSelectTopic?.(action.id); }}
                                 >
                                   <span className="pi-mhub-lesson-icon" aria-hidden="true">
                                     <Icon size={30} strokeWidth={2.4} />
@@ -1412,10 +1435,11 @@ export default function Tahun1ModuleHubLayout({
                     <button
                       key={action.id}
                       type="button"
-                      className="pi-mhub-action"
+                      className={`pi-mhub-action${action.disabled ? ' pi-mhub-action--disabled' : ''}`}
+                      disabled={action.disabled}
                       onClick={(e) => {
                         e.stopPropagation();
-                        onSelectTopic?.(action.id);
+                        if (!action.disabled) onSelectTopic?.(action.id);
                       }}
                     >
                       <span className="pi-mhub-action-label">{action.label}</span>

@@ -505,6 +505,106 @@ function FractionVisual({ shape = 'circle', parts = 2, shaded = 1, size = 92 }) 
   );
 }
 
+function ClockFacePreview({ hour, minute = 0, size = 132 }) {
+  const minuteAngle = (Number(minute) || 0) * 6;
+  const hourAngle = (((Number(hour) || 12) % 12) + (Number(minute) || 0) / 60) * 30;
+  return (
+    <svg viewBox="0 0 160 160" width={size} height={size} style={{ display: 'block' }}>
+      <circle cx="80" cy="80" r="72" fill="#FFFFFF" stroke="#22C55E" strokeWidth="5" />
+      <circle cx="80" cy="80" r="61" fill="#F0FDF4" stroke="#BBF7D0" strokeWidth="2" />
+      {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => {
+        const angle = ((n - 3) * Math.PI) / 6;
+        return (
+          <text
+            key={n}
+            x={80 + 47 * Math.cos(angle)}
+            y={80 + 47 * Math.sin(angle) + 5}
+            textAnchor="middle"
+            fontFamily="'Baloo 2', sans-serif"
+            fontWeight="900"
+            fontSize="13"
+            fill="#15803D"
+          >
+            {n}
+          </text>
+        );
+      })}
+      <line x1="80" y1="80" x2="80" y2="36" stroke="#0F172A" strokeWidth="5" strokeLinecap="round" transform={`rotate(${minuteAngle} 80 80)`} />
+      <line x1="80" y1="80" x2="80" y2="49" stroke="#16A34A" strokeWidth="7" strokeLinecap="round" transform={`rotate(${hourAngle} 80 80)`} />
+      <circle cx="80" cy="80" r="6" fill="#0F172A" />
+    </svg>
+  );
+}
+
+function DaySequencePreview({ sequence }) {
+  if (!Array.isArray(sequence)) return null;
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 8, border: '1px solid #E2E8F0', borderRadius: 16, background: '#F8FAFC', padding: 12 }}>
+      {sequence.map((day, index) => (
+        <span key={`${day || 'blank'}-${index}`} style={{ minWidth: 74, borderRadius: 12, background: day ? '#22C55E' : '#FFFFFF', border: day ? '0' : '2px dashed #22C55E', color: day ? '#FFFFFF' : '#15803D', padding: '8px 10px', textAlign: 'center', fontFamily: "'Baloo 2', sans-serif", fontWeight: 900 }}>
+          {day || '_____'}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function TimeQuestionPreview({ question, selected }) {
+  const isTime = [
+    'waktu-harian', 'baca-jam', 'digital-jam', 'hari-seterusnya', 'hari-sebelumnya',
+    'hari-esok', 'bulan-seterusnya', 'bulan-card', 'cerita-masa',
+    'padan-urutan-hari', 'susun-hari', 'bilangan-hari-minggu',
+    'hari-pertama-sekolah', 'hari-antara', 'cuti-hujung-minggu',
+  ].includes(question?.type);
+  if (!isTime) return null;
+
+  return (
+    <div style={{ display: 'grid', gap: 18, fontFamily: "'Fredoka', sans-serif" }}>
+      <h2 style={{ margin: 0, textAlign: 'center', fontFamily: "'Baloo 2', sans-serif", fontSize: 28, color: '#1E293B' }}>
+        {question.prompt || 'Question'}
+      </h2>
+      {(question.type === 'baca-jam' || question.type === 'cerita-masa') && (
+        <div style={{ display: 'grid', justifyItems: 'center' }}>
+          <ClockFacePreview hour={question.hour} minute={question.minute} />
+        </div>
+      )}
+      {(question.type === 'digital-jam' || question.type === 'bulan-card') && (
+        <div style={{
+          justifySelf: 'center',
+          minWidth: 128,
+          borderRadius: 18,
+          border: '2px solid rgba(34,197,94,.45)',
+          background: '#FFFFFF',
+          boxShadow: '0 5px 0 rgba(34,197,94,.18)',
+          padding: '14px 24px',
+          fontFamily: "'Baloo 2', sans-serif",
+          fontWeight: 900,
+          fontSize: 36,
+          color: '#15803D',
+          textAlign: 'center',
+        }}>
+          {question.display}
+        </div>
+      )}
+      {question.type === 'padan-urutan-hari' && <DaySequencePreview sequence={question.sequence} />}
+      {question.type === 'susun-hari' && Array.isArray(question.tiles) && (
+        <div style={{ display: 'grid', gap: 10 }}>
+          <MiniField label="Tiles shown">
+            <ValuePreview value={question.tiles.map(tile => tile.value).join(', ')} />
+          </MiniField>
+          <MiniField label="Correct order">
+            <ValuePreview value={question.correct?.join(', ') || question.answer} />
+          </MiniField>
+        </div>
+      )}
+      <OptionsPreview question={question} selected={selected} />
+      <MiniField label="Correct Answer">
+        <ValuePreview value={question.correct?.join(', ') || question.answer} />
+      </MiniField>
+    </div>
+  );
+}
+
 function MoneyQuestionPreview({ question, selected }) {
   const hasMoney = (value) => {
     if (!value) return false;
@@ -676,6 +776,9 @@ function GenericQuestionPreview({ question, selected }) {
 }
 
 function CompareQuestionPreview({ question, selected }) {
+  const timePreview = TimeQuestionPreview({ question, selected });
+  if (timePreview) return timePreview;
+
   const moneyPreview = MoneyQuestionPreview({ question, selected });
   if (moneyPreview) return moneyPreview;
 

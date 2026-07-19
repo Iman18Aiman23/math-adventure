@@ -8,24 +8,21 @@ const THEME = {
   accent: '#22C55E',
 };
 
-const EXPLORE_CONFIG = { primitive: 'cabar-minda-masa' };
+const EXPLORE_CONFIG = { primitive: 'selesaikan-bulan' };
 
-export default function CabarMindaMasa({ onBack, language = 'bm' }) {
+export default function SelesaikanBulan({ onBack, language = 'bm' }) {
   return (
     <MatematikTopicShell
       language={language}
       onBack={onBack}
       theme={THEME}
       emoji=""
-      titleBM="Ujian"
-      titleEN="Exam"
-      headerTitleBM="Ujian"
-      headerTitleEN="Exam"
+      titleBM=""
+      titleEN=""
       subtitleBM=""
       subtitleEN=""
       showToggle={false}
       showReadyCta={false}
-      formalMode
       learn={<MatematikExplore config={EXPLORE_CONFIG} language={language} theme={THEME} onExit={onBack} />}
     />
   );

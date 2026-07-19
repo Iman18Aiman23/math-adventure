@@ -9,7 +9,7 @@ const FRAC_WORDS = ['Setengah', 'Suku', 'Dua perempat', 'Tiga perempat'];
 function FractionSvg({ type, parts, shaded, size }) {
   const sz = size || 'clamp(90px, 16vmin, 160px)';
   const strok = { stroke: '#334155', strokeWidth: 3, fill: 'none' };
-  const shadeColors = ['#16A34A', '#22C55E', '#15803D', '#86EFAC'];
+  const shadeColors = ['#0F766E', '#14B8A6', '#0D9488', '#5EEAD4'];
   if (type === 'circle' && parts === 2) {
     const d = shaded > 0 ? 'M 60 10 A 50 50 0 0 0 60 110 Z' : null;
     return (
@@ -74,7 +74,7 @@ function EqualSvg({ type, size }) {
         {/* Equal halves — line dead center */}
         <line x1="60" y1="10" x2="60" y2="110" {...s} />
         {/* Shading on left half */}
-        <path d="M 60 10 A 50 50 0 0 0 60 110 Z" fill="#16A34A" opacity="0.25" />
+        <path d="M 60 10 A 50 50 0 0 0 60 110 Z" fill="#0F766E" opacity="0.25" />
       </svg>
     );
   }
@@ -82,7 +82,7 @@ function EqualSvg({ type, size }) {
     <svg viewBox="0 0 120 120" width={sz} height={sz} style={{ display: 'block' }}>
       <rect x="10" y="10" width="100" height="100" rx="6" {...s} />
       <line x1="60" y1="10" x2="60" y2="110" {...s} />
-      <rect x="10" y="10" width="50" height="100" fill="#16A34A" opacity="0.25" rx="6" />
+      <rect x="10" y="10" width="50" height="100" fill="#0F766E" opacity="0.25" rx="6" />
     </svg>
   );
 }
@@ -97,7 +97,7 @@ function UnequalSvg({ type, size }) {
         <circle cx="60" cy="60" r="50" {...s} />
         {/* Very off-center line — x=35, only ~15% from left */}
         <line x1="35" y1="17" x2="35" y2="103" {...s} />
-        <path d="M 35 17 A 50 50 0 0 0 35 103 Z" fill="#16A34A" opacity="0.18" />
+        <path d="M 35 17 A 50 50 0 0 0 35 103 Z" fill="#0F766E" opacity="0.18" />
       </svg>
     );
   }
@@ -106,7 +106,7 @@ function UnequalSvg({ type, size }) {
       <rect x="10" y="10" width="100" height="100" rx="6" {...s} />
       {/* Very off-center line — x=35 */}
       <line x1="35" y1="10" x2="35" y2="110" {...s} />
-      <rect x="10" y="10" width="25" height="100" fill="#16A34A" opacity="0.18" rx="6" />
+      <rect x="10" y="10" width="25" height="100" fill="#0F766E" opacity="0.18" rx="6" />
     </svg>
   );
 }
@@ -1074,7 +1074,7 @@ function StaticFractionSvg({ parts, shaded }) {
         <path
           key={index}
           d={path}
-          fill={index < shaded ? '#16A34A' : '#FFFFFF'}
+          fill={index < shaded ? '#0F766E' : '#FFFFFF'}
           opacity={index < shaded ? '0.42' : '1'}
           stroke={stroke}
           strokeWidth="2"
@@ -1108,7 +1108,7 @@ function SelectableFractionSvg({ parts, pickedParts, onToggle, disabled, resultT
             ? '#22C55E'
             : resultTone === 'wrong'
               ? '#EF4444'
-              : '#16A34A'
+              : '#0F766E'
           : '#FFFFFF';
         const opacity = active ? (resultTone ? '0.56' : '0.42') : '1';
         return (

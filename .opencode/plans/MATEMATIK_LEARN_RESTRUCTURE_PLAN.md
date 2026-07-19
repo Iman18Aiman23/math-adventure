@@ -206,12 +206,14 @@ below. Do not create a one-off layout unless the owner explicitly approves it.
 
 #### G1 — Tahun 1 navigation and module setting
 
-- Tahun 1 uses the owner-approved 5-module structure:
+- Tahun 1 uses the owner-approved 7-module structure:
   1. `Nombor Hingga 100`
   2. `Tambah dan Tolak`
   3. `Pecahan`
   4. `Wang`
   5. `Masa dan Waktu`
+  6. `Panjang, Jisim dan Isi Padu Cecair`
+  7. `Bentuk`
 - Each module page uses `MatematikModulePage` + `MatematikModuleNavBar`; do not bypass the
   shared module wrapper.
 - Each module has content cards first, followed by the fixed footer trio:
@@ -325,6 +327,27 @@ Before any new slice is marked pending verification:
    (except the small, explicitly-listed mismatch fixes in §6).
 
 ---
+
+## Current implementation status (2026-07-19)
+
+The active seven-module/subtopic plan has progressed beyond this original
+Learn-first roadmap. Module 5 `Masa dan Waktu` is implemented in the separate
+subtopic plan, including `Mengenali Masa dan Waktu`, `Selesaikan` (`Masa`, `Waktu`,
+`Bulan`), `Latih Tubi`, and the 30-question `Ujian`. This legacy document remains
+partially pending because its original 37-topic Belajar migration and separate
+global Latih Tubi track were not completed as specified here. Modules 6 `Panjang,
+Jisim dan Isi Padu Cecair` and 7 `Bentuk` are now added to the planning scope but
+their implementations are still pending.
+
+### Newly added module scope
+
+- **Module 6 — Panjang, Jisim dan Isi Padu Cecair:** `Kenali & Ukur Objek`,
+  `Ukur dan Banding Panjang Objek`, `Kenali Jisim Objek`, `Timbang dan Banding
+  Jisim Objek`, `Kenali Isi Padu Cecair`, `Sukat dan Banding Isi Padu Cecair`,
+  followed by `Selesaikan`, `Latih Diri`, and `Cabar Minda`.
+- **Module 7 — Bentuk:** `Bentuk 3D`, `Kenali Bentuk 3D`, `Pola Bentuk 3D`,
+  `Bina Model`, `Bentuk 2D`, `Kenali Bentuk 2D`, `Pola Bentuk 2D`, and `Buat
+  Corak`, followed by `Selesaikan`, `Latih Diri`, and `Cabar Minda`.
 
 ## 1. Problem statement
 

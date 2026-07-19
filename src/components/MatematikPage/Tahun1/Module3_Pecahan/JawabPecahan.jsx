@@ -293,7 +293,7 @@ function StaticFractionSvg({ parts, shaded }) {
         <path
           key={index}
           d={path}
-          fill={index < shaded ? '#16A34A' : '#FFFFFF'}
+          fill={index < shaded ? '#0F766E' : '#FFFFFF'}
           opacity={index < shaded ? '0.42' : '1'}
           stroke={stroke}
           strokeWidth="2"
@@ -327,7 +327,7 @@ function SelectableFractionSvg({ parts, pickedParts, onToggle, disabled, resultT
             ? '#22C55E'
             : resultTone === 'wrong'
               ? '#EF4444'
-              : '#16A34A'
+              : '#0F766E'
           : '#FFFFFF';
         const opacity = active ? (resultTone ? '0.56' : '0.42') : '1';
         return (

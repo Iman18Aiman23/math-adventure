@@ -38,8 +38,19 @@ const PRIMITIVE_ENTRIES = {
   'mengenali-hari': { exportName: 'MengenaliHariExplore', load: () => import('./explore_T1_5') },
   'mengenali-masa': { exportName: 'MengenaliMasaExplore', load: () => import('./explore_T1_5') },
   'selesaikan-masa': { exportName: 'SelesaikanMasaExplore', load: () => import('./explore_T1_5') },
+  'selesaikan-waktu': { exportName: 'SelesaikanWaktuExplore', load: () => import('./explore_T1_5') },
+  'selesaikan-bulan': { exportName: 'SelesaikanBulanExplore', load: () => import('./explore_T1_5') },
   'latih-diri-masa': { exportName: 'LatihDiriMasaExplore', load: () => import('./explore_T1_5') },
   'cabar-minda-masa': { exportName: 'CabarMindaMasaExplore', load: () => import('./explore_T1_5') },
+  'kenali-ukur-objek': { exportName: 'KenaliUkurObjekExplore', load: () => import('./explore_T1_6') },
+  'ukur-banding-panjang': { exportName: 'UkurBandingPanjangExplore', load: () => import('./explore_T1_6') },
+  'kenali-jisim': { exportName: 'KenaliJisimExplore', load: () => import('./explore_T1_6') },
+  'timbang-banding-jisim': { exportName: 'TimbangBandingJisimExplore', load: () => import('./explore_T1_6') },
+  'kenali-isi-padu': { exportName: 'KenaliIsiPaduExplore', load: () => import('./explore_T1_6') },
+  'sukat-banding-cecair': { exportName: 'SukatBandingCecairExplore', load: () => import('./explore_T1_6') },
+  'selesaikan-ukuran': { exportName: 'SelesaikanUkuranExplore', load: () => import('./explore_T1_6') },
+  'latih-diri-ukuran': { exportName: 'LatihDiriUkuranExplore', load: () => import('./explore_T1_6') },
+  'cabar-minda-ukuran': { exportName: 'CabarMindaUkuranExplore', load: () => import('./explore_T1_6') },
 };
 
 const primitiveCache = new Map();
