@@ -154,12 +154,12 @@ export function NumOptionsGrid({ options, answered, selected, answer, handlePick
         const picked = selected === opt.id;
         const isAns = opt.id === answer;
         const c = BOX_COLORS[idx % BOX_COLORS.length];
-        let bg, bd, clr, txt, anim;
-        if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; clr = '#fff'; txt = `${opt.value} ✓`; anim = 'snkBounce .5s ease'; }
-        else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; clr = '#fff'; txt = `${opt.value} ✗`; anim = 'shakeError .35s ease'; }
-        else if (answered) { bg = '#fff'; bd = '#E2E8F0'; clr = '#94A3B8'; txt = opt.value; anim = 'none'; }
-        else if (picked) { bg = `${C?.accent || '#8B5CF6'}40`; bd = C?.accent || '#8B5CF6'; clr = C?.dark || C?.accent || '#5B21B6'; txt = opt.value; anim = 'none'; }
-        else { bg = '#fff'; bd = '#CBD5E1'; clr = '#1E293B'; txt = opt.value; anim = 'none'; }
+        let bg, bd, clr, txt, anim, bxShadow;
+        if (answered && isAns) { bg = 'linear-gradient(135deg,#22C55E,#16A34A)'; bd = '#15803D'; clr = '#fff'; txt = `${opt.value} ✓`; anim = 'snkBounce .45s ease'; bxShadow = '0 4px 16px rgba(22,163,74,.3)'; }
+        else if (answered && picked) { bg = 'linear-gradient(135deg,#EF4444,#DC2626)'; bd = '#B91C1C'; clr = '#fff'; txt = `${opt.value} ✗`; anim = 'shakeError .35s ease'; bxShadow = '0 4px 16px rgba(220,38,38,.3)'; }
+        else if (answered) { bg = '#F8FAFC'; bd = '#E2E8F0'; clr = '#94A3B8'; txt = opt.value; anim = 'none'; bxShadow = 'none'; }
+        else if (picked) { bg = `linear-gradient(135deg,${C?.accent || '#8B5CF6'}40,${C?.accent || '#8B5CF6'}20)`; bd = C?.accent || '#8B5CF6'; clr = C?.dark || C?.accent || '#5B21B6'; txt = opt.value; anim = 'none'; bxShadow = `0 2px 8px ${C?.accent || '#8B5CF6'}30`; }
+        else { bg = '#fff'; bd = '#CBD5E1'; clr = '#1E293B'; txt = opt.value; anim = 'none'; bxShadow = '0 2px 0 rgba(15,23,42,.06)'; }
         return (
           <button key={opt.id} type="button" onClick={() => handlePick(opt.id)} disabled={locked}
             style={{
@@ -170,12 +170,13 @@ export function NumOptionsGrid({ options, answered, selected, answer, handlePick
               background: bg,
               color: clr,
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 900,
-              fontSize: answered && (isAns || picked) ? 'clamp(24px, 4vmin, 40px)' : 'clamp(24px, 4vmin, 40px)',
+              fontSize: 'clamp(24px, 4vmin, 40px)',
               lineHeight: 1.1, whiteSpace: 'nowrap',
               cursor: locked ? 'default' : 'pointer',
               transition: 'all .15s ease', WebkitTapHighlightColor: 'transparent',
               minHeight: 44, minWidth: 44,
               animation: anim,
+              boxShadow: bxShadow,
             }}
           >
             {txt}
@@ -213,8 +214,6 @@ export function WordOptionsGrid({ options, answered, selected, answer, handlePic
     }}>
       {plain && (
         <style>{`
-          /* Warnai (coloring) options — uncoloured swatches that "fill" with
-             their crayon colour on hover / tap. */
           .warnai-opt {
             position: relative; overflow: hidden;
             transition: transform .14s ease, background .18s ease, box-shadow .18s ease, border-color .18s ease;
@@ -241,12 +240,12 @@ export function WordOptionsGrid({ options, answered, selected, answer, handlePic
         const isAns = opt.id === answer;
         const c = BOX_COLORS[idx % BOX_COLORS.length];
         const warnai = plain && !answered;
-        let bg, bd, clr, txt, anim;
-        if (answered && isAns) { bg = '#22C55E'; bd = '#22C55E'; clr = '#fff'; txt = `${opt.value} ✓`; anim = 'snkBounce .5s ease'; }
-        else if (answered && picked) { bg = '#EF4444'; bd = '#EF4444'; clr = '#fff'; txt = `${opt.value} ✗`; anim = 'shakeError .35s ease'; }
-        else if (picked) { bg = `${C?.accent || '#8B5CF6'}40`; bd = C?.accent || '#8B5CF6'; clr = C?.dark || C?.accent || '#5B21B6'; txt = opt.value; anim = 'none'; }
-        else if (plain) { bg = '#fff'; bd = '#CBD5E1'; clr = '#1E293B'; txt = opt.value; anim = 'none'; }
-        else { bg = '#fff'; bd = '#CBD5E1'; clr = '#1E293B'; txt = opt.value; anim = 'none'; }
+        let bg, bd, clr, txt, anim, bxShadow;
+        if (answered && isAns) { bg = 'linear-gradient(135deg,#22C55E,#16A34A)'; bd = '#15803D'; clr = '#fff'; txt = `${opt.value} ✓`; anim = 'snkBounce .45s ease'; bxShadow = '0 4px 16px rgba(22,163,74,.3)'; }
+        else if (answered && picked) { bg = 'linear-gradient(135deg,#EF4444,#DC2626)'; bd = '#B91C1C'; clr = '#fff'; txt = `${opt.value} ✗`; anim = 'shakeError .35s ease'; bxShadow = '0 4px 16px rgba(220,38,38,.3)'; }
+        else if (picked) { bg = `linear-gradient(135deg,${C?.accent || '#8B5CF6'}40,${C?.accent || '#8B5CF6'}20)`; bd = C?.accent || '#8B5CF6'; clr = C?.dark || C?.accent || '#5B21B6'; txt = opt.value; anim = 'none'; bxShadow = `0 2px 8px ${C?.accent || '#8B5CF6'}30`; }
+        else if (plain) { bg = '#fff'; bd = '#CBD5E1'; clr = '#1E293B'; txt = opt.value; anim = 'none'; bxShadow = '0 2px 0 rgba(15,23,42,.06)'; }
+        else { bg = '#fff'; bd = '#CBD5E1'; clr = '#1E293B'; txt = opt.value; anim = 'none'; bxShadow = '0 2px 0 rgba(15,23,42,.06)'; }
         return (
           <button key={opt.id} type="button"
             className={warnai ? 'warnai-opt' : undefined}
@@ -263,11 +262,12 @@ export function WordOptionsGrid({ options, answered, selected, answer, handlePic
               color: clr,
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
               fontSize: answered && (isAns || picked) ? 'clamp(24px, 4vmin, 40px)' : 'clamp(16px, 2.6vmin, 26px)',
-              lineHeight: 1.2, whiteSpace: 'nowrap', textAlign: 'center',
+              lineHeight: 1.2, whiteSpace: 'normal', overflowWrap: 'anywhere', textAlign: 'center',
               cursor: locked ? 'default' : 'pointer',
               transition: 'all .15s ease', WebkitTapHighlightColor: 'transparent',
-              minHeight: 44, width: '100%',
+              minHeight: 44, minWidth: 0, width: '100%', boxSizing: 'border-box',
               animation: anim,
+              boxShadow: bxShadow,
             }}
           >
             {warnai && <span className="warnai-chip" style={{ background: c.bg }} aria-hidden="true" />}

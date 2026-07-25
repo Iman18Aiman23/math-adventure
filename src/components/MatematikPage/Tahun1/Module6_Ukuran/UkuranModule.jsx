@@ -22,8 +22,8 @@ const TOPICS = [
     visual: ROBOT,
     color: THEME.accent,
     actions: [
-      { id: 'kenali-ukur-objek', label: 'Kenali & Ukur Objek', icon: 'calculator' },
-      { id: 'ukur-banding-panjang', label: 'Ukur dan Banding Panjang', icon: 'repeat' },
+      { id: 'kenali-ukur-objek', label: 'Kenali Alat', icon: 'calculator' },
+      { id: 'ukur-banding-panjang', label: 'Kenali Panjang dan Jarak', icon: 'repeat' },
       { id: 'kenali-jisim', label: 'Kenali Jisim Objek', icon: 'type' },
       { id: 'timbang-banding-jisim', label: 'Timbang dan Banding Jisim', icon: 'repeat' },
       { id: 'kenali-isi-padu', label: 'Kenali Isi Padu Cecair', icon: 'type' },

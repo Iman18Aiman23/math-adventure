@@ -89,6 +89,7 @@ export default function QuestionIssueReportButton({
   return (
     <>
       <button
+        className="qir-button"
         type="button"
         onClick={() => setOpen(true)}
         disabled={state === 'submitted'}

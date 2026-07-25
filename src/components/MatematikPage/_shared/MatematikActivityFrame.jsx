@@ -26,6 +26,8 @@ export default function MatematikActivityFrame({
   scoreStorageKey,
   scoreId,
   showQuestionProgress,
+  singleScreen = false,
+  featuredQuestion = false,
   language = 'bm',
 }) {
   const safeTheme = theme || {};
@@ -40,11 +42,18 @@ export default function MatematikActivityFrame({
 
   const q = questions[idx];
   if (!q) return null;
+  const isFeaturedComparison = q.type === 'compare' && (q.metric === 'height' || q.metric === 'distance');
+  const isFeaturedQuestion = featuredQuestion || isFeaturedComparison;
+  const isHeightComparison = q.type === 'compare' && q.metric === 'height';
 
   const answered = selected !== null;
   const answer = String(q.answer);
   const isCorrect = answered && String(selected) === answer;
   const isLast = idx + 1 >= questions.length;
+  const nextQuestion = questions[idx + 1];
+  const finishesActivity = answered && isCorrect && (
+    isLast || nextQuestion?.activityId !== q.activityId
+  );
 
   const total = questions.length;
   const scorePct = total > 0 ? Math.round((correct / total) * 100) : 0;
@@ -121,7 +130,7 @@ export default function MatematikActivityFrame({
         <React.Fragment key={i}>
           {space}
           {part?.focus
-            ? <strong style={{ color: C.accent, fontWeight: 900, whiteSpace: 'nowrap' }}>{text}</strong>
+            ? <strong style={{ color: C.accent, fontWeight: 900, whiteSpace: part.wrap ? 'normal' : 'nowrap' }}>{text}</strong>
             : text}
         </React.Fragment>
       );
@@ -129,7 +138,7 @@ export default function MatematikActivityFrame({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%' }}>
+    <div className={[singleScreen ? 'maf-single-screen' : '', isFeaturedQuestion ? 'maf-featured-comparison' : '', isHeightComparison ? 'maf-height-comparison' : ''].filter(Boolean).join(' ') || undefined} style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%' }}>
       <style>{`
         .maf-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .maf-result-scroll { overflow-y: auto; }
@@ -219,6 +228,18 @@ export default function MatematikActivityFrame({
           align-items: center;
           gap: 8px;
         }
+        .maf-single-screen .maf-scroll-q,
+        .maf-single-screen .maf-result-scroll { overflow: hidden; }
+        .maf-single-screen .maf-body,
+        .maf-single-screen .maf-content-area { height: 100%; }
+        .maf-single-screen .maf-content-area { flex: 1 1 0; }
+        .maf-single-screen .maf-section-stage { min-height: 0; flex: 0 0 auto; }
+        .maf-single-screen .maf-action-row {
+          flex-direction: row;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+        .maf-single-screen .qir-button { margin-top: 0 !important; }
         .maf-question {
           font-family: 'Baloo 2', sans-serif;
           font-weight: 800;
@@ -259,6 +280,16 @@ export default function MatematikActivityFrame({
           vertical-align: middle;
           white-space: nowrap;
         }
+        .maf-section-question-featured { max-width:min(100%,896px); margin-bottom:0; }
+        .maf-question-featured { position:relative; width:100%; max-width:none; box-sizing:border-box; padding:clamp(16px,2.4vmin,24px); overflow:hidden; border:2px solid #34D399; border-radius:24px; background:#FFFFFF; box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1); display:flex !important; flex-direction:column; align-items:center; gap:8px; font-family:'Fredoka',sans-serif; color:#1E293B; }
+        .maf-question.maf-question-inline.maf-question-featured { display:flex !important; flex-direction:column; align-items:center; }
+        .maf-question-featured::before, .maf-question-featured::after { content:''; position:absolute; width:96px; height:96px; border-radius:50%; pointer-events:none; opacity:.5; filter:blur(24px); z-index:0; }
+        .maf-question-featured::before { top:-24px; right:-24px; background:#D1FAE5; }
+        .maf-question-featured::after { bottom:-24px; left:-24px; background:#CCFBF1; }
+        .maf-question-featured-meta { position:relative; z-index:1; display:grid; grid-template-columns:auto minmax(0,1fr); align-items:center; gap:10px; width:100%; padding:0 0 9px; border-bottom:1px dashed rgba(6,95,70,.24); font-family:'Plus Jakarta Sans','Fredoka',sans-serif; line-height:16px; }
+        .maf-question-featured-activity { justify-self:start; padding:4px 9px; border-radius:8px 8px 8px 2px; background:linear-gradient(135deg,${C.dark},${C.accent}); box-shadow:0 4px 10px rgba(6,95,70,.2),inset 0 1px 0 rgba(255,255,255,.26); color:#FFFFFF; font-family:'Baloo 2',sans-serif; font-size:12px; font-weight:800; letter-spacing:.02em; white-space:nowrap; }
+        .maf-question-featured-skill { justify-self:end; min-width:0; color:${C.dark}; font-size:11px; font-weight:800; letter-spacing:.045em; text-align:right; text-transform:uppercase; text-wrap:balance; }
+        .maf-question-featured-text { position:relative; z-index:1; font-size:clamp(24px,3.5vmin,36px); font-weight:700; letter-spacing:.025em; line-height:1.375; }
         .maf-feedback {
           font-family: 'Baloo 2', sans-serif;
           font-weight: 800;
@@ -272,28 +303,47 @@ export default function MatematikActivityFrame({
         }
         .maf-feedback.ok { color: ${C.green}; }
         .maf-feedback.no { color: ${C.red}; }
+        .maf-activity-complete {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 24px;
+          margin-bottom: 4px;
+          padding: 3px 12px;
+          border-radius: 999px;
+          background: #DCFCE7;
+          color: #15803D;
+          font-family: 'Fredoka', sans-serif;
+          font-size: clamp(12px, 1.7vmin, 16px);
+          font-weight: 800;
+        }
         .maf-next {
           padding: clamp(8px, 1.2vmin, 14px) clamp(20px, 3.2vmin, 44px);
           border: none;
           border-radius: 999px;
-          background: ${C.accent};
+          background: linear-gradient(135deg,${C.accent},${C.dark});
           color: #fff;
           font-family: 'Baloo 2', sans-serif;
           font-weight: 800;
           font-size: clamp(14px, 2.2vmin, 22px);
           cursor: pointer;
-          box-shadow: 0 4px 0 ${C.cd};
-          transition: transform .1s ease;
+          box-shadow: 0 4px 0 ${C.cd}, 0 6px 20px rgba(21,128,61,.24);
+          transition: transform .15s ease, box-shadow .15s ease;
           -webkit-tap-highlight-color: transparent;
+          position: relative;
+          overflow: hidden;
+          letter-spacing: .02em;
         }
-        .maf-next:hover:not(:disabled) { transform: translateY(-2px); }
-        .maf-next:active:not(:disabled) { transform: translateY(2px); }
+        .maf-next::after { content:''; position:absolute; inset:0; border-radius:inherit; background:linear-gradient(135deg,rgba(255,255,255,.2),transparent 50%); pointer-events:none; }
+        .maf-next:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 6px 0 ${C.cd}, 0 10px 30px rgba(21,128,61,.3); }
+        .maf-next:active:not(:disabled) { transform: translateY(1px); box-shadow: 0 2px 0 ${C.cd}, 0 3px 10px rgba(21,128,61,.2); }
         .maf-next:disabled {
           background: #E5E7EB;
           color: #9CA3AF;
-          box-shadow: 0 4px 0 #D1D5DB;
+          box-shadow: 0 4px 0 #D1D5DB, 0 6px 20px rgba(0,0,0,.06);
           cursor: not-allowed;
         }
+        .maf-next:disabled::after { display:none; }
         .maf-footer {
           flex-shrink: 0;
           display: flex;
@@ -370,9 +420,11 @@ export default function MatematikActivityFrame({
           font-size: clamp(16px, 2.4vmin, 24px);
           cursor: pointer;
           -webkit-tap-highlight-color: transparent;
-          transition: transform .1s ease;
+          transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+          box-shadow: 0 2px 8px rgba(21,128,61,.08);
         }
-        .maf-btn-secondary:active { transform: translateY(1px); }
+        .maf-btn-secondary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(21,128,61,.14); background: linear-gradient(135deg,#F0FDF4,#DCFCE7); }
+        .maf-btn-secondary:active { transform: translateY(1px); box-shadow: 0 1px 4px rgba(21,128,61,.10); }
         @media (max-width: 560px) {
           .maf-body {
             padding: 4px 10px 6px;
@@ -408,6 +460,30 @@ export default function MatematikActivityFrame({
           }
           .maf-stats {
             gap: 6px;
+          }
+          .maf-single-screen .maf-body { padding: 2px 8px 4px; }
+          .maf-single-screen .maf-section-question { margin-bottom: 2px; }
+          .maf-single-screen .maf-content-area { --maf-section-gap: 4px; --maf-question-gap: 6px; }
+          .maf-single-screen.maf-featured-comparison .maf-body { padding: 2px 6px 3px !important; }
+          .maf-single-screen.maf-featured-comparison .maf-content-area {
+            --maf-section-gap: 4px;
+            --maf-question-gap: 4px;
+            gap: 4px !important;
+          }
+          .maf-featured-comparison .maf-question-featured-text {
+            font-size: clamp(16px, 5.25vw, 22px);
+            line-height: 1.15;
+            text-wrap: normal;
+          }
+          .maf-height-comparison .maf-question-featured-text {
+            white-space: nowrap;
+          }
+          .maf-featured-comparison .maf-feedback:empty { display: none; }
+          .maf-featured-comparison .maf-activity-complete {
+            min-height: 20px;
+            margin-bottom: 2px;
+            padding: 2px 10px;
+            font-size: 11px;
           }
         }
         @media (min-width: 768px) {
@@ -461,12 +537,21 @@ export default function MatematikActivityFrame({
             <div className="maf-body">
               <div className="maf-content-area">
                 {q.prompt && (
-                  <div className="maf-section-question">
-                    <div className={`maf-question${Array.isArray(q.promptParts) ? ' maf-question-inline' : ''}`}>
-                      {renderPrompt()}
-                      {q.promptBadge && <span className="maf-question-badge">{q.promptBadge}</span>}
-                      {q.promptNumber != null && <>&nbsp;<strong style={{ fontSize: '1.3em', color: C.accent }}>{q.promptNumber}</strong>&nbsp;?</>}
-                      {q.promptBadge ? '?' : ''}
+                  <div className={`maf-section-question${isFeaturedQuestion ? ' maf-section-question-featured' : ''}`}>
+                    <div className={`maf-question${Array.isArray(q.promptParts) ? ' maf-question-inline' : ''}${isFeaturedQuestion ? ' maf-question-featured' : ''}`}>
+                      {isFeaturedQuestion ? (
+                        <>
+                          <span className="maf-question-featured-meta"><span className="maf-question-featured-activity">Aktiviti {q.activityNumber || 1}</span><span className="maf-question-featured-skill">{q.skill}</span></span>
+                          <span className="maf-question-featured-text">{q.bannerPrompt || renderPrompt()}</span>
+                        </>
+                      ) : (
+                        <>
+                          {renderPrompt()}
+                          {q.promptBadge && <span className="maf-question-badge">{q.promptBadge}</span>}
+                          {q.promptNumber != null && <>&nbsp;<strong style={{ fontSize: '1.3em', color: C.accent }}>{q.promptNumber}</strong>&nbsp;?</>}
+                          {q.promptBadge ? '?' : ''}
+                        </>
+                      )}
                     </div>
                   </div>
                 )}
@@ -477,6 +562,11 @@ export default function MatematikActivityFrame({
                   <div className={`maf-feedback ${answered ? (isCorrect ? 'ok' : 'no') : ''}`}>
                     {answered && !isCorrect ? 'Cuba lagi' : ''}
                   </div>
+                  {finishesActivity && (
+                    <div className="maf-activity-complete">
+                      ✓ {q.activityTitle || 'Aktiviti selesai'}
+                    </div>
+                  )}
                   {answered && (
                     <div className="maf-action-row">
                       <button className="maf-next" type="button" onClick={handleNext}>
