@@ -7,6 +7,7 @@ import { pick, randInt, shuffle } from './explorePrimitives_shared';
 import { recordActivityScore } from './MatematikActivityFrame';
 import QuestionIssueReportButton from './QuestionIssueReportButton';
 import { module2CoreApi } from './explore_T1_2_core';
+import { getMatematikQuestionSkill, MatematikQuestionActions, MatematikQuestionHeader } from './MatematikQuestionLayout';
 
 const { T1_M2_GENERATORS, renderT1M2Question } = module2CoreApi;
 
@@ -202,13 +203,14 @@ export function SelesaikanM2Explore({ data, language, theme, onExit }) {
         .sm2-backdrop {
           position: absolute; inset: 0; z-index: 50;
           display: flex; align-items: center; justify-content: center;
-          padding: clamp(12px, 3vmin, 32px); overflow: hidden;
+          padding: clamp(10px, 2vmin, 24px); overflow-y: auto;
           background: rgba(15, 23, 42, .32); backdrop-filter: blur(4px);
           animation: sm2-backdrop-in .18s ease;
         }
         .sm2-dialog {
-          position: relative; width: 100%; max-width: 360px; max-height: 100%;
+          position: relative; width: 100%; max-width: 440px; max-height: 100%;
           display: flex; flex-direction: column; align-items: center; gap: clamp(10px, 1.8vmin, 18px);
+          overflow-y: auto;
           background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(239,248,255,.96)); border-radius: clamp(16px, 2.4vmin, 24px);
           border: 1.5px solid rgba(147,197,253,.7);
           padding: clamp(16px, 3vmin, 28px);
@@ -355,23 +357,25 @@ export function SelesaikanM2Explore({ data, language, theme, onExit }) {
                       cursor: 'pointer', fontFamily: "'Baloo 2',sans-serif", fontWeight: 800,
                       fontSize: 'clamp(14px, 2.2vmin, 18px)', lineHeight: 1, WebkitTapHighlightColor: 'transparent',
                     }}>✕</button>
-                  <div style={{
-                    fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: 'clamp(13px, 2.2vmin, 17px)',
-                    color: accent, textTransform: 'uppercase', letterSpacing: '.04em',
-                  }}>{spokeLabels[activeSpoke]}</div>
-                  <div style={{
-                    fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(24px, 5vmin, 40px)',
-                    color: '#1E293B', textAlign: 'center', lineHeight: 1.3,
-                  }}>{spokes[activeSpoke].display}</div>
-                  <div style={{
-                    minWidth: 'clamp(96px, 18vmin, 140px)', height: 'clamp(48px, 6.6vmin, 66px)',
-                    border: '2px solid #BFDBFE', borderRadius: 'clamp(10px, 1.4vmin, 15px)',
-                    background: '#F8FBFF', boxShadow: 'inset 0 2px 6px rgba(30,64,175,.08)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: 'clamp(28px, 4.8vmin, 44px)',
-                    color: value ? dark : '#94A3B8', padding: '0 16px',
-                  }}>{value || '?'}</div>
-                  <div className="sm2-keypad">
+                  <MatematikQuestionHeader
+                    activityNumber={activeSpoke + 1}
+                    skill={spokeLabels[activeSpoke]}
+                    question={spokes[activeSpoke].display}
+                    language={language}
+                    dark={dark}
+                    accent={accent}
+                  />
+                  <section className="mtq-card-section" aria-label="Kad jawapan">
+                    <div style={{
+                      minWidth: 'clamp(96px, 18vmin, 140px)', height: 'clamp(48px, 6.6vmin, 66px)',
+                      border: '2px solid #BFDBFE', borderRadius: 'clamp(10px, 1.4vmin, 15px)',
+                      background: '#F8FBFF',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontFamily: "'Baloo 2',sans-serif", fontWeight: 900, fontSize: 'clamp(28px, 4.8vmin, 44px)',
+                      color: value ? dark : '#94A3B8', padding: '0 16px',
+                    }}>{value || '?'}</div>
+                  </section>
+                  <section className="sm2-keypad mtq-options-section" aria-label="Pilihan nombor">
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
                       <button key={d} type="button" className="sm2-kp-btn" onClick={() => pressDigit(String(d))}
                         style={{
@@ -392,18 +396,29 @@ export function SelesaikanM2Explore({ data, language, theme, onExit }) {
                         background: '#3B82F6', color: '#fff', cursor: 'pointer',
                         fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.6vmin, 24px)',
                       }}>0</button>
-                  </div>
-                  <button type="button" className="sm2-kp-btn" onClick={handleConfirm} disabled={value === ''}
-                    style={{
-                      width: '100%', height: 'clamp(44px, 6vmin, 58px)',
-                      border: 'none', borderRadius: 'clamp(10px, 1.4vmin, 15px)',
-                      borderBottom: value === '' ? '5px solid #D1D5DB' : '5px solid #15803D',
-                      background: value === '' ? '#E5E7EB' : '#22C55E',
-                      color: value === '' ? '#94A3B8' : '#fff',
-                      cursor: value === '' ? 'not-allowed' : 'pointer',
-                      fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(18px, 3vmin, 26px)',
-                      WebkitTapHighlightColor: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                    }}>Semak ✓</button>
+                  </section>
+                  <MatematikQuestionActions>
+                    <button type="button" className="sm2-kp-btn" onClick={handleConfirm} disabled={value === ''}
+                      style={{
+                        minWidth: 'min(100%, 220px)', height: 'clamp(44px, 6vmin, 58px)',
+                        border: 'none', borderRadius: 'clamp(10px, 1.4vmin, 15px)',
+                        background: value === '' ? '#E5E7EB' : dark,
+                        color: value === '' ? '#64748B' : '#fff',
+                        cursor: value === '' ? 'not-allowed' : 'pointer',
+                        fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(18px, 3vmin, 26px)',
+                        WebkitTapHighlightColor: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                      }}>Semak ✓</button>
+                    <QuestionIssueReportButton
+                      language={language}
+                      question={spokes[activeSpoke]}
+                      questionIndex={activeSpoke}
+                      totalQuestions={spokes.length}
+                      selected={value}
+                      answered={value !== ''}
+                      scoreId={data?.scoreId}
+                      source="T1M2Wheel"
+                    />
+                  </MatematikQuestionActions>
                 </div>
               </div>
             )}
@@ -959,7 +974,7 @@ function M2DrillScreen({ selectedType, language, theme, onBackToPicker, onScoreR
         .ld-drill-feedback.no { color: #DC2626; }
         .ld-drill-next {
           padding: clamp(11px, 1.5vmin, 17px) clamp(28px, 4vmin, 52px); border: none; border-radius: 999px;
-          background: linear-gradient(180deg, ${accent}, ${cd});
+          background: ${dark};
           color: #fff;
           font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(17px, 2.6vmin, 26px);
           cursor: pointer; box-shadow: 0 4px 16px ${accent}55; transition: transform .1s ease, box-shadow .1s ease;
@@ -1008,28 +1023,41 @@ function M2DrillScreen({ selectedType, language, theme, onBackToPicker, onScoreR
           <div className="ld-drill-scroll">
             <div className="ld-drill-body">
               <div className="ld-drill-content">
-                {q.prompt && <div className="ld-drill-question">{q.prompt}</div>}
-                {renderQuestionM2All(q, drillCtx)}
+                <MatematikQuestionHeader
+                  activityNumber={q.activityNumber || 1}
+                  skill={getMatematikQuestionSkill(q, info?.label, language)}
+                  question={q.prompt || (language === 'bm' ? 'Pilih jawapan yang betul.' : 'Choose the correct answer.')}
+                  language={language}
+                  dark={dark}
+                  accent={accent}
+                />
+                <section className="mtq-card-section" aria-label="Kad soalan">
+                  <section className="mtq-options-section" aria-label="Pilihan jawapan">
+                    {renderQuestionM2All(q, drillCtx)}
+                  </section>
+                </section>
                 <div className={`ld-drill-feedback ${answered ? (isCorrect ? 'ok' : 'no') : ''}`}>
                   {answered ? (isCorrect ? 'Betul! 🎉' : 'Cuba lagi') : ''}
                 </div>
-                {answered && (
-                  <>
-                  <button className="ld-drill-next" type="button" onClick={handleNext}>
-                    {isLast ? 'Tamat 🎉' : 'Seterusnya →'}
-                  </button>
-                  <QuestionIssueReportButton
-                    language={language}
-                    question={q}
-                    questionIndex={idx}
-                    totalQuestions={questions.length}
-                    selected={selected}
-                    answered={answered}
-                    scoreId={scoreId}
-                    source="T1M2Drill"
-                  />
-                  </>
-                )}
+                <MatematikQuestionActions>
+                  {answered && (
+                    <>
+                    <button className="ld-drill-next" type="button" onClick={handleNext}>
+                      {isLast ? 'Tamat 🎉' : 'Seterusnya →'}
+                    </button>
+                    <QuestionIssueReportButton
+                      language={language}
+                      question={q}
+                      questionIndex={idx}
+                      totalQuestions={questions.length}
+                      selected={selected}
+                      answered={answered}
+                      scoreId={scoreId}
+                      source="T1M2Drill"
+                    />
+                    </>
+                  )}
+                </MatematikQuestionActions>
               </div>
             </div>
           </div>
@@ -1298,7 +1326,7 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
           }
           .cm2-next {
             padding: clamp(8px, 1.1vmin, 13px) clamp(24px, 3.4vmin, 44px);
-            border: none; border-radius: 999px; background: ${accent}; color: #fff;
+            border: none; border-radius: 999px; background: ${dark}; color: #fff;
             font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(16px, 2.2vmin, 22px);
             cursor: pointer; box-shadow: 0 4px 0 ${cd}; transition: transform .1s ease;
             -webkit-tap-highlight-color: transparent;
@@ -1406,22 +1434,35 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
         <div className="cm2-scroll">
           <div className="cm2-body">
             <div className="cm2-content">
-              {q.prompt && <div className="cm2-prompt">{q.prompt}</div>}
-              {renderQuestionM2All(q, examCtx)}
-              <div className="cm2-feedback" aria-live="polite" />
-              <button className="cm2-next" type="button" onClick={handleExamNext} disabled={!answered}>
-                {nextLabel}
-              </button>
-              <QuestionIssueReportButton
+              <MatematikQuestionHeader
+                activityNumber={q.activityNumber || 1}
+                skill={getMatematikQuestionSkill(q, 'Cabar Minda Modul 2', language)}
+                question={q.prompt || (language === 'bm' ? 'Pilih jawapan yang betul.' : 'Choose the correct answer.')}
                 language={language}
-                question={q}
-                questionIndex={current}
-                totalQuestions={questions.length}
-                selected={answers[current]}
-                answered={answered}
-                scoreId={data?.scoreId}
-                source="T1M2Exam"
+                dark={dark}
+                accent={accent}
               />
+              <section className="mtq-card-section" aria-label="Kad soalan">
+                <section className="mtq-options-section" aria-label="Pilihan jawapan">
+                  {renderQuestionM2All(q, examCtx)}
+                </section>
+              </section>
+              <div className="cm2-feedback" aria-live="polite" />
+              <MatematikQuestionActions>
+                <button className="cm2-next" type="button" onClick={handleExamNext} disabled={!answered}>
+                  {nextLabel}
+                </button>
+                <QuestionIssueReportButton
+                  language={language}
+                  question={q}
+                  questionIndex={current}
+                  totalQuestions={questions.length}
+                  selected={selectedPerQ[current]}
+                  answered={answered}
+                  scoreId={data?.scoreId}
+                  source="T1M2Exam"
+                />
+              </MatematikQuestionActions>
             </div>
           </div>
         </div>

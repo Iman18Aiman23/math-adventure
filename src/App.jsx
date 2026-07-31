@@ -219,9 +219,7 @@ const UkuranModule = React.lazy(() => import('./components/MatematikPage/Tahun1/
 const KenaliUkurObjek = React.lazy(() => import('./components/MatematikPage/Tahun1/Module6_Ukuran/KenaliUkurObjek'));
 const UkurBandingPanjang = React.lazy(() => import('./components/MatematikPage/Tahun1/Module6_Ukuran/UkurBandingPanjang'));
 const KenaliJisim = React.lazy(() => import('./components/MatematikPage/Tahun1/Module6_Ukuran/KenaliJisim'));
-const TimbangBandingJisim = React.lazy(() => import('./components/MatematikPage/Tahun1/Module6_Ukuran/TimbangBandingJisim'));
 const KenaliIsiPadu = React.lazy(() => import('./components/MatematikPage/Tahun1/Module6_Ukuran/KenaliIsiPadu'));
-const SukatBandingCecair = React.lazy(() => import('./components/MatematikPage/Tahun1/Module6_Ukuran/SukatBandingCecair'));
 const SelesaikanUkuran = React.lazy(() => import('./components/MatematikPage/Tahun1/Module6_Ukuran/SelesaikanUkuran'));
 const LatihDiriUkuran = React.lazy(() => import('./components/MatematikPage/Tahun1/Module6_Ukuran/LatihDiriUkuran'));
 const CabarMindaUkuran = React.lazy(() => import('./components/MatematikPage/Tahun1/Module6_Ukuran/CabarMindaUkuran'));
@@ -455,7 +453,7 @@ const MT_MODULE2_ORDER = [...MT_MODULE2_DRILL_TYPES.map((id) => `m2-drill-${id}`
 const MT_MODULE3_ORDER = ['kenali-pecahan', 'selesaikan-pecahan', 'latih-diri-pecahan', 'cabar-minda-pecahan'];
 const MT_MODULE4_ORDER = ['kenali-nilai-wang', 'tukar-wang', 'dapat-catat-wang', 'selesaikan-wang', 'latih-diri-wang', 'cabar-minda-wang'];
 const MT_MODULE5_ORDER = ['mengenali-bulan', 'mengenali-hari', 'mengenali-masa', 'selesaikan-masa', 'selesaikan-waktu', 'selesaikan-bulan', 'latih-diri-masa', 'cabar-minda-masa'];
-const MT_MODULE6_ORDER = ['kenali-ukur-objek', 'ukur-banding-panjang', 'kenali-jisim', 'timbang-banding-jisim', 'kenali-isi-padu', 'sukat-banding-cecair', 'selesaikan-ukuran', 'latih-diri-ukuran', 'cabar-minda-ukuran'];
+const MT_MODULE6_ORDER = ['kenali-ukur-objek', 'ukur-banding-panjang', 'kenali-jisim', 'kenali-isi-padu', 'selesaikan-ukuran', 'latih-diri-ukuran', 'cabar-minda-ukuran'];
 
 export default function App() {
   const isDesktop = useIsDesktop();
@@ -692,9 +690,7 @@ export default function App() {
         if (matematikTopic === 'kenali-ukur-objek')      return <KenaliUkurObjek      onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'ukur-banding-panjang')   return <UkurBandingPanjang   onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'kenali-jisim')           return <KenaliJisim          onBack={() => setMatematikTopic(null)} language={language} />;
-        if (matematikTopic === 'timbang-banding-jisim')  return <TimbangBandingJisim  onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'kenali-isi-padu')        return <KenaliIsiPadu        onBack={() => setMatematikTopic(null)} language={language} />;
-        if (matematikTopic === 'sukat-banding-cecair')   return <SukatBandingCecair   onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'selesaikan-ukuran')      return <SelesaikanUkuran     onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'latih-diri-ukuran')      return <LatihDiriUkuran      onBack={() => setMatematikTopic(null)} language={language} />;
         if (matematikTopic === 'cabar-minda-ukuran')     return <CabarMindaUkuran     onBack={() => setMatematikTopic(null)} language={language} />;

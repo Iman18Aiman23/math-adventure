@@ -310,6 +310,13 @@ const REPORTS_PAGE_CSS = `
     overflow-wrap: anywhere;
   }
 
+  .qir-field-compact span {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
   .qir-empty {
     border: 1px dashed #9ed7ef;
     border-radius: 20px;
@@ -367,9 +374,50 @@ const REPORTS_PAGE_CSS = `
     font: 900 25px/1 'Baloo 2', sans-serif;
   }
 
+  .qir-dialog-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
   .qir-icon-btn {
     width: 40px;
     padding: 0;
+  }
+
+  .qir-evidence {
+    display: grid;
+    gap: 16px;
+  }
+
+  .qir-screenshot {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid #dbe8f1;
+    border-radius: 14px;
+    background: #f8fafc;
+  }
+
+  .qir-raw {
+    border: 1px solid #dbe8f1;
+    border-radius: 14px;
+    background: #f8fafc;
+    padding: 10px 12px;
+  }
+
+  .qir-raw summary {
+    cursor: pointer;
+    color: #075985;
+    font-weight: 900;
+  }
+
+  .qir-raw pre {
+    margin: 10px 0 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    color: #334155;
+    font: 600 12px/1.45 monospace;
   }
 
   @media (max-width: 840px) {
@@ -425,21 +473,24 @@ const REPORTS_PAGE_CSS = `
   }
 `;
 
-const PREVIEW_SKIP_KEYS = new Set([
-  'answer', 'answerVal', 'header', 'options', 'prompt', 'question', 'qid', 'examId',
-  'type', 'topicId', 'sourceId', 'selected', 'id', 'shape', 'parts', 'shaded',
-]);
-
-function Field({ label, value }) {
+function Field({ label, value, compact = false }) {
   if (value == null || value === '') return null;
   return (
-    <div className="qir-field">
+    <div className={`qir-field${compact ? ' qir-field-compact' : ''}`}>
       <b>{label}</b>
-      <span>
+      <span title={compact && typeof value === 'string' ? value : undefined}>
         {typeof value === 'string' ? value : JSON.stringify(value)}
       </span>
     </div>
   );
+}
+
+function exportableReport(report) {
+  if (!report?.screenshot) return report;
+  return {
+    ...report,
+    screenshot: `[captured in Reports page: ${Math.round(report.screenshot.length / 1024)} KB]`,
+  };
 }
 
 function Objects({ icon = '●', count = 0 }) {
@@ -749,7 +800,6 @@ function OptionsPreview({ question, selected }) {
 
 function GenericQuestionPreview({ question, selected }) {
   const title = question?.prompt || question?.question || question?.header || 'Question';
-  const extraEntries = Object.entries(question || {}).filter(([key]) => !PREVIEW_SKIP_KEYS.has(key));
   return (
     <div style={{ display: 'grid', gap: 16, fontFamily: "'Fredoka', sans-serif" }}>
       <h2 style={{ margin: 0, textAlign: 'center', fontFamily: "'Baloo 2', sans-serif", fontSize: 27, color: '#1E293B' }}>
@@ -760,13 +810,6 @@ function GenericQuestionPreview({ question, selected }) {
           <FractionVisual shape={question.shape} parts={question.parts} shaded={question.shaded} size={112} />
         </div>
       )}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 10 }}>
-        {extraEntries.map(([key, value]) => (
-          <MiniField key={key} label={key}>
-            <ValuePreview value={value} />
-          </MiniField>
-        ))}
-      </div>
       <OptionsPreview question={question} selected={selected} />
       <MiniField label="Correct Answer">
         <ValuePreview value={question?.answerVal ?? question?.answer} />
@@ -830,19 +873,11 @@ export default function QuestionIssueReportsPage({ onBack, language = 'bm' }) {
   const [reports, setReports] = useState([]);
   const [preview, setPreview] = useState(null);
   const [query, setQuery] = useState('');
-  const json = useMemo(() => JSON.stringify(reports, null, 2), [reports]);
+  const json = useMemo(() => JSON.stringify(reports.map(exportableReport), null, 2), [reports]);
   const filteredReports = useMemo(() => {
     const needle = query.trim().toLowerCase();
     if (!needle) return reports;
-    return reports.filter((report) => [
-      report.issue,
-      report.questionNo,
-      report.source,
-      report.scoreId,
-      report.selected,
-      report.visibleText,
-      report.submittedAt,
-    ].some((value) => String(value ?? '').toLowerCase().includes(needle)));
+    return reports.filter((report) => JSON.stringify(exportableReport(report)).toLowerCase().includes(needle));
   }, [query, reports]);
   const latestReport = reports.reduce((latest, report) => {
     if (!report.submittedAt) return latest;
@@ -857,6 +892,10 @@ export default function QuestionIssueReportsPage({ onBack, language = 'bm' }) {
 
   const copyAll = async () => {
     await navigator.clipboard?.writeText(json);
+  };
+
+  const copyReport = async (report) => {
+    await navigator.clipboard?.writeText(JSON.stringify(exportableReport(report), null, 2));
   };
 
   const clearAll = async () => {
@@ -956,7 +995,11 @@ export default function QuestionIssueReportsPage({ onBack, language = 'bm' }) {
                     <div className="qir-card-meta">
                       <button type="button" className="qir-btn" onClick={() => setPreview(report)}>
                         <Eye size={17} aria-hidden="true" />
-                        <span>View Question</span>
+                        <span>View Evidence</span>
+                      </button>
+                      <button type="button" className="qir-btn" onClick={() => copyReport(report)}>
+                        <Clipboard size={17} aria-hidden="true" />
+                        <span>Copy Report</span>
                       </button>
                       <span className="qir-time">
                         {report.submittedAt ? new Date(report.submittedAt).toLocaleString() : ''}
@@ -965,11 +1008,17 @@ export default function QuestionIssueReportsPage({ onBack, language = 'bm' }) {
                   </div>
                   <div className="qir-fields">
                     <Field label="Issue" value={report.issue} />
+                    <Field label="Issue Type" value={report.issueType} />
                     <Field label="Question No" value={report.questionNo} />
+                    <Field label="Question Type" value={report.question?.type} />
                     <Field label="Source" value={report.source} />
                     <Field label="Score ID" value={report.scoreId} />
                     <Field label="Selected" value={report.selected} />
-                    <Field label="Visible Text" value={report.visibleText} />
+                    <Field label="Correct Answer" value={report.correctAnswer ?? report.question?.answerVal ?? report.question?.answer} />
+                    <Field label="Report ID" value={report.reportId} />
+                    <Field label="Viewport" value={report.environment?.viewport ? `${report.environment.viewport.width} × ${report.environment.viewport.height} @ ${report.environment.viewport.devicePixelRatio || 1}x` : undefined} />
+                    <Field label="Screenshot" value={report.screenshot ? 'Captured' : report.screenshotStatus} />
+                    <Field label="Visible Text" value={report.visibleText} compact />
                   </div>
                 </article>
               );
@@ -987,12 +1036,27 @@ export default function QuestionIssueReportsPage({ onBack, language = 'bm' }) {
         >
           <section className="qir-dialog" onClick={(event) => event.stopPropagation()}>
             <div className="qir-dialog-head">
-              <h2 className="qir-dialog-title">Report Question</h2>
-              <button type="button" className="qir-btn qir-icon-btn" onClick={() => setPreview(null)} aria-label="Close preview">
-                <X size={18} aria-hidden="true" />
-              </button>
+              <h2 className="qir-dialog-title">Report #{reports.indexOf(preview) + 1} Evidence</h2>
+              <div className="qir-dialog-actions">
+                <button type="button" className="qir-btn" onClick={() => copyReport(preview)}>
+                  <Clipboard size={17} aria-hidden="true" />
+                  <span>Copy Report</span>
+                </button>
+                <button type="button" className="qir-btn qir-icon-btn" onClick={() => setPreview(null)} aria-label="Close preview">
+                  <X size={18} aria-hidden="true" />
+                </button>
+              </div>
             </div>
-            <CompareQuestionPreview question={preview.question} selected={preview.selected} />
+            <div className="qir-evidence">
+              {preview.screenshot && (
+                <img className="qir-screenshot" src={preview.screenshot} alt="Exact learner screen when this report was submitted" />
+              )}
+              {!preview.screenshot && <CompareQuestionPreview question={preview.question} selected={preview.selected} />}
+              <details className="qir-raw">
+                <summary>Full diagnostic payload</summary>
+                <pre>{JSON.stringify(exportableReport(preview), null, 2)}</pre>
+              </details>
+            </div>
           </section>
         </div>
       )}

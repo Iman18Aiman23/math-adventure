@@ -465,6 +465,153 @@ export function CompareExplore({ data, language, theme, onExit }) {
  * Uses the shared MatematikActivityFrame for chrome/footer/completion.
  * ──────────────────────────────────────────────────────────────────────────── */
 
+function buildStandardCompareRound(data) {
+  return (data?.questions || buildRound()).map((question) => ({
+    ...question,
+    prompt: CMP_PROMPTS[question.type],
+    answer: correctSide(question),
+    activityNumber: 1,
+    activityTitle: 'Banding Banyak Sedikit',
+    skill: 'Banding Banyak Sedikit',
+  }));
+}
+
+function renderStandardCompareQuestion(q, ctx) {
+  const renderPanel = (side) => {
+    const picked = ctx.selected === side;
+    const isAnswer = q.answer === side;
+    const state = ctx.answered
+      ? (isAnswer ? ' is-correct' : picked ? ' is-wrong' : ' is-muted')
+      : picked ? ' is-picked' : '';
+    const marker = ctx.answered ? (isAnswer ? '✓' : picked ? '×' : q[side]) : q[side];
+
+    return (
+      <button
+        key={side}
+        type="button"
+        className={`cmp-standard-option${state}`}
+        onClick={() => ctx.handlePick(side)}
+        disabled={ctx.answered}
+        aria-label={side === 'a' ? 'Kumpulan pertama' : 'Kumpulan kedua'}
+      >
+        <span className="cmp-standard-objects">
+          <ObjectsGrid icon={q.icon} count={q[side]} />
+        </span>
+        <span className="cmp-standard-marker" aria-hidden="true">{marker}</span>
+      </button>
+    );
+  };
+
+  return (
+    <div className="cmp-standard-card">
+      <style>{`
+        .cmp-standard-card {
+          width:min(100%,56rem);
+          display:flex;
+          flex-direction:column;
+          align-items:center;
+          gap:clamp(.7rem,1.8vmin,1.15rem);
+          box-sizing:border-box;
+          padding:clamp(.65rem,1.8vmin,1.15rem);
+          border:1px solid #BBF7D0;
+          border-radius:clamp(1rem,2vw,1.4rem);
+          background:#F8FAFC;
+        }
+        .cmp-standard-reference {
+          display:flex;
+          flex-direction:column;
+          align-items:center;
+          gap:.45rem;
+          padding:.65rem 1rem;
+          border:1px solid #CBD5E1;
+          border-radius:.9rem;
+          background:#FFFFFF;
+          color:#475569;
+          font-family:'Fredoka',sans-serif;
+          font-weight:700;
+        }
+        .cmp-standard-options {
+          width:100%;
+          display:grid;
+          grid-template-columns:repeat(2,minmax(0,1fr));
+          gap:clamp(.55rem,1.8vw,1rem);
+        }
+        .cmp-standard-option {
+          min-width:0;
+          min-height:clamp(8.5rem,24vmin,17rem);
+          display:flex;
+          flex-direction:column;
+          align-items:center;
+          justify-content:space-between;
+          gap:.65rem;
+          padding:clamp(.65rem,1.8vmin,1.2rem);
+          border:2px solid #CBD5E1;
+          border-radius:clamp(.9rem,1.8vw,1.25rem);
+          background:#FFFFFF;
+          color:#334155;
+          cursor:pointer;
+          transition:transform .16s ease,border-color .16s ease,background-color .16s ease;
+        }
+        .cmp-standard-option:not(:disabled):hover { border-color:${ctx.theme.dark}; transform:translateY(-2px); }
+        .cmp-standard-option:not(:disabled):active { transform:translateY(1px); }
+        .cmp-standard-option:disabled { cursor:default; opacity:1; }
+        .cmp-standard-option.is-picked { border-color:${ctx.theme.dark}; background:#F0FDF4; }
+        .cmp-standard-option.is-correct { border-color:#15803D; background:#ECFDF5; }
+        .cmp-standard-option.is-wrong { border-color:#DC2626; background:#FEF2F2; }
+        .cmp-standard-option.is-muted { opacity:.65; }
+        .cmp-standard-objects { flex:1; display:grid; place-items:center; width:100%; }
+        .cmp-standard-marker {
+          width:clamp(2.25rem,5vmin,3.25rem);
+          aspect-ratio:1;
+          display:grid;
+          place-items:center;
+          border:2px solid currentColor;
+          border-radius:.75rem;
+          font-family:'Baloo 2',sans-serif;
+          font-size:clamp(1.2rem,3vmin,2rem);
+          font-weight:900;
+          line-height:1;
+        }
+        .is-correct .cmp-standard-marker { background:#15803D; color:#FFFFFF; }
+        .is-wrong .cmp-standard-marker { background:#DC2626; color:#FFFFFF; }
+        @media (max-width:560px) {
+          .cmp-standard-card { padding:.55rem; }
+          .cmp-standard-options { gap:.5rem; }
+          .cmp-standard-option { min-height:8rem; padding:.55rem .35rem; }
+        }
+        @media (max-height:700px) and (orientation:landscape) {
+          .cmp-standard-option { min-height:6.5rem; }
+        }
+      `}</style>
+      {q.type === 'sama-banyak' && (
+        <section className="cmp-standard-reference" aria-label="Kumpulan rujukan">
+          <span>Sama dengan ini</span>
+          <ObjectsGrid icon={q.icon} count={q.ref} />
+        </section>
+      )}
+      <section className="cmp-standard-options mtq-options-section" aria-label="Pilihan jawapan">
+        {renderPanel('a')}
+        {renderPanel('b')}
+      </section>
+    </div>
+  );
+}
+
+export function CompareStandardExplore({ data, language, theme, onExit }) {
+  return (
+    <MatematikActivityFrame
+      buildRound={() => buildStandardCompareRound(data)}
+      renderQuestion={renderStandardCompareQuestion}
+      theme={theme}
+      onExit={onExit}
+      language={language}
+      showQuestionProgress
+      scoreId={data?.scoreId || 'banding-banyak-sedikit'}
+      scoreStorageKey={data?.scoreStorageKey || 'mt_ld_m1_scores'}
+    />
+  );
+}
+
 const KENALI_ICONS = MODULE1_OBJECT_ICONS;
 
 const KENALI_WORDS = ['sifar', 'satu', 'dua', 'tiga', 'empat', 'lima', 'enam', 'tujuh', 'lapan', 'sembilan', 'sepuluh',

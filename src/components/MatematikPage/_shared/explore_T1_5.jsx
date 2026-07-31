@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import MatematikActivityFrame, { recordActivityScore } from './MatematikActivityFrame';
 import QuestionIssueReportButton from './QuestionIssueReportButton';
+import { getMatematikQuestionSkill, MatematikQuestionActions, MatematikQuestionHeader } from './MatematikQuestionLayout';
 import { NumOptionsGrid, WordOptionsGrid, pick, randInt, shuffle } from './explorePrimitives_shared';
 
 const DAYS = ['Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu', 'Ahad'];
@@ -38,7 +39,7 @@ function ClockFace({ hour, minute = 0, small = false }) {
   const hourAngle = ((hour % 12) + minute / 60) * 30;
   const size = small ? 'clamp(86px, 16vmin, 132px)' : 'clamp(116px, 24vmin, 210px)';
   return (
-    <svg viewBox="0 0 160 160" width={size} height={size} style={{ display: 'block' }} aria-label={timeLabel(hour, minute)}>
+    <svg className="mt-clock-face" viewBox="0 0 160 160" width={size} height={size} style={{ display: 'block' }} aria-label={timeLabel(hour, minute)}>
       <circle cx="80" cy="80" r="72" fill="#FFFFFF" stroke="#22C55E" strokeWidth="5" />
       <circle cx="80" cy="80" r="61" fill="#F0FDF4" stroke="#BBF7D0" strokeWidth="2" />
       {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => {
@@ -484,7 +485,7 @@ function buildLatihDiriMasaRound() {
 
 function ClockOptionsGrid({ options, answered, selected, answer, handlePick, theme: C }) {
   return (
-    <div style={{
+    <div className="mt-clock-options-grid" style={{
       display: 'grid',
       gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
       gap: 'clamp(8px, 1.4vmin, 16px)',
@@ -527,7 +528,7 @@ function ClockOptionsGrid({ options, answered, selected, answer, handlePick, the
 
 function DaySequenceCard({ sequence, answer, answered, theme: C }) {
   return (
-    <div style={{
+    <div className="mt-sequence-card" style={{
       display: 'flex',
       flexWrap: 'wrap',
       justifyContent: 'center',
@@ -567,7 +568,7 @@ function DaySequenceCard({ sequence, answer, answered, theme: C }) {
 
 function TimeSequenceCard({ sequence, answer, answered, theme: C }) {
   return (
-    <div style={{
+    <div className="mt-sequence-card" style={{
       display: 'flex',
       flexWrap: 'wrap',
       alignItems: 'center',
@@ -650,8 +651,8 @@ function DayOrderContent({ q, ctx }) {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px, 1.7vmin, 18px)', width: '100%' }}>
-      <div style={{
+    <div className="mt-day-order" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px, 1.7vmin, 18px)', width: '100%' }}>
+      <div className="mt-day-order-drop" style={{
         minHeight: 'clamp(64px, 10vmin, 92px)',
         width: 'min(100%, 680px)',
         border: `3px dashed ${answered ? (isCorrect ? C.green : C.red) : '#CBD5E1'}`,
@@ -678,7 +679,7 @@ function DayOrderContent({ q, ctx }) {
         </div>
       )}
       {!locked && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 'clamp(7px, 1.2vmin, 12px)', width: 'min(100%, 680px)' }}>
+        <div className="mt-day-order-options" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 'clamp(7px, 1.2vmin, 12px)', width: 'min(100%, 680px)' }}>
           {q.tiles.map(t => (
             <button key={t.id} type="button" onClick={() => tap(t.id)} disabled={placedSet.has(t.id)} style={boxStyle(t.id, placedSet.has(t.id))}>
               {t.value}
@@ -695,13 +696,13 @@ function renderTimeQuestion(q, ctx) {
   if (q.type === 'susun-hari' || q.type === 'susun-bulan') return <DayOrderContent q={q} ctx={ctx} />;
   const grid = q.options?.length <= 2 ? 2 : 2;
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px, 1.7vmin, 20px)', width: '100%' }}>
+    <div className="mt-time-question" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px, 1.7vmin, 20px)', width: '100%' }}>
       {q.type === 'padan-urutan-hari' && <DaySequenceCard sequence={q.sequence} answer={ctx.answer} answered={ctx.answered} theme={C} />}
       {q.type === 'urutan-waktu' && <TimeSequenceCard sequence={q.sequence} answer={ctx.answer} answered={ctx.answered} theme={C} />}
       {q.type === 'urutan-bulan' && <TimeSequenceCard sequence={q.sequence} answer={ctx.answer} answered={ctx.answered} theme={C} />}
       {(q.type === 'baca-jam' || q.type === 'cerita-masa') && <ClockFace hour={q.hour} minute={q.minute} />}
       {q.type === 'digital-jam' && (
-        <div style={{
+        <div className="mt-digital-clock" style={{
           minWidth: 'clamp(128px, 24vmin, 210px)',
           borderRadius: 'clamp(18px, 2.6vmin, 28px)',
           border: `2px solid ${C.accent}66`,
@@ -719,7 +720,7 @@ function renderTimeQuestion(q, ctx) {
         </div>
       )}
       {q.type === 'bulan-card' && (
-        <div style={{
+        <div className="mt-month-card" style={{
           minWidth: 'clamp(112px, 22vmin, 190px)',
           minHeight: 'clamp(74px, 13vmin, 116px)',
           borderRadius: 'clamp(18px, 2.6vmin, 28px)',
@@ -952,7 +953,7 @@ export function CabarMindaMasaExplore({ language, theme, onExit }) {
           .ujian-masa-card { width:100%; max-width:min(94vw,860px); display:flex; flex-direction:column; align-items:center; gap:clamp(5px,1vmin,10px); }
           .ujian-masa-prompt { width:100%; max-width:680px; font-family:'Baloo 2',sans-serif; font-weight:900; font-size:clamp(17px,3.2vmin,31px); line-height:1.08; color:#1E293B; text-align:center; text-wrap:normal; }
           .ujian-masa-prompt-inline { white-space:normal; font-size:clamp(16px,3.2vmin,30px); }
-          .ujian-masa-next { border:0; border-radius:999px; padding:clamp(8px,1.1vmin,13px) clamp(24px,3.4vmin,44px); background:${accent}; color:#fff; box-shadow:0 4px 0 ${cd}; font-family:'Baloo 2',sans-serif; font-weight:900; font-size:clamp(16px,2.2vmin,22px); cursor:pointer; }
+          .ujian-masa-next { border:0; border-radius:999px; padding:clamp(8px,1.1vmin,13px) clamp(24px,3.4vmin,44px); background:${dark}; color:#fff; font-family:'Baloo 2',sans-serif; font-weight:900; font-size:clamp(16px,2.2vmin,22px); cursor:pointer; }
           .ujian-masa-next:disabled { opacity:.45; cursor:not-allowed; box-shadow:none; }
           .ujian-masa-footer { flex-shrink:0; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:clamp(8px,1.2vmin,15px) clamp(16px,2.4vmin,34px); background:rgba(255,255,255,.86); border-top:1px solid #E2E8F0; }
           .ujian-masa-map-btn { border:1.5px solid #BBF7D0; border-radius:999px; background:#F0FDF4; color:${dark}; padding:8px 14px; font-family:'Baloo 2',sans-serif; font-weight:900; cursor:pointer; max-width:58%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -978,10 +979,23 @@ export function CabarMindaMasaExplore({ language, theme, onExit }) {
         )}
         <div className="ujian-masa-main">
           <div className="ujian-masa-card">
-            <div className={`ujian-masa-prompt${Array.isArray(q.promptParts) ? ' ujian-masa-prompt-inline' : ''}`}>{renderPromptText(q, accent)}</div>
-            {renderTimeQuestion(q, ctx)}
-            <button type="button" className="ujian-masa-next" onClick={handleNext} disabled={!answered}>{nextLabel}</button>
-            <QuestionIssueReportButton language={language} question={q} questionIndex={current} totalQuestions={questions.length} selected={selected} answered={answered} scoreId="cabar-minda-masa" source="T1M5Exam" />
+            <MatematikQuestionHeader
+              activityNumber={q.activityNumber || 1}
+              skill={getMatematikQuestionSkill(q, 'Cabar Minda Masa', language)}
+              question={renderPromptText(q, accent)}
+              language={language}
+              dark={dark}
+              accent={accent}
+            />
+            <section className="mtq-card-section" aria-label="Kad soalan">
+              <section className="mtq-options-section" aria-label="Pilihan jawapan">
+                {renderTimeQuestion(q, ctx)}
+              </section>
+            </section>
+            <MatematikQuestionActions>
+              <button type="button" className="ujian-masa-next" onClick={handleNext} disabled={!answered}>{nextLabel}</button>
+              <QuestionIssueReportButton language={language} question={q} questionIndex={current} totalQuestions={questions.length} selected={selected} answered={answered} scoreId="cabar-minda-masa" source="T1M5Exam" />
+            </MatematikQuestionActions>
           </div>
         </div>
         <div className="ujian-masa-footer">

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import useGamification from '../../../hooks/useGamification';
 import StatsBar from '../../_shared/StatsBar';
-import MatematikSceneBackground from './MatematikSceneBackground';
 
 function MbScoreBar() {
   const { xp, streak, loading } = useGamification('mt');
@@ -99,7 +98,7 @@ export default function MatematikTopicShell({
           height: 100%;
           min-height: 0;
           position: relative;
-          background: #06142E;
+          background: #fff;
         }
         /* keep all content above the decorative landscape scene */
         .mt-topic-shell > .mt-shell-top,
@@ -1050,7 +1049,7 @@ export default function MatematikTopicShell({
       {legacyDarkChrome && <style>{`@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Space+Grotesk:wght@700&display=swap');`}</style>}
       {formalMode && <style>{`.mt-shell { background: #fff !important; }`}</style>}
 
-      {background || (!formalMode && <MatematikSceneBackground />)}
+      {background}
 
 
       {legacyDarkChrome ? (

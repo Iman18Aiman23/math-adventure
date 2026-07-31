@@ -50,6 +50,7 @@ function PencilSVG() {
 }
 
 const SCORE_KEY = 'mt_ld_m6_scores';
+const MASS_ACTIVITY_SKILL = 'Banding berat dan Ringan Jisim';
 const OBJECTS = [
   { name: 'pemadam', icon: '🧽', mass: 1, grams: 100 },
   { name: 'pensel', icon: '✏️', mass: 2, grams: 150 },
@@ -322,10 +323,10 @@ function genLengthMeasure() {
   });
 }
 
-function genMassKnow() {
+function genMassKnow(askLight = false, skill = 'Kenali jisim') {
   const [a, b] = pairBy('mass');
-  const answer = a.mass > b.mass ? a.name : b.name;
-  return makeQuestion('balance', 'Kenali jisim', 'Objek manakah lebih berat?', {
+  const answer = (askLight ? a.mass < b.mass : a.mass > b.mass) ? a.name : b.name;
+  return makeQuestion('balance', skill, askLight ? 'Objek manakah lebih ringan?' : 'Objek manakah lebih berat?', {
     items: [a, b],
     metric: 'mass',
     answer,
@@ -345,16 +346,17 @@ function genMassCompare() {
   });
 }
 
-function genLiquidKnow() {
+function genLiquidKnow(data = {}) {
   const liquid = pick(LIQUIDS);
   return makeQuestion('liquid', 'Baca isi padu cecair', `Berapakah isi padu cecair dalam ${liquid.name}?`, {
     liquid,
     answer: String(liquid.ml),
     options: asOptions(liquid.ml, [100, 150, 200, 250, 300, 500], ' ml'),
+    ...data,
   });
 }
 
-function genLiquidCompare() {
+function genLiquidCompare(data = {}) {
   const a = pick(LIQUIDS);
   let b = pick(LIQUIDS);
   while (b.name === a.name || b.ml === a.ml) b = pick(LIQUIDS);
@@ -364,17 +366,115 @@ function genLiquidCompare() {
     liquids: [a, b],
     answer,
     options: [a, b].map(o => ({ id: o.name, value: o.name })),
+    ...data,
   });
 }
+
+function solveQuestion(activityNumber, skill, prompt, answer, options, scene) {
+  return makeQuestion('solve-visual', skill, prompt, {
+    activityNumber,
+    activityTitle: 'Selesaikan ukuran',
+    answer,
+    options: shuffle(options).map(value => ({ id: value, value })),
+    scene,
+  });
+}
+
+const SOLVE_QUESTION_GENERATORS = [
+  () => solveQuestion(
+    1,
+    'Banding jisim',
+    'Kedua-dua neraca seimbang. Bandingkan jisim betik dengan nanas.',
+    'Sama berat',
+    ['Betik lebih berat', 'Nanas lebih berat', 'Sama berat'],
+    { kind: 'equal-fruit-mass' },
+  ),
+  () => solveQuestion(
+    2,
+    'Ukur dengan klip kertas',
+    'Pensel berukuran 6 klip. Pen penanda berukuran 4 klip. Yang manakah lebih panjang?',
+    'Pensel',
+    ['Pensel', 'Pen penanda', 'Sama panjang'],
+    { kind: 'paperclip-length' },
+  ),
+  () => solveQuestion(
+    3,
+    'Susun mengikut tinggi',
+    'Baca petunjuk. Siapakah yang paling tinggi?',
+    'Kumar',
+    ['Kumar', 'Linda', 'Zain'],
+    { kind: 'height-clues' },
+  ),
+  () => solveQuestion(
+    4,
+    'Susun mengikut tinggi',
+    'Baca petunjuk. Siapakah yang paling rendah?',
+    'Linda',
+    ['Kumar', 'Linda', 'Zain'],
+    { kind: 'height-clues' },
+  ),
+  () => solveQuestion(
+    5,
+    'Pilih mengikut saiz',
+    'Apakah yang boleh dimasukkan ke dalam bekas pensel?',
+    'Pembaris, pen dan gam',
+    ['Pembaris sahaja', 'Pen dan gam', 'Pembaris, pen dan gam', 'Gam sahaja'],
+    { kind: 'pencil-case' },
+  ),
+  () => solveQuestion(
+    6,
+    'Banding tiga jisim',
+    'Perhatikan kedua-dua neraca. Buah manakah yang paling ringan?',
+    'Tembikai',
+    ['Nangka', 'Labu', 'Tembikai'],
+    { kind: 'fruit-mass-order' },
+  ),
+  () => solveQuestion(
+    7,
+    'Banding tiga jisim',
+    'Perhatikan kedua-dua neraca. Buah manakah yang paling berat?',
+    'Nangka',
+    ['Nangka', 'Labu', 'Tembikai'],
+    { kind: 'fruit-mass-order' },
+  ),
+  () => solveQuestion(
+    8,
+    'Isi padu bukan piawai',
+    'Adik minum 2 gelas dan kawan-kawan minum 4 gelas. Satu kotak minuman mengisi berapa gelas?',
+    '6 gelas',
+    ['4 gelas', '5 gelas', '6 gelas', '8 gelas'],
+    { kind: 'juice-cups' },
+  ),
+  () => solveQuestion(
+    9,
+    'Buat kesimpulan jisim',
+    'Nangka lebih berat daripada labu. Labu pula lebih berat daripada buah apa?',
+    'Tembikai',
+    ['Nangka', 'Tembikai', 'Sama berat'],
+    { kind: 'fruit-mass-order' },
+  ),
+  () => solveQuestion(
+    10,
+    'Beza panjang',
+    'Berapakah beza panjang pensel dengan pen penanda?',
+    '2 klip',
+    ['1 klip', '2 klip', '4 klip', '10 klip'],
+    { kind: 'paperclip-length' },
+  ),
+];
 
 const BANKS = {
   'kenali-ukur-objek': WORKBOOK_BANKS['kenali-ukur-objek'],
   'ukur-banding-panjang': WORKBOOK_BANKS['ukur-banding-panjang'],
-  'kenali-jisim': [genMassKnow, genIdentifyMeasure],
-  'timbang-banding-jisim': [genMassCompare, genMassKnow],
-  'kenali-isi-padu': [genLiquidKnow, genIdentifyMeasure],
-  'sukat-banding-cecair': [genLiquidCompare, genLiquidKnow],
-  'selesaikan-ukuran': [genLengthMeasure, genMassCompare, genLiquidCompare],
+  'kenali-jisim': Array.from(
+    { length: 10 },
+    (_, index) => () => genMassKnow(index >= 5, MASS_ACTIVITY_SKILL),
+  ),
+  'kenali-isi-padu': [
+    ...Array.from({ length: 3 }, (_, index) => () => genLiquidKnow({ activityId: 'liquid-read', activityNumber: 1, activityStep: index + 1 })),
+    ...Array.from({ length: 7 }, (_, index) => () => genLiquidCompare({ activityId: 'liquid-compare', activityNumber: 2, activityStep: index + 1 })),
+  ],
+  'selesaikan-ukuran': SOLVE_QUESTION_GENERATORS,
   'latih-diri-ukuran': [genIdentifyMeasure, genLengthCompare, genMassCompare, genLiquidCompare],
   'cabar-minda-ukuran': [genLengthMeasure, genMassCompare, genLiquidKnow, genLiquidCompare],
 };
@@ -391,7 +491,7 @@ function buildRound(kind, total = 10) {
   const baseGens = BANKS[kind] || BANKS['kenali-ukur-objek'];
   const gens = kind === 'kenali-ukur-objek'
     ? shuffle(TOOL_QUESTIONS).slice(0, total).map((question, index) => ({ ...question, activityStep: index + 1 }))
-    : baseGens;
+    : kind === 'kenali-jisim' ? shuffle(baseGens) : baseGens;
   const used = { ruler: new Set(), liquid: new Set() };
   const pools = { ruler: LENGTH_OBJECTS, liquid: LIQUIDS };
   const round = Array.from({ length: total }, (_, i) => {
@@ -420,7 +520,7 @@ function buildRound(kind, total = 10) {
   }, {});
   return round.map(question => ({
     ...question,
-    featuredQuestion: kind === 'ukur-banding-panjang',
+    featuredQuestion: true,
     activityTotal: question.activityId ? activityTotals[question.activityId] : undefined,
   }));
 }
@@ -461,7 +561,7 @@ function ObjectPair({ items, metric, ctx, cardChoice = false }) {
               <span className="m6-height-scene-ground" aria-hidden="true" />
             </div>
             <div className="m6-scene-choice">
-              <span className="m6-scene-checkbox" aria-hidden="true"><span className="m6-scene-checkbox-icon">✓</span></span>
+              <span className="m6-scene-checkbox" aria-hidden="true"><span className="m6-scene-checkbox-icon">{wrong ? '×' : '✓'}</span></span>
               <div className="m6-object-name">{item.name}</div>
             </div>
             </>
@@ -471,7 +571,7 @@ function ObjectPair({ items, metric, ctx, cardChoice = false }) {
               <MeasurementVisual item={item} metric={metric} maxValue={maxValue} distanceUnit={distanceUnit} />
             </div>
             <div className="m6-scene-choice">
-              <span className="m6-scene-checkbox" aria-hidden="true"><span className="m6-scene-checkbox-icon">✓</span></span>
+              <span className="m6-scene-checkbox" aria-hidden="true"><span className="m6-scene-checkbox-icon">{wrong ? '×' : '✓'}</span></span>
               <div className="m6-object-name">{item.name}</div>
             </div>
             </>
@@ -493,13 +593,19 @@ function ObjectPair({ items, metric, ctx, cardChoice = false }) {
   const maxValue = Math.max(...items.map(item => item[valueKey] || 1));
   return (
     <div className="m6-object-pair">
-      {items.map(item => (
-        <div className="m6-object-tile" key={item.name}>
+      {items.map(item => {
+        const picked = ctx?.selected === item.name;
+        const correct = ctx?.answered && ctx?.answer === item.name;
+        const wrong = ctx?.answered && picked && !correct;
+        const className = ['m6-object-tile', cardChoice ? 'is-button is-mass-choice' : '', picked ? 'is-picked' : '', correct ? 'is-correct' : '', wrong ? 'is-wrong' : ''].filter(Boolean).join(' ');
+        const content = <>
           <MeasurementVisual item={item} metric={metric} maxValue={maxValue} />
           <div className="m6-object-name">{item.name}</div>
-          {metric === 'mass' && <div className="m6-object-value">{item.grams} g</div>}
-        </div>
-      ))}
+          {metric === 'mass' && <div className="m6-object-value">{item.grams} <span>g</span></div>}
+          {cardChoice && <span className="m6-object-checkbox" aria-hidden="true">{(correct || picked) && (wrong ? '×' : '✓')}</span>}
+        </>;
+        return cardChoice ? <button type="button" className={className} key={item.name} onClick={() => ctx.handlePick(item.name)} disabled={ctx.answered} aria-pressed={picked}>{content}</button> : <div className={className} key={item.name}>{content}</div>;
+      })}
     </div>
   );
 }
@@ -983,6 +1089,14 @@ function MeasurementVisual({ item, metric, maxValue, distanceUnit }) {
     );
   }
 
+  if (metric === 'mass') {
+    return (
+      <div className="m6-mass-object-stage" aria-label={`${item.name}, ${item.grams} gram`}>
+        <EmojiObject item={item} />
+      </div>
+    );
+  }
+
   return (
     <div className="m6-height-stage" aria-label={metric === 'height' ? 'Bar perbandingan tinggi' : 'Bar perbandingan panjang'}>
       <div className="m6-height-column">
@@ -999,20 +1113,23 @@ function MeasurementVisual({ item, metric, maxValue, distanceUnit }) {
 function RulerVisual({ item, C }) {
   const maxCm = 13;
   const ratio = item.len / maxCm;
-  const ZERO_PCT = 14 / 550 * 100;
-  const SPAN_PCT = (534 - 14) / 550 * 100;
+  const rulerWidth = 550;
+  const zeroX = 14;
+  const endX = 534;
+  const ZERO_PCT = zeroX / rulerWidth * 100;
+  const SPAN_PCT = (endX - zeroX) / rulerWidth * 100;
   const end = `${ZERO_PCT + ratio * SPAN_PCT}%`;
   const objWidth = `${ratio * SPAN_PCT}%`;
   return (
     <div className="m6-ruler" aria-label={`${item.name} sepanjang ${item.len} sentimeter`}>
       <div className="m6-ruler-object-lane">
-        <div className="m6-ruler-object" style={{ width: objWidth }}><LengthObjectSvg kind={item.kind} /><span className="m6-measure-line" /></div>
+        <div className="m6-ruler-object" style={{ left: `${ZERO_PCT}%`, width: objWidth }}><LengthObjectSvg kind={item.kind} /><span className="m6-measure-line" /></div>
         <span className="m6-ruler-end" style={{ left: end, borderColor: C.accent }} />
       </div>
       <svg className="m6-ruler-scale" viewBox="0 0 550 64" role="img" aria-label="Pembaris 0 hingga 13 sentimeter">
         <rect x="1" y="1" width="548" height="62" rx="7" fill="#FFFDF5" stroke="#D6A928" strokeWidth="2" />
         {Array.from({ length: maxCm + 1 }, (_, cm) => {
-          const x = 14 + cm * 40;
+          const x = zeroX + cm * 40;
           return <React.Fragment key={cm}><line x1={x} x2={x} y1="2" y2="30" stroke="#334155" strokeWidth="3"/><text x={x} y="51" textAnchor="middle" fill="#334155" fontFamily="Fredoka, sans-serif" fontSize="14" fontWeight="800">{cm}</text>{cm < maxCm && [1,2,3,4].map(tick => <line key={tick} x1={x + tick * 8} x2={x + tick * 8} y1="2" y2={tick === 2 ? 21 : 14} stroke="#64748B" strokeWidth="1.5"/>)}</React.Fragment>;
         })}
         <text x="540" y="52" textAnchor="end" fill={C.dark} fontFamily="Fredoka, sans-serif" fontSize="13" fontWeight="800">cm</text>
@@ -1021,7 +1138,7 @@ function RulerVisual({ item, C }) {
   );
 }
 
-function LiquidVisual({ liquid, C, compact = false }) {
+function LiquidVisual({ liquid, C, compact = false, showName = true }) {
   const maxMl = 500;
   const innerTop = 32;
   const innerBottom = 214;
@@ -1030,7 +1147,7 @@ function LiquidVisual({ liquid, C, compact = false }) {
   const marks = [500, 400, 300, 200, 100];
   return (
     <div className={`m6-liquid${compact ? ' is-compact' : ''}`}>
-      <svg viewBox="0 0 220 250" role="img" aria-label={`${liquid.ml} ml`}>
+      <svg viewBox={compact ? '-38 0 220 250' : '0 0 220 250'} role="img" aria-label={`${liquid.ml} ml`}>
         <defs>
           <linearGradient id={`glass-${liquid.ml}`} x1="0" x2="1">
             <stop offset="0" stopColor="#FFFFFF" stopOpacity=".9" />
@@ -1054,11 +1171,158 @@ function LiquidVisual({ liquid, C, compact = false }) {
         })}
         {marks.map(ml => {
           const y = innerBottom - (ml / maxMl) * innerHeight;
-          return <text key={ml} x="130" y={y + 4} fill="#334155" fontFamily="Fredoka, sans-serif" fontSize="12" fontWeight="800">{ml} ml</text>;
+          return <text key={ml} x="130" y={y + (compact ? 5 : 4)} fill="#334155" fontFamily="Fredoka, sans-serif" fontSize={compact ? 15 : 12} fontWeight="800">{ml} ml</text>;
         })}
         <path d="M49 44 V194" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" opacity=".75" />
-        <text x="72" y="242" textAnchor="middle" fill={C.dark} fontFamily="Baloo 2, sans-serif" fontSize="12" fontWeight="800">{liquid.name}</text>
+        {showName && <text x="72" y="242" textAnchor="middle" fill={C.dark} fontFamily="Baloo 2, sans-serif" fontSize="12" fontWeight="800">{liquid.name}</text>}
       </svg>
+    </div>
+  );
+}
+
+function LiquidCompareCards({ liquids, ctx, C }) {
+  return (
+    <div className="m6-object-pair">
+      {liquids.map(liquid => {
+        const picked = ctx?.selected === liquid.name;
+        const correct = ctx?.answered && ctx?.answer === liquid.name;
+        const wrong = ctx?.answered && picked && !correct;
+        const className = ['m6-object-tile is-button is-mass-choice is-liquid-choice', picked ? 'is-picked' : '', correct ? 'is-correct' : '', wrong ? 'is-wrong' : ''].filter(Boolean).join(' ');
+        return (
+          <button type="button" className={className} key={liquid.name} onClick={() => ctx.handlePick(liquid.name)} disabled={ctx.answered} aria-pressed={picked}>
+            <div className="m6-liquid-choice-stage">
+              <LiquidVisual compact liquid={liquid} C={C} showName={false} />
+            </div>
+            <div className="m6-object-name">{liquid.name}</div>
+            <div className="m6-object-value">{liquid.ml} <span>ml</span></div>
+            <span className="m6-object-checkbox" aria-hidden="true">{(correct || picked) && (wrong ? '×' : '✓')}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function SolveBalance({ leftIcon, leftLabel, rightIcon, rightLabel, tilt = 0 }) {
+  const leftY = 62 - tilt;
+  const rightY = 62 + tilt;
+  return (
+    <svg className="m6-solve-balance" viewBox="0 0 320 178" role="img" aria-label={`${leftLabel} dibandingkan dengan ${rightLabel}`}>
+      <path d={`M42 ${leftY} L278 ${rightY}`} stroke="#475569" strokeWidth="8" strokeLinecap="round" />
+      <circle cx="160" cy="62" r="12" fill="#22C55E" stroke="#166534" strokeWidth="5" />
+      <path d="M147 72h26l26 84h-78Z" fill="#FBBF24" stroke="#92400E" strokeWidth="4" strokeLinejoin="round" />
+      <path d={`M42 ${leftY} L24 ${leftY + 46} M42 ${leftY} L60 ${leftY + 46}`} stroke="#64748B" strokeWidth="3" />
+      <path d={`M278 ${rightY} L260 ${rightY + 46} M278 ${rightY} L296 ${rightY + 46}`} stroke="#64748B" strokeWidth="3" />
+      <path d={`M10 ${leftY + 46} Q42 ${leftY + 62} 74 ${leftY + 46}`} fill="#D1FAE5" stroke="#15803D" strokeWidth="4" strokeLinecap="round" />
+      <path d={`M246 ${rightY + 46} Q278 ${rightY + 62} 310 ${rightY + 46}`} fill="#D1FAE5" stroke="#15803D" strokeWidth="4" strokeLinecap="round" />
+      <text x="42" y={leftY + 39} textAnchor="middle" fontSize="38">{leftIcon}</text>
+      <text x="278" y={rightY + 39} textAnchor="middle" fontSize={rightIcon.includes('●') ? '18' : '38'} fontWeight="900" fill="#475569">{rightIcon}</text>
+      <text x="42" y={leftY + 83} textAnchor="middle" fontFamily="Fredoka, sans-serif" fontSize="16" fontWeight="800" fill="#334155">{leftLabel}</text>
+      <text x="278" y={rightY + 83} textAnchor="middle" fontFamily="Fredoka, sans-serif" fontSize="16" fontWeight="800" fill="#334155">{rightLabel}</text>
+    </svg>
+  );
+}
+
+function PaperclipLengthScene() {
+  return (
+    <div className="m6-solve-lengths" aria-label="Pensel sepanjang 6 klip dan pen penanda sepanjang 4 klip">
+      {[
+        { name: 'Pensel', icon: '✏️', units: 6 },
+        { name: 'Pen penanda', icon: '🖊️', units: 4 },
+      ].map(item => (
+        <div className="m6-solve-length-row" key={item.name}>
+          <span className="m6-solve-length-name">{item.name}</span>
+          <div className="m6-solve-object-line" style={{ width: `${38 + item.units * 9}%` }}>
+            <span aria-hidden="true">{item.icon}</span>
+          </div>
+          <div className="m6-solve-clips" aria-label={`${item.units} klip`}>
+            {Array.from({ length: item.units }, (_, index) => <span key={index} aria-hidden="true" />)}
+          </div>
+          <b>{item.units} klip</b>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function HeightClueScene() {
+  return (
+    <div className="m6-solve-height-clues" aria-label="Petunjuk perbandingan tinggi Kumar, Zain dan Linda">
+      <div className="m6-solve-clue">
+        <span className="m6-solve-avatar" aria-hidden="true">👦🏽</span>
+        <b>Kumar</b>
+        <p>Saya lebih tinggi daripada Linda.</p>
+      </div>
+      <div className="m6-solve-clue is-wide">
+        <span className="m6-solve-avatar" aria-hidden="true">👦🏻</span>
+        <b>Zain</b>
+        <p>Saya lebih rendah daripada Kumar, tetapi lebih tinggi daripada Linda.</p>
+      </div>
+      <div className="m6-solve-clue">
+        <span className="m6-solve-avatar" aria-hidden="true">👧🏻</span>
+        <b>Linda</b>
+        <p>Dua rakan lebih tinggi daripada saya.</p>
+      </div>
+    </div>
+  );
+}
+
+function PencilCaseScene() {
+  return (
+    <div className="m6-solve-pencilcase" aria-label="Bekas pensel bersama pembaris, pen dan gam">
+      <div className="m6-solve-pencilcase-shell" aria-hidden="true">
+        <span className="m6-solve-zip" />
+        <span className="m6-solve-zipper">◆</span>
+        <strong>BEKAS<br />PENSEL</strong>
+      </div>
+      <div className="m6-solve-pencilcase-items">
+        <span><i aria-hidden="true">📏</i><b>Pembaris</b></span>
+        <span><i aria-hidden="true">🖊️</i><b>Pen</b></span>
+        <span><i aria-hidden="true">🧴</i><b>Gam</b></span>
+      </div>
+    </div>
+  );
+}
+
+function FruitMassScene() {
+  return (
+    <div className="m6-solve-scale-grid" aria-label="Nangka lebih berat daripada labu dan labu lebih berat daripada tembikai">
+      <SolveBalance leftIcon="🍈" leftLabel="Nangka" rightIcon="🎃" rightLabel="Labu" tilt={-7} />
+      <SolveBalance leftIcon="🍉" leftLabel="Tembikai" rightIcon="🎃" rightLabel="Labu" tilt={7} />
+    </div>
+  );
+}
+
+function JuiceCupScene() {
+  return (
+    <div className="m6-solve-juice" aria-label="Dua gelas ditambah empat gelas">
+      <div className="m6-solve-carton" aria-hidden="true">
+        <span>🧃</span>
+        <b>Satu kotak<br />minuman</b>
+      </div>
+      <div className="m6-solve-equals" aria-hidden="true">=</div>
+      <div className="m6-solve-cup-groups">
+        <div><span aria-hidden="true">🥛 🥛</span><b>Adik: 2 gelas</b></div>
+        <strong aria-hidden="true">+</strong>
+        <div><span aria-hidden="true">🥛 🥛 🥛 🥛</span><b>Kawan: 4 gelas</b></div>
+      </div>
+      <div className="m6-solve-total">2 + 4 = <b>?</b></div>
+    </div>
+  );
+}
+
+function SelesaikanVisual({ scene }) {
+  if (scene.kind === 'paperclip-length') return <div className="m6-solve-scene"><PaperclipLengthScene /></div>;
+  if (scene.kind === 'height-clues') return <div className="m6-solve-scene"><HeightClueScene /></div>;
+  if (scene.kind === 'pencil-case') return <div className="m6-solve-scene"><PencilCaseScene /></div>;
+  if (scene.kind === 'fruit-mass-order') return <div className="m6-solve-scene"><FruitMassScene /></div>;
+  if (scene.kind === 'juice-cups') return <div className="m6-solve-scene"><JuiceCupScene /></div>;
+  return (
+    <div className="m6-solve-scene">
+      <div className="m6-solve-scale-grid" aria-label="Betik dan nanas seimbang dengan bilangan pemberat yang sama">
+        <SolveBalance leftIcon="🥭" leftLabel="Betik" rightIcon="● ● ● ●" rightLabel="4 pemberat" />
+        <SolveBalance leftIcon="🍍" leftLabel="Nanas" rightIcon="● ● ● ●" rightLabel="4 pemberat" />
+      </div>
     </div>
   );
 }
@@ -1087,14 +1351,17 @@ function ToolVisual({ tool, symbol }) {
 
 function renderQuestion(q, ctx) {
   const C = ctx.theme;
+  const isSolveVisual = q.type === 'solve-visual';
   const isHeightCardChoice = q.type === 'compare' && (q.metric === 'height' || q.metric === 'distance');
   const isLengthCardChoice = q.type === 'compare' && q.metric === 'len';
-  const isCardChoice = isHeightCardChoice || isLengthCardChoice;
+  const isMassCardChoice = q.type === 'balance' && q.skill === MASS_ACTIVITY_SKILL;
+  const isLiquidCardChoice = q.type === 'liquid-compare';
+  const isCardChoice = isHeightCardChoice || isLengthCardChoice || isMassCardChoice || isLiquidCardChoice;
   const optionGrid = q.type === 'ruler' || q.type === 'liquid'
     ? <NumOptionsGrid options={q.options} answered={ctx.answered} selected={ctx.selected} answer={ctx.answer} handlePick={ctx.handlePick} theme={C} />
     : <WordOptionsGrid options={q.options} answered={ctx.answered} selected={ctx.selected} answer={ctx.answer} handlePick={ctx.handlePick} theme={C} columns={q.type === 'tool' || q.options.length > 2 ? 2 : 1} />;
   return (
-    <div className={`m6-question-card${isHeightCardChoice ? ' is-featured' : ''}`}>
+    <div className={`m6-question-card${isHeightCardChoice ? ' is-featured' : ''}${isSolveVisual ? ' is-solve' : ''}`}>
       <style>{`
         .m6-question-card { width:min(100%,760px); min-height:0; max-height:100%; box-sizing:border-box; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:clamp(7px,1.35vmin,14px); padding:clamp(10px,1.6vmin,18px); border-radius:clamp(16px,2vmin,24px); background:rgba(255,255,255,.66); border:1px solid rgba(21,128,61,.15); box-shadow:0 12px 28px rgba(21,128,61,.08), inset 0 1px 0 rgba(255,255,255,.9); }
         .m6-question-head { align-self:stretch; display:flex; align-items:center; justify-content:space-between; gap:10px; padding-bottom:7px; border-bottom:1px solid rgba(21,128,61,.13); font-family:'Fredoka',sans-serif; font-size:clamp(10px,1.45vmin,13px); font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:${C.dark}; }
@@ -1112,8 +1379,65 @@ function renderQuestion(q, ctx) {
         .m6-activity-keyword { padding:0 3px; border-radius:5px; background:#D1FAE5; color:#047857; font-weight:900; }
         .m6-activity-progress { width:100%; height:12px; box-sizing:border-box; padding:2px; overflow:hidden; border:1px solid #CBD5E1; border-radius:999px; background:#E2E8F0; }
         .m6-activity-progress > span { display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,#34D399,#14B8A6); transition:width .35s ease; }
-        .m6-object-pair { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); justify-content:center; gap:clamp(8px,2.2vmin,20px); width:min(100%,430px); }
+        .m6-question-card.is-solve { width:min(100%,820px); gap:clamp(8px,1.4vmin,14px); padding:clamp(10px,1.6vmin,16px); overflow:hidden; background:linear-gradient(145deg,rgba(255,255,255,.96),rgba(240,253,244,.88)); border-color:rgba(34,197,94,.24); box-shadow:0 16px 36px rgba(21,128,61,.12),inset 0 1px 0 #FFFFFF; }
+        .m6-solve-scene { width:100%; min-height:clamp(138px,23vmin,210px); box-sizing:border-box; display:grid; place-items:center; padding:clamp(8px,1.5vmin,14px); overflow:hidden; border:1px solid rgba(21,128,61,.14); border-radius:18px 18px 10px 18px; background-color:#F7FEE7; background-image:radial-gradient(circle at 1px 1px,rgba(21,128,61,.13) 1px,transparent 0),radial-gradient(circle at 85% 18%,rgba(187,247,208,.76),transparent 31%); background-size:16px 16px,100% 100%; }
+        .m6-solve-scale-grid { width:min(100%,700px); display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:clamp(8px,1.7vmin,16px); }
+        .m6-solve-balance { display:block; width:100%; max-height:clamp(138px,22vmin,188px); overflow:visible; filter:drop-shadow(0 7px 6px rgba(15,23,42,.12)); }
+        .m6-solve-lengths { width:min(100%,620px); display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:clamp(10px,2vmin,20px); }
+        .m6-solve-length-row { min-width:0; padding:clamp(8px,1.5vmin,14px); border:2px solid #BBF7D0; border-radius:16px; background:rgba(255,255,255,.9); box-shadow:0 6px 14px rgba(21,128,61,.08); }
+        .m6-solve-length-name { display:block; margin-bottom:6px; color:#166534; font-family:'Fredoka',sans-serif; font-size:clamp(13px,1.9vmin,17px); font-weight:800; }
+        .m6-solve-object-line { max-width:100%; height:27px; display:flex; align-items:center; border-bottom:5px solid #FBBF24; border-radius:999px; }
+        .m6-solve-object-line > span { font-size:clamp(28px,4.8vmin,40px); line-height:1; transform:translateY(-2px); }
+        .m6-solve-clips { min-height:24px; display:flex; align-items:center; gap:2px; margin-top:5px; }
+        .m6-solve-clips > span { width:clamp(12px,2vmin,18px); height:clamp(6px,1.1vmin,10px); flex:0 0 auto; box-sizing:border-box; border:2px solid #64748B; border-radius:999px; transform:rotate(-12deg); }
+        .m6-solve-length-row > b { display:block; margin-top:2px; color:#475569; font-family:'Fredoka',sans-serif; font-size:clamp(12px,1.7vmin,15px); }
+        .m6-solve-height-clues { width:min(100%,680px); display:grid; grid-template-columns:.85fr 1.3fr .85fr; gap:clamp(7px,1.3vmin,12px); align-items:stretch; }
+        .m6-solve-clue { min-width:0; display:grid; grid-template-columns:auto minmax(0,1fr); align-content:center; gap:2px 6px; padding:clamp(7px,1.3vmin,12px); border:2px solid #BBF7D0; border-radius:16px 16px 8px 16px; background:rgba(255,255,255,.92); box-shadow:0 6px 14px rgba(21,128,61,.08); }
+        .m6-solve-avatar { grid-row:1 / span 2; align-self:center; font-size:clamp(32px,5.8vmin,50px); line-height:1; filter:drop-shadow(0 4px 3px rgba(15,23,42,.12)); }
+        .m6-solve-clue b { align-self:end; color:#166534; font-family:'Fredoka',sans-serif; font-size:clamp(12px,1.8vmin,16px); }
+        .m6-solve-clue p { align-self:start; margin:0; color:#475569; font-family:'Fredoka',sans-serif; font-size:clamp(10px,1.45vmin,13px); font-weight:600; line-height:1.28; }
+        .m6-solve-pencilcase { width:min(100%,640px); display:grid; grid-template-columns:minmax(150px,.9fr) minmax(0,1.5fr); gap:clamp(12px,2.4vmin,24px); align-items:center; }
+        .m6-solve-pencilcase-shell { position:relative; min-height:clamp(92px,15vmin,126px); display:grid; place-items:center; overflow:hidden; border:4px solid #166534; border-radius:18px 18px 12px 12px; background:linear-gradient(160deg,#86EFAC,#22C55E); box-shadow:0 10px 0 #15803D,0 16px 24px rgba(21,128,61,.16),inset 0 2px 0 rgba(255,255,255,.45); color:#14532D; font-family:'Baloo 2',sans-serif; font-size:clamp(14px,2.2vmin,20px); line-height:1.02; text-align:center; }
+        .m6-solve-zip { position:absolute; top:13px; left:0; right:0; height:7px; border-block:2px dashed #14532D; opacity:.7; }
+        .m6-solve-zipper { position:absolute; top:4px; right:17%; color:#FDE68A; font-size:20px; text-shadow:0 2px 0 #92400E; }
+        .m6-solve-pencilcase-items { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(6px,1.1vmin,10px); }
+        .m6-solve-pencilcase-items > span { min-width:0; min-height:clamp(82px,13vmin,108px); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:6px 3px; border:2px solid #BBF7D0; border-radius:14px; background:rgba(255,255,255,.92); }
+        .m6-solve-pencilcase-items i { font-style:normal; font-size:clamp(32px,5.5vmin,48px); line-height:1; }
+        .m6-solve-pencilcase-items b { color:#334155; font-family:'Fredoka',sans-serif; font-size:clamp(11px,1.7vmin,15px); }
+        .m6-solve-juice { width:min(100%,650px); display:grid; grid-template-columns:auto auto minmax(0,1fr) auto; gap:clamp(8px,1.7vmin,16px); align-items:center; }
+        .m6-solve-carton { display:flex; flex-direction:column; align-items:center; color:#166534; font-family:'Fredoka',sans-serif; font-size:clamp(10px,1.5vmin,13px); line-height:1.15; text-align:center; }
+        .m6-solve-carton span { font-size:clamp(48px,8vmin,68px); line-height:1; filter:drop-shadow(0 5px 4px rgba(15,23,42,.12)); }
+        .m6-solve-equals { color:#15803D; font-family:'Baloo 2',sans-serif; font-size:clamp(30px,5vmin,44px); font-weight:900; }
+        .m6-solve-cup-groups { display:grid; grid-template-columns:1fr auto 1.45fr; gap:clamp(5px,1vmin,10px); align-items:center; }
+        .m6-solve-cup-groups > div { min-width:0; display:flex; flex-direction:column; align-items:center; gap:4px; padding:clamp(7px,1.2vmin,11px); border:2px solid #BBF7D0; border-radius:14px; background:rgba(255,255,255,.92); text-align:center; }
+        .m6-solve-cup-groups span { font-size:clamp(21px,3.8vmin,32px); line-height:1.15; white-space:nowrap; }
+        .m6-solve-cup-groups b { color:#475569; font-family:'Fredoka',sans-serif; font-size:clamp(10px,1.5vmin,13px); }
+        .m6-solve-cup-groups > strong { color:#15803D; font-size:clamp(22px,3.7vmin,32px); }
+        .m6-solve-total { padding:6px 9px; border-radius:12px; background:#14532D; color:#FFFFFF; font-family:'Fredoka',sans-serif; font-size:clamp(16px,2.8vmin,24px); font-weight:800; white-space:nowrap; box-shadow:0 5px 0 #052E16; }
+        .m6-solve-total b { color:#FDE047; }
+        .m6-question-card.is-solve .m6-options button { min-height:42px !important; padding:6px 10px !important; font-size:clamp(15px,2.6vmin,23px) !important; }
+        .m6-object-pair { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); justify-content:center; gap:clamp(10px,2.2vmin,20px); width:min(100%,540px); }
         .m6-object-tile { min-width:0; min-height:clamp(112px,18vmin,156px); padding:clamp(7px,1.4vmin,13px); border-radius:16px; background:rgba(255,255,255,.94); border:1px solid rgba(148,163,184,.4); box-shadow:0 7px 16px rgba(15,23,42,.08); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; overflow:hidden; }
+        .m6-object-tile.is-button { appearance:none; color:inherit; cursor:pointer; font:inherit; }
+        .m6-object-tile.is-mass-choice { min-height:clamp(178px,28vmin,250px); padding:clamp(12px,2vmin,18px); gap:3px; border:3px solid #86EFAC; border-radius:26px; background:radial-gradient(circle at 50% 0,#FFFFFF 0 24%,transparent 25%),linear-gradient(160deg,#ECFDF5,#DCFCE7); box-shadow:0 8px 18px rgba(21,128,61,.14); justify-content:flex-start; transition:transform .2s cubic-bezier(.34,1.56,.64,1),border-color .2s ease,box-shadow .2s ease; position:relative; }
+        .m6-object-tile.is-mass-choice:not(:disabled):hover { transform:translateY(-4px); border-color:${C.accent}; box-shadow:0 16px 26px rgba(21,128,61,.2); }
+        .m6-object-tile.is-mass-choice:not(:disabled):active { transform:translateY(1px) scale(.98); }
+        .m6-object-tile.is-mass-choice:focus-visible { outline:3px solid ${C.dark}; outline-offset:3px; }
+        .m6-object-tile.is-mass-choice:disabled { cursor:default; opacity:1; }
+        .m6-mass-object-stage { width:100%; height:clamp(76px,13vmin,104px); flex:0 0 auto; display:grid; place-items:center; padding:clamp(8px,1.4vmin,12px) 4px; box-sizing:border-box; overflow:visible; }
+        .m6-object-tile.is-mass-choice .m6-object-emoji { max-width:100%; min-height:0; margin:0; font-size:clamp(58px,10vmin,82px); line-height:1; }
+        .m6-object-tile.is-mass-choice .m6-object-name { margin-top:12px; font-size:clamp(19px,3.2vmin,26px); font-weight:800; line-height:1; }
+        .m6-object-tile.is-mass-choice .m6-object-value { margin-top:2px; color:#166534; font-size:clamp(21px,3.4vmin,28px); font-weight:900; line-height:1; }
+        .m6-object-tile.is-mass-choice .m6-object-value span { font-size:.72em; }
+        .m6-object-checkbox { width:32px; height:32px; box-sizing:border-box; display:grid; place-items:center; margin-top:12px; border:3px solid #94A3B8; border-radius:10px; background:#FFFFFF; color:#FFFFFF; font-family:'Fredoka',sans-serif; font-size:21px; font-weight:900; line-height:1; }
+        .m6-object-tile.is-liquid-choice { min-height:clamp(190px,30vmin,260px); }
+        .m6-liquid-choice-stage { width:100%; height:clamp(92px,15vmin,128px); display:grid; place-items:center; padding:clamp(8px,1.4vmin,12px) 4px; box-sizing:border-box; }
+        .m6-liquid-choice-stage .m6-liquid.is-compact { width:min(100%,150px); }
+        .m6-liquid-choice-stage .m6-liquid.is-compact svg { max-height:clamp(104px,16vmin,132px); }
+        .m6-object-tile.is-correct { border-color:#16A34A; background:#ECFDF5; box-shadow:0 8px 18px rgba(22,163,74,.18); }
+        .m6-object-tile.is-wrong { border-color:#DC2626; background:#FEF2F2; box-shadow:0 8px 18px rgba(220,38,38,.16); animation:shakeError .4s ease; }
+        .m6-object-tile.is-correct .m6-object-checkbox { border-color:#16A34A; background:#16A34A; }
+        .m6-object-tile.is-wrong .m6-object-checkbox { border-color:#DC2626; background:#DC2626; }
         .m6-length-comparison { width:min(100%,560px); display:flex; flex-direction:column; gap:clamp(10px,1.8vmin,16px); padding:clamp(14px,2.4vmin,20px); border:none; border-radius:20px; background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(240,253,250,.7)); box-shadow:0 8px 32px rgba(21,128,61,.10),0 2px 8px rgba(21,128,61,.06),inset 0 1px 0 rgba(255,255,255,.9); }
         .m6-length-comparison-row { display:flex; flex-direction:column; align-items:flex-start; gap:4px; min-width:0; }
         .m6-length-comparison-row.is-button { width:100%; box-sizing:border-box; padding:12px 18px; border:2px solid #E2E8F0; border-radius:16px; background:#FFFFFF; color:inherit; text-align:left; cursor:pointer; font:inherit; box-shadow:0 2px 4px rgba(15,23,42,.04),0 0 0 0 rgba(34,197,94,.2); transition:all .2s cubic-bezier(.34,1.56,.64,1); position:relative; overflow:hidden; }
@@ -1144,7 +1468,7 @@ function renderQuestion(q, ctx) {
         .m6-height-scene.is-button:focus-visible { outline:3px solid ${C.dark}; outline-offset:2px; }
         .m6-height-scene.is-correct { border-color:#16A34A; background:rgba(236,253,245,.92); box-shadow:0 0 0 4px rgba(16,185,129,.25), 0 15px 30px -5px rgba(16,185,129,.25); }
         .m6-height-scene.is-wrong { border-color:#DC2626; background:rgba(254,226,226,.9); animation:shakeError .4s ease; }
-        .m6-height-scene.is-picked { border-color:#10B981; background:rgba(236,253,245,.92); box-shadow:0 0 0 4px rgba(16,185,129,.25), 0 15px 30px -5px rgba(16,185,129,.25); }
+        .m6-height-scene.is-picked:not(.is-wrong) { border-color:#10B981; background:rgba(236,253,245,.92); box-shadow:0 0 0 4px rgba(16,185,129,.25), 0 15px 30px -5px rgba(16,185,129,.25); }
         .m6-height-scene-art { width:100%; min-height:150px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; position:relative; background:linear-gradient(180deg,#F0F9FF 0%,rgba(236,253,245,.45) 100%); border-radius:14px; border:1px solid rgba(148,163,184,.16); overflow:hidden; }
         .m6-height-scene-object { position:absolute; bottom:14px; left:0; right:0; z-index:1; display:flex; align-items:flex-end; justify-content:center; filter:drop-shadow(0 5px 4px rgba(15,23,42,.14)); overflow:visible; }
         .m6-height-svg { display:block; height:100%; width:auto; max-width:100%; overflow:visible; filter:drop-shadow(0 2px 3px rgba(15,23,42,.1)); }
@@ -1157,15 +1481,16 @@ function renderQuestion(q, ctx) {
         .m6-height-ruler-val { font-family:'Fredoka',sans-serif; font-weight:900; font-size:clamp(10px,1.35vmin,13px); color:#334155; background:rgba(255,255,255,.92); padding:1px 2px; border-radius:3px; line-height:1.15; }
         .m6-scene-checkbox { width:24px; height:24px; margin:10px 0 0; display:flex; align-items:center; justify-content:center; border:2px solid #CBD5E1; border-radius:8px; background:#FFFFFF; transition:all .2s ease; }
         .m6-scene-checkbox-icon { display:none; font-size:clamp(12px,1.8vmin,16px); color:#FFFFFF; }
-        .m6-height-scene.is-picked .m6-scene-checkbox, .m6-distance-scene.is-picked .m6-scene-checkbox { background:#10B981; border-color:#10B981; }
-        .m6-height-scene.is-picked .m6-scene-checkbox-icon, .m6-distance-scene.is-picked .m6-scene-checkbox-icon { display:block; }
+        .m6-height-scene:is(.is-picked,.is-correct) .m6-scene-checkbox, .m6-distance-scene:is(.is-picked,.is-correct) .m6-scene-checkbox { background:#10B981; border-color:#10B981; }
+        .m6-height-scene.is-wrong .m6-scene-checkbox, .m6-distance-scene.is-wrong .m6-scene-checkbox { background:#DC2626; border-color:#DC2626; }
+        .m6-height-scene:is(.is-picked,.is-correct) .m6-scene-checkbox-icon, .m6-distance-scene:is(.is-picked,.is-correct) .m6-scene-checkbox-icon { display:block; }
         .m6-distance-scene.is-button { width:100%; appearance:none; color:inherit; text-align:center; cursor:pointer; font:inherit; }
         .m6-distance-scene.is-button:disabled { opacity:1; cursor:default; }
         .m6-distance-scene.is-button:not(:disabled):hover { transform:translateY(-4px) scale(1.02); box-shadow:0 20px 30px -8px rgba(34,197,94,.22), 0 8px 10px -6px rgba(0,0,0,.05); }
         .m6-distance-scene.is-button:focus-visible { outline:3px solid ${C.dark}; outline-offset:2px; }
         .m6-distance-scene.is-correct { border-color:#16A34A; background:rgba(236,253,245,.92); box-shadow:0 0 0 4px rgba(16,185,129,.25), 0 15px 30px -5px rgba(16,185,129,.25); }
         .m6-distance-scene.is-wrong { border-color:#DC2626; background:rgba(254,226,226,.9); animation:shakeError .4s ease; }
-        .m6-distance-scene.is-picked { border-color:#10B981; background:rgba(236,253,245,.92); box-shadow:0 0 0 4px rgba(16,185,129,.25), 0 15px 30px -5px rgba(16,185,129,.25); }
+        .m6-distance-scene.is-picked:not(.is-wrong) { border-color:#10B981; background:rgba(236,253,245,.92); box-shadow:0 0 0 4px rgba(16,185,129,.25), 0 15px 30px -5px rgba(16,185,129,.25); }
         .m6-distance-scene-art { width:100%; flex:1; min-height:150px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
         .m6-distance-stage { width:100%; min-height:126px; display:flex; align-items:center; justify-content:space-between; gap:clamp(6px,1vmin,12px); padding:clamp(10px,1.4vmin,16px) clamp(8px,1.5vmin,18px); box-sizing:border-box; background:linear-gradient(180deg,rgba(240,253,250,.7),rgba(236,254,255,.5)); border-radius:14px; border:1px solid rgba(148,163,184,.16); }
         .m6-distance-home { display:flex; align-items:center; justify-content:center; font-size:clamp(28px,5vmin,40px); line-height:1; flex-shrink:0; }
@@ -1196,7 +1521,7 @@ function renderQuestion(q, ctx) {
         .m6-object-value { margin-top:2px; font-family:'Fredoka',sans-serif; font-weight:800; color:#64748B; font-size:clamp(11px,1.7vmin,15px); font-variant-numeric:tabular-nums; }
         .m6-ruler { width:min(100%,520px); padding:10px 12px 7px; border-radius:15px; background:linear-gradient(180deg,#FFFDF5,#FEF3C7); border:1px solid #E7C96B; box-shadow:0 7px 16px rgba(120,80,10,.11); box-sizing:border-box; }
         .m6-ruler-object-lane { position:relative; height:72px; }
-        .m6-ruler-object { position:absolute; left:2.54545%; bottom:0; height:68px; min-width:0; display:flex; align-items:center; justify-content:center; }
+        .m6-ruler-object { position:absolute; bottom:0; height:68px; min-width:0; display:flex; align-items:center; justify-content:center; }
         .m6-ruler-object > svg, .m6-ruler-object > canvas { display:block; width:100%; height:100%; filter:drop-shadow(0 3px 3px rgba(15,23,42,.16)); }
         .m6-measure-line { position:absolute; left:0; right:0; bottom:1px; height:4px; border-radius:999px; background:linear-gradient(90deg,#86EFAC,#16A34A); }
         .m6-ruler-end { position:absolute; bottom:0; height:64px; border-left:2px dashed; transform:translateX(-1px); }
@@ -1218,12 +1543,38 @@ function renderQuestion(q, ctx) {
         @media (max-width:430px), (max-height:700px) {
           .m6-question-card { gap:6px; padding:8px; border-radius:16px; }
           .m6-question-head { padding-bottom:4px; font-size:10px; }
+          .m6-question-card.is-solve { gap:7px; padding:8px; }
+          .m6-solve-scene { min-height:132px; padding:6px; border-radius:14px 14px 8px 14px; }
+          .m6-solve-scale-grid { gap:5px; }
+          .m6-solve-balance { max-height:128px; }
+          .m6-solve-lengths { gap:7px; }
+          .m6-solve-length-row { padding:7px; }
+          .m6-solve-height-clues { gap:4px; }
+          .m6-solve-clue { grid-template-columns:1fr; justify-items:center; gap:2px; padding:5px 3px; text-align:center; }
+          .m6-solve-avatar { grid-row:auto; font-size:30px; }
+          .m6-solve-clue p { font-size:9px; line-height:1.2; }
+          .m6-solve-pencilcase { grid-template-columns:112px minmax(0,1fr); gap:7px; }
+          .m6-solve-pencilcase-shell { min-height:82px; border-width:3px; }
+          .m6-solve-pencilcase-items { gap:3px; }
+          .m6-solve-pencilcase-items > span { min-height:68px; padding:4px 1px; }
+          .m6-solve-pencilcase-items b { font-size:9px; }
+          .m6-solve-juice { grid-template-columns:auto auto minmax(0,1fr); gap:6px; }
+          .m6-solve-cup-groups { gap:3px; }
+          .m6-solve-cup-groups > div { padding:5px 3px; }
+          .m6-solve-cup-groups b { font-size:9px; }
+          .m6-solve-total { grid-column:1 / -1; justify-self:center; padding:4px 9px; }
           .m6-activity-copy.is-question-row, .m6-activity-question-group { gap:5px; }
           .m6-question-card.is-featured .m6-activity-copy.is-question-row .m6-activity-badge { padding:3px 8px; font-size:10px; }
           .m6-question-card.is-featured .m6-activity-divider,
           .m6-question-card.is-featured .m6-activity-step { font-size:10px; line-height:16px; }
           .m6-question-card.is-featured .m6-activity-question { font-size:clamp(12px,3.35vw,14px); line-height:18px; }
           .m6-object-tile { min-height:102px; padding:6px; }
+          .m6-object-tile.is-mass-choice { min-height:178px; padding:10px 10px 12px; }
+          .m6-object-tile.is-liquid-choice { min-height:190px; }
+          .m6-mass-object-stage { height:72px; padding:6px 2px; }
+          .m6-liquid-choice-stage { height:86px; padding:5px 2px; }
+          .m6-liquid-choice-stage .m6-liquid.is-compact svg { max-height:100px; }
+          .m6-object-tile.is-mass-choice .m6-object-emoji { font-size:58px; }
           .m6-length-comparison { gap:8px; padding:10px; }
           .m6-length-object { height:30px; min-width:72px; }
           .m6-length-stage { height:62px; }
@@ -1243,10 +1594,15 @@ function renderQuestion(q, ctx) {
           .m6-ruler-object-lane { height:58px; }
           .m6-ruler-object { height:55px; }
           .m6-ruler-end { height:56px; }
-          .m6-ruler-scale { max-height:50px; }
           .m6-liquid svg { max-height:145px; }
           .m6-liquid.is-compact svg { max-height:120px; }
           .m6-options button { min-height:42px !important; padding:7px 10px !important; font-size:clamp(15px,5vw,23px) !important; }
+        }
+        @media (max-height:700px) {
+          .m6-question-card.is-solve { gap:5px; padding:6px; }
+          .m6-solve-scene { min-height:106px; padding:3px 6px; }
+          .m6-solve-balance { max-height:102px; }
+          .m6-question-card.is-solve .m6-options button { min-height:34px !important; padding:4px 8px !important; font-size:clamp(14px,3vmin,19px) !important; }
         }
         @media (max-height:590px) {
           .m6-question-card { gap:4px; padding:6px; }
@@ -1292,11 +1648,12 @@ function renderQuestion(q, ctx) {
         )}
       </div>}
       {q.type === 'tool' && <ToolVisual tool={q.answer} symbol={q.toolSymbol} />}
+      {isSolveVisual && <SelesaikanVisual scene={q.scene} />}
       {q.visualItems && <LengthComparisonVisual items={q.visualItems} />}
       {(q.type === 'compare' || q.type === 'balance') && <ObjectPair items={q.items} metric={q.metric} ctx={ctx} cardChoice={isCardChoice} />}
       {q.type === 'ruler' && <RulerVisual item={q.item} C={C} />}
       {q.type === 'liquid' && <LiquidVisual liquid={q.liquid} C={C} />}
-      {q.type === 'liquid-compare' && <div className="m6-liquid-pair">{q.liquids.map(liquid => <LiquidVisual compact key={liquid.name} liquid={liquid} C={C} />)}</div>}
+      {q.type === 'liquid-compare' && (isLiquidCardChoice ? <LiquidCompareCards liquids={q.liquids} ctx={ctx} C={C} /> : <div className="m6-liquid-pair">{q.liquids.map(liquid => <LiquidVisual compact key={liquid.name} liquid={liquid} C={C} />)}</div>)}
       {!isCardChoice && <div className="m6-options">{optionGrid}</div>}
     </div>
   );
@@ -1306,14 +1663,14 @@ function Frame({ kind, total, language, theme, onExit }) {
   const roundTotal = total ?? (WORKBOOK_BANKS[kind]?.length || 10);
   return (
     <MatematikActivityFrame
-      buildRound={() => buildRound(kind, roundTotal)}
+      buildRound={() => buildRound(kind, roundTotal).map((question) => ({ ...question, featuredQuestion: true }))}
       renderQuestion={renderQuestion}
       theme={theme}
       onExit={onExit}
       language={language}
       showQuestionProgress
       singleScreen
-      featuredQuestion={kind === 'kenali-ukur-objek' || kind === 'ukur-banding-panjang'}
+      featuredQuestion
       scoreId={kind}
       scoreStorageKey={SCORE_KEY}
     />
@@ -1323,9 +1680,7 @@ function Frame({ kind, total, language, theme, onExit }) {
 export function KenaliUkurObjekExplore(props) { return <Frame kind="kenali-ukur-objek" total={10} {...props} />; }
 export function UkurBandingPanjangExplore(props) { return <Frame kind="ukur-banding-panjang" total={10} {...props} />; }
 export function KenaliJisimExplore(props) { return <Frame kind="kenali-jisim" {...props} />; }
-export function TimbangBandingJisimExplore(props) { return <Frame kind="timbang-banding-jisim" {...props} />; }
 export function KenaliIsiPaduExplore(props) { return <Frame kind="kenali-isi-padu" {...props} />; }
-export function SukatBandingCecairExplore(props) { return <Frame kind="sukat-banding-cecair" {...props} />; }
 export function SelesaikanUkuranExplore(props) { return <Frame kind="selesaikan-ukuran" {...props} />; }
 export function LatihDiriUkuranExplore(props) { return <Frame kind="latih-diri-ukuran" {...props} />; }
 export function CabarMindaUkuranExplore(props) { return <Frame kind="cabar-minda-ukuran" total={30} {...props} />; }

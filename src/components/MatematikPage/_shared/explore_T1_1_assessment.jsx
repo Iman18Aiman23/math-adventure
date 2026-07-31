@@ -4,6 +4,7 @@ import confetti from 'canvas-confetti';
 import { playSound } from '../../../utils/soundManager';
 import MatematikActivityFrame, { recordActivityScore } from './MatematikActivityFrame';
 import QuestionIssueReportButton from './QuestionIssueReportButton';
+import { getMatematikQuestionSkill, MatematikQuestionActions, MatematikQuestionHeader } from './MatematikQuestionLayout';
 import { BOX_COLORS, NumOptionsGrid, ObjectsGrid, numToBM, pick, randInt, shuffle } from './explorePrimitives_shared';
 import { module1CoreApi } from './explore_T1_1_core';
 /* ════════════════════════════════════════════════════════════════════════
@@ -1344,7 +1345,7 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
             padding: clamp(8px, 1.1vmin, 13px) clamp(24px, 3.4vmin, 44px);
             border: none;
             border-radius: 999px;
-            background: ${accent};
+            background: ${dark};
             color: #fff;
             font-family: 'Baloo 2', sans-serif;
             font-weight: 800;
@@ -1522,22 +1523,35 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
         <div className="cm1-scroll">
           <div className="cm1-body">
             <div className="cm1-content">
-              {promptContent && <div className="cm1-prompt">{promptContent}</div>}
-              <div className="cm1-question-stage">{renderQuestionM1All(q, examCtx)}</div>
-              <div className="cm1-feedback" aria-live="polite" />
-              <button className="cm1-next" type="button" onClick={handleExamNext} disabled={!answered}>
-                {nextLabel}
-              </button>
-              <QuestionIssueReportButton
+              <MatematikQuestionHeader
+                activityNumber={q.activityNumber || 1}
+                skill={getMatematikQuestionSkill(q, 'Cabar Minda Modul 1', language)}
+                question={promptContent}
                 language={language}
-                question={q}
-                questionIndex={current}
-                totalQuestions={questions.length}
-                selected={answers[current]}
-                answered={answered}
-                scoreId={data?.scoreId}
-                source="T1M1Exam"
+                dark={dark}
+                accent={accent}
               />
+              <section className="cm1-question-stage mtq-card-section" aria-label="Kad soalan">
+                <section className="mtq-options-section" aria-label="Pilihan jawapan">
+                  {renderQuestionM1All(q, examCtx)}
+                </section>
+              </section>
+              <div className="cm1-feedback" aria-live="polite" />
+              <MatematikQuestionActions>
+                <button className="cm1-next" type="button" onClick={handleExamNext} disabled={!answered}>
+                  {nextLabel}
+                </button>
+                <QuestionIssueReportButton
+                  language={language}
+                  question={q}
+                  questionIndex={current}
+                  totalQuestions={questions.length}
+                  selected={selectedPerQ[current]}
+                  answered={answered}
+                  scoreId={data?.scoreId}
+                  source="T1M1Exam"
+                />
+              </MatematikQuestionActions>
             </div>
           </div>
         </div>

@@ -112,15 +112,25 @@ export function ObjectsGrid({ icon, count }) {
       );
     }
     rows.push(
-      <div key={r} style={{ display: 'flex', justifyContent: 'center', gap: 'clamp(2px, 0.5vw, 5px)' }}>{rowItems}</div>
+      <div key={r} style={{
+        display: 'flex', flexWrap: 'wrap', justifyContent: 'center',
+        gap: 'clamp(2px, 0.5vw, 5px)', width: '100%', maxWidth: '100%', minWidth: 0,
+      }}>{rowItems}</div>
     );
   }
-  return <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1px' }}>{rows}</div>;
+  return (
+    <div className="mt-objects-grid" style={{
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      gap: '1px', width: '100%', maxWidth: '100%', minWidth: 0,
+    }}>
+      {rows}
+    </div>
+  );
 }
 
 export function EmptyTray({ height, compact }) {
   return (
-    <div style={{
+    <div className="mt-word-options-grid" style={{
       border: '2px dashed #CBD5E1', borderRadius: 'clamp(12px, 1.6vmin, 20px)',
       minHeight: height || 'clamp(60px, 10vmin, 120px)',
       width: compact ? 'clamp(50px, 8vmin, 100px)' : 'clamp(80px, 14vmin, 160px)',
@@ -305,12 +315,12 @@ export function KeypadInput({ answered, isCorrect, handlePick, answer, theme: C,
   }, [locked, input, handlePick]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(8px, 1.3vmin, 14px)', width: '100%' }}>
+    <div className="mt-keypad-input" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(8px, 1.3vmin, 14px)', width: '100%' }}>
       <style>{`
         .kp-btn { transition: all 0.08s ease; -webkit-tap-highlight-color: transparent; }
         .kp-btn:active { transform: translateY(4px); border-bottom-width: 0 !important; }
       `}</style>
-      <div className={!locked ? 'snk-input-ready' : ''} style={{
+      <div className={`mt-keypad-display${!locked ? ' snk-input-ready' : ''}`} style={{
         minWidth: 'clamp(80px, 20vmin, 160px)', minHeight: 'clamp(42px, 7vmin, 64px)',
         border: `3px solid ${answered ? (isCorrect ? C.green : C.red) : '#CBD5E1'}`,
         borderRadius: 'clamp(12px, 1.6vmin, 18px)', background: '#F9FAFB',
@@ -327,7 +337,7 @@ export function KeypadInput({ answered, isCorrect, handlePick, answer, theme: C,
         </div>
       )}
       {!locked && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(5px, 1vmin, 10px)', width: '100%', maxWidth: 'clamp(260px, 50vmin, 420px)' }}>
+        <div className="mt-keypad-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(5px, 1vmin, 10px)', width: '100%', maxWidth: 'clamp(260px, 50vmin, 420px)' }}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
             <button key={d} type="button" className="kp-btn" onClick={() => press(String(d))}
               style={{

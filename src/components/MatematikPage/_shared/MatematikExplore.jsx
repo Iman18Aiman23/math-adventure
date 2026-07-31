@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import useMtTts from './useMtTts';
+import './MatematikQuestionLayout.css';
 
 const PRIMITIVE_ENTRIES = {
-  compare: { exportName: 'CompareExplore', load: () => import('./explore_T1_1_core') },
+  compare: { exportName: 'CompareStandardExplore', load: () => import('./explore_T1_1_core') },
   'kenali-nombor': { exportName: 'KenaliNomborExplore', load: () => import('./explore_T1_1_core') },
   kombinasi: { exportName: 'KombinasiExplore', load: () => import('./explore_T1_1_core') },
   'kenali-21-100': { exportName: 'Kenali21Hingga100Explore', load: () => import('./explore_T1_1_core') },
@@ -45,9 +46,7 @@ const PRIMITIVE_ENTRIES = {
   'kenali-ukur-objek': { exportName: 'KenaliUkurObjekExplore', load: () => import('./explore_T1_6') },
   'ukur-banding-panjang': { exportName: 'UkurBandingPanjangExplore', load: () => import('./explore_T1_6') },
   'kenali-jisim': { exportName: 'KenaliJisimExplore', load: () => import('./explore_T1_6') },
-  'timbang-banding-jisim': { exportName: 'TimbangBandingJisimExplore', load: () => import('./explore_T1_6') },
   'kenali-isi-padu': { exportName: 'KenaliIsiPaduExplore', load: () => import('./explore_T1_6') },
-  'sukat-banding-cecair': { exportName: 'SukatBandingCecairExplore', load: () => import('./explore_T1_6') },
   'selesaikan-ukuran': { exportName: 'SelesaikanUkuranExplore', load: () => import('./explore_T1_6') },
   'latih-diri-ukuran': { exportName: 'LatihDiriUkuranExplore', load: () => import('./explore_T1_6') },
   'cabar-minda-ukuran': { exportName: 'CabarMindaUkuranExplore', load: () => import('./explore_T1_6') },
@@ -198,14 +197,16 @@ export default function MatematikExplore({ config, language, theme, onExit }) {
         />
       )}
     >
-      <LoadedExplore
-        data={dataWithScore}
-        language={language}
-        theme={theme}
-        onExit={onExit}
-        onSpeak={speak}
-        onStop={stop}
-      />
+      <div className="mt-question-standard">
+        <LoadedExplore
+          data={dataWithScore}
+          language={language}
+          theme={theme}
+          onExit={onExit}
+          onSpeak={speak}
+          onStop={stop}
+        />
+      </div>
     </ExploreErrorBoundary>
   );
 }

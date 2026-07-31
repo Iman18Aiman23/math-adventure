@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import MatematikActivityFrame, { recordActivityScore } from './MatematikActivityFrame';
 import QuestionIssueReportButton from './QuestionIssueReportButton';
+import { getMatematikQuestionSkill, MatematikQuestionActions, MatematikQuestionHeader } from './MatematikQuestionLayout';
 import { pick, randInt, shuffle } from './explorePrimitives_shared';
 
 function formatMoney(sen) {
@@ -428,7 +429,7 @@ function genTypeC() {
 
   return {
     type: 'C',
-    prompt: 'Yang manakah',
+    prompt: 'Yang manakah sama nilai dengan wang ini?',
     promptBadge: chosen.label,
     shown: shownItems,
     targetLabel: chosen.label,
@@ -559,6 +560,17 @@ function renderTukarWangQuestion(q, ctx) {
   if (q.type === 'C') {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px, 1.8vmin, 20px)', width: '100%' }}>
+        <div style={{
+          display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center',
+          gap: 'clamp(4px, 0.8vmin, 10px)',
+          background: 'rgba(255,255,255,.92)', borderRadius: 'clamp(14px, 2vmin, 20px)',
+          padding: 'clamp(8px, 1.4vmin, 16px)',
+          border: '1px solid #E2E8F0', maxWidth: 440,
+        }}>
+          {q.shown.map((d, i) => (
+            <MoneyVisual key={i} denom={d} size="clamp(60px, 10vmin, 100px)" />
+          ))}
+        </div>
         <div style={{
           display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
           gap: 'clamp(6px, 1vmin, 12px)', width: 'min(100%, 420px)', maxWidth: 420,
@@ -2427,7 +2439,7 @@ export function CabarMindaWangExplore({ data, language, theme, onExit }) {
           }
           .ujian-next {
             padding: clamp(8px, 1.1vmin, 13px) clamp(24px, 3.4vmin, 44px);
-            border: none; border-radius: 999px; background: ${accent}; color: #fff;
+            border: none; border-radius: 999px; background: ${dark}; color: #fff;
             font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(16px, 2.2vmin, 22px);
             cursor: pointer; box-shadow: 0 4px 0 ${cd}; transition: transform .1s ease;
             -webkit-tap-highlight-color: transparent;
@@ -2535,22 +2547,35 @@ export function CabarMindaWangExplore({ data, language, theme, onExit }) {
         <div className="ujian-scroll">
           <div className="ujian-body">
             <div className="ujian-content">
-              <div className="ujian-prompt">{q.prompt}</div>
-              {renderUjianWangQuestion(q, examCtx)}
-              <div className="ujian-feedback" aria-live="polite" />
-              <button className="ujian-next" type="button" onClick={handleExamNext} disabled={!answered}>
-                {nextLabel}
-              </button>
-              <QuestionIssueReportButton
+              <MatematikQuestionHeader
+                activityNumber={q.activityNumber || 1}
+                skill={getMatematikQuestionSkill(q, 'Cabar Minda Wang', language)}
+                question={q.prompt || (language === 'bm' ? 'Pilih jawapan yang betul.' : 'Choose the correct answer.')}
                 language={language}
-                question={q}
-                questionIndex={current}
-                totalQuestions={questions.length}
-                selected={answers[current]}
-                answered={answered}
-                scoreId={scoreId}
-                source="T1M4Exam"
+                dark={dark}
+                accent={accent}
               />
+              <section className="mtq-card-section" aria-label="Kad soalan">
+                <section className="mtq-options-section" aria-label="Pilihan jawapan">
+                  {renderUjianWangQuestion(q, examCtx)}
+                </section>
+              </section>
+              <div className="ujian-feedback" aria-live="polite" />
+              <MatematikQuestionActions>
+                <button className="ujian-next" type="button" onClick={handleExamNext} disabled={!answered}>
+                  {nextLabel}
+                </button>
+                <QuestionIssueReportButton
+                  language={language}
+                  question={q}
+                  questionIndex={current}
+                  totalQuestions={questions.length}
+                  selected={selectedPerQ[current]}
+                  answered={answered}
+                  scoreId={scoreId}
+                  source="T1M4Exam"
+                />
+              </MatematikQuestionActions>
             </div>
           </div>
         </div>
