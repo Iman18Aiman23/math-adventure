@@ -551,7 +551,8 @@ export default function App() {
   const viewKey = `${activeTab}-${currentSubject}-${mathSubGame}-${dateTimeSubGame}-${isPlaying}-${selectedAssessment?.id}`;
 
   // Hide sidebar during game play or assessment
-  const shouldHideSidebar = isPlaying || (currentSubject === 'math' && mathSubGame === 'faq') || selectedAssessment || !!currentAgeGame;
+  const shouldHideSidebar = isPlaying || (currentSubject === 'math' && mathSubGame === 'faq') || selectedAssessment || !!currentAgeGame
+    || (activeTab === 'learn' && currentSubject === 'matematik-kssr' && !!matematikModule && !matematikTopic);
 
   // ── Content renderer ──────────────────────────────────────────────────────
   const renderContent = () => {

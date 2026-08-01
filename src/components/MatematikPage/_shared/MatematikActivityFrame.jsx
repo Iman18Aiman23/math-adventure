@@ -63,9 +63,9 @@ export default function MatematikActivityFrame({
   const passed = correct >= passMark;
 
   const C = {
-    accent: safeTheme.accent || '#F59E0B',
-    dark: safeTheme.dark || '#B45309',
-    cd: safeTheme.cd || '#92400E',
+    accent: safeTheme.accent || '#22C55E',
+    dark: safeTheme.dark || '#15803D',
+    cd: safeTheme.cd || '#16A34A',
     green: '#16A34A',
     red: '#DC2626',
   };
@@ -525,7 +525,7 @@ export default function MatematikActivityFrame({
                 <div className="maf-summary-row no"><span>❌ Salah</span><b>{wrong}</b></div>
               </div>
               {!passed && (
-                <div className="maf-head" style={{ color: '#B45309' }}>
+                <div className="maf-head" style={{ color: C.dark }}>
                   Dapat {passMark}/{questions.length} (80%) untuk buka topik seterusnya
                 </div>
               )}
@@ -605,7 +605,7 @@ export default function MatematikActivityFrame({
                 </span>
               </span>
             </div>
-            <span style={{ color: '#CC7700', fontSize: '0.85rem', fontWeight: 900, minWidth: 28, textAlign: 'right' }}>
+            <span style={{ color: C.dark, fontSize: '0.85rem', fontWeight: 900, minWidth: 28, textAlign: 'right' }}>
               {showQuestionProgress ? `${idx + 1}/${questions.length}` : `${progressInGroup}/10`}
             </span>
           </div>

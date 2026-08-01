@@ -978,17 +978,17 @@ const CM1_DURATION_SECONDS = 30 * 60;
 const CM1_PASS_MARK = Math.ceil(CM1_TOTAL_QUESTIONS * 0.8);
 
 const CM1_SLICES = [
-  { id: 'banding-banyak-sedikit', name: 'Banding Banyak Sedikit', color: '#EC4899' },
+  { id: 'banding-banyak-sedikit', name: 'Banding Banyak Sedikit', color: '#16A34A' },
   { id: 'kenali-0-10', name: 'Kenali 0 Hingga 10', color: '#16A34A' },
   { id: 'kenali-11-20', name: 'Kenali 11 Hingga 20', color: '#15803D' },
   { id: 'kenali-21-100', name: 'Kenali 21 Hingga 100', color: '#16A34A' },
   { id: 'nilai-tempat', name: 'Nilai Tempat', color: '#15803D' },
   { id: 'susunan-nombor', name: 'Susunan Nombor', color: '#15803D' },
   { id: 'pola-nombor', name: 'Pola Nombor', color: '#15803D' },
-  { id: 'anggar-bundar', name: 'Anggar dan Bundar', color: '#86EFAC' },
-  { id: 'kombinasi-nombor', name: 'Kombinasi Nombor', color: '#3B0764' },
-  { id: 'selesaikan', name: 'Selesaikan', color: '#14B8A6' },
-  { id: 'selesaikan-cerita-m1', name: 'Selesaikan Cerita', color: '#2563EB' },
+  { id: 'anggar-bundar', name: 'Anggar dan Bundar', color: '#16A34A' },
+  { id: 'kombinasi-nombor', name: 'Kombinasi Nombor', color: '#16A34A' },
+  { id: 'selesaikan', name: 'Selesaikan', color: '#16A34A' },
+  { id: 'selesaikan-cerita-m1', name: 'Selesaikan Cerita', color: '#16A34A' },
 ];
 
 function tagCM1Topic(topicId, questions) {
@@ -1119,7 +1119,7 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
   const C = theme || {};
   const accent = C.accent || '#16A34A';
   const dark = C.dark || '#15803D';
-  const cd = C.cd || '#15803D';
+  const cd = C.cd || '#16A34A';
 
   const [phase, setPhase] = useState('start');
   const [questions, setQuestions] = useState(null);
@@ -1243,7 +1243,7 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
           <div style={{
             background: 'rgba(255,255,255,.90)',
             border: '1.5px solid #BBF7D0',
-            boxShadow: '0 12px 28px rgba(91,33,182,.10)',
+            boxShadow: '0 12px 28px rgba(21,128,61,.10)',
             borderRadius: 'clamp(14px, 2vmin, 20px)', padding: 'clamp(14px, 2.4vmin, 24px)',
             maxWidth: 420, width: '100%',
           }}>
@@ -1262,7 +1262,7 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
               padding: 'clamp(14px, 2vmin, 20px) clamp(32px, 5vmin, 64px)', border: 'none', borderRadius: 999,
               background: `linear-gradient(180deg, ${accent}, ${cd})`, color: '#fff', cursor: 'pointer', width: '100%', maxWidth: 360,
               fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(18px, 2.8vmin, 26px)',
-              boxShadow: `0 4px 0 ${dark}, 0 14px 24px rgba(91,33,182,.24)`, WebkitTapHighlightColor: 'transparent',
+              boxShadow: `0 4px 0 ${dark}, 0 14px 24px rgba(21,128,61,.24)`, WebkitTapHighlightColor: 'transparent',
             }}>
             {language === 'bm' ? 'Mula Peperiksaan →' : 'Start Exam →'}
           </button>
@@ -1780,7 +1780,7 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
                     padding: 'clamp(12px, 1.8vmin, 18px) clamp(24px, 4vmin, 48px)', border: 'none', borderRadius: 999,
                     background: `linear-gradient(180deg, ${accent}, ${cd})`, color: '#fff', cursor: 'pointer', width: '100%',
                     fontFamily: "'Baloo 2',sans-serif", fontWeight: 800, fontSize: 'clamp(16px, 2.6vmin, 24px)',
-                    boxShadow: `0 4px 0 ${dark}, 0 14px 24px rgba(91,33,182,.22)`, WebkitTapHighlightColor: 'transparent',
+                    boxShadow: `0 4px 0 ${dark}, 0 14px 24px rgba(21,128,61,.22)`, WebkitTapHighlightColor: 'transparent',
                   }}>
                   ↻ {language === 'bm' ? 'Cuba Semula' : 'Try Again'}
                 </button>

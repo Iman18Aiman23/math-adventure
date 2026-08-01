@@ -5,9 +5,7 @@ import {
   Calculator,
   ChevronRight,
   ChevronUp,
-  Gem,
   Home,
-  Layers3,
   Link,
   Medal,
   MinusCircle,
@@ -24,6 +22,7 @@ import {
   Users,
 } from 'lucide-react';
 import { FONT_IMPORT } from '../_shared/arabic';
+import useGamification from '../../../hooks/useGamification';
 
 const LESSON_ICONS = {
   users: Users,
@@ -44,9 +43,8 @@ const LESSON_ICONS = {
 
 const BOTTOM_NAV = [
   { label: 'Home', icon: Home },
-  { label: 'Module', icon: Layers3 },
-  { label: 'Achievement', icon: Medal },
-  { label: 'Rewards', icon: Gem },
+  { label: 'Learn', icon: BookOpen },
+  { label: 'Stats', icon: Trophy },
   { label: 'Profile', icon: UserCircle },
 ];
 
@@ -104,6 +102,58 @@ function DropdownActions({ items, language, accent, onSelect }) {
   );
 }
 
+function DashboardStats({ language }) {
+  const { loading, streak, completedTopics } = useGamification('mt');
+  const achievements = Object.values(completedTopics || {}).filter(topic => (topic?.crownLevel || 0) > 0).length;
+  const recent = Object.entries(completedTopics || {}).reduce((latest, entry) => {
+    if (!entry[1]?.lastPracticed) return latest;
+    return !latest || entry[1].lastPracticed > latest[1].lastPracticed ? entry : latest;
+  }, null);
+  const value = (number) => loading ? '—' : number;
+  const recentLabel = recent
+    ? recent[0].replace(/-/g, ' ').replace(/\b\w/g, letter => letter.toUpperCase())
+    : (language === 'bm' ? 'Belum ada aktiviti' : 'No recent activity');
+
+  return (
+      <aside className="pi-mhub-insights" aria-label={language === 'bm' ? 'Statistik pembelajaran' : 'Learning statistics'}>
+        <section className="pi-mhub-side-card pi-mhub-goal-card">
+          <div className="pi-mhub-side-heading">
+            <span>{language === 'bm' ? 'Matlamat harian' : 'Daily goal'}</span>
+            <Star size={18} aria-hidden="true" />
+          </div>
+          <strong>{language === 'bm' ? 'Selesaikan 1 aktiviti' : 'Complete 1 activity'}</strong>
+          <p>{language === 'bm' ? 'Sedikit demi sedikit, kamu pasti boleh.' : 'A little progress every day adds up.'}</p>
+        </section>
+
+        <section className="pi-mhub-side-card pi-mhub-week-card">
+          <div className="pi-mhub-side-heading">
+            <span>{language === 'bm' ? 'Kemajuan mingguan' : 'Weekly progress'}</span>
+            <Medal size={18} aria-hidden="true" />
+          </div>
+          <div className="pi-mhub-week-dots" aria-label={`${Math.min(streak, 7)} / 7`}>
+            {Array.from({ length: 7 }, (_, index) => (
+              <span key={index} className={index < Math.min(streak, 7) ? 'is-done' : ''} />
+            ))}
+          </div>
+          <small>{language === 'bm' ? `${Math.min(streak, 7)} daripada 7 hari` : `${Math.min(streak, 7)} of 7 days`}</small>
+        </section>
+
+        <section className="pi-mhub-side-card pi-mhub-achievement-card">
+          <span className="pi-mhub-achievement-icon" aria-hidden="true"><Trophy size={24} /></span>
+          <span>
+            <small>{language === 'bm' ? 'Pencapaian' : 'Achievements'}</small>
+            <strong>{value(achievements)}</strong>
+          </span>
+        </section>
+
+        <section className="pi-mhub-side-card pi-mhub-activity-card">
+          <div className="pi-mhub-side-heading">{language === 'bm' ? 'Aktiviti terkini' : 'Recent activity'}</div>
+          <strong>{recentLabel}</strong>
+        </section>
+      </aside>
+  );
+}
+
 export default function Tahun1ModuleHubLayout({
   moduleNum,
   moduleName,
@@ -132,6 +182,15 @@ export default function Tahun1ModuleHubLayout({
       return next;
     });
   };
+  const dashboardLessons = isDashboard
+    ? topics.flatMap(topic => (topic.actions?.length
+      ? topic.actions
+      : [{ id: topic.id, label: topic.title, icon: topic.icon || 'sparkles', disabled: topic.disabled }]))
+    : [];
+  const availableLessons = dashboardLessons.filter(lesson => !lesson.disabled);
+  const completedLessons = availableLessons.filter(lesson => lesson.score?.status === 'passed').length;
+  const moduleProgress = availableLessons.length ? Math.round((completedLessons / availableLessons.length) * 100) : 0;
+  const currentLesson = availableLessons.find(lesson => lesson.score?.status !== 'passed') || availableLessons[0];
 
   return (
     <>
@@ -1265,109 +1324,181 @@ export default function Tahun1ModuleHubLayout({
       <div className={`pi-mhub-page${isDashboard ? ' has-dashboard' : ''}`}>
         {isDashboard ? (
           <div className="pi-mhub-dashboard">
-            <div className="pi-mhub-banner" style={{ '--c': theme.accent, '--cd': theme.cd || theme.dark }}>
-              <div className="pi-mhub-banner-badge">{moduleNum}</div>
-              <div className="pi-mhub-banner-text">
-                <div className="pi-mhub-banner-kicker">
-                  {language === 'bm'
-                    ? `Modul ${moduleNum} · Unit Pembelajaran`
-                    : `Module ${moduleNum} · Learning Unit`}
+            <aside
+              className="pi-mhub-coach"
+              style={{ '--module-progress': `${moduleProgress}%` }}
+              aria-label={language === 'bm' ? 'Ringkasan modul' : 'Module summary'}
+            >
+              <div className="pi-mhub-coach-main">
+                <span className="pi-mhub-coach-kicker">{language === 'bm' ? `Modul ${moduleNum}` : `Module ${moduleNum}`}</span>
+                <h2>{language === 'bm' ? moduleName : moduleNameEn}</h2>
+                <div className="pi-mhub-progress-stage">
+                  <div className="pi-mhub-coach-progress">
+                    <div className="pi-mhub-progress-label">
+                      <span>{language === 'bm' ? 'Kemajuan modul' : 'Module progress'}</span>
+                      <strong className="pi-mhub-progress-value">{moduleProgress}%</strong>
+                    </div>
+                    <div className="pi-mhub-progress-track" aria-hidden="true">
+                      <span style={{ width: `${moduleProgress}%` }} />
+                      <strong className="pi-mhub-ring-value">{moduleProgress}%</strong>
+                    </div>
+                  </div>
+                  <div className="pi-mhub-coach-art" aria-hidden="true">{topics[0]?.visual}</div>
                 </div>
-                <div className="pi-mhub-banner-name">
-                  {language === 'bm' ? moduleName : moduleNameEn}
+              </div>
+              <button
+                type="button"
+                className="pi-mhub-continue"
+                disabled={!currentLesson}
+                onClick={() => currentLesson && onSelectTopic?.(currentLesson.id)}
+              >
+                <span>{language === 'bm' ? 'Teruskan belajar' : 'Continue learning'}</span>
+                <ChevronRight size={20} strokeWidth={3} aria-hidden="true" />
+              </button>
+              <div className="pi-mhub-coach-summary">
+                <span><strong>{topics.length}</strong>{language === 'bm' ? 'Topik' : 'Topics'}</span>
+                <span><strong>{availableLessons.length}</strong>{language === 'bm' ? 'Aktiviti' : 'Activities'}</span>
+              </div>
+              <p className="pi-mhub-motivation">
+                <Star size={18} aria-hidden="true" />
+                <span>{language === 'bm' ? 'Hebat! Satu langkah kecil setiap hari.' : 'Great work. One small step every day.'}</span>
+              </p>
+            </aside>
+
+            <div className="pi-mhub-center">
+              <header className="pi-mhub-banner" style={{ '--c': theme.accent, '--cd': theme.cd || theme.dark }}>
+                <div className="pi-mhub-banner-badge">{moduleNum}</div>
+                <div className="pi-mhub-banner-text">
+                  <div className="pi-mhub-banner-kicker">
+                    {language === 'bm' ? `Modul ${moduleNum}` : `Module ${moduleNum}`}
+                  </div>
+                  <div className="pi-mhub-banner-name">
+                    {language === 'bm' ? moduleName : moduleNameEn}
+                  </div>
+                  <p className="pi-mhub-banner-lead">
+                    {dashboardLead || (language === 'bm'
+                      ? 'Ikuti laluan pembelajaran ini satu demi satu.'
+                      : 'Follow this learning path one lesson at a time.')}
+                  </p>
                 </div>
+              </header>
+
+              <section className="pi-mhub-path" aria-labelledby="pi-mhub-path-title">
+                <div className="pi-mhub-path-heading">
+                  <div>
+                    <span className="pi-mhub-path-kicker">{language === 'bm' ? 'Laluan pembelajaran' : 'Learning path'}</span>
+                    <h2 id="pi-mhub-path-title">{language === 'bm' ? 'Pilih pelajaran seterusnya' : 'Choose your next lesson'}</h2>
+                  </div>
+                  <span className="pi-mhub-path-count">{completedLessons}/{availableLessons.length}</span>
+                </div>
+
+                <div className="pi-mhub-sections">
+                  {topics.map((t) => {
+                    const isOpen = openTopics.has(t.id);
+                    return (
+                      <section
+                        key={t.id}
+                        className={`pi-mhub-lesson-card${isOpen ? ' is-open' : ''}`}
+                        style={{ '--topic-accent': t.color || theme.accent }}
+                      >
+                        <button
+                          type="button"
+                          className="pi-mhub-lesson-head"
+                          onClick={() => toggleTopic(t.id)}
+                          aria-expanded={isOpen}
+                        >
+                          <span className="pi-mhub-lesson-robot" aria-hidden="true">{t.visual}</span>
+                          <span className="pi-mhub-lesson-copy">
+                            <span className="pi-mhub-lesson-title">{t.title}</span>
+                            <span className="pi-mhub-lesson-desc">{t.desc}</span>
+                          </span>
+                          <span className="pi-mhub-expand" aria-hidden="true">
+                            <ChevronUp size={22} strokeWidth={2.8} />
+                          </span>
+                        </button>
+                        <div className="pi-mhub-lesson-panel">
+                          <div className="pi-mhub-lesson-panel-inner">
+                            {t.dropdown ? (
+                              <DropdownActions
+                                items={t.dropdown}
+                                language={language}
+                                accent={t.color || theme.accent}
+                                onSelect={(id) => onSelectTopic?.(id)}
+                              />
+                            ) : (
+                              <div className="pi-mhub-lesson-list">
+                                {(t.actions?.length ? t.actions : [{ id: t.id, label: t.title, desc: t.desc, icon: t.icon || 'sparkles', disabled: t.disabled }]).map((action) => {
+                                  const Icon = LESSON_ICONS[action.icon] || Sparkles;
+                                  const status = action.score?.status || 'unplayed';
+                                  const isCurrent = currentLesson?.id === action.id;
+                                  return (
+                                    <button
+                                      key={action.id}
+                                      type="button"
+                                      className={`pi-mhub-lesson-button pi-mhub-lesson-button--no-score${isCurrent ? ' is-current' : ''}`}
+                                      data-status={status}
+                                      disabled={action.disabled}
+                                      style={{ '--topic-accent': t.color || theme.accent }}
+                                      onClick={() => { if (!action.disabled) onSelectTopic?.(action.id); }}
+                                    >
+                                      <span className="pi-mhub-lesson-icon" aria-hidden="true">
+                                        <Icon size={26} strokeWidth={2.4} />
+                                      </span>
+                                      <span className="pi-mhub-lesson-details">
+                                        <span className="pi-mhub-lesson-name">{action.label}</span>
+                                        <span className="pi-mhub-lesson-meta">{action.desc || t.desc}</span>
+                                        <span className="pi-mhub-difficulty">{language === 'bm' ? 'Tahap asas' : 'Foundation'}</span>
+                                      </span>
+                                      <span className={`pi-mhub-status pi-mhub-status--${status}`}>
+                                        {action.score?.label || (language === 'bm' ? 'Belum mula' : 'Not started')}
+                                      </span>
+                                      <span className="pi-mhub-completion">
+                                        {status === 'passed'
+                                          ? (language === 'bm' ? 'Selesai' : 'Complete')
+                                          : status === 'failed'
+                                            ? (language === 'bm' ? 'Cuba lagi' : 'Try again')
+                                            : (isCurrent ? (language === 'bm' ? 'Seterusnya' : 'Up next') : '')}
+                                      </span>
+                                      <span className="pi-mhub-row-chevron" aria-hidden="true">
+                                        <ChevronRight size={22} strokeWidth={3} />
+                                      </span>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </section>
+                    );
+                  })}
+                </div>
+              </section>
+
+              <div className="pi-mhub-progress-strip" aria-label={language === 'bm' ? 'Kemajuan latihan' : 'Practice progress'}>
+                <span className="pi-mhub-progress-left">
+                  <Star size={28} strokeWidth={2.2} />
+                  <span>
+                    {language === 'bm'
+                      ? 'Teruskan latihan untuk meningkatkan skor dan dapatkan lebih banyak bintang.'
+                      : 'Keep practising to raise your score and collect more stars.'}
+                  </span>
+                </span>
               </div>
             </div>
 
-            <div className="pi-mhub-sections">
-              {topics.map((t) => {
-                const isOpen = openTopics.has(t.id);
-                return (
-                  <section
-                    key={t.id}
-                    className={`pi-mhub-lesson-card${isOpen ? ' is-open' : ''}`}
-                    style={{ '--topic-accent': t.color || theme.accent }}
-                  >
-                    <button
-                      type="button"
-                      className="pi-mhub-lesson-head"
-                      onClick={() => toggleTopic(t.id)}
-                      aria-expanded={isOpen}
-                    >
-                      <span className="pi-mhub-lesson-robot" aria-hidden="true">{t.visual}</span>
-                      <span className="pi-mhub-lesson-copy">
-                        <span className="pi-mhub-lesson-title">{t.title}</span>
-                        <span className="pi-mhub-lesson-desc">{t.desc}</span>
-                      </span>
-                      <span className="pi-mhub-expand" aria-hidden="true">
-                        <ChevronUp size={28} strokeWidth={2.8} />
-                      </span>
-                    </button>
-                    <div className="pi-mhub-lesson-panel">
-                      <div className="pi-mhub-lesson-panel-inner">
-                        {t.dropdown ? (
-                          <DropdownActions
-                            items={t.dropdown}
-                            language={language}
-                            accent={t.color || theme.accent}
-                            onSelect={(id) => onSelectTopic?.(id)}
-                          />
-                        ) : (
-                          <div className="pi-mhub-lesson-list">
-                            {(t.actions?.length ? t.actions : [{ id: t.id, label: language === 'bm' ? 'Mula aktiviti' : 'Start activity', icon: t.icon || 'sparkles' }]).map((action) => {
-                              const Icon = LESSON_ICONS[action.icon] || Sparkles;
-                              const status = action.score?.status || 'unplayed';
-                              return (
-                                <button
-                                  key={action.id}
-                                  type="button"
-                                  className="pi-mhub-lesson-button pi-mhub-lesson-button--no-score"
-                                  disabled={action.disabled}
-                                  style={{ '--topic-accent': t.color || theme.accent }}
-                                  onClick={() => { if (!action.disabled) onSelectTopic?.(action.id); }}
-                                >
-                                  <span className="pi-mhub-lesson-icon" aria-hidden="true">
-                                    <Icon size={30} strokeWidth={2.4} />
-                                  </span>
-                                  <span className="pi-mhub-lesson-name">{action.label}</span>
-                                  <span className={`pi-mhub-status pi-mhub-status--${status}`}>
-                                    {action.score?.label || 'Score 0/10'}
-                                  </span>
-                                  <span className="pi-mhub-row-chevron" aria-hidden="true">
-                                    <ChevronRight size={24} strokeWidth={3} />
-                                  </span>
-                                </button>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </section>
-                );
-              })}
-            </div>
-
-            <div className="pi-mhub-progress-strip" aria-label={language === 'bm' ? 'Kemajuan latihan' : 'Practice progress'}>
-              <span className="pi-mhub-progress-left">
-                <Star size={34} strokeWidth={2.2} />
-                <span>
-                  {language === 'bm'
-                    ? 'Teruskan latihan untuk meningkatkan skor dan dapatkan lebih banyak bintang!'
-                    : 'Keep practising to raise your score and collect more stars.'}
-                </span>
-              </span>
-            </div>
+            <DashboardStats language={language} />
 
             <nav className="pi-mhub-bottom-nav" aria-label={language === 'bm' ? 'Navigasi pantas' : 'Quick navigation'}>
-              {BOTTOM_NAV.map(({ label, icon: Icon }, index) => (
+              {BOTTOM_NAV.map((item, index) => (
                 <button
-                  key={label}
+                  key={item.label}
                   type="button"
                   className={`pi-mhub-bottom-item${index === 1 ? ' is-active' : ''}`}
-                  aria-label={label}
+                  aria-label={item.label}
                 >
-                  <Icon size={23} strokeWidth={2.4} />
+                  {React.createElement(item.icon, { size: 21, strokeWidth: 2.4 })}
+                  <span>{item.label}</span>
                 </button>
               ))}
             </nav>

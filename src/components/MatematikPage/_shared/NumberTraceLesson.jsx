@@ -25,7 +25,7 @@ const NUMBERS = Array.from({ length: 21 }, (_, i) => i);
 
 export default function NumberTraceLesson({
   onBack, language = 'bm', topicComplete, onNextTopic,
-  topicId, topicLabel, accentColor = '#F59E0B',
+  topicId, topicLabel, accentColor = '#22C55E',
   scoreStorageKey,
   scoreId,
   hideTopbar,
@@ -132,7 +132,7 @@ export default function NumberTraceLesson({
     const msg = language === 'bm'
       ? `Kamu telah berjaya menulis ${topicLabel}!`
       : `You have completed tracing ${topicLabel}!`;
-    const gradient = 'linear-gradient(180deg, #FFFBEB 0%, #FDE68A 50%, #D97706 100%)';
+    const gradient = 'linear-gradient(180deg, #F7FEE7 0%, #DCFCE7 55%, #86EFAC 100%)';
     return (
       <>
         {showCelebration && <Celebration count={30} />}
@@ -171,7 +171,7 @@ export default function NumberTraceLesson({
               <button onClick={handleBack} style={{
                 fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 15,
                 cursor: 'pointer', border: 'none', borderRadius: 999, padding: '12px 28px',
-                color: '#92400E', background: '#FFFBEB', boxShadow: '0 4px 0 #FDE68A',
+                color: '#15803D', background: '#F7FEE7', boxShadow: '0 4px 0 #86EFAC',
               }}>
                 ← {language === 'bm' ? 'Kembali' : 'Back'}
               </button>
@@ -180,8 +180,8 @@ export default function NumberTraceLesson({
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 15,
               cursor: 'pointer', border: 'none', borderRadius: 999, padding: '12px 28px',
               marginTop: 12, color: '#fff',
-              background: `linear-gradient(180deg, ${accentColor}, #B45309)`,
-              boxShadow: `0 4px 0 #78350F`,
+              background: `linear-gradient(180deg, ${accentColor}, #16A34A)`,
+              boxShadow: `0 4px 0 #15803D`,
             }}>
               {language === 'bm' ? 'Topik Seterusnya →' : 'Next Topic →'}
             </button>
@@ -218,12 +218,12 @@ export default function NumberTraceLesson({
           display: flex; align-items: center; justify-content: center;
           width: 44px; height: 44px;
           font-family: 'Baloo 2', sans-serif; font-weight: 700;
-          font-size: 14px; color: #B45309;
-          background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,245,230,.90));
+          font-size: 14px; color: #15803D;
+          background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(240,253,244,.90));
           border: 1px solid rgba(255,255,255,.82);
           cursor: pointer; border-radius: 16px; padding: 0;
           transition: background .2s, transform .14s;
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.96), 0 12px 26px rgba(180,83,9,.12);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.96), 0 12px 26px rgba(21,128,61,.12);
         }
         .ntl-back:hover { transform: translateY(-1px); }
         .ntl-back:active { transform: translateY(1px); }
@@ -233,7 +233,7 @@ export default function NumberTraceLesson({
           white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
           font-family: 'Baloo 2', sans-serif; font-weight: 800;
           font-size: clamp(14px, 3.6vw, 17px);
-          color: #B45309;
+          color: #15803D;
         }
         .ntl-body {
           flex: 1; min-height: 0; position: relative; z-index: 1;
@@ -250,7 +250,7 @@ export default function NumberTraceLesson({
         .ntl-picker-label {
           font-family: 'Baloo 2', sans-serif; font-weight: 800;
           font-size: clamp(12px, 2vw, 15px);
-          color: #92400E; white-space: nowrap;
+          color: #15803D; white-space: nowrap;
         }
         .ntl-picker {
           flex: 1;
@@ -295,8 +295,8 @@ export default function NumberTraceLesson({
           transition: border-color .3s, box-shadow .3s;
         }
         .ntl-card.done {
-          border-color: #58CC02;
-          box-shadow: 0 6px 0 #46A302, 0 18px 44px rgba(88,204,2,.18), 0 0 0 1px rgba(88,204,2,.2);
+          border-color: #22C55E;
+          box-shadow: 0 6px 0 #16A34A, 0 18px 44px rgba(34,197,94,.18), 0 0 0 1px rgba(34,197,94,.2);
         }
         .ntl-card-canvas {
           flex: 1; min-height: 0;
@@ -319,9 +319,9 @@ export default function NumberTraceLesson({
         .ntl-btn:hover { transform: translateY(-2px); }
         .ntl-btn:active { transform: translateY(1px); }
         .ntl-btn.ghost {
-          color: #92400E;
+          color: #15803D;
           background: #fff;
-          box-shadow: 0 3px 0 #D9770644, 0 4px 10px rgba(0,0,0,.06);
+          box-shadow: 0 3px 0 #16A34A44, 0 4px 10px rgba(0,0,0,.06);
         }
         .ntl-btn.ghost:hover { filter: brightness(1.03); }
         .ntl-btn.ghost:disabled {
@@ -329,9 +329,9 @@ export default function NumberTraceLesson({
           color: #94A3B8; box-shadow: 0 3px 0 #CBD5E1;
         }
         .ntl-btn.primary {
-          color: #B45309;
+          color: #15803D;
           background: #fff;
-          box-shadow: 0 3px 0 #D9770644, 0 4px 10px rgba(0,0,0,.06);
+          box-shadow: 0 3px 0 #16A34A44, 0 4px 10px rgba(0,0,0,.06);
         }
         .ntl-btn.primary:disabled {
           opacity: .3; cursor: default; transform: none;

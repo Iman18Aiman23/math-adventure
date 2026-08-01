@@ -89,7 +89,13 @@ export default function MatematikTopicShell({
   return (
     <div
       className={`mt-topic-shell${legacyDarkChrome ? ' mt-dark-chrome' : ''}${formalMode ? ' mt-formal-mode' : ''}`}
-      style={{ '--mt-accent': theme.accent, '--mt-dark': theme.dark, '--mt-cd': theme.cd, ...(legacyDarkChrome ? { background: '#05030F' } : (formalMode ? { background: '#fff' } : null)) }}
+      style={{
+        '--mt-accent': theme.accent,
+        '--mt-dark': theme.dark,
+        '--mt-cd': theme.cd,
+        '--mt-page-gradient': theme.pageGradient || '#fff',
+        ...(legacyDarkChrome ? { background: '#05030F' } : null),
+      }}
     >
       <style>{`
         .mt-topic-shell {
@@ -98,7 +104,7 @@ export default function MatematikTopicShell({
           height: 100%;
           min-height: 0;
           position: relative;
-          background: #fff;
+          background: var(--mt-page-gradient, #fff);
         }
         /* keep all content above the decorative landscape scene */
         .mt-topic-shell > .mt-shell-top,

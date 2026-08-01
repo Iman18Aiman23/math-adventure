@@ -6,7 +6,7 @@
   min-height: 0;
   box-sizing: border-box;
   overflow: hidden;
-  background: #FFFFFF !important;
+  background: transparent !important;
 }
 
 .mt-question-standard,
@@ -27,7 +27,7 @@
   gap: var(--mtq-inner-gap);
   margin-inline: auto;
   padding: clamp(.72rem, 1.7vmin, 1.15rem);
-  border: 2px solid #34D399;
+  border: 2px solid var(--mtq-accent, #22C55E);
   border-radius: clamp(1rem, 2vw, 1.5rem);
   background: #FFFFFF;
   color: #1E293B;
@@ -183,7 +183,7 @@
   .ujian-masa-root,
   .ld-drill-root
 ) {
-  background: #FFFFFF !important;
+  background: transparent !important;
 }
 
 .mt-question-standard :is(
