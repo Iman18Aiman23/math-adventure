@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, createContext, useContext, Suspense
 import HomePage from './components/HomePage';
 import LoadingSpinner from './components/LoadingSpinner';
 import { MatematikNavContext } from './components/MatematikPage/_shared/MatematikNavContext';
+import { useBrowserBackFallback } from './hooks/useBrowserBack';
 const BMPage = React.lazy(() => import('./components/SpeakingPage/BMPage'));
 const MathHome = React.lazy(() => import('./components/MathematicsPage/MathHome'));
 const OpsLandingPage = React.lazy(() => import('./components/MathematicsPage/OpsLandingPage'));
@@ -322,7 +323,7 @@ const AssessmentPage = React.lazy(() => import('./pages/AssessmentPage'));
 import { getMuted, setMuted, preloadSounds, unlockAudio, playHoverSound } from './utils/soundManager';
 import SpeechManager from './services/SpeechManager';
 import { useGameState } from './hooks/useGameState';
-import { loadPlayerName, savePlayerName, recordLogin, calcStreak } from './services/storageService';
+import { loadPlayerName, savePlayerName, recordLogin, calcStreak, loadNavigationState, saveNavigationState } from './services/storageService';
 import { getGameData } from './utils/gameStatsManager';
 import { baseAssessments } from './data/curriculum/assessment';
 import { markTopicCompleted } from './components/BahasaMelayuPage/_shared/useModuleProgress';
@@ -457,29 +458,45 @@ const MT_MODULE6_ORDER = ['kenali-ukur-objek', 'ukur-banding-panjang', 'kenali-j
 
 export default function App() {
   const isDesktop = useIsDesktop();
+  const [savedNavigation] = useState(loadNavigationState);
   const [playerName,     setPlayerName]     = useState(() => loadPlayerName());
-  const [currentSubject, setCurrentSubject] = useState(null);
-  const [mathSubGame,    setMathSubGame]    = useState(null);
-  const [dateTimeSubGame,setDateTimeSubGame]= useState(null);
-  const [isPlaying,      setIsPlaying]      = useState(false);
-  const [gameConfig,     setGameConfig]     = useState({ operation: 'add', difficulty: 'easy', nums: [], quizType: 'multiple' });
+  const [currentSubject, setCurrentSubject] = useState(savedNavigation.currentSubject);
+  const [mathSubGame,    setMathSubGame]    = useState(savedNavigation.mathSubGame);
+  const [dateTimeSubGame,setDateTimeSubGame]= useState(savedNavigation.dateTimeSubGame);
+  const [isPlaying,      setIsPlaying]      = useState(savedNavigation.isPlaying);
+  const [gameConfig,     setGameConfig]     = useState(savedNavigation.gameConfig);
   const [isMuted,        setIsMuted]        = useState(getMuted());
   const [language,       setLanguage]       = useState('bm');
-  const [activeTab,      setActiveTab]      = useState('learn');
+  const [activeTab,      setActiveTab]      = useState(savedNavigation.activeTab);
   const [streak,         setStreak]         = useState(0);
-  const [selectedAssessment, setSelectedAssessment] = useState(null);
-  const [currentAgeGroup, setCurrentAgeGroup] = useState(null);
-  const [currentAgeGame, setCurrentAgeGame] = useState(null);
+  const [selectedAssessment, setSelectedAssessment] = useState(() =>
+    baseAssessments.find(({ id }) => id === savedNavigation.selectedAssessmentId) || null
+  );
+  const [currentAgeGroup, setCurrentAgeGroup] = useState(savedNavigation.currentAgeGroup);
+  const [currentAgeGame, setCurrentAgeGame] = useState(savedNavigation.currentAgeGame);
   const [currentTheme, setCurrentTheme] = useState('cosmic');
-  const [islamModule, setIslamModule] = useState(null);
-  const [islamTopic,  setIslamTopic]  = useState(null);
-  const [islamYear,   setIslamYear]   = useState(1);
-  const [matematikModule, setMatematikModule] = useState(null);
-  const [matematikTopic,  setMatematikTopic]  = useState(null);
-  const [matematikYear,   setMatematikYear]   = useState(1);
-  const [bmModule, setBmModule] = useState(null);
-  const [bmTopic,  setBmTopic]  = useState(null);
-  const [bmYear,   setBmYear]   = useState(1);
+  const [islamModule, setIslamModule] = useState(savedNavigation.islamModule);
+  const [islamTopic,  setIslamTopic]  = useState(savedNavigation.islamTopic);
+  const [islamYear,   setIslamYear]   = useState(savedNavigation.islamYear);
+  const [matematikModule, setMatematikModule] = useState(savedNavigation.matematikModule);
+  const [matematikTopic,  setMatematikTopic]  = useState(savedNavigation.matematikTopic);
+  const [matematikYear,   setMatematikYear]   = useState(savedNavigation.matematikYear);
+  const [bmModule, setBmModule] = useState(savedNavigation.bmModule);
+  const [bmTopic,  setBmTopic]  = useState(savedNavigation.bmTopic);
+  const [bmYear,   setBmYear]   = useState(savedNavigation.bmYear);
+
+  useEffect(() => {
+    saveNavigationState({
+      activeTab, currentSubject, mathSubGame, dateTimeSubGame, isPlaying, gameConfig,
+      selectedAssessmentId: selectedAssessment?.id ?? null,
+      currentAgeGroup, currentAgeGame,
+      islamModule, islamTopic, islamYear,
+      matematikModule, matematikTopic, matematikYear,
+      bmModule, bmTopic, bmYear,
+    });
+  }, [activeTab, currentSubject, mathSubGame, dateTimeSubGame, isPlaying, gameConfig,
+      selectedAssessment, currentAgeGroup, currentAgeGame, islamModule, islamTopic, islamYear,
+      matematikModule, matematikTopic, matematikYear, bmModule, bmTopic, bmYear]);
 
   const viewContainerRef = useRef(null);
   useEffect(() => {
@@ -546,6 +563,24 @@ export default function App() {
   const handleBackToHome   = () => { setIsPlaying(false); setMathSubGame(null); setDateTimeSubGame(null); setCurrentSubject(null); setCurrentAgeGroup(null); setCurrentAgeGame(null); setIslamModule(null); setIslamTopic(null); setMatematikModule(null); setMatematikTopic(null); setMatematikYear(1); setBmModule(null); setBmTopic(null); setBmYear(1); setActiveTab('learn'); };
   const handleToggleMute   = () => { const m = !isMuted; setIsMuted(m); setMuted(m); };
   const handleToggleLang   = () => setLanguage(l => l === 'bm' ? 'eng' : 'bm');
+
+  const canBrowserBack = activeTab !== 'learn' || selectedAssessment || currentSubject || currentAgeGroup || currentAgeGame;
+  useBrowserBackFallback(() => {
+    if (selectedAssessment) { setSelectedAssessment(null); return; }
+    if (activeTab !== 'learn') { setActiveTab('learn'); return; }
+    if (currentAgeGame) { setCurrentAgeGame(null); return; }
+    if (currentAgeGroup) { setCurrentAgeGroup(null); return; }
+    if (currentSubject === 'math' && isPlaying) { setIsPlaying(false); return; }
+    if (currentSubject === 'math' && mathSubGame) { setMathSubGame(null); setDateTimeSubGame(null); return; }
+    if (currentSubject === 'matematik-kssr' && matematikTopic) { setMatematikTopic(null); return; }
+    if (currentSubject === 'matematik-kssr' && matematikModule) { setMatematikModule(null); return; }
+    if (currentSubject === 'matematik-reports') { setCurrentSubject('matematik-kssr'); return; }
+    if (currentSubject === 'pendidikan-islam-v1' && islamTopic) { setIslamTopic(null); return; }
+    if (currentSubject === 'pendidikan-islam-v1' && islamModule) { setIslamModule(null); return; }
+    if (currentSubject === 'bm-kssr' && bmTopic) { setBmTopic(null); return; }
+    if (currentSubject === 'bm-kssr' && bmModule) { setBmModule(null); return; }
+    if (currentSubject) handleBackToHome();
+  }, Boolean(canBrowserBack));
 
   const inActiveQuiz = isPlaying;
   const viewKey = `${activeTab}-${currentSubject}-${mathSubGame}-${dateTimeSubGame}-${isPlaying}-${selectedAssessment?.id}`;
@@ -724,6 +759,11 @@ export default function App() {
               <MatematikModulePage year={matematikYear} activeModule={matematikModule} language={language}
                 onBack={hubOnBack}
                 onModuleChange={(id) => navigate(() => { setMatematikModule(id); setMatematikTopic(null); })}
+                onProfile={() => handleTabChange('profile')}
+                onToggleLanguage={handleToggleLang}
+                appTheme={THEMES[currentTheme]}
+                themes={THEMES}
+                onThemeChange={setCurrentTheme}
                 onSelectTopic={(id) => navigate(() => setMatematikTopic(id))}>
                 {hubComponent}
               </MatematikModulePage>
@@ -1567,6 +1607,10 @@ export default function App() {
   const matematikNav = {
     hasNext: mtIdx >= 0 && mtIdx + 1 < mtOrder.length,
     goNext: () => setMatematikTopic(mtIdx >= 0 && mtIdx + 1 < mtOrder.length ? mtOrder[mtIdx + 1] : null),
+    goCourses: handleBackToHome,
+    goLeaderboard: () => handleTabChange('leaderboard'),
+    goAchievements: () => handleTabChange('achievement'),
+    goReports: () => navigate(() => setCurrentSubject('matematik-reports')),
   };
 
   return (

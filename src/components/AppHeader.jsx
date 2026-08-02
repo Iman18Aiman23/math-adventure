@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useGameStateContext } from '../App';
 import { getGameData } from '../utils/gameStatsManager';
+import useBrowserBack from '../hooks/useBrowserBack';
 import HeartShopModal from './HeartShopModal';
 
 const DESIGN_SYSTEM = {
@@ -12,6 +13,7 @@ const DESIGN_SYSTEM = {
 };
 
 export default function AppHeader({ onBack, gameState, language, hearts, gems, stars }) {
+  const handleBack = useBrowserBack(onBack);
   const [displayHearts, setDisplayHearts] = useState(3);
   const [displayGems, setDisplayGems] = useState(0);
   const [displayStars, setDisplayStars] = useState(0);
@@ -66,7 +68,7 @@ export default function AppHeader({ onBack, gameState, language, hearts, gems, s
       }}>
         {/* Back Button */}
         <button
-          onClick={onBack}
+          onClick={handleBack}
           style={{
             background: '#fff',
             border: `2px solid ${DESIGN_SYSTEM.colors.hair}`,

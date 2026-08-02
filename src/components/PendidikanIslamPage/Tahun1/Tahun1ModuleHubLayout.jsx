@@ -5,6 +5,8 @@ import {
   Calculator,
   ChevronRight,
   ChevronUp,
+  Flag,
+  GraduationCap,
   Home,
   Link,
   Medal,
@@ -23,6 +25,7 @@ import {
 } from 'lucide-react';
 import { FONT_IMPORT } from '../_shared/arabic';
 import useGamification from '../../../hooks/useGamification';
+import { MatematikNavContext } from '../../MatematikPage/_shared/MatematikNavContext';
 
 const LESSON_ICONS = {
   users: Users,
@@ -46,6 +49,13 @@ const BOTTOM_NAV = [
   { label: 'Learn', icon: BookOpen },
   { label: 'Stats', icon: Trophy },
   { label: 'Profile', icon: UserCircle },
+];
+
+const DASHBOARD_LINKS = [
+  { id: 'courses', icon: GraduationCap, action: 'goCourses', label: { bm: 'Kursus', eng: 'Course' } },
+  { id: 'leaderboard', icon: Trophy, action: 'goLeaderboard', label: { bm: 'Papan Juara', eng: 'Leaderboard' } },
+  { id: 'achievements', icon: Medal, action: 'goAchievements', label: { bm: 'Pencapaian', eng: 'Achievement' } },
+  { id: 'reports', icon: Flag, action: 'goReports', label: { bm: 'Report', eng: 'Report' } },
 ];
 
 function DropdownActions({ items, language, accent, onSelect }) {
@@ -173,6 +183,7 @@ export default function Tahun1ModuleHubLayout({
   dashboardLead,
 }) {
   const isDashboard = layoutVariant === 'dashboard';
+  const matematikNav = React.useContext(MatematikNavContext);
   const [openTopics, setOpenTopics] = React.useState(() => new Set(topics.map(t => t.id)));
   const toggleTopic = (id) => {
     setOpenTopics(prev => {
@@ -1330,6 +1341,13 @@ export default function Tahun1ModuleHubLayout({
               aria-label={language === 'bm' ? 'Ringkasan modul' : 'Module summary'}
             >
               <div className="pi-mhub-coach-main">
+                <div className="pi-mhub-coach-brand" aria-label="ImanCore Learning Hub">
+                  <span className="pi-mhub-coach-brand-mark" aria-hidden="true">
+                    <span className="pi-mhub-coach-brand-main">Iman</span>
+                    <span className="pi-mhub-coach-brand-core">core</span>
+                  </span>
+                  <span className="pi-mhub-coach-brand-label">Learning Hub</span>
+                </div>
                 <span className="pi-mhub-coach-kicker">{language === 'bm' ? `Modul ${moduleNum}` : `Module ${moduleNum}`}</span>
                 <h2>{language === 'bm' ? moduleName : moduleNameEn}</h2>
                 <div className="pi-mhub-progress-stage">
@@ -1359,10 +1377,27 @@ export default function Tahun1ModuleHubLayout({
                 <span><strong>{topics.length}</strong>{language === 'bm' ? 'Topik' : 'Topics'}</span>
                 <span><strong>{availableLessons.length}</strong>{language === 'bm' ? 'Aktiviti' : 'Activities'}</span>
               </div>
-              <p className="pi-mhub-motivation">
-                <Star size={18} aria-hidden="true" />
-                <span>{language === 'bm' ? 'Hebat! Satu langkah kecil setiap hari.' : 'Great work. One small step every day.'}</span>
-              </p>
+              {matematikNav?.goCourses ? (
+                <nav className="pi-mhub-quick-nav" aria-label={language === 'bm' ? 'Navigasi utama' : 'Main navigation'}>
+                  {DASHBOARD_LINKS.map((link) => {
+                    const Icon = link.icon;
+                    return (
+                      <button
+                        key={link.id}
+                        type="button"
+                        className={`pi-mhub-quick-link${link.id === 'courses' ? ' is-current' : ''}`}
+                        aria-current={link.id === 'courses' ? 'page' : undefined}
+                        onClick={matematikNav[link.action]}
+                      >
+                        <span className="pi-mhub-quick-icon" aria-hidden="true">
+                          <Icon size={19} strokeWidth={2.5} />
+                        </span>
+                        <span>{link.label[language] || link.label.bm}</span>
+                      </button>
+                    );
+                  })}
+                </nav>
+              ) : null}
             </aside>
 
             <div className="pi-mhub-center">
@@ -1446,7 +1481,7 @@ export default function Tahun1ModuleHubLayout({
                                       </span>
                                       <span className="pi-mhub-lesson-details">
                                         <span className="pi-mhub-lesson-name">{action.label}</span>
-                                        <span className="pi-mhub-lesson-meta">{action.desc || t.desc}</span>
+                                        {action.desc ? <span className="pi-mhub-lesson-meta">{action.desc}</span> : null}
                                         <span className="pi-mhub-difficulty">{language === 'bm' ? 'Tahap asas' : 'Foundation'}</span>
                                       </span>
                                       <span className={`pi-mhub-status pi-mhub-status--${status}`}>

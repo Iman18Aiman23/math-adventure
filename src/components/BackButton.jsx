@@ -1,4 +1,5 @@
 import { ArrowLeft } from 'lucide-react';
+import useBrowserBack from '../hooks/useBrowserBack';
 
 const DESIGN_SYSTEM = {
   colors: {
@@ -8,10 +9,12 @@ const DESIGN_SYSTEM = {
 };
 
 export default function BackButton({ onClick, style = {} }) {
+  const handleBack = useBrowserBack(onClick);
+
   return (
     <button
       type="button"
-      onClick={onClick}
+      onClick={handleBack}
       style={{
         position: 'fixed',
         top: '12px',

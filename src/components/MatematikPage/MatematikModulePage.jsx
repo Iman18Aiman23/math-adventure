@@ -1,7 +1,20 @@
 import React, { useEffect, useRef } from 'react';
 import MatematikModuleNavBar, { getMtModuleTheme } from './MatematikModuleNavBar';
 
-export default function MatematikModulePage({ year, activeModule, onModuleChange, onBack, onSelectTopic, children, language }) {
+export default function MatematikModulePage({
+  year,
+  activeModule,
+  onModuleChange,
+  onBack,
+  onSelectTopic,
+  onProfile,
+  onToggleLanguage,
+  appTheme,
+  themes,
+  onThemeChange,
+  children,
+  language,
+}) {
   const contentRef = useRef(null);
   const theme = getMtModuleTheme(activeModule, year);
 
@@ -19,6 +32,11 @@ export default function MatematikModulePage({ year, activeModule, onModuleChange
         activeModule={activeModule}
         onModuleChange={onModuleChange}
         onBack={onBack}
+        onProfile={onProfile}
+        onToggleLanguage={onToggleLanguage}
+        theme={appTheme}
+        themes={themes}
+        onThemeChange={onThemeChange}
         language={language}
       />
       <main className="mt-module-content" ref={contentRef}>
@@ -171,6 +189,7 @@ export default function MatematikModulePage({ year, activeModule, onModuleChange
           display: flex;
           flex-direction: column;
         }
+        .mt-module-content .pi-mhub-coach-brand { display: none; }
         .mt-module-content .pi-mhub-progress-stage { display: contents; }
         .mt-module-content .pi-mhub-coach-art {
           order: -1;
@@ -293,23 +312,63 @@ export default function MatematikModulePage({ year, activeModule, onModuleChange
           font-size: 18px;
           font-variant-numeric: tabular-nums;
         }
-        .mt-module-content .pi-mhub-motivation {
-          display: flex;
-          align-items: flex-start;
-          gap: 9px;
-          margin: 16px 0 0;
-          padding: 12px;
-          border-radius: 14px;
-          color: #5D6B58;
-          background: #FFF9DF;
-          font-size: 12px;
-          font-weight: 600;
-          line-height: 1.4;
+        .mt-module-content .pi-mhub-quick-nav {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 8px;
+          margin-top: 16px;
+          padding-top: 16px;
+          border-top: 1px solid #E5EEE1;
         }
-        .mt-module-content .pi-mhub-motivation svg {
-          flex: none;
-          color: #F5B301;
-          fill: #FFD84D;
+        .mt-module-content .pi-mhub-quick-link {
+          min-width: 0;
+          min-height: 72px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          padding: 8px 5px;
+          border: 1px solid #E0EBDC;
+          border-radius: 15px;
+          color: #63705F;
+          background: linear-gradient(180deg, #FFFFFF, #F6FAF4);
+          box-shadow: 0 3px 0 #E0E9DC;
+          cursor: pointer;
+          font-family: 'Fredoka', system-ui, sans-serif;
+          font-size: 10.5px;
+          font-weight: 700;
+          line-height: 1.1;
+          text-align: center;
+          transition: transform .16s ease, border-color .16s ease, color .16s ease, box-shadow .16s ease;
+        }
+        .mt-module-content .pi-mhub-quick-icon {
+          width: 30px;
+          height: 30px;
+          display: grid;
+          place-items: center;
+          border-radius: 10px;
+          color: var(--mt-accent-d);
+          background: color-mix(in srgb, var(--mt-accent) 13%, #FFFFFF);
+        }
+        .mt-module-content .pi-mhub-quick-link.is-current {
+          border-color: color-mix(in srgb, var(--mt-accent) 40%, #DCE8D8);
+          color: var(--mt-accent-d);
+          background: color-mix(in srgb, var(--mt-accent) 8%, #FFFFFF);
+        }
+        .mt-module-content .pi-mhub-quick-link:hover {
+          transform: translateY(-2px);
+          border-color: color-mix(in srgb, var(--mt-accent) 48%, #DCE8D8);
+          color: var(--mt-accent-d);
+          box-shadow: 0 5px 0 color-mix(in srgb, var(--mt-accent) 18%, #DDE7D9);
+        }
+        .mt-module-content .pi-mhub-quick-link:active {
+          transform: translateY(2px);
+          box-shadow: none;
+        }
+        .mt-module-content .pi-mhub-quick-link:focus-visible {
+          outline: 3px solid color-mix(in srgb, var(--mt-accent) 38%, transparent);
+          outline-offset: 2px;
         }
 
         .mt-module-content .pi-mhub-center { grid-column: 2; min-width: 0; }
@@ -727,6 +786,68 @@ export default function MatematikModulePage({ year, activeModule, onModuleChange
         }
         .mt-module-content .pi-mhub-bottom-nav { display: none; }
 
+        @container mt-module (min-width: 801px) {
+          .mt-module-content .pi-mhub-coach-brand {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 4px 0 26px;
+          }
+          .mt-module-content .pi-mhub-coach-brand-mark {
+            width: 112px;
+            height: 112px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 32px;
+            color: #fff;
+            background: linear-gradient(
+              145deg,
+              color-mix(in srgb, var(--mt-accent) 68%, #fff),
+              var(--mt-accent) 52%,
+              var(--mt-accent-d)
+            );
+            box-shadow:
+              0 13px 28px color-mix(in srgb, var(--mt-accent-d) 28%, transparent),
+              inset 0 2px 0 rgba(255,255,255,.32),
+              inset 0 -4px 0 rgba(0,0,0,.12);
+            font-family: 'Fredoka', system-ui, sans-serif;
+            line-height: 1;
+          }
+          .mt-module-content .pi-mhub-coach-brand-main {
+            font-size: 29px;
+            font-weight: 700;
+            letter-spacing: -.035em;
+            text-shadow: 0 2px 0 rgba(0,0,0,.13);
+          }
+          .mt-module-content .pi-mhub-coach-brand-core {
+            margin-top: 5px;
+            color: rgba(255,255,255,.82);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .28em;
+            text-transform: lowercase;
+            text-shadow: 0 1px 0 rgba(0,0,0,.13);
+          }
+          .mt-module-content .pi-mhub-coach-brand-label {
+            margin-top: 13px;
+            color: var(--mt-accent-d);
+            font-family: 'Fredoka', system-ui, sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .24em;
+            line-height: 1;
+            text-transform: uppercase;
+          }
+          .mt-module-content .pi-mhub-coach-kicker,
+          .mt-module-content .pi-mhub-coach h2,
+          .mt-module-content .pi-mhub-coach-art { display: none; }
+          .mt-module-content .pi-mhub-coach-progress { width: 100%; }
+        }
+
         @container mt-module (max-width: 920px) {
           .mt-module-content .pi-mhub-dashboard {
             grid-template-columns: minmax(210px, 250px) minmax(0, 1fr) !important;
@@ -768,7 +889,7 @@ export default function MatematikModulePage({ year, activeModule, onModuleChange
           .mt-module-content .pi-mhub-coach-progress,
           .mt-module-content .pi-mhub-continue,
           .mt-module-content .pi-mhub-coach-summary { grid-column: 1; }
-          .mt-module-content .pi-mhub-motivation { display: none; }
+          .mt-module-content .pi-mhub-quick-nav { display: none; }
           .mt-module-content .pi-mhub-center { grid-column: 1; grid-row: 2; }
           .mt-module-content .pi-mhub-center .pi-mhub-banner { display: none !important; }
           .mt-module-content .pi-mhub-insights { display: none; }
@@ -922,8 +1043,7 @@ export default function MatematikModulePage({ year, activeModule, onModuleChange
             margin-top: 20px;
             border-radius: 17px;
           }
-          .mt-module-content .pi-mhub-coach-summary,
-          .mt-module-content .pi-mhub-motivation { display: none; }
+          .mt-module-content .pi-mhub-coach-summary { display: none; }
           .mt-module-content .pi-mhub-center .pi-mhub-banner { display: none !important; }
           .mt-module-content .pi-mhub-path {
             padding: 22px 14px 24px;
@@ -1063,6 +1183,7 @@ export default function MatematikModulePage({ year, activeModule, onModuleChange
           .mt-module-content .pi-mhub-coach-art svg,
           .mt-module-content .pi-mhub-progress-track span,
           .mt-module-content .pi-mhub-continue,
+          .mt-module-content .pi-mhub-quick-link,
           .mt-module-content .pi-mhub-lesson-button,
           .mt-module-content .pi-mhub-expand {
             scroll-behavior: auto;
@@ -1070,6 +1191,7 @@ export default function MatematikModulePage({ year, activeModule, onModuleChange
             transition: none !important;
           }
           .mt-module-content .pi-mhub-continue:hover,
+          .mt-module-content .pi-mhub-quick-link:hover,
           .mt-module-content .pi-mhub-lesson-button:hover { transform: none !important; }
         }
       `}</style>

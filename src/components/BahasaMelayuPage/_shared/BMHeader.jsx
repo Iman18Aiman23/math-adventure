@@ -1,6 +1,9 @@
 import React from 'react';
+import useBrowserBack from '../../../hooks/useBrowserBack';
 
 export default function BMHeader({ onBack, language, title, sectionLabel, sticky }) {
+  const handleBack = useBrowserBack(onBack);
+
   return (
     <>
       <style>{`
@@ -54,7 +57,7 @@ export default function BMHeader({ onBack, language, title, sectionLabel, sticky
 
       <div className={`bm-header${sticky ? ' bm-header--sticky' : ''}`}>
         <div className="bm-header-row">
-          <button className="bm-header-back" onClick={onBack}>
+          <button className="bm-header-back" onClick={handleBack}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>

@@ -7,6 +7,7 @@ import BMSpeakGame from './BMSpeakGame';
 import PageLayout from '../PageLayout';
 import { MusicNoteIcon } from '../icons/GameIcons';
 import { RobotDefs, RobotHeadSpeaking } from '../SubjectRobots';
+import { useBrowserBackHandler } from '../../hooks/useBrowserBack';
 import {
   LearnKVWordsIcon,
   LearnKVKWordsIcon,
@@ -68,6 +69,7 @@ export default function BMPage({ onBack, onHome, language }) {
   const gameState = useGameStateContext();
 
   const [selectedCategory, setSelectedCategory] = useState(null);
+  useBrowserBackHandler(selectedCategory ? () => setSelectedCategory(null) : onBack);
   const isSupported = SpeechManager.isSupported();
   const unsupportedReason = SpeechManager.getUnsupportedReason();
 

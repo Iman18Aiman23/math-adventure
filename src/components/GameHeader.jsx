@@ -1,10 +1,12 @@
 import React from 'react';
 import { ArrowLeft, Heart, Volume2, VolumeX } from 'lucide-react';
+import useBrowserBack from '../hooks/useBrowserBack';
 
 export default function GameHeader({
   onBack, onHome, onToggleMute, isMuted,
   streak, progress, lives, title, language = 'bm',
 }) {
+  const handleBack = useBrowserBack(onBack);
   const MAX_LIVES = 3;
   const backTip = language === 'bm' ? 'Kembali' : 'Go Back';
 
@@ -13,7 +15,7 @@ export default function GameHeader({
       {/* Left: Back */}
       <div className="header-section left" style={{ flex: '0 0 auto', marginRight: '0.5rem' }}>
         {onBack && (
-          <button onClick={onBack} title={backTip}
+          <button onClick={handleBack} title={backTip}
             style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
             <ArrowLeft size={22} />
           </button>

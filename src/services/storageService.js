@@ -19,12 +19,82 @@
 
 const STORAGE_KEY = 'mathAdventureData';
 const PLAYER_KEY  = 'mathAdventurePlayer';
+const NAVIGATION_KEY = 'mathAdventureNavigation:v1';
 
 const DEFAULT_GAME_STATE = {
   totalXP: 0,
   mathCoins: 0,
   unlockedItems: [],
 };
+
+const DEFAULT_NAVIGATION_STATE = {
+  activeTab: 'learn',
+  currentSubject: null,
+  mathSubGame: null,
+  dateTimeSubGame: null,
+  isPlaying: false,
+  gameConfig: { operation: 'add', difficulty: 'easy', nums: [], quizType: 'multiple' },
+  selectedAssessmentId: null,
+  currentAgeGroup: null,
+  currentAgeGame: null,
+  islamModule: null,
+  islamTopic: null,
+  islamYear: 1,
+  matematikModule: null,
+  matematikTopic: null,
+  matematikYear: 1,
+  bmModule: null,
+  bmTopic: null,
+  bmYear: 1,
+};
+
+function cleanNavigationState(saved = {}) {
+  const text = (key) => typeof saved[key] === 'string' ? saved[key] : null;
+  const year = (key) => [1, 2, 3].includes(saved[key]) ? saved[key] : 1;
+  const config = saved.gameConfig && typeof saved.gameConfig === 'object' && !Array.isArray(saved.gameConfig)
+    ? saved.gameConfig
+    : {};
+
+  return {
+    activeTab: ['learn', 'leaderboard', 'profile', 'achievement'].includes(saved.activeTab) ? saved.activeTab : 'learn',
+    currentSubject: text('currentSubject'),
+    mathSubGame: text('mathSubGame'),
+    dateTimeSubGame: text('dateTimeSubGame'),
+    isPlaying: saved.isPlaying === true,
+    gameConfig: {
+      operation: typeof config.operation === 'string' ? config.operation : 'add',
+      difficulty: typeof config.difficulty === 'string' ? config.difficulty : 'easy',
+      nums: Array.isArray(config.nums) ? config.nums.filter(Number.isFinite) : [],
+      quizType: typeof config.quizType === 'string' ? config.quizType : 'multiple',
+    },
+    selectedAssessmentId: Number.isInteger(saved.selectedAssessmentId) ? saved.selectedAssessmentId : null,
+    currentAgeGroup: text('currentAgeGroup'),
+    currentAgeGame: text('currentAgeGame'),
+    islamModule: text('islamModule'),
+    islamTopic: text('islamTopic'),
+    islamYear: year('islamYear'),
+    matematikModule: text('matematikModule'),
+    matematikTopic: text('matematikTopic'),
+    matematikYear: year('matematikYear'),
+    bmModule: text('bmModule'),
+    bmTopic: text('bmTopic'),
+    bmYear: year('bmYear'),
+  };
+}
+
+export function loadNavigationState() {
+  try {
+    const raw = localStorage.getItem(NAVIGATION_KEY);
+    return raw ? cleanNavigationState(JSON.parse(raw)) : cleanNavigationState(DEFAULT_NAVIGATION_STATE);
+  } catch {
+    return cleanNavigationState(DEFAULT_NAVIGATION_STATE);
+  }
+}
+
+export function saveNavigationState(state) {
+  try { localStorage.setItem(NAVIGATION_KEY, JSON.stringify(cleanNavigationState(state))); }
+  catch (err) { console.warn('[storageService] Failed to save navigation state:', err); }
+}
 
 // ── Player name ────────────────────────────────────────────────────────────
 export function loadPlayerName() {

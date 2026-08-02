@@ -16,6 +16,7 @@ import {
 } from '../icons/LearningIcons';
 import PageLayout from '../PageLayout';
 import { RobotDefs, RobotHeadReading } from '../SubjectRobots';
+import { useBrowserBackHandler } from '../../hooks/useBrowserBack';
 import LearnWords from './LearnWords';
 import LongSentences from './LongSentences';
 
@@ -68,6 +69,7 @@ const getTileIllustration = (level) => {
 export default function ReadingPage({ onBack, language }) {
   // ── State ─────────────────────────────────────────────────────────────
   const [selectedLevel, setSelectedLevel] = useState(null);
+  useBrowserBackHandler(selectedLevel ? () => setSelectedLevel(null) : onBack);
   // Keep the level menu visible while a lazy level chunk (KV/KVK) loads.
   const [isPending, startTransition] = useTransition();
   const [displayHearts, setDisplayHearts] = useState(3);

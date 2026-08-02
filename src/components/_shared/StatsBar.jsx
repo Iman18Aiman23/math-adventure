@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import useGamification from '../../hooks/useGamification';
 
-export default function StatsBar({ subject = 'bm', variant }) {
+export default function StatsBar({ subject = 'bm', variant, forceBundled = false }) {
   const { loading, xp, gems, level, streak, hearts, maxHearts } = useGamification(subject);
   const prevXpRef = useRef(xp);
   const pulseRef = useRef(null);
 
-  const [isBundled, setIsBundled] = useState(false);
+  const [isBundled, setIsBundled] = useState(forceBundled);
   const [isOpen, setIsOpen] = useState(false);
   const popoverRef = useRef(null);
 
@@ -23,7 +23,7 @@ export default function StatsBar({ subject = 'bm', variant }) {
     const handleResize = () => {
       // If window is tablet/mobile sized, there might not be enough space
       // safely display all 5 items side-by-side with large numbers, so we bundle it.
-      if (window.innerWidth <= 1024) {
+      if (forceBundled || window.innerWidth <= 1024) {
         setIsBundled(true);
       } else {
         setIsBundled(false);
@@ -33,7 +33,7 @@ export default function StatsBar({ subject = 'bm', variant }) {
     handleResize(); // Init
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [forceBundled]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -55,7 +55,7 @@ export default function StatsBar({ subject = 'bm', variant }) {
     };
   }, [isOpen]);
 
-  if (loading) {
+  if (loading && !forceBundled) {
     return (
       <div
         className="sb-root"

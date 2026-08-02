@@ -1,4 +1,5 @@
 import React from 'react';
+import { Settings, UserRound } from 'lucide-react';
 import { playHoverSound } from '../../utils/soundManager';
 import StatsBar from '../_shared/StatsBar';
 
@@ -39,7 +40,18 @@ export function getMtModuleTheme(activeModule, year) {
   };
 }
 
-export default function MatematikModuleNavBar({ year, activeModule, onModuleChange, onBack, language = 'bm' }) {
+export default function MatematikModuleNavBar({
+  year,
+  activeModule,
+  onModuleChange,
+  onBack,
+  onProfile,
+  onToggleLanguage,
+  theme,
+  themes,
+  onThemeChange,
+  language = 'bm',
+}) {
   const isT1 = year === 1;
   const modules = isT1 ? MT_MODULES_T1 : MT_MODULES_T2T3;
   const stripPrefix = (id) => id.replace(/^\d-/, '');
@@ -49,9 +61,10 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
   const yearTheme = MT_YEAR_TAB_THEME[year];
   const accent = yearTheme?.c || activeMod?.c || '#3B82F6';
   const accentD = yearTheme?.cd || activeMod?.cd || '#1D4ED8';
-  const tabCount = modules.length;
   const [isSelectOpen, setIsSelectOpen] = React.useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
   const dropdownRef = React.useRef(null);
+  const settingsRef = React.useRef(null);
   const listboxId = React.useId();
 
   React.useEffect(() => {
@@ -59,11 +72,15 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
       if (!dropdownRef.current?.contains(event.target)) {
         setIsSelectOpen(false);
       }
+      if (!settingsRef.current?.contains(event.target)) {
+        setIsSettingsOpen(false);
+      }
     };
 
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
         setIsSelectOpen(false);
+        setIsSettingsOpen(false);
       }
     };
 
@@ -74,6 +91,8 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
+
+  const hasSettings = onToggleLanguage || (themes && onThemeChange);
 
   return (
     <header className="mt-module-header" style={{ '--accent': accent, '--accent-d': accentD }}>
@@ -133,12 +152,22 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           outline: 3px solid var(--accent);
           outline-offset: 2px;
         }
-        .mt-top-stats {
+        .mt-top-actions {
           grid-column: 3;
-          min-width: 0;
-          width: max-content;
           max-width: 100%;
           margin-left: auto;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          gap: 4px;
+          padding: 3px;
+          border: 1px solid #E7EEE4;
+          border-radius: 17px;
+          background: #F6F9F4;
+        }
+        .mt-top-stats {
+          min-width: 0;
+          width: max-content;
           display: flex;
           justify-content: flex-end;
         }
@@ -215,10 +244,131 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
           min-height: 34px;
         }
         .mt-top-stats .sb-bundle-btn {
-          min-width: 86px;
+          min-width: 82px;
+          min-height: 40px;
+          padding: 8px 11px;
+          border: 0;
+          border-radius: 13px;
+          color: #314339;
+          background: #FFFFFF;
+          box-shadow: 0 1px 0 rgba(53, 83, 62, .07);
         }
         .mt-top-stats .sb-popover {
           right: 0;
+        }
+        .mt-top-utility {
+          width: 40px;
+          height: 40px;
+          display: grid;
+          place-items: center;
+          flex: none;
+          padding: 0;
+          border: 0;
+          border-radius: 13px;
+          color: #6E776C;
+          background: transparent;
+          cursor: pointer;
+          transition: color .18s ease, background .18s ease, transform .16s ease;
+        }
+        .mt-top-utility:hover {
+          color: var(--accent-d);
+          background: color-mix(in srgb, var(--accent) 11%, #fff);
+          transform: translateY(-1px);
+        }
+        .mt-top-utility:active { transform: translateY(1px); }
+        .mt-top-utility:focus-visible {
+          outline: 3px solid color-mix(in srgb, var(--accent) 55%, #fff);
+          outline-offset: 2px;
+        }
+        .mt-top-settings {
+          position: relative;
+          display: flex;
+        }
+        .mt-settings-popover {
+          position: absolute;
+          top: calc(100% + 11px);
+          right: -44px;
+          z-index: 40;
+          width: 252px;
+          padding: 16px;
+          border: 1px solid #DEE8DA;
+          border-radius: 20px;
+          background: rgba(255,255,255,.98);
+          box-shadow: 0 18px 42px rgba(48, 82, 57, .16);
+          animation: mtMenuDrop .16s ease-out both;
+        }
+        .mt-settings-heading {
+          margin: 0 0 13px;
+          color: #344039;
+          font-family: 'Baloo 2', 'Fredoka', sans-serif;
+          font-size: 16px;
+          font-weight: 800;
+          line-height: 1;
+        }
+        .mt-settings-group + .mt-settings-group {
+          margin-top: 14px;
+          padding-top: 14px;
+          border-top: 1px solid #E8EEE5;
+        }
+        .mt-settings-label {
+          display: block;
+          margin-bottom: 8px;
+          color: #7A8578;
+          font-family: 'Fredoka', sans-serif;
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: .12em;
+          text-transform: uppercase;
+        }
+        .mt-settings-languages {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 7px;
+          padding: 4px;
+          border-radius: 14px;
+          background: #F2F6F0;
+        }
+        .mt-settings-language {
+          min-height: 36px;
+          border: 0;
+          border-radius: 10px;
+          color: #687266;
+          background: transparent;
+          cursor: pointer;
+          font-family: 'Fredoka', sans-serif;
+          font-size: 12px;
+          font-weight: 700;
+        }
+        .mt-settings-language.active {
+          color: #fff;
+          background: var(--accent-d);
+          box-shadow: 0 4px 10px color-mix(in srgb, var(--accent-d) 24%, transparent);
+        }
+        .mt-settings-language:focus-visible,
+        .mt-settings-swatch:focus-visible {
+          outline: 3px solid color-mix(in srgb, var(--accent) 55%, #fff);
+          outline-offset: 2px;
+        }
+        .mt-settings-swatches {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        .mt-settings-swatch {
+          width: 34px;
+          height: 34px;
+          padding: 0;
+          border: 3px solid #fff;
+          border-radius: 11px;
+          background: var(--swatch);
+          box-shadow: 0 0 0 1px #DDE5DA;
+          cursor: pointer;
+          transition: transform .16s ease, box-shadow .16s ease;
+        }
+        .mt-settings-swatch:hover { transform: translateY(-2px); }
+        .mt-settings-swatch.active {
+          transform: translateY(-1px);
+          box-shadow: 0 0 0 3px var(--accent-d);
         }
         @media (min-width: 1181px) {
           .mt-top-module {
@@ -539,10 +689,15 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
             border-radius: 18px;
             padding: 7px;
           }
-          .mt-top-stats {
+          .mt-top-actions {
             grid-column: 3;
             width: auto;
+            gap: 0;
+            padding: 0;
+            border: 0;
+            background: transparent;
           }
+          .mt-top-utility { display: none; }
           .mt-top-stats .sb-bundle-btn {
             min-width: 86px;
             min-height: 40px;
@@ -573,6 +728,7 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
         }
         @media (prefers-reduced-motion: reduce) {
           .mt-top-back,
+          .mt-top-utility,
           .mt-mnav-select,
           .mt-mnav-select-arrow,
           .mt-mnav-select-shell,
@@ -669,8 +825,84 @@ export default function MatematikModuleNavBar({ year, activeModule, onModuleChan
             )}
           </div>
         </div>
-        <div className="mt-top-stats">
-          <StatsBar subject="mt" variant="mb" />
+        <div className="mt-top-actions">
+          <div className="mt-top-stats">
+            <StatsBar subject="mt" variant="mb" forceBundled />
+          </div>
+          {hasSettings ? (
+            <div className="mt-top-settings" ref={settingsRef}>
+              <button
+                type="button"
+                className="mt-top-utility"
+                onClick={() => {
+                  playHoverSound();
+                  setIsSettingsOpen(open => !open);
+                }}
+                aria-label={language === 'bm' ? 'Buka tetapan' : 'Open settings'}
+                aria-expanded={isSettingsOpen}
+                aria-haspopup="dialog"
+              >
+                <Settings size={22} strokeWidth={2.4} aria-hidden="true" />
+              </button>
+              {isSettingsOpen ? (
+                <div
+                  className="mt-settings-popover"
+                  role="dialog"
+                  aria-label={language === 'bm' ? 'Tetapan' : 'Settings'}
+                >
+                  <h2 className="mt-settings-heading">{language === 'bm' ? 'Tetapan' : 'Settings'}</h2>
+                  {onToggleLanguage ? (
+                    <div className="mt-settings-group">
+                      <span className="mt-settings-label">{language === 'bm' ? 'Bahasa' : 'Language'}</span>
+                      <div className="mt-settings-languages">
+                        {['bm', 'eng'].map(lang => (
+                          <button
+                            key={lang}
+                            type="button"
+                            className={`mt-settings-language${language === lang ? ' active' : ''}`}
+                            onClick={() => {
+                              if (language !== lang) onToggleLanguage();
+                            }}
+                          >
+                            {lang === 'bm' ? 'Bahasa Melayu' : 'English'}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                  {themes && onThemeChange ? (
+                    <div className="mt-settings-group">
+                      <span className="mt-settings-label">{language === 'bm' ? 'Tema aplikasi' : 'App theme'}</span>
+                      <div className="mt-settings-swatches">
+                        {Object.values(themes).map(item => (
+                          <button
+                            key={item.key}
+                            type="button"
+                            className={`mt-settings-swatch${theme?.key === item.key ? ' active' : ''}`}
+                            style={{ '--swatch': item.swatch }}
+                            onClick={() => onThemeChange(item.key)}
+                            aria-label={item.label}
+                            title={item.label}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+          <button
+            type="button"
+            className="mt-top-utility"
+            onClick={() => {
+              playHoverSound();
+              onProfile?.();
+            }}
+            aria-label={language === 'bm' ? 'Buka profil' : 'Open profile'}
+          >
+            <UserRound size={23} strokeWidth={2.4} aria-hidden="true" />
+          </button>
         </div>
       </div>
     </header>

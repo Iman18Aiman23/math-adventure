@@ -1,8 +1,7 @@
 import { createContext } from 'react';
 
 /**
- * Provides "advance to the next topic" navigation to the activity completion
- * screen, without plumbing props through every topic page / explore component.
- * Value shape: { hasNext: boolean, goNext: () => void } | null
+ * Provides Matematik navigation without plumbing callbacks through every
+ * module and activity component.
  */
 export const MatematikNavContext = createContext(null);
