@@ -2,6 +2,8 @@ import React, { useState, Suspense } from 'react';
 import { AGE_GROUPS } from '../data/ageCurriculum';
 import { playHoverSound } from '../utils/soundManager';
 import { RobotDefs, RobotReading, RobotSpeaking, RobotArabic, RobotMath } from './SubjectRobots';
+import { Trophy, Star, Medal, Flag, GraduationCap, ChevronRight, Settings } from 'lucide-react';
+import StatsBar from './_shared/StatsBar';
 
 const HomePagePrototype = React.lazy(() => import('./HomePagePrototype'));
 
@@ -15,11 +17,31 @@ const HERO_STARS = Array.from({ length: 28 }, (_, i) => ({
   o: [0.4,0.65,0.35,0.7,0.5,0.25,0.6,0.45,0.55,0.72,0.3,0.58,0.42,0.68,0.38,0.62,0.28,0.5,0.75,0.33,0.6,0.48,0.4,0.7,0.32,0.56,0.78,0.44][i],
 }));
 
-export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, playerName, gameState, streak = 0 }) {
+export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, playerName, gameState, streak = 0, onTabChange, onHome, onToggleLang, theme, themes, onThemeChange }) {
   const [showRobotInterface, setShowRobotInterface] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const settingsRef = React.useRef(null);
   const currentLevel = gameState?.level ?? 1;
 
-  // Show Robot & Kod interface when clicked
+  React.useEffect(() => {
+    const handlePointerDown = (event) => {
+      if (!settingsRef.current?.contains(event.target)) {
+        setIsSettingsOpen(false);
+      }
+    };
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setIsSettingsOpen(false);
+      }
+    };
+    document.addEventListener('pointerdown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   if (showRobotInterface) {
     return (
       <Suspense fallback={null}>
@@ -35,7 +57,6 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
     );
   }
 
-  /* Streak logic */
   const days = [
     { id: 'mon', label: { bm: 'Isn', eng: 'Mon' } },
     { id: 'tue', label: { bm: 'Sel', eng: 'Tue' } },
@@ -48,66 +69,433 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
   const currentDay = new Date().getDay();
   const activeDayIndex = currentDay === 0 ? 6 : currentDay - 1;
 
-  // Render distinct SVG icons for the age groups
   const renderAgeIcon = (id) => {
     if (id === 'age-4-6') {
       return (
-        <svg viewBox="0 0 100 100" width="60" height="60" className="age-icon-bounce">
-          <circle cx="50" cy="50" r="50" fill="rgba(255,255,255,0.25)" />
-          <path d="M50 15 L60 40 L85 40 L65 55 L75 80 L50 65 L25 80 L35 55 L15 40 L40 40 Z" fill="#FFFFFF" />
+        <svg viewBox="0 0 100 100" width="40" height="40" className="age-icon-bounce">
+          <path d="M50 15 L60 40 L85 40 L65 55 L75 80 L50 65 L25 80 L35 55 L15 40 L40 40 Z" fill="currentColor" />
           <path d="M50 25 L56 42 L74 42 L60 52 L66 68 L50 58 L34 68 L40 52 L26 42 L44 42 Z" fill="#FFD93D" />
         </svg>
       );
     } else if (id === 'age-7') {
       return (
-        <svg viewBox="0 0 100 100" width="60" height="60" className="age-icon-bounce">
-          <circle cx="50" cy="50" r="50" fill="rgba(255,255,255,0.25)" />
-          <path d="M50 15 L80 35 L80 65 L50 85 L20 65 L20 35 Z" fill="#FFFFFF" />
+        <svg viewBox="0 0 100 100" width="40" height="40" className="age-icon-bounce">
+          <path d="M50 15 L80 35 L80 65 L50 85 L20 65 L20 35 Z" fill="currentColor" />
           <path d="M50 25 L70 40 L70 60 L50 75 L30 60 L30 40 Z" fill="#4ECDC4" />
-          <circle cx="50" cy="50" r="8" fill="#FFFFFF" />
+          <circle cx="50" cy="50" r="8" fill="currentColor" />
         </svg>
       );
     } else if (id === 'age-8') {
       return (
-        <svg viewBox="0 0 100 100" width="60" height="60" className="age-icon-bounce">
-          <circle cx="50" cy="50" r="50" fill="rgba(255,255,255,0.25)" />
-          <path d="M20 30 L80 30 L75 70 Q50 90 25 70 Z" fill="#FFFFFF" />
+        <svg viewBox="0 0 100 100" width="40" height="40" className="age-icon-bounce">
+          <path d="M20 30 L80 30 L75 70 Q50 90 25 70 Z" fill="currentColor" />
           <path d="M30 35 L70 35 L66 65 Q50 78 34 65 Z" fill="#FFB347" />
-          <rect x="40" y="15" width="20" height="15" fill="#FFFFFF" />
-          <circle cx="50" cy="45" r="8" fill="#FFFFFF" />
+          <rect x="40" y="15" width="20" height="15" fill="currentColor" />
+          <circle cx="50" cy="45" r="8" fill="currentColor" />
         </svg>
       );
     } else {
-      // age-9 and any fallback
       return (
-        <svg viewBox="0 0 100 100" width="60" height="60" className="age-icon-bounce">
-          <circle cx="50" cy="50" r="50" fill="rgba(255,255,255,0.25)" />
-          <path d="M50 20 L65 45 L90 45 L70 60 L80 85 L50 70 L20 85 L30 60 L10 45 L35 45 Z" fill="#FFFFFF" />
+        <svg viewBox="0 0 100 100" width="40" height="40" className="age-icon-bounce">
+          <path d="M50 20 L65 45 L90 45 L70 60 L80 85 L50 70 L20 85 L30 60 L10 45 L35 45 Z" fill="currentColor" />
           <path d="M50 30 L60 50 L80 50 L65 63 L73 83 L50 68 L27 83 L35 63 L20 50 L40 50 Z" fill="#E5A4FF" />
         </svg>
       );
     }
   };
 
-  // Age cards as vibrant "active-style" game buttons (face / darker border)
   const AGE_COLORS = [
-    { main: '#FF6B6B', dark: '#E03131', glow: 'rgba(255,107,107,0.35)'  },  // age-4-6
-    { main: '#FFB020', dark: '#F08C00', glow: 'rgba(255,176,32,0.35)'   },  // age-7
-    { main: '#4FC3F7', dark: '#0288D1', glow: 'rgba(79,195,247,0.35)'   },  // age-8
-    { main: '#AB7DF0', dark: '#7A4FD0', glow: 'rgba(171,125,240,0.35)'  },  // age-9
+    { soft: '#FFE3E3', dark: '#FF6B6B' },
+    { soft: '#FFF4E5', dark: '#F59E0B' },
+    { soft: '#E0F2FE', dark: '#0EA5E9' },
+    { soft: '#F3E8FF', dark: '#A855F7' },
   ];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#F7F8FA', color: '#4A4A4A', fontFamily: "'Nunito', sans-serif" }}>
+    <div className="home-dashboard-wrapper">
       <RobotDefs />
-
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Fredoka:wght@500;600;700&display=swap');
 
-        /* ─── Subject Cards — white "game-button" cards matching the sidebar ─── */
+        .home-dashboard-wrapper {
+          display: flex;
+          flex-direction: column;
+          min-height: 100vh;
+          overflow-y: auto;
+          overflow-x: hidden;
+          background: #F2F8F1;
+          color: #4A4A4A;
+          font-family: 'Fredoka', system-ui, sans-serif;
+          padding: 24px;
+        }
+
+        .home-dashboard-grid {
+          width: min(1460px, 100%);
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: minmax(220px, 280px) minmax(440px, 1fr) minmax(220px, 260px);
+          gap: clamp(18px, 2vw, 28px);
+        }
+
+        @media (max-width: 1100px) {
+          .home-dashboard-grid {
+            grid-template-columns: 280px 1fr;
+          }
+          .home-insights {
+            display: none !important;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .home-dashboard-wrapper {
+            padding: 16px;
+          }
+          .home-dashboard-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+          }
+          .home-coach {
+            display: none !important;
+          }
+        }
+
+        /* ── Left Sidebar (Coach / Profile) matching DesktopSidebar ── */
+        .home-coach {
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+          padding: 24px 20px 20px;
+          border: 2px solid #ECECEC;
+          border-radius: 24px;
+          background: radial-gradient(circle at 50% 0%, rgba(34,197,94,.07), transparent 42%), #F7F8FA;
+        }
+        
+        .sidebar-logo {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.55rem;
+          padding: 1.15rem 1rem 0.6rem;
+          border: 0;
+          background: transparent;
+          margin-bottom: 12px;
+          cursor: pointer;
+          -webkit-tap-highlight-color: transparent;
+        }
+        .home-coach-footer {
+          margin-top: auto;
+          padding-top: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+        .home-top-actions {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 20px;
+        }
+        .home-settings-btn {
+          width: 44px;
+          height: 44px;
+          display: grid;
+          place-items: center;
+          flex: none;
+          padding: 0;
+          border: 2px solid #E6E6E6;
+          border-radius: 14px;
+          color: #707070;
+          background: #ffffff;
+          cursor: pointer;
+          transition: color .18s ease, background .18s ease, transform .16s ease, border-color .16s ease;
+        }
+        .home-settings-btn:hover {
+          color: #22C55E;
+          border-color: #22C55E;
+          transform: translateY(-1px);
+        }
+        .home-settings-btn:active { transform: translateY(1px); }
+        .home-settings-popover {
+          position: absolute;
+          top: calc(100% + 8px);
+          left: -4px;
+          z-index: 50;
+          width: 252px;
+          padding: 16px;
+          border: 1px solid #DEE8DA;
+          border-radius: 20px;
+          background: rgba(255,255,255,.98);
+          box-shadow: 0 18px 42px rgba(48, 82, 57, .16);
+          animation: mtMenuDrop .16s ease-out both;
+        }
+        @keyframes mtMenuDrop {
+          from { opacity: 0; transform: translateY(-8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .mt-settings-heading {
+          font-family: 'Fredoka', sans-serif;
+          font-size: 11px;
+          font-weight: 800;
+          color: #22C55E;
+          text-transform: uppercase;
+          letter-spacing: .12em;
+          margin-bottom: 8px;
+        }
+        .mt-lang-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          padding: 10px;
+          border: 2px solid #E7EEE4;
+          border-radius: 14px;
+          background: #fff;
+          font-family: 'Fredoka', sans-serif;
+          font-size: 13px;
+          font-weight: 700;
+          color: #4A4A4A;
+          cursor: pointer;
+          transition: all .15s ease;
+        }
+        .mt-lang-btn:hover { border-color: #22C55E; color: #22C55E; }
+        .mt-lang-btn.active {
+          border-color: #22C55E;
+          background: #22C55E;
+          color: #fff;
+        }
+        .mt-lang-flag { font-size: 16px; }
+        .mt-theme-list {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+        }
+        .mt-theme-btn {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 10px;
+          border: 2px solid #E7EEE4;
+          border-radius: 12px;
+          background: #fff;
+          font-family: 'Fredoka', sans-serif;
+          font-size: 12px;
+          font-weight: 700;
+          color: #4A4A4A;
+          cursor: pointer;
+          transition: all .15s ease;
+        }
+        .mt-theme-btn:hover { border-color: #22C55E; }
+        .mt-theme-btn.active { border-color: #22C55E; background: #F4FAF1; }
+        .mt-theme-color-dot {
+          width: 14px;
+          height: 14px;
+          border-radius: 50%;
+          background: var(--t-bg);
+          border: 1px solid rgba(0,0,0,.1);
+        }
+        .sidebar-logo-badge {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          width: 58px;
+          height: 58px;
+          border-radius: 19px;
+          background: linear-gradient(145deg, #5FD968 0%, #22C55E 52%, #15803D 100%);
+          box-shadow:
+            0 8px 18px rgba(34, 197, 94, 0.35),
+            inset 0 2px 0 rgba(255,255,255,0.28),
+            inset 0 -3px 0 rgba(0,0,0,0.14);
+          font-family: var(--font-heading, 'Baloo 2', sans-serif);
+          line-height: 1;
+          flex-shrink: 0;
+          transition: transform .15s ease;
+        }
+        .sidebar-logo:hover .sidebar-logo-badge { transform: translateY(-2px); }
+        .sidebar-logo:active .sidebar-logo-badge { transform: translateY(1px); }
+        .sidebar-logo-badge-main {
+          font-size: 1.05rem;
+          font-weight: 800;
+          color: #ffffff;
+          letter-spacing: -0.01em;
+          text-shadow: 0 2px 0 rgba(0,0,0,0.16);
+        }
+        .sidebar-logo-badge-sub {
+          font-size: 0.5rem;
+          font-weight: 700;
+          color: rgba(255,255,255,0.85);
+          letter-spacing: 2.4px;
+          text-transform: lowercase;
+          margin-top: 3px;
+          text-shadow: 0 1px 0 rgba(0,0,0,0.16);
+        }
+        .sidebar-subtitle-text {
+          color: #677064;
+          font-family: var(--font-body, 'Fredoka', sans-serif);
+          font-size: 0.66rem;
+          font-weight: 800;
+          letter-spacing: 2.5px;
+          margin: 0;
+          text-transform: uppercase;
+        }
+
+        .home-coach-progress {
+          margin-bottom: 16px;
+        }
+        .home-progress-label {
+          display: flex;
+          justify-content: space-between;
+          font-size: 13px;
+          font-weight: 700;
+          color: #677064;
+          margin-bottom: 8px;
+        }
+        .home-progress-label strong {
+          color: #22C55E;
+        }
+        .home-progress-track {
+          height: 12px;
+          background: #E7EFE3;
+          border-radius: 999px;
+          padding: 2px;
+        }
+        .home-progress-track span {
+          display: block;
+          height: 100%;
+          background: linear-gradient(90deg, #8EEB52, #22C55E);
+          border-radius: 999px;
+          width: 8%; /* placeholder */
+          box-shadow: 0 0 14px rgba(88, 204, 2, 0.35);
+        }
+
+        .sidebar-continue {
+          width: 100%;
+          min-height: 46px;
+          margin-bottom: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 7px;
+          padding: 9px 14px;
+          border: 0;
+          border-radius: 15px;
+          color: #ffffff;
+          background: linear-gradient(180deg, #76D93B, #22C55E);
+          box-shadow:
+            0 5px 0 #16A34A,
+            0 14px 24px rgba(88, 204, 2, 0.2);
+          cursor: pointer;
+          font-family: var(--font-heading, 'Baloo 2', sans-serif);
+          font-size: 0.98rem;
+          font-weight: 800;
+          letter-spacing: 0.2px;
+          text-shadow: 0 2px 0 rgba(0,0,0,0.12);
+          transition: transform .18s ease, box-shadow .18s ease;
+        }
+        .sidebar-continue:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 7px 0 #16A34A, 0 18px 30px rgba(88, 204, 2, 0.24);
+        }
+        .sidebar-continue:active {
+          transform: translateY(3px);
+          box-shadow: 0 2px 0 #16A34A;
+        }
+
+        .home-coach-summary {
+          display: flex;
+          justify-content: space-between;
+          background: #ffffff;
+          border: 2px solid #E3EFE0;
+          padding: 12px 16px;
+          border-radius: 14px;
+          margin-bottom: 16px;
+          font-size: 12px;
+          color: #707070;
+          font-weight: 600;
+          box-shadow: 0 6px 16px rgba(66, 115, 44, 0.06);
+        }
+        .home-coach-summary strong {
+          display: block;
+          color: #4A4A4A;
+          font-size: 16px;
+          font-family: 'Baloo 2', sans-serif;
+        }
+
+        .home-quick-nav {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+        }
+        .home-quick-link {
+          background: #FFFFFF;
+          border: 3px solid #E6E6E6;
+          border-radius: 16px;
+          padding: 12px 8px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 6px;
+          font-family: 'Fredoka', sans-serif;
+          font-size: 12px;
+          font-weight: 700;
+          color: #707070;
+          cursor: pointer;
+          transition: transform .1s ease, border-color .15s ease, color .15s ease, background .15s ease;
+        }
+        .home-quick-link:hover {
+          transform: translateY(-2px);
+          border-color: #D8D8D8;
+          color: #4A4A4A;
+        }
+
+        /* ── Center Column (Main) ── */
+        .home-main {
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+        }
+
+        .home-hero {
+          background: #ffffff;
+          border-radius: 24px;
+          padding: 32px;
+          border: 2px solid #E6E6E6;
+          box-shadow: 0 6px 0 #E6E6E6;
+          display: flex;
+          align-items: center;
+          gap: 24px;
+          position: relative;
+          overflow: hidden;
+        }
+        .hero-title {
+          font-family: 'Baloo 2', sans-serif;
+          font-size: 2.25rem;
+          font-weight: 800;
+          color: #4A4A4A;
+          margin: 0 0 12px 0;
+        }
+
+        .section-header {
+          font-family: 'Fredoka', system-ui, sans-serif;
+          font-size: 1.15rem;
+          font-weight: 800;
+          color: #4A4A4A;
+          letter-spacing: 0.08em;
+          margin: 8px 0;
+          text-transform: uppercase;
+          padding-left: 16px;
+          border-left: 6px solid #22C55E;
+          line-height: 1.2;
+        }
+
+        .subject-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 16px;
+        }
         .subject-card {
-            --accent: #7A4FD0;
-            --accent-soft: #EDE5FF;
+            --accent: #22C55E;
+            --accent-soft: #F4FAF1;
             border-radius: 20px;
             padding: 16px 12px 20px;
             cursor: pointer;
@@ -115,15 +503,13 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             flex-direction: column;
             align-items: center;
             gap: 12px;
-            transition: transform .12s ease, border-color .15s ease;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
+            transition: transform .12s ease, border-color .15s ease, box-shadow .12s ease;
             width: 100%;
             min-height: 220px;
             justify-content: flex-start;
             background: #ffffff;
-            border: 3px solid #E6E6E6;
-            box-shadow: none;
+            border: 2px solid #E6E6E6;
+            box-shadow: 0 4px 0 #E6E6E6;
         }
         .subject-card.card-reading        { --accent: #FF8F3D; --accent-soft: #FFEAD6; }
         .subject-card.card-speak          { --accent: #FF6FA5; --accent-soft: #FFE3EF; }
@@ -132,17 +518,16 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
         .subject-card.card-matematik-kssr { --accent: #0F9488; --accent-soft: #D2F4EF; }
         .subject-card.card-bm-kssr        { --accent: #0284C7; --accent-soft: #DCF0FB; }
         .subject-card.card-robot          { --accent: #F97316; --accent-soft: #FFE6D2; }
-
-        /* Hover: lift like a bubble + border lights up in the card's accent */
         .subject-card:hover {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             border-color: var(--accent);
+            box-shadow: 0 6px 0 var(--accent);
         }
         .subject-card:active {
             transform: translateY(2px);
+            box-shadow: 0 2px 0 var(--accent);
         }
 
-        /* Coloured robot stage — soft tint of the card accent */
         .rb-stage {
             width: 100%;
             max-width: 110px;
@@ -151,41 +536,19 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-            overflow: hidden;
-            margin: 0 auto;
             background: var(--accent-soft);
-            box-shadow: inset 0 -4px 12px rgba(0,0,0,0.05), inset 0 1.5px 0 rgba(255,255,255,0.5);
         }
-        .rb-stage > svg { width: 96%; height: 96%; display: block; overflow: visible; }
-
-        /* Floating deco dots inside each stage */
-        .rb-deco-dot { position: absolute; border-radius: 50%; pointer-events: none; }
-        .rb-d1 { width: 10px; height: 10px; background: rgba(255,255,255,.8);  top: 14%; left: 12%;  animation: rb-drift1 6s ease-in-out infinite; }
-        .rb-d2 { width:  6px; height:  6px; background: rgba(255,255,255,.7);  top: 78%; right: 14%; animation: rb-drift2 7s ease-in-out infinite; }
-        .rb-d3 { width: 14px; height: 14px; background: rgba(255,255,255,.55); top: 62%; left:  9%;  animation: rb-drift1 8s ease-in-out infinite; }
-        .rb-d4 { width:  8px; height:  8px; background: rgba(255,255,255,.65); top: 22%; right: 18%; animation: rb-drift2 9s ease-in-out infinite; }
-        @keyframes rb-drift1 { 50% { transform: translate(10px, -8px); } }
-        @keyframes rb-drift2 { 50% { transform: translate(-10px, 8px); } }
-
-        /* Pill label — solid accent chip, Fredoka */
+        .rb-stage > svg { width: 96%; height: 96%; display: block; }
+        
         .rb-pill {
             font-family: 'Fredoka', system-ui, sans-serif;
             font-weight: 700;
             font-size: 11px;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
             color: #fff;
             padding: 5px 16px;
             border-radius: 999px;
             background: var(--accent);
-            box-shadow: 0 3px 8px -2px rgba(0,0,0,0.25);
-            text-shadow: 1px 1px 0 rgba(0,0,0,0.12);
-            white-space: nowrap;
-            text-align: center;
         }
-
-        /* Card description */
         .rb-desc {
             font-family: 'Nunito', sans-serif;
             font-weight: 800;
@@ -194,486 +557,387 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             margin: 0;
             text-align: center;
             line-height: 1.45;
-            padding: 0 4px;
-        }
-
-        @keyframes heroStarTwinkle { from { opacity: var(--base-op, 0.25); transform: scale(1); } to { opacity: 1; transform: scale(1.7); } }
-        .hero-star-particle { animation: heroStarTwinkle var(--dur, 2s) ease-in-out infinite alternate; }
-
-        @keyframes jello { 0% { transform: scale(1); } 20% { transform: scale(0.94, 1.06); } 40% { transform: scale(1.04, 0.96); } 60% { transform: scale(0.98, 1.02); } 80% { transform: scale(1.01, 0.99); } 100% { transform: scale(1); } }
-
-        /* Age Group Buttons — vibrant "active-style" game cards */
-        .age-group-card {
-            border-radius: 20px;
-            transition: transform 0.12s ease, box-shadow 0.2s ease;
-        }
-        .age-group-card:hover {
-            transform: translateY(-3px);
-        }
-        .age-group-card:active {
-            transform: translateY(2px) !important;
-        }
-        .age-group-card:hover .age-icon-bounce {
-            animation: jello 0.6s ease;
-        }
-
-        .section-header {
-            font-family: 'Fredoka', system-ui, sans-serif;
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: #3F2A86;
-            letter-spacing: 0.08em;
-            margin-bottom: 1.2rem;
-            text-transform: uppercase;
-            padding-left: 14px;
-            border-left: 5px solid #7A4FD0;
-            border-radius: 2px;
-            line-height: 1;
-        }
-
-        .course-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.25rem;
-            padding-bottom: 2.5rem;
         }
 
         .age-group-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 16px;
         }
-
-        .streak-circle {
-            width: 28px;
-            height: 28px;
-            font-size: 0.85rem;
+        .age-group-card {
+            border-radius: 20px;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            border: 2px solid #E6E6E6;
+            background: #ffffff;
+            box-shadow: 0 4px 0 #E6E6E6;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            color: #4A4A4A;
+        }
+        .age-group-card:hover { 
+            border-color: var(--card-color);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 var(--card-color);
+        }
+        .age-group-card:active { 
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 var(--card-color);
+        }
+        .age-group-badge {
+            width: 58px;
+            height: 58px;
+            border-radius: 16px;
+            background: var(--card-color-soft);
+            color: var(--card-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             flex-shrink: 0;
         }
-
-        @media (max-width: 1023px) {
-            .course-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1.25rem;
-            }
+        .age-group-card h3 {
+            margin: 0 0 4px;
+            font-size: 18px;
+            color: #4A4A4A;
+            font-family: 'Baloo 2', sans-serif;
+            font-weight: 800;
+        }
+        .age-group-card p {
+            margin: 0;
+            font-size: 13px;
+            color: #677064;
+            font-family: 'Fredoka', sans-serif;
         }
 
-        @media (max-width: 768px) {
-            .main-content-area {
-                padding: 1.5rem 1rem !important;
-            }
-            .hero-section {
-                padding: 1.5rem 1rem 1.5rem 1rem !important;
-                margin-bottom: 2rem !important;
-            }
-            .hero-header {
-                flex-direction: row !important;
-                align-items: flex-start !important;
-                justify-content: space-between !important;
-            }
-            .planet-svg-container {
-                width: 110px !important;
-                height: 110px !important;
-                right: 6% !important;
-                top: 50% !important;
-                transform: translateY(-50%) !important;
-            }
-            .streak-bar-container {
-                flex-wrap: nowrap !important;
-                justify-content: space-between !important;
-                gap: 2px !important;
-                padding: 0.5rem 0.25rem !important;
-                overflow-x: hidden !important;
-            }
-            .streak-day-item {
-                flex-direction: column !important;
-                gap: 2px !important;
-                justify-content: center !important;
-                flex: 1 !important;
-            }
-            .streak-day-item span {
-                font-size: 0.6rem !important;
-                text-align: center;
-            }
-            .streak-circle {
-                width: 22px !important;
-                height: 22px !important;
-                font-size: 0.7rem !important;
-                margin: 0 auto;
-            }
-            .course-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 0.85rem !important;
-                padding-bottom: 2rem !important;
-            }
-            .age-group-grid {
-                grid-template-columns: 1fr !important;
-                gap: 1rem !important;
-            }
-            .subject-card {
-                padding: 12px 8px 14px !important;
-                gap: 10px !important;
-                border-radius: 18px !important;
-                min-height: 190px !important;
-            }
-            .rb-stage {
-                max-width: 85px !important;
-                border-radius: 14px !important;
-            }
-            .rb-pill {
-                font-size: 9px !important;
-                padding: 4px 12px !important;
-            }
-            .rb-desc {
-                font-size: 10.5px !important;
-                line-height: 1.35 !important;
-                padding: 0 !important;
-            }
-            .hero-title {
-                font-size: 1.8rem !important;
-            }
+        /* ── Right Sidebar (Insights) matching DesktopSidebar ── */
+        .home-insights {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
         }
+        .home-side-card {
+          background: #ffffff;
+          border: 2px solid #E3EFE0;
+          border-radius: 20px;
+          padding: 20px;
+          box-shadow: 0 6px 16px rgba(66, 115, 44, 0.06);
+          font-family: 'Fredoka', sans-serif;
+        }
+        .home-side-heading {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 14px;
+          font-weight: 700;
+          color: #22C55E;
+          margin-bottom: 12px;
+        }
+        .home-side-card strong {
+          display: block;
+          font-size: 16px;
+          color: #4A4A4A;
+          margin-bottom: 4px;
+        }
+        .home-side-card p {
+          margin: 0;
+          font-size: 12px;
+          color: #677064;
+          line-height: 1.4;
+        }
+
+        .home-week-dots {
+          display: flex;
+          gap: 6px;
+          margin-bottom: 12px;
+        }
+        .home-week-dots span {
+          width: 24px;
+          height: 24px;
+          border-radius: 6px;
+          background: #E7EFE3;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .home-week-dots span.is-done {
+          background: #22C55E;
+        }
+
+        .home-achievement-card {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
+        .home-achievement-icon {
+          width: 48px;
+          height: 48px;
+          border-radius: 14px;
+          background: #FEF3C7;
+          color: #D97706;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
       `}</style>
 
-      {/* Main Content Area */}
-      <div className="page-shell main-content-area" style={{ paddingTop: '1.5rem', paddingLeft: '2.5rem', paddingRight: '2.5rem', paddingBottom: 0 }}>
-
-        {/* HERO SECTION — purple brand gradient (matches sidebar logo badge) */}
-        <div className="hero-section" style={{
-          background: 'linear-gradient(135deg, #9A6BE8 0%, #7A4FD0 48%, #3F2A86 100%)',
-          borderRadius: '24px',
-          padding: '2.5rem 2rem 1.5rem 2rem',
-          marginBottom: '3rem',
-          border: '4px solid #6A45C0',
-          boxShadow: '0 14px 30px -10px rgba(95,58,196,0.5)',
-          color: '#FFFFFF',
-          position: 'relative',
-          overflow: 'hidden'
-        }}>
-          {/* Radial glow accents */}
-          <div style={{ position: 'absolute', top: '-60px', left: '50%', transform: 'translateX(-50%)', width: '340px', height: '340px', background: 'radial-gradient(circle, rgba(255,255,255,0.25) 0%, transparent 70%)', filter: 'blur(40px)', pointerEvents: 'none' }} />
-          <div style={{ position: 'absolute', bottom: '-20px', right: '8%', width: '180px', height: '180px', background: 'radial-gradient(circle, rgba(255,214,107,0.3) 0%, transparent 70%)', filter: 'blur(30px)', pointerEvents: 'none' }} />
-
-          {/* 28 animated star particles */}
-          {HERO_STARS.map(s => (
-            <div key={s.key} className="hero-star-particle" style={{
-              position: 'absolute',
-              left: `${s.x}%`, top: `${s.y}%`,
-              width: `${s.s}px`, height: `${s.s}px`,
-              borderRadius: '50%',
-              background: '#fff',
-              opacity: s.o,
-              animationDuration: `${s.d}s`,
-              pointerEvents: 'none',
-            }} />
-          ))}
-
-          {/* Planet — body + ring, fully % based */}
-          <div className="planet-svg-container" style={{ position: 'absolute', top: '50%', right: '12%', transform: 'translateY(-50%)', width: '160px', height: '160px', pointerEvents: 'none' }}>
-            <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-              <div style={{
-                width: '75%',
-                height: '75%',
-                borderRadius: '50%',
-                background: 'radial-gradient(circle at 30% 30%, #FFD66B, #E8920B)',
-                position: 'absolute',
-                top: '12.5%',
-                left: '12.5%',
-                boxShadow: '0 0 40px rgba(255,214,107,0.45), inset 0 0 20px rgba(255,255,255,0.12)',
-              }} />
-              <div style={{
-                position: 'absolute',
-                width: '120%',
-                height: '35%',
-                border: '2.5px solid rgba(255,255,255,0.7)',
-                borderRadius: '50%',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%) rotate(-15deg)',
-                opacity: 0.7,
-              }} />
+      <div className="home-dashboard-grid">
+        {/* LEFT COLUMN: Profile & Navigation */}
+        <div className="home-coach-wrapper">
+          <aside className="home-coach">
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+            <div className="sidebar-logo" style={{ marginBottom: 0 }}>
+              <div className="sidebar-logo-badge">
+                <span className="sidebar-logo-badge-main">Iman</span>
+                <span className="sidebar-logo-badge-sub">core</span>
+              </div>
+              <h2 className="sidebar-subtitle-text">Learning Hub</h2>
             </div>
           </div>
 
-          <div className="hero-header" style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2.5rem' }}>
-            <div>
-              <p style={{
-                fontFamily: "'Nunito', sans-serif",
-                fontSize: '0.8rem',
-                fontWeight: 900,
-                color: 'rgba(255,255,255,0.85)',
-                textTransform: 'uppercase',
-                letterSpacing: '0.1em',
-                marginBottom: '0.2rem',
-              }}>
+
+
+          <div className="home-coach-progress">
+            <div className="home-progress-label">
+              <span>Kemajuan</span>
+              <strong>8%</strong>
+            </div>
+            <div className="home-progress-track">
+              <span></span>
+            </div>
+          </div>
+
+          <button className="sidebar-continue">
+            <span>Teruskan belajar</span>
+            <ChevronRight className="sidebar-continue-arrow" size={20} strokeWidth={3} />
+          </button>
+
+          <div className="home-coach-summary">
+            <div style={{ textAlign: 'center' }}>
+              <strong>5</strong>
+              <span>Topik</span>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <strong>13</strong>
+              <span>Aktiviti</span>
+            </div>
+          </div>
+
+          <div className="home-quick-nav">
+            <div className="home-quick-link" onClick={() => onHome?.()}>
+              <GraduationCap size={22} />
+              <span>Kursus</span>
+            </div>
+            <div className="home-quick-link" onClick={() => onTabChange?.('leaderboard')}>
+              <Trophy size={22} />
+              <span>Papan Juara</span>
+            </div>
+            <div className="home-quick-link" onClick={() => onTabChange?.('achievement')}>
+              <Medal size={22} />
+              <span>Pencapaian</span>
+            </div>
+            <div className="home-quick-link" onClick={() => onSelectSubject?.('matematik-reports')}>
+              <Flag size={22} />
+              <span>Laporan</span>
+            </div>
+          </div>
+
+          <div className="home-coach-footer">
+            <div className="home-top-actions" style={{ marginBottom: 0 }}>
+              <StatsBar forceBundled={true} variant="mb" />
+            </div>
+            
+            <div style={{ position: 'relative', display: 'flex', justifyContent: 'center' }} ref={settingsRef}>
+              <button className="home-settings-btn" onClick={() => setIsSettingsOpen(p => !p)} style={{ width: '100%' }}>
+                <Settings size={21} strokeWidth={2.4} />
+              </button>
+              {isSettingsOpen && (
+                <div className="home-settings-popover" style={{ top: 'auto', bottom: 'calc(100% + 8px)' }}>
+                  <div className="mt-settings-heading">
+                    {language === 'bm' ? 'Pilih Bahasa' : 'Language'}
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '16px' }}>
+                    <button
+                      className={`mt-lang-btn ${language === 'bm' ? 'active' : ''}`}
+                      onClick={() => { if (language !== 'bm') onToggleLang?.(); setIsSettingsOpen(false); }}
+                    >
+                      <span className="mt-lang-flag">🇲🇾</span>
+                      <span>Bahasa</span>
+                    </button>
+                    <button
+                      className={`mt-lang-btn ${language === 'en' ? 'active' : ''}`}
+                      onClick={() => { if (language !== 'en') onToggleLang?.(); setIsSettingsOpen(false); }}
+                    >
+                      <span className="mt-lang-flag">🇬🇧</span>
+                      <span>English</span>
+                    </button>
+                  </div>
+                  {themes && onThemeChange && (
+                    <>
+                      <div className="mt-settings-heading" style={{ marginTop: '4px' }}>
+                        {language === 'bm' ? 'Tema Angkasa' : 'Theme'}
+                      </div>
+                      <div className="mt-theme-list">
+                        {Object.entries(themes).map(([tid, t]) => (
+                          <button
+                            key={tid}
+                            className={`mt-theme-btn ${theme === t ? 'active' : ''}`}
+                            onClick={() => { onThemeChange(tid); setIsSettingsOpen(false); }}
+                            style={{ '--t-bg': t.heroBg }}
+                          >
+                            <span className="mt-theme-color-dot" />
+                            <span>{t.label}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+          </aside>
+        </div>
+
+        {/* CENTER COLUMN: Hero & Main content */}
+        <div className="home-main">
+          
+          <div className="home-hero">
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+              <p style={{ fontFamily: "'Fredoka', sans-serif", fontSize: '0.9rem', fontWeight: 800, color: '#22C55E', letterSpacing: '0.12em', margin: '0 0 0.2rem 0' }}>
                 {language === 'bm' ? 'SELAMAT DATANG' : "WELCOME"}
               </p>
-              <h1 className="hero-title" style={{
-                fontFamily: "'Fredoka', system-ui, sans-serif",
-                fontSize: '2.25rem',
-                fontWeight: 700,
-                lineHeight: 1.2,
-                margin: '0 0 0.75rem 0',
-                letterSpacing: '-0.01em',
-                textShadow: '0 2px 6px rgba(0,0,0,0.18)'
-              }}>
+              <h1 className="hero-title">
                 {playerName ? `Hei, ${playerName}! 🚀` : (language === 'bm' ? 'Hei, Iman! 🚀' : 'Hey, Iman! 🚀')}
               </h1>
 
-              <div style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.4rem',
-                background: 'rgba(255,255,255,0.18)',
-                color: '#FFF',
-                padding: '6px 16px',
-                borderRadius: '14px',
-                fontFamily: "'Nunito', sans-serif",
-                fontWeight: 900,
-                fontSize: '0.9rem',
-                border: '2px solid rgba(255,255,255,0.25)'
-              }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: '#F4FAF1', padding: '6px 16px', borderRadius: '14px', fontFamily: "'Fredoka', sans-serif", fontWeight: 800, fontSize: '0.95rem', color: '#16A34A', border: '2px solid #D1EAC9' }}>
                 ⭐ LEVEL {currentLevel}
               </div>
             </div>
-
-            {/* Fire icon for streak pill */}
-            <div style={{
-              background: '#FFFFFF',
-              borderRadius: '16px',
-              padding: '8px 16px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              border: '3px solid #EDEDED',
-              boxShadow: '0 6px 14px rgba(0,0,0,0.12)'
-            }}>
-              <span style={{ fontSize: '1.2rem' }}>🔥</span>
-              <span style={{ color: '#3F2A86', fontFamily: "'Fredoka', system-ui, sans-serif", fontWeight: 700, fontSize: '1.05rem' }}>{streak || 1}</span>
+            
+            <div style={{ marginLeft: 'auto', flexShrink: 0, opacity: 0.9 }}>
+               <RobotMath style={{ width: '110px', height: '110px' }} />
             </div>
           </div>
 
-          {/* Unified Mon-Sun Interactive Streak Bar */}
-          <div className="streak-bar-container" style={{
-            background: 'rgba(255,255,255,0.15)',
-            borderRadius: '20px',
-            padding: '0.8rem 1.5rem',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: '0.5rem',
-            border: '2px solid rgba(255,255,255,0.2)',
-            backdropFilter: 'blur(12px)',
-            position: 'relative',
-            zIndex: 1,
-            maxWidth: '600px',
-            marginRight: 'auto'
-          }}>
-            {days.map((day, idx) => {
-              const isActive = idx === activeDayIndex;
+          <h2 className="section-header">{language === 'bm' ? 'SUBJEK' : 'SUBJECT'}</h2>
+          
+          <div className="subject-grid">
+            <div className="subject-card card-reading" onClick={() => onSelectSubject('reading')}>
+              <div className="rb-stage"><RobotReading /></div>
+              <span className="rb-pill">{language === 'bm' ? 'MEMBACA' : 'READING'}</span>
+              <p className="rb-desc">{language === 'bm' ? 'Kuasai kemahiran membaca dengan seronok!' : 'From syllables to full sentences — one step at a time!'}</p>
+            </div>
+            <div className="subject-card card-speak" onClick={() => onSelectSubject('bm')}>
+              <div className="rb-stage"><RobotSpeaking /></div>
+              <span className="rb-pill">{language === 'bm' ? 'SEBUTAN' : 'SPEAKING'}</span>
+              <p className="rb-desc">{language === 'bm' ? 'Perbaiki sebutan dengan yakin!' : 'Improve pronunciation with confidence!'}</p>
+            </div>
+            <div className="subject-card card-math" onClick={() => onSelectSubject('math')}>
+              <div className="rb-stage"><RobotMath /></div>
+              <span className="rb-pill">{language === 'bm' ? 'MATEMATIK' : 'MATHEMATICS'}</span>
+              <p className="rb-desc">{language === 'bm' ? 'Teroka dunia nombor dan logik!' : 'Explore the world of numbers and shapes!'}</p>
+            </div>
+            <div className="subject-card card-arabic" onClick={() => onSelectSubject('pendidikan-islam-v1')}>
+              <div className="rb-stage"><RobotArabic /></div>
+              <span className="rb-pill">PENDIDIKAN ISLAM</span>
+              <p className="rb-desc">{language === 'bm' ? 'Belajar Pendidikan Islam dengan mudah!' : 'Learn Islamic Education easily!'}</p>
+            </div>
+            <div className="subject-card card-matematik-kssr" onClick={() => onSelectSubject('matematik-kssr')}>
+              <div className="rb-stage"><RobotMath /></div>
+              <span className="rb-pill">{language === 'bm' ? 'MATEMATIK KSSR' : 'MATH KSSR'}</span>
+              <p className="rb-desc">{language === 'bm' ? 'Ikut silibus KSSR Tahun 1–3!' : 'Follow the KSSR syllabus!'}</p>
+            </div>
+            <div className="subject-card card-bm-kssr" onClick={() => onSelectSubject('bm-kssr')}>
+              <div className="rb-stage"><RobotSpeaking /></div>
+              <span className="rb-pill">{language === 'bm' ? 'B. MELAYU KSSR' : 'MALAY KSSR'}</span>
+              <p className="rb-desc">{language === 'bm' ? 'Ikut silibus BM KSSR Tahun 1–3!' : 'Follow the Malay KSSR syllabus!'}</p>
+            </div>
+            <div className="subject-card card-robot" onClick={() => setShowRobotInterface(true)}>
+              <div className="rb-stage"><RobotMath /></div>
+              <span className="rb-pill">{language === 'bm' ? 'ROBOT & KÓD' : 'ROBOT & CODE'}</span>
+              <p className="rb-desc">{language === 'bm' ? 'Belajar robotik dan kod dengan mudah!' : 'Learn robotics and coding!'}</p>
+            </div>
+          </div>
+
+          <h2 className="section-header">{language === 'bm' ? 'KUMPULAN UMUR' : 'AGE GROUPS'}</h2>
+
+          <div className="age-group-grid">
+            {AGE_GROUPS.map((group, i) => {
+              const colors = AGE_COLORS[i % AGE_COLORS.length];
               return (
-                <div key={day.id} className="streak-day-item" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div className="streak-circle" style={{
-                    borderRadius: '50%',
-                    background: isActive ? '#FFFFFF' : 'rgba(255,255,255,0.2)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    boxShadow: isActive ? '0 4px 12px rgba(0,0,0,0.12)' : 'none',
-                  }}>
-                    {isActive ? '🔥' : ''}
+                <button
+                  key={group.id}
+                  className="age-group-card"
+                  onClick={() => onSelectAgeGroup && onSelectAgeGroup(group.id)}
+                  onMouseEnter={playHoverSound}
+                  style={{
+                    '--card-color': colors.dark,
+                    '--card-color-soft': colors.soft,
+                  }}
+                >
+                  <div className="age-group-badge">
+                    {renderAgeIcon(group.id)}
                   </div>
-                  <span style={{
-                    fontFamily: "'Nunito', sans-serif",
-                    fontSize: '0.85rem',
-                    fontWeight: isActive ? 900 : 700,
-                    color: isActive ? '#FFFFFF' : 'rgba(255,255,255,0.7)'
-                  }}>
-                    {day.label[language] || day.label.bm}
-                  </span>
-                </div>
+                  <div>
+                    <h3>{group.title[language] || group.title.bm}</h3>
+                    <p>{group.subtitle[language] || group.subtitle.bm}</p>
+                  </div>
+                </button>
               );
             })}
           </div>
+          
+          <div style={{ paddingBottom: '80px' }} />
         </div>
 
-        {/* SUBJECT Header */}
-        <h2 className="section-header">
-          {language === 'bm' ? 'SUBJEK' : 'SUBJECT'}
-        </h2>
+        {/* RIGHT COLUMN: Insights / DashboardStats */}
+        <div className="home-insights-wrapper">
+          <aside className="home-insights">
+            <section className="home-side-card">
+              <div className="home-side-heading">
+                <span>{language === 'bm' ? 'Matlamat harian' : 'Daily goal'}</span>
+                <Star size={18} />
+              </div>
+              <strong>{language === 'bm' ? 'Selesaikan 1 aktiviti' : 'Complete 1 activity'}</strong>
+              <p>{language === 'bm' ? 'Sedikit demi sedikit, kamu pasti boleh.' : 'A little progress every day adds up.'}</p>
+            </section>
 
-        {/* 2x2 Grid with WIDE horizontal cards matching image */}
-        <div className="course-grid">
+            <section className="home-side-card">
+              <div className="home-side-heading">
+                <span>{language === 'bm' ? 'Kemajuan mingguan' : 'Weekly progress'}</span>
+                <Medal size={18} />
+              </div>
+              <div className="home-week-dots">
+                {Array.from({ length: 7 }, (_, index) => (
+                  <span key={index} className={index < Math.min(streak, 7) ? 'is-done' : ''} />
+                ))}
+              </div>
+              <p style={{ fontWeight: 700, fontSize: 13, color: '#22C55E', margin: 0 }}>
+                🔥 {streak} {language === 'bm' ? 'Hari berturut' : 'Day streak'}
+              </p>
+            </section>
 
-          {/* 1. Belajar Membaca */}
-          <div className="subject-card card-reading" onClick={() => onSelectSubject('reading')} role="button" tabIndex="0" aria-label="Belajar Membaca">
-            <div className="rb-stage">
-              <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
-              <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
-              <RobotReading />
-            </div>
-            <span className="rb-pill">{language === 'bm' ? 'MEMBACA' : 'READING'}</span>
-            <p className="rb-desc">{language === 'bm' ? 'Kuasai kemahiran membaca dengan seronok!' : 'From syllables to full sentences — one step at a time!'}</p>
-          </div>
+            <section className="home-side-card home-achievement-card">
+              <span className="home-achievement-icon"><Trophy size={24} /></span>
+              <div>
+                <p style={{ fontWeight: 700, marginBottom: 2 }}>{language === 'bm' ? 'Tahap Semasa' : 'Current Level'}</p>
+                <strong style={{ margin: 0 }}>Level {currentLevel}</strong>
+              </div>
+            </section>
 
-          {/* 2. Belajar Sebutan */}
-          <div className="subject-card card-speak" onClick={() => onSelectSubject('bm')} role="button" tabIndex="0" aria-label="Belajar Sebutan">
-            <div className="rb-stage">
-              <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
-              <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
-              <RobotSpeaking />
-            </div>
-            <span className="rb-pill">{language === 'bm' ? 'SEBUTAN' : 'SPEAKING'}</span>
-            <p className="rb-desc">{language === 'bm' ? 'Perbaiki sebutan dengan yakin!' : 'Improve pronunciation with confidence!'}</p>
-          </div>
-
-          {/* 3. Matematik */}
-          <div className="subject-card card-math" onClick={() => onSelectSubject('math')} role="button" tabIndex="0" aria-label="Matematik">
-            <div className="rb-stage">
-              <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
-              <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
-              <RobotMath />
-            </div>
-            <span className="rb-pill">{language === 'bm' ? 'MATEMATIK' : 'MATHEMATICS'}</span>
-            <p className="rb-desc">{language === 'bm' ? 'Teroka dunia nombor dan logik!' : 'Explore the world of numbers and shapes!'}</p>
-          </div>
-
-          {/* 4. Pendidikan Islam V1 */}
-          <div className="subject-card card-arabic" onClick={() => onSelectSubject('pendidikan-islam-v1')} role="button" tabIndex="0" aria-label="Pendidikan Islam V1">
-            <div className="rb-stage">
-              <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
-              <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
-              <RobotArabic />
-            </div>
-            <span className="rb-pill">PENDIDIKAN ISLAM</span>
-            <p className="rb-desc">{language === 'bm' ? 'Belajar Pendidikan Islam dengan mudah!' : 'Learn Islamic Education easily!'}</p>
-          </div>
-
-          {/* 5. Matematik KSSR */}
-          <div className="subject-card card-matematik-kssr" onClick={() => onSelectSubject('matematik-kssr')} role="button" tabIndex="0" aria-label="Matematik KSSR">
-            <div className="rb-stage">
-              <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
-              <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
-              <RobotMath />
-            </div>
-            <span className="rb-pill">{language === 'bm' ? 'MATEMATIK KSSR' : 'MATH KSSR'}</span>
-            <p className="rb-desc">{language === 'bm' ? 'Ikut silibus KSSR Tahun 1–3!' : 'Follow the KSSR syllabus for Year 1–3!'}</p>
-          </div>
-
-          {/* 6. Bahasa Melayu KSSR */}
-          <div className="subject-card card-bm-kssr" onClick={() => onSelectSubject('bm-kssr')} role="button" tabIndex="0" aria-label="Bahasa Melayu KSSR">
-            <div className="rb-stage">
-              <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
-              <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
-              <RobotSpeaking />
-            </div>
-            <span className="rb-pill">{language === 'bm' ? 'B. MELAYU KSSR' : 'MALAY KSSR'}</span>
-            <p className="rb-desc">{language === 'bm' ? 'Ikut silibus BM KSSR Tahun 1–3!' : 'Follow the Malay KSSR syllabus!'}</p>
-          </div>
-
-          {/* 7. Robot & Kod */}
-          <div className="subject-card card-robot" onClick={() => setShowRobotInterface(true)} role="button" tabIndex="0" aria-label="Robot & Kod">
-            <div className="rb-stage">
-              <span className="rb-deco-dot rb-d1"/><span className="rb-deco-dot rb-d2"/>
-              <span className="rb-deco-dot rb-d3"/><span className="rb-deco-dot rb-d4"/>
-              <RobotMath />
-            </div>
-            <span className="rb-pill">{language === 'bm' ? 'ROBOT & KÓD' : 'ROBOT & CODE'}</span>
-            <p className="rb-desc">{language === 'bm' ? 'Belajar robotik dan kod dengan mudah!' : 'Learn robotics and coding the fun way!'}</p>
-          </div>
-        </div>
-
-        {/* AGE GROUPS Header */}
-        <h2 className="section-header">
-          {language === 'bm' ? 'KUMPULAN UMUR' : 'AGE GROUPS'}
-        </h2>
-
-        {/* AGE GROUPS List — vibrant game buttons */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingBottom: 'calc(140px + var(--safe-bottom))' }}>
-          {AGE_GROUPS.map((group, i) => {
-            const colors = AGE_COLORS[i % AGE_COLORS.length];
-            return (
-              <button
-                key={group.id}
-                className="age-group-card"
-                onClick={() => onSelectAgeGroup && onSelectAgeGroup(group.id)}
-                onMouseEnter={playHoverSound}
-                style={{
-                  background: colors.main,
-                  padding: '1.25rem 1.5rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '1.25rem',
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  width: '100%',
-                  outline: 'none',
-                  color: '#FFFFFF',
-                  boxShadow: `0 6px 16px -6px ${colors.glow}`,
-                  border: `3px solid ${colors.dark}`,
-                  borderRadius: '20px',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  textShadow: '1px 2px 0 rgba(0,0,0,0.12)',
-                }}
-              >
-                <div style={{
-                  flexShrink: 0,
-                  position: 'relative',
-                  zIndex: 1,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '64px',
-                  height: '64px',
-                  borderRadius: '16px',
-                  background: 'rgba(255,255,255,0.18)',
-                  border: '2px solid rgba(255,255,255,0.25)',
-                }}>
-                  {renderAgeIcon(group.id)}
-                </div>
-
-                <div style={{ flex: 1, position: 'relative', zIndex: 1 }}>
-                  <div style={{
-                    fontFamily: "'Fredoka', system-ui, sans-serif",
-                    fontWeight: 700,
-                    fontSize: '1.25rem',
-                    lineHeight: 1.2,
-                  }}>
-                    {group.title[language] || group.title.bm}
-                  </div>
-                  <div style={{
-                    fontFamily: "'Nunito', sans-serif",
-                    fontSize: '0.9rem',
-                    fontWeight: 800,
-                    opacity: 0.95,
-                    marginTop: '6px',
-                  }}>
-                    {group.subtitle[language] || group.subtitle.bm}
-                  </div>
-                </div>
-
-                <div style={{
-                  background: 'rgba(255,255,255,0.25)',
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 900,
-                  fontSize: '1.2rem',
-                  border: '2px solid rgba(255,255,255,0.3)',
-                  position: 'relative',
-                  zIndex: 1,
-                }}>
-                  →
-                </div>
-              </button>
-            );
-          })}
+            <section className="home-side-card">
+              <div className="home-side-heading">{language === 'bm' ? 'Aktiviti terkini' : 'Recent activity'}</div>
+              <strong>{language === 'bm' ? 'Belum ada aktiviti' : 'No recent activity'}</strong>
+            </section>
+          </aside>
         </div>
 
       </div>
-
-    </div >
+    </div>
   );
 }
