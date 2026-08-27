@@ -15,10 +15,7 @@ const REPORTS_PAGE_CSS = `
     width: 100%;
     overflow-y: auto;
     color: #172033;
-    background:
-      radial-gradient(circle at 0% 0%, rgba(14, 165, 233, .12), transparent 24rem),
-      radial-gradient(circle at 100% 0%, rgba(16, 185, 129, .12), transparent 22rem),
-      linear-gradient(180deg, #f4f8fc 0%, #eef4f7 100%);
+    background: #F2F8F1;
     font-family: 'Fredoka', sans-serif;
   }
 

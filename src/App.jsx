@@ -585,10 +585,9 @@ export default function App() {
   const inActiveQuiz = isPlaying;
   const viewKey = `${activeTab}-${currentSubject}-${mathSubGame}-${dateTimeSubGame}-${isPlaying}-${selectedAssessment?.id}`;
 
-  // Hide sidebar during game play, assessment, or on the homepage (which has its own left column)
+  // Hide sidebar during game play, assessment, or inside age-group games
   const shouldHideSidebar = isPlaying || (currentSubject === 'math' && mathSubGame === 'faq') || selectedAssessment || !!currentAgeGame
-    || (activeTab === 'learn' && currentSubject === 'matematik-kssr' && !!matematikModule && !matematikTopic)
-    || (activeTab === 'learn' && !currentSubject && !currentAgeGroup);
+    || (activeTab === 'learn' && currentSubject === 'matematik-kssr' && !!matematikModule && !matematikTopic);
 
   // ── Content renderer ──────────────────────────────────────────────────────
   const renderContent = () => {
@@ -1630,7 +1629,8 @@ export default function App() {
             playerName={playerName}
             gameState={gameState}
             onHome={handleBackToHome}
-            onOpenReports={() => navigate(() => setCurrentSubject('matematik-reports'))}
+            currentSubject={currentSubject}
+            onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
             theme={THEMES[currentTheme]}
             onThemeChange={setCurrentTheme}
             themes={THEMES}

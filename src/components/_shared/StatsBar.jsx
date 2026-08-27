@@ -156,10 +156,9 @@ export default function StatsBar({ subject = 'bm', variant, forceBundled = false
     <>
       <style>{`
         .sb-container {
-          position: relative;
+          position: ${variant === 'mb' ? 'static' : 'relative'};
           display: inline-flex;
           align-items: center;
-          isolation: isolate;
           z-index: 9999;
         }
         .sb-bundle-btn {
@@ -202,29 +201,33 @@ export default function StatsBar({ subject = 'bm', variant, forceBundled = false
         
         .sb-popover {
           position: absolute;
-          top: calc(100% + 10px);
-          right: 0;
+          ${variant === 'mb' ? 'bottom: calc(100% + 10px); left: 50%;' : 'top: calc(100% + 10px); right: 0;'}
           z-index: 9999;
-          min-width: ${variant === 'mb' ? '168px' : '144px'};
+          width: ${variant === 'mb' ? '252px' : 'auto'};
+          min-width: ${variant === 'mb' ? '252px' : '144px'};
           background: ${variant === 'mb' ? 'linear-gradient(180deg, rgba(255,255,255,.98), rgba(243,249,252,.96))' : '#ffffff'};
           padding: ${variant === 'mb' ? '10px' : '12px'};
           border-radius: ${variant === 'mb' ? '20px' : '16px'};
           box-shadow: none;
           border: ${variant === 'mb' ? '1px solid #E6E6E6' : '1px solid rgba(20,40,70,.1)'};
           overflow: hidden;
-          animation: sb-fade-in .18s cubic-bezier(.34,1.56,.64,1);
-          transform-origin: top right;
+          animation: ${variant === 'mb' ? 'sb-fade-in-up' : 'sb-fade-in-down'} .18s cubic-bezier(.34,1.56,.64,1) both;
+          transform-origin: ${variant === 'mb' ? 'bottom center' : 'top right'};
         }
-        @keyframes sb-fade-in {
+        @keyframes sb-fade-in-down {
           0% { opacity: 0; transform: scale(0.95) translateY(-5px); }
           100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        @keyframes sb-fade-in-up {
+          0% { opacity: 0; transform: translateX(-50%) scale(0.95) translateY(5px); }
+          100% { opacity: 1; transform: translateX(-50%) scale(1) translateY(0); }
         }
 
         /* Adjustments for popover mode */
         .sb-mb-wrap.popover-mode {
-          flex-direction: column;
-          align-items: stretch;
-          gap: 7px;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
           width: 100%;
           position: relative;
           z-index: 1;
@@ -236,6 +239,9 @@ export default function StatsBar({ subject = 'bm', variant, forceBundled = false
           justify-content: flex-start;
           padding: 0 12px;
           box-sizing: border-box;
+        }
+        .sb-mb-wrap.popover-mode .sb-mb-pill:last-child {
+          grid-column: 1 / -1;
         }
         .sb-mb-wrap.popover-mode .sb-mb-em {
           width: 22px;

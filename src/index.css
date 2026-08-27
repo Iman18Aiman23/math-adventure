@@ -41,7 +41,7 @@
   --text-light:     #94A3B8;
 
   /* Backgrounds */
-  --bg-body:   #F8FAFC;
+  --bg-body:   #F2F8F1;
   --bg-white:  #FFFFFF;
   --bg-card:   #FFFFFF;
   --bg-muted:  #F1F5F9;
@@ -1957,22 +1957,16 @@ button {
     max-width: 100%;
     flex-direction: row;
     box-shadow: none;
-    background: var(--bg-body);
+    background: #F2F8F1;
   }
 
-  /* ── Desktop Sidebar ── */
+  /* ── Desktop Sidebar ── (styles managed by DesktopSidebar.jsx inline <style>) */
   .desktop-sidebar {
     display: flex;
     flex-direction: column;
-    width: var(--sidebar-w);
-    min-width: var(--sidebar-w);
-    height: 100%;
-    background: #FFF8F0;
-    border-right: 2px solid var(--border-color);
     flex-shrink: 0;
     z-index: 60;
-    padding: var(--sp-3) 0;
-    overflow-y: auto;
+    /* No border-right — sidebar is a floating card, not a flush panel */
   }
 
   .sidebar-logo {
@@ -2040,6 +2034,7 @@ button {
     flex: 1;
     min-width: 0;
     height: 100%;
+    background: #F2F8F1;
   }
 
   /* ── Hide mobile bottom nav on desktop ── */

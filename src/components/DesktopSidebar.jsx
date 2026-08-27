@@ -1,11 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { GraduationCap, Trophy, Medal, User, Settings, Star, Heart, Gem, Flag } from 'lucide-react';
-import { getGameData } from '../utils/gameStatsManager';
+import { GraduationCap, Trophy, Medal, Settings, Flag, ChevronRight } from 'lucide-react';
 import useGamification from '../hooks/useGamification';
+import StatsBar from './_shared/StatsBar';
 
-// Matematik Tahun 1 topic registry — mirrors the routing keys in App.jsx
-// (MT_MODULE1..6_ORDER + legacy standalone games). Used as the denominator
-// for the "Kemajuan Modul" progress bar.
 const MT_MODULE2_DRILL_TYPES = [
   'kt-gabung', 'kt-garis', 'kt-perkataan', 'kt-ayat',
   'lt-mudah-m1', 'lt-warnai', 'lt-padankan', 'lt-bond', 'lt-abacus', 'lt-sederhana-s1', 'lt-sukar-k1',
@@ -38,55 +35,55 @@ const MT_T1_TOPICS = [
   'cerita-tambah-tolak', 'tambah-berulang', 'latih-diri', 'cabar-minda',
 ];
 
-// Matematik Tahun 1 theme — green Duolingo-style (matches NomborModule THEME
-// and the module hub coach card: #22C55E accent / #16A34A dark).
-const MT = {
-  accent: '#22C55E',
-  accentD: '#16A34A',
-  deep: '#15803D',
-  accentSoft: '#E7EFE3',
-  shell: '#F7F8FA',
-  border: '#E6E6E6',
-  text: '#707070',
-  textStrong: '#4A4A4A',
-  label: '#677064',
-};
-
 const getSidebarStyles = () => `
-  /* ── Sidebar shell — light surface matching the Matematik Tahun 1
-     module pages (#F7F8FA) with a soft green radial wash. ───────────── */
   .desktop-sidebar {
-    background:
-      radial-gradient(circle at 50% 0%, rgba(34,197,94,.07), transparent 42%),
-      ${MT.shell} !important;
-    border-right: 2px solid #ECECEC !important;
-    box-shadow: none !important;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 28px 22px 28px !important;
+    gap: 18px;
+    border: 1px solid rgba(0,0,0,0.06) !important;
+    border-radius: 28px !important;
+    background: radial-gradient(circle at 50% 0%, rgba(34,197,94,.06), transparent 40%), #F9FBFA !important;
     font-family: var(--font-body, 'Fredoka', sans-serif);
-    gap: 0;
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
+    box-sizing: border-box;
+    margin: 24px 0 24px 24px !important;
+    height: calc(100vh - 48px) !important;
+    overflow-y: hidden;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.02) !important;
   }
 
-  /* ── Logo: green gradient monogram badge (like the module coach
-     brand mark) + "Learning Hub" label ─────────────────────────────── */
+  @media (max-width: 1100px) {
+    .desktop-sidebar {
+      margin: 16px !important;
+      height: calc(100vh - 32px) !important;
+    }
+  }
+
   .sidebar-logo {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.55rem;
-    padding: 1.15rem 1rem 0.6rem;
+    gap: 8px;
+    padding: 0 1rem 8px;
     border: 0;
     background: transparent;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
   }
+  
   .sidebar-logo-badge {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 58px;
-    height: 58px;
-    border-radius: 19px;
-    background: linear-gradient(145deg, #5FD968 0%, ${MT.accent} 52%, ${MT.deep} 100%);
+    width: 62px;
+    height: 62px;
+    border-radius: 20px;
+    background: linear-gradient(145deg, #5FD968 0%, #22C55E 52%, #15803D 100%);
     box-shadow:
       0 8px 18px rgba(34, 197, 94, 0.35),
       inset 0 2px 0 rgba(255,255,255,0.28),
@@ -94,233 +91,273 @@ const getSidebarStyles = () => `
     font-family: var(--font-heading, 'Baloo 2', sans-serif);
     line-height: 1;
     flex-shrink: 0;
-    transition: transform .15s ease;
+    transition: transform .15s ease, box-shadow .15s ease;
   }
-  .sidebar-logo:hover .sidebar-logo-badge { transform: translateY(-2px); }
+  .sidebar-logo:hover .sidebar-logo-badge { 
+    transform: translateY(-2px); 
+    box-shadow: 0 12px 24px rgba(34, 197, 94, 0.4), inset 0 2px 0 rgba(255,255,255,0.3);
+  }
   .sidebar-logo:active .sidebar-logo-badge { transform: translateY(1px); }
   .sidebar-logo-badge-main {
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     font-weight: 800;
     color: #ffffff;
     letter-spacing: -0.01em;
     text-shadow: 0 2px 0 rgba(0,0,0,0.16);
   }
   .sidebar-logo-badge-sub {
-    font-size: 0.5rem;
+    font-size: 0.55rem;
     font-weight: 700;
-    color: rgba(255,255,255,0.85);
-    letter-spacing: 2.4px;
+    color: rgba(255,255,255,0.9);
+    letter-spacing: 2.5px;
     text-transform: lowercase;
-    margin-top: 3px;
+    margin-top: 2px;
     text-shadow: 0 1px 0 rgba(0,0,0,0.16);
   }
   .sidebar-subtitle-text {
-    color: ${MT.label};
+    color: #677064;
     font-family: var(--font-body, 'Fredoka', sans-serif);
-    font-size: 0.66rem;
+    font-size: 0.68rem;
     font-weight: 800;
-    letter-spacing: 2.5px;
-    margin: 0;
+    letter-spacing: 2.8px;
+    margin: 4px 0 0;
     text-transform: uppercase;
   }
 
-  /* ── Kemajuan Modul card — white card with soft green tint ───────── */
-  .sidebar-progress {
-    margin: 0.65rem 1rem 0.35rem;
-    padding: 13px 14px 14px;
-    border: 2px solid #DDEAD8;
-    border-radius: 18px;
-    background: #ffffff;
-    box-shadow: 0 10px 24px rgba(66, 115, 44, 0.08);
+  .home-coach-progress {
+    padding: 0 4px;
   }
-  .sidebar-progress-head {
+  .home-progress-label {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 8px;
-    color: ${MT.label};
-    font-size: 0.78rem;
+    font-size: 13px;
     font-weight: 700;
-    line-height: 1.2;
+    color: #677064;
+    margin-bottom: 10px;
   }
-  .sidebar-progress-head strong {
-    color: ${MT.accentD};
-    font-family: var(--font-heading, 'Baloo 2', sans-serif);
-    font-size: 0.92rem;
-    font-weight: 800;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
+  .home-progress-label strong {
+    color: #22C55E;
   }
-  .sidebar-progress-track {
-    height: 12px;
-    margin-top: 8px;
-    padding: 2px;
+  .home-progress-track {
+    height: 14px;
+    background: #E7EFE3;
     border-radius: 999px;
-    background: ${MT.accentSoft};
-    overflow: hidden;
+    padding: 3px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
   }
-  .sidebar-progress-track span {
+  .home-progress-track span {
     display: block;
     height: 100%;
-    min-width: 4px;
-    border-radius: inherit;
-    background: linear-gradient(90deg, #8EEB52, ${MT.accent});
-    box-shadow: 0 0 14px rgba(88, 204, 2, 0.35);
-    transition: width .7s ease;
+    background: linear-gradient(90deg, #8EEB52, #22C55E);
+    border-radius: 999px;
+    box-shadow: 0 0 12px rgba(88, 204, 2, 0.4);
+    transition: width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
-  /* ── Teruskan Belajar button — green gradient, 3D press ──────────── */
   .sidebar-continue {
     width: 100%;
-    min-height: 46px;
-    margin-top: 12px;
+    min-height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 7px;
-    padding: 9px 14px;
+    gap: 8px;
+    padding: 10px 16px;
     border: 0;
-    border-radius: 15px;
+    border-radius: 18px;
     color: #ffffff;
-    background: linear-gradient(180deg, #76D93B, ${MT.accent});
+    background: linear-gradient(180deg, #76D93B, #22C55E);
     box-shadow:
-      0 5px 0 ${MT.accentD},
-      0 14px 24px rgba(88, 204, 2, 0.2);
+      0 4px 0 #16A34A,
+      0 12px 24px rgba(88, 204, 2, 0.22);
     cursor: pointer;
     font-family: var(--font-heading, 'Baloo 2', sans-serif);
-    font-size: 0.98rem;
+    font-size: 1.05rem;
     font-weight: 800;
-    letter-spacing: 0.2px;
+    letter-spacing: 0.3px;
     text-shadow: 0 2px 0 rgba(0,0,0,0.12);
     transition: transform .18s ease, box-shadow .18s ease;
-    -webkit-tap-highlight-color: transparent;
   }
   .sidebar-continue:hover {
     transform: translateY(-2px);
-    box-shadow: 0 7px 0 ${MT.accentD}, 0 18px 30px rgba(88, 204, 2, 0.24);
+    box-shadow: 0 6px 0 #16A34A, 0 16px 32px rgba(88, 204, 2, 0.28);
   }
   .sidebar-continue:active {
-    transform: translateY(3px);
-    box-shadow: 0 2px 0 ${MT.accentD};
-  }
-  .sidebar-continue:focus-visible {
-    outline: 3px solid rgba(34, 197, 94, 0.4);
-    outline-offset: 3px;
-  }
-  .sidebar-continue-arrow {
-    font-size: 1.05rem;
-    line-height: 1;
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #16A34A;
   }
 
-  /* ── Nav items: white "game-button" cards, green active ───────────── */
-  .desktop-sidebar .sidebar-item {
-    font-family: var(--font-body, 'Fredoka', sans-serif) !important;
-    font-weight: 700 !important;
-    font-size: 0.9rem !important;
-    border: 3px solid ${MT.border} !important;
-    background: #ffffff !important;
-    border-radius: 16px !important;
-    color: ${MT.text} !important;
-    box-shadow: none !important;
-    padding: 10px 14px !important;
-    transition: transform .1s ease, border-color .15s ease, color .15s ease, background .15s ease !important;
-    -webkit-tap-highlight-color: transparent;
+
+
+  .home-quick-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: auto;
   }
-  .desktop-sidebar .sidebar-item:hover:not(.active) {
-    transform: translateY(-2px) !important;
-    border-color: #D8D8D8 !important;
-    background: #ffffff !important;
-    color: ${MT.textStrong} !important;
+  .home-quick-link {
+    background: #FFFFFF;
+    border: 2px solid #EAEAEA;
+    border-radius: 18px;
+    padding: 14px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-body, 'Fredoka', sans-serif);
+    font-size: 13px;
+    font-weight: 700;
+    color: #707070;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    transition: transform .15s ease, border-color .15s ease, color .15s ease, background .15s ease, box-shadow .15s ease;
   }
-  .desktop-sidebar .sidebar-item:active {
-    transform: translateY(2px) !important;
+  .home-quick-link:hover {
+    transform: translateY(-2px);
+    border-color: #D8D8D8;
+    color: #4A4A4A;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.04);
   }
-  .desktop-sidebar .sidebar-item.active {
-    background: ${MT.accent} !important;
-    border: 3px solid ${MT.accentD} !important;
-    color: #ffffff !important;
-    box-shadow: none !important;
-    text-shadow: 1px 2px 0 rgba(0,0,0,0.12);
-    backdrop-filter: none;
+  .home-quick-link.active {
+    background: linear-gradient(180deg, #76D93B, #22C55E);
+    border-color: #16A34A;
+    color: #ffffff;
+    box-shadow: 0 4px 0 #16A34A, 0 8px 20px rgba(88, 204, 2, 0.25);
+    text-shadow: 0 1px 0 rgba(0,0,0,0.12);
+    transform: none;
   }
-  .desktop-sidebar .sidebar-item-icon {
+  .home-quick-link.active svg {
+    color: #ffffff;
+  }
+  .home-quick-link.active:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #16A34A, 0 12px 24px rgba(88, 204, 2, 0.3);
+  }
+
+  .home-coach-footer {
+    margin-top: auto;
+    padding-top: 16px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .home-top-actions {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: inherit !important;
-    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.08));
   }
-  .desktop-sidebar .sidebar-item.active .sidebar-item-icon {
-    color: #ffffff !important;
+  .home-settings-btn {
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    flex: none;
+    padding: 0;
+    border: 2px solid #EAEAEA;
+    border-radius: 16px;
+    color: #707070;
+    background: #ffffff;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    transition: color .18s ease, background .18s ease, transform .16s ease, border-color .16s ease, box-shadow .16s ease;
   }
-
-  .desktop-sidebar .sidebar-nav {
-    gap: 8px;
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding: 0.35rem 1rem 0.5rem;
+  .home-settings-btn:hover {
+    color: #22C55E;
+    border-color: #22C55E;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(34,197,94,0.12);
   }
-  .desktop-sidebar .sidebar-nav::-webkit-scrollbar { width: 4px; }
-  .desktop-sidebar .sidebar-nav::-webkit-scrollbar-thumb {
-    background: rgba(34, 197, 94, 0.25);
-    border-radius: 999px;
+  .home-settings-btn:active { transform: translateY(1px); }
+  
+  .home-settings-popover {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    z-index: 50;
+    width: 252px;
+    padding: 16px;
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 20px;
+    background: rgba(255,255,255,.98);
+    box-shadow: 0 18px 42px rgba(0,0,0,0.08);
+    animation: mtMenuDrop .18s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    backdrop-filter: blur(12px);
+    transform-origin: bottom center;
   }
-
-  /* ── Footer stat pills: white game-cards with green-tinted border ─── */
-  .sidebar-stat-pill {
+  @keyframes mtMenuDrop {
+    from { opacity: 0; transform: translateX(-50%) translateY(8px) scale(0.98); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+  }
+  .mt-settings-heading {
+    font-family: var(--font-body, 'Fredoka', sans-serif);
+    font-size: 11px;
+    font-weight: 800;
+    color: #22C55E;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    margin-bottom: 10px;
+  }
+  .mt-lang-btn {
     display: flex;
     align-items: center;
-    gap: 10px;
-    width: 100%;
-    box-sizing: border-box;
-    background: #ffffff;
-    border: 2px solid #E3EFE0;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    border: 2px solid #EAEAEA;
     border-radius: 14px;
-    padding: 8px 14px;
+    background: #fff;
     font-family: var(--font-body, 'Fredoka', sans-serif);
+    font-size: 13px;
     font-weight: 700;
-    font-size: 0.84rem;
-    box-shadow: 0 6px 16px rgba(66, 115, 44, 0.06);
-  }
-  .sidebar-stat-pill-value {
-    font-family: var(--font-heading, 'Baloo 2', sans-serif);
-    font-weight: 800;
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* ── Settings dropdown game-style toggles ─────────────────────────── */
-  .settings-pill-btn {
-    font-family: var(--font-body, 'Fredoka', sans-serif);
-    font-weight: 700;
-    border-radius: 12px;
+    color: #4A4A4A;
     cursor: pointer;
-    transition: transform .1s ease, border-color .15s ease, background .15s ease;
+    transition: all .15s ease;
   }
-  .settings-pill-btn:hover { transform: translateY(-1px); }
-  .settings-pill-btn:active { transform: translateY(1px); }
+  .mt-lang-btn:hover { border-color: #22C55E; color: #22C55E; }
+  .mt-lang-btn.active {
+    border-color: #22C55E;
+    background: #F4FAF1;
+    color: #22C55E;
+  }
+  .mt-lang-flag { font-size: 16px; }
+  
+  .mt-theme-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .mt-theme-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border: 2px solid #EAEAEA;
+    border-radius: 14px;
+    background: #fff;
+    font-family: var(--font-body, 'Fredoka', sans-serif);
+    font-size: 12px;
+    font-weight: 700;
+    color: #4A4A4A;
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+  .mt-theme-btn:hover { border-color: #22C55E; }
+  .mt-theme-btn.active { border-color: #22C55E; background: #F4FAF1; }
+  .mt-theme-color-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--t-bg);
+    border: 1px solid rgba(0,0,0,.1);
+  }
 `;
-
-// Active state uses a single green accent (set in CSS), so tabs only
-// need their icon + label.
-const SIDEBAR_TABS = [
-  { id: 'learn',       icon: GraduationCap, label: { bm: 'Kursus',      eng: 'Course' } },
-  { id: 'leaderboard', icon: Trophy,        label: { bm: 'Papan Juara', eng: 'Leaderboard' } },
-  { id: 'profile',     icon: User,          label: { bm: 'Profil',      eng: 'Profile' } },
-  { id: 'achievement', icon: Medal,         label: { bm: 'Pencapaian',  eng: 'Achievement' } },
-];
 
 export default function DesktopSidebar({
   activeTab, onTabChange, language, onToggleLanguage,
   playerName, gameState, onHome, onOpenReports,
   theme, onThemeChange, themes,
-  onContinueLearning,
+  onContinueLearning, currentSubject,
 }) {
-  const [hearts, setHearts] = useState(3);
-  const [gems, setGems] = useState(0);
-  const [stars, setStars] = useState(0);
-  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const settingsRef = useRef(null);
 
   const { completedTopics } = useGamification('mt');
@@ -331,232 +368,143 @@ export default function DesktopSidebar({
     : 0;
 
   useEffect(() => {
-    const gameData = getGameData();
-    setHearts(gameData.hearts);
-    setGems(gameData.gems);
-    setStars(gameData.stars);
-  }, []);
-
-  useEffect(() => {
     const handleClickOutside = (event) => {
       if (settingsRef.current && !settingsRef.current.contains(event.target)) {
-        setSettingsOpen(false);
+        setIsSettingsOpen(false);
       }
     };
-
-    if (settingsOpen) {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setIsSettingsOpen(false);
+      }
+    };
+    if (isSettingsOpen) {
       document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+        document.removeEventListener('keydown', handleKeyDown);
+      };
     }
-  }, [settingsOpen]);
-
-  const handleLanguagePick = (lang) => {
-    if (lang === language) return;
-    onToggleLanguage?.();
-  };
+  }, [isSettingsOpen]);
 
   const hasSettings = onToggleLanguage || (themes && onThemeChange);
 
   return (
     <>
       <style>{getSidebarStyles()}</style>
-      <style>{`
-        @keyframes settingsDropdownIn {
-          from { opacity: 0; transform: translateY(-8px); }
-          to   { opacity: 1; transform: translateY(0);    }
-        }
-      `}</style>
 
       <aside className="desktop-sidebar">
-        {/* Logo — green monogram badge (Matematik coach brand style) */}
-        <div className="sidebar-logo" onClick={onHome} role="button" tabIndex={0}
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onHome(); }}>
-          <div className="sidebar-logo-badge" aria-hidden="true">
-            <span className="sidebar-logo-badge-main">Iman</span>
-            <span className="sidebar-logo-badge-sub">core</span>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className="sidebar-logo" onClick={onHome} role="button" tabIndex={0}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onHome(); }}>
+            <div className="sidebar-logo-badge">
+              <span className="sidebar-logo-badge-main">Iman</span>
+              <span className="sidebar-logo-badge-sub">core</span>
+            </div>
+            <h2 className="sidebar-subtitle-text">Learning Hub</h2>
           </div>
-          <h2 className="sidebar-subtitle-text">Learning Hub</h2>
         </div>
 
-        {/* Kemajuan Modul — progress card + Teruskan Belajar */}
-        <section className="sidebar-progress" aria-label={language === 'bm' ? 'Kemajuan modul' : 'Module progress'}>
-          <div className="sidebar-progress-head">
-            <span>{language === 'bm' ? 'Kemajuan Modul' : 'Module Progress'}</span>
+        <div className="home-coach-progress">
+          <div className="home-progress-label">
+            <span>{language === 'bm' ? 'Kemajuan' : 'Progress'}</span>
             <strong>{moduleProgress}%</strong>
           </div>
-          <div className="sidebar-progress-track" aria-hidden="true">
-            <span style={{ width: `${moduleProgress}%` }} />
+          <div className="home-progress-track">
+            <span style={{ width: `${moduleProgress}%` }}></span>
           </div>
-          <button
-            className="sidebar-continue"
-            onClick={() => onContinueLearning?.()}
-            type="button"
-          >
-            <span>{language === 'bm' ? 'Teruskan Belajar' : 'Continue Learning'}</span>
-            <span className="sidebar-continue-arrow">▸</span>
-          </button>
-        </section>
+        </div>
 
-        {/* Navigation */}
-        <nav className="sidebar-nav">
-          {SIDEBAR_TABS.map(tab => (
-            <button
-              key={tab.id}
-              className={`sidebar-item${activeTab === tab.id ? ' active' : ''}`}
-              style={{ gap: '0.85rem' }}
-              onClick={() => {
-                if (tab.id === 'learn') {
-                  onHome();
-                } else {
-                  onTabChange(tab.id);
-                }
-              }}
-            >
-              <span className="sidebar-item-icon">
-                {React.createElement(tab.icon, { size: 22, strokeWidth: 2.4 })}
-              </span>
-              <span>{tab.label[language] || tab.label.bm}</span>
-            </button>
-          ))}
+        <button 
+          className="sidebar-continue" 
+          onClick={() => {
+            if (onContinueLearning) onContinueLearning();
+            else onHome();
+          }}
+          type="button"
+        >
+          <span>{language === 'bm' ? 'Teruskan belajar' : 'Continue learning'}</span>
+          <ChevronRight className="sidebar-continue-arrow" size={20} strokeWidth={3} />
+        </button>
 
-          {/* Divider */}
-          <div style={{ height: 2, background: '#ECECEC', margin: '6px 4px', borderRadius: 2 }} />
 
-          {/* Settings Button with Dropdown */}
-          {hasSettings && (
-            <div ref={settingsRef} style={{ position: 'relative', zIndex: 100 }}>
-              <button
-                className={`sidebar-item${settingsOpen ? ' active' : ''}`}
-                onClick={() => setSettingsOpen(p => !p)}
-                style={{ gap: '0.85rem', width: '100%' }}
-              >
-                <span className="sidebar-item-icon">
-                  <Settings size={22} strokeWidth={2.4} />
-                </span>
-                <span>{language === 'bm' ? 'Tetapan' : 'Settings'}</span>
-              </button>
 
-              {/* Settings Dropdown */}
-              {settingsOpen && (
-                <div
-                  style={{
-                    position: 'fixed',
-                    top: '50%',
-                    left: 'calc(var(--sidebar-w, 240px) + 16px)',
-                    transform: 'translateY(-50%)',
-                    background: 'white',
-                    borderRadius: '18px',
-                    padding: '20px',
-                    border: '3px solid #E3EFE0',
-                    boxShadow: '0 10px 32px rgba(22, 101, 52, 0.16)',
-                    minWidth: '280px',
-                    animation: 'settingsDropdownIn 0.2s ease-out',
-                    zIndex: 1000,
-                  }}
-                >
-                  <h3 style={{ margin: '0 0 18px 0', fontFamily: "var(--font-heading, 'Baloo 2', sans-serif)", fontSize: '1.05rem', fontWeight: 800, color: '#15803D' }}>
-                    {language === 'bm' ? 'Tetapan' : 'Settings'}
-                  </h3>
+        <div className="home-quick-nav">
+          <div className={`home-quick-link ${activeTab === 'learn' && currentSubject !== 'matematik-reports' ? 'active' : ''}`} onClick={() => onHome?.()}>
+            <GraduationCap size={22} />
+            <span>{language === 'bm' ? 'Kursus' : 'Course'}</span>
+          </div>
+          <div className={`home-quick-link ${activeTab === 'leaderboard' ? 'active' : ''}`} onClick={() => onTabChange?.('leaderboard')}>
+            <Trophy size={22} />
+            <span>{language === 'bm' ? 'Papan Juara' : 'Leaderboard'}</span>
+          </div>
+          <div className={`home-quick-link ${activeTab === 'achievement' ? 'active' : ''}`} onClick={() => onTabChange?.('achievement')}>
+            <Medal size={22} />
+            <span>{language === 'bm' ? 'Pencapaian' : 'Achievement'}</span>
+          </div>
+          <div className={`home-quick-link ${currentSubject === 'matematik-reports' ? 'active' : ''}`} onClick={() => onOpenReports?.()}>
+            <Flag size={22} />
+            <span>{language === 'bm' ? 'Laporan' : 'Reports'}</span>
+          </div>
+        </div>
 
-                  {onToggleLanguage && (
-                    <div style={{ marginBottom: '18px' }}>
-                      <p style={{ margin: '0 0 10px 0', fontFamily: "var(--font-body, 'Fredoka', sans-serif)", fontSize: '0.72rem', fontWeight: 800, color: '#9AA0AB', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                        {language === 'bm' ? 'Bahasa' : 'Language'}
-                      </p>
-                      <div style={{ display: 'flex', gap: 10 }}>
-                        {['bm', 'eng'].map(lang => {
-                          const isActive = language === lang;
-                          return (
-                            <button
-                              key={lang}
-                              className="settings-pill-btn"
-                              onClick={() => handleLanguagePick(lang)}
-                              style={{
-                                flex: 1,
-                                padding: '10px 12px',
-                                border: isActive ? '3px solid #16A34A' : '3px solid #E6E6E6',
-                                background: isActive ? '#22C55E' : '#ffffff',
-                                color: isActive ? '#ffffff' : '#707070',
-                                fontSize: '0.9rem',
-                                textShadow: isActive ? '1px 2px 0 rgba(0,0,0,0.12)' : 'none',
-                              }}
-                            >
-                              {lang === 'bm' ? 'BM' : 'EN'}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-
+        <div className="home-coach-footer">
+          <div style={{ display: 'flex', flexDirection: 'row', gap: '8px', alignItems: 'center' }}>
+            <div className="home-top-actions" style={{ flex: 1, marginBottom: 0, justifyContent: 'flex-start' }}>
+              <StatsBar forceBundled={true} variant="mb" />
+            </div>
+            
+            {hasSettings && (
+              <div style={{ display: 'flex', flexShrink: 0 }} ref={settingsRef}>
+                <button className="home-settings-btn" onClick={() => setIsSettingsOpen(p => !p)}>
+                  <Settings size={21} strokeWidth={2.4} />
+                </button>
+              {isSettingsOpen && (
+                <div className="home-settings-popover">
+                  <div className="mt-settings-heading">
+                    {language === 'bm' ? 'Pilih Bahasa' : 'Language'}
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '16px' }}>
+                    <button
+                      className={`mt-lang-btn ${language === 'bm' ? 'active' : ''}`}
+                      onClick={() => { if (language !== 'bm') onToggleLanguage?.(); setIsSettingsOpen(false); }}
+                    >
+                      <span className="mt-lang-flag">🇲🇾</span>
+                      <span>Bahasa</span>
+                    </button>
+                    <button
+                      className={`mt-lang-btn ${language === 'en' ? 'active' : ''}`}
+                      onClick={() => { if (language !== 'en') onToggleLanguage?.(); setIsSettingsOpen(false); }}
+                    >
+                      <span className="mt-lang-flag">🇬🇧</span>
+                      <span>English</span>
+                    </button>
+                  </div>
                   {themes && onThemeChange && (
-                    <div>
-                      <p style={{ margin: '0 0 10px 0', fontFamily: "var(--font-body, 'Fredoka', sans-serif)", fontSize: '0.72rem', fontWeight: 800, color: '#9AA0AB', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                        {language === 'bm' ? 'Tema' : 'Theme'}
-                      </p>
-                      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                        {Object.values(themes).map(t => {
-                          const isActive = theme?.key === t.key;
-                          return (
-                            <button
-                              key={t.key}
-                              className="settings-pill-btn"
-                              onClick={() => onThemeChange(t.key)}
-                              title={t.label}
-                              style={{
-                                width: '38px',
-                                height: '38px',
-                                background: t.swatch,
-                                border: isActive ? '3px solid #15803D' : '3px solid #E6E6E6',
-                                transform: isActive ? 'scale(1.06)' : 'scale(1)',
-                              }}
-                            />
-                          );
-                        })}
+                    <>
+                      <div className="mt-settings-heading" style={{ marginTop: '4px' }}>
+                        {language === 'bm' ? 'Tema Angkasa' : 'Theme'}
                       </div>
-                    </div>
+                      <div className="mt-theme-list">
+                        {Object.entries(themes).map(([tid, t]) => (
+                          <button
+                            key={tid}
+                            className={`mt-theme-btn ${theme?.key === t.key ? 'active' : ''}`}
+                            onClick={() => { onThemeChange(tid); setIsSettingsOpen(false); }}
+                            style={{ '--t-bg': t.heroBg }}
+                          >
+                            <span className="mt-theme-color-dot" />
+                            <span>{t.label}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </>
                   )}
                 </div>
               )}
             </div>
           )}
-
-          {onOpenReports && (
-            <button
-              className="sidebar-item"
-              onClick={onOpenReports}
-              style={{ gap: '0.85rem', width: '100%' }}
-            >
-              <span className="sidebar-item-icon">
-                <Flag size={22} strokeWidth={2.4} />
-              </span>
-              <span>Reports</span>
-            </button>
-          )}
-        </nav>
-
-        {/* Footer Stats — white game-card pills */}
-        <div className="sidebar-footer" style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'stretch',
-          gap: '0.55rem',
-          padding: '0.9rem 1rem 1.1rem',
-          borderTop: '2px solid #ECECEC',
-          marginTop: 'auto',
-          background: 'transparent'
-        }}>
-          <div className="sidebar-stat-pill">
-            <Star size={18} color="#F59E0B" fill="#FCD34D" />
-            <span className="sidebar-stat-pill-value" style={{ color: '#B45309' }}>{stars} {language === 'bm' ? 'bintang' : 'stars'}</span>
-          </div>
-          <div className="sidebar-stat-pill">
-            <Heart size={18} color="#EF4444" fill="#FCA5A5" />
-            <span className="sidebar-stat-pill-value" style={{ color: '#DC2626' }}>{hearts} {language === 'bm' ? 'nyawa' : 'hearts'}</span>
-          </div>
-          <div className="sidebar-stat-pill">
-            <Gem size={18} color="#8B5CF6" fill="#C4B5FD" />
-            <span className="sidebar-stat-pill-value" style={{ color: '#7C3AED' }}>{gems} {language === 'bm' ? 'permata' : 'gems'}</span>
           </div>
         </div>
       </aside>

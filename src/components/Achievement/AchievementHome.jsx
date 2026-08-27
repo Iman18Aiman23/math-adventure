@@ -1174,7 +1174,7 @@ export default function AchievementHome({ onBack, onHome, language, gameState, o
   const unlockedAchievements = useMemo(() => getUnlockedAchievements(), [getUnlockedAchievements]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#fff' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#F2F8F1' }}>
       
       {/* Full-screen Loading Overlay */}
       {downloadingBadge && (
@@ -1230,7 +1230,7 @@ export default function AchievementHome({ onBack, onHome, language, gameState, o
         gap: '0.5rem',
         padding: '1rem 0.75rem',
         borderBottom: '2px solid #E5E5E5',
-        background: '#fff',
+        background: 'transparent',
         flexWrap: 'wrap',
         justifyContent: 'center'
       }}>

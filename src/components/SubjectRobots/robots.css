@@ -63,3 +63,27 @@
   0%, 100% { transform: skewX(-2deg); }
   50% { transform: skewX(3deg); }
 }
+
+/* Mobile Performance Optimizations */
+@media (max-width: 768px) {
+  /* 1. Strip all GPU-heavy filters (drop shadows, blurs) to fix render delays */
+  [filter="url(#fShadow)"],
+  [filter="url(#fShadowSoft)"],
+  [filter="url(#fGlow)"],
+  [filter="url(#fBigGlow)"] {
+    filter: none !important;
+  }
+  
+  /* 2. Disable complex infinite animations to save battery and CPU */
+  .rb-floatA,
+  .rb-pulseGlow,
+  .rb-spin,
+  .rb-spinR,
+  .rb-wiggle,
+  .rb-pointArm,
+  .rb-capeWave {
+    animation: none !important;
+    transform: none !important;
+    will-change: auto !important;
+  }
+}

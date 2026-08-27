@@ -2,8 +2,7 @@ import React, { useState, Suspense } from 'react';
 import { AGE_GROUPS } from '../data/ageCurriculum';
 import { playHoverSound } from '../utils/soundManager';
 import { RobotDefs, RobotReading, RobotSpeaking, RobotArabic, RobotMath } from './SubjectRobots';
-import { Trophy, Star, Medal, Flag, GraduationCap, ChevronRight, Settings } from 'lucide-react';
-import StatsBar from './_shared/StatsBar';
+import { Trophy, Star, Medal } from 'lucide-react';
 
 const HomePagePrototype = React.lazy(() => import('./HomePagePrototype'));
 
@@ -19,28 +18,7 @@ const HERO_STARS = Array.from({ length: 28 }, (_, i) => ({
 
 export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, playerName, gameState, streak = 0, onTabChange, onHome, onToggleLang, theme, themes, onThemeChange }) {
   const [showRobotInterface, setShowRobotInterface] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const settingsRef = React.useRef(null);
   const currentLevel = gameState?.level ?? 1;
-
-  React.useEffect(() => {
-    const handlePointerDown = (event) => {
-      if (!settingsRef.current?.contains(event.target)) {
-        setIsSettingsOpen(false);
-      }
-    };
-    const handleKeyDown = (event) => {
-      if (event.key === 'Escape') {
-        setIsSettingsOpen(false);
-      }
-    };
-    document.addEventListener('pointerdown', handlePointerDown);
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('pointerdown', handlePointerDown);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
 
   if (showRobotInterface) {
     return (
@@ -120,7 +98,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
         .home-dashboard-wrapper {
           display: flex;
           flex-direction: column;
-          min-height: 100vh;
+          min-height: 100%;
           overflow-y: auto;
           overflow-x: hidden;
           background: #F2F8F1;
@@ -130,16 +108,16 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
         }
 
         .home-dashboard-grid {
-          width: min(1460px, 100%);
+          width: min(1200px, 100%);
           margin: 0 auto;
           display: grid;
-          grid-template-columns: minmax(220px, 280px) minmax(440px, 1fr) minmax(220px, 260px);
+          grid-template-columns: minmax(440px, 1fr) minmax(220px, 260px);
           gap: clamp(18px, 2vw, 28px);
         }
 
         @media (max-width: 1100px) {
           .home-dashboard-grid {
-            grid-template-columns: 280px 1fr;
+            grid-template-columns: 1fr;
           }
           .home-insights {
             display: none !important;
@@ -154,84 +132,8 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             grid-template-columns: 1fr;
             gap: 16px;
           }
-          .home-coach {
-            display: none !important;
-          }
         }
 
-        /* ── Left Sidebar (Coach / Profile) matching DesktopSidebar ── */
-        .home-coach {
-          display: flex;
-          flex-direction: column;
-          align-items: stretch;
-          padding: 24px 20px 20px;
-          border: 2px solid #ECECEC;
-          border-radius: 24px;
-          background: radial-gradient(circle at 50% 0%, rgba(34,197,94,.07), transparent 42%), #F7F8FA;
-        }
-        
-        .sidebar-logo {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 0.55rem;
-          padding: 1.15rem 1rem 0.6rem;
-          border: 0;
-          background: transparent;
-          margin-bottom: 12px;
-          cursor: pointer;
-          -webkit-tap-highlight-color: transparent;
-        }
-        .home-coach-footer {
-          margin-top: auto;
-          padding-top: 20px;
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-        }
-        .home-top-actions {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 20px;
-        }
-        .home-settings-btn {
-          width: 44px;
-          height: 44px;
-          display: grid;
-          place-items: center;
-          flex: none;
-          padding: 0;
-          border: 2px solid #E6E6E6;
-          border-radius: 14px;
-          color: #707070;
-          background: #ffffff;
-          cursor: pointer;
-          transition: color .18s ease, background .18s ease, transform .16s ease, border-color .16s ease;
-        }
-        .home-settings-btn:hover {
-          color: #22C55E;
-          border-color: #22C55E;
-          transform: translateY(-1px);
-        }
-        .home-settings-btn:active { transform: translateY(1px); }
-        .home-settings-popover {
-          position: absolute;
-          top: calc(100% + 8px);
-          left: -4px;
-          z-index: 50;
-          width: 252px;
-          padding: 16px;
-          border: 1px solid #DEE8DA;
-          border-radius: 20px;
-          background: rgba(255,255,255,.98);
-          box-shadow: 0 18px 42px rgba(48, 82, 57, .16);
-          animation: mtMenuDrop .16s ease-out both;
-        }
-        @keyframes mtMenuDrop {
-          from { opacity: 0; transform: translateY(-8px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
         .mt-settings-heading {
           font-family: 'Fredoka', sans-serif;
           font-size: 11px;
@@ -292,160 +194,6 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
           border-radius: 50%;
           background: var(--t-bg);
           border: 1px solid rgba(0,0,0,.1);
-        }
-        .sidebar-logo-badge {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          width: 58px;
-          height: 58px;
-          border-radius: 19px;
-          background: linear-gradient(145deg, #5FD968 0%, #22C55E 52%, #15803D 100%);
-          box-shadow:
-            0 8px 18px rgba(34, 197, 94, 0.35),
-            inset 0 2px 0 rgba(255,255,255,0.28),
-            inset 0 -3px 0 rgba(0,0,0,0.14);
-          font-family: var(--font-heading, 'Baloo 2', sans-serif);
-          line-height: 1;
-          flex-shrink: 0;
-          transition: transform .15s ease;
-        }
-        .sidebar-logo:hover .sidebar-logo-badge { transform: translateY(-2px); }
-        .sidebar-logo:active .sidebar-logo-badge { transform: translateY(1px); }
-        .sidebar-logo-badge-main {
-          font-size: 1.05rem;
-          font-weight: 800;
-          color: #ffffff;
-          letter-spacing: -0.01em;
-          text-shadow: 0 2px 0 rgba(0,0,0,0.16);
-        }
-        .sidebar-logo-badge-sub {
-          font-size: 0.5rem;
-          font-weight: 700;
-          color: rgba(255,255,255,0.85);
-          letter-spacing: 2.4px;
-          text-transform: lowercase;
-          margin-top: 3px;
-          text-shadow: 0 1px 0 rgba(0,0,0,0.16);
-        }
-        .sidebar-subtitle-text {
-          color: #677064;
-          font-family: var(--font-body, 'Fredoka', sans-serif);
-          font-size: 0.66rem;
-          font-weight: 800;
-          letter-spacing: 2.5px;
-          margin: 0;
-          text-transform: uppercase;
-        }
-
-        .home-coach-progress {
-          margin-bottom: 16px;
-        }
-        .home-progress-label {
-          display: flex;
-          justify-content: space-between;
-          font-size: 13px;
-          font-weight: 700;
-          color: #677064;
-          margin-bottom: 8px;
-        }
-        .home-progress-label strong {
-          color: #22C55E;
-        }
-        .home-progress-track {
-          height: 12px;
-          background: #E7EFE3;
-          border-radius: 999px;
-          padding: 2px;
-        }
-        .home-progress-track span {
-          display: block;
-          height: 100%;
-          background: linear-gradient(90deg, #8EEB52, #22C55E);
-          border-radius: 999px;
-          width: 8%; /* placeholder */
-          box-shadow: 0 0 14px rgba(88, 204, 2, 0.35);
-        }
-
-        .sidebar-continue {
-          width: 100%;
-          min-height: 46px;
-          margin-bottom: 20px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 7px;
-          padding: 9px 14px;
-          border: 0;
-          border-radius: 15px;
-          color: #ffffff;
-          background: linear-gradient(180deg, #76D93B, #22C55E);
-          box-shadow:
-            0 5px 0 #16A34A,
-            0 14px 24px rgba(88, 204, 2, 0.2);
-          cursor: pointer;
-          font-family: var(--font-heading, 'Baloo 2', sans-serif);
-          font-size: 0.98rem;
-          font-weight: 800;
-          letter-spacing: 0.2px;
-          text-shadow: 0 2px 0 rgba(0,0,0,0.12);
-          transition: transform .18s ease, box-shadow .18s ease;
-        }
-        .sidebar-continue:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 7px 0 #16A34A, 0 18px 30px rgba(88, 204, 2, 0.24);
-        }
-        .sidebar-continue:active {
-          transform: translateY(3px);
-          box-shadow: 0 2px 0 #16A34A;
-        }
-
-        .home-coach-summary {
-          display: flex;
-          justify-content: space-between;
-          background: #ffffff;
-          border: 2px solid #E3EFE0;
-          padding: 12px 16px;
-          border-radius: 14px;
-          margin-bottom: 16px;
-          font-size: 12px;
-          color: #707070;
-          font-weight: 600;
-          box-shadow: 0 6px 16px rgba(66, 115, 44, 0.06);
-        }
-        .home-coach-summary strong {
-          display: block;
-          color: #4A4A4A;
-          font-size: 16px;
-          font-family: 'Baloo 2', sans-serif;
-        }
-
-        .home-quick-nav {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 12px;
-        }
-        .home-quick-link {
-          background: #FFFFFF;
-          border: 3px solid #E6E6E6;
-          border-radius: 16px;
-          padding: 12px 8px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 6px;
-          font-family: 'Fredoka', sans-serif;
-          font-size: 12px;
-          font-weight: 700;
-          color: #707070;
-          cursor: pointer;
-          transition: transform .1s ease, border-color .15s ease, color .15s ease, background .15s ease;
-        }
-        .home-quick-link:hover {
-          transform: translateY(-2px);
-          border-color: #D8D8D8;
-          color: #4A4A4A;
         }
 
         /* ── Center Column (Main) ── */
@@ -685,123 +433,6 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
       `}</style>
 
       <div className="home-dashboard-grid">
-        {/* LEFT COLUMN: Profile & Navigation */}
-        <div className="home-coach-wrapper">
-          <aside className="home-coach">
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
-            <div className="sidebar-logo" style={{ marginBottom: 0 }}>
-              <div className="sidebar-logo-badge">
-                <span className="sidebar-logo-badge-main">Iman</span>
-                <span className="sidebar-logo-badge-sub">core</span>
-              </div>
-              <h2 className="sidebar-subtitle-text">Learning Hub</h2>
-            </div>
-          </div>
-
-
-
-          <div className="home-coach-progress">
-            <div className="home-progress-label">
-              <span>Kemajuan</span>
-              <strong>8%</strong>
-            </div>
-            <div className="home-progress-track">
-              <span></span>
-            </div>
-          </div>
-
-          <button className="sidebar-continue">
-            <span>Teruskan belajar</span>
-            <ChevronRight className="sidebar-continue-arrow" size={20} strokeWidth={3} />
-          </button>
-
-          <div className="home-coach-summary">
-            <div style={{ textAlign: 'center' }}>
-              <strong>5</strong>
-              <span>Topik</span>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <strong>13</strong>
-              <span>Aktiviti</span>
-            </div>
-          </div>
-
-          <div className="home-quick-nav">
-            <div className="home-quick-link" onClick={() => onHome?.()}>
-              <GraduationCap size={22} />
-              <span>Kursus</span>
-            </div>
-            <div className="home-quick-link" onClick={() => onTabChange?.('leaderboard')}>
-              <Trophy size={22} />
-              <span>Papan Juara</span>
-            </div>
-            <div className="home-quick-link" onClick={() => onTabChange?.('achievement')}>
-              <Medal size={22} />
-              <span>Pencapaian</span>
-            </div>
-            <div className="home-quick-link" onClick={() => onSelectSubject?.('matematik-reports')}>
-              <Flag size={22} />
-              <span>Laporan</span>
-            </div>
-          </div>
-
-          <div className="home-coach-footer">
-            <div className="home-top-actions" style={{ marginBottom: 0 }}>
-              <StatsBar forceBundled={true} variant="mb" />
-            </div>
-            
-            <div style={{ position: 'relative', display: 'flex', justifyContent: 'center' }} ref={settingsRef}>
-              <button className="home-settings-btn" onClick={() => setIsSettingsOpen(p => !p)} style={{ width: '100%' }}>
-                <Settings size={21} strokeWidth={2.4} />
-              </button>
-              {isSettingsOpen && (
-                <div className="home-settings-popover" style={{ top: 'auto', bottom: 'calc(100% + 8px)' }}>
-                  <div className="mt-settings-heading">
-                    {language === 'bm' ? 'Pilih Bahasa' : 'Language'}
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '16px' }}>
-                    <button
-                      className={`mt-lang-btn ${language === 'bm' ? 'active' : ''}`}
-                      onClick={() => { if (language !== 'bm') onToggleLang?.(); setIsSettingsOpen(false); }}
-                    >
-                      <span className="mt-lang-flag">🇲🇾</span>
-                      <span>Bahasa</span>
-                    </button>
-                    <button
-                      className={`mt-lang-btn ${language === 'en' ? 'active' : ''}`}
-                      onClick={() => { if (language !== 'en') onToggleLang?.(); setIsSettingsOpen(false); }}
-                    >
-                      <span className="mt-lang-flag">🇬🇧</span>
-                      <span>English</span>
-                    </button>
-                  </div>
-                  {themes && onThemeChange && (
-                    <>
-                      <div className="mt-settings-heading" style={{ marginTop: '4px' }}>
-                        {language === 'bm' ? 'Tema Angkasa' : 'Theme'}
-                      </div>
-                      <div className="mt-theme-list">
-                        {Object.entries(themes).map(([tid, t]) => (
-                          <button
-                            key={tid}
-                            className={`mt-theme-btn ${theme === t ? 'active' : ''}`}
-                            onClick={() => { onThemeChange(tid); setIsSettingsOpen(false); }}
-                            style={{ '--t-bg': t.heroBg }}
-                          >
-                            <span className="mt-theme-color-dot" />
-                            <span>{t.label}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-          </aside>
-        </div>
-
         {/* CENTER COLUMN: Hero & Main content */}
         <div className="home-main">
           
@@ -892,7 +523,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             })}
           </div>
           
-          <div style={{ paddingBottom: '80px' }} />
+          <div style={{ paddingBottom: '40px' }} />
         </div>
 
         {/* RIGHT COLUMN: Insights / DashboardStats */}
@@ -941,3 +572,4 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
     </div>
   );
 }
+
