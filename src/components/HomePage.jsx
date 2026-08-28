@@ -108,18 +108,25 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
         }
 
         .home-dashboard-grid {
-          width: min(1200px, 100%);
+          width: min(1120px, 100%);
           margin: 0 auto;
           display: grid;
           grid-template-columns: minmax(440px, 1fr) minmax(220px, 260px);
+          grid-template-areas:
+            'hero hero'
+            'main insights';
+          align-items: start;
           gap: clamp(18px, 2vw, 28px);
         }
 
         @media (max-width: 1100px) {
           .home-dashboard-grid {
             grid-template-columns: 1fr;
+            grid-template-areas:
+              'hero'
+              'main';
           }
-          .home-insights {
+          .home-insights-wrapper {
             display: none !important;
           }
         }
@@ -198,12 +205,14 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
 
         /* ── Center Column (Main) ── */
         .home-main {
+          grid-area: main;
           display: flex;
           flex-direction: column;
           gap: 24px;
         }
 
         .home-hero {
+          grid-area: hero;
           background: #ffffff;
           border-radius: 24px;
           padding: 32px;
@@ -366,6 +375,10 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
           flex-direction: column;
           gap: 16px;
         }
+        .home-insights-wrapper {
+          grid-area: insights;
+          min-width: 0;
+        }
         .home-side-card {
           background: #ffffff;
           border: 2px solid #E3EFE0;
@@ -433,10 +446,8 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
       `}</style>
 
       <div className="home-dashboard-grid">
-        {/* CENTER COLUMN: Hero & Main content */}
-        <div className="home-main">
-          
-          <div className="home-hero">
+        {/* FIRST ROW: Full-width welcome section */}
+        <div className="home-hero">
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
               <p style={{ fontFamily: "'Fredoka', sans-serif", fontSize: '0.9rem', fontWeight: 800, color: '#22C55E', letterSpacing: '0.12em', margin: '0 0 0.2rem 0' }}>
                 {language === 'bm' ? 'SELAMAT DATANG' : "WELCOME"}
@@ -453,8 +464,10 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
             <div style={{ marginLeft: 'auto', flexShrink: 0, opacity: 0.9 }}>
                <RobotMath style={{ width: '110px', height: '110px' }} />
             </div>
-          </div>
+        </div>
 
+        {/* LEFT COLUMN: Subjects and age groups */}
+        <main className="home-main">
           <h2 className="section-header">{language === 'bm' ? 'SUBJEK' : 'SUBJECT'}</h2>
           
           <div className="subject-grid">
@@ -524,7 +537,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
           </div>
           
           <div style={{ paddingBottom: '40px' }} />
-        </div>
+        </main>
 
         {/* RIGHT COLUMN: Insights / DashboardStats */}
         <div className="home-insights-wrapper">
@@ -572,4 +585,3 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language, 
     </div>
   );
 }
-

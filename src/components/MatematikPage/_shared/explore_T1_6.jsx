@@ -1147,7 +1147,7 @@ function LiquidVisual({ liquid, C, compact = false, showName = true }) {
   const marks = [500, 400, 300, 200, 100];
   return (
     <div className={`m6-liquid${compact ? ' is-compact' : ''}`}>
-      <svg viewBox={compact ? '-38 0 220 250' : '0 0 220 250'} role="img" aria-label={`${liquid.ml} ml`}>
+      <svg viewBox={compact ? '-16 0 240 262' : '0 0 240 262'} role="img" aria-label={`${liquid.ml} ml`}>
         <defs>
           <linearGradient id={`glass-${liquid.ml}`} x1="0" x2="1">
             <stop offset="0" stopColor="#FFFFFF" stopOpacity=".9" />
@@ -1171,10 +1171,10 @@ function LiquidVisual({ liquid, C, compact = false, showName = true }) {
         })}
         {marks.map(ml => {
           const y = innerBottom - (ml / maxMl) * innerHeight;
-          return <text key={ml} x="130" y={y + (compact ? 5 : 4)} fill="#334155" fontFamily="Fredoka, sans-serif" fontSize={compact ? 15 : 12} fontWeight="800">{ml} ml</text>;
+          return <text key={ml} x="150" y={y + (compact ? 5 : 4)} fill="#334155" fontFamily="Fredoka, sans-serif" fontSize={compact ? 15 : 12} fontWeight="800">{ml} ml</text>;
         })}
         <path d="M49 44 V194" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" opacity=".75" />
-        {showName && <text x="72" y="242" textAnchor="middle" fill={C.dark} fontFamily="Baloo 2, sans-serif" fontSize="12" fontWeight="800">{liquid.name}</text>}
+        {showName && <text x="72" y="252" textAnchor="middle" fill={C.dark} fontFamily="Baloo 2, sans-serif" fontSize="12" fontWeight="800">{liquid.name}</text>}
       </svg>
     </div>
   );

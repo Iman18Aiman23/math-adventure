@@ -49,16 +49,21 @@ const getSidebarStyles = () => `
     width: 280px !important;
     min-width: 280px !important;
     max-width: 280px !important;
+    align-self: flex-start;
     box-sizing: border-box;
     margin: 24px 0 24px 24px !important;
     height: calc(100vh - 48px) !important;
-    overflow-y: hidden;
+    overflow: hidden;
     box-shadow: 0 12px 36px rgba(0,0,0,0.02) !important;
   }
 
-  @media (max-width: 1100px) {
+  @media (max-width: 1200px) {
     .desktop-sidebar {
+      width: 250px !important;
+      min-width: 250px !important;
+      max-width: 250px !important;
       margin: 16px !important;
+      padding: 22px 16px !important;
       height: calc(100vh - 32px) !important;
     }
   }
@@ -190,32 +195,45 @@ const getSidebarStyles = () => `
 
   .home-quick-nav {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: auto;
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
   .home-quick-link {
-    background: #FFFFFF;
-    border: 2px solid #EAEAEA;
-    border-radius: 18px;
-    padding: 14px 8px;
+    min-width: 0;
+    min-height: 52px;
+    background: #F4F8F2;
+    border: 1px solid #E3ECE0;
+    border-radius: 14px;
+    padding: 7px 10px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 8px;
+    justify-content: flex-start;
+    gap: 10px;
     font-family: var(--font-body, 'Fredoka', sans-serif);
     font-size: 13px;
     font-weight: 700;
     color: #707070;
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
     transition: transform .15s ease, border-color .15s ease, color .15s ease, background .15s ease, box-shadow .15s ease;
+  }
+  .home-quick-link svg {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    padding: 8px;
+    border-radius: 11px;
+    color: #647060;
+    background: #FFFFFF;
+    box-shadow: 0 2px 7px rgba(55, 110, 30, .07);
   }
   .home-quick-link:hover {
     transform: translateY(-2px);
-    border-color: #D8D8D8;
-    color: #4A4A4A;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.04);
+    border-color: #CFE2C9;
+    color: #344630;
+    background: #FFFFFF;
+    box-shadow: 0 7px 16px rgba(55, 110, 30, .08);
   }
   .home-quick-link.active {
     background: linear-gradient(180deg, #76D93B, #22C55E);
@@ -227,23 +245,57 @@ const getSidebarStyles = () => `
   }
   .home-quick-link.active svg {
     color: #ffffff;
+    background: rgba(255,255,255,.18);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.22);
   }
   .home-quick-link.active:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 0 #16A34A, 0 12px 24px rgba(88, 204, 2, 0.3);
   }
+  .home-quick-link:focus-visible {
+    outline: 3px solid rgba(22, 163, 74, .35);
+    outline-offset: 2px;
+  }
 
   .home-coach-footer {
     margin-top: auto;
-    padding-top: 16px;
-    display: flex;
-    flex-direction: column;
+    padding-top: 10px;
+    border-top: 1px solid #E5EEE2;
     position: relative;
+  }
+
+  .sidebar-menu-panel {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+    margin-top: 2px;
+    padding: 10px;
+    border: 0;
+    border-radius: 22px;
+    background: transparent;
+    box-shadow: none;
   }
   .home-top-actions {
     display: flex;
     align-items: center;
-    justify-content: center;
+  }
+  .sidebar-utility-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 46px;
+    align-items: center;
+    gap: 8px;
+  }
+  .home-top-actions,
+  .home-top-actions .sb-container,
+  .home-top-actions .sb-container > div,
+  .home-top-actions .sb-bundle-btn {
+    width: 100%;
+  }
+  .home-top-actions .sb-bundle-btn { min-height: 46px; }
+  .home-settings-wrap {
+    position: relative;
+    display: flex;
   }
   .home-settings-btn {
     width: 46px;
@@ -267,6 +319,10 @@ const getSidebarStyles = () => `
     box-shadow: 0 6px 16px rgba(34,197,94,0.12);
   }
   .home-settings-btn:active { transform: translateY(1px); }
+  .home-settings-btn:focus-visible {
+    outline: 3px solid rgba(22, 163, 74, .35);
+    outline-offset: 2px;
+  }
   
   .home-settings-popover {
     position: absolute;
@@ -349,11 +405,55 @@ const getSidebarStyles = () => `
     background: var(--t-bg);
     border: 1px solid rgba(0,0,0,.1);
   }
+
+  @media (max-height: 700px) and (min-width: 768px) {
+    .desktop-sidebar {
+      margin: 12px 0 12px 16px !important;
+      height: calc(100vh - 24px) !important;
+      padding: 16px 18px !important;
+      gap: 10px;
+    }
+    .sidebar-logo {
+      gap: 5px;
+      padding-bottom: 0;
+    }
+    .sidebar-logo-badge {
+      width: 54px;
+      height: 54px;
+      border-radius: 18px;
+    }
+    .home-progress-label { margin-bottom: 6px; }
+    .home-progress-track {
+      height: 12px;
+      padding: 2px;
+    }
+    .sidebar-continue {
+      min-height: 48px;
+      padding: 8px 12px;
+      white-space: nowrap;
+    }
+    .sidebar-menu-panel {
+      padding: 8px;
+      border-radius: 18px;
+    }
+    .home-quick-nav { gap: 6px; }
+    .home-quick-link {
+      min-height: 46px;
+      padding: 5px 8px;
+    }
+    .home-quick-link svg {
+      width: 34px;
+      height: 34px;
+      flex-basis: 34px;
+      padding: 7px;
+    }
+    .home-coach-footer { padding-top: 6px; }
+  }
 `;
 
 export default function DesktopSidebar({
   activeTab, onTabChange, language, onToggleLanguage,
-  playerName, gameState, onHome, onOpenReports,
+  onHome, onOpenReports,
   theme, onThemeChange, themes,
   onContinueLearning, currentSubject,
 }) {
@@ -427,41 +527,46 @@ export default function DesktopSidebar({
           <span>{language === 'bm' ? 'Teruskan belajar' : 'Continue learning'}</span>
           <ChevronRight className="sidebar-continue-arrow" size={20} strokeWidth={3} />
         </button>
+        <div className="sidebar-menu-panel">
+          <nav className="home-quick-nav" aria-label={language === 'bm' ? 'Menu utama' : 'Main menu'}>
+            <button type="button" className={`home-quick-link ${activeTab === 'learn' && currentSubject !== 'matematik-reports' ? 'active' : ''}`} onClick={() => onHome?.()}>
+              <GraduationCap size={22} />
+              <span>{language === 'bm' ? 'Kursus' : 'Course'}</span>
+            </button>
+            <button type="button" className={`home-quick-link ${activeTab === 'leaderboard' ? 'active' : ''}`} onClick={() => onTabChange?.('leaderboard')}>
+              <Trophy size={22} />
+              <span>{language === 'bm' ? 'Papan Juara' : 'Leaderboard'}</span>
+            </button>
+            <button type="button" className={`home-quick-link ${activeTab === 'achievement' ? 'active' : ''}`} onClick={() => onTabChange?.('achievement')}>
+              <Medal size={22} />
+              <span>{language === 'bm' ? 'Pencapaian' : 'Achievement'}</span>
+            </button>
+            <button type="button" className={`home-quick-link ${currentSubject === 'matematik-reports' ? 'active' : ''}`} onClick={() => onOpenReports?.()}>
+              <Flag size={22} />
+              <span>{language === 'bm' ? 'Laporan' : 'Reports'}</span>
+            </button>
+          </nav>
 
+          <div className="home-coach-footer">
+            <div className="sidebar-utility-row">
+              <div className="home-top-actions">
+                <StatsBar forceBundled={true} variant="mb" />
+              </div>
 
-
-        <div className="home-quick-nav">
-          <div className={`home-quick-link ${activeTab === 'learn' && currentSubject !== 'matematik-reports' ? 'active' : ''}`} onClick={() => onHome?.()}>
-            <GraduationCap size={22} />
-            <span>{language === 'bm' ? 'Kursus' : 'Course'}</span>
-          </div>
-          <div className={`home-quick-link ${activeTab === 'leaderboard' ? 'active' : ''}`} onClick={() => onTabChange?.('leaderboard')}>
-            <Trophy size={22} />
-            <span>{language === 'bm' ? 'Papan Juara' : 'Leaderboard'}</span>
-          </div>
-          <div className={`home-quick-link ${activeTab === 'achievement' ? 'active' : ''}`} onClick={() => onTabChange?.('achievement')}>
-            <Medal size={22} />
-            <span>{language === 'bm' ? 'Pencapaian' : 'Achievement'}</span>
-          </div>
-          <div className={`home-quick-link ${currentSubject === 'matematik-reports' ? 'active' : ''}`} onClick={() => onOpenReports?.()}>
-            <Flag size={22} />
-            <span>{language === 'bm' ? 'Laporan' : 'Reports'}</span>
-          </div>
-        </div>
-
-        <div className="home-coach-footer">
-          <div style={{ display: 'flex', flexDirection: 'row', gap: '8px', alignItems: 'center' }}>
-            <div className="home-top-actions" style={{ flex: 1, marginBottom: 0, justifyContent: 'flex-start' }}>
-              <StatsBar forceBundled={true} variant="mb" />
-            </div>
-            
-            {hasSettings && (
-              <div style={{ display: 'flex', flexShrink: 0 }} ref={settingsRef}>
-                <button className="home-settings-btn" onClick={() => setIsSettingsOpen(p => !p)}>
-                  <Settings size={21} strokeWidth={2.4} />
-                </button>
-              {isSettingsOpen && (
-                <div className="home-settings-popover">
+              {hasSettings && (
+                <div className="home-settings-wrap" ref={settingsRef}>
+                  <button
+                    type="button"
+                    className="home-settings-btn"
+                    onClick={() => setIsSettingsOpen(p => !p)}
+                    aria-label={language === 'bm' ? 'Buka tetapan' : 'Open settings'}
+                    aria-expanded={isSettingsOpen}
+                    aria-haspopup="dialog"
+                  >
+                    <Settings size={21} strokeWidth={2.4} />
+                  </button>
+                {isSettingsOpen && (
+                  <div className="home-settings-popover">
                   <div className="mt-settings-heading">
                     {language === 'bm' ? 'Pilih Bahasa' : 'Language'}
                   </div>
@@ -501,10 +606,11 @@ export default function DesktopSidebar({
                       </div>
                     </>
                   )}
-                </div>
-              )}
+                  </div>
+                )}
+              </div>
+            )}
             </div>
-          )}
           </div>
         </div>
       </aside>
