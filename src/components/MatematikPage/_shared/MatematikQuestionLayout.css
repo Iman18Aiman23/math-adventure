@@ -228,27 +228,215 @@
   border-bottom-width: min(2px, var(--mtq-button-border-width, 2px)) !important;
 }
 
+.mt-question-standard:is(.maf-root, .cm1-root, .cm2-root, .ujian-root, .ujian-masa-root, .ld-drill-root) {
+  height: 100% !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  background: transparent !important;
+}
+
+.mt-question-standard :is(.maf-scroll-q, .cm1-scroll, .cm2-scroll, .ujian-scroll, .ujian-masa-main, .ld-drill-scroll) {
+  flex: 1 1 0 !important;
+}
+
+.mt-question-standard :is(.maf-body, .cm1-body, .cm2-body, .ujian-body, .ujian-masa-main, .ld-drill-body) {
+  height: 100% !important;
+  padding-block: clamp(.25rem, 1vmin, .6rem) !important;
+  padding-inline: clamp(.5rem, 1.8vmin, 1.25rem) !important;
+  box-sizing: border-box !important;
+}
+
+.mt-question-standard :is(.maf-content-area, .cm1-content, .cm2-content, .ujian-content, .ujian-masa-card, .ld-drill-content) {
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  justify-content: center !important;
+}
+
+.mt-question-standard :is(.maf-section-stage, .cm1-question-stage, .mtq-card-section) {
+  flex: 0 1 auto !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  margin-bottom: 0 !important;
+}
+
+.mt-question-standard .mtq-question-header,
+.mt-question-standard .mtq-actions-section,
+.mt-question-standard :is(.maf-footer, .cm1-footer, .cm2-footer, .ujian-footer, .ujian-masa-footer) {
+  flex: 0 0 auto !important;
+}
+
+.mt-question-standard .mtq-actions-section {
+  gap: clamp(.25rem, .8vmin, .55rem) !important;
+}
+
+.mt-question-standard .mtq-actions-section > :is(button, .qir-button),
+.mt-question-standard .ujian-masa-review-row button {
+  min-height: clamp(2rem, 5.2vmin, 2.6rem) !important;
+  padding-block: clamp(.35rem, .9vmin, .65rem) !important;
+  padding-inline: clamp(1rem, 3vmin, 2rem) !important;
+}
+
+.mt-question-standard .qir-button {
+  margin-top: 0 !important;
+}
+
+@media (max-height: 760px), (max-width: 430px) {
+  .mt-question-standard {
+    --mtq-section-gap: clamp(.32rem, .9vmin, .55rem);
+    --mtq-inner-gap: clamp(.25rem, .75vmin, .45rem);
+  }
+
+  .mt-question-standard .mtq-question-header {
+    gap: var(--mtq-inner-gap) !important;
+    padding: clamp(.35rem, 1vmin, .6rem) clamp(.5rem, 1.8vmin, .85rem) !important;
+    border-radius: .9rem !important;
+  }
+
+  .mt-question-standard .mtq-question-meta {
+    gap: .35rem !important;
+    padding-bottom: .25rem !important;
+  }
+
+  .mt-question-standard :is(.mtq-activity-label, .mtq-skill-label) {
+    font-size: clamp(.62rem, 2.6vmin, .78rem) !important;
+    line-height: 1.05 !important;
+  }
+
+  .mt-question-standard .mtq-question-label {
+    padding: .12rem .45rem !important;
+    font-size: clamp(1rem, 4.7vmin, 1.38rem) !important;
+    line-height: 1.08 !important;
+  }
+
+  .mt-question-standard :is(.cm1-prompt, .ujian-masa-prompt, .maf-question) {
+    font-size: clamp(1rem, 4.8vmin, 1.45rem) !important;
+    line-height: 1.08 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .mt-question-standard :is(.cm1-content, .cm2-content, .ujian-content, .ujian-masa-card, .maf-content-area) {
+    gap: var(--mtq-section-gap) !important;
+  }
+
+  .mt-question-standard :is(.mt-num-options-grid, .mt-word-options-grid, .mt-clock-options-grid, .mt-day-order, .mt-time-question) {
+    gap: var(--mtq-inner-gap) !important;
+  }
+
+  .mt-question-standard :is(.mt-num-options-grid, .mt-word-options-grid, .mt-clock-options-grid) button,
+  .mt-question-standard :is(.mt-day-order-drop, .mt-day-order-options) button {
+    min-height: clamp(2rem, 6.3vmin, 2.65rem) !important;
+    padding: clamp(.22rem, .8vmin, .42rem) clamp(.45rem, 1.8vmin, .8rem) !important;
+    border-radius: .65rem !important;
+    font-size: clamp(.82rem, 3.8vmin, 1.05rem) !important;
+    line-height: 1.05 !important;
+  }
+
+  .mt-question-standard .mt-clock-face {
+    width: clamp(4.5rem, 18vmin, 8.2rem) !important;
+    height: clamp(4.5rem, 18vmin, 8.2rem) !important;
+  }
+
+  .mt-question-standard .mt-clock-options-grid .mt-clock-face {
+    width: clamp(2.15rem, 11vmin, 3.25rem) !important;
+    height: clamp(2.15rem, 11vmin, 3.25rem) !important;
+  }
+
+  .mt-question-standard :is(.mt-digital-clock, .mt-month-card) {
+    min-width: clamp(5.6rem, 32vmin, 8rem) !important;
+    min-height: clamp(1.8rem, 6vmin, 2.4rem) !important;
+    padding: .1rem .55rem !important;
+    border-radius: .65rem !important;
+    font-size: clamp(1.05rem, 4.6vmin, 1.45rem) !important;
+  }
+
+  .mt-question-standard .mt-sequence-card {
+    gap: clamp(.18rem, .7vmin, .35rem) !important;
+    padding: clamp(.18rem, .7vmin, .35rem) !important;
+    border-radius: .75rem !important;
+  }
+
+  .mt-question-standard .mt-sequence-card > div {
+    min-width: clamp(3.5rem, 18vmin, 5rem) !important;
+    min-height: clamp(1.85rem, 6vmin, 2.45rem) !important;
+    padding: .08rem .3rem !important;
+    border-radius: .55rem !important;
+    font-size: clamp(.72rem, 3.2vmin, .92rem) !important;
+    line-height: 1.05 !important;
+  }
+
+  .mt-question-standard .mt-day-order-drop {
+    min-height: clamp(2.25rem, 10vmin, 4rem) !important;
+    padding: clamp(.22rem, .8vmin, .45rem) !important;
+    gap: var(--mtq-inner-gap) !important;
+  }
+
+  .mt-question-standard .ujian-masa-review-row {
+    gap: clamp(.25rem, .8vmin, .45rem) !important;
+  }
+
+  .mt-question-standard .mtq-actions-section > :is(button, .qir-button),
+  .mt-question-standard .ujian-masa-review-row button {
+    min-height: clamp(1.9rem, 5.4vmin, 2.35rem) !important;
+    padding-block: clamp(.28rem, .85vmin, .5rem) !important;
+    padding-inline: clamp(.9rem, 3vmin, 1.6rem) !important;
+    font-size: clamp(.78rem, 3.4vmin, 1rem) !important;
+    line-height: 1.05 !important;
+  }
+
+  .mt-question-standard :is(.maf-footer, .cm1-footer, .cm2-footer, .ujian-footer, .ujian-masa-footer) {
+    min-height: 0 !important;
+    padding-block: clamp(.28rem, .9vmin, .5rem) !important;
+    padding-inline: clamp(.6rem, 2vmin, 1rem) !important;
+  }
+}
+
+@media (max-height: 620px), (max-width: 360px) {
+  .mt-question-standard {
+    --mtq-section-gap: .28rem;
+    --mtq-inner-gap: .22rem;
+  }
+
+  .mt-question-standard :is(.maf-body, .cm1-body, .cm2-body, .ujian-body, .ujian-masa-main, .ld-drill-body) {
+    padding-block: .2rem !important;
+    padding-inline: .45rem !important;
+  }
+
+  .mt-question-standard .mtq-question-header {
+    padding: .3rem .45rem !important;
+  }
+
+  .mt-question-standard .mtq-question-label {
+    font-size: clamp(.9rem, 4.4vmin, 1.1rem) !important;
+  }
+
+  .mt-question-standard .mtq-actions-section > :is(button, .qir-button),
+  .mt-question-standard .ujian-masa-review-row button {
+    min-height: 1.75rem !important;
+    padding: .22rem .9rem !important;
+  }
+}
+
 @media (max-width: 560px) {
   .mt-question-standard {
-    --mtq-section-gap: clamp(.5rem, 1.25vh, .72rem);
-    --mtq-inner-gap: clamp(.4rem, 1vh, .6rem);
+    --mtq-section-gap: clamp(.32rem, 1vh, .55rem);
+    --mtq-inner-gap: clamp(.25rem, .8vh, .45rem);
   }
 
   .mtq-question-header {
     gap: var(--mtq-inner-gap);
-    padding: clamp(.58rem, 1.45vh, .75rem);
-    border-radius: 1rem;
+    padding: clamp(.35rem, 1vh, .6rem);
+    border-radius: .9rem;
   }
 
   .mtq-question-meta {
     gap: .45rem;
-    padding-bottom: .45rem;
+    padding-bottom: .25rem;
   }
 
   .mtq-question-label {
-    padding: clamp(.26rem, .8vh, .4rem) .65rem;
-    font-size: clamp(1.05rem, 5.2vw, 1.45rem);
-    line-height: 1.15;
+    padding: .12rem .45rem;
+    font-size: clamp(.98rem, 4.8vw, 1.32rem);
+    line-height: 1.08;
   }
 
   .mt-question-standard.maf-single-screen :is(.maf-body, .maf-content-area),

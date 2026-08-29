@@ -1147,7 +1147,7 @@ function LiquidVisual({ liquid, C, compact = false, showName = true }) {
   const marks = [500, 400, 300, 200, 100];
   return (
     <div className={`m6-liquid${compact ? ' is-compact' : ''}`}>
-      <svg viewBox={compact ? '-16 0 240 262' : '0 0 240 262'} role="img" aria-label={`${liquid.ml} ml`}>
+      <svg viewBox={compact && !showName ? '-16 20 240 214' : compact ? '-16 0 240 262' : '0 0 240 262'} role="img" aria-label={`${liquid.ml} ml`}>
         <defs>
           <linearGradient id={`glass-${liquid.ml}`} x1="0" x2="1">
             <stop offset="0" stopColor="#FFFFFF" stopOpacity=".9" />
@@ -1171,7 +1171,7 @@ function LiquidVisual({ liquid, C, compact = false, showName = true }) {
         })}
         {marks.map(ml => {
           const y = innerBottom - (ml / maxMl) * innerHeight;
-          return <text key={ml} x="150" y={y + (compact ? 5 : 4)} fill="#334155" fontFamily="Fredoka, sans-serif" fontSize={compact ? 15 : 12} fontWeight="800">{ml} ml</text>;
+          return <text key={ml} x={compact ? 150 : 142} y={y + (compact ? 5 : 7)} fill="#334155" fontFamily="Fredoka, sans-serif" fontSize={compact ? 15 : 24} fontWeight="800">{ml} ml</text>;
         })}
         <path d="M49 44 V194" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" opacity=".75" />
         {showName && <text x="72" y="252" textAnchor="middle" fill={C.dark} fontFamily="Baloo 2, sans-serif" fontSize="12" fontWeight="800">{liquid.name}</text>}
@@ -1431,9 +1431,9 @@ function renderQuestion(q, ctx) {
         .m6-object-tile.is-mass-choice .m6-object-value span { font-size:.72em; }
         .m6-object-checkbox { width:32px; height:32px; box-sizing:border-box; display:grid; place-items:center; margin-top:12px; border:3px solid #94A3B8; border-radius:10px; background:#FFFFFF; color:#FFFFFF; font-family:'Fredoka',sans-serif; font-size:21px; font-weight:900; line-height:1; }
         .m6-object-tile.is-liquid-choice { min-height:clamp(190px,30vmin,260px); }
-        .m6-liquid-choice-stage { width:100%; height:clamp(92px,15vmin,128px); display:grid; place-items:center; padding:clamp(8px,1.4vmin,12px) 4px; box-sizing:border-box; }
+        .m6-liquid-choice-stage { width:100%; height:clamp(120px,19vmin,150px); flex:0 0 auto; display:grid; place-items:center; padding:0 4px; box-sizing:border-box; overflow:hidden; }
         .m6-liquid-choice-stage .m6-liquid.is-compact { width:min(100%,150px); }
-        .m6-liquid-choice-stage .m6-liquid.is-compact svg { max-height:clamp(104px,16vmin,132px); }
+        .m6-liquid-choice-stage .m6-liquid.is-compact svg { max-height:clamp(120px,19vmin,150px) !important; }
         .m6-object-tile.is-correct { border-color:#16A34A; background:#ECFDF5; box-shadow:0 8px 18px rgba(22,163,74,.18); }
         .m6-object-tile.is-wrong { border-color:#DC2626; background:#FEF2F2; box-shadow:0 8px 18px rgba(220,38,38,.16); animation:shakeError .4s ease; }
         .m6-object-tile.is-correct .m6-object-checkbox { border-color:#16A34A; background:#16A34A; }
@@ -1535,7 +1535,12 @@ function renderQuestion(q, ctx) {
         .m6-tool-symbol { min-height:clamp(90px,18vh,140px); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; color:#334155; font-family:'Fredoka',sans-serif; font-weight:800; text-transform:capitalize; }
         .m6-tool-symbol > span { font-size:clamp(64px,14vmin,104px); line-height:1; filter:drop-shadow(0 8px 7px rgba(15,23,42,.14)); }
         .m6-options { width:100%; display:flex; justify-content:center; }
+        .m6-options.is-liquid-options .mt-num-options-grid { grid-template-columns:repeat(4,minmax(0,1fr)) !important; max-width:min(100%,680px) !important; }
+        .m6-options.is-liquid-options .mt-num-options-grid button { width:100%; min-width:0 !important; box-sizing:border-box; padding:clamp(7px,1vmin,12px) !important; font-size:clamp(20px,3vmin,28px) !important; }
         .m6-options button:focus-visible { outline:3px solid ${C.dark}; outline-offset:-3px; }
+        @media (max-width:560px) {
+          .m6-options.is-liquid-options .mt-num-options-grid { grid-template-columns:repeat(2,minmax(0,1fr)) !important; max-width:min(100%,400px) !important; }
+        }
         @media (min-width:640px) {
           .m6-question-card.is-featured .m6-question-head { flex-direction:row; }
           .m6-question-card.is-featured .m6-activity-progress { width:192px; flex:0 0 192px; }
@@ -1572,8 +1577,7 @@ function renderQuestion(q, ctx) {
           .m6-object-tile.is-mass-choice { min-height:178px; padding:10px 10px 12px; }
           .m6-object-tile.is-liquid-choice { min-height:190px; }
           .m6-mass-object-stage { height:72px; padding:6px 2px; }
-          .m6-liquid-choice-stage { height:86px; padding:5px 2px; }
-          .m6-liquid-choice-stage .m6-liquid.is-compact svg { max-height:100px; }
+          .m6-liquid-choice-stage { height:120px; padding:0 2px; }
           .m6-object-tile.is-mass-choice .m6-object-emoji { font-size:58px; }
           .m6-length-comparison { gap:8px; padding:10px; }
           .m6-length-object { height:30px; min-width:72px; }
@@ -1654,13 +1658,14 @@ function renderQuestion(q, ctx) {
       {q.type === 'ruler' && <RulerVisual item={q.item} C={C} />}
       {q.type === 'liquid' && <LiquidVisual liquid={q.liquid} C={C} />}
       {q.type === 'liquid-compare' && (isLiquidCardChoice ? <LiquidCompareCards liquids={q.liquids} ctx={ctx} C={C} /> : <div className="m6-liquid-pair">{q.liquids.map(liquid => <LiquidVisual compact key={liquid.name} liquid={liquid} C={C} />)}</div>)}
-      {!isCardChoice && <div className="m6-options">{optionGrid}</div>}
+      {!isCardChoice && <div className={`m6-options${q.type === 'liquid' ? ' is-liquid-options' : ''}`}>{optionGrid}</div>}
     </div>
   );
 }
 
 function Frame({ kind, total, language, theme, onExit }) {
   const roundTotal = total ?? (WORKBOOK_BANKS[kind]?.length || 10);
+  const isExam = kind === 'cabar-minda-ukuran';
   return (
     <MatematikActivityFrame
       buildRound={() => buildRound(kind, roundTotal).map((question) => ({ ...question, featuredQuestion: true }))}
@@ -1671,6 +1676,7 @@ function Frame({ kind, total, language, theme, onExit }) {
       showQuestionProgress
       singleScreen
       featuredQuestion
+      examNavigation={isExam}
       scoreId={kind}
       scoreStorageKey={SCORE_KEY}
     />

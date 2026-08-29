@@ -612,12 +612,12 @@ function genBond() {
   const missing = whole - part;
   const opts = new Set([missing]);
   let guard = 0;
-  while (opts.size < 3 && guard++ < 60) {
+  while (opts.size < 4 && guard++ < 60) {
     const d = missing + randInt(-3, 3);
     if (d >= 0 && d <= whole && d !== missing) opts.add(d);
   }
   let f = 0;
-  while (opts.size < 3) { if (f !== missing && f <= whole) opts.add(f); f++; }
+  while (opts.size < 4) { if (f !== missing && f <= whole) opts.add(f); f++; }
   const options = shuffle([...opts]).map((v, i) => ({ id: `b${i}`, value: String(v) }));
   return {
     type: 'lt-bond', header: 'Latihan Tambah',
@@ -752,6 +752,9 @@ function ColumnAddContent({ q, ctx }) {
   const hasCarry = carryFlags.some(Boolean);
 
   const filled = ans.every(d => d !== '');
+  const saveAns = (next) => {
+    if (C?.canChangeAnswer) handlePick(next.every(d => d !== '') ? next.join('') : null);
+  };
 
   // Move focus only during active typing (keyboard already open) — never auto-
   // open the keyboard on load or on a new question.
@@ -761,7 +764,12 @@ function ColumnAddContent({ q, ctx }) {
   const onAns = (k, v) => {
     if (locked) return;
     const d = v.replace(/[^0-9]/g, '').slice(-1);
-    setAns(prev => { const n = [...prev]; n[k] = d; return n; });
+    setAns(prev => {
+      const n = [...prev];
+      n[k] = d;
+      saveAns(n);
+      return n;
+    });
     if (d && k > 0) {
       // If the next column to the left expects a carry, jump up to its carry
       // box first; otherwise advance straight to the next answer digit.
@@ -861,7 +869,7 @@ function ColumnAddContent({ q, ctx }) {
         ))}
       </div>
 
-      {!locked && <SemakButton disabled={!filled} onClick={submit} />}
+      {!locked && !C?.canChangeAnswer && <SemakButton disabled={!filled} onClick={submit} />}
       {answered && !isCorrect && !C?.canChangeAnswer && (
         <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, color: '#64748B', fontSize: 'clamp(13px, 2vmin, 18px)' }}>
           Jawapan: <b style={{ color: C.green }}>{q.total}</b>
@@ -1119,12 +1127,19 @@ function AbacusBuildContent({ q, ctx }) {
   const savedBuilt = Number(C?.savedAnswer || 0);
   const [tens, setTens] = useState(() => Math.floor(savedBuilt / 10));
   const [ones, setOnes] = useState(() => savedBuilt % 10);
+  const lastBuiltRef = useRef(savedBuilt);
   useEffect(() => {
     const value = Number(C?.savedAnswer || 0);
     setTens(Math.floor(value / 10));
     setOnes(value % 10);
+    lastBuiltRef.current = value;
   }, [q.qid, C?.savedAnswer]);
   const built = tens * 10 + ones;
+  useEffect(() => {
+    if (!C?.canChangeAnswer || lastBuiltRef.current === built) return;
+    lastBuiltRef.current = built;
+    handlePick(String(built));
+  }, [C?.canChangeAnswer, built, handlePick]);
   const submit = () => { if (!locked) handlePick(C?.canChangeAnswer ? String(built) : (built === q.total ? 'ok' : 'no')); };
   const col = (label, val, set, color, isTen) => (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
@@ -1165,7 +1180,7 @@ function AbacusBuildContent({ q, ctx }) {
           Jawapan: <b style={{ color: '#4ADE80' }}>{q.total}</b>
         </div>
       )}
-      {!locked && <SemakButton disabled={false} onClick={submit} />}
+      {!locked && !C?.canChangeAnswer && <SemakButton disabled={false} onClick={submit} />}
     </div>
   );
 }
@@ -1405,12 +1420,12 @@ function genBondTolak() {
   const missing = whole - part;
   const opts = new Set([missing]);
   let guard = 0;
-  while (opts.size < 3 && guard++ < 60) {
+  while (opts.size < 4 && guard++ < 60) {
     const d = missing + randInt(-3, 3);
     if (d >= 0 && d <= whole && d !== missing) opts.add(d);
   }
   let f = 0;
-  while (opts.size < 3) { if (f !== missing && f <= whole) opts.add(f); f++; }
+  while (opts.size < 4) { if (f !== missing && f <= whole) opts.add(f); f++; }
   const options = shuffle([...opts]).map((v, i) => ({ id: `b${i}`, value: String(v) }));
   return {
     type: 'lt-tolak-bond', header: 'Latihan Tolak',
@@ -1518,6 +1533,9 @@ function VerticalDiffContent({ q, ctx }) {
   const ansRefs = useRef([]);
   const filled = ans.every(d => d !== '');
   const needsBorrow = borrowProblem && !borrowed; // must regroup before submitting
+  const saveAns = (next) => {
+    if (C?.canChangeAnswer) handlePick(next.every(d => d !== '') ? String(parseInt(next.join(''), 10)) : null);
+  };
 
   // Reset everything when the question changes (component instance is reused
   // for consecutive same-type questions — useState initialisers don't re-run).
@@ -1537,7 +1555,12 @@ function VerticalDiffContent({ q, ctx }) {
   const onAns = (k, v) => {
     if (locked) return;
     const d = v.replace(/[^0-9]/g, '').slice(-1);
-    setAns(prev => { const n = [...prev]; n[k] = d; return n; });
+    setAns(prev => {
+      const n = [...prev];
+      n[k] = d;
+      saveAns(n);
+      return n;
+    });
     if (d && k > 0) focusIdx(k - 1);
   };
 
@@ -1553,7 +1576,7 @@ function VerticalDiffContent({ q, ctx }) {
   // top digit is too small until you've regrouped (borrowed) — like ColumnMathGame.
   const submit = () => {
     if (locked || !filled) return;
-    if (needsBorrow) {
+    if (!C?.canChangeAnswer && needsBorrow) {
       setLockMsg(`${onesAval} terlalu kecil untuk tolak ${onesBval}. Pinjam dari rumah sebelah dahulu!`);
       return;
     }
@@ -1654,7 +1677,7 @@ function VerticalDiffContent({ q, ctx }) {
       </div>
 
       {/* Borrow ("Pinjam dari rumah sebelah") mini-step — only for borrow problems. */}
-      {borrowOpen && !locked && (
+      {borrowOpen && !locked && !C?.canChangeAnswer && (
         <div style={{
           background: '#FFF7ED', border: '2px solid #FED7AA', borderRadius: 'clamp(14px, 2vmin, 20px)',
           padding: 'clamp(12px, 2vmin, 18px)', display: 'flex', flexDirection: 'column', alignItems: 'center',
@@ -1687,7 +1710,7 @@ function VerticalDiffContent({ q, ctx }) {
         </div>
       )}
 
-      {!locked && <SemakButton disabled={!filled} onClick={submit} />}
+      {!locked && !C?.canChangeAnswer && <SemakButton disabled={!filled} onClick={submit} />}
 
       {lockMsg && !locked && (
         <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 700, color: '#B45309', textAlign: 'center', fontSize: 'clamp(12px, 2vmin, 17px)', maxWidth: 360 }}>
@@ -1711,12 +1734,19 @@ function TolakBlokContent({ q, ctx }) {
   const savedBuilt = Number(C?.savedAnswer || 0);
   const [tens, setTens] = useState(() => Math.floor(savedBuilt / 10));
   const [ones, setOnes] = useState(() => savedBuilt % 10);
+  const lastBuiltRef = useRef(savedBuilt);
   useEffect(() => {
     const value = Number(C?.savedAnswer || 0);
     setTens(Math.floor(value / 10));
     setOnes(value % 10);
+    lastBuiltRef.current = value;
   }, [q.qid, C?.savedAnswer]);
   const built = tens * 10 + ones;
+  useEffect(() => {
+    if (!C?.canChangeAnswer || lastBuiltRef.current === built) return;
+    lastBuiltRef.current = built;
+    handlePick(String(built));
+  }, [C?.canChangeAnswer, built, handlePick]);
   const submit = () => { if (!locked) handlePick(C?.canChangeAnswer ? String(built) : (built === q.diff ? 'ok' : 'no')); };
   const col = (label, val, set, color, isTen) => (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
@@ -1755,7 +1785,7 @@ function TolakBlokContent({ q, ctx }) {
           Jawapan: <b style={{ color: '#4ADE80' }}>{q.diff}</b>
         </div>
       )}
-      {!locked && <SemakButton disabled={false} onClick={submit} />}
+      {!locked && !C?.canChangeAnswer && <SemakButton disabled={false} onClick={submit} />}
     </div>
   );
 }
@@ -1929,6 +1959,18 @@ function genTypeC() {
   return { type: 'ctt-operasi', header: 'Cerita Matematik', prompt: 'Operasi yang digunakan ialah ___?', story, options, answer: isAdd ? 'ctc-add' : 'ctc-sub' };
 }
 
+function makeCttEquationOptions(correct, candidates) {
+  const values = [];
+  const seen = new Set();
+  [correct, ...candidates].forEach((value) => {
+    if (!seen.has(value) && values.length < 4) {
+      seen.add(value);
+      values.push(value);
+    }
+  });
+  return shuffle(values).map((value, index) => ({ id: `d${index}`, value }));
+}
+
 function genTypeD() {
   const isAdd = Math.random() < 0.5;
   const a = randInt(10, 40);
@@ -1942,7 +1984,8 @@ function genTypeD() {
     let off = sum + (Math.random() < 0.5 ? 1 : -1) * randInt(1, 3);
     if (off === sum) off = sum + 1;
     const wrongAns = `${a} + ${b} = ${off}`;
-    const options = shuffle([{ id: 'd0', value: correct }, { id: 'd1', value: wrongOp }, { id: 'd2', value: wrongAns }]);
+    const wrongOpAns = `${a} - ${b} = ${Math.max(0, a - b + randInt(1, 3))}`;
+    const options = makeCttEquationOptions(correct, [wrongOp, wrongAns, wrongOpAns]);
     return { type: 'ctt-ayat', header: 'Ayat Matematik', prompt: 'Pilih ayat matematik yang betul.', story, options, answer: options.find(o => o.value === correct).id };
   }
   const result = a - b;
@@ -1952,7 +1995,8 @@ function genTypeD() {
   let off = result + (Math.random() < 0.5 ? 1 : -1) * randInt(1, 3);
   if (off === result) off = result + 1;
   const wrongAns = `${a} − ${b} = ${off}`;
-  const options = shuffle([{ id: 'd0', value: correct }, { id: 'd1', value: wrongOp }, { id: 'd2', value: wrongAns }]);
+  const wrongOpAns = `${a} + ${b} = ${a + b + randInt(1, 3)}`;
+  const options = makeCttEquationOptions(correct, [wrongOp, wrongAns, wrongOpAns]);
   return { type: 'ctt-ayat', header: 'Ayat Matematik', prompt: 'Pilih ayat matematik yang betul.', story, options, answer: options.find(o => o.value === correct).id };
 }
 
@@ -1999,7 +2043,8 @@ function genTypeDWithOp(isAdd) {
     let off = sum + (Math.random() < 0.5 ? 1 : -1) * randInt(1, 3);
     if (off === sum) off = sum + 1;
     const wrongAns = `${a} + ${b} = ${off}`;
-    const opts = shuffle([{ id: 'd0', value: correct }, { id: 'd1', value: wrongOp }, { id: 'd2', value: wrongAns }]);
+    const wrongOpAns = `${a} - ${b} = ${a - b + randInt(1, 3)}`;
+    const opts = makeCttEquationOptions(correct, [wrongOp, wrongAns, wrongOpAns]);
     return { type: 'ctt-ayat', header: 'Ayat Matematik', prompt: 'Pilih ayat matematik yang betul.', story, options: opts, answer: opts.find(o => o.value === correct).id };
   }
   const result = a - b;
@@ -2010,7 +2055,8 @@ function genTypeDWithOp(isAdd) {
   if (off === result) off = result + 1;
   if (off < 1) off = result + 2;
   const wrongAns = `${a} − ${b} = ${off}`;
-  const opts = shuffle([{ id: 'd0', value: correct }, { id: 'd1', value: wrongOp }, { id: 'd2', value: wrongAns }]);
+  const wrongOpAns = `${a} + ${b} = ${a + b + randInt(1, 3)}`;
+  const opts = makeCttEquationOptions(correct, [wrongOp, wrongAns, wrongOpAns]);
   return { type: 'ctt-ayat', header: 'Ayat Matematik', prompt: 'Pilih ayat matematik yang betul.', story, options: opts, answer: opts.find(o => o.value === correct).id };
 }
 
@@ -2057,7 +2103,7 @@ function CeritaKeypadContent({ q, ctx }) {
       <div style={{ background: 'white', borderRadius: 'clamp(12px,1.8vmin,18px)', padding: 'clamp(10px,1.6vmin,18px) clamp(14px,2.2vmin,22px)', borderLeft: `5px solid ${accent}`, boxShadow: '0 2px 10px rgba(0,0,0,0.07)', fontFamily: "'Fredoka',sans-serif", fontWeight: 600, fontSize: 'clamp(14px,2.2vmin,22px)', color: '#334155', lineHeight: 1.7, width: '100%', maxWidth: 500, textAlign: 'left' }}>
         <StoryText text={q.story} answer={q.answer} answered={answered} />
       </div>
-      <KeypadInput answered={answered} isCorrect={isCorrect} handlePick={handlePick} answer={q.answer} theme={C} qid={q.qid} maxLength={2} />
+      <KeypadInput answered={answered} isCorrect={isCorrect} handlePick={handlePick} answer={q.answer} theme={C} qid={q.qid} maxLength={2} compact />
     </div>
   );
 }
@@ -2163,7 +2209,7 @@ export function CeritaTambahTolakExplore({ data, language, theme, onExit }) {
 /* ════════════════════════════════════════════════════════════════════════
  * Slice 2.6 — "Tambah Berulang & Tolak Berturut" (repeated addition &
  * repeated subtraction). Round of 10 = 3 Type A + 2 Type B + 2 Type C +
- * 2 Type D + 1 Type E. Malay only. Uses NumOptionsGrid (3 options).
+ * 2 Type D + 1 Type E. Malay only. Uses NumOptionsGrid (4 options).
  * ════════════════════════════════════════════════════════════════════════ */
 
 const TB_ICONS = ['🍎','⭐','🍦','🐱','🚗','🎈','🍬','🐟','🍌','🐒','🌟','🍇','🐘','🦒','🎁','🐰','🦋','🐝','🌺','🍕'];
@@ -2179,11 +2225,11 @@ function genTbParams() {
 function tbOpts(answer, M) {
   const opts = new Set([answer]);
   for (const c of shuffle([answer - M, answer + M, answer - 2 * M, answer + 2 * M])) {
-    if (opts.size >= 3) break;
+    if (opts.size >= 4) break;
     if (c > 0 && c <= 50 && c !== answer) opts.add(c);
   }
   let g = 0;
-  while (opts.size < 3 && g++ < 50) { const r = randInt(1, 50); if (!opts.has(r)) opts.add(r); }
+  while (opts.size < 4 && g++ < 50) { const r = randInt(1, 50); if (!opts.has(r)) opts.add(r); }
   const arr = shuffle([...opts]);
   return arr.map((v, i) => ({ id: `o${i}`, value: v }));
 }
@@ -2225,11 +2271,11 @@ function genTbSubParams() {
 function tbSubOpts(remainder, M) {
   const opts = new Set([remainder]);
   for (const c of shuffle([remainder + M, remainder + 2 * M, remainder === 0 ? M : 0, M - 1, M + 1])) {
-    if (opts.size >= 3) break;
+    if (opts.size >= 4) break;
     if (c >= 0 && c <= 50 && c !== remainder) opts.add(c);
   }
   let g = 0;
-  while (opts.size < 3 && g++ < 50) { const r = randInt(0, M * 2); if (!opts.has(r)) opts.add(r); }
+  while (opts.size < 4 && g++ < 50) { const r = randInt(0, M * 2); if (!opts.has(r)) opts.add(r); }
   const arr = shuffle([...opts]);
   return arr.map((v, i) => ({ id: `o${i}`, value: v }));
 }

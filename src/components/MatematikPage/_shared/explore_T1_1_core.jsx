@@ -1174,7 +1174,7 @@ export function KombinasiExplore({ data, language, theme, onExit }) {
 const KENALI21_ICONS = MODULE1_OBJECT_ICONS;
 
 
-// Exactly 3 options: the answer + 2 distractors (digit-swap / ±10 / ±1, in
+// Exactly 4 options: the answer + 3 distractors (digit-swap / ±10 / ±1, in
 // random priority), filled with a random in-range number if needed.
 function make21Options(n, min, max) {
   const opts = new Set([n]);
@@ -1186,10 +1186,10 @@ function make21Options(n, min, max) {
   if (n + 1 <= max) cands.push(n + 1);
   if (n - 1 >= min) cands.push(n - 1);
   for (const c of shuffle(cands)) {
-    if (opts.size >= 3) break;
+    if (opts.size >= 4) break;
     opts.add(c);
   }
-  while (opts.size < 3) { const d = randInt(min, max); opts.add(d); }
+  while (opts.size < 4) { const d = randInt(min, max); opts.add(d); }
   return shuffle([...opts]);
 }
 
@@ -1471,17 +1471,19 @@ function TulisAngkaContent({ q, ctx }) {
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
               fontSize: 'clamp(20px, 3.4vmin, 30px)',
             }}>0</button>
-          <button type="button" className="tak-kp-btn" onClick={submit} disabled={input === ''}
-            style={{
-              minHeight: 'clamp(44px, 6vmin, 54px)', border: 'none',
-              borderBottom: input === '' ? '4px solid #D1D5DB' : '4px solid #16A34A',
-              borderRadius: 'clamp(12px, 1.6vmin, 16px)',
-              background: input === '' ? '#E5E7EB' : '#22C55E',
-              color: input === '' ? '#9CA3AF' : '#fff',
-              cursor: input === '' ? 'not-allowed' : 'pointer',
-              fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-              fontSize: 'clamp(16px, 2.6vmin, 24px)',
-            }}>Semak</button>
+          {!C?.canChangeAnswer && (
+            <button type="button" className="tak-kp-btn" onClick={submit} disabled={input === ''}
+              style={{
+                minHeight: 'clamp(44px, 6vmin, 54px)', border: 'none',
+                borderBottom: input === '' ? '4px solid #D1D5DB' : '4px solid #16A34A',
+                borderRadius: 'clamp(12px, 1.6vmin, 16px)',
+                background: input === '' ? '#E5E7EB' : '#22C55E',
+                color: input === '' ? '#9CA3AF' : '#fff',
+                cursor: input === '' ? 'not-allowed' : 'pointer',
+                fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
+                fontSize: 'clamp(16px, 2.6vmin, 24px)',
+              }}>Semak</button>
+          )}
         </div>
       )}
     </div>
@@ -1825,19 +1827,21 @@ function IsiNilaiTempatContent({ q, ctx }) {
               fontSize: 'clamp(20px, 3.4vmin, 30px)',
               minHeight: 'clamp(44px, 6vmin, 54px)',
             }}>0</button>
-          <button type="button" className="btk-kp-btn" onClick={() => { if (allFilled) handlePick(submitValue); }}
-            disabled={!allFilled}
-            style={{
-              border: 'none',
-              borderBottom: allFilled ? '4px solid #16A34A' : '4px solid #D1D5DB',
-              borderRadius: 'clamp(12px, 1.6vmin, 16px)',
-              background: allFilled ? '#22C55E' : '#E5E7EB',
-              color: '#fff',
-              cursor: allFilled ? 'pointer' : 'not-allowed',
-              fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-              fontSize: 'clamp(16px, 2.6vmin, 24px)',
-              minHeight: 'clamp(44px, 6vmin, 54px)',
-            }}>Semak</button>
+          {!C?.canChangeAnswer && (
+            <button type="button" className="btk-kp-btn" onClick={() => { if (allFilled) handlePick(submitValue); }}
+              disabled={!allFilled}
+              style={{
+                border: 'none',
+                borderBottom: allFilled ? '4px solid #16A34A' : '4px solid #D1D5DB',
+                borderRadius: 'clamp(12px, 1.6vmin, 16px)',
+                background: allFilled ? '#22C55E' : '#E5E7EB',
+                color: '#fff',
+                cursor: allFilled ? 'pointer' : 'not-allowed',
+                fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
+                fontSize: 'clamp(16px, 2.6vmin, 24px)',
+                minHeight: 'clamp(44px, 6vmin, 54px)',
+              }}>Semak</button>
+          )}
         </div>
       )}
     </div>
@@ -2329,16 +2333,18 @@ function SusunanKeypadContent({ q, ctx }) {
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
               fontSize: 'clamp(20px, 3.4vmin, 30px)',
             }}>0</button>
-          <button type="button" className="snk-kp-btn" onClick={submit} disabled={input === ''}
-            style={{
-              minHeight: 'clamp(44px, 6vmin, 54px)', border: 'none',
-              borderBottom: input === '' ? '4px solid #D1D5DB' : '4px solid #16A34A',
-              borderRadius: 'clamp(12px, 1.6vmin, 16px)',
-              background: input === '' ? '#E5E7EB' : '#22C55E',
-              color: input === '' ? '#9CA3AF' : '#fff', cursor: input === '' ? 'not-allowed' : 'pointer',
-              fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-              fontSize: 'clamp(16px, 2.6vmin, 24px)',
-            }}>Semak</button>
+          {!C?.canChangeAnswer && (
+            <button type="button" className="snk-kp-btn" onClick={submit} disabled={input === ''}
+              style={{
+                minHeight: 'clamp(44px, 6vmin, 54px)', border: 'none',
+                borderBottom: input === '' ? '4px solid #D1D5DB' : '4px solid #16A34A',
+                borderRadius: 'clamp(12px, 1.6vmin, 16px)',
+                background: input === '' ? '#E5E7EB' : '#22C55E',
+                color: input === '' ? '#9CA3AF' : '#fff', cursor: input === '' ? 'not-allowed' : 'pointer',
+                fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
+                fontSize: 'clamp(16px, 2.6vmin, 24px)',
+              }}>Semak</button>
+          )}
         </div>
       )}
     </div>

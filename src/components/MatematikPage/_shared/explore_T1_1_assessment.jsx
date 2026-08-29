@@ -5,7 +5,7 @@ import { playSound } from '../../../utils/soundManager';
 import MatematikActivityFrame, { recordActivityScore } from './MatematikActivityFrame';
 import QuestionIssueReportButton from './QuestionIssueReportButton';
 import { getMatematikQuestionSkill, MatematikQuestionActions, MatematikQuestionHeader } from './MatematikQuestionLayout';
-import { BOX_COLORS, NumOptionsGrid, ObjectsGrid, numToBM, pick, randInt, shuffle } from './explorePrimitives_shared';
+import { BOX_COLORS, NumOptionsGrid, ObjectsGrid, getNextExamQuestionIndex, numToBM, pick, randInt, shuffle } from './explorePrimitives_shared';
 import { module1CoreApi } from './explore_T1_1_core';
 /* ════════════════════════════════════════════════════════════════════════
  * Slice 1.F (a) — "Selesaikan" (problem solving). KSSR T1 Selesaikan p63–66.
@@ -393,7 +393,7 @@ function genA2Bilang() {
 function genA2Kenal() {
   const t = randInt(1, 7);
   const g = [{ id: '0', c: t }]; const u = new Set([t]);
-  while (g.length < 3) { const c = randInt(1, 9); if (!u.has(c)) { u.add(c); g.push({ id: String(g.length), c }); } }
+  while (g.length < 4) { const c = randInt(1, 9); if (!u.has(c)) { u.add(c); g.push({ id: String(g.length), c }); } }
   const sg = shuffle(g);
   return {
     type: 'a-pick', prompt: `Yang manakah ${t}?`,
@@ -411,7 +411,7 @@ function genA3Bilang() {
 function genA3Kenal() {
   const t = randInt(11, 17);
   const g = [{ id: '0', c: t }]; const u = new Set([t]);
-  while (g.length < 3) { const c = randInt(11, 19); if (!u.has(c)) { u.add(c); g.push({ id: String(g.length), c }); } }
+  while (g.length < 4) { const c = randInt(11, 19); if (!u.has(c)) { u.add(c); g.push({ id: String(g.length), c }); } }
   const sg = shuffle(g);
   return {
     type: 'a-pick', prompt: `Yang manakah ${t}?`,
@@ -469,7 +469,7 @@ function genA8Pola() {
   do { b = randInt(1, 9); } while (b === a);
   const seq = [a, b, a, b, a, b];
   const cells = [...seq.map(v => ({ value: String(v), isGap: false })), { value: '?', isGap: true }];
-  const set = new Set([String(a), String(b)]); while (set.size < 3) set.add(String(randInt(1, 9)));
+  const set = new Set([String(a), String(b)]); while (set.size < 4) set.add(String(randInt(1, 9)));
   const opts = shuffle([...set]).map((v, i) => ({ id: `o${i}`, value: v }));
   return { type: 'a-pick', prompt: 'Pilih nombor seterusnya', cells, answerVal: a, options: opts, answer: opts.find(o => o.value === String(a)).id };
 }
@@ -478,8 +478,8 @@ function genA9Bundar() {
   let n; do { n = randInt(11, 96); } while (n % 10 === 0);
   const nearest = roundTen(n);
   const set = new Set([nearest]);
-  for (const c of [nearest - 10, nearest + 10, nearest - 20, nearest + 20]) { if (set.size < 3 && c >= 0 && c <= 100) set.add(c); }
-  while (set.size < 3) set.add(randInt(0, 100));
+  for (const c of [nearest - 10, nearest + 10, nearest - 20, nearest + 20]) { if (set.size < 4 && c >= 0 && c <= 100) set.add(c); }
+  while (set.size < 4) set.add(randInt(0, 100));
   const opts = shuffle([...set]).map((v, i) => ({ id: `o${i}`, value: String(v) }));
   return { type: 'a-pick', prompt: 'Bundarkan kepada puluh terdekat.', displayNum: n, options: opts, answer: opts.find(o => Number(o.value) === nearest).id };
 }
@@ -1128,6 +1128,7 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
   const [selectedPerQ, setSelectedPerQ] = useState(null);
   const [showQuestionList, setShowQuestionList] = useState(false);
   const [reviewMode, setReviewMode] = useState(null);
+  const [fillSkippedOnly, setFillSkippedOnly] = useState(false);
   const [timeLeft, setTimeLeft] = useState(CM1_DURATION_SECONDS);
   const [timeUsed, setTimeUsed] = useState(0);
   const timerRef = useRef(null);
@@ -1159,6 +1160,7 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
     setSelectedPerQ({});
     setShowQuestionList(false);
     setReviewMode(null);
+    setFillSkippedOnly(false);
     setCurrent(0);
     setTimeLeft(CM1_DURATION_SECONDS);
     setTimeUsed(0);
@@ -1187,6 +1189,7 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
       newAnswers[current] = null;
       setAnswers(newAnswers);
       answersRef.current = newAnswers;
+      setFillSkippedOnly(true);
       setSelectedPerQ((currentSelected) => ({ ...(currentSelected || {}), [current]: savedAnswer || '' }));
       return;
     }
@@ -1201,16 +1204,13 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
   const handleExamNext = () => {
     if (!questions) return;
     const latestAnswers = answersRef.current || answers;
-    if (latestAnswers[current] === null) return;
-    if (current + 1 >= questions.length) {
-      if (!latestAnswers.every((value) => value !== null)) {
-        setShowQuestionList(true);
-        return;
-      }
+    if (latestAnswers.every((value) => value !== null)) {
       finishExam(CM1_DURATION_SECONDS - timeLeft);
       return;
     }
-    setCurrent(c => c + 1);
+    const nextIndex = getNextExamQuestionIndex(latestAnswers, current, fillSkippedOnly);
+    if (nextIndex < current || current + 1 >= questions.length) setFillSkippedOnly(true);
+    setCurrent(nextIndex);
   };
 
   if (phase === 'start') {
@@ -1281,8 +1281,7 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
     const timerStr = `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
     const timerRed = timeLeft <= 300;
     const allAnswered = answeredCount === questions.length;
-    const isLastQuestion = current + 1 >= questions.length;
-    const nextLabel = isLastQuestion && allAnswered
+    const nextLabel = allAnswered
       ? (language === 'bm' ? 'Tamat' : 'Finish')
       : (language === 'bm' ? 'Seterusnya ->' : 'Next ->');
     const savedAnswer = selectedPerQ[current] || '';
@@ -1307,7 +1306,7 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
     };
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'transparent' }}>
+      <div className="mt-question-standard cm1-root" style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'transparent' }}>
         <style>{`
           .cm1-scroll { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
           .cm1-body {
@@ -1538,7 +1537,7 @@ export function CabarMindaM1Explore({ data, language, theme, onExit }) {
               </section>
               <div className="cm1-feedback" aria-live="polite" />
               <MatematikQuestionActions>
-                <button className="cm1-next" type="button" onClick={handleExamNext} disabled={!answered}>
+                <button className="cm1-next" type="button" onClick={handleExamNext}>
                   {nextLabel}
                 </button>
                 <QuestionIssueReportButton

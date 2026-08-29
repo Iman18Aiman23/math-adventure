@@ -93,6 +93,15 @@ export const shuffle = (arr) => {
   return a;
 };
 
+export const getNextExamQuestionIndex = (answers, current, fillSkippedOnly) => {
+  if (!Array.isArray(answers) || answers.length === 0) return current;
+  if (!fillSkippedOnly && current < answers.length - 1) return current + 1;
+  const nextUnanswered = answers.findIndex((value, index) => index > current && value === null);
+  if (nextUnanswered >= 0) return nextUnanswered;
+  const firstUnanswered = answers.findIndex((value, index) => index !== current && value === null);
+  return firstUnanswered >= 0 ? firstUnanswered : current;
+};
+
 function objEmojiSize(count) {
   if (count <= 4) return 'clamp(24px, 6vmin, 52px)';
   if (count <= 6) return 'clamp(22px, 5vmin, 44px)';
@@ -143,6 +152,7 @@ export function EmptyTray({ height, compact }) {
 export function NumOptionsGrid({ options, answered, selected, answer, handlePick, theme: C }) {
   const cols = Math.min(options.length, 4);
   const locked = answered && !C?.canChangeAnswer;
+  const showFeedback = answered && !C?.canChangeAnswer;
   return (
     <div className="mt-num-options-grid" style={{
       display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`,
@@ -165,9 +175,10 @@ export function NumOptionsGrid({ options, answered, selected, answer, handlePick
         const isAns = opt.id === answer;
         const c = BOX_COLORS[idx % BOX_COLORS.length];
         let bg, bd, clr, txt, anim, bxShadow;
-        if (answered && isAns) { bg = 'linear-gradient(135deg,#22C55E,#16A34A)'; bd = '#15803D'; clr = '#fff'; txt = `${opt.value} ✓`; anim = 'snkBounce .45s ease'; bxShadow = '0 4px 16px rgba(22,163,74,.3)'; }
-        else if (answered && picked) { bg = 'linear-gradient(135deg,#EF4444,#DC2626)'; bd = '#B91C1C'; clr = '#fff'; txt = `${opt.value} ✗`; anim = 'shakeError .35s ease'; bxShadow = '0 4px 16px rgba(220,38,38,.3)'; }
-        else if (answered) { bg = '#F8FAFC'; bd = '#E2E8F0'; clr = '#94A3B8'; txt = opt.value; anim = 'none'; bxShadow = 'none'; }
+        if (showFeedback && isAns) { bg = 'linear-gradient(135deg,#22C55E,#16A34A)'; bd = '#15803D'; clr = '#fff'; txt = `${opt.value} ✓`; anim = 'snkBounce .45s ease'; bxShadow = '0 4px 16px rgba(22,163,74,.3)'; }
+        else if (showFeedback && picked) { bg = 'linear-gradient(135deg,#EF4444,#DC2626)'; bd = '#B91C1C'; clr = '#fff'; txt = `${opt.value} ✗`; anim = 'shakeError .35s ease'; bxShadow = '0 4px 16px rgba(220,38,38,.3)'; }
+        else if (showFeedback) { bg = '#F8FAFC'; bd = '#E2E8F0'; clr = '#94A3B8'; txt = opt.value; anim = 'none'; bxShadow = 'none'; }
+        else if (picked && C?.canChangeAnswer) { bg = `linear-gradient(135deg,${C?.accent || '#8B5CF6'},${C?.cd || C?.dark || '#5B21B6'})`; bd = C?.dark || C?.accent || '#5B21B6'; clr = '#FFFFFF'; txt = opt.value; anim = 'none'; bxShadow = `0 4px 14px ${C?.accent || '#8B5CF6'}40`; }
         else if (picked) { bg = `linear-gradient(135deg,${C?.accent || '#8B5CF6'}40,${C?.accent || '#8B5CF6'}20)`; bd = C?.accent || '#8B5CF6'; clr = C?.dark || C?.accent || '#5B21B6'; txt = opt.value; anim = 'none'; bxShadow = `0 2px 8px ${C?.accent || '#8B5CF6'}30`; }
         else { bg = '#fff'; bd = '#CBD5E1'; clr = '#1E293B'; txt = opt.value; anim = 'none'; bxShadow = '0 2px 0 rgba(15,23,42,.06)'; }
         return (
@@ -175,7 +186,7 @@ export function NumOptionsGrid({ options, answered, selected, answer, handlePick
             style={{
               padding: 'clamp(10px, 1.6vmin, 18px)',
               border: 'none',
-              borderBottom: answered ? 'none' : `4px solid ${bd}`,
+              borderBottom: showFeedback ? 'none' : `4px solid ${bd}`,
               borderRadius: 'clamp(12px, 1.6vmin, 18px)',
               background: bg,
               color: clr,
@@ -213,6 +224,7 @@ export function numToBM(n) {
 
 export function WordOptionsGrid({ options, answered, selected, answer, handlePick, theme: C, columns = 1, plain = false }) {
   const locked = answered && !C?.canChangeAnswer;
+  const showFeedback = answered && !C?.canChangeAnswer;
   return (
     <div style={{
       display: columns > 1 ? 'grid' : 'flex',
@@ -251,8 +263,8 @@ export function WordOptionsGrid({ options, answered, selected, answer, handlePic
         const c = BOX_COLORS[idx % BOX_COLORS.length];
         const warnai = plain && !answered;
         let bg, bd, clr, txt, anim, bxShadow;
-        if (answered && isAns) { bg = 'linear-gradient(135deg,#22C55E,#16A34A)'; bd = '#15803D'; clr = '#fff'; txt = `${opt.value} ✓`; anim = 'snkBounce .45s ease'; bxShadow = '0 4px 16px rgba(22,163,74,.3)'; }
-        else if (answered && picked) { bg = 'linear-gradient(135deg,#EF4444,#DC2626)'; bd = '#B91C1C'; clr = '#fff'; txt = `${opt.value} ✗`; anim = 'shakeError .35s ease'; bxShadow = '0 4px 16px rgba(220,38,38,.3)'; }
+        if (showFeedback && isAns) { bg = 'linear-gradient(135deg,#22C55E,#16A34A)'; bd = '#15803D'; clr = '#fff'; txt = `${opt.value} ✓`; anim = 'snkBounce .45s ease'; bxShadow = '0 4px 16px rgba(22,163,74,.3)'; }
+        else if (showFeedback && picked) { bg = 'linear-gradient(135deg,#EF4444,#DC2626)'; bd = '#B91C1C'; clr = '#fff'; txt = `${opt.value} ✗`; anim = 'shakeError .35s ease'; bxShadow = '0 4px 16px rgba(220,38,38,.3)'; }
         else if (picked) { bg = `linear-gradient(135deg,${C?.accent || '#8B5CF6'}40,${C?.accent || '#8B5CF6'}20)`; bd = C?.accent || '#8B5CF6'; clr = C?.dark || C?.accent || '#5B21B6'; txt = opt.value; anim = 'none'; bxShadow = `0 2px 8px ${C?.accent || '#8B5CF6'}30`; }
         else if (plain) { bg = '#fff'; bd = '#CBD5E1'; clr = '#1E293B'; txt = opt.value; anim = 'none'; bxShadow = '0 2px 0 rgba(15,23,42,.06)'; }
         else { bg = '#fff'; bd = '#CBD5E1'; clr = '#1E293B'; txt = opt.value; anim = 'none'; bxShadow = '0 2px 0 rgba(15,23,42,.06)'; }
@@ -266,12 +278,12 @@ export function WordOptionsGrid({ options, answered, selected, answer, handlePic
               padding: 'clamp(10px, 1.6vmin, 18px) clamp(16px, 2.4vmin, 28px)',
               ...(warnai
                 ? { border: `2px solid ${bd}`, borderBottom: `5px solid ${bd}`, '--swatch': c.bg }
-                : { border: 'none', borderBottom: answered ? 'none' : `4px solid ${bd}` }),
+                : { border: 'none', borderBottom: showFeedback ? 'none' : `4px solid ${bd}` }),
               borderRadius: 'clamp(12px, 1.6vmin, 18px)',
               background: bg,
               color: clr,
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-              fontSize: answered && (isAns || picked) ? 'clamp(24px, 4vmin, 40px)' : 'clamp(16px, 2.6vmin, 26px)',
+              fontSize: showFeedback && (isAns || picked) ? 'clamp(24px, 4vmin, 40px)' : 'clamp(16px, 2.6vmin, 26px)',
               lineHeight: 1.2, whiteSpace: 'normal', overflowWrap: 'anywhere', textAlign: 'center',
               cursor: locked ? 'default' : 'pointer',
               transition: 'all .15s ease', WebkitTapHighlightColor: 'transparent',
@@ -281,7 +293,7 @@ export function WordOptionsGrid({ options, answered, selected, answer, handlePic
             }}
           >
             {warnai && <span className="warnai-chip" style={{ background: c.bg }} aria-hidden="true" />}
-            <span>{txt}</span>
+            <span style={{ color: clr }}>{txt}</span>
           </button>
         );
       })}
@@ -290,10 +302,20 @@ export function WordOptionsGrid({ options, answered, selected, answer, handlePic
 }
 
 
-export function KeypadInput({ answered, isCorrect, handlePick, answer, theme: C, qid, maxLength = 2 }) {
+export function KeypadInput({ answered, isCorrect, handlePick, answer, theme: C, qid, maxLength = 2, compact = false }) {
   const [input, setInput] = useState(C?.savedAnswer || '');
   useEffect(() => { setInput(C?.savedAnswer || ''); }, [qid, C?.savedAnswer]);
   const locked = answered && !C?.canChangeAnswer;
+  const showFeedback = answered && !C?.canChangeAnswer;
+  const gap = compact ? 'clamp(4px, 0.7vmin, 8px)' : 'clamp(8px, 1.3vmin, 14px)';
+  const displayHeight = compact ? 'clamp(34px, 5vmin, 46px)' : 'clamp(42px, 7vmin, 64px)';
+  const displayWidth = compact ? 'clamp(72px, 16vmin, 132px)' : 'clamp(80px, 20vmin, 160px)';
+  const displayFont = compact ? 'clamp(22px, 4.2vmin, 34px)' : 'clamp(24px, 5vmin, 44px)';
+  const gridGap = compact ? 'clamp(4px, 0.7vmin, 7px)' : 'clamp(5px, 1vmin, 10px)';
+  const gridWidth = compact ? 'clamp(220px, 44vmin, 300px)' : 'clamp(260px, 50vmin, 420px)';
+  const keyHeight = compact ? 'clamp(32px, 4.7vmin, 42px)' : 'clamp(44px, 6vmin, 54px)';
+  const keyFont = compact ? 'clamp(18px, 3vmin, 24px)' : 'clamp(20px, 3.4vmin, 30px)';
+  const auxFont = compact ? 'clamp(14px, 2.4vmin, 19px)' : 'clamp(16px, 2.6vmin, 24px)';
 
   const setExamInput = (next) => {
     setInput(next);
@@ -315,19 +337,19 @@ export function KeypadInput({ answered, isCorrect, handlePick, answer, theme: C,
   }, [locked, input, handlePick]);
 
   return (
-    <div className="mt-keypad-input" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(8px, 1.3vmin, 14px)', width: '100%' }}>
+    <div className="mt-keypad-input" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap, width: '100%' }}>
       <style>{`
         .kp-btn { transition: all 0.08s ease; -webkit-tap-highlight-color: transparent; }
         .kp-btn:active { transform: translateY(4px); border-bottom-width: 0 !important; }
       `}</style>
       <div className={`mt-keypad-display${!locked ? ' snk-input-ready' : ''}`} style={{
-        minWidth: 'clamp(80px, 20vmin, 160px)', minHeight: 'clamp(42px, 7vmin, 64px)',
-        border: `3px solid ${answered ? (isCorrect ? C.green : C.red) : '#CBD5E1'}`,
+        minWidth: displayWidth, minHeight: displayHeight,
+        border: `3px solid ${showFeedback ? (isCorrect ? C.green : C.red) : '#CBD5E1'}`,
         borderRadius: 'clamp(12px, 1.6vmin, 18px)', background: '#F9FAFB',
         boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.06)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: 'clamp(24px, 5vmin, 44px)',
-        color: answered ? (isCorrect ? C.green : C.red) : (input ? '#334155' : '#CBD5E1'), padding: '0 14px',
+        fontFamily: "'Baloo 2', sans-serif", fontWeight: 900, fontSize: displayFont,
+        color: showFeedback ? (isCorrect ? C.green : C.red) : (input ? '#334155' : '#CBD5E1'), padding: '0 14px',
       }}>
         {input || '?'}
       </div>
@@ -337,43 +359,45 @@ export function KeypadInput({ answered, isCorrect, handlePick, answer, theme: C,
         </div>
       )}
       {!locked && (
-        <div className="mt-keypad-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(5px, 1vmin, 10px)', width: '100%', maxWidth: 'clamp(260px, 50vmin, 420px)' }}>
+        <div className="mt-keypad-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: gridGap, width: '100%', maxWidth: gridWidth }}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
             <button key={d} type="button" className="kp-btn" onClick={() => press(String(d))}
               style={{
-                minHeight: 'clamp(44px, 6vmin, 54px)', border: 'none',
+                minHeight: keyHeight, border: 'none',
                 borderBottom: '4px solid #2563EB', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
                 background: '#3B82F6', color: '#fff', cursor: 'pointer',
                 fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-                fontSize: 'clamp(20px, 3.4vmin, 30px)',
+                fontSize: keyFont,
               }}>{d}</button>
           ))}
           <button type="button" className="kp-btn" onClick={back}
             style={{
-              minHeight: 'clamp(44px, 6vmin, 54px)', border: 'none',
+              minHeight: keyHeight, border: 'none',
               borderBottom: '4px solid #DC2626', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: '#EF4444', color: '#fff', cursor: 'pointer',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-              fontSize: 'clamp(16px, 2.6vmin, 24px)',
+              fontSize: auxFont,
             }}>Padam</button>
           <button type="button" className="kp-btn" onClick={() => press('0')}
             style={{
-              minHeight: 'clamp(44px, 6vmin, 54px)', border: 'none',
+              minHeight: keyHeight, border: 'none',
               borderBottom: '4px solid #2563EB', borderRadius: 'clamp(12px, 1.6vmin, 16px)',
               background: '#3B82F6', color: '#fff', cursor: 'pointer',
               fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-              fontSize: 'clamp(20px, 3.4vmin, 30px)',
+              fontSize: keyFont,
             }}>0</button>
-          <button type="button" className="kp-btn" onClick={submit} disabled={input === ''}
-            style={{
-              minHeight: 'clamp(44px, 6vmin, 54px)', border: 'none',
-              borderBottom: input === '' ? '4px solid #D1D5DB' : '4px solid #16A34A',
-              borderRadius: 'clamp(12px, 1.6vmin, 16px)',
-              background: input === '' ? '#E5E7EB' : '#22C55E',
-              color: input === '' ? '#9CA3AF' : '#fff', cursor: input === '' ? 'not-allowed' : 'pointer',
-              fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
-              fontSize: 'clamp(16px, 2.6vmin, 24px)',
-            }}>Semak</button>
+          {!C?.canChangeAnswer && (
+            <button type="button" className="kp-btn" onClick={submit} disabled={input === ''}
+              style={{
+                minHeight: keyHeight, border: 'none',
+                borderBottom: input === '' ? '4px solid #D1D5DB' : '4px solid #16A34A',
+                borderRadius: 'clamp(12px, 1.6vmin, 16px)',
+                background: input === '' ? '#E5E7EB' : '#22C55E',
+                color: input === '' ? '#9CA3AF' : '#fff', cursor: input === '' ? 'not-allowed' : 'pointer',
+                fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
+                fontSize: auxFont,
+              }}>Semak</button>
+          )}
         </div>
       )}
     </div>

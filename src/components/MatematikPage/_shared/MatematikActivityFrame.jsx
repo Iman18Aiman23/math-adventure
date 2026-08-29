@@ -4,6 +4,7 @@ import { playSound } from '../../../utils/soundManager';
 import { MatematikNavContext } from './MatematikNavContext';
 import QuestionIssueReportButton from './QuestionIssueReportButton';
 import { getMatematikQuestionSkill, MatematikQuestionHeader } from './MatematikQuestionLayout';
+import { getNextExamQuestionIndex } from './explorePrimitives_shared';
 
 const PASS_RATIO = 0.8; // 80% needed to unlock "Topik Seterusnya →"
 
@@ -29,6 +30,7 @@ export default function MatematikActivityFrame({
   showQuestionProgress,
   singleScreen = false,
   featuredQuestion = true,
+  examNavigation = false,
   language = 'bm',
 }) {
   const safeTheme = theme || {};
@@ -40,6 +42,9 @@ export default function MatematikActivityFrame({
   const [wrong, setWrong] = useState(0);
   const [streak, setStreak] = useState(0);
   const [complete, setComplete] = useState(false);
+  const [examAnswers, setExamAnswers] = useState(() => new Array(questions.length).fill(null));
+  const [examSelected, setExamSelected] = useState(() => new Array(questions.length).fill(null));
+  const [fillSkippedOnly, setFillSkippedOnly] = useState(false);
 
   const q = questions[idx];
   if (!q) return null;
@@ -47,9 +52,10 @@ export default function MatematikActivityFrame({
   const isFeaturedQuestion = featuredQuestion || isFeaturedComparison;
   const isHeightComparison = q.type === 'compare' && q.metric === 'height';
 
-  const answered = selected !== null;
+  const currentSelected = examNavigation ? examSelected[idx] : selected;
+  const answered = currentSelected !== null;
   const answer = String(q.answer);
-  const isCorrect = answered && String(selected) === answer;
+  const isCorrect = answered && String(currentSelected) === answer;
   const isLast = idx + 1 >= questions.length;
   const skillLabel = getMatematikQuestionSkill(q, scoreId, language);
   const nextQuestion = questions[idx + 1];
@@ -58,9 +64,12 @@ export default function MatematikActivityFrame({
   );
 
   const total = questions.length;
-  const scorePct = total > 0 ? Math.round((correct / total) * 100) : 0;
+  const examAnsweredCount = examNavigation ? examAnswers.filter((value) => value !== null).length : 0;
+  const scoreCorrect = examNavigation ? examAnswers.filter(Boolean).length : correct;
+  const scoreWrong = examNavigation ? examAnswers.filter((value) => value === false).length : wrong;
+  const scorePct = total > 0 ? Math.round((scoreCorrect / total) * 100) : 0;
   const passMark = Math.ceil(total * PASS_RATIO);
-  const passed = correct >= passMark;
+  const passed = scoreCorrect >= passMark;
 
   const C = {
     accent: safeTheme.accent || '#22C55E',
@@ -71,6 +80,15 @@ export default function MatematikActivityFrame({
   };
 
   const handlePick = (value) => {
+    if (examNavigation) {
+      const nextSelected = [...examSelected];
+      const nextAnswers = [...examAnswers];
+      nextSelected[idx] = value;
+      nextAnswers[idx] = value === null || value === '' ? null : String(value) === answer;
+      setExamSelected(nextSelected);
+      setExamAnswers(nextAnswers);
+      return;
+    }
     if (answered) return;
     setSelected(value);
     if (String(value) === answer) {
@@ -86,6 +104,20 @@ export default function MatematikActivityFrame({
   };
 
   const handleNext = () => {
+    if (examNavigation) {
+      if (examAnswers.every((value) => value !== null)) {
+        recordActivityScore(scoreStorageKey, scoreId, scoreCorrect, questions.length);
+        setComplete(true);
+        playSound('streak');
+        confetti({ particleCount: 200, spread: 160, origin: { y: 0.4 } });
+        setTimeout(() => confetti({ particleCount: 140, spread: 120, startVelocity: 45, origin: { y: 0.55 } }), 250);
+        return;
+      }
+      const nextIndex = getNextExamQuestionIndex(examAnswers, idx, fillSkippedOnly);
+      if (nextIndex < idx || idx + 1 >= questions.length) setFillSkippedOnly(true);
+      setIdx(nextIndex);
+      return;
+    }
     if (isLast) {
       recordActivityScore(scoreStorageKey, scoreId, correct, questions.length);
       setComplete(true);
@@ -99,28 +131,32 @@ export default function MatematikActivityFrame({
   };
 
   const handleRedo = () => {
-    setQuestions(buildRound());
+    const nextQuestions = buildRound();
+    setQuestions(nextQuestions);
     setIdx(0);
     setSelected(null);
     setCorrect(0);
     setWrong(0);
     setStreak(0);
     setComplete(false);
+    setExamAnswers(new Array(nextQuestions.length).fill(null));
+    setExamSelected(new Array(nextQuestions.length).fill(null));
+    setFillSkippedOnly(false);
   };
 
   const progressInGroup = streak > 0 && streak % 10 === 0 ? 10 : streak % 10;
 
   const ctx = {
-    answered,
-    selected,
+    answered: examNavigation ? false : answered,
+    selected: currentSelected,
     answer,
-    isCorrect,
+    isCorrect: examNavigation ? false : isCorrect,
     handlePick,
     handleNext,
     streak,
-    correct,
-    wrong,
-    theme: C,
+    correct: scoreCorrect,
+    wrong: scoreWrong,
+    theme: { ...C, canChangeAnswer: examNavigation },
   };
 
   const renderPrompt = () => {
@@ -149,7 +185,7 @@ export default function MatematikActivityFrame({
   );
 
   return (
-    <div className={['mt-question-standard', 'maf-root', singleScreen ? 'maf-single-screen' : '', isFeaturedQuestion ? 'maf-featured-comparison' : '', isHeightComparison ? 'maf-height-comparison' : ''].filter(Boolean).join(' ')} style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%' }}>
+    <div className={['mt-question-standard', 'maf-root', examNavigation ? 'maf-exam-nav' : '', singleScreen ? 'maf-single-screen' : '', isFeaturedQuestion ? 'maf-featured-comparison' : '', isHeightComparison ? 'maf-height-comparison' : ''].filter(Boolean).join(' ')} style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%' }}>
       <style>{`
         .maf-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .maf-result-scroll { overflow-y: auto; }
@@ -519,10 +555,10 @@ export default function MatematikActivityFrame({
               <div className="maf-content maf-result-content">
                 <div className="maf-done-emoji">{passed ? '🎉' : '💪'}</div>
                 <div className="maf-question maf-result-title">{passed ? 'Tahniah!' : 'Cuba lagi!'}</div>
-                <div className="maf-head maf-result-score">Skor kamu: {correct}/{questions.length} ({scorePct}%)</div>
+                <div className="maf-head maf-result-score">Skor kamu: {scoreCorrect}/{questions.length} ({scorePct}%)</div>
               <div className="maf-summary">
-                <div className="maf-summary-row ok"><span>✅ Betul</span><b>{correct}</b></div>
-                <div className="maf-summary-row no"><span>❌ Salah</span><b>{wrong}</b></div>
+                <div className="maf-summary-row ok"><span>✅ Betul</span><b>{scoreCorrect}</b></div>
+                <div className="maf-summary-row no"><span>❌ Salah</span><b>{scoreWrong}</b></div>
               </div>
               {!passed && (
                 <div className="maf-head" style={{ color: C.dark }}>
@@ -563,25 +599,25 @@ export default function MatematikActivityFrame({
                   </section>
                 </section>
                 <section className="maf-section-feedback mtq-actions-section" aria-label={language === 'bm' ? 'Maklum balas dan tindakan' : 'Feedback and actions'}>
-                  <div className={`maf-feedback ${answered ? (isCorrect ? 'ok' : 'no') : ''}`}>
-                    {answered && !isCorrect ? 'Cuba lagi' : ''}
+                  <div className={`maf-feedback ${!examNavigation && answered ? (isCorrect ? 'ok' : 'no') : ''}`}>
+                    {!examNavigation && answered && !isCorrect ? 'Cuba lagi' : ''}
                   </div>
-                  {finishesActivity && (
+                  {!examNavigation && finishesActivity && (
                     <div className="maf-activity-complete">
                       ✓ {q.activityTitle || 'Aktiviti selesai'}
                     </div>
                   )}
-                  {answered && (
+                  {(examNavigation || answered) && (
                     <div className="maf-action-row">
                       <button className="maf-next" type="button" onClick={handleNext}>
-                        {isLast ? 'Tamat 🎉' : 'Seterusnya →'}
+                        {examNavigation ? (examAnswers.every((value) => value !== null) ? 'Tamat' : 'Seterusnya →') : isLast ? 'Tamat 🎉' : 'Seterusnya →'}
                       </button>
                       <QuestionIssueReportButton
                         language={language}
                         question={q}
                         questionIndex={idx}
                         totalQuestions={questions.length}
-                        selected={selected}
+                        selected={currentSelected}
                         answered={answered}
                         scoreId={scoreId}
                         source="MatematikActivityFrame"
@@ -593,18 +629,29 @@ export default function MatematikActivityFrame({
             </div>
           </div>
           <div className="maf-footer">
-            <div className="maf-footer-tally">
-              <span>Jawapan :</span>
-              <span className="maf-stats">
-                <span className="maf-stat" style={{ color: '#1E293B' }}>
-                  <span>✅</span><span>{correct}</span><span style={{ color: '#94A3B8', fontWeight: 500 }}>Betul</span>
+            {examNavigation ? (
+              <div className="maf-footer-tally">
+                <span>Soalan :</span>
+                <span className="maf-stats">
+                  <span className="maf-stat" style={{ color: C.dark }}>
+                    <span>{examAnsweredCount}/{questions.length}</span><span style={{ color: '#94A3B8', fontWeight: 500 }}>dijawab</span>
+                  </span>
                 </span>
-                <span className="maf-divider">|</span>
-                <span className="maf-stat" style={{ color: '#EF4444' }}>
-                  <span>❌</span><span>{wrong}</span><span style={{ color: '#94A3B8', fontWeight: 500 }}>salah</span>
+              </div>
+            ) : (
+              <div className="maf-footer-tally">
+                <span>Jawapan :</span>
+                <span className="maf-stats">
+                  <span className="maf-stat" style={{ color: '#1E293B' }}>
+                    <span>✅</span><span>{scoreCorrect}</span><span style={{ color: '#94A3B8', fontWeight: 500 }}>Betul</span>
+                  </span>
+                  <span className="maf-divider">|</span>
+                  <span className="maf-stat" style={{ color: '#EF4444' }}>
+                    <span>❌</span><span>{scoreWrong}</span><span style={{ color: '#94A3B8', fontWeight: 500 }}>salah</span>
+                  </span>
                 </span>
-              </span>
-            </div>
+              </div>
+            )}
             <span style={{ color: C.dark, fontSize: '0.85rem', fontWeight: 900, minWidth: 28, textAlign: 'right' }}>
               {showQuestionProgress ? `${idx + 1}/${questions.length}` : `${progressInGroup}/10`}
             </span>

@@ -53,7 +53,7 @@ const TOPICS = [
     visual: ROBOT,
     color: THEME.accent,
     actions: [
-      { id: 'selesaikan-masa', label: 'Masa', icon: 'calculator' },
+      { id: 'selesaikan-masa', label: 'Hari', icon: 'calculator' },
       { id: 'selesaikan-waktu', label: 'Waktu', icon: 'calculator' },
       { id: 'selesaikan-bulan', label: 'Bulan', icon: 'calculator' },
     ],

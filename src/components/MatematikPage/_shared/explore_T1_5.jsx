@@ -484,6 +484,8 @@ function buildLatihDiriMasaRound() {
 }
 
 function ClockOptionsGrid({ options, answered, selected, answer, handlePick, theme: C }) {
+  const showFeedback = answered && !C.canChangeAnswer;
+  const locked = answered && !C.canChangeAnswer;
   return (
     <div className="mt-clock-options-grid" style={{
       display: 'grid',
@@ -495,14 +497,14 @@ function ClockOptionsGrid({ options, answered, selected, answer, handlePick, the
         const picked = selected === opt.id;
         const isAns = opt.id === answer;
         const { hour, minute } = parseTimeLabel(opt.value);
-        const border = answered && isAns ? '#22C55E' : answered && picked ? '#EF4444' : '#CBD5E1';
-        const background = answered && isAns ? '#DCFCE7' : answered && picked ? '#FEE2E2' : '#FFFFFF';
+        const border = showFeedback && isAns ? '#22C55E' : showFeedback && picked ? '#EF4444' : picked ? C.accent : '#CBD5E1';
+        const background = showFeedback && isAns ? '#DCFCE7' : showFeedback && picked ? '#FEE2E2' : picked ? '#F0FDF4' : '#FFFFFF';
         return (
           <button
             key={opt.id}
             type="button"
             onClick={() => handlePick(opt.id)}
-            disabled={answered}
+            disabled={locked}
             style={{
               display: 'grid',
               placeItems: 'center',
@@ -512,7 +514,7 @@ function ClockOptionsGrid({ options, answered, selected, answer, handlePick, the
               borderBottom: `4px solid ${border}`,
               borderRadius: 'clamp(14px, 1.8vmin, 20px)',
               background,
-              cursor: answered ? 'default' : 'pointer',
+              cursor: locked ? 'default' : 'pointer',
               transition: 'all .15s ease',
               WebkitTapHighlightColor: 'transparent',
               boxShadow: picked ? `0 0 0 3px ${C.accent}33` : 'none',
@@ -526,7 +528,7 @@ function ClockOptionsGrid({ options, answered, selected, answer, handlePick, the
   );
 }
 
-function DaySequenceCard({ sequence, answer, answered, theme: C }) {
+function DaySequenceCard({ sequence, answer, answered, selected, theme: C }) {
   return (
     <div className="mt-sequence-card" style={{
       display: 'flex',
@@ -559,14 +561,14 @@ function DaySequenceCard({ sequence, answer, answered, theme: C }) {
           fontSize: 'clamp(15px, 2.5vmin, 22px)',
           textAlign: 'center',
         }}>
-          {day || (answered ? answer : '')}
+          {day || (answered ? (selected || answer) : '')}
         </div>
       ))}
     </div>
   );
 }
 
-function TimeSequenceCard({ sequence, answer, answered, theme: C }) {
+function TimeSequenceCard({ sequence, answer, answered, selected, theme: C }) {
   return (
     <div className="mt-sequence-card" style={{
       display: 'flex',
@@ -600,7 +602,7 @@ function TimeSequenceCard({ sequence, answer, answered, theme: C }) {
             fontSize: 'clamp(14px, 2.3vmin, 20px)',
             textAlign: 'center',
           }}>
-            {value || (answered ? answer : '')}
+            {value || (answered ? (selected || answer) : '')}
           </div>
         </React.Fragment>
       ))}
@@ -610,13 +612,24 @@ function TimeSequenceCard({ sequence, answer, answered, theme: C }) {
 
 function DayOrderContent({ q, ctx }) {
   const { answered, isCorrect, handlePick, theme: C } = ctx;
-  const locked = answered;
+  const locked = answered && !C.canChangeAnswer;
+  const showFeedback = answered && !ctx.examMode;
   const [placed, setPlaced] = useState([]);
-  useEffect(() => { setPlaced([]); }, [q.qid]);
 
   const valueById = {};
   q.tiles.forEach(t => { valueById[t.id] = t.value; });
+  const idByValue = {};
+  q.tiles.forEach(t => { idByValue[t.value] = t.id; });
+  const savedOrder = C.savedAnswer || ctx.selected || '';
+  useEffect(() => {
+    const restored = String(savedOrder || '')
+      .split(',')
+      .map(value => idByValue[value])
+      .filter(id => id !== undefined);
+    setPlaced(restored);
+  }, [q.qid, savedOrder]);
   const placedSet = new Set(placed);
+  const remainingTiles = q.tiles.filter(t => !placedSet.has(t.id));
 
   const boxStyle = (id, faded = false) => {
     const c = DAY_COLORS[id % DAY_COLORS.length];
@@ -642,12 +655,16 @@ function DayOrderContent({ q, ctx }) {
     setPlaced(next);
     if (next.length === q.tiles.length) {
       handlePick(next.map(i => valueById[i]).join(','));
+    } else if (C.canChangeAnswer) {
+      handlePick(next.map(i => valueById[i]).join(','), false);
     }
   };
 
   const removeAt = (idx) => {
     if (locked) return;
-    setPlaced(placed.filter((_, i) => i !== idx));
+    const next = placed.filter((_, i) => i !== idx);
+    setPlaced(next);
+    if (C.canChangeAnswer) handlePick(next.map(i => valueById[i]).join(','), false);
   };
 
   return (
@@ -655,7 +672,7 @@ function DayOrderContent({ q, ctx }) {
       <div className="mt-day-order-drop" style={{
         minHeight: 'clamp(64px, 10vmin, 92px)',
         width: 'min(100%, 680px)',
-        border: `3px dashed ${answered ? (isCorrect ? C.green : C.red) : '#CBD5E1'}`,
+        border: `3px dashed ${showFeedback ? (isCorrect ? C.green : C.red) : '#CBD5E1'}`,
         borderRadius: 'clamp(14px, 1.8vmin, 22px)',
         background: '#F9FAFB',
         display: 'flex',
@@ -666,22 +683,22 @@ function DayOrderContent({ q, ctx }) {
         padding: 'clamp(8px, 1.4vmin, 14px)',
       }}>
         {placed.length === 0
-          ? <span style={{ color: '#94A3B8', fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(14px, 2.2vmin, 18px)' }}>Susun hari di sini</span>
+          ? <span style={{ color: '#94A3B8', fontFamily: "'Fredoka', sans-serif", fontWeight: 700, fontSize: 'clamp(14px, 2.2vmin, 18px)' }}>{q.type === 'susun-bulan' ? 'Susun bulan di sini' : 'Susun hari di sini'}</span>
           : placed.map((id, idx) => (
               <button key={idx} type="button" onClick={() => removeAt(idx)} disabled={locked} style={boxStyle(id)}>
                 {idx + 1}. {valueById[id]}
               </button>
             ))}
       </div>
-      {answered && !isCorrect && (
+      {showFeedback && !isCorrect && (
         <div style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 800, fontSize: 'clamp(13px, 2vmin, 18px)', color: '#64748B', background: '#F8FAFC', padding: '8px 14px', borderRadius: 12, border: '1px solid #E2E8F0', textAlign: 'center' }}>
           Jawapan: <b style={{ color: C.green }}>{q.correct.join(', ')}</b>
         </div>
       )}
       {!locked && (
         <div className="mt-day-order-options" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 'clamp(7px, 1.2vmin, 12px)', width: 'min(100%, 680px)' }}>
-          {q.tiles.map(t => (
-            <button key={t.id} type="button" onClick={() => tap(t.id)} disabled={placedSet.has(t.id)} style={boxStyle(t.id, placedSet.has(t.id))}>
+          {remainingTiles.map(t => (
+            <button key={t.id} type="button" onClick={() => tap(t.id)} style={boxStyle(t.id)}>
               {t.value}
             </button>
           ))}
@@ -697,9 +714,9 @@ function renderTimeQuestion(q, ctx) {
   const grid = q.options?.length <= 2 ? 2 : 2;
   return (
     <div className="mt-time-question" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(10px, 1.7vmin, 20px)', width: '100%' }}>
-      {q.type === 'padan-urutan-hari' && <DaySequenceCard sequence={q.sequence} answer={ctx.answer} answered={ctx.answered} theme={C} />}
-      {q.type === 'urutan-waktu' && <TimeSequenceCard sequence={q.sequence} answer={ctx.answer} answered={ctx.answered} theme={C} />}
-      {q.type === 'urutan-bulan' && <TimeSequenceCard sequence={q.sequence} answer={ctx.answer} answered={ctx.answered} theme={C} />}
+      {q.type === 'padan-urutan-hari' && <DaySequenceCard sequence={q.sequence} answer={ctx.answer} answered={ctx.answered} selected={ctx.selected} theme={C} />}
+      {q.type === 'urutan-waktu' && <TimeSequenceCard sequence={q.sequence} answer={ctx.answer} answered={ctx.answered} selected={ctx.selected} theme={C} />}
+      {q.type === 'urutan-bulan' && <TimeSequenceCard sequence={q.sequence} answer={ctx.answer} answered={ctx.answered} selected={ctx.selected} theme={C} />}
       {(q.type === 'baca-jam' || q.type === 'cerita-masa') && <ClockFace hour={q.hour} minute={q.minute} />}
       {q.type === 'digital-jam' && (
         <div className="mt-digital-clock" style={{
@@ -850,6 +867,7 @@ export function CabarMindaMasaExplore({ language, theme, onExit }) {
   const [selectedPerQ, setSelectedPerQ] = useState([]);
   const [showMap, setShowMap] = useState(false);
   const [reviewMode, setReviewMode] = useState(null);
+  const [fillSkippedOnly, setFillSkippedOnly] = useState(false);
   const [timeLeft, setTimeLeft] = useState(EXAM_SECONDS);
   const [timeUsed, setTimeUsed] = useState(0);
   const timerRef = useRef(null);
@@ -876,6 +894,7 @@ export function CabarMindaMasaExplore({ language, theme, onExit }) {
     setCurrent(0);
     setShowMap(false);
     setReviewMode(null);
+    setFillSkippedOnly(false);
     setTimeLeft(EXAM_SECONDS);
     setTimeUsed(0);
     setPhase('exam');
@@ -926,9 +945,20 @@ export function CabarMindaMasaExplore({ language, theme, onExit }) {
     const mm = Math.floor(timeLeft / 60);
     const ss = timeLeft % 60;
     const allAnswered = answeredCount === questions.length;
-    const isLast = current === questions.length - 1;
-    const nextLabel = isLast && allAnswered ? 'Tamat' : 'Seterusnya';
-    const handlePick = (value) => {
+    const canReviewPrev = allAnswered && current > 0;
+    const canReviewNext = allAnswered && current < questions.length - 1;
+    const handlePick = (value, completeAnswer = true) => {
+      if (!completeAnswer) {
+        const nextAnswers = [...answers];
+        const nextSelected = [...selectedPerQ];
+        nextAnswers[current] = null;
+        nextSelected[current] = value || null;
+        setAnswers(nextAnswers);
+        setSelectedPerQ(nextSelected);
+        answersRef.current = nextAnswers;
+        setFillSkippedOnly(true);
+        return;
+      }
       const ok = String(value) === String(q.answer);
       const nextAnswers = [...answers];
       const nextSelected = [...selectedPerQ];
@@ -939,22 +969,36 @@ export function CabarMindaMasaExplore({ language, theme, onExit }) {
       answersRef.current = nextAnswers;
     };
     const handleNext = () => {
-      if (!answered) return;
-      if (isLast && allAnswered) return finishExam(answers, EXAM_SECONDS - timeLeft);
-      if (isLast) return setShowMap(true);
-      setCurrent(c => c + 1);
+      if (fillSkippedOnly) {
+        let nextUnanswered = answers.findIndex((value, index) => index > current && value === null);
+        if (nextUnanswered < 0) nextUnanswered = answers.findIndex((value, index) => index !== current && value === null);
+        if (nextUnanswered >= 0) setCurrent(nextUnanswered);
+        return;
+      }
+      if (current < questions.length - 1) return setCurrent(c => c + 1);
+      const nextUnanswered = answers.findIndex(value => value === null);
+      if (nextUnanswered >= 0) {
+        setFillSkippedOnly(true);
+        setCurrent(nextUnanswered);
+      }
     };
-    const ctx = { answered: false, examMode: true, selected, answer: q.answer, handlePick, theme: { accent, dark, cd, canChangeAnswer: true, savedAnswer: selected || '' } };
+    const handleSubmit = () => {
+      if (allAnswered) finishExam(answers, EXAM_SECONDS - timeLeft);
+    };
+    const ctx = { answered, examMode: true, selected, answer: q.answer, isCorrect: answers[current] === true, handlePick, theme: { accent, dark, cd, canChangeAnswer: true, savedAnswer: selected || '' } };
     return (
-      <div className="ujian-masa-root">
+      <div className="mt-question-standard ujian-masa-root">
         <style>{`
           .ujian-masa-root { height:100%; min-height:0; display:flex; flex-direction:column; background:transparent; }
           .ujian-masa-main { flex:1; min-height:0; display:grid; place-items:center; padding:clamp(6px,1.1vmin,12px) clamp(10px,1.6vmin,20px); box-sizing:border-box; overflow:hidden; }
           .ujian-masa-card { width:100%; max-width:min(94vw,860px); display:flex; flex-direction:column; align-items:center; gap:clamp(5px,1vmin,10px); }
           .ujian-masa-prompt { width:100%; max-width:680px; font-family:'Baloo 2',sans-serif; font-weight:900; font-size:clamp(17px,3.2vmin,31px); line-height:1.08; color:#1E293B; text-align:center; text-wrap:normal; }
           .ujian-masa-prompt-inline { white-space:normal; font-size:clamp(16px,3.2vmin,30px); }
+          .ujian-masa-review-row { display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap; }
           .ujian-masa-next { border:0; border-radius:999px; padding:clamp(8px,1.1vmin,13px) clamp(24px,3.4vmin,44px); background:${dark}; color:#fff; font-family:'Baloo 2',sans-serif; font-weight:900; font-size:clamp(16px,2.2vmin,22px); cursor:pointer; }
+          .ujian-masa-review { border:2px solid #BBF7D0; border-radius:999px; padding:clamp(7px,1vmin,12px) clamp(16px,2.4vmin,28px); background:#fff; color:${dark}; font-family:'Baloo 2',sans-serif; font-weight:900; font-size:clamp(15px,2vmin,20px); cursor:pointer; }
           .ujian-masa-next:disabled { opacity:.45; cursor:not-allowed; box-shadow:none; }
+          .ujian-masa-review:disabled { opacity:.4; cursor:not-allowed; }
           .ujian-masa-footer { flex-shrink:0; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:clamp(8px,1.2vmin,15px) clamp(16px,2.4vmin,34px); background:rgba(255,255,255,.86); border-top:1px solid #E2E8F0; }
           .ujian-masa-map-btn { border:1.5px solid #BBF7D0; border-radius:999px; background:#F0FDF4; color:${dark}; padding:8px 14px; font-family:'Baloo 2',sans-serif; font-weight:900; cursor:pointer; max-width:58%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
           .ujian-masa-overlay { position:fixed; inset:0; z-index:2147482000; display:grid; place-items:center; padding:14px; background:rgba(15,23,42,.34); backdrop-filter:blur(8px); }
@@ -993,7 +1037,15 @@ export function CabarMindaMasaExplore({ language, theme, onExit }) {
               </section>
             </section>
             <MatematikQuestionActions>
-              <button type="button" className="ujian-masa-next" onClick={handleNext} disabled={!answered}>{nextLabel}</button>
+              {allAnswered ? (
+                <div className="ujian-masa-review-row">
+                  <button type="button" className="ujian-masa-review" onClick={() => setCurrent(c => Math.max(0, c - 1))} disabled={!canReviewPrev}>Sebelumnya</button>
+                  <button type="button" className="ujian-masa-review" onClick={() => setCurrent(c => Math.min(questions.length - 1, c + 1))} disabled={!canReviewNext}>Seterusnya</button>
+                  <button type="button" className="ujian-masa-next" onClick={handleSubmit}>Tamat</button>
+                </div>
+              ) : (
+                <button type="button" className="ujian-masa-next" onClick={handleNext}>Seterusnya</button>
+              )}
               <QuestionIssueReportButton language={language} question={q} questionIndex={current} totalQuestions={questions.length} selected={selected} answered={answered} scoreId="cabar-minda-masa" source="T1M5Exam" />
             </MatematikQuestionActions>
           </div>

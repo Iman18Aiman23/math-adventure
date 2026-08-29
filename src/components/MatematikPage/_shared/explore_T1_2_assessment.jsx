@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import confetti from 'canvas-confetti';
 import { playSound } from '../../../utils/soundManager';
 import useGamification from '../../../hooks/useGamification';
-import { pick, randInt, shuffle } from './explorePrimitives_shared';
+import { getNextExamQuestionIndex, pick, randInt, shuffle } from './explorePrimitives_shared';
 import { recordActivityScore } from './MatematikActivityFrame';
 import QuestionIssueReportButton from './QuestionIssueReportButton';
 import { module2CoreApi } from './explore_T1_2_core';
@@ -1132,6 +1132,7 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
   const [timeLeft, setTimeLeft] = useState(1800);
   const [timeUsed, setTimeUsed] = useState(0);
   const [reviewMode, setReviewMode] = useState(null);
+  const [fillSkippedOnly, setFillSkippedOnly] = useState(false);
   const timerRef = useRef(null);
   const answersRef = useRef(null);
 
@@ -1162,6 +1163,7 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
     setSelectedPerQ({});
     setShowQuestionList(false);
     setReviewMode(null);
+    setFillSkippedOnly(false);
     setCurrent(0);
     setTimeLeft(1800);
     setTimeUsed(0);
@@ -1185,6 +1187,7 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
       newAnswers[current] = null;
       setAnswers(newAnswers);
       answersRef.current = newAnswers;
+      setFillSkippedOnly(true);
       setSelectedPerQ((currentSelected) => ({ ...(currentSelected || {}), [current]: '' }));
       return;
     }
@@ -1204,16 +1207,13 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
   const handleExamNext = () => {
     if (!questions) return;
     const latestAnswers = answersRef.current || answers;
-    if (latestAnswers[current] === null) return;
-    if (current + 1 >= questions.length) {
-      if (!latestAnswers.every((value) => value !== null)) {
-        setShowQuestionList(true);
-        return;
-      }
+    if (latestAnswers.every((value) => value !== null)) {
       finishExam(latestAnswers, 1800 - timeLeft);
       return;
     }
-    setCurrent(c => c + 1);
+    const nextIndex = getNextExamQuestionIndex(latestAnswers, current, fillSkippedOnly);
+    if (nextIndex < current || current + 1 >= questions.length) setFillSkippedOnly(true);
+    setCurrent(nextIndex);
   };
 
   if (phase === 'start') {
@@ -1282,8 +1282,7 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
     const timerStr = `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
     const timerRed = timeLeft <= 300;
     const allAnswered = answeredCount === questions.length;
-    const isLastQuestion = current + 1 >= questions.length;
-    const nextLabel = isLastQuestion && allAnswered
+    const nextLabel = allAnswered
       ? (language === 'bm' ? 'Tamat' : 'Finish')
       : (language === 'bm' ? 'Seterusnya ->' : 'Next ->');
 
@@ -1302,7 +1301,7 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
     };
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'transparent' }}>
+      <div className="mt-question-standard cm2-root" style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'transparent' }}>
         <style>{`
           .cm2-scroll { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
           .cm2-body {
@@ -1449,7 +1448,7 @@ export function CabarMindaM2Explore({ data, language, theme, onExit }) {
               </section>
               <div className="cm2-feedback" aria-live="polite" />
               <MatematikQuestionActions>
-                <button className="cm2-next" type="button" onClick={handleExamNext} disabled={!answered}>
+                <button className="cm2-next" type="button" onClick={handleExamNext}>
                   {nextLabel}
                 </button>
                 <QuestionIssueReportButton

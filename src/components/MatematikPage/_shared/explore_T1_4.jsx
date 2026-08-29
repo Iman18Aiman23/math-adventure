@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import MatematikActivityFrame, { recordActivityScore } from './MatematikActivityFrame';
 import QuestionIssueReportButton from './QuestionIssueReportButton';
 import { getMatematikQuestionSkill, MatematikQuestionActions, MatematikQuestionHeader } from './MatematikQuestionLayout';
-import { pick, randInt, shuffle } from './explorePrimitives_shared';
+import { getNextExamQuestionIndex, pick, randInt, shuffle } from './explorePrimitives_shared';
 
 function formatMoney(sen) {
   if (sen < 100) return `${sen} sen`;
@@ -2257,6 +2257,7 @@ export function CabarMindaWangExplore({ data, language, theme, onExit }) {
   const [selectedPerQ, setSelectedPerQ] = useState(null);
   const [showQuestionList, setShowQuestionList] = useState(false);
   const [reviewMode, setReviewMode] = useState(null);
+  const [fillSkippedOnly, setFillSkippedOnly] = useState(false);
   const [timeLeft, setTimeLeft] = useState(UJIAN_WANG_DURATION_SECONDS);
   const [timeUsed, setTimeUsed] = useState(0);
   const timerRef = useRef(null);
@@ -2289,6 +2290,7 @@ export function CabarMindaWangExplore({ data, language, theme, onExit }) {
     setSelectedPerQ({});
     setShowQuestionList(false);
     setReviewMode(null);
+    setFillSkippedOnly(false);
     setCurrent(0);
     setTimeLeft(UJIAN_WANG_DURATION_SECONDS);
     setTimeUsed(0);
@@ -2317,16 +2319,14 @@ export function CabarMindaWangExplore({ data, language, theme, onExit }) {
 
   function handleExamNext() {
     if (!questions) return;
-    if (answers[current] === null) return;
-    if (current + 1 >= questions.length) {
-      if (!answers.every((value) => value !== null)) {
-        setShowQuestionList(true);
-        return;
-      }
+    const latestAnswers = answersRef.current || answers;
+    if (latestAnswers.every((value) => value !== null)) {
       finishExam(answersRef.current || answers, UJIAN_WANG_DURATION_SECONDS - timeLeft);
       return;
     }
-    setCurrent((value) => value + 1);
+    const nextIndex = getNextExamQuestionIndex(latestAnswers, current, fillSkippedOnly);
+    if (nextIndex < current || current + 1 >= questions.length) setFillSkippedOnly(true);
+    setCurrent(nextIndex);
   }
 
   if (phase === 'start') {
@@ -2396,8 +2396,7 @@ export function CabarMindaWangExplore({ data, language, theme, onExit }) {
     const timerStr = `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
     const timerRed = timeLeft <= 300;
     const allAnswered = answeredCount === questions.length;
-    const isLastQuestion = current + 1 >= questions.length;
-    const nextLabel = isLastQuestion && allAnswered
+    const nextLabel = allAnswered
       ? (language === 'bm' ? 'Tamat' : 'Finish')
       : (language === 'bm' ? 'Seterusnya ->' : 'Next ->');
     const examCtx = {
@@ -2415,9 +2414,9 @@ export function CabarMindaWangExplore({ data, language, theme, onExit }) {
     };
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'transparent' }}>
+      <div className="mt-question-standard ujian-root" style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, width: '100%', background: 'transparent' }}>
         <style>{`
-        .ujian-scroll { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+          .ujian-scroll { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
           .ujian-body {
             min-height: 100%; box-sizing: border-box;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -2562,7 +2561,7 @@ export function CabarMindaWangExplore({ data, language, theme, onExit }) {
               </section>
               <div className="ujian-feedback" aria-live="polite" />
               <MatematikQuestionActions>
-                <button className="ujian-next" type="button" onClick={handleExamNext} disabled={!answered}>
+                <button className="ujian-next" type="button" onClick={handleExamNext}>
                   {nextLabel}
                 </button>
                 <QuestionIssueReportButton
