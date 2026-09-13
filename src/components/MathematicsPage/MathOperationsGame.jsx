@@ -3,7 +3,6 @@ import confetti from 'canvas-confetti';
 import { ArrowLeft, Calculator, Diamond, Heart, Pencil, Settings, Star, X } from 'lucide-react';
 import { generateProblem } from '../../utils/mathLogic';
 import { playSound } from '../../utils/soundManager';
-import GameMenu from './GameMenu';
 import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
 import useBrowserBack from '../../hooks/useBrowserBack';
 import HeartShopModal from '../HeartShopModal';
@@ -567,76 +566,91 @@ const getOpsClayStyles = () => `
   }
 
   .ops-settings-overlay {
-    position: absolute;
+    position: fixed;
     inset: 0;
-    z-index: 90;
+    z-index: 180;
     display: grid;
     place-items: center;
-    padding: clamp(0.65rem, 2.5vw, 1.25rem);
-    background: rgba(241, 248, 242, 0.72);
+    padding: 16px;
+    background: rgba(236, 250, 245, 0.78);
     backdrop-filter: blur(10px);
-    overflow: hidden;
   }
 
   .ops-settings-panel {
-    width: min(940px, 100%);
-    max-width: 100%;
-    height: min(760px, calc(100dvh - clamp(1.3rem, 5vw, 2.5rem)));
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    border: 1px solid rgba(227, 236, 224, 0.94);
-    border-radius: clamp(24px, 5vw, 34px);
-    background:
-      radial-gradient(circle at 18% 0%, rgba(255,255,255,0.96), transparent 42%),
-      linear-gradient(145deg, rgba(255,255,255,0.98), #F4F8F2);
-    box-shadow:
-      0 30px 60px rgba(55, 110, 30, 0.18),
-      0 7px 0 rgba(215, 229, 212, 0.88),
-      inset 0 3px 0 rgba(255,255,255,0.94),
-      inset 0 -14px 24px rgba(55,110,30,0.05);
+    width: min(520px, 100%);
+    border-radius: 26px;
+    background: #FFFFFF;
+    border: 1px solid #DDEBE5;
+    box-shadow: 0 20px 50px rgba(31, 78, 60, 0.18);
+    padding: 18px;
   }
 
   .ops-settings-panel-head {
-    flex: 0 0 auto;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 0.75rem;
-    padding: clamp(0.75rem, 2vh, 1rem) clamp(0.85rem, 3vw, 1.25rem) 0.35rem;
-    min-width: 0;
+    align-items: center;
+    margin-bottom: 14px;
   }
 
   .ops-settings-title {
-    min-width: 0;
     margin: 0;
-    color: #374151;
-    font-family: var(--font-heading);
-    font-size: clamp(1.1rem, 3vmin, 1.55rem);
+    color: #102D53;
+    font-size: 22px;
     font-weight: 900;
-    line-height: 1.05;
-    overflow-wrap: anywhere;
-    text-shadow: 0 2px 0 rgba(255,255,255,0.8);
   }
 
   .ops-settings-close {
-    width: clamp(38px, 6vmin, 46px);
-    height: clamp(38px, 6vmin, 46px);
-    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #DDEBE5;
+    background: #FFFFFF;
+    color: #102D53;
     display: grid;
     place-items: center;
-    border: 1px solid rgba(227, 236, 224, 0.94);
-    border-radius: 50%;
-    background: linear-gradient(145deg, #FFFFFF, #F4F8F2);
-    color: #677064;
     cursor: pointer;
-    box-shadow:
-      0 7px 14px rgba(55,110,30,0.12),
-      0 3px 0 #DDE8DA,
-      inset 0 2px 0 rgba(255,255,255,0.88),
-      inset 0 -5px 9px rgba(55,110,30,0.06);
   }
+
+  .ops-settings-group {
+    display: grid;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .ops-settings-label {
+    color: #7B8EA8;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0;
+  }
+
+  .ops-settings-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .ops-settings-option {
+    min-height: 42px;
+    padding: 8px 13px;
+    border-radius: 14px;
+    border: 1px solid #DDEBE5;
+    background: #F8FCFA;
+    color: #102D53;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .ops-settings-option.is-active {
+    background: #23B76B;
+    border-color: #23B76B;
+    color: #FFFFFF;
+  }
+
+  .ops-settings-panel { box-sizing: border-box; max-height: calc(100dvh - 32px); overflow-y: auto; }
+  .ops-settings-panel-head { gap: 12px; }
+  .ops-settings-close { flex-shrink: 0; }
+  .ops-settings-start { width: 100%; margin-top: 18px; }
 
   @media (max-width: 600px) {
     .ops-game-shell .duo-home-header {
@@ -1433,6 +1447,10 @@ const getOpsClayStyles = () => `
   }
 
   @media (max-height: 700px) {
+    .ops-game-shell {
+      --object-size: clamp(24px, min(5vw, 5.2vh), 42px);
+    }
+
     .ops-ref-header {
       padding-block: 4px;
     }
@@ -1442,11 +1460,35 @@ const getOpsClayStyles = () => `
     }
 
     .ops-question-label {
-      font-size: clamp(18px, min(4vw, 5vh), 30px) !important;
+      font-size: clamp(17px, min(3.6vw, 4.6vh), 28px) !important;
+      line-height: 1.05 !important;
+    }
+
+    .ops-question-subtitle {
+      margin-top: 2px !important;
+      font-size: clamp(12px, min(2.4vw, 2.6vh), 17px) !important;
+      line-height: 1.15 !important;
     }
 
     .ops-icons-container {
-      margin-block: clamp(4px, 1vh, 10px) !important;
+      gap: clamp(14px, 4vw, 44px) !important;
+      margin-block: clamp(3px, 0.8vh, 8px) !important;
+    }
+
+    .ops-icon-group {
+      gap: clamp(3px, 0.8vw, 7px) !important;
+    }
+
+    .ops-icon-operator {
+      width: clamp(42px, 9vw, 62px) !important;
+      height: clamp(42px, 9vw, 62px) !important;
+      font-size: clamp(26px, 6vw, 40px) !important;
+    }
+
+    .ops-question-expr {
+      font-size: clamp(38px, min(9vw, 9.5vh), 68px) !important;
+      line-height: 0.9 !important;
+      gap: clamp(8px, 2vw, 18px) !important;
     }
 
     .ops-typing-input-shell {
@@ -1463,16 +1505,36 @@ const getOpsClayStyles = () => `
   }
 
   @media (max-height: 600px) {
+    .ops-game-shell {
+      --object-size: clamp(22px, min(4.7vw, 4.8vh), 34px);
+    }
+
     .ops-question-zone {
       padding-block: 8px !important;
     }
 
+    .ops-question-label {
+      font-size: clamp(16px, min(3.4vw, 4.2vh), 24px) !important;
+    }
+
     .ops-question-subtitle {
-      font-size: clamp(11px, 2.5vw, 15px) !important;
+      font-size: clamp(11px, min(2.3vw, 2.5vh), 15px) !important;
     }
 
     .ops-icons-container {
       gap: clamp(12px, 3vw, 28px) !important;
+      margin-block: 3px !important;
+    }
+
+    .ops-icon-operator {
+      width: clamp(38px, 8vw, 52px) !important;
+      height: clamp(38px, 8vw, 52px) !important;
+      font-size: clamp(24px, 5.2vw, 34px) !important;
+    }
+
+    .ops-question-expr {
+      font-size: clamp(34px, min(8vw, 8.2vh), 56px) !important;
+      line-height: 0.88 !important;
     }
 
     .ops-typing-input-shell,
@@ -1503,7 +1565,21 @@ const getOpsClayStyles = () => `
     }
   }
 
-  @media (min-width: 600px) and (min-height: 700px) {
+  @media (min-width: 600px) {
+    .ops-footer-stats {
+      flex: 0 0 auto !important;
+      height: auto !important;
+      min-height: 0 !important;
+      max-height: clamp(96px, 18vh, 145px) !important;
+      justify-content: flex-start !important;
+      overflow: visible !important;
+    }
+
+    .ops-answer-record {
+      flex: 0 0 auto !important;
+      min-height: 30px !important;
+    }
+
     .ops-progress-wrap {
       flex: 0 0 auto !important;
     }
@@ -1571,9 +1647,111 @@ function StreakPopup({ streak, language, onClose }) {
 }
 
 // ─── Main Game Component ───────────────────────────────────────────────────────
+const OPERATIONS = [
+  { id: 'add',      emoji: '➕', labelBm: 'Tambah',  labelEn: 'Addition',       color: '#62D98B', dark: '#20A458', light: '#DDFBE8' },
+  { id: 'subtract', emoji: '➖', labelBm: 'Tolak',   labelEn: 'Subtraction',    color: '#68C7F7', dark: '#188CC5', light: '#DDF3FF' },
+  { id: 'multiply', emoji: '✖️', labelBm: 'Darab',   labelEn: 'Multiplication', color: '#D9A5FF', dark: '#9957C8', light: '#F3E3FF' },
+  { id: 'divide',   emoji: '➗', labelBm: 'Bahagi',  labelEn: 'Division',       color: '#FFB86C', dark: '#D46B1F', light: '#FFE8CF' },
+  { id: 'random',   emoji: '🎲', labelBm: 'Rawak',   labelEn: 'Random Mix',     color: '#FF8B8B', dark: '#D94B4B', light: '#FFE0E0' },
+];
+
+const DIFFICULTIES = [
+  { id: 'easy',   emoji: '🌱', labelBm: 'Senang',    labelEn: 'Easy',   descBm: '(1-9)',     color: '#62D98B', dark: '#20A458', light: '#DDFBE8' },
+  { id: 'medium', emoji: '⭐', labelBm: 'Sederhana', labelEn: 'Medium', descBm: '(10-99)',   color: '#FFD873', dark: '#D59B17', light: '#FFF3CF' },
+  { id: 'hard',   emoji: '🔥', labelBm: 'Susah',     labelEn: 'Hard',   descBm: '(100+)',    color: '#FF8B8B', dark: '#D94B4B', light: '#FFE0E0' },
+];
+
+const INPUT_MODES = [
+  { id: 'multiple', emoji: '🔘', labelBm: 'Pilihan', labelEn: 'Choices', color: '#D9A5FF', dark: '#9957C8', light: '#F3E3FF' },
+  { id: 'typing',   emoji: '⌨️', labelBm: 'Taip',    labelEn: 'Type',    color: '#FFB86C', dark: '#D46B1F', light: '#FFE8CF' },
+];
+
+// Numbers 1 to 9
+const NUMBERS = Array.from({length: 9}, (_, i) => i + 1);
+
+function GameMenu({
+  onStart,
+  language,
+  initialOperation = null,
+  initialDifficulty = null,
+  initialNums = [],
+  initialInputMode = null,
+}) {
+  const [selOp,    setSelOp]    = useState(() => OPERATIONS.find(op => op.id === initialOperation) || null);
+  const [selNums,  setSelNums]  = useState(() => Array.isArray(initialNums) ? initialNums : []);
+  const [selDiff,  setSelDiff]  = useState(() => DIFFICULTIES.find(d => d.id === initialDifficulty) || null);
+  const [selInput, setSelInput] = useState(() => INPUT_MODES.find(m => m.id === initialInputMode) || null);
+
+  const bm = language === 'bm';
+
+  const handleToggleNum = (n) => {
+    if (n === 'random') {
+      setSelNums(['random']);
+      return;
+    }
+    let current = selNums.includes('random') ? [] : [...selNums];
+    if (current.includes(n)) {
+       current = current.filter(x => x !== n);
+    } else {
+       current.push(n);
+    }
+    setSelNums(current);
+  };
+
+  const handleStart = () => {
+    if (selOp && selDiff && selInput) {
+      const finalNums = selNums.includes('random') ? [] : selNums;
+      onStart(selOp.id, selDiff.id, finalNums, selInput.id);
+    }
+  };
+
+  const isReady = selOp && selDiff && selInput;
+
+  return (
+    <div>
+      <div className="ops-settings-group">
+        <div className="ops-settings-label">{bm ? 'TAHAP' : 'LEVEL'}</div>
+        <div className="ops-settings-options">
+          {DIFFICULTIES.map(d => (
+            <button type="button" key={d.id} className={`ops-settings-option ${selDiff?.id === d.id ? 'is-active' : ''}`} aria-pressed={selDiff?.id === d.id} onClick={() => setSelDiff(d)}>{bm ? d.labelBm : d.labelEn}</button>
+          ))}
+        </div>
+      </div>
+      <div className="ops-settings-group">
+        <div className="ops-settings-label">{bm ? 'OPERASI' : 'OPERATION'}</div>
+        <div className="ops-settings-options">
+          {[OPERATIONS[4], ...OPERATIONS.slice(0, 4)].map(op => (
+            <button type="button" key={op.id} className={`ops-settings-option ${selOp?.id === op.id ? 'is-active' : ''}`} aria-pressed={selOp?.id === op.id} aria-label={bm ? op.labelBm : op.labelEn} title={bm ? op.labelBm : op.labelEn} onClick={() => setSelOp(op)}>
+              {({ add: '+', subtract: '-', multiply: '\u00d7', divide: '\u00f7' })[op.id] || (bm ? 'Rawak' : 'Random')}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="ops-settings-group">
+        <div className="ops-settings-label">{bm ? 'NOMBOR' : 'NUMBERS'}</div>
+        <div className="ops-settings-options">
+          {['random', ...NUMBERS].map(n => {
+            const selected = n === 'random' ? !selNums.length || selNums.includes('random') : selNums.includes(n);
+            return <button type="button" key={n} className={`ops-settings-option ${selected ? 'is-active' : ''}`} aria-pressed={selected} onClick={() => handleToggleNum(n)}>{n === 'random' ? (bm ? 'Rawak' : 'Random') : n}</button>;
+          })}
+        </div>
+      </div>
+      <div className="ops-settings-group">
+        <div className="ops-settings-label">{bm ? 'CARA MENJAWAB' : 'INPUT MODE'}</div>
+        <div className="ops-settings-options">
+          {INPUT_MODES.map(m => (
+            <button type="button" key={m.id} className={`ops-settings-option ${selInput?.id === m.id ? 'is-active' : ''}`} aria-pressed={selInput?.id === m.id} onClick={() => setSelInput(m)}>{bm ? m.labelBm : m.labelEn}</button>
+          ))}
+        </div>
+      </div>
+      <button type="button" className="ops-settings-option is-active ops-settings-start" disabled={!isReady} onClick={handleStart}>{bm ? 'Mula Main!' : 'Start Playing!'}</button>
+    </div>
+  );
+}
+
 export default function MathOperationsGame({
   operation, difficulty, nums, quizType,
-  onBack, language,
+  onBack, language, onConfigChange,
 }) {
   const initialGameData = useMemo(() => getGameData(), []);
   const initialNums = useMemo(() => (Array.isArray(nums) ? nums : []), [nums]);
@@ -1583,7 +1761,7 @@ export default function MathOperationsGame({
   const [activeDifficulty, setActiveDifficulty] = useState(difficulty || 'easy');
   const [activeNums, setActiveNums] = useState(initialNums);
   const [activeQuizType, setActiveQuizType] = useState(quizType || 'multiple');
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(true);
   const [problem,        setProblem]        = useState(null);
   const [streak,         setStreak]         = useState(initialGameData.streak);
   const [correctCount,   setCorrectCount]   = useState(0);
@@ -1620,10 +1798,10 @@ export default function MathOperationsGame({
 
   // Re-focus input after feedback clears (typing mode)
   useEffect(() => {
-    if (!feedback && activeQuizType === 'typing' && inputRef.current) {
+    if (!isSettingsOpen && !feedback && activeQuizType === 'typing' && inputRef.current) {
       inputRef.current.focus();
     }
-  }, [feedback, activeQuizType]);
+  }, [feedback, activeQuizType, isSettingsOpen]);
 
   // Pre-load voices (Chrome lazy-loads them)
   useEffect(() => {
@@ -1720,6 +1898,7 @@ export default function MathOperationsGame({
     setWrongCount(0);
     setShowStreak(false);
     setIsSettingsOpen(false);
+    onConfigChange?.({ operation: nextOperation, difficulty: nextDifficulty, nums: safeNums, quizType: nextQuizType });
   };
 
   const handleRewardPurchase = (newData) => {
@@ -1811,9 +1990,7 @@ export default function MathOperationsGame({
               </button>
             </div>
             <GameMenu
-              embedded
               language={language}
-              onBack={() => setIsSettingsOpen(false)}
               onStart={handleSettingsStart}
               initialOperation={activeOperation}
               initialDifficulty={activeDifficulty}

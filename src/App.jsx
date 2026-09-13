@@ -5,7 +5,6 @@ import { MatematikNavContext } from './components/MatematikPage/_shared/Matemati
 import { useBrowserBackFallback } from './hooks/useBrowserBack';
 const BMPage = React.lazy(() => import('./components/SpeakingPage/BMPage'));
 const MathHome = React.lazy(() => import('./components/MathematicsPage/MathHome'));
-const OpsLandingPage = React.lazy(() => import('./components/MathematicsPage/OpsLandingPage'));
 const TimeGameMenu = React.lazy(() => import('./components/MathematicsPage/TimeGameMenu'));
 const MonthsGame = React.lazy(() => import('./components/MathematicsPage/MonthsGame'));
 const ClockGame = React.lazy(() => import('./components/MathematicsPage/ClockGame'));
@@ -557,7 +556,6 @@ export default function App() {
     });
   }, []);
 
-  const handleStartGame    = (op, diff, _nums = [], qType = 'multiple') => { setGameConfig({ operation: op, difficulty: diff, nums: _nums, quizType: qType }); setIsPlaying(true); };
   const handleBackToMenu   = () => setIsPlaying(false);
   const handleStartTimeGame= (gameId) => { setDateTimeSubGame(gameId); setIsPlaying(true); };
   const handleBackToHome   = () => { setIsPlaying(false); setMathSubGame(null); setDateTimeSubGame(null); setCurrentSubject(null); setCurrentAgeGroup(null); setCurrentAgeGame(null); setIslamModule(null); setIslamTopic(null); setMatematikModule(null); setMatematikTopic(null); setMatematikYear(1); setBmModule(null); setBmTopic(null); setBmYear(1); setActiveTab('learn'); };
@@ -570,6 +568,7 @@ export default function App() {
     if (activeTab !== 'learn') { setActiveTab('learn'); return; }
     if (currentAgeGame) { setCurrentAgeGame(null); return; }
     if (currentAgeGroup) { setCurrentAgeGroup(null); return; }
+    if (currentSubject === 'math' && mathSubGame === 'operations') { setMathSubGame(null); setIsPlaying(false); return; }
     if (currentSubject === 'math' && isPlaying) { setIsPlaying(false); return; }
     if (currentSubject === 'math' && mathSubGame) { setMathSubGame(null); setDateTimeSubGame(null); return; }
     if (currentSubject === 'matematik-kssr' && matematikTopic) { setMatematikTopic(null); return; }
@@ -582,11 +581,11 @@ export default function App() {
     if (currentSubject) handleBackToHome();
   }, Boolean(canBrowserBack));
 
-  const inActiveQuiz = isPlaying;
+  const inActiveQuiz = isPlaying || (currentSubject === 'math' && mathSubGame === 'operations');
   const viewKey = `${activeTab}-${currentSubject}-${mathSubGame}-${dateTimeSubGame}-${isPlaying}-${selectedAssessment?.id}`;
 
   // Hide sidebar during game play, assessment, or inside age-group games
-  const shouldHideSidebar = isPlaying || (currentSubject === 'math' && mathSubGame === 'faq') || selectedAssessment || !!currentAgeGame
+  const shouldHideSidebar = inActiveQuiz || (currentSubject === 'math' && mathSubGame === 'faq') || selectedAssessment || !!currentAgeGame
     || (activeTab === 'learn' && currentSubject === 'matematik-kssr' && !!matematikModule && !matematikTopic);
 
   // ── Content renderer ──────────────────────────────────────────────────────
@@ -634,9 +633,7 @@ export default function App() {
       case 'math':
         if (!mathSubGame) return <MathHome onSelectSubGame={setMathSubGame} onBack={handleBackToHome} onHome={handleBackToHome} language={language} />;
         if (mathSubGame === 'operations') {
-          return !isPlaying
-            ? <OpsLandingPage onStart={handleStartGame} onBack={() => setMathSubGame(null)} onHome={handleBackToHome} language={language} />
-            : <MathOperationsGame operation={gameConfig.operation} difficulty={gameConfig.difficulty} nums={gameConfig.nums} quizType={gameConfig.quizType} onBack={handleBackToMenu} onHome={handleBackToHome} language={language} />;
+          return <MathOperationsGame operation={gameConfig.operation} difficulty={gameConfig.difficulty} nums={gameConfig.nums} quizType={gameConfig.quizType} onConfigChange={setGameConfig} onBack={() => { setMathSubGame(null); setIsPlaying(false); }} language={language} />;
         }
         if (mathSubGame === 'datetime') {
           if (!isPlaying) return <TimeGameMenu onBack={() => setMathSubGame(null)} onStart={handleStartTimeGame} onHome={handleBackToHome} language={language} />;

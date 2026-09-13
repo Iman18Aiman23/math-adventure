@@ -1,10 +1,10 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Calculator, Diamond, Heart, Settings, Star, X } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { playSound } from '../../utils/soundManager';
-import { useGameStateContext } from '../../App';
-import AppHeader from '../AppHeader';
 import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
+import useBrowserBack from '../../hooks/useBrowserBack';
+import HeartShopModal from '../HeartShopModal';
 
 const STREAK_MILESTONE = 10;
 
@@ -25,14 +25,16 @@ function generateProblem(difficulty, op) {
       b = t * 10 + o;
     } else {
       a = Math.floor(Math.random() * 900) + 100;
+      const h = Math.floor(Math.random() * 9) + 1;
       const t = Math.floor(Math.random() * 9) + 1;
       const o = Math.floor(Math.random() * 9) + 1;
-      b = t * 10 + o;
+      b = h * 100 + t * 10 + o;
     }
     const prob = { num1: a, num2: b, op: '×', answer: a * b };
     if (difficulty !== 'easy') {
       prob.partial1 = a * (b % 10);
-      prob.partial2 = a * Math.floor(b / 10);
+      prob.partial2 = a * (Math.floor(b / 10) % 10);
+      if (b >= 100) prob.partial3 = a * Math.floor(b / 100);
       prob.hasPartials = true;
     }
     return prob;
@@ -40,14 +42,14 @@ function generateProblem(difficulty, op) {
 
   let a, b;
   if (difficulty === 'easy') {
+    a = Math.floor(Math.random() * 9) + 1;
+    b = Math.floor(Math.random() * 9) + 1;
+  } else if (difficulty === 'medium') {
     a = Math.floor(Math.random() * 90) + 10;
     b = Math.floor(Math.random() * 90) + 10;
-  } else if (difficulty === 'medium') {
+  } else {
     a = Math.floor(Math.random() * 900) + 100;
     b = Math.floor(Math.random() * 900) + 100;
-  } else {
-    a = Math.floor(Math.random() * 9000) + 1000;
-    b = Math.floor(Math.random() * 9000) + 1000;
   }
 
   if (operation === '-') {
@@ -56,17 +58,12 @@ function generateProblem(difficulty, op) {
   }
 
   if (operation === '÷') {
-    let dividend, divisor;
-    if (difficulty === 'easy') {
-      divisor = Math.floor(Math.random() * 9) + 1;
-      dividend = divisor * (Math.floor(Math.random() * 9) + 1);
-    } else if (difficulty === 'medium') {
-      divisor = Math.floor(Math.random() * 9) + 1;
-      dividend = divisor * (Math.floor(Math.random() * 99) + 10);
-    } else {
-      divisor = Math.floor(Math.random() * 9) + 1;
-      dividend = divisor * (Math.floor(Math.random() * 999) + 100);
-    }
+    const divisor = Math.floor(Math.random() * 9) + 1;
+    const min = difficulty === 'easy' ? 1 : difficulty === 'medium' ? 10 : 100;
+    const max = min * 10 - 1;
+    const minQuotient = Math.ceil(min / divisor);
+    const maxQuotient = Math.floor(max / divisor);
+    const dividend = divisor * (minQuotient + Math.floor(Math.random() * (maxQuotient - minQuotient + 1)));
     return { num1: dividend, num2: divisor, op: '÷', answer: dividend / divisor };
   }
 
@@ -75,6 +72,611 @@ function generateProblem(difficulty, op) {
 
 const CHEERS_BM = ['Bagus!', 'Cemerlang!', 'Hebat!', 'Luar Biasa!', 'Menakjubkan!', 'BINTANG!', 'JUARA!', 'PAKAR MATEMATIK!'];
 const CHEERS_EN = ['Great!', 'Excellent!', 'Fantastic!', 'Amazing!', 'Incredible!', 'SUPERSTAR!', 'CHAMPION!', 'MATH WIZARD!'];
+
+const getColumnMathStyles = () => `
+  .cmg-shell {
+    --game-bg: #ECFAF5;
+    --surface: #FFFFFF;
+    --surface-soft: #F8FCFA;
+    --primary: #27B668;
+    --primary-dark: #159653;
+    --primary-soft: #E5F7EE;
+    --navy: #082A55;
+    --text-secondary: #74849A;
+    --text-muted: #9AA7B7;
+    --border: #DCE7E3;
+    --digit-border: #B7BDC4;
+    --correct: #27B668;
+    --wrong: #FF3D45;
+    --multiply: #C96AF0;
+    --subtract: #FF4D55;
+    --reward: #FFBE18;
+    --progress-track: #E5EBE8;
+    --active-digit: #1DADEB;
+    --digit-size: clamp(52px, min(11vw, 8vh), 82px);
+    --math-font: clamp(44px, min(10vw, 7.4vh), 82px);
+    width: 100% !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    max-width: 100vw !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: linear-gradient(180deg, #ECFAF5 0%, #F7FCF9 100%) !important;
+    color: var(--navy);
+    font-family: "Nunito", "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    box-sizing: border-box;
+  }
+
+  .cmg-shell *,
+  .cmg-shell *::before,
+  .cmg-shell *::after {
+    box-sizing: border-box;
+  }
+
+  .cmg-ref-header {
+    width: min(100%, 1100px);
+    margin-inline: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(8px, 2vw, 18px);
+    padding: max(clamp(6px, 1vh, 14px), env(safe-area-inset-top)) clamp(12px, 3vw, 28px) clamp(6px, 1vh, 12px);
+    flex-shrink: 0;
+    min-width: 0;
+  }
+
+  .cmg-ref-header-left,
+  .cmg-ref-rewards {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .cmg-ref-header-left {
+    gap: clamp(8px, 2vw, 14px);
+    flex: 1 1 auto;
+  }
+
+  .cmg-ref-back {
+    width: clamp(44px, 10vw, 62px);
+    height: clamp(44px, 10vw, 62px);
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 1px solid #E1ECE7;
+    color: var(--navy);
+    box-shadow: 0 3px 10px rgba(31, 78, 60, 0.08);
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    cursor: pointer;
+  }
+
+  .cmg-ref-subject-icon {
+    width: clamp(44px, 10vw, 62px);
+    height: clamp(44px, 10vw, 62px);
+    border-radius: clamp(12px, 3vw, 18px);
+    background: linear-gradient(180deg, #35C878, #18A85C);
+    color: #FFFFFF;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+  }
+
+  .cmg-ref-title-block {
+    min-width: 0;
+  }
+
+  .cmg-ref-title-block h1 {
+    margin: 0;
+    color: var(--navy);
+    font-size: clamp(19px, 4vw, 30px);
+    font-weight: 800;
+    line-height: 1.05;
+    white-space: nowrap;
+  }
+
+  .cmg-ref-title-block p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: clamp(13px, 2.8vw, 19px);
+    font-weight: 600;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+
+  .cmg-ref-rewards {
+    gap: clamp(6px, 1.3vw, 14px);
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .cmg-ref-reward-pill {
+    display: flex;
+    align-items: center;
+    gap: clamp(4px, 1vw, 8px);
+    padding: clamp(6px, 1vw, 10px) clamp(8px, 2vw, 14px);
+    background: #FFFFFF;
+    border: 1px solid #E5EEEA;
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(31, 78, 60, 0.07);
+    color: var(--navy);
+    font-size: clamp(16px, 3vw, 24px);
+    font-weight: 900;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .cmg-ref-reward-icon.is-star { color: #FFBE18; }
+  .cmg-ref-reward-icon.is-heart { color: #FF4D55; }
+  .cmg-ref-reward-icon.is-gem { color: #2BBDF7; }
+
+  .cmg-main {
+    width: min(100%, 1100px) !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    flex: 1 1 auto !important;
+    margin-inline: auto !important;
+    padding: 0 clamp(12px, 3vw, 28px) max(clamp(6px, 1vh, 14px), env(safe-area-inset-bottom)) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: clamp(8px, 1.3vh, 16px) !important;
+    overflow: hidden !important;
+  }
+
+  .cmg-settings-strip {
+    display: none !important;
+  }
+
+  .cmg-shell > .ops-footer-stats {
+    display: none !important;
+  }
+
+  .cmg-card {
+    position: relative !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: clamp(14px, 2.5vh, 28px) clamp(16px, 4vw, 40px) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgba(255, 255, 255, 0.97) !important;
+    border: 1px solid rgba(216, 233, 226, 0.95) !important;
+    border-radius: clamp(24px, 5vw, 36px) !important;
+    box-shadow: 0 6px 20px rgba(31, 78, 60, 0.08) !important;
+    overflow: hidden !important;
+  }
+
+  .cmg-card.is-multiply::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: clamp(5px, 0.8vh, 9px);
+    background: #D174EF;
+    z-index: 1;
+  }
+
+  .cmg-card > div:first-child {
+    display: none !important;
+  }
+
+  .cmg-question-counter {
+    position: absolute;
+    top: clamp(16px, 2.5vh, 28px);
+    left: clamp(16px, 4vw, 32px);
+    padding: clamp(7px, 1vh, 11px) clamp(14px, 3vw, 20px);
+    border-radius: 999px;
+    background: #E5F7EE;
+    color: #108253;
+    font-size: clamp(14px, 3vw, 20px);
+    font-weight: 800;
+    line-height: 1.2;
+    z-index: 3;
+  }
+
+  .cmg-card-settings,
+  .cmg-card-info {
+    position: absolute !important;
+    display: grid !important;
+    place-items: center !important;
+    border-radius: 50% !important;
+    cursor: pointer !important;
+    z-index: 4 !important;
+  }
+
+  .cmg-card-settings {
+    top: clamp(16px, 2.5vh, 28px) !important;
+    right: clamp(16px, 3vw, 28px) !important;
+    width: clamp(42px, 9vw, 58px) !important;
+    height: clamp(42px, 9vw, 58px) !important;
+    background: #FFFFFF !important;
+    border: 1px solid #DDEAE5 !important;
+    color: var(--navy) !important;
+    box-shadow: 0 3px 10px rgba(31, 78, 60, 0.09) !important;
+  }
+
+  .cmg-card-info {
+    top: clamp(82px, 11vh, 112px) !important;
+    right: clamp(18px, 3vw, 30px) !important;
+    width: clamp(40px, 8vw, 54px) !important;
+    height: clamp(40px, 8vw, 54px) !important;
+    background: transparent !important;
+    border: 3px solid #FF3D45 !important;
+    color: #FF3D45 !important;
+    box-shadow: none !important;
+    font-size: clamp(28px, 6vw, 44px) !important;
+  }
+
+  .cmg-work-area {
+    --line-color: #082A55;
+    width: max-content !important;
+    max-width: none !important;
+    flex-shrink: 0;
+    margin: 0 auto !important;
+    padding-top: clamp(48px, 7vh, 82px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: center !important;
+    gap: clamp(6px, 1.3vh, 14px) !important;
+    transform-origin: center;
+  }
+
+  .cmg-work-viewport {
+    position: absolute;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cmg-work-viewport .cmg-work-area {
+    padding-top: 0 !important;
+  }
+
+  .cmg-work-area:not(.is-division) div[style*="border-top"] {
+    border-top-color: var(--line-color) !important;
+    border-top-width: clamp(4px, 0.6vh, 6px) !important;
+    border-radius: 999px !important;
+  }
+
+  .cmg-work-area:not(.is-division) input[type="text"]:not(.cmg-carry-field) {
+    border: clamp(3px, 0.7vw, 5px) solid var(--digit-border) !important;
+    border-radius: clamp(14px, 3vw, 20px) !important;
+    background: #FFFFFF !important;
+    color: var(--navy) !important;
+    font-size: clamp(34px, min(8vw, 5.8vh), 58px) !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    font-family: inherit !important;
+    text-align: center !important;
+    box-shadow: none !important;
+  }
+
+  .cmg-work-area:not(.is-division) input[type="text"]:focus {
+    border-color: var(--active-digit) !important;
+    background: #F5FCFF !important;
+    box-shadow: 0 0 0 2px rgba(29, 173, 235, 0.08) !important;
+    transform: none !important;
+  }
+
+  .cmg-work-area .cmg-carry-field {
+    padding: 0;
+    border-radius: 6px;
+    line-height: normal;
+    flex-shrink: 0;
+  }
+
+  .cmg-work-area span,
+  .cmg-work-area div {
+    font-family: inherit !important;
+  }
+
+  .cmg-action-area {
+    flex: 0 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: clamp(8px, 1.2vh, 14px) !important;
+  }
+
+  .cmg-action-area .cmg-btn {
+    width: min(100%, 650px) !important;
+    height: clamp(58px, 8vh, 78px) !important;
+    padding: 0 clamp(18px, 4vw, 32px) !important;
+    margin: 0 auto !important;
+    border: 0 !important;
+    border-radius: clamp(20px, 4vw, 30px) !important;
+    background: linear-gradient(180deg, #35C875, #20AD61) !important;
+    color: #FFFFFF !important;
+    font-size: clamp(20px, 4.5vw, 30px) !important;
+    font-weight: 800 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+    box-shadow: 0 5px 0 #158F4D !important;
+  }
+
+  .cmg-action-area .cmg-btn:disabled {
+    background: #E2E5E7 !important;
+    color: #9CA4AC !important;
+    box-shadow: 0 4px 0 #C3C8CC !important;
+    opacity: 1 !important;
+  }
+
+  .cmg-progress-footer {
+    width: 100% !important;
+    flex: 0 0 auto !important;
+    padding: clamp(8px, 1.2vh, 14px) clamp(12px, 3vw, 22px) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid #DDEBE5 !important;
+    border-radius: clamp(20px, 4vw, 30px) !important;
+    box-shadow: 0 3px 12px rgba(31, 78, 60, 0.06) !important;
+  }
+
+  .cmg-footer-stats,
+  .cmg-answer-stat {
+    display: flex;
+    align-items: center;
+  }
+
+  .cmg-footer-stats {
+    gap: clamp(6px, 1.5vw, 12px);
+    white-space: nowrap;
+    color: var(--text-secondary);
+    font-size: clamp(12px, 2.5vw, 17px);
+    font-weight: 800;
+  }
+
+  .cmg-footer-title {
+    color: var(--navy);
+    font-weight: 900;
+  }
+
+  .cmg-answer-stat {
+    gap: clamp(4px, 1vw, 7px);
+    font-weight: 900;
+  }
+
+  .cmg-stat-icon {
+    width: clamp(25px, 6vw, 34px);
+    height: clamp(25px, 6vw, 34px);
+    display: grid;
+    place-items: center;
+    border-radius: 7px;
+    color: #FFFFFF;
+  }
+
+  .cmg-stat-icon.is-correct { background: #27B668; }
+  .cmg-stat-icon.is-wrong { background: #FF3D45; }
+  .cmg-answer-stat.is-correct { color: #159653; }
+  .cmg-answer-stat.is-wrong { color: #E93E46; }
+
+  .cmg-footer-divider {
+    width: 1px;
+    height: 26px;
+    background: #CBD5D1;
+  }
+
+  .cmg-footer-progress-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: clamp(10px, 2vw, 16px);
+    margin-top: clamp(6px, 1vh, 10px);
+  }
+
+  .cmg-trophy-badge {
+    width: clamp(40px, 9vw, 58px);
+    height: clamp(40px, 9vw, 58px);
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #FFD84D, #FFB515);
+    color: #8B6200;
+    font-size: clamp(20px, 5vw, 28px);
+  }
+
+  .cmg-progress-track {
+    width: 100%;
+    height: clamp(12px, 2vh, 18px);
+    background: #E5EBE8;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .cmg-progress-fill {
+    height: 100%;
+    background: #FFBE18;
+    border-radius: inherit;
+    transition: width 300ms ease;
+  }
+
+  .cmg-progress-counter {
+    color: var(--navy);
+    font-size: clamp(16px, 3vw, 22px);
+    font-weight: 900;
+    white-space: nowrap;
+  }
+
+  .cmg-settings-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 180;
+    display: grid;
+    place-items: center;
+    padding: 16px;
+    background: rgba(236, 250, 245, 0.78);
+    backdrop-filter: blur(10px);
+  }
+
+  .cmg-settings-modal {
+    width: min(520px, 100%);
+    border-radius: 26px;
+    background: #FFFFFF;
+    border: 1px solid #DDEBE5;
+    box-shadow: 0 20px 50px rgba(31, 78, 60, 0.18);
+    padding: 18px;
+  }
+
+  .cmg-settings-modal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .cmg-settings-modal h2 {
+    margin: 0;
+    color: var(--navy);
+    font-size: 22px;
+    font-weight: 900;
+  }
+
+  .cmg-settings-close {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #DDEBE5;
+    background: #FFFFFF;
+    color: var(--navy);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+  }
+
+  .cmg-settings-group {
+    display: grid;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .cmg-settings-label {
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+  }
+
+  .cmg-settings-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .cmg-settings-option {
+    min-height: 42px;
+    padding: 8px 13px;
+    border-radius: 14px;
+    border: 1px solid #DDEBE5;
+    background: #F8FCFA;
+    color: var(--navy);
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .cmg-settings-option.is-active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #FFFFFF;
+  }
+
+  @media (max-height: 700px) {
+    .cmg-shell {
+      --digit-size: clamp(46px, min(10vw, 7vh), 68px);
+      --math-font: clamp(38px, min(9vw, 6.5vh), 66px);
+    }
+
+    .cmg-ref-header {
+      padding-block: 4px;
+    }
+
+    .cmg-card {
+      padding-block: 12px !important;
+    }
+
+    .cmg-work-area {
+      padding-top: 42px !important;
+      gap: 6px !important;
+    }
+
+    .cmg-action-area .cmg-btn {
+      height: 54px !important;
+    }
+
+    .cmg-progress-footer {
+      padding-block: 6px !important;
+    }
+  }
+
+  @media (max-height: 600px) {
+    .cmg-shell {
+      --digit-size: clamp(40px, min(9vw, 6.2vh), 58px);
+      --math-font: clamp(34px, min(8vw, 5.8vh), 56px);
+    }
+
+    .cmg-main {
+      gap: 5px !important;
+    }
+
+    .cmg-card {
+      padding-block: 8px !important;
+    }
+
+    .cmg-work-area {
+      padding-top: 36px !important;
+      gap: 4px !important;
+    }
+
+    .cmg-action-area .cmg-btn {
+      height: 48px !important;
+    }
+
+    .cmg-progress-footer {
+      padding-block: 5px !important;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .cmg-ref-rewards {
+      gap: 5px;
+    }
+
+    .cmg-ref-reward-pill {
+      padding-inline: 8px;
+    }
+
+    .cmg-ref-title-block h1 {
+      max-width: 30vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  @media (max-width: 430px) {
+    .cmg-ref-subject-icon {
+      display: none;
+    }
+
+    .cmg-ref-reward-pill svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .cmg-ref-reward-pill {
+      font-size: 16px;
+      padding-inline: 7px;
+      gap: 3px;
+    }
+  }
+`;
 
 function StreakPopup({ streak, language, onClose }) {
   const bm = language === 'bm';
@@ -460,7 +1062,6 @@ function useIsDesktop(bp = 768) {
     const mql = window.matchMedia(`(min-width: ${bp}px)`);
     const h = (e) => setIsDesk(e.matches);
     mql.addEventListener('change', h);
-    setIsDesk(mql.matches);
     return () => mql.removeEventListener('change', h);
   }, [bp]);
   return isDesk;
@@ -507,7 +1108,7 @@ function computeMultiplicationInfo(prob, maxLen) {
 
   const s1 = String(prob.num1);
   const m1 = prob.num2 % 10;
-  const m2 = Math.floor(prob.num2 / 10);
+  const m2 = Math.floor(prob.num2 / 10) % 10;
   
   let c = 0;
   for (let i = s1.length - 1; i >= 0; i--) {
@@ -529,10 +1130,11 @@ function computeMultiplicationInfo(prob, maxLen) {
 
   const pp1 = String(prob.partial1).padStart(maxLen, '0').split('').map(Number);
   const pp2 = (String(prob.partial2) + '0').padStart(maxLen, '0').split('').map(Number);
+  const pp3 = String((prob.partial3 ?? 0) * 100).padStart(maxLen, '0').split('').map(Number);
   let ac = 0;
   for (let r = 0; r < maxLen; r++) {
     const dc = maxLen - 1 - r;
-    const sum = pp1[dc] + pp2[dc] + ac;
+    const sum = pp1[dc] + pp2[dc] + pp3[dc] + ac;
     ac = Math.floor(sum / 10);
     if (ac > 0 && dc > 0) addCarries[dc - 1] = ac;
   }
@@ -541,21 +1143,20 @@ function computeMultiplicationInfo(prob, maxLen) {
 }
 
 export default function ColumnMathGame({ onBack, language }) {
-  const gameState = useGameStateContext();
   const bm = language === 'bm';
   const isDesktop = useIsDesktop();
+  const handleBack = useBrowserBack(onBack);
 
   // Responsive sizing — compact on desktop to fit without scrolling
-  const CELL_W   = isDesktop ? 48 : 48;
-  const OP_W     = isDesktop ? 48 : 48;
-  const DIGIT_FS = isDesktop ? '2rem' : '2.4rem';
-  const ANS_FS   = isDesktop ? '1.8rem' : '2.2rem';
-  const ANS_H    = isDesktop ? '2.8rem' : '3.2rem';
-  const TOP_W1   = isDesktop ? '32px'   : '32px';
-  const TOP_W2   = isDesktop ? '40px'   : '42px';
-  const TOP_H    = isDesktop ? '30px'   : '32px';
-  const TOP_FS   = isDesktop ? '0.95rem' : '1.05rem';
-  const CARD_MIN = isDesktop ? 380      : 0;
+  const CELL_W   = isDesktop ? 88 : 64;
+  const OP_W     = isDesktop ? 70 : 48;
+  const DIGIT_FS = isDesktop ? '4.6rem' : '3rem';
+  const ANS_FS   = isDesktop ? '3.2rem' : '2.35rem';
+  const ANS_H    = isDesktop ? '4.9rem' : '3.7rem';
+  const TOP_W1   = '40px';
+  const TOP_W2   = '48px';
+  const TOP_H    = '38px';
+  const TOP_FS   = '24px';
 
   const [difficulty,      setDifficulty]      = useState('easy');
   const [op,              setOp]              = useState('random');
@@ -567,8 +1168,9 @@ export default function ColumnMathGame({ onBack, language }) {
   const [activeTopIdx,    setActiveTopIdx]    = useState(0);
   const [status,          setStatus]          = useState('playing');
   const [score,           setScore]           = useState(0);
-  const [streak,          setStreak]          = useState(0);
+  const [streak,          setStreak]          = useState(() => getGameData().streak);
   const [totalAnswered,   setTotalAnswered]   = useState(0);
+  const [wrongCount,      setWrongCount]      = useState(0);
   const [showStreak,      setShowStreak]      = useState(false);
   const [userStruckRow,    setUserStruckRow]    = useState([]);
   const [userBorrowedTo,   setUserBorrowedTo]   = useState([]);
@@ -578,6 +1180,9 @@ export default function ColumnMathGame({ onBack, language }) {
   const [lockMessage,      setLockMessage]      = useState('');
   const [partial1Inputs,       setPartial1Inputs]       = useState([]);
   const [partial2Inputs,       setPartial2Inputs]       = useState([]);
+  const [partial3Inputs,       setPartial3Inputs]       = useState([]);
+  const [partial3CarryInputs,  setPartial3CarryInputs]  = useState([]);
+  const [activePartial3Idx,    setActivePartial3Idx]    = useState(0);
   const [partial1CarryInputs,  setPartial1CarryInputs]  = useState([]);
   const [partial2CarryInputs,  setPartial2CarryInputs]  = useState([]);
   const [activePartial1Idx,    setActivePartial1Idx]    = useState(0);
@@ -585,26 +1190,22 @@ export default function ColumnMathGame({ onBack, language }) {
   const [activePartial1CarryIdx, setActivePartial1CarryIdx] = useState(0);
   const [activePartial2CarryIdx, setActivePartial2CarryIdx] = useState(0);
   const [showTutorial,         setShowTutorial]         = useState(false);
+  const [isSettingsOpen,       setIsSettingsOpen]       = useState(false);
+  const [isHeartShopOpen,      setIsHeartShopOpen]      = useState(false);
   const [partial1Submitted,    setPartial1Submitted]    = useState(new Set());
   const [partial2Submitted,    setPartial2Submitted]    = useState(new Set());
   const [answerSubmitted,      setAnswerSubmitted]      = useState(new Set());
-  const [hearts,               setHearts]               = useState(3);
-  const [gems,                 setGems]                 = useState(0);
-  const [stars,                setStars]                = useState(0);
+  const [hearts,               setHearts]               = useState(() => getGameData().hearts);
+  const [gems,                 setGems]                 = useState(() => getGameData().gems);
+  const [stars,                setStars]                = useState(() => getGameData().stars);
 
   const inputRefs            = useRef([]);
-
-  // Load game data from localStorage on mount
-  useEffect(() => {
-    const gameData = getGameData();
-    setHearts(gameData.hearts);
-    setGems(gameData.gems);
-    setStars(gameData.stars);
-    setStreak(gameData.streak);
-  }, []);
   const topRowRefs           = useRef([]);
   const partial1Refs         = useRef([]);
   const partial2Refs         = useRef([]);
+  const partial3Refs         = useRef([]);
+  const cardRef              = useRef(null);
+  const workRef              = useRef(null);
   const partial1CarryRefs    = useRef([]);
   const partial2CarryRefs    = useRef([]);
   const submitBtnRef         = useRef(null);
@@ -648,6 +1249,8 @@ export default function ColumnMathGame({ onBack, language }) {
     setUserBorrowedTo(Array(ml).fill(false));
     setPartial1Inputs(Array(ml).fill(''));
     setPartial2Inputs(Array(ml).fill(''));
+    setPartial3Inputs(Array(ml).fill(''));
+    setPartial3CarryInputs(Array(ml).fill(''));
     setPartial1CarryInputs(Array(ml).fill(''));
     setPartial2CarryInputs(Array(ml).fill(''));
     setPartial1Submitted(new Set());
@@ -677,7 +1280,47 @@ export default function ColumnMathGame({ onBack, language }) {
     setShowStreak(false);
   }, [difficulty, op]);
 
+  // Regenerate the working problem when the selected level or operation changes.
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => { newProblem(); }, [newProblem]);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
+  useEffect(() => {
+    const card = cardRef.current;
+    const work = workRef.current;
+    if (!card || !work) return;
+    let frame;
+    const fit = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const styles = getComputedStyle(card);
+        const width = card.clientWidth - parseFloat(styles.paddingLeft) - parseFloat(styles.paddingRight);
+        const bottom = parseFloat(styles.paddingBottom);
+        const settings = card.querySelector('.cmg-card-settings');
+        const counter = card.querySelector('.cmg-question-counter');
+        const info = card.querySelector('.cmg-card-info');
+        const headerTop = Math.max(settings.offsetTop + settings.offsetHeight, counter.offsetTop + counter.offsetHeight) + 8;
+        const infoTop = info.offsetTop + info.offsetHeight + 8;
+        // Use the largest space that keeps the working clear of the counter and buttons.
+        const besideWidth = Math.max(1, 2 * (info.offsetLeft - card.clientWidth / 2 - 8));
+        const besideScale = Math.min(1, besideWidth / work.offsetWidth, (card.clientHeight - headerTop - bottom) / work.offsetHeight);
+        const belowScale = Math.min(1, width / work.offsetWidth, (card.clientHeight - infoTop - bottom) / work.offsetHeight);
+        const corridorWidth = Math.max(0, Math.min(besideWidth, 2 * (card.clientWidth / 2 - counter.offsetLeft - counter.offsetWidth - 8)));
+        const paddingTop = parseFloat(styles.paddingTop);
+        const corridorScale = Math.min(1, corridorWidth / work.offsetWidth, (card.clientHeight - paddingTop - bottom) / work.offsetHeight);
+        const candidates = [{ scale: besideScale, top: headerTop }, { scale: belowScale, top: infoTop }, { scale: corridorScale, top: paddingTop }];
+        const { scale, top } = candidates.reduce((best, candidate) => candidate.scale > best.scale ? candidate : best);
+        work.parentElement.style.top = `${top}px`;
+        work.parentElement.style.bottom = `${bottom}px`;
+        work.style.zoom = String(Math.max(0.1, Math.floor(scale * 1000) / 1000));
+      });
+    };
+    const observer = new ResizeObserver(fit);
+    observer.observe(card);
+    observer.observe(work);
+    fit();
+    return () => { observer.disconnect(); cancelAnimationFrame(frame); };
+  }, [problem]);
 
   // Cleanup feedback timer on unmount
   useEffect(() => {
@@ -719,6 +1362,10 @@ export default function ColumnMathGame({ onBack, language }) {
           if (partial2Inputs[ml - N2 - 1 + i] !== cp2[i]) { correct = false; break; }
         }
       }
+      if (correct && problem.partial3 !== undefined) {
+        const cp3 = String(problem.partial3);
+        correct = cp3.split('').every((d, i) => partial3Inputs[ml - cp3.length - 2 + i] === d);
+      }
     }
     if (correct) {
       setStatus('correct');
@@ -746,6 +1393,7 @@ export default function ColumnMathGame({ onBack, language }) {
       }
     } else {
       setStatus('wrong');
+      setWrongCount(w => w + 1);
       playSound('wrong');
       if (navigator.vibrate) navigator.vibrate([60, 30, 60]);
 
@@ -754,7 +1402,7 @@ export default function ColumnMathGame({ onBack, language }) {
       setHearts(gameData.hearts);
       setStreak(gameData.streak);
     }
-  }, [problem, streak, partial1Inputs, partial2Inputs, newProblem]);
+  }, [problem, partial1Inputs, partial2Inputs, partial3Inputs, newProblem]);
 
   const submitAnswer = () => {
     if (status !== 'playing') return;
@@ -781,6 +1429,7 @@ export default function ColumnMathGame({ onBack, language }) {
       for (let i = ml - N2 - 1; i <= ml - 2; i++) {
         if (!partial2Inputs[i]) return;
       }
+      if (problem.partial3 !== undefined && partial3Inputs.slice(ml - String(problem.partial3).length - 2, ml - 2).includes('')) return;
     }
 
     checkAnswer(inputDigits);
@@ -792,6 +1441,8 @@ export default function ColumnMathGame({ onBack, language }) {
     setTopRowInputs(Array(ml).fill(''));
     setPartial1Inputs(Array(ml).fill(''));
     setPartial2Inputs(Array(ml).fill(''));
+    setPartial3Inputs(Array(ml).fill(''));
+    setPartial3CarryInputs(Array(ml).fill(''));
     setPartial1CarryInputs(Array(ml).fill(''));
     setPartial2CarryInputs(Array(ml).fill(''));
     setPartial1Submitted(new Set());
@@ -873,7 +1524,7 @@ export default function ColumnMathGame({ onBack, language }) {
 
       // Set the tens digit in the upper carry field (left column)
       const topInputs = [...topRowInputs];
-      topInputs[i - 1] = tens;
+      if (i > 0) topInputs[i - 1] = tens;
       setTopRowInputs(topInputs);
 
       // Mark carry position as submitted so it displays
@@ -921,13 +1572,15 @@ export default function ColumnMathGame({ onBack, language }) {
 
       // Set the tens digit in the carry row to the left column
       const carryInputs = [...partial1CarryInputs];
+      let submittedWithCarry = newSubmitted;
       if (i - 1 >= 0) {
         carryInputs[i - 1] = tens;
         // Mark the carry position as submitted so it displays
-        newSubmitted.add(i - 1);
+        submittedWithCarry = new Set(newSubmitted);
+        submittedWithCarry.add(i - 1);
       }
       setPartial1CarryInputs(carryInputs);
-      setPartial1Submitted(newSubmitted);
+      setPartial1Submitted(submittedWithCarry);
       return;
     }
 
@@ -965,12 +1618,13 @@ export default function ColumnMathGame({ onBack, language }) {
       setPartial2Inputs(digits);
 
       // Set the tens digit in the carry row aligned with partial 2 (shifted left by 1)
-      // Place carry at same column as input (i) so it visually aligns with partial 1 carries
+      // Undo the tens-row shift so the carry sits over the next multiplicand digit.
       const carryInputs = [...partial2CarryInputs];
       carryInputs[i] = tens;
-      newSubmitted.add(i);
+      const submittedWithCarry = new Set(newSubmitted);
+      submittedWithCarry.add(i);
       setPartial2CarryInputs(carryInputs);
-      setPartial2Submitted(newSubmitted);
+      setPartial2Submitted(submittedWithCarry);
       return;
     }
 
@@ -986,12 +1640,12 @@ export default function ColumnMathGame({ onBack, language }) {
       e.preventDefault();
       // Process carry logic when user presses Enter
       processCarryLogic(i, inputRefs.current[i].value);
-      // Move focus to left column if not already at leftmost
-      if (i > 0) {
+      const nextIdx = problem.op === '÷' ? i + 1 : i - 1;
+      if (nextIdx >= 0 && nextIdx < inputDigits.length) {
         setTimeout(() => {
-          setActiveIdx(i - 1);
+          setActiveIdx(nextIdx);
           setActiveSection('answer');
-          inputRefs.current[i - 1]?.focus();
+          inputRefs.current[nextIdx]?.focus();
         }, 0);
       } else {
         // At leftmost answer input — focus submit button when all answer fields are filled
@@ -1189,10 +1843,15 @@ export default function ColumnMathGame({ onBack, language }) {
           }
         }
         if (allFilled) {
-          const rightmostAnswer = ml - 1;
           setTimeout(() => {
-            setActiveSection('answer');
-            inputRefs.current[rightmostAnswer]?.focus();
+            if (problem.partial3 !== undefined) {
+              setActiveSection('partial3');
+              setActivePartial3Idx(ml - 3);
+              partial3Refs.current[ml - 3]?.focus();
+            } else {
+              setActiveSection('answer');
+              inputRefs.current[ml - 1]?.focus();
+            }
           }, 80);
         }
       }
@@ -1228,89 +1887,35 @@ export default function ColumnMathGame({ onBack, language }) {
     }
   };
 
-  const handlePartial1CarryChange = (i, rawValue) => {
-    if (status !== 'playing' || !problem.hasPartials) return;
-    const cleaned = rawValue.replace(/[^0-9]/g, '');
-    const limited = cleaned.slice(0, 2);
-    const inputs = [...partial1CarryInputs];
-    inputs[i] = limited;
-    setPartial1CarryInputs(inputs);
-  };
-
-  const handlePartial1CarryKeyDown = (i, e) => {
+  const processPartial3CarryLogic = (i, rawValue) => {
     if (status !== 'playing') return;
-    if (e.key === 'Enter') { e.preventDefault(); submitAnswer(); return; }
-    if (e.key === 'ArrowLeft') {
-      e.preventDefault();
-      if (i > 0) {
-        setActivePartial1CarryIdx(i - 1);
-        partial1CarryRefs.current[i - 1]?.focus();
-      }
-      return;
-    }
-    if (e.key === 'ArrowRight') {
-      e.preventDefault();
-      const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
-      if (i < ml - 1) {
-        setActivePartial1CarryIdx(i + 1);
-        partial1CarryRefs.current[i + 1]?.focus();
-      }
-      return;
-    }
-    if (e.key === 'Backspace') {
-      e.preventDefault();
-      const inputs = [...partial1CarryInputs];
-      if (inputs[i] !== '') {
-        inputs[i] = '';
-        setPartial1CarryInputs(inputs);
-      } else if (i > 0) {
-        inputs[i - 1] = '';
-        setPartial1CarryInputs(inputs);
-        setActivePartial1CarryIdx(i - 1);
-      }
+    const cleaned = rawValue.replace(/[^0-9]/g, '').slice(0, 2);
+    const digits = [...partial3Inputs];
+    digits[i] = cleaned ? String(Number(cleaned) % 10) : '';
+    setPartial3Inputs(digits);
+    if (Number(cleaned) >= 10) {
+      const carries = [...partial3CarryInputs];
+      // Hundreds-row cells are shifted two places left of the multiplicand.
+      carries[i + 1] = String(Math.floor(Number(cleaned) / 10));
+      setPartial3CarryInputs(carries);
     }
   };
 
-  const handlePartial2CarryChange = (i, rawValue) => {
-    if (status !== 'playing' || !problem.hasPartials) return;
-    const cleaned = rawValue.replace(/[^0-9]/g, '');
-    const limited = cleaned.slice(0, 2);
-    const inputs = [...partial2CarryInputs];
-    inputs[i] = limited;
-    setPartial2CarryInputs(inputs);
-  };
-
-  const handlePartial2CarryKeyDown = (i, e) => {
+  const handlePartial3KeyDown = (i, e) => {
     if (status !== 'playing') return;
-    if (e.key === 'Enter') { e.preventDefault(); submitAnswer(); return; }
-    if (e.key === 'ArrowLeft') {
+    const ml = inputDigits.length;
+    const leftmost = ml - String(problem.partial3).length - 2;
+    if (e.key === 'Enter') {
       e.preventDefault();
-      if (i > 0) {
-        setActivePartial2CarryIdx(i - 1);
-        partial2CarryRefs.current[i - 1]?.focus();
-      }
-      return;
-    }
-    if (e.key === 'ArrowRight') {
+      processPartial3CarryLogic(i, e.currentTarget.value);
+      setTimeout(() => {
+        if (i > leftmost) partial3Refs.current[i - 1]?.focus();
+        else inputRefs.current[ml - 1]?.focus();
+      }, 0);
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
       e.preventDefault();
-      const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
-      if (i < ml - 1) {
-        setActivePartial2CarryIdx(i + 1);
-        partial2CarryRefs.current[i + 1]?.focus();
-      }
-      return;
-    }
-    if (e.key === 'Backspace') {
-      e.preventDefault();
-      const inputs = [...partial2CarryInputs];
-      if (inputs[i] !== '') {
-        inputs[i] = '';
-        setPartial2CarryInputs(inputs);
-      } else if (i > 0) {
-        inputs[i - 1] = '';
-        setPartial2CarryInputs(inputs);
-        setActivePartial2CarryIdx(i - 1);
-      }
+      const next = i + (e.key === 'ArrowLeft' ? -1 : 1);
+      if (next >= leftmost && next <= ml - 3) partial3Refs.current[next]?.focus();
     }
   };
 
@@ -1321,12 +1926,10 @@ export default function ColumnMathGame({ onBack, language }) {
   const maxLen = Math.max(s1.length, s2.length, String(problem.answer).length);
   const p1     = s1.padStart(maxLen, ' ');
   const p2     = s2.padStart(maxLen, ' ');
-  const sa     = String(problem.answer).padStart(maxLen, '0');
   const totalW = OP_W + CELL_W * maxLen;
 
   const { topRow } = computeDisplayInfo(problem, maxLen);
-  const { p1Carries, p2Carries, addCarries } = computeMultiplicationInfo(problem, maxLen);
-  const hasTopRow = topRow.some((v, i) => v !== null && !(p1[i] === ' ' && p2[i] === ' '));
+  const { addCarries } = computeMultiplicationInfo(problem, maxLen);
   const showTopRow = problem.op === '+'
     ? topRowInputs.some((d, i) => d !== '' && d !== undefined && answerSubmitted.has(i))
     : problem.op === '-'
@@ -1344,10 +1947,32 @@ export default function ColumnMathGame({ onBack, language }) {
         : problem.op === '÷'
           ? { main: '#FF9600', dark: '#CC7700', soft: '#FFF4E6', stripe: 'linear-gradient(90deg, #FFB833, #FF9600)' }
           : { main: '#1CB0F6', dark: '#0E8FD0', soft: '#E1F4FF', stripe: 'linear-gradient(90deg, #7AD2FF, #1CB0F6)' };
+  const displayOp = problem.op;
+  const isMultiply = problem.op === '×';
+  const isDivision = problem.op === '÷';
+  const operationSubtitle = isMultiply
+    ? (bm ? 'Darab' : 'Multiplication')
+    : problem.op === '-'
+      ? (bm ? 'Tolak Panjang' : 'Long Subtraction')
+      : problem.op === '+'
+        ? (bm ? 'Tambah Panjang' : 'Long Addition')
+        : isDivision
+          ? (bm ? 'Bahagi Panjang' : 'Long Division')
+          : 'Matematik';
+  const progressInGroup = showStreak && streak % STREAK_MILESTONE === 0 && streak > 0 ? STREAK_MILESTONE : streak % STREAK_MILESTONE;
+  const questionNumber = Math.min(progressInGroup + 1, STREAK_MILESTONE);
+  const correctCount = Math.floor(score / 10);
+  const handleRewardPurchase = (newData) => {
+    if (!newData) return;
+    setHearts(newData.hearts);
+    setGems(newData.gems);
+    setStars(newData.stars);
+  };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#FAFAFA' }}>
+    <div className="cmg-shell">
       <style>{`
+        ${getColumnMathStyles()}
         @keyframes cmg-pop { 0%{transform:scale(0.92);opacity:0;} 60%{transform:scale(1.02);} 100%{transform:scale(1);opacity:1;} }
         @keyframes cmg-slide { from{opacity:0;transform:translateY(-6px);} to{opacity:1;transform:translateY(0);} }
         @keyframes cmg-shake { 0%,100%{transform:translateX(0);} 20%{transform:translateX(-6px);} 40%{transform:translateX(6px);} 60%{transform:translateX(-4px);} 80%{transform:translateX(4px);} }
@@ -1519,12 +2144,107 @@ export default function ColumnMathGame({ onBack, language }) {
         </div>
       )}
 
-      <AppHeader onBack={onBack} gameState={gameState} language={language} hearts={hearts} gems={gems} stars={stars} />
+      <header className="cmg-ref-header">
+        <div className="cmg-ref-header-left">
+          <button
+            type="button"
+            className="cmg-ref-back"
+            onClick={handleBack}
+            aria-label={bm ? 'Kembali' : 'Back'}
+          >
+            <ArrowLeft size={28} strokeWidth={3} aria-hidden="true" />
+          </button>
 
-      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: isDesktop ? '0.75rem 1.5rem 1rem' : '1.25rem 1rem', gap: isDesktop ? '0.65rem' : '1.25rem' }}>
+          <div className="cmg-ref-subject-icon" aria-hidden="true">
+            <Calculator size={30} strokeWidth={2.7} />
+          </div>
+
+          <div className="cmg-ref-title-block">
+            <h1>Matematik</h1>
+            <p>{operationSubtitle}</p>
+          </div>
+        </div>
+
+        <div className="cmg-ref-rewards" aria-label={bm ? 'Ganjaran' : 'Rewards'}>
+          <button type="button" className="cmg-ref-reward-pill" onClick={() => setIsHeartShopOpen(true)} title={bm ? 'Bintang' : 'Stars'}>
+            <Star className="cmg-ref-reward-icon is-star" size={28} fill="currentColor" strokeWidth={2.2} aria-hidden="true" />
+            <span>{stars}</span>
+          </button>
+          <button type="button" className="cmg-ref-reward-pill" onClick={() => setIsHeartShopOpen(true)} title={bm ? 'Nyawa' : 'Hearts'}>
+            <Heart className="cmg-ref-reward-icon is-heart" size={28} fill="currentColor" strokeWidth={2.2} aria-hidden="true" />
+            <span>{hearts}</span>
+          </button>
+          <button type="button" className="cmg-ref-reward-pill" onClick={() => setIsHeartShopOpen(true)} title={bm ? 'Permata' : 'Gems'}>
+            <Diamond className="cmg-ref-reward-icon is-gem" size={28} fill="currentColor" strokeWidth={2.2} aria-hidden="true" />
+            <span>{gems}</span>
+          </button>
+        </div>
+      </header>
+
+      {isSettingsOpen && (
+        <div className="cmg-settings-overlay" role="dialog" aria-modal="true" aria-label={bm ? 'Tetapan permainan' : 'Game settings'}>
+          <div className="cmg-settings-modal">
+            <div className="cmg-settings-modal-head">
+              <h2>{bm ? 'Tetapan permainan' : 'Game settings'}</h2>
+              <button
+                type="button"
+                className="cmg-settings-close"
+                onClick={() => setIsSettingsOpen(false)}
+                aria-label={bm ? 'Tutup tetapan' : 'Close settings'}
+              >
+                <X size={22} strokeWidth={2.5} aria-hidden="true" />
+              </button>
+            </div>
+
+            <div className="cmg-settings-group">
+              <div className="cmg-settings-label">{bm ? 'TAHAP' : 'LEVEL'}</div>
+              <div className="cmg-settings-options">
+                {[
+                  { id: 'easy', label: bm ? 'Senang' : 'Easy' },
+                  { id: 'medium', label: bm ? 'Sederhana' : 'Medium' },
+                  { id: 'hard', label: bm ? 'Susah' : 'Hard' },
+                ].map(d => (
+                  <button
+                    key={d.id}
+                    type="button"
+                    className={`cmg-settings-option ${difficulty === d.id ? 'is-active' : ''}`}
+                    onClick={() => setDifficulty(d.id)}
+                  >
+                    {d.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="cmg-settings-group">
+              <div className="cmg-settings-label">{bm ? 'OPERASI' : 'OPERATION'}</div>
+              <div className="cmg-settings-options">
+                {[
+                  { id: 'random', label: bm ? 'Rawak' : 'Random' },
+                  { id: '+', label: '+' },
+                  { id: '-', label: '-' },
+                  { id: '×', label: '×' },
+                  { id: '÷', label: '÷' },
+                ].map(o => (
+                  <button
+                    key={o.id}
+                    type="button"
+                    className={`cmg-settings-option ${op === o.id ? 'is-active' : ''}`}
+                    onClick={() => setOp(o.id)}
+                  >
+                    {o.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <main className="cmg-main">
 
         {/* Settings panel — secondary, narrower than the question box */}
-        <div style={{
+        <div className="cmg-settings-strip" style={{
           display: 'flex', gap: '0.85rem', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'flex-start',
           background: '#fff', borderRadius: '16px', padding: '0.65rem 0.9rem',
           border: '2px solid #E5E5E5', boxShadow: '0 3px 0 #E5E5E5',
@@ -1592,8 +2312,9 @@ export default function ColumnMathGame({ onBack, language }) {
 
         {/* Column problem card — main focus, dominant on desktop */}
         <div
+          ref={cardRef}
           key={`${problem.num1}-${problem.num2}-${problem.op}`}
-          className={`cmg-card ${status === 'wrong' ? 'cmg-shake' : ''}`}
+          className={`cmg-card ${isMultiply ? 'is-multiply' : ''} ${status === 'wrong' ? 'cmg-shake' : ''}`}
           style={{
             position: 'relative',
             background: '#fff',
@@ -1610,9 +2331,23 @@ export default function ColumnMathGame({ onBack, language }) {
           {/* Top color stripe themed by operation */}
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: isDesktop ? '8px' : '6px', background: opTheme.stripe, borderTopLeftRadius: '21px', borderTopRightRadius: '21px' }} />
 
+          <div className="cmg-question-counter">
+            {bm ? 'Soalan' : 'Question'} {questionNumber} / {STREAK_MILESTONE}
+          </div>
+
+          <button
+            type="button"
+            className="cmg-card-settings"
+            onClick={() => setIsSettingsOpen(true)}
+            aria-label={bm ? 'Tetapan' : 'Settings'}
+          >
+            <Settings size={26} strokeWidth={2.8} aria-hidden="true" />
+          </button>
+
           {/* Information icon button */}
           <button
             onClick={() => setShowTutorial(true)}
+            className="cmg-card-info"
             title={bm ? 'Maklumat' : 'Information'}
             style={{
               position: 'absolute', top: isDesktop ? '18px' : '14px', right: isDesktop ? '18px' : '14px',
@@ -1638,8 +2373,19 @@ export default function ColumnMathGame({ onBack, language }) {
             i
           </button>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: totalW, margin: '0 auto' }}>
+          <div className="cmg-work-viewport">
+          <div ref={workRef} className={`cmg-work-area ${isDivision ? 'is-division' : ''}`} style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: totalW, margin: '0 auto' }}>
 
+            {problem.partial3 !== undefined && partial3CarryInputs.some(Boolean) && (
+              <div style={{ display: 'flex', alignItems: 'center', height: '38px' }}>
+                <div style={{ width: OP_W }} />
+                {partial3CarryInputs.map((carry, i) => (
+                  <div key={i} style={{ width: CELL_W, display: 'flex', justifyContent: 'center' }}>
+                    {carry && <div className="cmg-carry-field" style={{ width: TOP_W1, height: TOP_H, boxSizing: 'border-box', border: '2px solid #CE82FF', background: '#F3E5FF', color: '#9C4DCC', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: TOP_FS, fontWeight: 900 }}>{carry}</div>}
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* Multiplication Carry Row 2 (Top-most) */}
             {problem.hasPartials && partial2CarryInputs.some((c, i) => c !== '' && partial2Submitted.has(i)) && (
@@ -1654,6 +2400,7 @@ export default function ColumnMathGame({ onBack, language }) {
                   return (
                     <div key={i} style={{ width: CELL_W, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                       <div
+                        className="cmg-carry-field"
                         style={{
                           width: TOP_W1, height: TOP_H, boxSizing: 'border-box',
                           border: `2px solid #1CB0F6`,
@@ -1683,6 +2430,7 @@ export default function ColumnMathGame({ onBack, language }) {
                   return (
                     <div key={i} style={{ width: CELL_W, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                       <div
+                        className="cmg-carry-field"
                         style={{
                           width: TOP_W1, height: TOP_H, boxSizing: 'border-box',
                           border: `2px solid #CE82FF`,
@@ -1719,6 +2467,7 @@ export default function ColumnMathGame({ onBack, language }) {
                     <div key={i} style={{ width: CELL_W, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                       {hasCarry && (
                         <input
+                          className="cmg-carry-field"
                           ref={el => topRowRefs.current[i] = el}
                           type="text" inputMode="numeric" maxLength={2}
                           value={topRowInputs[i] ?? ''} readOnly={isReadonly} tabIndex={isReadonly ? -1 : 0}
@@ -1746,34 +2495,33 @@ export default function ColumnMathGame({ onBack, language }) {
             {/* Long Division Format (for division operations) */}
             {problem.op === '÷' ? (
               (() => {
-                // Compute a fixed-width left gutter for the divisor + bracket.
-                // Every row uses DIVISOR_COL_W so columns stay perfectly aligned.
                 const divisorStr = String(problem.num2);
-                const DIVISOR_COL_W = divisorStr.length * 18 + 28; // text + bracket + padding
+                const DIV_CELL_W = isDesktop ? 58 : 48;
+                const DIV_BOX_W = DIV_CELL_W - 6;
+                const DIV_BOX_H = isDesktop ? '3.3rem' : '2.9rem';
+                const DIV_DIGIT_FS = isDesktop ? '2.35rem' : '2rem';
+                const DIVISOR_COL_W = divisorStr.length * (isDesktop ? 34 : 28) + (isDesktop ? 28 : 24);
+                const dividendWidth = DIV_CELL_W * String(problem.num1).length;
 
-                // Helper: render the left gutter (visible or hidden)
                 const DivisorGutter = ({ visible }) => (
                   <div style={{ width: DIVISOR_COL_W, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', flexShrink: 0 }}>
-                    <span style={{ fontSize: DIGIT_FS, fontWeight: 700, fontFamily: '"Courier New", monospace', marginRight: '2px', visibility: visible ? 'visible' : 'hidden' }}>
+                    <span style={{ fontSize: DIV_DIGIT_FS, fontWeight: 700, fontFamily: '"Courier New", monospace', marginRight: '2px', visibility: visible ? 'visible' : 'hidden', color: '#3C3C3C' }}>
                       {problem.num2}
                     </span>
-                    <span style={{ fontSize: '2.2rem', fontWeight: 900, color: opTheme.main, lineHeight: 0.8, visibility: visible ? 'visible' : 'hidden' }}>
+                    <span style={{ fontSize: isDesktop ? '2.25rem' : '2rem', fontWeight: 900, color: opTheme.main, lineHeight: 0.8, visibility: visible ? 'visible' : 'hidden' }}>
                       )
                     </span>
                   </div>
                 );
 
-                // Helper: render a row of digit cells (fixed width, gap matches everywhere)
                 const DigitRow = ({ children }) => (
-                  <div style={{ display: 'flex', gap: '3px' }}>
+                  <div style={{ display: 'flex', gap: 0 }}>
                     {children}
                   </div>
                 );
 
                 // Build all working rows dynamically based on how many quotient digits the user has entered
                 const dividendDigits = p1.replace(/ /g, '').split('').map(Number);
-                const quotientStr = String(problem.answer);
-
                 // Collect working-step rows to render
                 const workingRows = [];
                 let currentValue = 0; // running value being divided
@@ -1811,14 +2559,13 @@ export default function ColumnMathGame({ onBack, language }) {
                 return (
                   <>
                     {/* Quotient row */}
-                    <div style={{ display: 'flex', alignItems: 'flex-end', marginBottom: '8px', fontFamily: '"Courier New", monospace' }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-end', marginBottom: '6px', fontFamily: '"Courier New", monospace' }}>
                       <DivisorGutter visible={false} />
                       <DigitRow>
                         {Array.from({ length: maxLen }, (_, i) => {
                           const d = inputDigits[i] ?? '';
                           const isActive = status === 'playing' && activeIdx === i && activeSection === 'answer';
-                          const correctD = quotientStr[i];
-                          const isWrong = status === 'wrong' && d !== '' && d !== correctD;
+                          const isWrong = status === 'wrong';
                           const isCorrect = status === 'correct';
                           return (
                             <input
@@ -1829,10 +2576,10 @@ export default function ColumnMathGame({ onBack, language }) {
                               onBlur={e => processCarryLogic(i, e.target.value)}
                               onFocus={() => { if (status === 'playing') { setActiveSection('answer'); setActiveIdx(i); } }}
                               style={{
-                                width: CELL_W, height: ANS_H, boxSizing: 'border-box',
+                                width: DIV_BOX_W, height: DIV_BOX_H, margin: '0 3px', boxSizing: 'border-box',
                                 border: `3px solid ${isActive ? opTheme.main : isWrong ? '#FF4B4B' : isCorrect ? '#58CC02' : '#ADADAD'}`,
-                                borderRadius: '12px', background: isActive ? opTheme.soft : isWrong ? '#FFEBEB' : isCorrect ? '#EFFFEA' : '#fafafa',
-                                textAlign: 'center', fontSize: ANS_FS, fontWeight: 700, fontFamily: '"Courier New", monospace',
+                                borderRadius: '10px', background: isActive ? opTheme.soft : isWrong ? '#FFEBEB' : isCorrect ? '#EFFFEA' : '#fafafa',
+                                textAlign: 'center', fontSize: isDesktop ? '2rem' : '1.8rem', fontWeight: 700, fontFamily: '"Courier New", monospace',
                                 color: isWrong ? '#FF4B4B' : isCorrect ? '#58CC02' : '#3C3C3C', outline: 'none', caretColor: 'transparent', cursor: 'pointer', transition: 'all 0.12s',
                               }}
                             />
@@ -1842,21 +2589,25 @@ export default function ColumnMathGame({ onBack, language }) {
                     </div>
 
                     {/* Bracket line under quotient */}
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px', fontFamily: '"Courier New", monospace' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px', fontFamily: '"Courier New", monospace' }}>
                       <DivisorGutter visible={false} />
-                      <div style={{ flex: 1, borderTop: `3px solid ${opTheme.main}` }} />
+                      <div style={{ width: dividendWidth, borderTop: `3px solid ${opTheme.main}` }} />
                     </div>
 
                     {/* Divisor ) Dividend row */}
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '4px', fontFamily: '"Courier New", monospace' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px', fontFamily: '"Courier New", monospace' }}>
                       <DivisorGutter visible={true} />
                       <DigitRow>
                         {dividendDigits.map((d, i) => (
-                          <div key={i} style={{ width: CELL_W, textAlign: 'center', fontSize: DIGIT_FS, fontWeight: 700, fontFamily: '"Courier New", monospace', color: '#3C3C3C' }}>
+                          <div key={i} style={{ width: DIV_CELL_W, textAlign: 'center', fontSize: DIV_DIGIT_FS, fontWeight: 700, fontFamily: '"Courier New", monospace', color: '#3C3C3C' }}>
                             {d}
                           </div>
                         ))}
                       </DigitRow>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '6px', fontFamily: '"Courier New", monospace' }}>
+                      <div style={{ width: DIVISOR_COL_W + dividendWidth, borderTop: '3px solid #3C3C3C' }} />
                     </div>
 
                     {/* Dynamic working rows */}
@@ -1876,7 +2627,7 @@ export default function ColumnMathGame({ onBack, language }) {
                       return (
                         <React.Fragment key={rIdx}>
                           {/* Multiply result row */}
-                          <div style={{ display: 'flex', alignItems: 'center', minHeight: ANS_H, fontFamily: '"Courier New", monospace' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', minHeight: DIV_BOX_H, fontFamily: '"Courier New", monospace' }}>
                             <DivisorGutter visible={false} />
                             <DigitRow>
                               {Array.from({ length: maxLen }, (_, i) => {
@@ -1885,7 +2636,7 @@ export default function ColumnMathGame({ onBack, language }) {
                                   digit = row.multiplyStr[i - mulStartCol];
                                 }
                                 return (
-                                  <div key={i} style={{ width: CELL_W, textAlign: 'center', fontSize: DIGIT_FS, fontWeight: 700, fontFamily: '"Courier New", monospace', color: digit ? opTheme.main : 'transparent', height: ANS_H, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                  <div key={i} style={{ width: DIV_CELL_W, textAlign: 'center', fontSize: DIV_DIGIT_FS, fontWeight: 700, fontFamily: '"Courier New", monospace', color: digit ? opTheme.main : 'transparent', height: DIV_BOX_H, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     {digit || '\u00A0'}
                                   </div>
                                 );
@@ -1898,13 +2649,13 @@ export default function ColumnMathGame({ onBack, language }) {
                             <DivisorGutter visible={false} />
                             <DigitRow>
                               {Array.from({ length: maxLen }, (_, i) => (
-                                <div key={i} style={{ borderTop: '2px solid #3C3C3C', width: CELL_W }} />
+                                <div key={i} style={{ borderTop: '2px solid #3C3C3C', width: DIV_CELL_W }} />
                               ))}
                             </DigitRow>
                           </div>
 
                           {/* Subtract + Brought down row */}
-                          <div style={{ display: 'flex', alignItems: 'center', minHeight: ANS_H, marginBottom: '4px', fontFamily: '"Courier New", monospace' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', minHeight: DIV_BOX_H, marginBottom: '4px', fontFamily: '"Courier New", monospace' }}>
                             <DivisorGutter visible={false} />
                             <DigitRow>
                               {Array.from({ length: maxLen }, (_, i) => {
@@ -1915,7 +2666,7 @@ export default function ColumnMathGame({ onBack, language }) {
                                   color = row.hasNextDigit ? '#999' : '#58CC02';
                                 }
                                 return (
-                                  <div key={i} style={{ width: CELL_W, textAlign: 'center', fontSize: DIGIT_FS, fontWeight: 700, fontFamily: '"Courier New", monospace', color, height: ANS_H, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                  <div key={i} style={{ width: DIV_CELL_W, textAlign: 'center', fontSize: DIV_DIGIT_FS, fontWeight: 700, fontFamily: '"Courier New", monospace', color, height: DIV_BOX_H, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     {digit || '\u00A0'}
                                   </div>
                                 );
@@ -1956,7 +2707,7 @@ export default function ColumnMathGame({ onBack, language }) {
                 {/* Row 2 — op + num2 */}
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <div style={{ width: OP_W, textAlign: 'center', fontSize: DIGIT_FS, fontWeight: 900, fontFamily: '"Courier New", monospace', color: opTheme.main }}>
-                    {problem.op}
+                    {displayOp}
                   </div>
                   {p2.split('').map((d, i) => (
                     <div key={i} style={{ width: CELL_W, textAlign: 'center', fontSize: DIGIT_FS, fontWeight: 700, fontFamily: '"Courier New", monospace', color: '#3C3C3C' }}>
@@ -1981,7 +2732,7 @@ export default function ColumnMathGame({ onBack, language }) {
                     <div style={{ width: OP_W }} />
                     {Array.from({ length: maxLen }, (_, i) => {
                       const cInfo = addCarries[i];
-                      const isP1P2Done = !partial1Inputs.slice(maxLen - String(problem.partial1).length).includes('') && !partial2Inputs.slice(maxLen - String(problem.partial2).length - 1, -1).includes('');
+                      const isP1P2Done = !partial1Inputs.slice(maxLen - String(problem.partial1).length).includes('') && !partial2Inputs.slice(maxLen - String(problem.partial2).length - 1, -1).includes('') && (problem.partial3 === undefined || !partial3Inputs.slice(maxLen - String(problem.partial3).length - 2, -2).includes(''));
                       const isVisible = cInfo !== null && isP1P2Done;
 
                       if (!isVisible) return <div key={i} style={{ width: CELL_W }} />;
@@ -1990,6 +2741,7 @@ export default function ColumnMathGame({ onBack, language }) {
                       return (
                         <div key={i} style={{ width: CELL_W, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                           <input
+                            className="cmg-carry-field"
                             ref={el => topRowRefs.current[i] = el}
                             type="text" inputMode="numeric" maxLength={2}
                             value={c} readOnly={status !== 'playing'} tabIndex={status !== 'playing' ? -1 : 0}
@@ -2011,7 +2763,7 @@ export default function ColumnMathGame({ onBack, language }) {
                 )}
 
                 {/* Partial 1 */}
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div data-partial="1" style={{ display: 'flex', alignItems: 'center' }}>
                   <div style={{ width: OP_W }} />
                   {Array.from({ length: maxLen }, (_, i) => {
                     const N1 = String(problem.partial1).length;
@@ -2019,8 +2771,7 @@ export default function ColumnMathGame({ onBack, language }) {
                     if (!inRange) return <div key={i} style={{ width: CELL_W }} />;
                     const d = partial1Inputs[i] ?? '';
                     const isActive = status === 'playing' && activeSection === 'partial1' && activePartial1Idx === i;
-                    const correctD = String(problem.partial1)[i - (maxLen - N1)];
-                    const isWrong = status === 'wrong' && d !== correctD;
+                    const isWrong = status === 'wrong';
                     const isCorrect = status === 'correct';
                     return (
                       <input
@@ -2070,7 +2821,7 @@ export default function ColumnMathGame({ onBack, language }) {
                   const isP1Submitted = isP1Done && partial1Submitted.has(maxLen - N1);
                   return isP1Submitted;
                 })() && (
-                <div style={{ display: 'flex', alignItems: 'center', marginTop: '4px' }}>
+                <div data-partial="2" style={{ display: 'flex', alignItems: 'center', marginTop: '4px' }}>
                   {/* + sign appears when p1 is done */}
                   {(() => {
                     const isP1Done = !partial1Inputs.slice(maxLen - String(problem.partial1).length).includes('');
@@ -2095,8 +2846,7 @@ export default function ColumnMathGame({ onBack, language }) {
 
                     const d = partial2Inputs[i] ?? '';
                     const isActive = status === 'playing' && activeSection === 'partial2' && activePartial2Idx === i;
-                    const correctD = String(problem.partial2)[i - (maxLen - N2 - 1)];
-                    const isWrong = status === 'wrong' && d !== correctD;
+                    const isWrong = status === 'wrong';
                     const isCorrect = status === 'correct';
                     return (
                       <input
@@ -2128,6 +2878,29 @@ export default function ColumnMathGame({ onBack, language }) {
                 </div>
                 )}
 
+                {problem.partial3 !== undefined && !partial2Inputs.slice(maxLen - String(problem.partial2).length - 1, -1).includes('') && partial2Submitted.has(maxLen - String(problem.partial2).length - 1) && (
+                  <div data-partial="3" style={{ display: 'flex', alignItems: 'center', marginTop: '4px' }}>
+                    <div style={{ width: OP_W, textAlign: 'center', fontSize: DIGIT_FS, color: '#58CC02', fontWeight: 900 }}>+</div>
+                    {Array.from({ length: maxLen }, (_, i) => {
+                      const leftmost = maxLen - String(problem.partial3).length - 2;
+                      if (i < leftmost) return <div key={i} style={{ width: CELL_W }} />;
+                      if (i >= maxLen - 2) return <div key={i} style={{ width: CELL_W - 6, height: ANS_H, margin: '0 3px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: ANS_FS, color: '#999', background: '#F5F5F5', borderRadius: '12px', border: '3px solid #D0D0D0' }}>0</div>;
+                      const active = status === 'playing' && activeSection === 'partial3' && activePartial3Idx === i;
+                      const wrong = status === 'wrong';
+                      return <input
+                        key={i} ref={el => partial3Refs.current[i] = el}
+                        type="text" inputMode="numeric" maxLength={2} enterKeyHint="next"
+                        value={partial3Inputs[i] ?? ''} readOnly={status !== 'playing'}
+                        onChange={e => { const digits = [...partial3Inputs]; digits[i] = e.target.value.replace(/[^0-9]/g, '').slice(0, 2); setPartial3Inputs(digits); }}
+                        onBlur={e => processPartial3CarryLogic(i, e.target.value)}
+                        onKeyDown={e => handlePartial3KeyDown(i, e)}
+                        onFocus={() => { if (status === 'playing') { setActiveSection('partial3'); setActivePartial3Idx(i); } }}
+                        style={{ width: CELL_W - 6, height: ANS_H, margin: '0 3px', boxSizing: 'border-box', border: `3px solid ${active ? '#1CB0F6' : wrong ? '#FF4B4B' : status === 'correct' ? '#58CC02' : '#ADADAD'}`, borderRadius: '12px', background: active ? '#EAF7FF' : wrong ? '#FFEBEB' : status === 'correct' ? '#EFFFEA' : '#fafafa', textAlign: 'center', fontSize: ANS_FS, fontWeight: 700, color: wrong ? '#FF4B4B' : status === 'correct' ? '#58CC02' : '#3C3C3C', outline: 'none', caretColor: 'transparent' }}
+                      />;
+                    })}
+                  </div>
+                )}
+
                 {/* Separator between partials and final total */}
                 <div style={{ borderTop: '3px solid #3C3C3C', margin: '4px 0' }} />
               </>
@@ -2140,8 +2913,7 @@ export default function ColumnMathGame({ onBack, language }) {
                   <div style={{ width: OP_W }} />
                   {inputDigits.map((d, i) => {
                     const isActive = status === 'playing' && i === activeIdx && activeSection === 'answer';
-                    const correctD = sa[i];
-                    const isWrong = status === 'wrong' && d !== correctD;
+                    const isWrong = status === 'wrong';
                     const isCorrect = status === 'correct';
                     return (
                       <input
@@ -2167,10 +2939,7 @@ export default function ColumnMathGame({ onBack, language }) {
               </>
             )}
 
-            {/* Bottom separator for division only */}
-            {problem?.op === '÷' && (
-              <div style={{ borderTop: '3px solid #3C3C3C', marginTop: '8px' }} />
-            )}
+          </div>
           </div>
         </div>
 
@@ -2209,10 +2978,11 @@ export default function ColumnMathGame({ onBack, language }) {
                   if (!partial2Inputs[i]) { ready = false; break; }
                 }
               }
+              if (ready && problem.partial3 !== undefined) ready = !partial3Inputs.slice(ml - String(problem.partial3).length - 2, ml - 2).includes('');
             }
           }
           return (
-            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <div className="cmg-action-area" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
               <button
                 onClick={resetFields}
                 className="cmg-btn"
@@ -2284,6 +3054,31 @@ export default function ColumnMathGame({ onBack, language }) {
           </>
         )}
 
+      </main>
+
+      <div className="cmg-progress-footer">
+        <div className="cmg-footer-stats">
+          <span className="cmg-footer-title">{bm ? 'Jawapan :' : 'Answer :'}</span>
+          <span className="cmg-answer-stat is-correct">
+            <span className="cmg-stat-icon is-correct">✓</span>
+            <span>{correctCount}</span>
+            <span>{bm ? 'Betul' : 'Correct'}</span>
+          </span>
+          <span className="cmg-footer-divider" aria-hidden="true" />
+          <span className="cmg-answer-stat is-wrong">
+            <span className="cmg-stat-icon is-wrong">×</span>
+            <span>{wrongCount}</span>
+            <span>{bm ? 'Salah' : 'Wrong'}</span>
+          </span>
+        </div>
+
+        <div className="cmg-footer-progress-row">
+          <span className="cmg-trophy-badge" aria-hidden="true">🏆</span>
+          <div className="cmg-progress-track">
+            <div className="cmg-progress-fill" style={{ width: `${(progressInGroup / STREAK_MILESTONE) * 100}%` }} />
+          </div>
+          <span className="cmg-progress-counter">{progressInGroup}/{STREAK_MILESTONE}</span>
+        </div>
       </div>
 
       {/* Footer stats bar */}
@@ -2313,6 +3108,7 @@ export default function ColumnMathGame({ onBack, language }) {
           );
         })()}
       </div>
+      <HeartShopModal isOpen={isHeartShopOpen} onClose={() => setIsHeartShopOpen(false)} onPurchase={handleRewardPurchase} language={language} />
     </div>
   );
 }
