@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import confetti from 'canvas-confetti';
-import { Settings, X } from 'lucide-react';
+import { ArrowLeft, Calculator, Diamond, Heart, Pencil, Settings, Star, X } from 'lucide-react';
 import { generateProblem } from '../../utils/mathLogic';
 import { playSound } from '../../utils/soundManager';
-import { useGameStateContext } from '../../App';
-import AppHeader from '../AppHeader';
 import GameMenu from './GameMenu';
 import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
+import useBrowserBack from '../../hooks/useBrowserBack';
+import HeartShopModal from '../HeartShopModal';
 
 // ─── Web Speech API voice helper ───────────────────────────────────────────────
 function speak(text, { pitch = 1.4, rate = 1.05, volume = 1 } = {}) {
@@ -828,6 +828,723 @@ const getOpsClayStyles = () => `
       margin: 0;
     }
   }
+
+  .ops-game-shell {
+    --game-bg: #ECFAF5;
+    --surface: #FFFFFF;
+    --surface-soft: #F8FCFA;
+    --primary: #27B668;
+    --primary-dark: #159653;
+    --primary-soft: #E5F7EE;
+    --text-primary: #172B4D;
+    --text-secondary: #74849A;
+    --text-muted: #9AA7B7;
+    --border: #DCE7E3;
+    --correct: #27B668;
+    --wrong: #FF4D55;
+    --reward: #FFBE18;
+    --progress-track: #E4E9E7;
+    --object-size: clamp(28px, min(6vw, 6vh), 56px);
+    width: 100% !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    max-width: 100vw !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    box-sizing: border-box !important;
+    background: linear-gradient(180deg, #ECFAF5 0%, #F7FCF9 100%) !important;
+    font-family: "Nunito", "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .ops-ref-header {
+    width: min(100%, 1100px);
+    margin-inline: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(8px, 2vw, 18px);
+    padding: max(clamp(6px, 1vh, 12px), env(safe-area-inset-top)) clamp(12px, 3vw, 28px) clamp(6px, 1vh, 12px);
+    flex-shrink: 0;
+    min-width: 0;
+  }
+
+  .ops-ref-header-left,
+  .ops-ref-rewards {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .ops-ref-header-left {
+    gap: clamp(8px, 2vw, 14px);
+    flex: 1 1 auto;
+  }
+
+  .ops-ref-back {
+    width: clamp(44px, 10vw, 64px);
+    height: clamp(44px, 10vw, 64px);
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 1px solid #E2ECE8;
+    color: var(--text-primary);
+    box-shadow: 0 3px 10px rgba(25, 65, 50, 0.08);
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    transition: transform 160ms ease, box-shadow 160ms ease;
+  }
+
+  .ops-ref-back:active {
+    transform: translateY(2px);
+  }
+
+  .ops-ref-subject-icon {
+    width: clamp(44px, 10vw, 64px);
+    height: clamp(44px, 10vw, 64px);
+    border-radius: clamp(12px, 3vw, 18px);
+    background: var(--primary);
+    color: #FFFFFF;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    box-shadow: 0 4px 10px rgba(39, 182, 104, 0.18);
+  }
+
+  .ops-ref-title-block {
+    min-width: 0;
+  }
+
+  .ops-ref-title-block h1 {
+    margin: 0;
+    font-family: inherit;
+    font-size: clamp(18px, 3.5vw, 30px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: 0;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ops-ref-title-block p {
+    margin: 0;
+    font-size: clamp(13px, 2.5vw, 20px);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ops-ref-rewards {
+    gap: clamp(6px, 1.3vw, 14px);
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .ops-ref-reward-pill {
+    display: flex;
+    align-items: center;
+    gap: clamp(4px, 1vw, 8px);
+    padding: clamp(6px, 1vw, 10px) clamp(8px, 2vw, 14px);
+    background: #FFFFFF;
+    border: 1px solid #E6EEEB;
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(31, 78, 60, 0.07);
+    color: var(--text-primary);
+    font-size: clamp(16px, 3vw, 24px);
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .ops-ref-reward-icon.is-star { color: #FFBE18; }
+  .ops-ref-reward-icon.is-heart { color: #FF4D55; }
+  .ops-ref-reward-icon.is-gem { color: #2BBDF7; }
+
+  .ops-game-board {
+    width: min(100%, 1100px) !important;
+    height: 100% !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    margin-inline: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: clamp(8px, 1.2vh, 14px) !important;
+    padding: 0 clamp(12px, 3vw, 28px) max(clamp(6px, 1vh, 14px), env(safe-area-inset-bottom)) !important;
+    overflow: hidden !important;
+  }
+
+  .ops-question-zone {
+    width: 100% !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: clamp(14px, 2.5vh, 28px) clamp(16px, 4vw, 40px) !important;
+    border: 1px solid rgba(210, 230, 221, 0.9) !important;
+    border-radius: clamp(22px, 5vw, 36px) !important;
+    background: rgba(255, 255, 255, 0.96) !important;
+    box-shadow: 0 6px 20px rgba(31, 78, 60, 0.08) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+
+  .ops-question-top {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex: 0 0 auto;
+  }
+
+  .ops-question-counter {
+    display: inline-flex;
+    align-items: center;
+    padding: clamp(6px, 1vh, 10px) clamp(12px, 3vw, 18px);
+    background: #E6F6EF;
+    border-radius: 999px;
+    color: #14784C;
+    font-size: clamp(13px, 2.5vw, 18px);
+    font-weight: 900;
+    line-height: 1.2;
+  }
+
+  .ops-settings-puck {
+    position: absolute !important;
+    top: clamp(14px, 2.5vh, 28px) !important;
+    right: clamp(16px, 4vw, 40px) !important;
+    width: clamp(40px, 9vw, 56px) !important;
+    height: clamp(40px, 9vw, 56px) !important;
+    border-radius: 50% !important;
+    background: #F8FCFA !important;
+    border: 1px solid #DFEBE6 !important;
+    color: var(--text-primary) !important;
+    box-shadow: 0 2px 8px rgba(31, 78, 60, 0.06) !important;
+    flex: 0 0 auto;
+  }
+
+  .ops-question-label {
+    margin: auto 0 0 !important;
+    max-width: 100% !important;
+    color: var(--text-primary) !important;
+    font-family: inherit !important;
+    font-size: clamp(20px, min(4.5vw, 5.3vh), 38px) !important;
+    font-weight: 900 !important;
+    line-height: 1.1 !important;
+    letter-spacing: 0.02em !important;
+    text-align: center !important;
+    text-transform: uppercase !important;
+    text-shadow: none !important;
+  }
+
+  .ops-question-subtitle {
+    margin: 4px 0 0 !important;
+    color: #708198 !important;
+    font-size: clamp(13px, min(2.8vw, 3vh), 20px) !important;
+    font-weight: 700 !important;
+    line-height: 1.3 !important;
+    text-align: center !important;
+  }
+
+  .ops-icons-container {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: clamp(18px, 5vw, 60px) !important;
+    margin: clamp(8px, 2vh, 24px) 0 clamp(8px, 1.6vh, 18px) !important;
+    flex-wrap: nowrap !important;
+    min-width: 0 !important;
+  }
+
+  .ops-icon-group {
+    display: grid !important;
+    grid-template-columns: repeat(3, var(--object-size)) !important;
+    gap: clamp(4px, 1vw, 10px) !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    justify-content: center !important;
+    flex: 0 1 auto !important;
+  }
+
+  .ops-icon-emoji {
+    width: var(--object-size) !important;
+    height: var(--object-size) !important;
+    border-radius: 50% !important;
+    color: transparent !important;
+    background:
+      radial-gradient(circle at 30% 28%, rgba(255,255,255,0.9) 0 13%, transparent 14%),
+      radial-gradient(circle at 64% 30%, rgba(103, 199, 255, 0.7), transparent 22%),
+      linear-gradient(145deg, #4BB6FF 0%, #1677ED 58%, #0D56C8 100%) !important;
+    box-shadow:
+      0 8px 12px rgba(30, 108, 210, 0.16),
+      inset 0 3px 0 rgba(255,255,255,0.34),
+      inset 0 -8px 12px rgba(18,72,170,0.22) !important;
+  }
+
+  .ops-icon-operator {
+    min-width: 0 !important;
+    min-height: 0 !important;
+    width: clamp(48px, 11vw, 76px) !important;
+    height: clamp(48px, 11vw, 76px) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #EAF8F1 !important;
+    color: #20A866 !important;
+    font-size: clamp(28px, 7vw, 48px) !important;
+    font-weight: 900 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    flex: 0 0 auto !important;
+  }
+
+  .ops-question-expr {
+    max-width: 100% !important;
+    margin: 0 auto auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-wrap: nowrap !important;
+    gap: clamp(10px, 2.5vw, 24px) !important;
+    color: var(--text-primary) !important;
+    font-family: inherit !important;
+    font-size: clamp(48px, min(11vw, 12vh), 90px) !important;
+    font-weight: 900 !important;
+    line-height: 0.95 !important;
+    letter-spacing: 0 !important;
+    white-space: nowrap !important;
+    text-shadow: none !important;
+  }
+
+  .ops-question-op,
+  .ops-question-mark {
+    color: #20A866 !important;
+    padding: 0 !important;
+    transform: none !important;
+  }
+
+  .ops-question-equals {
+    color: #758392 !important;
+    margin: 0 !important;
+    text-shadow: none !important;
+  }
+
+  .ops-answer-zone {
+    width: 100% !important;
+    padding: 0 !important;
+    flex: 0 0 auto !important;
+    overflow: visible !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: clamp(8px, 1.2vh, 14px) !important;
+  }
+
+  .ops-typing-form {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: clamp(8px, 1.2vh, 14px) !important;
+  }
+
+  .ops-typing-input-shell {
+    width: 100%;
+    height: clamp(62px, 9vh, 94px);
+    background: #FFFFFF;
+    border: 2px solid #DCE5E3;
+    border-radius: clamp(20px, 4vw, 30px);
+    box-shadow: 0 3px 12px rgba(31, 78, 60, 0.06);
+    padding-inline: clamp(18px, 4vw, 34px);
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 3vw, 20px);
+    flex: 0 0 auto;
+  }
+
+  .ops-typing-input-shell:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(39, 182, 104, 0.12);
+  }
+
+  .ops-pencil-icon {
+    color: #96A6B8;
+    flex: 0 0 auto;
+  }
+
+  .ops-typing-input {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    width: auto !important;
+    height: 100% !important;
+    padding: 0 !important;
+    border: 0 !important;
+    outline: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    color: var(--text-primary) !important;
+    font-family: inherit !important;
+    font-size: clamp(20px, 5vw, 34px) !important;
+    font-weight: 800 !important;
+    text-align: left !important;
+  }
+
+  .ops-typing-input::placeholder {
+    color: #93A0B1;
+    opacity: 1;
+  }
+
+  .ops-submit-btn {
+    width: 100% !important;
+    height: clamp(58px, 8vh, 82px) !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: clamp(20px, 4vw, 30px) !important;
+    background: linear-gradient(180deg, #36C875, #22AA60) !important;
+    color: #FFFFFF !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: clamp(8px, 2vw, 14px) !important;
+    font-family: inherit !important;
+    font-size: clamp(20px, 4.5vw, 32px) !important;
+    font-weight: 900 !important;
+    box-shadow: 0 5px 0 #168D4D, 0 8px 14px rgba(25, 120, 70, 0.12) !important;
+    flex: 0 0 auto !important;
+    transition: transform 160ms ease, filter 160ms ease, box-shadow 160ms ease !important;
+  }
+
+  .ops-submit-btn:active:not(:disabled) {
+    transform: translateY(2px) !important;
+    box-shadow: 0 3px 0 #168D4D, 0 5px 10px rgba(25, 120, 70, 0.10) !important;
+  }
+
+  @media (hover: hover) {
+    .ops-submit-btn:hover:not(:disabled) {
+      filter: brightness(1.02);
+    }
+  }
+
+  .ops-submit-btn:disabled {
+    background: #B9DEC9 !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 4px 0 #9BC7AD !important;
+    cursor: not-allowed !important;
+    opacity: 1 !important;
+  }
+
+  .ops-choices-grid {
+    width: 100%;
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: clamp(8px, 1.5vw, 14px) !important;
+  }
+
+  .ops-choice-btn {
+    min-height: clamp(58px, 8vh, 82px) !important;
+    border-radius: clamp(18px, 3vw, 26px) !important;
+    border: 1px solid #DCE7E3 !important;
+    border-bottom: 4px solid #CAD7D2 !important;
+    background: #FFFFFF !important;
+    box-shadow: 0 3px 12px rgba(31, 78, 60, 0.06) !important;
+  }
+
+  .ops-choice-value {
+    color: var(--text-primary) !important;
+    font-family: inherit !important;
+    text-shadow: none !important;
+  }
+
+  .ops-footer-stats {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: clamp(8px, 1.2vh, 14px) clamp(12px, 3vw, 22px) !important;
+    background: rgba(255, 255, 255, 0.94) !important;
+    border: 1px solid #DDEBE5 !important;
+    border-radius: clamp(20px, 4vw, 30px) !important;
+    box-shadow: 0 3px 12px rgba(31, 78, 60, 0.06) !important;
+    flex: 0 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: clamp(6px, 1vh, 10px) !important;
+  }
+
+  .ops-answer-record {
+    width: 100% !important;
+    min-height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: clamp(6px, 1.5vw, 12px) !important;
+    padding: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    color: var(--text-secondary) !important;
+    white-space: nowrap !important;
+  }
+
+  .ops-answer-title {
+    color: var(--text-primary) !important;
+    font-family: inherit !important;
+    font-size: clamp(12px, 2.5vw, 17px) !important;
+    font-weight: 900 !important;
+    text-shadow: none !important;
+  }
+
+  .ops-answer-stats {
+    display: flex !important;
+    align-items: center !important;
+    gap: clamp(6px, 1.5vw, 12px) !important;
+    min-width: 0 !important;
+  }
+
+  .ops-answer-stat {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: clamp(4px, 1vw, 7px) !important;
+    font-family: inherit !important;
+    font-size: clamp(12px, 2.5vw, 17px) !important;
+    font-weight: 900 !important;
+  }
+
+  .ops-answer-icon {
+    width: clamp(26px, 6vw, 34px) !important;
+    height: clamp(26px, 6vw, 34px) !important;
+    border-radius: 8px !important;
+    display: grid !important;
+    place-items: center !important;
+    color: #FFFFFF !important;
+    font-size: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ops-answer-icon.is-correct {
+    background: #27B668 !important;
+  }
+
+  .ops-answer-icon.is-wrong {
+    background: #FF4D55 !important;
+  }
+
+  .ops-answer-icon.is-correct::before {
+    content: "✓";
+    font-size: clamp(18px, 4vw, 24px);
+    line-height: 1;
+  }
+
+  .ops-answer-icon.is-wrong::before {
+    content: "×";
+    font-size: clamp(18px, 4vw, 24px);
+    line-height: 1;
+  }
+
+  .ops-answer-stat.is-correct {
+    color: #159653 !important;
+  }
+
+  .ops-answer-stat.is-wrong {
+    color: #E93E46 !important;
+  }
+
+  .ops-answer-muted {
+    color: var(--text-secondary) !important;
+    font-weight: 800 !important;
+  }
+
+  .ops-answer-divider {
+    width: 1px !important;
+    height: 26px !important;
+    background: #CBD5D1 !important;
+    color: transparent !important;
+    margin-inline: clamp(2px, 1vw, 8px) !important;
+  }
+
+  .ops-progress-wrap {
+    width: 100% !important;
+    max-width: none !important;
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: clamp(10px, 2vw, 16px) !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ops-stat-trophy {
+    width: clamp(40px, 9vw, 58px) !important;
+    height: clamp(40px, 9vw, 58px) !important;
+    border-radius: 50% !important;
+    background: linear-gradient(180deg, #FFD84D, #FFB515) !important;
+    display: grid !important;
+    place-items: center !important;
+    color: #9A6A00 !important;
+    box-shadow: 0 2px 6px rgba(180, 120, 0, 0.12) !important;
+    font-size: clamp(22px, 5vw, 30px) !important;
+    line-height: 1 !important;
+  }
+
+  .ops-progress-track {
+    width: 100% !important;
+    height: clamp(12px, 2vh, 18px) !important;
+    padding: 0 !important;
+    background: #E5EBE8 !important;
+    border-radius: 999px !important;
+    overflow: hidden !important;
+    box-shadow: none !important;
+  }
+
+  .ops-progress-fill {
+    height: 100% !important;
+    background: var(--primary) !important;
+    border-radius: inherit !important;
+    box-shadow: none !important;
+    transition: width 300ms ease !important;
+  }
+
+  .ops-progress-count {
+    min-width: 0 !important;
+    color: var(--text-primary) !important;
+    font-size: clamp(16px, 3vw, 22px) !important;
+    font-weight: 900 !important;
+    white-space: nowrap !important;
+  }
+
+  .ops-feedback-bar {
+    position: fixed !important;
+    top: max(8px, env(safe-area-inset-top)) !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    width: min(92vw, 420px) !important;
+    border-radius: 999px !important;
+    padding: 10px 16px !important;
+    box-shadow: 0 8px 20px rgba(31, 78, 60, 0.14) !important;
+    z-index: 70 !important;
+  }
+
+  @media (max-height: 700px) {
+    .ops-ref-header {
+      padding-block: 4px;
+    }
+
+    .ops-question-zone {
+      padding: 10px clamp(14px, 3vw, 24px) !important;
+    }
+
+    .ops-question-label {
+      font-size: clamp(18px, min(4vw, 5vh), 30px) !important;
+    }
+
+    .ops-icons-container {
+      margin-block: clamp(4px, 1vh, 10px) !important;
+    }
+
+    .ops-typing-input-shell {
+      height: clamp(54px, 8vh, 68px);
+    }
+
+    .ops-submit-btn {
+      height: clamp(52px, 7.5vh, 64px) !important;
+    }
+
+    .ops-footer-stats {
+      padding: 6px clamp(10px, 2vw, 18px) !important;
+    }
+  }
+
+  @media (max-height: 600px) {
+    .ops-question-zone {
+      padding-block: 8px !important;
+    }
+
+    .ops-question-subtitle {
+      font-size: clamp(11px, 2.5vw, 15px) !important;
+    }
+
+    .ops-icons-container {
+      gap: clamp(12px, 3vw, 28px) !important;
+    }
+
+    .ops-typing-input-shell,
+    .ops-submit-btn {
+      height: 50px !important;
+    }
+
+    .ops-footer-stats {
+      gap: 4px !important;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .ops-ref-rewards {
+      gap: 5px;
+    }
+
+    .ops-ref-reward-pill {
+      padding-inline: 8px;
+    }
+
+    .ops-ref-title-block h1 {
+      max-width: 28vw;
+    }
+
+    .ops-choices-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+  }
+
+  @media (min-width: 600px) and (min-height: 700px) {
+    .ops-progress-wrap {
+      flex: 0 0 auto !important;
+    }
+  }
+
+  @media (max-width: 430px) {
+    .ops-ref-subject-icon {
+      display: none;
+    }
+
+    .ops-ref-reward-pill svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .ops-ref-reward-pill {
+      font-size: 16px;
+      padding-inline: 7px;
+      gap: 3px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .ops-game-board,
+    .ops-ref-header {
+      padding-inline: 10px !important;
+    }
+
+    .ops-ref-header-left {
+      gap: 6px;
+    }
+
+    .ops-icons-container {
+      gap: 14px !important;
+    }
+
+    .ops-answer-record,
+    .ops-answer-stats {
+      gap: 4px !important;
+    }
+  }
 `;
 
 // ─── Streak Popup ──────────────────────────────────────────────────────────────
@@ -858,9 +1575,9 @@ export default function MathOperationsGame({
   operation, difficulty, nums, quizType,
   onBack, language,
 }) {
-  const gameState = useGameStateContext();
   const initialGameData = useMemo(() => getGameData(), []);
   const initialNums = useMemo(() => (Array.isArray(nums) ? nums : []), [nums]);
+  const handleBack = useBrowserBack(onBack);
 
   const [activeOperation, setActiveOperation] = useState(operation || 'add');
   const [activeDifficulty, setActiveDifficulty] = useState(difficulty || 'easy');
@@ -879,10 +1596,12 @@ export default function MathOperationsGame({
   const [hearts,         setHearts]         = useState(initialGameData.hearts);
   const [gems,           setGems]           = useState(initialGameData.gems);
   const [stars,          setStars]          = useState(initialGameData.stars);
+  const [isHeartShopOpen, setIsHeartShopOpen] = useState(false);
 
   const inputRef      = useRef(null);
   const feedbackTimer = useRef(null);
   const opMeta   = OP_META[activeOperation]  || OP_META.add;
+  const operationTitle = language === 'bm' ? opMeta.label : opMeta.labelEn;
 
   const loadNext = useCallback(() => {
     setProblem(generateProblem(activeOperation, activeDifficulty, activeNums));
@@ -1003,6 +1722,13 @@ export default function MathOperationsGame({
     setIsSettingsOpen(false);
   };
 
+  const handleRewardPurchase = (newData) => {
+    if (!newData) return;
+    setHearts(newData.hearts);
+    setGems(newData.gems);
+    setStars(newData.stars);
+  };
+
   if (!problem) {
     return (
       <div className="ops-game-shell">
@@ -1016,6 +1742,9 @@ export default function MathOperationsGame({
 
   const accentColor = opMeta.color;
   const accentDark  = opMeta.dark;
+  const displaySymbol = problem.symbol === 'Ã—' ? '×' : problem.symbol === 'Ã·' ? '÷' : problem.symbol;
+  const progressInGroup = showStreak && streak % 10 === 0 && streak > 0 ? 10 : streak % STREAK_MILESTONE;
+  const questionNumber = Math.min(progressInGroup + 1, STREAK_MILESTONE);
 
   return (
     <div className="ops-game-shell">
@@ -1030,7 +1759,42 @@ export default function MathOperationsGame({
         />
       )}
 
-      <AppHeader onBack={onBack} gameState={gameState} language={language} hearts={hearts} gems={gems} stars={stars} />
+      <header className="ops-ref-header">
+        <div className="ops-ref-header-left">
+          <button
+            type="button"
+            className="ops-ref-back"
+            onClick={handleBack}
+            aria-label={language === 'bm' ? 'Kembali' : 'Back'}
+          >
+            <ArrowLeft size={28} strokeWidth={3} aria-hidden="true" />
+          </button>
+
+          <div className="ops-ref-subject-icon" aria-hidden="true">
+            <Calculator size={30} strokeWidth={2.7} />
+          </div>
+
+          <div className="ops-ref-title-block">
+            <h1>Matematik</h1>
+            <p>{operationTitle}</p>
+          </div>
+        </div>
+
+        <div className="ops-ref-rewards" aria-label={language === 'bm' ? 'Ganjaran' : 'Rewards'}>
+          <button type="button" className="ops-ref-reward-pill" onClick={() => setIsHeartShopOpen(true)} title={language === 'bm' ? 'Bintang' : 'Stars'}>
+            <Star className="ops-ref-reward-icon is-star" size={28} fill="currentColor" strokeWidth={2.2} aria-hidden="true" />
+            <span>{stars}</span>
+          </button>
+          <button type="button" className="ops-ref-reward-pill" onClick={() => setIsHeartShopOpen(true)} title={language === 'bm' ? 'Nyawa' : 'Hearts'}>
+            <Heart className="ops-ref-reward-icon is-heart" size={28} fill="currentColor" strokeWidth={2.2} aria-hidden="true" />
+            <span>{hearts}</span>
+          </button>
+          <button type="button" className="ops-ref-reward-pill" onClick={() => setIsHeartShopOpen(true)} title={language === 'bm' ? 'Permata' : 'Gems'}>
+            <Diamond className="ops-ref-reward-icon is-gem" size={28} fill="currentColor" strokeWidth={2.2} aria-hidden="true" />
+            <span>{gems}</span>
+          </button>
+        </div>
+      </header>
 
       {isSettingsOpen && (
         <div className="ops-settings-overlay" role="dialog" aria-modal="true" aria-label={language === 'bm' ? 'Tetapan permainan' : 'Game settings'}>
@@ -1063,17 +1827,25 @@ export default function MathOperationsGame({
       <main className="ops-game-board">
       {/* ── Question Zone ── */}
       <div className="ops-question-zone">
+        <div className="ops-question-top">
+          <span className="ops-question-counter">
+            {language === 'bm' ? `Soalan ${questionNumber} / ${STREAK_MILESTONE}` : `Question ${questionNumber} / ${STREAK_MILESTONE}`}
+          </span>
+        </div>
         <button
           type="button"
           className="ops-settings-puck"
           onClick={() => setIsSettingsOpen(true)}
           aria-label={language === 'bm' ? 'Buka tetapan permainan' : 'Open game settings'}
         >
-          <Settings size={22} strokeWidth={2.5} aria-hidden="true" />
+          <Settings size={26} strokeWidth={2.5} aria-hidden="true" />
         </button>
 
         <p className="ops-question-label">
           {language === 'bm' ? 'Berapakah hasilnya?' : 'What is the answer?'}
+        </p>
+        <p className="ops-question-subtitle">
+          {language === 'bm' ? 'Kira jumlah objek dan jawab soalan.' : 'Count the objects and answer.'}
         </p>
 
         {/* ── Icons Visual ── */}
@@ -1089,7 +1861,7 @@ export default function MathOperationsGame({
 
             {/* Operator */}
             <div className="ops-icon-operator" style={{ color: accentColor }}>
-              {problem.symbol}
+              {displaySymbol}
             </div>
 
             {/* Number 2 Icons */}
@@ -1106,7 +1878,11 @@ export default function MathOperationsGame({
           className="ops-question-expr ops-question-row"
           style={{ color: feedback === 'correct' ? '#46A302' : feedback === 'wrong' ? '#CC3B3B' : '#3C3C3C', display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'nowrap' }}
         >
-          {problem.num1} <span className="ops-question-op" style={{ color: accentColor }}>{problem.symbol}</span> {problem.num2} <span className="ops-question-equals" style={{ color: '#3C3C3C', marginLeft: '0.5rem' }}>= ?</span>
+          <span>{problem.num1}</span>
+          <span className="ops-question-op">{displaySymbol}</span>
+          <span>{problem.num2}</span>
+          <span className="ops-question-equals">=</span>
+          <span className="ops-question-mark">?</span>
         </div>
       </div>
 
@@ -1115,7 +1891,9 @@ export default function MathOperationsGame({
         {activeQuizType === 'typing' ? (
           /* Manual Entry */
           <form onSubmit={handleTypingSubmit} className="ops-typing-form">
-            <input
+            <div className="ops-typing-input-shell">
+              <Pencil className="ops-pencil-icon" size={32} strokeWidth={2.4} aria-hidden="true" />
+              <input
               ref={inputRef}
               type="number"
               inputMode="numeric"
@@ -1127,7 +1905,8 @@ export default function MathOperationsGame({
               disabled={!!feedback}
               className={`ops-typing-input${feedback === 'correct' ? ' ops-input-correct' : feedback === 'wrong' ? ' ops-input-wrong' : ''}`}
               autoComplete="off"
-            />
+              />
+            </div>
             <button
               type="submit"
               className="ops-submit-btn"
@@ -1227,6 +2006,7 @@ export default function MathOperationsGame({
         })()}
       </div>
       </main>
+      <HeartShopModal isOpen={isHeartShopOpen} onClose={() => setIsHeartShopOpen(false)} onPurchase={handleRewardPurchase} language={language} />
     </div>
   );
 }
