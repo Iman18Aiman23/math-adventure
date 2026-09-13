@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import confetti from 'canvas-confetti';
-import { X, HelpCircle, Layers, Keyboard, MousePointerClick } from 'lucide-react';
+import { CalendarDays, X, HelpCircle, Keyboard, Layers, MousePointerClick, Pencil, Settings } from 'lucide-react';
 import { MONTHS } from '../../utils/timeData';
 import { LOCALIZATION } from '../../utils/localization';
 import { playSound } from '../../utils/soundManager';
 import { useGameStateContext } from '../../App';
-import AppHeader from '../AppHeader';
 import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
+import { getTimeGameClayStyles } from './timeGameClayStyles';
+import { MathGameBody, MathGameFooter, MathGameHeader, MathGameShell } from './MathGameLayout';
 
 // ─── Web Speech API voice helper ───────────────────────────────────────────────
 function speak(text, { pitch = 1.4, rate = 1.05, volume = 1 } = {}) {
@@ -62,7 +63,8 @@ export default function MonthsGame({ onBack, onHome, language }) {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   
   const [streak, setStreak] = useState(0);
-  const [totalAnswered, setTotalAnswered] = useState(0);
+  const [correctCount, setCorrectCount] = useState(0);
+  const [wrongCount, setWrongCount] = useState(0);
   
   const [feedback, setFeedback] = useState(null); // 'correct' | 'incorrect'
   const [selectedOption, setSelectedOption] = useState(null);
@@ -71,13 +73,12 @@ export default function MonthsGame({ onBack, onHome, language }) {
   const [showStreak, setShowStreak] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [showReference, setShowReference] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [hearts, setHearts] = useState(3);
   const [gems, setGems] = useState(0);
   const [stars, setStars] = useState(0);
-
   const [showLogicDropdown, setShowLogicDropdown] = useState(false);
   const [showInputDropdown, setShowInputDropdown] = useState(false);
-
   const inputRef = useRef(null);
   const feedbackTimer = useRef(null);
 
@@ -201,7 +202,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
       setStars(gameData.stars);
       const newStreak = gameData.streak;
       setStreak(newStreak);
-      setTotalAnswered(t => t + 1);
+      setCorrectCount(t => t + 1);
 
       if (newStreak % STREAK_MILESTONE === 0) {
         playSound('streak');
@@ -222,7 +223,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
       }, 1200);
 
     } else {
-      setTotalAnswered(t => t + 1);
+      setWrongCount(t => t + 1);
       if (navigator.vibrate) navigator.vibrate([60, 30, 60]);
 
       // Deduct heart on wrong answer (resets streak)
@@ -249,18 +250,13 @@ export default function MonthsGame({ onBack, onHome, language }) {
      setQuestionMode(prev => prev === 'name' ? 'islamic' : prev === 'islamic' ? 'number' : 'name');
   };
 
-  const handleInputToggle = () => {
-     setCurrentQuestion(null);
-     setQuizType(prev => prev === 'multiple' ? 'typing' : 'multiple');
-  };
-
   if (!currentQuestion) {
     return (
-      <div className="ops-game-shell">
+      <MathGameShell className="ops-game-shell time-ref-game" styles={getTimeGameClayStyles()}>
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="ops-loading-spinner" />
         </div>
-      </div>
+      </MathGameShell>
     );
   }
 
@@ -269,16 +265,103 @@ export default function MonthsGame({ onBack, onHome, language }) {
   const accentDark  = '#7B2CBF';
 
   return (
-    <div className="ops-game-shell">
+    <MathGameShell className="ops-game-shell time-ref-game" styles={getTimeGameClayStyles()}>
       {/* Streak popup */}
       {showStreak && (
         <StreakPopup streak={streak} language={language} onClose={() => setShowStreak(false)} />
       )}
 
-      <AppHeader onBack={onBack} gameState={gameState} language={language} hearts={hearts} gems={gems} stars={stars} />
+      <MathGameHeader
+        variant="app"
+        onBack={onBack}
+        gameState={gameState}
+        language={language}
+        hearts={hearts}
+        gems={gems}
+        stars={stars}
+        icon={<CalendarDays size={26} strokeWidth={2.7} aria-hidden="true" />}
+        title="Matematik"
+        subtitle={bm ? 'Bulan dan Kalendar' : 'Months and Calendar'}
+      />
 
+      {isSettingsOpen && (
+        <div className="ops-settings-overlay" role="dialog" aria-modal="true" aria-label={bm ? 'Tetapan permainan' : 'Game settings'}>
+          <div className="ops-settings-panel">
+            <div className="ops-settings-panel-head">
+              <h2 className="ops-settings-title">{bm ? 'Tetapan permainan' : 'Game settings'}</h2>
+              <button type="button" className="ops-settings-close" onClick={() => setIsSettingsOpen(false)} aria-label={bm ? 'Tutup tetapan' : 'Close settings'}>
+                <X size={22} strokeWidth={2.5} aria-hidden="true" />
+              </button>
+            </div>
+
+            <div className="ops-settings-group">
+              <div className="ops-settings-label">
+                <Layers size={15} strokeWidth={2.4} aria-hidden="true" />
+                <span>Mode Selection</span>
+                <span>· 🔁</span>
+              </div>
+              <div className="ops-settings-options">
+                {[
+                  { id: 'name', label: bm ? 'Nama → Islam' : 'Name → Islamic' },
+                  { id: 'islamic', label: bm ? 'Islam → Nama' : 'Islamic → Name' },
+                  { id: 'number', label: bm ? 'Nombor → Nama' : 'Number → Name' }
+                ].map(opt => (
+                  <button
+                    type="button"
+                    key={opt.id}
+                    className={`ops-settings-option ${questionMode === opt.id ? 'is-active' : ''}`}
+                    aria-pressed={questionMode === opt.id}
+                    onClick={() => {
+                      if (questionMode !== opt.id) {
+                        setCurrentQuestion(null);
+                        setQuestionMode(opt.id);
+                      }
+                    }}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="ops-settings-group">
+              <div className="ops-settings-label">
+                {quizType === 'multiple' ? <MousePointerClick size={15} strokeWidth={2.4} aria-hidden="true" /> : <Keyboard size={15} strokeWidth={2.4} aria-hidden="true" />}
+                <span>Answer Selection</span>
+                <span>· 🔁</span>
+              </div>
+              <div className="ops-settings-options">
+                {[
+                  { id: 'multiple', label: bm ? 'Pilihan (ABCD)' : 'Multiple Choice' },
+                  { id: 'typing', label: bm ? 'Menaip' : 'Typing' }
+                ].map(opt => (
+                  <button
+                    type="button"
+                    key={opt.id}
+                    className={`ops-settings-option ${quizType === opt.id ? 'is-active' : ''}`}
+                    aria-pressed={quizType === opt.id}
+                      onClick={() => {
+                        if (quizType !== opt.id) {
+                          setQuizType(opt.id);
+                        }
+                      }}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <button type="button" className="ops-settings-option is-active ops-settings-start" onClick={() => setIsSettingsOpen(false)}>
+              {bm ? 'Selesai' : 'Done'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      <MathGameBody className="ops-game-board">
       {/* ── Secondary Modes Row ── */}
-      <div style={{ display: 'flex', gap: '10px', padding: '0 1rem', margin: '14px 0 8px 0', justifyContent: 'center' }}>
+      <div style={{ display: 'none', gap: '10px', padding: 0, margin: 0, justifyContent: 'center' }}>
         <div style={{ position: 'relative' }}>
           <button onClick={() => { setShowLogicDropdown(v => !v); setShowInputDropdown(false); }} className="ops-mode-pill" style={{ cursor: 'pointer', background: accentColor + '15', border: `2px solid ${accentColor}40` }}>
               <Layers size={14} color={accentColor} />
@@ -286,7 +369,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
               <span style={{ color: '#AFAFAF', fontSize: '0.7rem', fontWeight: 700 }}>· 🔁</span>
           </button>
           {showLogicDropdown && (
-            <div className="fade-in" style={{ position: 'absolute', top: '120%', left: '50%', transform: 'translateX(-50%)', background: 'white', borderRadius: '12px', border: '2px solid #E5E5E5', zIndex: 10, width: 'max-content', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <div className="fade-in time-dropdown-menu" style={{ position: 'absolute', top: '120%', left: '50%', transform: 'translateX(-50%)', background: 'white', borderRadius: '12px', border: '2px solid #E5E5E5', zIndex: 10, width: 'max-content', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                 {[
                   { id: 'name', label: bm ? 'Nama → Islam' : 'Name → Islamic' },
                   { id: 'islamic', label: bm ? 'Islam → Nama' : 'Islamic → Name' },
@@ -307,7 +390,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
               <span style={{ color: '#AFAFAF', fontSize: '0.7rem', fontWeight: 700 }}>· 🔁</span>
           </button>
           {showInputDropdown && (
-            <div className="fade-in" style={{ position: 'absolute', top: '120%', left: '50%', transform: 'translateX(-50%)', background: 'white', borderRadius: '12px', border: '2px solid #E5E5E5', zIndex: 10, width: 'max-content', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <div className="fade-in time-dropdown-menu" style={{ position: 'absolute', top: '120%', left: '50%', transform: 'translateX(-50%)', background: 'white', borderRadius: '12px', border: '2px solid #E5E5E5', zIndex: 10, width: 'max-content', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                 {[
                   { id: 'multiple', label: bm ? 'Pilihan (ABCD)' : 'Multiple Choice' },
                   { id: 'typing', label: bm ? 'Menaip' : 'Typing' }
@@ -325,9 +408,18 @@ export default function MonthsGame({ onBack, onHome, language }) {
       <div className="ops-question-zone" style={{ position: 'relative' }}>
         <button
           onClick={() => setShowReference(true)}
-          style={{ position: 'absolute', top: 8, right: 8, background: accentColor + '15', border: 'none', borderRadius: '50%', width: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+          className="time-ref-help"
+          style={{ position: 'absolute', top: 8, left: 8, background: accentColor + '15', border: 'none', borderRadius: '50%', width: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
         >
            <HelpCircle size={18} color={accentColor} />
+        </button>
+        <button
+          type="button"
+          className="ops-settings-puck"
+          onClick={() => setIsSettingsOpen(true)}
+          aria-label={bm ? 'Buka tetapan permainan' : 'Open game settings'}
+        >
+          <Settings size={26} strokeWidth={2.5} aria-hidden="true" />
         </button>
         
         <p className="ops-question-label">
@@ -338,7 +430,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
         </div>
         
         {currentQuestion.subtitle && (
-            <div style={{ marginTop: '0.2rem', color: '#AFAFAF', fontWeight: 800, fontSize: '1.2rem', textTransform: 'uppercase', letterSpacing: '2px' }}>
+            <div className="time-question-kicker" style={{ marginTop: '0.2rem', color: '#AFAFAF', fontWeight: 800, fontSize: '1.2rem', textTransform: 'uppercase', letterSpacing: '2px' }}>
                 {currentQuestion.subtitle}
             </div>
         )}
@@ -348,21 +440,23 @@ export default function MonthsGame({ onBack, onHome, language }) {
       <div className="ops-answer-zone">
         {quizType === 'typing' ? (
           <form onSubmit={handleTypingSubmit} className="ops-typing-form">
-            <input
-              ref={inputRef}
-              type="text"
-              enterKeyHint="go"
-              value={typedAnswer}
-              onChange={e => setTypedAnswer(e.target.value)}
-              placeholder={bm ? 'Taip jawapan...' : 'Type answer...'}
-              disabled={!!feedback}
-              className={`ops-typing-input${feedback === 'correct' ? ' ops-input-correct' : feedback === 'incorrect' ? ' ops-input-wrong' : ''}`}
-              autoComplete="off"
-            />
+            <div className="ops-typing-input-shell">
+              <Pencil className="ops-pencil-icon" size={32} strokeWidth={2.4} aria-hidden="true" />
+              <input
+                ref={inputRef}
+                type="text"
+                enterKeyHint="go"
+                value={typedAnswer}
+                onChange={e => setTypedAnswer(e.target.value)}
+                placeholder={bm ? 'Taip jawapan...' : 'Type answer...'}
+                disabled={!!feedback}
+                className={`ops-typing-input${feedback === 'correct' ? ' ops-input-correct' : feedback === 'incorrect' ? ' ops-input-wrong' : ''}`}
+                autoComplete="off"
+              />
+            </div>
             <button
               type="submit"
               className="ops-submit-btn"
-              style={{ background: accentColor, borderBottomColor: accentDark }}
               disabled={!typedAnswer.trim() || !!feedback}
             >
               {bm ? 'Semak ✓' : 'Check ✓'}
@@ -428,33 +522,18 @@ export default function MonthsGame({ onBack, onHome, language }) {
       )}
 
       {/* ── Footer Stats ── */}
-      <div className="ops-footer-stats">
-        <div className="ops-stat-chip">
-          <span>✅</span>
-          <span>{totalAnswered}</span>
-          <span style={{ color: '#AFAFAF', fontSize: '0.7rem' }}>{bm ? 'dijawab' : 'answered'}</span>
-        </div>
-        {(() => {
-          const progressInGroup = showStreak && streak % 10 === 0 && streak > 0 ? 10 : streak % 10;
-          return (
-            <div className="ops-stat-chip ops-stat-chip-highlight" style={{ gap: '8px' }}>
-              <span>🏆</span>
-              <div style={{ width: '80px', height: '8px', background: 'rgba(204, 119, 0, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
-                <div style={{ width: `${(progressInGroup / 10) * 100}%`, height: '100%', background: '#FFB800', borderRadius: '4px', transition: 'width 0.3s ease-out' }} />
-              </div>
-              <span style={{ color: '#CC7700', fontSize: '0.9rem', fontWeight: 900, minWidth: '32px', textAlign: 'right' }}>
-                {progressInGroup}/10
-              </span>
-            </div>
-          );
-        })()}
-      </div>
+      <MathGameFooter
+        language={language}
+        correctCount={correctCount}
+        wrongCount={wrongCount}
+        progress={showStreak && streak % 10 === 0 && streak > 0 ? 10 : streak % 10}
+      />
 
-      {/* ── Reference Modal ── */}
+      </MathGameBody>
       {showReference && createPortal(
           <div className="ops-streak-overlay" onClick={() => setShowReference(false)}>
               <div 
-                  className="ops-streak-popup" 
+                  className="ops-streak-popup time-reference-popup" 
                   style={{ background: '#fff', textAlign: 'left', minHeight: '50vh', maxHeight: '90vh', width: '90vw', maxWidth: '700px', display: 'flex', flexDirection: 'column' }} 
                   onClick={e => e.stopPropagation()}
               >
@@ -491,6 +570,6 @@ export default function MonthsGame({ onBack, onHome, language }) {
           </div>,
           document.body
       )}
-    </div>
+    </MathGameShell>
   );
 }

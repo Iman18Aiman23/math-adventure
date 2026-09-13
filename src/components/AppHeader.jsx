@@ -12,7 +12,7 @@ const DESIGN_SYSTEM = {
   }
 };
 
-export default function AppHeader({ onBack, gameState, language, hearts, gems, stars }) {
+export default function AppHeader({ onBack, gameState, language, hearts, gems, stars, icon, title, subtitle }) {
   const handleBack = useBrowserBack(onBack);
   const [displayHearts, setDisplayHearts] = useState(3);
   const [displayGems, setDisplayGems] = useState(0);
@@ -89,6 +89,60 @@ export default function AppHeader({ onBack, gameState, language, hearts, gems, s
         >
           <ArrowLeft size={24} />
         </button>
+
+        {(icon || title || subtitle) && (
+          <div className="app-header-topic" style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.65rem',
+            minWidth: 0,
+            flex: '1 1 auto',
+          }}>
+            {icon && (
+              <div style={{
+                width: 44,
+                height: 44,
+                borderRadius: 14,
+                display: 'grid',
+                placeItems: 'center',
+                background: '#fff',
+                border: `2px solid ${DESIGN_SYSTEM.colors.hair}`,
+                boxShadow: `0 3px 0 ${DESIGN_SYSTEM.colors.hair}`,
+                color: '#2563EB',
+                flexShrink: 0,
+              }}>
+                {icon}
+              </div>
+            )}
+            <div style={{ minWidth: 0, lineHeight: 1.05 }}>
+              {title && (
+                <div style={{
+                  color: '#102D53',
+                  fontWeight: 900,
+                  fontSize: 'clamp(1rem, 2.5vw, 1.35rem)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}>
+                  {title}
+                </div>
+              )}
+              {subtitle && (
+                <div style={{
+                  color: DESIGN_SYSTEM.colors.muted,
+                  fontWeight: 800,
+                  fontSize: 'clamp(0.74rem, 1.8vw, 0.9rem)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  marginTop: 3,
+                }}>
+                  {subtitle}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Stats on the Right - Badge Style */}
         <div className="duo-home-stats" style={{

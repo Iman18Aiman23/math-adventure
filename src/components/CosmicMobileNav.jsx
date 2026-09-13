@@ -1,3 +1,4 @@
+import { BookOpen, Trophy, UserRound, Medal, Settings } from 'lucide-react';
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { GradCapIcon, TrophyIcon, ProfileIcon, MedalIcon, GearsIcon } from './icons/GameIcons';
 
@@ -14,6 +15,7 @@ const TABS = [
 ];
 
 export default function CosmicMobileNav({
+  appearance = 'default',
   activeTab = 'learn',
   language = 'bm',
   onTabChange,
@@ -184,7 +186,7 @@ export default function CosmicMobileNav({
                 <div className="nav-sphere">
                   <div className="nav-orbit" />
                   <span className="nav-icon-wrap">
-                    {React.createElement(tab.icon, { size: 22 })}
+                    {React.createElement(appearance === 'math' ? ({ learn: BookOpen, leaderboard: Trophy, profile: UserRound, achievement: Medal }[tab.id]) : tab.icon, { size: 22, 'aria-hidden': true })}
                   </span>
                   {tab.badge && <div className="nav-badge show" />}
                 </div>
@@ -205,7 +207,7 @@ export default function CosmicMobileNav({
                 <div className="nav-sphere">
                   <div className="nav-orbit" />
                   <span className="nav-icon-wrap">
-                    <GearsIcon size={22} />
+                    {appearance === 'math' ? <Settings size={22} aria-hidden="true" /> : <GearsIcon size={22} />}
                   </span>
                 </div>
                 <span className="nav-label">{language === 'bm' ? 'Tetapan' : 'Settings'}</span>

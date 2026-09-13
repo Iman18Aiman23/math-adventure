@@ -1,10 +1,11 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { ArrowLeft, Calculator, Diamond, Heart, Settings, Star, X } from 'lucide-react';
+import { Settings, X } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { playSound } from '../../utils/soundManager';
 import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
 import useBrowserBack from '../../hooks/useBrowserBack';
 import HeartShopModal from '../HeartShopModal';
+import { MathGameBody, MathGameFooter, MathGameHeader, MathGameShell } from './MathGameLayout';
 
 const STREAK_MILESTONE = 10;
 
@@ -411,101 +412,6 @@ const getColumnMathStyles = () => `
     opacity: 1 !important;
   }
 
-  .cmg-progress-footer {
-    width: 100% !important;
-    flex: 0 0 auto !important;
-    padding: clamp(8px, 1.2vh, 14px) clamp(12px, 3vw, 22px) !important;
-    background: rgba(255, 255, 255, 0.95) !important;
-    border: 1px solid #DDEBE5 !important;
-    border-radius: clamp(20px, 4vw, 30px) !important;
-    box-shadow: 0 3px 12px rgba(31, 78, 60, 0.06) !important;
-  }
-
-  .cmg-footer-stats,
-  .cmg-answer-stat {
-    display: flex;
-    align-items: center;
-  }
-
-  .cmg-footer-stats {
-    gap: clamp(6px, 1.5vw, 12px);
-    white-space: nowrap;
-    color: var(--text-secondary);
-    font-size: clamp(12px, 2.5vw, 17px);
-    font-weight: 800;
-  }
-
-  .cmg-footer-title {
-    color: var(--navy);
-    font-weight: 900;
-  }
-
-  .cmg-answer-stat {
-    gap: clamp(4px, 1vw, 7px);
-    font-weight: 900;
-  }
-
-  .cmg-stat-icon {
-    width: clamp(25px, 6vw, 34px);
-    height: clamp(25px, 6vw, 34px);
-    display: grid;
-    place-items: center;
-    border-radius: 7px;
-    color: #FFFFFF;
-  }
-
-  .cmg-stat-icon.is-correct { background: #27B668; }
-  .cmg-stat-icon.is-wrong { background: #FF3D45; }
-  .cmg-answer-stat.is-correct { color: #159653; }
-  .cmg-answer-stat.is-wrong { color: #E93E46; }
-
-  .cmg-footer-divider {
-    width: 1px;
-    height: 26px;
-    background: #CBD5D1;
-  }
-
-  .cmg-footer-progress-row {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    align-items: center;
-    gap: clamp(10px, 2vw, 16px);
-    margin-top: clamp(6px, 1vh, 10px);
-  }
-
-  .cmg-trophy-badge {
-    width: clamp(40px, 9vw, 58px);
-    height: clamp(40px, 9vw, 58px);
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    background: linear-gradient(180deg, #FFD84D, #FFB515);
-    color: #8B6200;
-    font-size: clamp(20px, 5vw, 28px);
-  }
-
-  .cmg-progress-track {
-    width: 100%;
-    height: clamp(12px, 2vh, 18px);
-    background: #E5EBE8;
-    border-radius: 999px;
-    overflow: hidden;
-  }
-
-  .cmg-progress-fill {
-    height: 100%;
-    background: #FFBE18;
-    border-radius: inherit;
-    transition: width 300ms ease;
-  }
-
-  .cmg-progress-counter {
-    color: var(--navy);
-    font-size: clamp(16px, 3vw, 22px);
-    font-weight: 900;
-    white-space: nowrap;
-  }
-
   .cmg-settings-overlay {
     position: fixed;
     inset: 0;
@@ -611,9 +517,6 @@ const getColumnMathStyles = () => `
       height: 54px !important;
     }
 
-    .cmg-progress-footer {
-      padding-block: 6px !important;
-    }
   }
 
   @media (max-height: 600px) {
@@ -639,9 +542,6 @@ const getColumnMathStyles = () => `
       height: 48px !important;
     }
 
-    .cmg-progress-footer {
-      padding-block: 5px !important;
-    }
   }
 
   @media (max-width: 720px) {
@@ -1480,6 +1380,21 @@ export default function ColumnMathGame({ onBack, language }) {
       return;
     }
 
+    if (problem && problem.op === '÷') {
+      const submitted = new Set(answerSubmitted);
+      submitted.add(i);
+      setAnswerSubmitted(submitted);
+
+      const nextIdx = i + 1;
+      if (nextIdx < inputDigits.length) {
+        setActiveIdx(nextIdx);
+        setActiveSection('answer');
+        setTimeout(() => inputRefs.current[nextIdx]?.focus(), 0);
+      }
+      setLockMessage('');
+      return;
+    }
+
     // Check if borrowing is needed for subtraction
     if (problem && problem.op === '-') {
       const ml = Math.max(String(problem.num1).length, String(problem.num2).length, String(problem.answer).length);
@@ -1970,7 +1885,7 @@ export default function ColumnMathGame({ onBack, language }) {
   };
 
   return (
-    <div className="cmg-shell">
+    <MathGameShell className="cmg-shell">
       <style>{`
         ${getColumnMathStyles()}
         @keyframes cmg-pop { 0%{transform:scale(0.92);opacity:0;} 60%{transform:scale(1.02);} 100%{transform:scale(1);opacity:1;} }
@@ -2144,42 +2059,16 @@ export default function ColumnMathGame({ onBack, language }) {
         </div>
       )}
 
-      <header className="cmg-ref-header">
-        <div className="cmg-ref-header-left">
-          <button
-            type="button"
-            className="cmg-ref-back"
-            onClick={handleBack}
-            aria-label={bm ? 'Kembali' : 'Back'}
-          >
-            <ArrowLeft size={28} strokeWidth={3} aria-hidden="true" />
-          </button>
-
-          <div className="cmg-ref-subject-icon" aria-hidden="true">
-            <Calculator size={30} strokeWidth={2.7} />
-          </div>
-
-          <div className="cmg-ref-title-block">
-            <h1>Matematik</h1>
-            <p>{operationSubtitle}</p>
-          </div>
-        </div>
-
-        <div className="cmg-ref-rewards" aria-label={bm ? 'Ganjaran' : 'Rewards'}>
-          <button type="button" className="cmg-ref-reward-pill" onClick={() => setIsHeartShopOpen(true)} title={bm ? 'Bintang' : 'Stars'}>
-            <Star className="cmg-ref-reward-icon is-star" size={28} fill="currentColor" strokeWidth={2.2} aria-hidden="true" />
-            <span>{stars}</span>
-          </button>
-          <button type="button" className="cmg-ref-reward-pill" onClick={() => setIsHeartShopOpen(true)} title={bm ? 'Nyawa' : 'Hearts'}>
-            <Heart className="cmg-ref-reward-icon is-heart" size={28} fill="currentColor" strokeWidth={2.2} aria-hidden="true" />
-            <span>{hearts}</span>
-          </button>
-          <button type="button" className="cmg-ref-reward-pill" onClick={() => setIsHeartShopOpen(true)} title={bm ? 'Permata' : 'Gems'}>
-            <Diamond className="cmg-ref-reward-icon is-gem" size={28} fill="currentColor" strokeWidth={2.2} aria-hidden="true" />
-            <span>{gems}</span>
-          </button>
-        </div>
-      </header>
+      <MathGameHeader
+        classPrefix="cmg"
+        onBack={handleBack}
+        language={language}
+        subtitle={operationSubtitle}
+        hearts={hearts}
+        gems={gems}
+        stars={stars}
+        onRewardsClick={() => setIsHeartShopOpen(true)}
+      />
 
       {isSettingsOpen && (
         <div className="cmg-settings-overlay" role="dialog" aria-modal="true" aria-label={bm ? 'Tetapan permainan' : 'Game settings'}>
@@ -2241,7 +2130,7 @@ export default function ColumnMathGame({ onBack, language }) {
         </div>
       )}
 
-      <main className="cmg-main">
+      <MathGameBody className="cmg-main">
 
         {/* Settings panel — secondary, narrower than the question box */}
         <div className="cmg-settings-strip" style={{
@@ -3054,61 +2943,16 @@ export default function ColumnMathGame({ onBack, language }) {
           </>
         )}
 
-      </main>
+      </MathGameBody>
 
-      <div className="cmg-progress-footer">
-        <div className="cmg-footer-stats">
-          <span className="cmg-footer-title">{bm ? 'Jawapan :' : 'Answer :'}</span>
-          <span className="cmg-answer-stat is-correct">
-            <span className="cmg-stat-icon is-correct">✓</span>
-            <span>{correctCount}</span>
-            <span>{bm ? 'Betul' : 'Correct'}</span>
-          </span>
-          <span className="cmg-footer-divider" aria-hidden="true" />
-          <span className="cmg-answer-stat is-wrong">
-            <span className="cmg-stat-icon is-wrong">×</span>
-            <span>{wrongCount}</span>
-            <span>{bm ? 'Salah' : 'Wrong'}</span>
-          </span>
-        </div>
-
-        <div className="cmg-footer-progress-row">
-          <span className="cmg-trophy-badge" aria-hidden="true">🏆</span>
-          <div className="cmg-progress-track">
-            <div className="cmg-progress-fill" style={{ width: `${(progressInGroup / STREAK_MILESTONE) * 100}%` }} />
-          </div>
-          <span className="cmg-progress-counter">{progressInGroup}/{STREAK_MILESTONE}</span>
-        </div>
-      </div>
-
-      {/* Footer stats bar */}
-      <div className="ops-footer-stats">
-        {/* Answered count */}
-        <div className="ops-stat-chip">
-          <span>✅</span>
-          <span>{totalAnswered}</span>
-          <span style={{ color: '#AFAFAF', fontSize: '0.7rem' }}>
-            {bm ? 'dijawab' : 'answered'}
-          </span>
-        </div>
-
-        {/* Level progress */}
-        {(() => {
-          const progressInGroup = showStreak && streak % 10 === 0 && streak > 0 ? 10 : streak % 10;
-          return (
-            <div className="ops-stat-chip ops-stat-chip-highlight" style={{ gap: '8px' }}>
-              <span>🏆</span>
-              <div style={{ width: '80px', height: '8px', background: 'rgba(255, 184, 0, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
-                <div style={{ width: `${(progressInGroup / 10) * 100}%`, height: '100%', background: '#FFB800', borderRadius: '4px', transition: 'width 0.3s ease-out' }} />
-              </div>
-              <span style={{ color: '#CC7700', fontSize: '0.9rem', fontWeight: 900, minWidth: '32px', textAlign: 'right' }}>
-                {progressInGroup}/10
-              </span>
-            </div>
-          );
-        })()}
-      </div>
+      <MathGameFooter
+        language={language}
+        correctCount={correctCount}
+        wrongCount={wrongCount}
+        progress={progressInGroup}
+        milestone={STREAK_MILESTONE}
+      />
       <HeartShopModal isOpen={isHeartShopOpen} onClose={() => setIsHeartShopOpen(false)} onPurchase={handleRewardPurchase} language={language} />
-    </div>
+    </MathGameShell>
   );
 }

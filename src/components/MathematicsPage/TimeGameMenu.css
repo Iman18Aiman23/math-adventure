@@ -1,0 +1,13 @@
+/* Layout, palette, typography and interactions are shared with MathHome.css. */
+.time-menu-shell .mh-section-heading h2 { font-size: clamp(20px, 2.3vw, 32px); }
+
+@media (max-width: 767px) and (max-height: 740px) {
+  /* Longer translated activity labels need more room than MathHome's titles. */
+  .time-menu-shell .mh-wrap { grid-template-rows: 44px minmax(0, .85fr) auto minmax(0, 1.65fr); }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .time-menu-shell .mh-wrap { grid-template-rows: 44px auto minmax(0, 1fr); }
+  .time-menu-shell .mh-section-heading h2 { font-size: 20px; }
+  .time-menu-shell .mh-topic-title { font-size: 15px; }
+}

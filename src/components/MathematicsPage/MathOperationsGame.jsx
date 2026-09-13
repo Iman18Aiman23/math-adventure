@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import confetti from 'canvas-confetti';
-import { ArrowLeft, Calculator, Diamond, Heart, Pencil, Settings, Star, X } from 'lucide-react';
+import { Pencil, Settings, X } from 'lucide-react';
 import { generateProblem } from '../../utils/mathLogic';
 import { playSound } from '../../utils/soundManager';
 import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
 import useBrowserBack from '../../hooks/useBrowserBack';
 import HeartShopModal from '../HeartShopModal';
+import { MathGameBody, MathGameFooter, MathGameHeader, MathGameShell } from './MathGameLayout';
 
 // ─── Web Speech API voice helper ───────────────────────────────────────────────
 function speak(text, { pitch = 1.4, rate = 1.05, volume = 1 } = {}) {
@@ -1276,6 +1277,8 @@ const getOpsClayStyles = () => `
 
   .ops-footer-stats {
     width: 100% !important;
+    max-width: none !important;
+    align-self: stretch !important;
     margin: 0 !important;
     padding: clamp(8px, 1.2vh, 14px) clamp(12px, 3vw, 22px) !important;
     background: rgba(255, 255, 255, 0.94) !important;
@@ -1910,12 +1913,11 @@ export default function MathOperationsGame({
 
   if (!problem) {
     return (
-      <div className="ops-game-shell">
-        <style>{getOpsClayStyles()}</style>
+      <MathGameShell className="ops-game-shell" styles={getOpsClayStyles()}>
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="ops-loading-spinner" />
         </div>
-      </div>
+      </MathGameShell>
     );
   }
 
@@ -1926,8 +1928,7 @@ export default function MathOperationsGame({
   const questionNumber = Math.min(progressInGroup + 1, STREAK_MILESTONE);
 
   return (
-    <div className="ops-game-shell">
-      <style>{getOpsClayStyles()}</style>
+    <MathGameShell className="ops-game-shell" styles={getOpsClayStyles()}>
 
       {/* Streak popup */}
       {showStreak && (
@@ -1938,42 +1939,16 @@ export default function MathOperationsGame({
         />
       )}
 
-      <header className="ops-ref-header">
-        <div className="ops-ref-header-left">
-          <button
-            type="button"
-            className="ops-ref-back"
-            onClick={handleBack}
-            aria-label={language === 'bm' ? 'Kembali' : 'Back'}
-          >
-            <ArrowLeft size={28} strokeWidth={3} aria-hidden="true" />
-          </button>
-
-          <div className="ops-ref-subject-icon" aria-hidden="true">
-            <Calculator size={30} strokeWidth={2.7} />
-          </div>
-
-          <div className="ops-ref-title-block">
-            <h1>Matematik</h1>
-            <p>{operationTitle}</p>
-          </div>
-        </div>
-
-        <div className="ops-ref-rewards" aria-label={language === 'bm' ? 'Ganjaran' : 'Rewards'}>
-          <button type="button" className="ops-ref-reward-pill" onClick={() => setIsHeartShopOpen(true)} title={language === 'bm' ? 'Bintang' : 'Stars'}>
-            <Star className="ops-ref-reward-icon is-star" size={28} fill="currentColor" strokeWidth={2.2} aria-hidden="true" />
-            <span>{stars}</span>
-          </button>
-          <button type="button" className="ops-ref-reward-pill" onClick={() => setIsHeartShopOpen(true)} title={language === 'bm' ? 'Nyawa' : 'Hearts'}>
-            <Heart className="ops-ref-reward-icon is-heart" size={28} fill="currentColor" strokeWidth={2.2} aria-hidden="true" />
-            <span>{hearts}</span>
-          </button>
-          <button type="button" className="ops-ref-reward-pill" onClick={() => setIsHeartShopOpen(true)} title={language === 'bm' ? 'Permata' : 'Gems'}>
-            <Diamond className="ops-ref-reward-icon is-gem" size={28} fill="currentColor" strokeWidth={2.2} aria-hidden="true" />
-            <span>{gems}</span>
-          </button>
-        </div>
-      </header>
+      <MathGameHeader
+        classPrefix="ops"
+        onBack={handleBack}
+        language={language}
+        subtitle={operationTitle}
+        hearts={hearts}
+        gems={gems}
+        stars={stars}
+        onRewardsClick={() => setIsHeartShopOpen(true)}
+      />
 
       {isSettingsOpen && (
         <div className="ops-settings-overlay" role="dialog" aria-modal="true" aria-label={language === 'bm' ? 'Tetapan permainan' : 'Game settings'}>
@@ -2001,7 +1976,7 @@ export default function MathOperationsGame({
         </div>
       )}
 
-      <main className="ops-game-board">
+      <MathGameBody className="ops-game-board">
       {/* ── Question Zone ── */}
       <div className="ops-question-zone">
         <div className="ops-question-top">
@@ -2150,40 +2125,15 @@ export default function MathOperationsGame({
       )}
 
       {/* ── Footer Stats ── */}
-      <div className="ops-footer-stats">
-        <div className="ops-stat-chip ops-answer-record">
-          <span className="ops-answer-title">{language === 'bm' ? 'Jawapan :' : 'Answer :'}</span>
-          <span className="ops-answer-stats">
-            <span className="ops-answer-stat is-correct">
-                  <span className="ops-answer-icon is-correct">✅</span>
-              <span>{correctCount}</span>
-              <span className="ops-answer-muted">{language === 'bm' ? 'Betul' : 'Correct'}</span>
-            </span>
-            <span className="ops-answer-divider">|</span>
-            <span className="ops-answer-stat is-wrong">
-                  <span className="ops-answer-icon is-wrong">❌</span>
-              <span>{wrongCount}</span>
-              <span className="ops-answer-muted">{language === 'bm' ? 'salah' : 'wrong'}</span>
-            </span>
-          </span>
-        </div>
-        {(() => {
-          const progressInGroup = showStreak && streak % 10 === 0 && streak > 0 ? 10 : streak % 10;
-          return (
-            <div className="ops-stat-chip ops-stat-chip-highlight ops-progress-wrap" style={{ gap: '8px' }}>
-              <span className="ops-stat-trophy">🏆</span>
-              <div className="ops-progress-track">
-                <div className="ops-progress-fill" style={{ width: `${(progressInGroup / 10) * 100}%` }} />
-              </div>
-              <span className="ops-progress-count">
-                {progressInGroup}/10
-              </span>
-            </div>
-          );
-        })()}
-      </div>
-      </main>
+      <MathGameFooter
+        language={language}
+        correctCount={correctCount}
+        wrongCount={wrongCount}
+        progress={progressInGroup}
+        milestone={STREAK_MILESTONE}
+      />
+      </MathGameBody>
       <HeartShopModal isOpen={isHeartShopOpen} onClose={() => setIsHeartShopOpen(false)} onPurchase={handleRewardPurchase} language={language} />
-    </div>
+    </MathGameShell>
   );
 }

@@ -6,8 +6,9 @@ import AnalogClock from './AnalogClock';
 import { playSound } from '../../utils/soundManager';
 import { LOCALIZATION } from '../../utils/localization';
 import { useGameStateContext } from '../../App';
-import AppHeader from '../AppHeader';
 import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
+import { getTimeGameClayStyles } from './timeGameClayStyles';
+import { MathGameBody, MathGameFooter, MathGameHeader, MathGameShell } from './MathGameLayout';
 
 // ─── Web Speech API voice helper ───────────────────────────────────────────────
 function speak(text, { pitch = 1.4, rate = 1.05, volume = 1 } = {}) {
@@ -60,7 +61,8 @@ export default function ClockGame({ onBack, onHome, language }) {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   
   const [streak, setStreak] = useState(0);
-  const [totalAnswered, setTotalAnswered] = useState(0);
+  const [correctCount, setCorrectCount] = useState(0);
+  const [wrongCount, setWrongCount] = useState(0);
 
   const [feedback, setFeedback] = useState(null); // 'correct' | 'incorrect'
   const [selectedOption, setSelectedOption] = useState(null);
@@ -140,7 +142,7 @@ export default function ClockGame({ onBack, onHome, language }) {
       setStars(gameData.stars);
       const newStreak = gameData.streak;
       setStreak(newStreak);
-      setTotalAnswered(t => t + 1);
+      setCorrectCount(t => t + 1);
 
       if (newStreak % STREAK_MILESTONE === 0) {
         playSound('streak');
@@ -161,7 +163,7 @@ export default function ClockGame({ onBack, onHome, language }) {
       }, 1200);
 
     } else {
-      setTotalAnswered(t => t + 1);
+      setWrongCount(t => t + 1);
       if (navigator.vibrate) navigator.vibrate([60, 30, 60]);
 
       // Deduct heart on wrong answer (resets streak)
@@ -184,11 +186,11 @@ export default function ClockGame({ onBack, onHome, language }) {
 
   if (!currentQuestion) {
     return (
-      <div className="ops-game-shell">
+      <MathGameShell className="ops-game-shell time-ref-game" styles={getTimeGameClayStyles()}>
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="ops-loading-spinner" />
         </div>
-      </div>
+      </MathGameShell>
     );
   }
 
@@ -197,16 +199,28 @@ export default function ClockGame({ onBack, onHome, language }) {
   const accentDark  = '#3BAEA5';
 
   return (
-    <div className="ops-game-shell">
+    <MathGameShell className="ops-game-shell time-ref-game" styles={getTimeGameClayStyles()}>
       {/* Streak popup */}
       {showStreak && (
         <StreakPopup streak={streak} language={language} onClose={() => setShowStreak(false)} />
       )}
 
-      <AppHeader onBack={onBack} gameState={gameState} language={language} hearts={hearts} gems={gems} stars={stars} />
+      <MathGameHeader
+        variant="app"
+        onBack={onBack}
+        gameState={gameState}
+        language={language}
+        hearts={hearts}
+        gems={gems}
+        stars={stars}
+        icon={<Clock size={26} strokeWidth={2.7} aria-hidden="true" />}
+        title="Matematik"
+        subtitle={bm ? 'Jam dan Masa' : 'Clock and Time'}
+      />
 
+      <MathGameBody className="ops-game-board">
       {/* ── Mode pill toggles the gamemode ── */}
-      <div style={{ display: 'flex', gap: '0.5rem', padding: '0.75rem 1rem', justifyContent: 'center' }}>
+      <div className="time-game-mode-row" style={{ display: 'flex', gap: '0.5rem', padding: 0, justifyContent: 'center' }}>
         <button
           onClick={handleModeChange}
           className="ops-mode-pill"
@@ -229,7 +243,7 @@ export default function ClockGame({ onBack, onHome, language }) {
         </p>
 
         {clockMode === 'analog-to-digital' ? (
-           <div style={{ margin: '1rem 0' }}>
+           <div className="time-clock-stage" style={{ margin: '1rem 0' }}>
              <AnalogClock hour={currentQuestion.hour} minute={currentQuestion.minute} size={150} showNumbers={true} />
            </div>
         ) : (
@@ -285,7 +299,7 @@ export default function ClockGame({ onBack, onHome, language }) {
                   onClick={() => handleAnswer(opt)}
                   disabled={!!feedback}
                   className={`ops-choice-btn ops-choice-${state}`}
-                  style={state === 'idle' ? { '--accent': accentColor, '--accent-dark': accentDark, minHeight: '130px', padding: 0 } : { minHeight: '130px', padding: 0 }}
+                  style={state === 'idle' ? { '--accent': accentColor, '--accent-dark': accentDark, minHeight: 'clamp(78px, 15dvh, 130px)', padding: 0 } : { minHeight: 'clamp(78px, 15dvh, 130px)', padding: 0 }}
                 >
                   <div style={{ pointerEvents: 'none', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                      <AnalogClock hour={opt.hour} minute={opt.minute} size={100} showNumbers={true} />
@@ -324,29 +338,13 @@ export default function ClockGame({ onBack, onHome, language }) {
       )}
 
       {/* ── Footer Stats ── */}
-      <div className="ops-footer-stats">
-        <div className="ops-stat-chip">
-          <span>✅</span>
-          <span>{totalAnswered}</span>
-          <span style={{ color: '#AFAFAF', fontSize: '0.7rem' }}>
-            {bm ? 'dijawab' : 'answered'}
-          </span>
-        </div>
-        {(() => {
-          const progressInGroup = showStreak && streak % 10 === 0 && streak > 0 ? 10 : streak % 10;
-          return (
-            <div className="ops-stat-chip ops-stat-chip-highlight" style={{ gap: '8px' }}>
-              <span>🏆</span>
-              <div style={{ width: '80px', height: '8px', background: 'rgba(204, 119, 0, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
-                <div style={{ width: `${(progressInGroup / 10) * 100}%`, height: '100%', background: '#FFB800', borderRadius: '4px', transition: 'width 0.3s ease-out' }} />
-              </div>
-              <span style={{ color: '#CC7700', fontSize: '0.9rem', fontWeight: 900, minWidth: '32px', textAlign: 'right' }}>
-                {progressInGroup}/10
-              </span>
-            </div>
-          );
-        })()}
-      </div>
-    </div>
+      <MathGameFooter
+        language={language}
+        correctCount={correctCount}
+        wrongCount={wrongCount}
+        progress={showStreak && streak % 10 === 0 && streak > 0 ? 10 : streak % 10}
+      />
+      </MathGameBody>
+    </MathGameShell>
   );
 }

@@ -1,95 +1,65 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
+import { ArrowLeft, ChevronRight, Star } from 'lucide-react';
 import { LOCALIZATION } from '../../utils/localization';
-import { useGameStateContext } from '../../App';
-import BackButton from '../BackButton';
+import { getStars } from '../../utils/gameStatsManager';
+import useBrowserBack from '../../hooks/useBrowserBack';
+import TimeMathMascot from './TimeMathMascot';
+import TimeMenuArtwork from './TimeMenuArtwork';
+import './MathHome.css';
+import './TimeGameMenu.css';
 
 const TIME_GAMES = [
-  { id: 'month-learning', emoji: '📅', iconBg: '#EDD9FF', iconColor: '#CE82FF', titleKey: 'monthLearning', descKey: 'monthLearningDesc' },
-  { id: 'months',         emoji: '🗓️', iconBg: '#FFE0E0', iconColor: '#FF4B4B', titleKey: 'monthQuiz',     descKey: 'monthQuizDesc'     },
-  { id: 'clock',          emoji: '⏰', iconBg: '#D0F0FF', iconColor: '#1CB0F6', titleKey: 'timeAdventure', descKey: 'timeAdventureDesc' },
+  { id: 'month-learning', theme: 'blue', titleKey: 'monthLearning', descKey: 'monthLearningDesc' },
+  { id: 'months', theme: 'red', titleKey: 'monthQuiz', descKey: 'monthQuizDesc' },
+  { id: 'clock', theme: 'mint', titleKey: 'timeAdventure', descKey: 'timeAdventureDesc' },
 ];
 
-export default function TimeGameMenu({ onStart, onBack, onHome, language }) {
-  const t = LOCALIZATION[language].time;
-  const gameState = useGameStateContext();
+export default function TimeGameMenu({ onStart, onBack, language = 'bm' }) {
+  const bm = language === 'bm';
+  const t = LOCALIZATION[bm ? 'bm' : 'eng'].time;
+  const handleBack = useBrowserBack(onBack);
+  const [stars, setStars] = useState(getStars);
+  useEffect(() => {
+    const refresh = () => setStars(getStars());
+    window.addEventListener('storage', refresh);
+    window.addEventListener('focus', refresh);
+    return () => {
+      window.removeEventListener('storage', refresh);
+      window.removeEventListener('focus', refresh);
+    };
+  }, []);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: 'var(--bg-body)', padding: '0 14px', maxWidth: '980px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
-      <BackButton onClick={onBack} />
-
-      {/* Content */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 1rem' }}>
-        <p style={{ fontSize: '0.8rem', fontWeight: 800, color: '#AFAFAF', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1.5rem' }}>
-          {t.selectGame}
-        </p>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {TIME_GAMES.map((game, i) => (
-            <button
-              key={game.id}
-              className="fade-in"
-              onClick={() => onStart(game.id)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                padding: '1.25rem',
-                background: '#fff',
-                border: `3px solid ${game.iconBg}`,
-                borderBottom: `5px solid ${game.iconColor}`,
-                borderRadius: '20px',
-                cursor: 'pointer',
-                transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
-                gap: '1.2rem',
-                animationDelay: `${i * 0.07}s`,
-                textAlign: 'left',
-                width: '100%',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-3px)';
-                e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.15)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'none';
-                e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.1)';
-              }}
-              onMouseDown={(e) => {
-                e.currentTarget.style.transform = 'translateY(2px)';
-                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
-              }}
-              onMouseUp={(e) => {
-                e.currentTarget.style.transform = 'translateY(-3px)';
-                e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.15)';
-              }}
-            >
-              <div style={{
-                background: game.iconColor,
-                color: '#fff',
-                borderRadius: '14px',
-                width: '56px',
-                height: '56px',
-                minWidth: '56px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '1.8rem',
-                fontWeight: 900,
-              }}>
-                {game.emoji}
-              </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: '1.1rem', fontWeight: 900, color: '#3C3C3C', marginBottom: '4px' }}>
-                  {t[game.titleKey]}
-                </div>
-                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#AFAFAF', lineHeight: 1.3 }}>
-                  {t[game.descKey]}
-                </div>
-              </div>
-              <div style={{ fontSize: '1.5rem', color: '#AFAFAF' }}>›</div>
+    <main className="mh-screen time-menu-shell" aria-label={bm ? 'Bulan & Masa' : 'Clock & Time'}>
+      <div className="mh-wrap">
+        <header className="mh-header">
+          <button type="button" className="mh-back" onClick={handleBack} aria-label={bm ? 'Kembali' : 'Back'}><ArrowLeft aria-hidden="true" /></button>
+          <h1>{bm ? 'Bulan & Masa' : 'Clock & Time'}</h1>
+          <span className="mh-score" aria-label={`${stars} ${bm ? 'bintang' : 'stars'}`}><Star aria-hidden="true" /><span>{stars}</span></span>
+        </header>
+        <section className="mh-hero" aria-labelledby="time-menu-hero-title">
+          <div className="mh-hero-copy">
+            <p className="mh-eyebrow">{bm ? 'BULAN & MASA' : 'CLOCK & TIME'}</p>
+            <h2 id="time-menu-hero-title">{bm ? 'Jom kenali masa!' : 'Let’s explore time!'}</h2>
+            <p className="mh-description">{bm ? 'Kenali 12 bulan dan belajar membaca jam.' : 'Discover 12 months and learn to read the clock.'}</p>
+            <p className="mh-encouragement">{bm ? 'Setiap hari, ada sesuatu yang baharu untuk dipelajari!' : 'Every day brings something new to learn!'}</p>
+          </div>
+          <div className="mh-mascot" aria-hidden="true"><TimeMathMascot /></div>
+        </section>
+        <div className="mh-section-heading">
+          <h2 id="time-menu-topics-title">{bm ? 'Pilih Aktiviti' : 'Choose activity'}</h2>
+          <p>{bm ? 'Pilih aktiviti untuk mula belajar.' : 'Pick an activity to start learning.'}</p>
+        </div>
+        <section className="mh-topic-grid time-menu-list" aria-labelledby="time-menu-topics-title">
+          {TIME_GAMES.map(game => (
+            <button key={game.id} type="button" className={`mh-topic-card time-menu-card mh-${game.theme}`} onClick={() => onStart(game.id)}>
+              <span className="mh-topic-visual" aria-hidden="true"><TimeMenuArtwork topic={game.id} /></span>
+              <span className="mh-topic-copy"><span className="mh-topic-title">{t[game.titleKey]}</span><span className="mh-topic-description">{t[game.descKey]}</span></span>
+              <span className="mh-arrow" aria-hidden="true"><ChevronRight /></span>
             </button>
           ))}
-        </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }
