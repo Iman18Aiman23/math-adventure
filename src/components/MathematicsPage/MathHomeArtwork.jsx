@@ -6,7 +6,8 @@ export function MathTopicArtwork({ topic }) {
   const url = name => `url(#${id}-${name})`;
   const operation = topic === 'operations';
   const division = topic === 'faq';
-  const colors = operation ? ['#56B8FF', '#0874E9'] : division ? ['#FFA8AF', '#F75D67'] : ['#6AE5D1', '#21C4AC'];
+  const journey = topic === 'journey';
+  const colors = operation ? ['#56B8FF', '#0874E9'] : division ? ['#FFA8AF', '#F75D67'] : journey ? ['#FFD857', '#F5A400'] : ['#6AE5D1', '#21C4AC'];
   return (
     <svg viewBox="0 0 200 200" fill="none" aria-hidden="true" focusable="false">
       <defs>
@@ -33,6 +34,21 @@ export function MathTopicArtwork({ topic }) {
             <path d="M48 58H75M61.5 44.5V71.5M128 58H153M50 126L74 150M74 126L50 150M128 139H153" />
           </g>
           <g fill="white"><circle cx="140.5" cy="122" r="5" /><circle cx="140.5" cy="156" r="5" /></g>
+        </g>
+      ) : journey ? (
+        <g filter={url('shadow')}>
+          <path d="M58 58H142V86C142 116 124 137 104 143V159H127V176H73V159H96V143C76 137 58 116 58 86Z" fill="#B97900" opacity=".58" />
+          <path d="M62 48H138V82C138 114 120 132 100 138C80 132 62 114 62 82Z" fill={url('yellow')} />
+          <path d="M65 58H39C39 89 52 107 72 112M135 58H161C161 89 148 107 128 112" stroke="#FFF4B8" strokeWidth="13" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M83 70L96 70L100 57L104 70H117L106 78L111 91L100 83L89 91L94 78Z" fill="#FFF8D8" />
+          <rect x="84" y="138" width="32" height="27" rx="8" fill="#D59000" />
+          <rect x="68" y="160" width="64" height="19" rx="9.5" fill="#7B4E00" />
+          <path d="M41 143C68 123 93 124 116 143C132 156 149 156 166 144" stroke="#0956A4" strokeWidth="7" strokeLinecap="round" strokeDasharray="1 17" />
+          <g fill="#FFFFFF">
+            <circle cx="42" cy="143" r="6" />
+            <circle cx="100" cy="133" r="6" />
+            <circle cx="166" cy="144" r="6" />
+          </g>
         </g>
       ) : division ? (
         <>

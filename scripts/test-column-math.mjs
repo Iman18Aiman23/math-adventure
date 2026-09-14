@@ -57,7 +57,21 @@ async function select(level, op) {
 }
 
 async function fitCheck(name) {
-  await page.waitForTimeout(200);
+  await page.waitForTimeout(500);
+  const stability = await page.locator('.cmg-work-area').evaluate(async work => {
+    let resizes = 0;
+    const observer = new ResizeObserver(() => resizes++);
+    observer.observe(work);
+    const samples = [];
+    for (let i = 0; i < 30; i++) {
+      await new Promise(requestAnimationFrame);
+      const rect = work.getBoundingClientRect();
+      samples.push([rect.x, rect.y, rect.width, rect.height]);
+    }
+    observer.disconnect();
+    return { resizes, drift: Math.max(...samples[0].map((_, i) => Math.max(...samples.map(s => s[i])) - Math.min(...samples.map(s => s[i])))) };
+  });
+  assert(stability.resizes <= 2 && stability.drift < 1, `${name}: idle layout did not settle ${JSON.stringify(stability)}`);
   const result = await page.locator('.cmg-card').evaluate(card => {
     const box = card.getBoundingClientRect();
     const work = card.querySelector('.cmg-work-area').getBoundingClientRect();
@@ -137,6 +151,9 @@ try {
   await page.locator('.cmg-work-area.is-division').waitFor();
   const quotient = page.locator('.is-division input');
   assert.equal(await quotient.count(), 3);
+  const originalInput = await quotient.first().elementHandle();
+  await quotient.nth(1).focus();
+  assert(await originalInput.evaluate(el => el.isConnected), 'division focus remounted the answer input');
   assert.equal(await quotient.first().evaluate(el => getComputedStyle(el).borderTopColor), 'rgb(255, 150, 0)');
   assert.equal(await page.locator('.is-division').innerText().then(text => text.includes('\u00f7')), false);
   for (const [w, h] of [[1200, 660], [788, 450], [390, 844], [320, 568]]) {
@@ -148,8 +165,12 @@ try {
     await quotient.nth(i).press('Enter');
     await page.waitForTimeout(100);
     if (i < 2) assert(await quotient.nth(i + 1).evaluate(el => el === document.activeElement));
+    assert(await originalInput.evaluate(el => el.isConnected), 'division typing remounted the answer input');
   }
-  await fitCheck('division-working');
+  for (const [w, h] of [[1200, 660], [788, 450], [390, 844], [390, 500], [320, 568]]) {
+    await page.setViewportSize({ width: w, height: h });
+    await fitCheck(`division-working-${w}x${h}`);
+  }
   await page.getByRole('button', { name: /Hantar/ }).click();
   await page.waitForTimeout(100);
   assert.equal(await page.locator('.cmg-shake').count(), 0, 'division rejected correct answer');

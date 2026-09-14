@@ -12,6 +12,8 @@ const SUB_GAMES = [
     bm: 'Belajar langkah demi langkah dengan mudah.', eng: 'Learn step by step with clear, simple methods.' },
   { id: 'datetime', theme: 'mint', title: 'Clock & Time',
     bm: 'Kenali masa, jam dan penyelesaian soalan berkaitan masa.', eng: 'Explore clocks, tell the time and solve time problems.' },
+  { id: 'journey', theme: 'gold', title: 'Math Journey',
+    bm: 'Cabaran merentasi semua topik. Lengkapkan unit dan buka tahap baharu.', eng: 'Complete units, collect stars and unlock new levels.' },
 ];
 
 export default function MathHome({ onSelectSubGame, onBack, language = 'bm' }) {
@@ -53,7 +55,7 @@ export default function MathHome({ onSelectSubGame, onBack, language = 'bm' }) {
           {SUB_GAMES.map(({ id, theme, title, ...description }) => (
             <button key={id} className={`mh-topic-card mh-${theme}`} type="button" onClick={() => onSelectSubGame(id)}>
               <span className="mh-topic-visual" aria-hidden="true"><MathTopicArtwork topic={id} /></span>
-              <span className="mh-topic-copy"><span className="mh-topic-title">{title}</span><span className="mh-topic-description">{description[bm ? 'bm' : 'eng']}</span></span>
+              <span className="mh-topic-copy"><span className="mh-topic-title" title={title}>{title}</span><span className="mh-topic-description" title={description[bm ? 'bm' : 'eng']}>{description[bm ? 'bm' : 'eng']}</span></span>
               <span className="mh-arrow" aria-hidden="true"><ChevronRight /></span>
             </button>
           ))}

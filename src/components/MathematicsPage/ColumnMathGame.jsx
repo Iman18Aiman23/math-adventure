@@ -578,6 +578,12 @@ const getColumnMathStyles = () => `
   }
 `;
 
+// Keep this component identity stable so division inputs retain their DOM nodes
+// (and focus) when typing or moving between columns.
+function DigitRow({ children }) {
+  return <div style={{ display: 'flex', gap: 0 }}>{children}</div>;
+}
+
 function StreakPopup({ streak, language, onClose }) {
   const bm = language === 'bm';
   const cheers = bm ? CHEERS_BM : CHEERS_EN;
@@ -1193,6 +1199,11 @@ export default function ColumnMathGame({ onBack, language }) {
     const fit = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
+        // Measure unscaled layout dimensions. CSS zoom changes layout and can
+        // retrigger this observer every frame as text and borders are rounded.
+        const workWidth = work.offsetWidth;
+        const workHeight = work.offsetHeight;
+        if (!workWidth || !workHeight || !card.clientHeight) return;
         const styles = getComputedStyle(card);
         const width = card.clientWidth - parseFloat(styles.paddingLeft) - parseFloat(styles.paddingRight);
         const bottom = parseFloat(styles.paddingBottom);
@@ -1203,16 +1214,21 @@ export default function ColumnMathGame({ onBack, language }) {
         const infoTop = info.offsetTop + info.offsetHeight + 8;
         // Use the largest space that keeps the working clear of the counter and buttons.
         const besideWidth = Math.max(1, 2 * (info.offsetLeft - card.clientWidth / 2 - 8));
-        const besideScale = Math.min(1, besideWidth / work.offsetWidth, (card.clientHeight - headerTop - bottom) / work.offsetHeight);
-        const belowScale = Math.min(1, width / work.offsetWidth, (card.clientHeight - infoTop - bottom) / work.offsetHeight);
+        const besideScale = Math.min(1, besideWidth / workWidth, (card.clientHeight - headerTop - bottom) / workHeight);
+        const belowScale = Math.min(1, width / workWidth, (card.clientHeight - infoTop - bottom) / workHeight);
         const corridorWidth = Math.max(0, Math.min(besideWidth, 2 * (card.clientWidth / 2 - counter.offsetLeft - counter.offsetWidth - 8)));
         const paddingTop = parseFloat(styles.paddingTop);
-        const corridorScale = Math.min(1, corridorWidth / work.offsetWidth, (card.clientHeight - paddingTop - bottom) / work.offsetHeight);
+        const corridorScale = Math.min(1, corridorWidth / workWidth, (card.clientHeight - paddingTop - bottom) / workHeight);
         const candidates = [{ scale: besideScale, top: headerTop }, { scale: belowScale, top: infoTop }, { scale: corridorScale, top: paddingTop }];
         const { scale, top } = candidates.reduce((best, candidate) => candidate.scale > best.scale ? candidate : best);
-        work.parentElement.style.top = `${top}px`;
-        work.parentElement.style.bottom = `${bottom}px`;
-        work.style.zoom = String(Math.max(0.1, Math.floor(scale * 1000) / 1000));
+        const viewport = work.parentElement;
+        const nextTop = `${top}px`;
+        const nextBottom = `${bottom}px`;
+        const nextTransform = `scale(${Math.max(0.1, Math.floor(scale * 1000) / 1000)})`;
+        if (viewport.style.top !== nextTop) viewport.style.top = nextTop;
+        if (viewport.style.bottom !== nextBottom) viewport.style.bottom = nextBottom;
+        // A transform changes only painting, leaving the observed size stable.
+        if (work.style.transform !== nextTransform) work.style.transform = nextTransform;
       });
     };
     const observer = new ResizeObserver(fit);
@@ -1231,17 +1247,17 @@ export default function ColumnMathGame({ onBack, language }) {
   useEffect(() => {
     if (status !== 'playing') return;
     if (activeSection === 'answer') {
-      inputRefs.current[activeIdx]?.focus();
+      inputRefs.current[activeIdx]?.focus({ preventScroll: true });
     } else if (activeSection === 'topRow') {
-      topRowRefs.current[activeTopIdx]?.focus();
+      topRowRefs.current[activeTopIdx]?.focus({ preventScroll: true });
     } else if (activeSection === 'partial1Carry') {
-      partial1CarryRefs.current[activePartial1CarryIdx]?.focus();
+      partial1CarryRefs.current[activePartial1CarryIdx]?.focus({ preventScroll: true });
     } else if (activeSection === 'partial1') {
-      partial1Refs.current[activePartial1Idx]?.focus();
+      partial1Refs.current[activePartial1Idx]?.focus({ preventScroll: true });
     } else if (activeSection === 'partial2Carry') {
-      partial2CarryRefs.current[activePartial2CarryIdx]?.focus();
+      partial2CarryRefs.current[activePartial2CarryIdx]?.focus({ preventScroll: true });
     } else if (activeSection === 'partial2') {
-      partial2Refs.current[activePartial2Idx]?.focus();
+      partial2Refs.current[activePartial2Idx]?.focus({ preventScroll: true });
     }
   }, [activeSection, activeIdx, activeTopIdx, activePartial1Idx, activePartial2Idx, activePartial1CarryIdx, activePartial2CarryIdx, status, problem]);
 
@@ -1363,6 +1379,36 @@ export default function ColumnMathGame({ onBack, language }) {
     setActivePartial2CarryIdx(0);
   };
 
+  const focusAnswerField = (index) => {
+    if (index < 0 || index >= inputDigits.length) return;
+    setActiveIdx(index);
+    setActiveSection('answer');
+    requestAnimationFrame(() => {
+      inputRefs.current[index]?.focus({ preventScroll: true });
+    });
+  };
+
+  const focusDivisionSubmit = () => {
+    requestAnimationFrame(() => {
+      submitBtnRef.current?.focus({ preventScroll: true });
+    });
+  };
+
+  const moveDivisionAnswerFocus = (currentIndex, digitsOverride = inputDigits) => {
+    if (problem?.op !== '÷') return false;
+    const nextIdx = currentIndex + 1;
+    if (nextIdx < digitsOverride.length) {
+      focusAnswerField(nextIdx);
+      return true;
+    }
+    const allFilled = digitsOverride.every((d) => d !== '');
+    if (allFilled) {
+      focusDivisionSubmit();
+      return true;
+    }
+    return false;
+  };
+
   const handleAnswerChange = (i, rawValue) => {
     if (status !== 'playing') return;
     // Allow any numeric input - user can type 1, 2, or more digits
@@ -1385,11 +1431,13 @@ export default function ColumnMathGame({ onBack, language }) {
       submitted.add(i);
       setAnswerSubmitted(submitted);
 
-      const nextIdx = i + 1;
-      if (nextIdx < inputDigits.length) {
-        setActiveIdx(nextIdx);
-        setActiveSection('answer');
-        setTimeout(() => inputRefs.current[nextIdx]?.focus(), 0);
+      const nextDigits = [...digits];
+      const moved = moveDivisionAnswerFocus(i, nextDigits);
+      if (!moved) {
+        setTimeout(() => {
+          const allFilled = nextDigits.every((d) => d !== '');
+          if (allFilled) focusDivisionSubmit();
+        }, 0);
       }
       setLockMessage('');
       return;
@@ -1551,25 +1599,36 @@ export default function ColumnMathGame({ onBack, language }) {
 
   const handleAnswerKeyDown = (i, e) => {
     if (status !== 'playing') return;
-    if (e.key === 'Enter') {
+
+    const moveFocus = (nextIdx) => {
+      if (nextIdx < 0 || nextIdx >= inputDigits.length) return false;
+      focusAnswerField(nextIdx);
+      return true;
+    };
+
+    const isAdvanceKey = ['Enter', 'NumpadEnter', 'Tab', 'Done', 'Next'].includes(e.key) || e.code === 'NumpadEnter';
+
+    if (isAdvanceKey) {
       e.preventDefault();
-      // Process carry logic when user presses Enter
-      processCarryLogic(i, inputRefs.current[i].value);
-      const nextIdx = problem.op === '÷' ? i + 1 : i - 1;
-      if (nextIdx >= 0 && nextIdx < inputDigits.length) {
-        setTimeout(() => {
-          setActiveIdx(nextIdx);
-          setActiveSection('answer');
-          inputRefs.current[nextIdx]?.focus();
-        }, 0);
+      if (problem && problem.op === '÷') {
+        const nextDigits = [...inputDigits];
+        const moved = moveDivisionAnswerFocus(i, nextDigits);
+        if (!moved) {
+          const allFilled = nextDigits.every((d) => d !== '');
+          if (allFilled) focusDivisionSubmit();
+        }
       } else {
-        // At leftmost answer input — focus submit button when all answer fields are filled
-        setTimeout(() => {
-          const allFilled = !inputDigits.some((d, idx) => idx === i ? false : d === '');
-          if (allFilled) {
-            submitBtnRef.current?.focus();
-          }
-        }, 0);
+        // Process carry logic when user presses Enter
+        processCarryLogic(i, inputRefs.current[i]?.value ?? '');
+        const nextIdx = i - 1;
+        if (!moveFocus(nextIdx)) {
+          setTimeout(() => {
+            const allFilled = !inputDigits.some((d, idx) => idx === i ? false : d === '');
+            if (allFilled) {
+              submitBtnRef.current?.focus({ preventScroll: true });
+            }
+          }, 0);
+        }
       }
       return;
     }
@@ -1577,9 +1636,7 @@ export default function ColumnMathGame({ onBack, language }) {
       e.preventDefault();
       // Move focus to left column (i-1)
       if (i > 0) {
-        setActiveIdx(i - 1);
-        setActiveSection('answer');
-        inputRefs.current[i - 1]?.focus();
+        focusAnswerField(i - 1);
       }
       return;
     }
@@ -1587,9 +1644,7 @@ export default function ColumnMathGame({ onBack, language }) {
       e.preventDefault();
       // Move focus to right column (i+1)
       if (i < inputDigits.length - 1) {
-        setActiveIdx(i + 1);
-        setActiveSection('answer');
-        inputRefs.current[i + 1]?.focus();
+        focusAnswerField(i + 1);
       }
       return;
     }
@@ -1628,7 +1683,7 @@ export default function ColumnMathGame({ onBack, language }) {
       // Move to answer section on Enter
       setActiveSection('answer');
       setActiveIdx(0);
-      inputRefs.current[0]?.focus();
+      inputRefs.current[0]?.focus({ preventScroll: true });
       return;
     }
 
@@ -1636,7 +1691,7 @@ export default function ColumnMathGame({ onBack, language }) {
       e.preventDefault();
       if (i < maxLen - 1) {
         setActiveTopIdx(i + 1);
-        topRowRefs.current[i + 1]?.focus();
+        topRowRefs.current[i + 1]?.focus({ preventScroll: true });
       }
       return;
     }
@@ -1645,7 +1700,7 @@ export default function ColumnMathGame({ onBack, language }) {
       e.preventDefault();
       if (i > 0) {
         setActiveTopIdx(i - 1);
-        topRowRefs.current[i - 1]?.focus();
+        topRowRefs.current[i - 1]?.focus({ preventScroll: true });
       }
       return;
     }
@@ -1678,7 +1733,7 @@ export default function ColumnMathGame({ onBack, language }) {
       if (i > leftmostP1) {
         setTimeout(() => {
           setActivePartial1Idx(i - 1);
-          partial1Refs.current[i - 1]?.focus();
+          partial1Refs.current[i - 1]?.focus({ preventScroll: true });
         }, 50);
       } else if (problem.hasPartials) {
         // At leftmost partial 1, all filled → move to rightmost partial 2
@@ -1690,7 +1745,7 @@ export default function ColumnMathGame({ onBack, language }) {
           setTimeout(() => {
             setActiveSection('partial2');
             setActivePartial2Idx(rightmostP2);
-            partial2Refs.current[rightmostP2]?.focus();
+            partial2Refs.current[rightmostP2]?.focus({ preventScroll: true });
           }, 80);
         }
       }
@@ -1700,7 +1755,7 @@ export default function ColumnMathGame({ onBack, language }) {
       e.preventDefault();
       if (i > 0) {
         setActivePartial1Idx(i - 1);
-        partial1Refs.current[i - 1]?.focus();
+        partial1Refs.current[i - 1]?.focus({ preventScroll: true });
       }
       return;
     }
@@ -1708,7 +1763,7 @@ export default function ColumnMathGame({ onBack, language }) {
       e.preventDefault();
       if (i < ml - 1) {
         setActivePartial1Idx(i + 1);
-        partial1Refs.current[i + 1]?.focus();
+        partial1Refs.current[i + 1]?.focus({ preventScroll: true });
       }
       return;
     }
@@ -1746,7 +1801,7 @@ export default function ColumnMathGame({ onBack, language }) {
       if (i > leftmostP2) {
         setTimeout(() => {
           setActivePartial2Idx(i - 1);
-          partial2Refs.current[i - 1]?.focus();
+          partial2Refs.current[i - 1]?.focus({ preventScroll: true });
         }, 0);
       } else if (leftmostP2 >= 0) {
         // At leftmost partial 2, check if all filled by examining DOM refs
@@ -1762,10 +1817,10 @@ export default function ColumnMathGame({ onBack, language }) {
             if (problem.partial3 !== undefined) {
               setActiveSection('partial3');
               setActivePartial3Idx(ml - 3);
-              partial3Refs.current[ml - 3]?.focus();
+              partial3Refs.current[ml - 3]?.focus({ preventScroll: true });
             } else {
               setActiveSection('answer');
-              inputRefs.current[ml - 1]?.focus();
+              inputRefs.current[ml - 1]?.focus({ preventScroll: true });
             }
           }, 80);
         }
@@ -1776,7 +1831,7 @@ export default function ColumnMathGame({ onBack, language }) {
       e.preventDefault();
       if (i > 0) {
         setActivePartial2Idx(i - 1);
-        partial2Refs.current[i - 1]?.focus();
+        partial2Refs.current[i - 1]?.focus({ preventScroll: true });
       }
       return;
     }
@@ -1784,7 +1839,7 @@ export default function ColumnMathGame({ onBack, language }) {
       e.preventDefault();
       if (i < ml - 1) {
         setActivePartial2Idx(i + 1);
-        partial2Refs.current[i + 1]?.focus();
+        partial2Refs.current[i + 1]?.focus({ preventScroll: true });
       }
       return;
     }
@@ -1824,13 +1879,13 @@ export default function ColumnMathGame({ onBack, language }) {
       e.preventDefault();
       processPartial3CarryLogic(i, e.currentTarget.value);
       setTimeout(() => {
-        if (i > leftmost) partial3Refs.current[i - 1]?.focus();
-        else inputRefs.current[ml - 1]?.focus();
+        if (i > leftmost) partial3Refs.current[i - 1]?.focus({ preventScroll: true });
+        else inputRefs.current[ml - 1]?.focus({ preventScroll: true });
       }, 0);
     } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
       e.preventDefault();
       const next = i + (e.key === 'ArrowLeft' ? -1 : 1);
-      if (next >= leftmost && next <= ml - 3) partial3Refs.current[next]?.focus();
+      if (next >= leftmost && next <= ml - 3) partial3Refs.current[next]?.focus({ preventScroll: true });
     }
   };
 
@@ -2403,12 +2458,6 @@ export default function ColumnMathGame({ onBack, language }) {
                   </div>
                 );
 
-                const DigitRow = ({ children }) => (
-                  <div style={{ display: 'flex', gap: 0 }}>
-                    {children}
-                  </div>
-                );
-
                 // Build all working rows dynamically based on how many quotient digits the user has entered
                 const dividendDigits = p1.replace(/ /g, '').split('').map(Number);
                 // Collect working-step rows to render
@@ -2674,7 +2723,7 @@ export default function ColumnMathGame({ onBack, language }) {
                             const N1 = String(problem.partial1).length;
                             const leftmostP1 = maxLen - N1;
                             if (i > leftmostP1) {
-                              setTimeout(() => { setActivePartial1Idx(i - 1); partial1Refs.current[i - 1]?.focus(); }, 50);
+                              setTimeout(() => { setActivePartial1Idx(i - 1); partial1Refs.current[i - 1]?.focus({ preventScroll: true }); }, 50);
                             } else {
                               const updatedInputs = [...partial1Inputs];
                               updatedInputs[i] = e.target.value.replace(/[^0-9]/g, '').slice(0, 2);
@@ -2684,7 +2733,7 @@ export default function ColumnMathGame({ onBack, language }) {
                                 setTimeout(() => {
                                   setActiveSection('partial2');
                                   setActivePartial2Idx(rightmostP2);
-                                  partial2Refs.current[rightmostP2]?.focus();
+                                  partial2Refs.current[rightmostP2]?.focus({ preventScroll: true });
                                 }, 80);
                               }
                             }
@@ -2749,7 +2798,7 @@ export default function ColumnMathGame({ onBack, language }) {
                             const N2 = String(problem.partial2).length;
                             const leftmostP2 = maxLen - N2 - 1;
                             if (i > leftmostP2) {
-                              setTimeout(() => { setActivePartial2Idx(i - 1); partial2Refs.current[i - 1]?.focus(); }, 50);
+                              setTimeout(() => { setActivePartial2Idx(i - 1); partial2Refs.current[i - 1]?.focus({ preventScroll: true }); }, 50);
                             }
                           }
                         }}

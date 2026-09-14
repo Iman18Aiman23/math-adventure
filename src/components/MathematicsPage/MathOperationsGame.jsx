@@ -69,7 +69,7 @@ const getOpsClayStyles = () => `
   }
 
   .ops-game-board {
-    width: min(100%, 1120px);
+    width: min(100%, 1100px);
     max-width: 100%;
     min-width: 0;
     min-height: 0;

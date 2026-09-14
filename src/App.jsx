@@ -11,6 +11,7 @@ const ClockGame = React.lazy(() => import('./components/MathematicsPage/ClockGam
 const MonthLearning = React.lazy(() => import('./components/MathematicsPage/MonthLearning'));
 const MathOperationsGame = React.lazy(() => import('./components/MathematicsPage/MathOperationsGame'));
 const ColumnMathGame = React.lazy(() => import('./components/MathematicsPage/ColumnMathGame'));
+const MathJourney = React.lazy(() => import('./components/MathematicsPage/MathJourney'));
 const LevelUpToast = React.lazy(() => import('./components/LevelUpToast'));
 const WelcomeModal = React.lazy(() => import('./components/WelcomeModal'));
 import DesktopSidebar from './components/DesktopSidebar';
@@ -643,6 +644,9 @@ export default function App() {
         }
         if (mathSubGame === 'faq') {
           return <ColumnMathGame onBack={() => setMathSubGame(null)} language={language} />;
+        }
+        if (mathSubGame === 'journey') {
+          return <MathJourney onBack={() => setMathSubGame(null)} language={language} />;
         }
         return <MathHome onSelectSubGame={setMathSubGame} onBack={handleBackToHome} onHome={handleBackToHome} language={language} />;
       case 'bm':
@@ -1627,6 +1631,15 @@ export default function App() {
             gameState={gameState}
             onHome={handleBackToHome}
             currentSubject={currentSubject}
+            isJawi={currentSubject === 'pendidikan-islam-v1' && islamModule === 'jawi'}
+            onSelectSubject={(subject) => navigate(() => {
+              handleBackToHome();
+              if (subject === 'jawi') {
+                setCurrentSubject('pendidikan-islam-v1');
+                setIslamYear(1);
+                setIslamModule('jawi');
+              } else setCurrentSubject(subject);
+            })}
             onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
             theme={THEMES[currentTheme]}
             onThemeChange={setCurrentTheme}
@@ -1668,7 +1681,7 @@ export default function App() {
           </div>
 
           {/* CosmicMobileNav — rendered outside view-container so position:fixed works correctly */}
-          {!inActiveQuiz && !selectedAssessment && !currentAgeGame && !currentAgeGroup && (!currentSubject || (currentSubject === 'math' && (!mathSubGame || (mathSubGame === 'datetime' && !isPlaying)))) && (
+          {!inActiveQuiz && !selectedAssessment && !currentAgeGame && !currentAgeGroup && (!currentSubject || (currentSubject === 'math' && (!mathSubGame || mathSubGame === 'journey' || (mathSubGame === 'datetime' && !isPlaying)))) && (
             <CosmicMobileNav
               appearance={currentSubject === 'math' ? 'math' : 'default'}
               activeTab={activeTab}
