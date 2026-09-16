@@ -224,41 +224,59 @@ export const getTimeGameClayStyles = () => `
     z-index: 180;
     display: grid;
     place-items: center;
-    padding: 16px;
-    background: rgba(236, 250, 245, 0.78);
-    backdrop-filter: blur(10px);
+    padding: clamp(14px, 3vw, 28px);
+    background: rgba(236, 250, 245, 0.72);
+    backdrop-filter: blur(14px);
   }
 
   .time-ref-game .ops-settings-panel {
-    width: min(520px, 100%);
-    max-height: calc(100dvh - 32px);
+    width: min(760px, calc(100vw - 28px));
+    max-height: calc(100dvh - 28px);
     overflow-y: auto;
     box-sizing: border-box;
-    border-radius: 26px;
+    border-radius: clamp(24px, 4vw, 32px);
     background: #FFFFFF;
     border: 1px solid #DDEBE5;
-    box-shadow: 0 20px 50px rgba(31, 78, 60, 0.18);
-    padding: 18px;
+    box-shadow: 0 28px 70px rgba(31, 78, 60, 0.16);
+    padding: clamp(20px, 4vw, 34px);
   }
 
   .time-ref-game .ops-settings-panel-head {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 14px;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: clamp(18px, 3vh, 24px);
   }
 
   .time-ref-game .ops-settings-title {
     margin: 0;
     color: #102D53;
-    font-size: 22px;
+    font-size: clamp(28px, 4vw, 36px);
     font-weight: 900;
+    line-height: 1.02;
+  }
+
+  .time-ref-game .ops-settings-subtitle,
+  .time-ref-game .ops-settings-help {
+    margin: 0;
+    color: #7B8EA8;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .time-ref-game .ops-settings-subtitle {
+    margin-top: 4px;
+    font-size: clamp(14px, 2.1vw, 17px);
+  }
+
+  .time-ref-game .ops-settings-help {
+    font-size: clamp(12px, 1.7vw, 15px);
   }
 
   .time-ref-game .ops-settings-close {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     flex-shrink: 0;
     border-radius: 50%;
     border: 1px solid #DDEBE5;
@@ -267,50 +285,112 @@ export const getTimeGameClayStyles = () => `
     display: grid;
     place-items: center;
     cursor: pointer;
+    box-shadow: 0 6px 14px rgba(31, 78, 60, 0.06);
   }
 
   .time-ref-game .ops-settings-group {
     display: grid;
-    gap: 8px;
-    margin-top: 14px;
+    gap: 10px;
+    margin-top: clamp(16px, 2.8vh, 24px);
   }
 
   .time-ref-game .ops-settings-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: #7B8EA8;
-    font-size: 12px;
+    color: #102D53;
+    font-size: clamp(18px, 2.7vw, 22px);
     font-weight: 900;
     letter-spacing: 0;
+    line-height: 1.05;
+  }
+
+  .time-ref-game .ops-settings-section-head {
+    display: grid;
+    gap: 3px;
   }
 
   .time-ref-game .ops-settings-options {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: clamp(8px, 1.4vw, 12px);
   }
 
   .time-ref-game .ops-settings-option {
-    min-height: 42px;
-    padding: 8px 13px;
-    border-radius: 14px;
+    min-height: clamp(42px, 6.2vh, 54px);
+    padding: 9px clamp(14px, 2.5vw, 24px);
+    border-radius: 15px;
     border: 1px solid #DDEBE5;
     background: #F8FCFA;
     color: #102D53;
-    font-weight: 800;
+    font-size: clamp(14px, 1.8vw, 16px);
+    font-weight: 900;
     cursor: pointer;
+    box-shadow: 0 2px 0 rgba(221, 235, 229, 0.8);
+    transition: transform 120ms ease, background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
   }
 
   .time-ref-game .ops-settings-option.is-active {
     background: #23B76B;
     border-color: #23B76B;
     color: #FFFFFF;
+    box-shadow: 0 4px 10px rgba(35, 183, 107, 0.18);
+  }
+
+  .time-ref-game .ops-settings-option:active {
+    transform: translateY(1px);
+  }
+
+  .time-ref-game .ops-settings-footer {
+    display: grid;
+    grid-template-columns: minmax(116px, 0.34fr) minmax(180px, 1fr);
+    gap: clamp(12px, 2vw, 18px);
+    margin-top: clamp(18px, 3vh, 28px);
+    padding-top: clamp(14px, 2vh, 18px);
+    border-top: 1px solid #DDEBE5;
+  }
+
+  .time-ref-game .ops-settings-cancel,
+  .time-ref-game .ops-settings-start {
+    min-height: clamp(46px, 6.8vh, 56px);
+    border-radius: 16px;
+    font-size: clamp(14px, 1.8vw, 17px);
+    font-weight: 900;
+  }
+
+  .time-ref-game .ops-settings-cancel {
+    border: 0;
+    background: #F3F7F6;
+    color: #64748B;
+    cursor: pointer;
   }
 
   .time-ref-game .ops-settings-start {
     width: 100%;
-    margin-top: 18px;
+    margin-top: 0;
+    border: 0;
+    justify-self: end;
+  }
+
+  @media (max-width: 600px) {
+    .time-ref-game .ops-settings-overlay {
+      padding: 12px;
+    }
+
+    .time-ref-game .ops-settings-panel {
+      width: min(100%, calc(100vw - 24px));
+      padding: 18px;
+    }
+
+    .time-ref-game .ops-settings-title {
+      font-size: 26px;
+    }
+
+    .time-ref-game .ops-settings-close {
+      width: 42px;
+      height: 42px;
+    }
+
+    .time-ref-game .ops-settings-footer {
+      grid-template-columns: 1fr;
+    }
   }
 
   .time-ref-game .ops-answer-zone {

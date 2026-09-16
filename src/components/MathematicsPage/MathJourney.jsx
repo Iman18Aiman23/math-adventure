@@ -610,16 +610,20 @@ export default function MathJourney({ onBack }) {
 
         {view.name === 'info' && (
           <section className="mj-panel mj-info">
-            <div className="mj-info-icon" aria-hidden="true">{activeLevel.operation === 'subtract' ? <Minus /> : activeLevel.operation === 'add' ? <Plus /> : <Trophy />}</div>
-            <h2>Cabaran Level {activeUnit.levels.findIndex(level => level.id === activeLevel.id) + 1}</h2>
-            <p>{activeLevel.title}</p>
-            <div className="mj-rules">
-              <span><Clock3 /> {activeLevel.questionCount} soalan</span>
-              <span><Heart /> {activeLevel.lives} nyawa</span>
-              <span><Check /> Jawab dengan pilihan</span>
-              <span><Star /> Dapatkan {Math.ceil(activeLevel.questionCount * activeLevel.passScore)}/{activeLevel.questionCount} untuk lulus</span>
+            <div className="mj-info-content">
+              <div className="mj-info-main">
+                <div className="mj-info-icon" aria-hidden="true">{activeLevel.operation === 'subtract' ? <Minus /> : activeLevel.operation === 'add' ? <Plus /> : <Trophy />}</div>
+                <h2>Cabaran Level {activeUnit.levels.findIndex(level => level.id === activeLevel.id) + 1}</h2>
+                <p>{activeLevel.title}</p>
+              </div>
+              <div className="mj-rules">
+                <span><Clock3 /> {activeLevel.questionCount} soalan</span>
+                <span><Heart /> {activeLevel.lives} nyawa</span>
+                <span><Check /> Jawab dengan pilihan</span>
+                <span><Star /> Dapatkan {Math.ceil(activeLevel.questionCount * activeLevel.passScore)}/{activeLevel.questionCount} untuk lulus</span>
+              </div>
+              <div className="mj-tip"><b>Tips</b><span>Fikir dengan teliti. Anda boleh lakukannya!</span></div>
             </div>
-            <div className="mj-tip"><b>Tips</b><span>Fikir dengan teliti. Anda boleh lakukannya!</span></div>
             <button type="button" className="mj-primary" onClick={() => startChallenge(activeUnit, activeLevel)}>Mula Cabaran!</button>
           </section>
         )}

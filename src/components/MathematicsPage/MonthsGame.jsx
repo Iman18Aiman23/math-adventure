@@ -288,17 +288,21 @@ export default function MonthsGame({ onBack, onHome, language }) {
         <div className="ops-settings-overlay" role="dialog" aria-modal="true" aria-label={bm ? 'Tetapan permainan' : 'Game settings'}>
           <div className="ops-settings-panel">
             <div className="ops-settings-panel-head">
-              <h2 className="ops-settings-title">{bm ? 'Tetapan permainan' : 'Game settings'}</h2>
+              <div>
+                <h2 className="ops-settings-title">{bm ? 'Tetapan Permainan' : 'Game Settings'}</h2>
+                <p className="ops-settings-subtitle">
+                  {bm ? 'Laraskan pilihan mengikut tahap dan gaya pembelajaran anda.' : 'Adjust choices for your level and learning style.'}
+                </p>
+              </div>
               <button type="button" className="ops-settings-close" onClick={() => setIsSettingsOpen(false)} aria-label={bm ? 'Tutup tetapan' : 'Close settings'}>
                 <X size={22} strokeWidth={2.5} aria-hidden="true" />
               </button>
             </div>
 
             <div className="ops-settings-group">
-              <div className="ops-settings-label">
-                <Layers size={15} strokeWidth={2.4} aria-hidden="true" />
-                <span>Mode Selection</span>
-                <span>· 🔁</span>
+              <div className="ops-settings-section-head">
+                <div className="ops-settings-label">{bm ? 'Mode' : 'Mode'}</div>
+                <p className="ops-settings-help">{bm ? 'Pilih jenis soalan kalendar.' : 'Choose the calendar question type.'}</p>
               </div>
               <div className="ops-settings-options">
                 {[
@@ -325,10 +329,9 @@ export default function MonthsGame({ onBack, onHome, language }) {
             </div>
 
             <div className="ops-settings-group">
-              <div className="ops-settings-label">
-                {quizType === 'multiple' ? <MousePointerClick size={15} strokeWidth={2.4} aria-hidden="true" /> : <Keyboard size={15} strokeWidth={2.4} aria-hidden="true" />}
-                <span>Answer Selection</span>
-                <span>· 🔁</span>
+              <div className="ops-settings-section-head">
+                <div className="ops-settings-label">{bm ? 'Cara Menjawab' : 'Answer Method'}</div>
+                <p className="ops-settings-help">{bm ? 'Pilih cara menjawab soalan.' : 'Choose how to answer questions.'}</p>
               </div>
               <div className="ops-settings-options">
                 {[
@@ -352,9 +355,14 @@ export default function MonthsGame({ onBack, onHome, language }) {
               </div>
             </div>
 
-            <button type="button" className="ops-settings-option is-active ops-settings-start" onClick={() => setIsSettingsOpen(false)}>
-              {bm ? 'Selesai' : 'Done'}
-            </button>
+            <div className="ops-settings-footer">
+              <button type="button" className="ops-settings-cancel" onClick={() => setIsSettingsOpen(false)}>
+                {bm ? 'Batal' : 'Cancel'}
+              </button>
+              <button type="button" className="ops-settings-option is-active ops-settings-start" onClick={() => setIsSettingsOpen(false)}>
+                {bm ? 'Selesai' : 'Done'}
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -418,37 +418,59 @@ const getColumnMathStyles = () => `
     z-index: 180;
     display: grid;
     place-items: center;
-    padding: 16px;
-    background: rgba(236, 250, 245, 0.78);
-    backdrop-filter: blur(10px);
+    padding: clamp(14px, 3vw, 28px);
+    background: rgba(236, 250, 245, 0.72);
+    backdrop-filter: blur(14px);
   }
 
   .cmg-settings-modal {
-    width: min(520px, 100%);
-    border-radius: 26px;
+    width: min(760px, calc(100vw - 28px));
+    max-height: calc(100dvh - 28px);
+    overflow-y: auto;
+    box-sizing: border-box;
+    border-radius: clamp(24px, 4vw, 32px);
     background: #FFFFFF;
     border: 1px solid #DDEBE5;
-    box-shadow: 0 20px 50px rgba(31, 78, 60, 0.18);
-    padding: 18px;
+    box-shadow: 0 28px 70px rgba(31, 78, 60, 0.16);
+    padding: clamp(20px, 4vw, 34px);
   }
 
   .cmg-settings-modal-head {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: clamp(18px, 3vh, 24px);
   }
 
   .cmg-settings-modal h2 {
     margin: 0;
     color: var(--navy);
-    font-size: 22px;
+    font-size: clamp(28px, 4vw, 36px);
     font-weight: 900;
+    line-height: 1.02;
+  }
+
+  .cmg-settings-subtitle,
+  .cmg-settings-help {
+    margin: 0;
+    color: var(--text-secondary);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .cmg-settings-subtitle {
+    margin-top: 4px;
+    font-size: clamp(14px, 2.1vw, 17px);
+  }
+
+  .cmg-settings-help {
+    font-size: clamp(12px, 1.7vw, 15px);
   }
 
   .cmg-settings-close {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     border: 1px solid #DDEBE5;
     background: #FFFFFF;
@@ -456,42 +478,113 @@ const getColumnMathStyles = () => `
     display: grid;
     place-items: center;
     cursor: pointer;
+    flex-shrink: 0;
+    box-shadow: 0 6px 14px rgba(31, 78, 60, 0.06);
   }
 
   .cmg-settings-group {
     display: grid;
-    gap: 8px;
-    margin-top: 14px;
+    gap: 10px;
+    margin-top: clamp(16px, 2.8vh, 24px);
   }
 
   .cmg-settings-label {
-    color: var(--text-secondary);
-    font-size: 12px;
+    color: var(--navy);
+    font-size: clamp(18px, 2.7vw, 22px);
     font-weight: 900;
-    letter-spacing: 0.08em;
+    letter-spacing: 0;
+    line-height: 1.05;
+  }
+
+  .cmg-settings-section-head {
+    display: grid;
+    gap: 3px;
   }
 
   .cmg-settings-options {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: clamp(8px, 1.4vw, 12px);
   }
 
   .cmg-settings-option {
-    min-height: 42px;
-    padding: 8px 13px;
-    border-radius: 14px;
+    min-height: clamp(42px, 6.2vh, 54px);
+    padding: 9px clamp(14px, 2.5vw, 24px);
+    border-radius: 15px;
     border: 1px solid #DDEBE5;
     background: #F8FCFA;
     color: var(--navy);
-    font-weight: 800;
+    font-size: clamp(14px, 1.8vw, 16px);
+    font-weight: 900;
     cursor: pointer;
+    box-shadow: 0 2px 0 rgba(221, 235, 229, 0.8);
+    transition: transform 120ms ease, background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
   }
 
   .cmg-settings-option.is-active {
     background: var(--primary);
     border-color: var(--primary);
     color: #FFFFFF;
+    box-shadow: 0 4px 10px rgba(35, 183, 107, 0.18);
+  }
+
+  .cmg-settings-option:active {
+    transform: translateY(1px);
+  }
+
+  .cmg-settings-footer {
+    display: grid;
+    grid-template-columns: minmax(116px, 0.34fr) minmax(180px, 1fr);
+    gap: clamp(12px, 2vw, 18px);
+    margin-top: clamp(18px, 3vh, 28px);
+    padding-top: clamp(14px, 2vh, 18px);
+    border-top: 1px solid #DDEBE5;
+  }
+
+  .cmg-settings-cancel,
+  .cmg-settings-start {
+    min-height: clamp(46px, 6.8vh, 56px);
+    border-radius: 16px;
+    font-size: clamp(14px, 1.8vw, 17px);
+    font-weight: 900;
+  }
+
+  .cmg-settings-cancel {
+    border: 0;
+    background: #F3F7F6;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+
+  .cmg-settings-start {
+    width: 100%;
+    margin-top: 0;
+    border: 0;
+    justify-self: end;
+  }
+
+  @media (max-width: 600px) {
+    .cmg-settings-overlay {
+      padding: 12px;
+    }
+
+    .cmg-settings-modal {
+      width: min(100%, calc(100vw - 24px));
+      padding: 18px;
+    }
+
+    .cmg-settings-modal h2 {
+      font-size: 26px;
+    }
+
+    .cmg-settings-close {
+      width: 42px;
+      height: 42px;
+    }
+
+    .cmg-settings-footer {
+      grid-template-columns: 1fr;
+    }
   }
 
   @media (max-height: 700px) {
@@ -2129,7 +2222,12 @@ export default function ColumnMathGame({ onBack, language }) {
         <div className="cmg-settings-overlay" role="dialog" aria-modal="true" aria-label={bm ? 'Tetapan permainan' : 'Game settings'}>
           <div className="cmg-settings-modal">
             <div className="cmg-settings-modal-head">
-              <h2>{bm ? 'Tetapan permainan' : 'Game settings'}</h2>
+              <div>
+                <h2>{bm ? 'Tetapan Permainan' : 'Game Settings'}</h2>
+                <p className="cmg-settings-subtitle">
+                  {bm ? 'Laraskan pilihan mengikut tahap dan gaya pembelajaran anda.' : 'Adjust choices for your level and learning style.'}
+                </p>
+              </div>
               <button
                 type="button"
                 className="cmg-settings-close"
@@ -2141,7 +2239,10 @@ export default function ColumnMathGame({ onBack, language }) {
             </div>
 
             <div className="cmg-settings-group">
-              <div className="cmg-settings-label">{bm ? 'TAHAP' : 'LEVEL'}</div>
+              <div className="cmg-settings-section-head">
+                <div className="cmg-settings-label">{bm ? 'Tahap' : 'Level'}</div>
+                <p className="cmg-settings-help">{bm ? 'Pilih tahap kesukaran soalan.' : 'Choose question difficulty.'}</p>
+              </div>
               <div className="cmg-settings-options">
                 {[
                   { id: 'easy', label: bm ? 'Senang' : 'Easy' },
@@ -2161,7 +2262,10 @@ export default function ColumnMathGame({ onBack, language }) {
             </div>
 
             <div className="cmg-settings-group">
-              <div className="cmg-settings-label">{bm ? 'OPERASI' : 'OPERATION'}</div>
+              <div className="cmg-settings-section-head">
+                <div className="cmg-settings-label">{bm ? 'Operasi' : 'Operation'}</div>
+                <p className="cmg-settings-help">{bm ? 'Pilih operasi matematik.' : 'Choose a math operation.'}</p>
+              </div>
               <div className="cmg-settings-options">
                 {[
                   { id: 'random', label: bm ? 'Rawak' : 'Random' },
@@ -2180,6 +2284,15 @@ export default function ColumnMathGame({ onBack, language }) {
                   </button>
                 ))}
               </div>
+            </div>
+
+            <div className="cmg-settings-footer">
+              <button type="button" className="cmg-settings-cancel" onClick={() => setIsSettingsOpen(false)}>
+                {bm ? 'Batal' : 'Cancel'}
+              </button>
+              <button type="button" className="cmg-settings-option is-active cmg-settings-start" onClick={() => setIsSettingsOpen(false)}>
+                {bm ? 'Mula Main!' : 'Start Playing!'}
+              </button>
             </div>
           </div>
         </div>

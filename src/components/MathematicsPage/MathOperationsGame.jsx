@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import confetti from 'canvas-confetti';
-import { Pencil, Settings, X } from 'lucide-react';
+import { Pencil, SendHorizontal, Settings, X } from 'lucide-react';
 import { generateProblem } from '../../utils/mathLogic';
 import { playSound } from '../../utils/soundManager';
 import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
@@ -572,37 +572,59 @@ const getOpsClayStyles = () => `
     z-index: 180;
     display: grid;
     place-items: center;
-    padding: 16px;
-    background: rgba(236, 250, 245, 0.78);
-    backdrop-filter: blur(10px);
+    padding: clamp(14px, 3vw, 28px);
+    background: rgba(236, 250, 245, 0.72);
+    backdrop-filter: blur(14px);
   }
 
   .ops-settings-panel {
-    width: min(520px, 100%);
-    border-radius: 26px;
+    width: min(760px, calc(100vw - 28px));
+    max-height: calc(100dvh - 28px);
+    overflow-y: auto;
+    box-sizing: border-box;
+    border-radius: clamp(24px, 4vw, 32px);
     background: #FFFFFF;
     border: 1px solid #DDEBE5;
-    box-shadow: 0 20px 50px rgba(31, 78, 60, 0.18);
-    padding: 18px;
+    box-shadow: 0 28px 70px rgba(31, 78, 60, 0.16);
+    padding: clamp(20px, 4vw, 34px);
   }
 
   .ops-settings-panel-head {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: clamp(18px, 3vh, 24px);
   }
 
   .ops-settings-title {
     margin: 0;
     color: #102D53;
-    font-size: 22px;
+    font-size: clamp(28px, 4vw, 36px);
     font-weight: 900;
+    line-height: 1.02;
+  }
+
+  .ops-settings-subtitle,
+  .ops-settings-help {
+    margin: 0;
+    color: #7B8EA8;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .ops-settings-subtitle {
+    margin-top: 4px;
+    font-size: clamp(14px, 2.1vw, 17px);
+  }
+
+  .ops-settings-help {
+    font-size: clamp(12px, 1.7vw, 15px);
   }
 
   .ops-settings-close {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     border: 1px solid #DDEBE5;
     background: #FFFFFF;
@@ -610,50 +632,122 @@ const getOpsClayStyles = () => `
     display: grid;
     place-items: center;
     cursor: pointer;
+    flex-shrink: 0;
+    box-shadow: 0 6px 14px rgba(31, 78, 60, 0.06);
   }
 
   .ops-settings-group {
     display: grid;
-    gap: 8px;
-    margin-top: 14px;
+    gap: 10px;
+    margin-top: clamp(16px, 2.8vh, 24px);
   }
 
   .ops-settings-label {
-    color: #7B8EA8;
-    font-size: 12px;
+    color: #102D53;
+    font-size: clamp(18px, 2.7vw, 22px);
     font-weight: 900;
     letter-spacing: 0;
+    line-height: 1.05;
+  }
+
+  .ops-settings-section-head {
+    display: grid;
+    gap: 3px;
   }
 
   .ops-settings-options {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: clamp(8px, 1.4vw, 12px);
   }
 
   .ops-settings-option {
-    min-height: 42px;
-    padding: 8px 13px;
-    border-radius: 14px;
+    min-height: clamp(42px, 6.2vh, 54px);
+    padding: 9px clamp(14px, 2.5vw, 24px);
+    border-radius: 15px;
     border: 1px solid #DDEBE5;
     background: #F8FCFA;
     color: #102D53;
-    font-weight: 800;
+    font-size: clamp(14px, 1.8vw, 16px);
+    font-weight: 900;
     cursor: pointer;
+    box-shadow: 0 2px 0 rgba(221, 235, 229, 0.8);
+    transition: transform 120ms ease, background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
   }
 
   .ops-settings-option.is-active {
     background: #23B76B;
     border-color: #23B76B;
     color: #FFFFFF;
+    box-shadow: 0 4px 10px rgba(35, 183, 107, 0.18);
   }
 
-  .ops-settings-panel { box-sizing: border-box; max-height: calc(100dvh - 32px); overflow-y: auto; }
-  .ops-settings-panel-head { gap: 12px; }
-  .ops-settings-close { flex-shrink: 0; }
-  .ops-settings-start { width: 100%; margin-top: 18px; }
+  .ops-settings-option:active {
+    transform: translateY(1px);
+  }
+
+  .ops-settings-footer {
+    display: grid;
+    grid-template-columns: minmax(116px, 0.34fr) minmax(180px, 1fr);
+    gap: clamp(12px, 2vw, 18px);
+    margin-top: clamp(18px, 3vh, 28px);
+    padding-top: clamp(14px, 2vh, 18px);
+    border-top: 1px solid #DDEBE5;
+  }
+
+  .ops-settings-cancel,
+  .ops-settings-start {
+    min-height: clamp(46px, 6.8vh, 56px);
+    border-radius: 16px;
+    font-size: clamp(14px, 1.8vw, 17px);
+    font-weight: 900;
+  }
+
+  .ops-settings-cancel {
+    border: 0;
+    background: #F3F7F6;
+    color: #64748B;
+    cursor: pointer;
+  }
+
+  .ops-settings-start {
+    width: 100%;
+    margin-top: 0;
+    border: 0;
+    justify-self: end;
+  }
+
+  .ops-settings-start:disabled {
+    background: #B9DEC9 !important;
+    border-color: #B9DEC9 !important;
+    color: rgba(255, 255, 255, 0.82) !important;
+    box-shadow: none !important;
+    cursor: not-allowed;
+  }
 
   @media (max-width: 600px) {
+    .ops-settings-overlay {
+      padding: 12px;
+    }
+
+    .ops-settings-panel {
+      width: min(100%, calc(100vw - 24px));
+      padding: 18px;
+    }
+
+    .ops-settings-title {
+      font-size: 26px;
+    }
+
+    .ops-settings-close {
+      width: 42px;
+      height: 42px;
+    }
+
+    .ops-settings-footer {
+      grid-template-columns: 1fr;
+    }
+
     .ops-game-shell .duo-home-header {
       min-height: 60px !important;
       padding: 0.5rem 0.65rem !important;
@@ -1090,16 +1184,15 @@ const getOpsClayStyles = () => `
   .ops-icon-emoji {
     width: var(--object-size) !important;
     height: var(--object-size) !important;
-    border-radius: 50% !important;
-    color: transparent !important;
-    background:
-      radial-gradient(circle at 30% 28%, rgba(255,255,255,0.9) 0 13%, transparent 14%),
-      radial-gradient(circle at 64% 30%, rgba(103, 199, 255, 0.7), transparent 22%),
-      linear-gradient(145deg, #4BB6FF 0%, #1677ED 58%, #0D56C8 100%) !important;
-    box-shadow:
-      0 8px 12px rgba(30, 108, 210, 0.16),
-      inset 0 3px 0 rgba(255,255,255,0.34),
-      inset 0 -8px 12px rgba(18,72,170,0.22) !important;
+    display: grid !important;
+    place-items: center !important;
+    border-radius: 0 !important;
+    color: inherit !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    font-size: calc(var(--object-size) * 0.92) !important;
+    line-height: 1 !important;
+    overflow: visible !important;
   }
 
   .ops-icon-operator {
@@ -1163,27 +1256,28 @@ const getOpsClayStyles = () => `
 
   .ops-typing-form {
     display: flex !important;
-    flex-direction: column !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
     gap: clamp(8px, 1.2vh, 14px) !important;
   }
 
   .ops-typing-input-shell {
-    width: 100%;
-    height: clamp(62px, 9vh, 94px);
+    flex: 1 1 auto;
+    min-width: 0;
+    height: clamp(58px, 8vh, 78px);
     background: #FFFFFF;
     border: 2px solid #DCE5E3;
-    border-radius: clamp(20px, 4vw, 30px);
-    box-shadow: 0 3px 12px rgba(31, 78, 60, 0.06);
-    padding-inline: clamp(18px, 4vw, 34px);
+    border-radius: clamp(18px, 3vw, 26px);
+    box-shadow: 0 3px 0 #D7E4DF, 0 8px 16px rgba(31, 78, 60, 0.06);
+    padding-inline: clamp(14px, 3vw, 24px);
     display: flex;
     align-items: center;
-    gap: clamp(12px, 3vw, 20px);
-    flex: 0 0 auto;
+    gap: clamp(10px, 2vw, 16px);
   }
 
   .ops-typing-input-shell:focus-within {
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(39, 182, 104, 0.12);
+    box-shadow: 0 3px 0 #9CE3BA, 0 0 0 3px rgba(39, 182, 104, 0.12);
   }
 
   .ops-pencil-icon {
@@ -1204,7 +1298,7 @@ const getOpsClayStyles = () => `
     border-radius: 0 !important;
     color: var(--text-primary) !important;
     font-family: inherit !important;
-    font-size: clamp(20px, 5vw, 34px) !important;
+    font-size: clamp(18px, 4vw, 30px) !important;
     font-weight: 800 !important;
     text-align: left !important;
   }
@@ -1215,11 +1309,11 @@ const getOpsClayStyles = () => `
   }
 
   .ops-submit-btn {
-    width: 100% !important;
-    height: clamp(58px, 8vh, 82px) !important;
+    width: auto !important;
+    height: clamp(58px, 8vh, 78px) !important;
     padding: 0 !important;
     border: 0 !important;
-    border-radius: clamp(20px, 4vw, 30px) !important;
+    border-radius: clamp(18px, 3vw, 26px) !important;
     background: linear-gradient(180deg, #36C875, #22AA60) !important;
     color: #FFFFFF !important;
     display: flex !important;
@@ -1227,11 +1321,17 @@ const getOpsClayStyles = () => `
     justify-content: center !important;
     gap: clamp(8px, 2vw, 14px) !important;
     font-family: inherit !important;
-    font-size: clamp(20px, 4.5vw, 32px) !important;
+    font-size: clamp(18px, 3vw, 28px) !important;
     font-weight: 900 !important;
     box-shadow: 0 5px 0 #168D4D, 0 8px 14px rgba(25, 120, 70, 0.12) !important;
-    flex: 0 0 auto !important;
+    flex: 0 0 clamp(132px, 30%, 190px) !important;
     transition: transform 160ms ease, filter 160ms ease, box-shadow 160ms ease !important;
+  }
+
+  .ops-submit-btn svg {
+    width: 0.9em;
+    height: 0.9em;
+    flex: 0 0 auto;
   }
 
   .ops-submit-btn:active:not(:disabled) {
@@ -1436,6 +1536,67 @@ const getOpsClayStyles = () => `
     white-space: nowrap !important;
   }
 
+  .ops-footer-stats.mgf-footer {
+    padding: clamp(6px, 0.9vh, 10px) clamp(12px, 3vw, 22px) !important;
+    border-radius: clamp(18px, 4vw, 26px) !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: clamp(8px, 1.6vw, 16px) !important;
+    min-height: 0 !important;
+  }
+
+  .ops-footer-stats .mgf-answer-row {
+    width: auto !important;
+    flex: 0 0 auto !important;
+    min-height: 0 !important;
+    gap: clamp(6px, 1.2vw, 10px) !important;
+  }
+
+  .ops-footer-stats .mgf-progress-row {
+    width: auto !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) auto !important;
+    gap: clamp(8px, 1.6vw, 16px) !important;
+  }
+
+  .ops-footer-stats .mgf-title,
+  .ops-footer-stats .mgf-stat {
+    font-size: clamp(12px, 1.7vw, 17px) !important;
+  }
+
+  .ops-footer-stats .mgf-stat {
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    gap: clamp(4px, 0.7vw, 7px) !important;
+  }
+
+  .ops-footer-stats .mgf-icon {
+    width: clamp(24px, 4vw, 34px) !important;
+    height: clamp(24px, 4vw, 34px) !important;
+  }
+
+  .ops-footer-stats .mgf-divider {
+    height: clamp(22px, 3.8vh, 30px) !important;
+    margin-inline: clamp(2px, 0.8vw, 8px) !important;
+  }
+
+  .ops-footer-stats .mgf-trophy {
+    width: clamp(32px, 5.2vw, 44px) !important;
+    height: clamp(32px, 5.2vw, 44px) !important;
+  }
+
+  .ops-footer-stats .mgf-track {
+    height: clamp(12px, 1.7vh, 18px) !important;
+  }
+
+  .ops-footer-stats .mgf-count {
+    font-size: clamp(15px, 2.3vw, 22px) !important;
+  }
+
   .ops-feedback-bar {
     position: fixed !important;
     top: max(8px, env(safe-area-inset-top)) !important;
@@ -1451,7 +1612,7 @@ const getOpsClayStyles = () => `
 
   @media (max-height: 700px) {
     .ops-game-shell {
-      --object-size: clamp(24px, min(5vw, 5.2vh), 42px);
+      --object-size: clamp(20px, min(4.4vw, 4.5vh), 34px);
     }
 
     .ops-ref-header {
@@ -1463,6 +1624,7 @@ const getOpsClayStyles = () => `
     }
 
     .ops-question-label {
+      margin: clamp(4px, 0.9vh, 10px) 0 0 !important;
       font-size: clamp(17px, min(3.6vw, 4.6vh), 28px) !important;
       line-height: 1.05 !important;
     }
@@ -1474,8 +1636,8 @@ const getOpsClayStyles = () => `
     }
 
     .ops-icons-container {
-      gap: clamp(14px, 4vw, 44px) !important;
-      margin-block: clamp(3px, 0.8vh, 8px) !important;
+      gap: clamp(10px, 3vw, 34px) !important;
+      margin-block: clamp(2px, 0.6vh, 7px) !important;
     }
 
     .ops-icon-group {
@@ -1489,6 +1651,7 @@ const getOpsClayStyles = () => `
     }
 
     .ops-question-expr {
+      margin: 0 auto !important;
       font-size: clamp(38px, min(9vw, 9.5vh), 68px) !important;
       line-height: 0.9 !important;
       gap: clamp(8px, 2vw, 18px) !important;
@@ -1509,35 +1672,43 @@ const getOpsClayStyles = () => `
 
   @media (max-height: 600px) {
     .ops-game-shell {
-      --object-size: clamp(22px, min(4.7vw, 4.8vh), 34px);
+      --object-size: clamp(16px, min(3.7vw, 3.8vh), 28px);
     }
 
     .ops-question-zone {
-      padding-block: 8px !important;
+      padding-block: 6px !important;
     }
 
     .ops-question-label {
-      font-size: clamp(16px, min(3.4vw, 4.2vh), 24px) !important;
+      margin-top: 2px !important;
+      font-size: clamp(14px, min(3vw, 3.5vh), 21px) !important;
     }
 
     .ops-question-subtitle {
-      font-size: clamp(11px, min(2.3vw, 2.5vh), 15px) !important;
+      margin-top: 1px !important;
+      font-size: clamp(10px, min(2vw, 2.2vh), 13px) !important;
+      line-height: 1.1 !important;
     }
 
     .ops-icons-container {
-      gap: clamp(12px, 3vw, 28px) !important;
-      margin-block: 3px !important;
+      gap: clamp(8px, 2.2vw, 22px) !important;
+      margin-block: 1px !important;
+    }
+
+    .ops-icon-group {
+      gap: clamp(2px, 0.5vw, 5px) !important;
     }
 
     .ops-icon-operator {
-      width: clamp(38px, 8vw, 52px) !important;
-      height: clamp(38px, 8vw, 52px) !important;
-      font-size: clamp(24px, 5.2vw, 34px) !important;
+      width: clamp(32px, 6.5vw, 44px) !important;
+      height: clamp(32px, 6.5vw, 44px) !important;
+      font-size: clamp(22px, 4.5vw, 30px) !important;
     }
 
     .ops-question-expr {
-      font-size: clamp(34px, min(8vw, 8.2vh), 56px) !important;
+      font-size: clamp(28px, min(6.7vw, 6.8vh), 46px) !important;
       line-height: 0.88 !important;
+      gap: clamp(6px, 1.4vw, 14px) !important;
     }
 
     .ops-typing-input-shell,
@@ -1547,6 +1718,114 @@ const getOpsClayStyles = () => `
 
     .ops-footer-stats {
       gap: 4px !important;
+    }
+  }
+
+  @media (max-height: 480px) {
+    .ops-game-shell {
+      --object-size: clamp(13px, min(3vw, 3.2vh), 22px);
+    }
+
+    .ops-question-counter {
+      padding: 4px 10px;
+      font-size: clamp(11px, 2.1vw, 14px);
+    }
+
+    .ops-settings-puck {
+      width: clamp(32px, 7vw, 40px) !important;
+      height: clamp(32px, 7vw, 40px) !important;
+    }
+
+    .ops-question-label {
+      font-size: clamp(12px, min(2.7vw, 3vh), 18px) !important;
+      line-height: 1 !important;
+    }
+
+    .ops-question-subtitle {
+      font-size: clamp(9px, min(1.8vw, 2vh), 12px) !important;
+    }
+
+    .ops-icons-container {
+      gap: clamp(6px, 1.7vw, 16px) !important;
+      margin-block: 0 !important;
+    }
+
+    .ops-icon-operator {
+      width: clamp(28px, 5.4vw, 36px) !important;
+      height: clamp(28px, 5.4vw, 36px) !important;
+      font-size: clamp(19px, 3.8vw, 26px) !important;
+    }
+
+    .ops-question-expr {
+      font-size: clamp(24px, min(5.6vw, 5.8vh), 38px) !important;
+      gap: clamp(5px, 1vw, 10px) !important;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .ops-typing-form {
+      gap: 7px !important;
+    }
+
+    .ops-typing-input-shell {
+      height: 52px;
+      padding-inline: 12px;
+    }
+
+    .ops-pencil-icon {
+      width: 21px;
+      height: 21px;
+    }
+
+    .ops-typing-input {
+      font-size: 16px !important;
+    }
+
+    .ops-submit-btn {
+      height: 52px !important;
+      flex-basis: 118px !important;
+      font-size: 17px !important;
+    }
+
+    .ops-footer-stats.mgf-footer {
+      gap: clamp(5px, 1.3vw, 8px) !important;
+      padding-inline: 8px !important;
+    }
+
+    .ops-footer-stats .mgf-title,
+    .ops-footer-stats .mgf-stat {
+      font-size: 11px !important;
+    }
+
+    .ops-footer-stats .mgf-stat {
+      gap: 3px !important;
+    }
+
+    .ops-footer-stats .mgf-icon {
+      width: 22px !important;
+      height: 22px !important;
+    }
+
+    .ops-footer-stats .mgf-muted {
+      font-size: 0.72em !important;
+    }
+
+    .ops-footer-stats .mgf-divider {
+      height: 20px !important;
+      margin-inline: 1px !important;
+    }
+
+    .ops-footer-stats .mgf-progress-row {
+      gap: 6px !important;
+    }
+
+    .ops-footer-stats .mgf-trophy {
+      width: 28px !important;
+      height: 28px !important;
+    }
+
+    .ops-footer-stats .mgf-count {
+      font-size: 13px !important;
     }
   }
 
@@ -1674,6 +1953,7 @@ const NUMBERS = Array.from({length: 9}, (_, i) => i + 1);
 
 function GameMenu({
   onStart,
+  onCancel,
   language,
   initialOperation = null,
   initialDifficulty = null,
@@ -1713,7 +1993,10 @@ function GameMenu({
   return (
     <div>
       <div className="ops-settings-group">
-        <div className="ops-settings-label">{bm ? 'TAHAP' : 'LEVEL'}</div>
+        <div className="ops-settings-section-head">
+          <div className="ops-settings-label">{bm ? 'Tahap' : 'Level'}</div>
+          <p className="ops-settings-help">{bm ? 'Pilih tahap kesukaran soalan.' : 'Choose question difficulty.'}</p>
+        </div>
         <div className="ops-settings-options">
           {DIFFICULTIES.map(d => (
             <button type="button" key={d.id} className={`ops-settings-option ${selDiff?.id === d.id ? 'is-active' : ''}`} aria-pressed={selDiff?.id === d.id} onClick={() => setSelDiff(d)}>{bm ? d.labelBm : d.labelEn}</button>
@@ -1721,7 +2004,10 @@ function GameMenu({
         </div>
       </div>
       <div className="ops-settings-group">
-        <div className="ops-settings-label">{bm ? 'OPERASI' : 'OPERATION'}</div>
+        <div className="ops-settings-section-head">
+          <div className="ops-settings-label">{bm ? 'Operasi' : 'Operation'}</div>
+          <p className="ops-settings-help">{bm ? 'Pilih operasi matematik.' : 'Choose a math operation.'}</p>
+        </div>
         <div className="ops-settings-options">
           {[OPERATIONS[4], ...OPERATIONS.slice(0, 4)].map(op => (
             <button type="button" key={op.id} className={`ops-settings-option ${selOp?.id === op.id ? 'is-active' : ''}`} aria-pressed={selOp?.id === op.id} aria-label={bm ? op.labelBm : op.labelEn} title={bm ? op.labelBm : op.labelEn} onClick={() => setSelOp(op)}>
@@ -1731,7 +2017,10 @@ function GameMenu({
         </div>
       </div>
       <div className="ops-settings-group">
-        <div className="ops-settings-label">{bm ? 'NOMBOR' : 'NUMBERS'}</div>
+        <div className="ops-settings-section-head">
+          <div className="ops-settings-label">{bm ? 'Nombor' : 'Numbers'}</div>
+          <p className="ops-settings-help">{bm ? 'Pilih julat nombor.' : 'Choose number range.'}</p>
+        </div>
         <div className="ops-settings-options">
           {['random', ...NUMBERS].map(n => {
             const selected = n === 'random' ? !selNums.length || selNums.includes('random') : selNums.includes(n);
@@ -1740,14 +2029,20 @@ function GameMenu({
         </div>
       </div>
       <div className="ops-settings-group">
-        <div className="ops-settings-label">{bm ? 'CARA MENJAWAB' : 'INPUT MODE'}</div>
+        <div className="ops-settings-section-head">
+          <div className="ops-settings-label">{bm ? 'Cara Menjawab' : 'Answer Method'}</div>
+          <p className="ops-settings-help">{bm ? 'Pilih cara menjawab soalan.' : 'Choose how to answer questions.'}</p>
+        </div>
         <div className="ops-settings-options">
           {INPUT_MODES.map(m => (
             <button type="button" key={m.id} className={`ops-settings-option ${selInput?.id === m.id ? 'is-active' : ''}`} aria-pressed={selInput?.id === m.id} onClick={() => setSelInput(m)}>{bm ? m.labelBm : m.labelEn}</button>
           ))}
         </div>
       </div>
-      <button type="button" className="ops-settings-option is-active ops-settings-start" disabled={!isReady} onClick={handleStart}>{bm ? 'Mula Main!' : 'Start Playing!'}</button>
+      <div className="ops-settings-footer">
+        <button type="button" className="ops-settings-cancel" onClick={onCancel}>{bm ? 'Batal' : 'Cancel'}</button>
+        <button type="button" className="ops-settings-option is-active ops-settings-start" disabled={!isReady} onClick={handleStart}>{bm ? 'Mula Main!' : 'Start Playing!'}</button>
+      </div>
     </div>
   );
 }
@@ -1954,7 +2249,12 @@ export default function MathOperationsGame({
         <div className="ops-settings-overlay" role="dialog" aria-modal="true" aria-label={language === 'bm' ? 'Tetapan permainan' : 'Game settings'}>
           <div className="ops-settings-panel">
             <div className="ops-settings-panel-head">
-              <h2 className="ops-settings-title">{language === 'bm' ? 'Tetapan permainan' : 'Game settings'}</h2>
+              <div>
+                <h2 className="ops-settings-title">{language === 'bm' ? 'Tetapan Permainan' : 'Game Settings'}</h2>
+                <p className="ops-settings-subtitle">
+                  {language === 'bm' ? 'Laraskan pilihan mengikut tahap dan gaya pembelajaran anda.' : 'Adjust choices for your level and learning style.'}
+                </p>
+              </div>
               <button
                 type="button"
                 className="ops-settings-close"
@@ -1967,6 +2267,7 @@ export default function MathOperationsGame({
             <GameMenu
               language={language}
               onStart={handleSettingsStart}
+              onCancel={() => setIsSettingsOpen(false)}
               initialOperation={activeOperation}
               initialDifficulty={activeDifficulty}
               initialNums={activeNums}
@@ -2065,14 +2366,14 @@ export default function MathOperationsGame({
               style={{ background: accentColor, borderBottomColor: accentDark }}
               disabled={!typedAnswer.trim() || !!feedback}
             >
-              {language === 'bm' ? 'Semak ✓' : 'Check ✓'}
+              <span>{language === 'bm' ? 'Semak' : 'Check'}</span>
+              <SendHorizontal size={22} strokeWidth={2.6} aria-hidden="true" />
             </button>
           </form>
         ) : (
           /* Multiple Choice */
           <div className="ops-choices-grid">
-            {problem.options.map((opt, idx) => {
-              const labels = ['A', 'B', 'C', 'D'];
+            {problem.options.map((opt) => {
               let state = 'idle';
               if (feedback === 'correct' && opt === problem.answer) state = 'correct';
               else if (feedback === 'wrong') {
@@ -2088,7 +2389,6 @@ export default function MathOperationsGame({
                   className={`ops-choice-btn ops-choice-${state}`}
                   style={state === 'idle' ? { '--accent': accentColor, '--accent-dark': accentDark } : undefined}
                 >
-                  <span className="ops-choice-label">{labels[idx]}</span>
                   <span className="ops-choice-value">{opt}</span>
                 </button>
               );
@@ -2131,6 +2431,7 @@ export default function MathOperationsGame({
         wrongCount={wrongCount}
         progress={progressInGroup}
         milestone={STREAK_MILESTONE}
+        className="ops-footer-stats"
       />
       </MathGameBody>
       <HeartShopModal isOpen={isHeartShopOpen} onClose={() => setIsHeartShopOpen(false)} onPurchase={handleRewardPurchase} language={language} />
