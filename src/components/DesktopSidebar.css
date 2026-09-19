@@ -3,9 +3,10 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  width: 264px;
-  min-width: 264px;
-  max-width: 264px;
+  --desktop-sidebar-width: 300px;
+  width: var(--desktop-sidebar-width);
+  min-width: var(--desktop-sidebar-width);
+  max-width: var(--desktop-sidebar-width);
   height: 100dvh;
   margin: 0;
   padding: 22px 18px;
@@ -24,14 +25,9 @@
 .desktop-sidebar *, .desktop-sidebar *::before, .desktop-sidebar *::after { box-sizing: border-box; }
 .desktop-sidebar button { cursor: pointer; font: inherit; }
 .desktop-sidebar button:focus-visible { outline: 3px solid #278bcd; outline-offset: 3px; }
-.desktop-sidebar .sidebar-logo { display: flex; align-items: center; gap: 10px; width: 100%; padding: 0 0 12px; border: 0; background: transparent; text-align: left; color: #071a49; }
+.desktop-sidebar .sidebar-logo { display: flex; align-items: center; width: 100%; padding: 4px 0 12px; border: 0; border-radius: 8px; background: transparent; text-align: left; color: #164b3f; transition: opacity 160ms ease, transform 160ms ease; }
+.desktop-sidebar .sidebar-logo:active { transform: translateY(1px); }
 .desktop-sidebar .sidebar-nav-divider { height: 1px; margin: 8px 0; background: #e7eef5; }
-.desktop-sidebar .sidebar-logo-badge { display: flex; flex-direction: column; justify-content: center; align-items: center; flex: 0 0 52px; height: 52px; border-radius: 16px; background: linear-gradient(145deg, #28cf91, #07985e); color: white; box-shadow: inset 0 2px 0 #ffffff50, 0 3px 0 #078650; }
-.desktop-sidebar .sidebar-logo-badge-main { font: 900 18px/1 'Outfit', sans-serif; }
-.desktop-sidebar .sidebar-logo-badge-sub { font-size: 9px; letter-spacing: 2px; }
-.desktop-sidebar .sidebar-brand-copy { display: flex; flex-direction: column; gap: 4px; }
-.desktop-sidebar .sidebar-brand-copy strong { font: 800 22px/1.1 'Outfit', sans-serif; }
-.desktop-sidebar .sidebar-subtitle-text { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #7590a9; }
 .desktop-sidebar .home-coach-progress { padding: 14px; border: 1px solid #dbeef5; border-radius: 16px; background: #f0f9fc; }
 .desktop-sidebar .home-progress-label { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 10px; font-size: 12px; font-weight: 700; color: #526d88; }
 .desktop-sidebar .home-progress-label strong { color: #099b61; font-variant-numeric: tabular-nums; }
@@ -39,6 +35,7 @@
 .desktop-sidebar .home-progress-track span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #0ab36b, #36d49a); }
 .desktop-sidebar .sidebar-continue { width: 100%; min-height: 48px; display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 12px 14px; border: 0; border-radius: 13px; background: linear-gradient(180deg, #1bc77f, #09aa65); color: white; font: 800 16px/1.2 'Outfit', sans-serif; box-shadow: 0 4px 0 #078c52; }
 .desktop-sidebar .sidebar-continue-arrow { flex-shrink: 0; }
+.desktop-sidebar .sidebar-play-icon, .desktop-sidebar .sidebar-motivation { display: none; }
 .desktop-sidebar .sidebar-menu-panel { display: flex; flex: 1; flex-direction: column; min-height: 0; padding: 0; background: transparent; border: 0; box-shadow: none; }
 .desktop-sidebar .home-quick-nav { display: grid; gap: 4px; overflow-y: auto; min-height: 0; padding: 3px; scrollbar-width: thin; }
 .desktop-sidebar .home-quick-link { display: flex; align-items: center; gap: 14px; min-height: 40px; width: 100%; padding: 8px 12px; border: 1px solid transparent; border-radius: 12px; background: transparent; color: #5c7393; text-align: left; font-size: 14px; font-weight: 600; box-shadow: none; transition: background 150ms, border-color 150ms; }
@@ -58,17 +55,24 @@
 .desktop-sidebar .mt-theme-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .desktop-sidebar .mt-theme-color-dot { width: 14px; height: 14px; flex-shrink: 0; border-radius: 50%; border: 1px solid #c4d6e5; background: var(--t-bg); }
 @media (hover: hover) {
+  .desktop-sidebar .sidebar-logo:hover { opacity: .82; }
   .desktop-sidebar .home-quick-link:hover { background: #edf6fb; border-color: #bed8ea; }
   .desktop-sidebar .home-quick-link.active:hover { background: #dff7ec; border-color: #69d5a6; }
   .desktop-sidebar .sidebar-continue:hover { background: #09ad68; }
   .desktop-sidebar .home-settings-btn:hover { color: #0b9f65; border-color: #79d9b0; }
 }
 @media (max-width: 1200px) {
-  .desktop-sidebar.desktop-sidebar { width: 236px; min-width: 236px; max-width: 236px; padding: 18px 14px; }
+  .desktop-sidebar.desktop-sidebar { --desktop-sidebar-width: 260px; padding: 18px 14px; }
   .desktop-sidebar .home-settings-popover { width: 220px; }
 }
 @media (max-width: 767px) {
   .desktop-sidebar.desktop-sidebar { display: none; }
+}
+@media (min-width: 1600px) {
+  .desktop-sidebar.desktop-sidebar { --desktop-sidebar-width: 320px; }
+}
+@media (min-width: 768px) and (max-width: 900px) {
+  .desktop-sidebar.desktop-sidebar { --desktop-sidebar-width: 224px; }
 }
 @media (max-height: 700px) {
   .desktop-sidebar.desktop-sidebar { padding: 16px 14px; gap: 12px; }

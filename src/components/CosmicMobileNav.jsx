@@ -1,4 +1,4 @@
-import { BookOpen, Trophy, UserRound, Medal, Settings } from 'lucide-react';
+import { BookOpen, Trophy, UserRound, Medal, Settings, House } from 'lucide-react';
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { GradCapIcon, TrophyIcon, ProfileIcon, MedalIcon, GearsIcon } from './icons/GameIcons';
 
@@ -80,6 +80,23 @@ export default function CosmicMobileNav({
     '--nav-accent-rgb': hexToRgb(accentColor),
     '--nav-glow-rgb':   hexToRgb(glowColor),
   }), [accentColor, glowColor]);
+
+  // Home uses the reference's five destinations. Language/theme controls remain
+  // available through the homepage header; other pages retain their existing nav.
+  if (appearance === 'home') {
+    const homeTabs = [
+      { id: 'home', icon: House, label: 'Home' },
+      { id: 'learn', icon: BookOpen, label: language === 'bm' ? 'Kursus' : 'Courses' },
+      { id: 'leaderboard', icon: Trophy, label: language === 'bm' ? 'Papan Juara' : 'Leaderboard' },
+      { id: 'achievement', icon: Medal, label: language === 'bm' ? 'Pencapaian' : 'Achievements' },
+      { id: 'profile', icon: UserRound, label: language === 'bm' ? 'Profil' : 'Profile' },
+    ];
+    return <nav className="cosmic-nav ih-mobile-nav" aria-label={language === 'bm' ? 'Navigasi utama' : 'Main navigation'}>
+      {homeTabs.map(tab => <button type="button" key={tab.id} className={tab.id === 'home' ? 'is-active' : ''} aria-current={tab.id === 'home' ? 'page' : undefined} onClick={() => tab.id === 'home' ? onHome?.() : handleTab(tab.id)}>
+        {React.createElement(tab.icon, { size: 21, 'aria-hidden': true })}<span>{tab.label}</span>
+      </button>)}
+    </nav>;
+  }
 
   return (
     <>

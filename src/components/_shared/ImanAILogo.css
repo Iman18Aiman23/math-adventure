@@ -1,0 +1,18 @@
+.imanai-logo {
+  display: block;
+  width: 100%;
+  max-width: 228px;
+}
+
+.imanai-logo-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.imanai-logo--mono .imanai-logo-image { filter: grayscale(1); }
+
+@media print {
+  .imanai-logo-image { filter: grayscale(1); }
+}

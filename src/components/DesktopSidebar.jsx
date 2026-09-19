@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { GraduationCap, Trophy, Medal, Settings, Flag, ChevronRight, House, BookOpen, Mic, Calculator, Moon, UserRound } from 'lucide-react';
+import { GraduationCap, Trophy, Medal, Settings, Flag, ChevronRight, House, BookOpen, Mic, Calculator, Moon, UserRound, Crown, Play } from 'lucide-react';
 import useGamification from '../hooks/useGamification';
 import StatsBar from './_shared/StatsBar';
+import ImanAILogo from './_shared/ImanAILogo';
 import './DesktopSidebar.css';
 
 const MT_MODULE2_DRILL_TYPES = [
@@ -81,16 +82,12 @@ export default function DesktopSidebar({
 
       <aside className="desktop-sidebar">
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <button className="sidebar-logo" type="button" onClick={onHome} aria-label={language === 'bm' ? 'Halaman utama' : 'Home'}>
-            <span className="sidebar-logo-badge" aria-hidden="true">
-              <span className="sidebar-logo-badge-main">Iman</span>
-              <span className="sidebar-logo-badge-sub">core</span>
-            </span>
-            <span className="sidebar-brand-copy"><strong>Iman Core</strong><span className="sidebar-subtitle-text">Learning Hub</span></span>
+          <button className="sidebar-logo" type="button" onClick={onHome} aria-label={language === 'bm' ? 'ImanAI — Halaman utama' : 'ImanAI — Home'}>
+            <ImanAILogo language={language} />
           </button>
         </div>
 
-        <div className="home-coach-progress">
+        <div className="home-coach-progress" data-progress={`${moduleProgress}%`} style={{ '--progress': `${moduleProgress}%` }}>
           <div className="home-progress-label">
             <span>{language === 'bm' ? 'Kemajuan' : 'Progress'}</span>
             <strong>{moduleProgress}%</strong>
@@ -108,6 +105,7 @@ export default function DesktopSidebar({
           }}
           type="button"
         >
+          <Play className="sidebar-play-icon" size={16} aria-hidden="true" />
           <span>{language === 'bm' ? 'Teruskan belajar' : 'Continue learning'}</span>
           <ChevronRight className="sidebar-continue-arrow" size={20} strokeWidth={3} />
         </button>
@@ -209,6 +207,11 @@ export default function DesktopSidebar({
             </div>
           </div>
         </div>
+        <button type="button" className="sidebar-motivation" onClick={onContinueLearning || onHome}>
+          <Crown size={28} aria-hidden="true" />
+          <span>{language === 'bm' ? 'Terus belajar' : 'Keep learning'}<small>{language === 'bm' ? 'Capai impian!' : 'Follow your dreams!'}</small></span>
+          <ChevronRight size={17} aria-hidden="true" />
+        </button>
       </aside>
     </>
   );

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <title>ImanAI</title>
+  <path d="M10 30V43C10 49 14 52 20 52S30 48 30 42V28C30 21 34 17 41 17S52 21 52 28V52" stroke="#164b3f" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="10" cy="13" r="6" fill="#94bf39"/>
+</svg>
