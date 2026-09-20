@@ -42,6 +42,7 @@ export default function DesktopSidebar({
   onHome, onOpenReports,
   theme, onThemeChange, themes,
   onContinueLearning, currentSubject, onSelectSubject, isJawi = false,
+  simplified = false,
 }) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const settingsRef = useRef(null);
@@ -120,7 +121,7 @@ export default function DesktopSidebar({
             ].map(({ id, label, icon: Icon }) => (
               <button key={id} type="button" className={`home-quick-link ${activeTab === 'learn' && (id === 'jawi' ? isJawi : currentSubject === id) ? 'active' : ''}`} onClick={() => onSelectSubject?.(id)}>{React.createElement(Icon)}<span>{label}</span></button>
             ))}
-            <div className="sidebar-nav-divider" />
+            {!simplified && <><div className="sidebar-nav-divider" />
             <button type="button" className={`home-quick-link ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => onTabChange?.('profile')}><UserRound /><span>{language === 'bm' ? 'Profil' : 'Profile'}</span></button>
             <button type="button" className="home-quick-link" onClick={() => onHome?.()}>
               <GraduationCap size={22} />
@@ -138,9 +139,10 @@ export default function DesktopSidebar({
               <Flag size={22} />
               <span>{language === 'bm' ? 'Laporan' : 'Reports'}</span>
             </button>
+            </>}
           </nav>
 
-          <div className="home-coach-footer">
+          {!simplified && <div className="home-coach-footer">
             <div className="sidebar-utility-row">
               <div className="home-top-actions">
                 <StatsBar forceBundled={true} variant="mb" />
@@ -206,6 +208,7 @@ export default function DesktopSidebar({
             )}
             </div>
           </div>
+          }
         </div>
         <button type="button" className="sidebar-motivation" onClick={onContinueLearning || onHome}>
           <Crown size={28} aria-hidden="true" />

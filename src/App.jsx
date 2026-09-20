@@ -1587,6 +1587,7 @@ export default function App() {
           }
         }
         return <HomePage
+          onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
           onSelectSubject={(s) => navigate(() => setCurrentSubject(s))}
           onSelectAgeGroup={(g) => navigate(() => setCurrentAgeGroup(g))}
           language={language}
@@ -1623,6 +1624,7 @@ export default function App() {
         {/* Desktop Sidebar — rendered outside .app-container, inside #root row */}
         {isDesktop && !shouldHideSidebar && (
           <DesktopSidebar
+            simplified={activeTab === 'learn' && !currentSubject && !currentAgeGroup}
             activeTab={activeTab}
             onTabChange={handleTabChange}
             language={language}

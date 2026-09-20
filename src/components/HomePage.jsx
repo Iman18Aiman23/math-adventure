@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
-import { ChevronDown, ChevronRight, Settings, Star, UserRound, ArrowLeft } from 'lucide-react';
+import { ChevronDown, ChevronRight, Settings, Star, UserRound, ArrowLeft, GraduationCap, Trophy, Medal, Flag, LogOut } from 'lucide-react';
 import { AGE_GROUPS } from '../data/ageCurriculum';
 import { playHoverSound } from '../utils/soundManager';
 import ImanAILogo from './_shared/ImanAILogo';
+import StatsBar from './_shared/StatsBar';
 import './HomePage.css';
 
 const HomePagePrototype = React.lazy(() => import('./HomePagePrototype'));
@@ -39,10 +40,11 @@ function AgeBadge({ index }) {
   );
 }
 
-export default function HomePage({ onSelectSubject, onSelectAgeGroup, language = 'bm', playerName, gameState, streak = 0, onTabChange, onHome, onToggleLang, theme, themes, onThemeChange }) {
+export default function HomePage({ onSelectSubject, onSelectAgeGroup, language = 'bm', playerName, gameState, streak = 0, onTabChange, onHome, onOpenReports, onToggleLang, theme, themes, onThemeChange }) {
   const [showRobotInterface, setShowRobotInterface] = useState(false);
   const [panel, setPanel] = useState(null);
   const headerRef = useRef(null);
+  const popoverRef = useRef(null);
   const triggerRef = useRef(null);
   const bm = language === 'bm';
   const langIndex = bm ? 0 : 1;
@@ -55,7 +57,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
       if (event.type === 'keydown') {
         if (event.key !== 'Escape') return;
         triggerRef.current?.focus();
-      } else if (headerRef.current?.contains(event.target)) return;
+      } else if (popoverRef.current?.contains(event.target) || triggerRef.current?.contains(event.target)) return;
       setPanel(null);
     };
     document.addEventListener('pointerdown', dismiss);
@@ -68,8 +70,18 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
 
   const togglePanel = (next, event) => {
     triggerRef.current = event.currentTarget;
-    setPanel(previous => previous === next ? null : next);
+    setPanel(previous => previous === next || (next === 'account' && previous === 'settings') ? null : next);
   };
+
+  const selectAccountAction = (action) => {
+    setPanel(null);
+    triggerRef.current?.focus();
+    action?.();
+  };
+
+  useEffect(() => {
+    if (panel === 'account' || panel === 'settings') popoverRef.current?.querySelector('button')?.focus();
+  }, [panel]);
 
   if (showRobotInterface) {
     return <div className="ih-robot-interface">
@@ -83,14 +95,14 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
   return (
     <div className="ih-root" style={{ '--ih-art': `url("${import.meta.env.BASE_URL}images/home/robots.webp")` }}>
       <header className="ih-header" ref={headerRef}>
-        <button type="button" className="ih-mobile-settings" aria-label={bm ? 'Buka tetapan' : 'Open settings'} aria-expanded={panel === 'account'} aria-controls="ih-account-panel" onClick={event => togglePanel('account', event)}><Settings size={20} /></button>
+        <button type="button" className="ih-mobile-settings" aria-label={bm ? 'Buka menu akaun' : 'Open account menu'} aria-expanded={panel === 'account' || panel === 'settings'} aria-controls="ih-account-panel" onClick={event => togglePanel('account', event)}><UserRound size={20} /></button>
         <button type="button" className="ih-mobile-logo" onClick={onHome} aria-label="ImanAI — Home"><ImanAILogo language={language} /></button>
         <button type="button" className="ih-points" aria-label={`${gameState?.totalXP ?? 0} XP — ${bm ? 'Lihat kemajuan' : 'View progress'}`} aria-expanded={panel === 'progress'} aria-controls="ih-progress-panel" onClick={event => togglePanel('progress', event)}><Star aria-hidden="true" /><span>{gameState?.totalXP ?? 0}</span></button>
-        <button type="button" className="ih-account" aria-expanded={panel === 'account'} aria-controls="ih-account-panel" onClick={event => togglePanel('account', event)}>
+        <button type="button" className="ih-account" aria-expanded={panel === 'account' || panel === 'settings'} aria-controls="ih-account-panel" onClick={event => togglePanel('account', event)}>
           <span className="ih-avatar"><UserRound aria-hidden="true" /></span>
           <span className="ih-account-copy"><strong>{bm ? 'Hai' : 'Hi'}, {name}</strong><span>{bm ? 'Teruskan belajar!' : 'Keep learning!'}</span></span><ChevronDown size={19} />
         </button>
-        {panel && <section className="ih-popover" id={`ih-${panel}-panel`} aria-label={panel === 'progress' ? (bm ? 'Kemajuan pembelajaran' : 'Learning progress') : (bm ? 'Akaun dan tetapan' : 'Account and settings')}>
+        {panel && <section ref={popoverRef} className={`ih-popover ${panel === 'account' ? 'ih-account-menu' : ''}`} id={panel === 'progress' ? 'ih-progress-panel' : 'ih-account-panel'} aria-label={panel === 'progress' ? (bm ? 'Kemajuan pembelajaran' : 'Learning progress') : (bm ? 'Akaun dan tetapan' : 'Account and settings')}>
           {panel === 'progress' ? <>
             <h2>{bm ? 'Matlamat harian' : 'Daily goal'}</h2>
             <strong>{bm ? 'Selesaikan 1 aktiviti' : 'Complete 1 activity'}</strong>
@@ -100,8 +112,20 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
             <p>{streak} {bm ? 'hari berturut-turut' : 'day streak'}</p>
             <h2>{bm ? 'Tahap semasa' : 'Current level'}</h2><p>Level {currentLevel}</p>
             <h2>{bm ? 'Aktiviti terkini' : 'Recent activity'}</h2><p>{bm ? 'Belum ada aktiviti' : 'No recent activity'}</p>
+            <StatsBar forceBundled={true} variant="mb" />
+          </> : panel === 'account' ? <>
+            <nav aria-label={bm ? 'Menu akaun' : 'Account menu'}>
+              <button type="button" onClick={() => selectAccountAction(() => onTabChange?.('profile'))}><UserRound />{bm ? 'Profil Saya' : 'My Profile'}</button>
+              <button type="button" onClick={() => selectAccountAction(onHome)}><GraduationCap />{bm ? 'Kursus Saya' : 'My Courses'}</button>
+              <button type="button" onClick={() => selectAccountAction(() => onTabChange?.('leaderboard'))}><Trophy />{bm ? 'Papan Juara' : 'Leaderboard'}</button>
+              <button type="button" onClick={() => selectAccountAction(() => onTabChange?.('achievement'))}><Medal />{bm ? 'Pencapaian Saya' : 'My Achievements'}</button>
+              <button type="button" onClick={() => selectAccountAction(onOpenReports)}><Flag />{bm ? 'Laporan' : 'Reports'}</button>
+              <hr />
+              <button type="button" onClick={() => setPanel('settings')}><Settings />{bm ? 'Tetapan' : 'Settings'}</button>
+              <button type="button" className="ih-logout" disabled title={bm ? 'Log keluar belum tersedia' : 'Logout is not available yet'}><LogOut />{bm ? 'Log Keluar' : 'Log Out'}</button>
+            </nav>
           </> : <>
-            <button type="button" className="ih-profile-link" onClick={() => onTabChange?.('profile')}><UserRound size={18} />{bm ? 'Profil saya' : 'My profile'}<ChevronRight size={16} /></button>
+            <button type="button" className="ih-profile-link" onClick={() => setPanel('account')}><ArrowLeft size={18} />{bm ? 'Tetapan' : 'Settings'}</button>
             {onToggleLang && <><h2>{bm ? 'Bahasa' : 'Language'}</h2><div className="ih-language">
               <button type="button" aria-pressed={bm} onClick={() => { if (!bm) onToggleLang(); }}>Bahasa Melayu</button>
               <button type="button" aria-pressed={!bm} onClick={() => { if (bm) onToggleLang(); }}>English</button>
@@ -131,9 +155,9 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
             aria-labelledby={`ih-title-${subject.id}`} aria-describedby={`ih-desc-${subject.id}`}
             onClick={() => subject.id === 'robot' ? setShowRobotInterface(true) : onSelectSubject(subject.id)} onMouseEnter={playHoverSound}
           >
-            <span className="ih-subject-scene"><span className="ih-art-backdrop" /><RobotArt index={subject.art} /></span>
-            <span className="ih-subject-content"><span className="ih-subject-pill" id={`ih-title-${subject.id}`}>{subject.title[langIndex]}</span><span className="ih-subject-desc" id={`ih-desc-${subject.id}`}>{subject.desc[langIndex]}</span></span>
-            <span className="ih-card-arrow"><ChevronRight size={20} /></span>
+            <span className="ih-subject-scene"><RobotArt index={subject.art} /></span>
+            <span className="ih-subject-content"><span className="ih-subject-title" id={`ih-title-${subject.id}`}>{subject.title[langIndex]}</span><span className="ih-subject-desc" id={`ih-desc-${subject.id}`}>{subject.desc[langIndex]}</span></span>
+            <span className="ih-card-arrow" aria-hidden="true"><ChevronRight size={20} /></span>
           </button>)}
         </div>
       </section>
