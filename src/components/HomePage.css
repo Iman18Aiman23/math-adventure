@@ -18,11 +18,12 @@
 .ih-root button:focus-visible, .ih-return:focus-visible { outline: 3px solid #1578c6; outline-offset: 3px; }
 .ih-root button { -webkit-tap-highlight-color: transparent; }
 .ih-header { position: relative; z-index: 5; display: flex; align-items: center; justify-content: flex-end; gap: 24px; min-width: 0; }
+.ih-top-actions-cluster { position: relative; display: flex; align-items: center; justify-content: flex-end; gap: clamp(8px, .8vw, 14px); min-width: 0; }
 .ih-mobile-logo, .ih-mobile-settings { display: none; }
 .ih-points { display: inline-flex; justify-content: center; align-items: center; gap: 9px; min-height: 40px; min-width: 76px; max-width: 160px; padding: 7px 16px; border: 1px solid white; border-radius: 28px; background: #edfff3; color: var(--ih-ink); font-size: 19px; font-weight: 800; box-shadow: 0 2px 9px #5795bd0a; }
 .ih-points span { overflow: hidden; text-overflow: ellipsis; }
 .ih-points svg, .ih-level svg, .ih-hero-star { fill: #ffce27; stroke: #f6ac05; flex-shrink: 0; }
-.ih-account { display: flex; align-items: center; gap: 12px; max-width: 280px; min-height: 44px; background: transparent; color: var(--ih-muted); text-align: left; }
+.ih-account { display: flex; align-items: center; gap: 8px; width: auto; max-width: none; min-height: 44px; background: transparent; color: var(--ih-muted); text-align: left; }
 .ih-avatar { display: grid; place-items: center; width: 40px; height: 40px; flex-shrink: 0; border: 2px solid white; border-radius: 50%; background: #dcebff; color: #80a9da; }
 .ih-avatar svg { width: 31px; height: 31px; fill: #9cbfea; stroke-width: 1.3; }
 .ih-account-copy { display: grid; gap: 3px; min-width: 0; }
@@ -33,6 +34,8 @@
 .ih-account[aria-expanded="true"] > svg { transform: rotate(180deg); }
 .ih-header { gap: clamp(8px, .8vw, 14px); }
 .ih-account-menu.ih-popover { width: min(clamp(230px, 17vw, 280px), calc(100vw - 32px)); padding: 10px; }
+.ih-account-greeting { display: flex; align-items: center; gap: 10px; margin: 2px 2px 8px; padding: 8px 10px 12px; border-bottom: 1px solid #e4ecf4; color: var(--ih-muted); }
+.ih-account-greeting .ih-account-copy strong { display: block; max-width: 170px; }
 .ih-account-menu nav { display: grid; gap: 2px; }
 .ih-account-menu.ih-popover button { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 44px; padding: 10px 12px; border: 0; background: transparent; color: #42628c; text-align: left; font-size: 14px; font-weight: 500; transition: background 150ms ease; }
 .ih-account-menu button svg { width: 21px; height: 21px; flex-shrink: 0; }
@@ -303,13 +306,25 @@
   .ih-mobile-nav .is-active { color: #00a77b; font-weight: 700; }
   .ih-mobile-nav .is-active span { border-radius: 12px; background: #e8fbf3; padding: 1px 6px; }
   .ih-root { height: auto; min-height: 100%; flex: none; grid-template-rows: 58px 180px auto auto; gap: 16px; padding: 0 14px calc(88px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(#f2fbff, white 230px); }
-  .ih-header { justify-content: space-between; gap: 12px; }
-  .ih-mobile-logo { display: block; width: 150px; padding: 0; background: transparent; }
-  .ih-mobile-settings { display: grid; place-items: center; width: 34px; height: 40px; background: transparent; color: #537ca1; }
-  #ih-account-panel { left: 0; right: auto; }
+  .ih-header { justify-content: flex-end; gap: 8px; }
+  .ih-top-actions-cluster { display: contents; }
+  .ih-mobile-logo, .ih-mobile-settings { display: none; }
+  .ih-popover {
+    position: fixed;
+    top: calc(58px + env(safe-area-inset-top, 0px));
+    right: 12px;
+    left: auto;
+    z-index: 200;
+    max-height: calc(100dvh - 150px);
+  }
+  #ih-account-panel { left: auto; right: 12px; }
   .ih-points { min-width: 60px; min-height: 36px; padding: 5px 10px; font-size: 17px; gap: 6px; border-color: #e4f2e8; }
   .ih-points svg { width: 21px; height: 21px; }
-  .ih-account { display: none; }
+  .ih-account { display: flex; min-height: 40px; gap: 7px; padding: 3px 9px 3px 4px; }
+  .ih-avatar { width: 34px; height: 34px; }
+  .ih-avatar svg { width: 26px; height: 26px; }
+  .ih-account-copy strong { font-size: 12px; }
+  .ih-account-copy > span { font-size: 10px; }
   .ih-hero { border-radius: 17px; }
   .ih-hero-copy { padding: 12px 0 12px 12px; width: 54%; }
   .ih-eyebrow { font-size: 10px; }

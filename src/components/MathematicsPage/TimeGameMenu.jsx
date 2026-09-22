@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
-import { ArrowLeft, ChevronRight, Star } from 'lucide-react';
+import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { LOCALIZATION } from '../../utils/localization';
-import { getStars } from '../../utils/gameStatsManager';
 import useBrowserBack from '../../hooks/useBrowserBack';
+import HomeHeaderActions from '../_shared/HomeHeaderActions';
 import TimeMathMascot from './TimeMathMascot';
 import TimeMenuArtwork from './TimeMenuArtwork';
 import './MathHome.css';
@@ -14,20 +13,24 @@ const TIME_GAMES = [
   { id: 'clock', theme: 'mint', titleKey: 'timeAdventure', descKey: 'timeAdventureDesc' },
 ];
 
-export default function TimeGameMenu({ onStart, onBack, language = 'bm' }) {
+export default function TimeGameMenu({
+  onStart,
+  onBack,
+  language = 'bm',
+  playerName,
+  gameState,
+  streak = 0,
+  onTabChange,
+  onHome,
+  onOpenReports,
+  onToggleLang,
+  theme,
+  themes,
+  onThemeChange,
+}) {
   const bm = language === 'bm';
   const t = LOCALIZATION[bm ? 'bm' : 'eng'].time;
   const handleBack = useBrowserBack(onBack);
-  const [stars, setStars] = useState(getStars);
-  useEffect(() => {
-    const refresh = () => setStars(getStars());
-    window.addEventListener('storage', refresh);
-    window.addEventListener('focus', refresh);
-    return () => {
-      window.removeEventListener('storage', refresh);
-      window.removeEventListener('focus', refresh);
-    };
-  }, []);
 
   return (
     <main className="mh-screen time-menu-shell" aria-label={bm ? 'Bulan & Masa' : 'Clock & Time'}>
@@ -35,7 +38,7 @@ export default function TimeGameMenu({ onStart, onBack, language = 'bm' }) {
         <header className="mh-header">
           <button type="button" className="mh-back" onClick={handleBack} aria-label={bm ? 'Kembali' : 'Back'}><ArrowLeft aria-hidden="true" /></button>
           <h1>{bm ? 'Bulan & Masa' : 'Clock & Time'}</h1>
-          <span className="mh-score" aria-label={`${stars} ${bm ? 'bintang' : 'stars'}`}><Star aria-hidden="true" /><span>{stars}</span></span>
+          <HomeHeaderActions language={language} playerName={playerName} gameState={gameState} streak={streak} onTabChange={onTabChange} onHome={onHome} onOpenReports={onOpenReports} onToggleLang={onToggleLang} theme={theme} themes={themes} onThemeChange={onThemeChange} />
         </header>
         <section className="mh-hero" aria-labelledby="time-menu-hero-title">
           <div className="mh-hero-copy">

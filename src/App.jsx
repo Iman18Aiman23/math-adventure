@@ -632,12 +632,40 @@ export default function App() {
 
     switch (currentSubject) {
       case 'math':
-        if (!mathSubGame) return <MathHome onSelectSubGame={setMathSubGame} onBack={handleBackToHome} onHome={handleBackToHome} language={language} />;
+        if (!mathSubGame) return <MathHome
+          onSelectSubGame={setMathSubGame}
+          onBack={handleBackToHome}
+          onHome={handleBackToHome}
+          language={language}
+          playerName={playerName}
+          gameState={gameState}
+          streak={streak}
+          onTabChange={handleTabChange}
+          onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
+          onToggleLang={handleToggleLang}
+          theme={THEMES[currentTheme]}
+          themes={THEMES}
+          onThemeChange={setCurrentTheme}
+        />;
         if (mathSubGame === 'operations') {
           return <MathOperationsGame operation={gameConfig.operation} difficulty={gameConfig.difficulty} nums={gameConfig.nums} quizType={gameConfig.quizType} onConfigChange={setGameConfig} onBack={() => { setMathSubGame(null); setIsPlaying(false); }} language={language} />;
         }
         if (mathSubGame === 'datetime') {
-          if (!isPlaying) return <TimeGameMenu onBack={() => setMathSubGame(null)} onStart={handleStartTimeGame} onHome={handleBackToHome} language={language} />;
+          if (!isPlaying) return <TimeGameMenu
+            onBack={() => setMathSubGame(null)}
+            onStart={handleStartTimeGame}
+            onHome={handleBackToHome}
+            language={language}
+            playerName={playerName}
+            gameState={gameState}
+            streak={streak}
+            onTabChange={handleTabChange}
+            onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
+            onToggleLang={handleToggleLang}
+            theme={THEMES[currentTheme]}
+            themes={THEMES}
+            onThemeChange={setCurrentTheme}
+          />;
           if (dateTimeSubGame === 'months')          return <MonthsGame    onBack={handleBackToMenu} onHome={handleBackToHome} language={language} />;
           if (dateTimeSubGame === 'clock')           return <ClockGame     onBack={handleBackToMenu} onHome={handleBackToHome} language={language} />;
           if (dateTimeSubGame === 'month-learning')  return <MonthLearning onBack={handleBackToMenu} onHome={handleBackToHome} language={language} />;
@@ -648,7 +676,21 @@ export default function App() {
         if (mathSubGame === 'journey') {
           return <MathJourney onBack={() => setMathSubGame(null)} language={language} />;
         }
-        return <MathHome onSelectSubGame={setMathSubGame} onBack={handleBackToHome} onHome={handleBackToHome} language={language} />;
+        return <MathHome
+          onSelectSubGame={setMathSubGame}
+          onBack={handleBackToHome}
+          onHome={handleBackToHome}
+          language={language}
+          playerName={playerName}
+          gameState={gameState}
+          streak={streak}
+          onTabChange={handleTabChange}
+          onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
+          onToggleLang={handleToggleLang}
+          theme={THEMES[currentTheme]}
+          themes={THEMES}
+          onThemeChange={setCurrentTheme}
+        />;
       case 'bm':
         return <BMPage onBack={handleBackToHome} onHome={handleBackToHome} language={language} />;
       case 'matematik-kssr':

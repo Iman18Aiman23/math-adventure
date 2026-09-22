@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import confetti from 'canvas-confetti';
-import { Pencil, SendHorizontal, Settings, X } from 'lucide-react';
+import { Check, Pencil, SendHorizontal, Settings, X } from 'lucide-react';
 import { generateProblem } from '../../utils/mathLogic';
 import { playSound } from '../../utils/soundManager';
 import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
 import useBrowserBack from '../../hooks/useBrowserBack';
 import HeartShopModal from '../HeartShopModal';
-import { MathGameBody, MathGameFooter, MathGameHeader, MathGameShell } from './MathGameLayout';
+import { MathGameBody, MathGameHeader, MathGameShell } from './MathGameLayout';
 
 // ─── Web Speech API voice helper ───────────────────────────────────────────────
 function speak(text, { pitch = 1.4, rate = 1.05, volume = 1 } = {}) {
@@ -46,526 +46,6 @@ const STREAK_CHEERS_BM  = ['Bagus!', 'Cemerlang!', 'Hebat!', 'Luar Biasa!', 'Men
 const STREAK_CHEERS_EN  = ['Great!', 'Excellent!', 'Fantastic!', 'Amazing!', 'Incredible!', 'SUPERSTAR!', 'CHAMPION!', 'MATH WIZARD!'];
 
 const getOpsClayStyles = () => `
-  .ops-game-shell {
-    width: 100% !important;
-    height: 100vh !important;
-    height: 100dvh !important;
-    max-width: 100vw !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-    display: flex !important;
-    flex-direction: column !important;
-    background:
-      radial-gradient(circle at 18% 8%, rgba(104, 199, 247, 0.16), transparent 30%),
-      radial-gradient(circle at 82% 5%, rgba(255, 216, 115, 0.2), transparent 28%),
-      linear-gradient(180deg, #FBFCFD 0%, #F7FBF8 48%, #EEF6F5 100%) !important;
-    overflow: hidden !important;
-  }
-
-  .ops-game-shell *,
-  .ops-game-shell *::before,
-  .ops-game-shell *::after {
-    box-sizing: border-box;
-  }
-
-  .ops-game-board {
-    width: min(100%, 1100px);
-    max-width: 100%;
-    min-width: 0;
-    min-height: 0;
-    flex: 1 1 auto;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: stretch;
-    overflow: hidden;
-  }
-
-  .ops-game-shell .duo-home-header {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    min-height: clamp(54px, 8.5dvh, 68px) !important;
-    padding: 0.65rem clamp(0.75rem, 3vw, 1.25rem) !important;
-    flex-wrap: nowrap !important;
-    border-bottom: 0 !important;
-    background:
-      radial-gradient(circle at 24% 0%, rgba(255,255,255,0.95), transparent 46%),
-      linear-gradient(145deg, rgba(255,255,255,0.96), #F4F8F2) !important;
-    box-shadow:
-      0 14px 30px rgba(55, 110, 30, 0.08),
-      0 4px 0 rgba(227, 236, 224, 0.82),
-      inset 0 2px 0 rgba(255,255,255,0.9),
-      inset 0 -8px 18px rgba(55, 110, 30, 0.04) !important;
-    position: relative;
-    z-index: 20;
-  }
-
-  .ops-game-shell .duo-home-header > button {
-    width: clamp(40px, 6dvh, 48px) !important;
-    height: clamp(40px, 6dvh, 48px) !important;
-    border: 1px solid rgba(227, 236, 224, 0.95) !important;
-    background: linear-gradient(145deg, #FFFFFF, #F4F8F2) !important;
-    color: #677064 !important;
-    box-shadow:
-      0 8px 16px rgba(55, 110, 30, 0.13),
-      0 4px 0 #DDE8DA,
-      inset 0 2px 0 rgba(255,255,255,0.9),
-      inset 0 -5px 10px rgba(55,110,30,0.06) !important;
-  }
-
-  .ops-game-shell .duo-home-stats button {
-    min-height: clamp(36px, 5.5dvh, 42px) !important;
-    padding: clamp(5px, 1.1dvh, 7px) clamp(8px, 2vw, 12px) !important;
-    border: 1px solid rgba(255,255,255,0.78) !important;
-    background: linear-gradient(145deg, #FFFFFF, #F4F8F2) !important;
-    box-shadow:
-      0 8px 16px rgba(55, 110, 30, 0.1),
-      0 3px 0 #DDE8DA,
-      inset 0 2px 0 rgba(255,255,255,0.88),
-      inset 0 -5px 10px rgba(55,110,30,0.05) !important;
-  }
-
-  .ops-game-shell .duo-home-stats button span:first-child {
-    width: clamp(24px, 4dvh, 28px);
-    height: clamp(24px, 4dvh, 28px);
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    color: #fff;
-    text-shadow: 0 2px 0 rgba(0,0,0,0.16);
-    box-shadow:
-      inset 0 3px 0 rgba(255,255,255,0.42),
-      inset 0 -5px 8px rgba(0,0,0,0.18),
-      0 5px 10px rgba(55,110,30,0.12);
-  }
-
-  .ops-game-shell .duo-home-stats button:nth-child(1) span:first-child {
-    background: linear-gradient(145deg, #FFE98A, #FACC15 58%, #D59B17);
-  }
-
-  .ops-game-shell .duo-home-stats button:nth-child(2) span:first-child {
-    background: linear-gradient(145deg, #FF9AAE, #F43F5E 58%, #BE123C);
-  }
-
-  .ops-game-shell .duo-home-stats button:nth-child(3) span:first-child {
-    background: linear-gradient(145deg, #8FD7FF, #1CB0F6 58%, #0B6EA8);
-  }
-
-  .ops-question-zone {
-    position: relative;
-    flex: 1 1 auto !important;
-    min-height: 0;
-    width: calc(100% - clamp(1rem, 5vw, 4rem));
-    max-width: 100%;
-    margin: clamp(0.4rem, 1.4dvh, 0.85rem) auto 0 !important;
-    padding: clamp(0.75rem, 2.5dvh, 1.6rem) clamp(0.6rem, 2.6vw, 1.25rem) !important;
-    overflow: hidden;
-    border: 1px solid rgba(227, 236, 224, 0.9);
-    border-radius: clamp(26px, 5vw, 42px);
-    background:
-      radial-gradient(circle at 50% 6%, rgba(255,255,255,0.92), transparent 45%),
-      linear-gradient(145deg, rgba(255,255,255,0.95), #F4F8F2);
-    box-shadow:
-      0 24px 44px rgba(55, 110, 30, 0.09),
-      0 7px 0 rgba(227, 236, 224, 0.84),
-      inset 0 3px 0 rgba(255,255,255,0.95),
-      inset 0 -14px 24px rgba(55,110,30,0.05);
-  }
-
-  .ops-question-label {
-    color: #677064 !important;
-    font-size: clamp(0.78rem, 2.1vmin, 1.12rem) !important;
-    letter-spacing: 0.08em !important;
-    max-width: calc(100% - clamp(2.7rem, 7vmin, 3.4rem));
-    margin-bottom: clamp(0.75rem, 1.8vh, 1.2rem) !important;
-    text-shadow: 0 2px 0 rgba(255,255,255,0.82);
-  }
-
-  .ops-icons-container {
-    gap: clamp(0.45rem, 2.3vmin, 1.4rem) !important;
-    margin-bottom: clamp(0.35rem, 1.2dvh, 0.75rem) !important;
-    max-width: 100%;
-    min-width: 0;
-  }
-
-  .ops-icon-group {
-    max-width: min(clamp(6rem, 20vmin, 10.5rem), 32vw) !important;
-    min-width: 0 !important;
-    gap: clamp(0.2rem, 0.7vmin, 0.35rem) !important;
-  }
-
-  .ops-icon-emoji {
-    width: clamp(1.35rem, 4.6vmin, 2.6rem);
-    height: clamp(1.35rem, 4.6vmin, 2.6rem);
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    background:
-      radial-gradient(circle at 34% 26%, #BEEBFF 0 13%, transparent 14%),
-      radial-gradient(circle at 62% 32%, rgba(255,255,255,0.42), transparent 18%),
-      linear-gradient(145deg, #77C9FF, #4388E8 62%, #2D5EBE);
-    color: transparent;
-    box-shadow:
-      0 9px 14px rgba(45, 94, 190, 0.16),
-      inset 0 3px 0 rgba(255,255,255,0.44),
-      inset 0 -7px 10px rgba(28,65,150,0.28);
-  }
-
-  .ops-icon-operator {
-    min-width: clamp(2.35rem, 6vmin, 4rem);
-    min-height: clamp(2.35rem, 6vmin, 4rem);
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    background: linear-gradient(145deg, #FFFFFF, #F0F4EC);
-    color: #677064 !important;
-    font-family: var(--font-heading);
-    font-size: clamp(1.65rem, 4.4vmin, 2.8rem) !important;
-    font-weight: 900 !important;
-    text-shadow:
-      1px 2px 0 rgba(255,255,255,0.9),
-      -1px -2px 0 rgba(55,110,30,0.16);
-    box-shadow:
-      inset 0 5px 10px rgba(55,110,30,0.12),
-      inset 0 -3px 8px rgba(255,255,255,0.86),
-      0 10px 18px rgba(55,110,30,0.09);
-  }
-
-  .ops-question-expr {
-    color: #374151 !important;
-    max-width: 100%;
-    min-width: 0;
-    overflow-wrap: anywhere;
-    font-size: clamp(2.2rem, 8.5vmin, 5.2rem) !important;
-    font-weight: 900 !important;
-    letter-spacing: 0 !important;
-    text-shadow:
-      2px 3px 0 rgba(255,255,255,0.95),
-      -2px -3px 0 rgba(55,110,30,0.15),
-      0 8px 16px rgba(55,110,30,0.08);
-  }
-
-  .ops-question-op {
-    color: #20A458 !important;
-    padding: 0 0.28em !important;
-  }
-
-  .ops-question-equals {
-    color: #677064 !important;
-    text-shadow:
-      1px 2px 0 rgba(255,255,255,0.95),
-      -1px -2px 0 rgba(55,110,30,0.17);
-  }
-
-  .ops-answer-zone {
-    flex: 0 0 auto;
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    padding: clamp(0.55rem, 1.8dvh, 1rem) clamp(0.65rem, 3vw, 1.4rem) !important;
-    overflow: hidden;
-  }
-
-  .ops-choices-grid {
-    width: 100%;
-    min-width: 0;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: clamp(0.5rem, 1.8vmin, 0.9rem) !important;
-  }
-
-  .ops-choice-btn {
-    min-width: 0;
-    min-height: clamp(4.6rem, 11.5vmin, 7rem);
-    border: 1px solid rgba(255,255,255,0.78) !important;
-    border-bottom-width: 8px !important;
-    border-radius: clamp(22px, 4vw, 32px) !important;
-    padding: clamp(1rem, 2.6vmin, 1.55rem) 0.75rem !important;
-    box-shadow:
-      0 16px 24px rgba(55, 110, 30, 0.08),
-      inset 0 3px 0 rgba(255,255,255,0.82),
-      inset 0 -10px 16px rgba(0,0,0,0.07);
-    transition: transform 0.16s cubic-bezier(.34,1.56,.64,1), box-shadow 0.16s ease, border-bottom-width 0.16s ease !important;
-  }
-
-  .ops-choice-btn:nth-child(1) {
-    background: linear-gradient(145deg, #F7FFF9, #DDFBE8) !important;
-    border-bottom-color: #20A458 !important;
-  }
-
-  .ops-choice-btn:nth-child(2) {
-    background: linear-gradient(145deg, #F7FCFF, #DDF3FF) !important;
-    border-bottom-color: #188CC5 !important;
-  }
-
-  .ops-choice-btn:nth-child(3) {
-    background: linear-gradient(145deg, #FFFDF5, #FFF3CF) !important;
-    border-bottom-color: #D59B17 !important;
-  }
-
-  .ops-choice-btn:nth-child(4) {
-    background: linear-gradient(145deg, #FFF7F7, #FFE0E0) !important;
-    border-bottom-color: #D94B4B !important;
-  }
-
-  .ops-choice-btn:active:not(:disabled) {
-    transform: translateY(5px) scale(0.99) !important;
-    border-bottom-width: 3px !important;
-    box-shadow:
-      0 8px 14px rgba(55, 110, 30, 0.08),
-      inset 0 7px 14px rgba(0,0,0,0.09),
-      inset 0 -3px 8px rgba(255,255,255,0.62) !important;
-  }
-
-  .ops-choice-label {
-    top: 10px !important;
-    left: 12px !important;
-    width: 28px !important;
-    height: 28px !important;
-    border-radius: 10px !important;
-    border: 0 !important;
-    background: rgba(255,255,255,0.58) !important;
-    color: #677064 !important;
-    box-shadow:
-      inset 0 2px 0 rgba(255,255,255,0.9),
-      inset 0 -4px 8px rgba(55,110,30,0.08);
-  }
-
-  .ops-choice-value {
-    color: #374151 !important;
-    font-family: var(--font-heading);
-    font-size: clamp(1.65rem, 6vmin, 3.2rem) !important;
-    line-height: 1;
-    text-shadow:
-      1px 2px 0 rgba(255,255,255,0.95),
-      -1px -2px 0 rgba(55,110,30,0.18);
-  }
-
-  .ops-choice-correct {
-    background: linear-gradient(145deg, #93F0AD, #22C55E) !important;
-    border-bottom-color: #15803D !important;
-  }
-
-  .ops-choice-wrong {
-    background: linear-gradient(145deg, #FFACB8, #F43F5E) !important;
-    border-bottom-color: #BE123C !important;
-  }
-
-  .ops-typing-input,
-  .ops-submit-btn,
-  .ops-continue-wrong {
-    border-radius: 26px !important;
-    box-shadow:
-      0 14px 24px rgba(55, 110, 30, 0.08),
-      inset 0 3px 0 rgba(255,255,255,0.78),
-      inset 0 -8px 14px rgba(0,0,0,0.06);
-  }
-
-  .ops-footer-stats {
-    width: calc(100% - clamp(1rem, 5vw, 4rem));
-    max-width: 100%;
-    min-width: 0;
-    flex: 0 0 auto;
-    margin: 0 auto calc(0.45rem + var(--safe-bottom));
-    padding: clamp(0.5rem, 1.25dvh, 0.85rem) clamp(0.6rem, 2.4vw, 1rem) !important;
-    border: 1px solid rgba(227, 236, 224, 0.9) !important;
-    border-radius: clamp(24px, 5vw, 34px);
-    background:
-      radial-gradient(circle at 12% 0%, rgba(255,255,255,0.9), transparent 42%),
-      linear-gradient(145deg, rgba(255,255,255,0.96), #F4F8F2) !important;
-    box-shadow:
-      0 16px 30px rgba(55, 110, 30, 0.08),
-      0 4px 0 rgba(227, 236, 224, 0.84),
-      inset 0 2px 0 rgba(255,255,255,0.9),
-      inset 0 -8px 16px rgba(55,110,30,0.04);
-  }
-
-  .ops-stat-chip {
-    min-width: 0;
-    border: 0 !important;
-    background: rgba(255,255,255,0.52) !important;
-    box-shadow:
-      inset 0 2px 0 rgba(255,255,255,0.9),
-      inset 0 -4px 9px rgba(55,110,30,0.06);
-  }
-
-  .ops-answer-record {
-    flex: 1 1 auto;
-    min-width: 0;
-    justify-content: flex-start;
-    gap: clamp(0.4rem, 1.5vw, 0.7rem) !important;
-    padding: clamp(0.55rem, 1.5vh, 0.75rem) clamp(0.75rem, 2.6vw, 1.2rem) !important;
-    border-radius: 999px !important;
-    background:
-      radial-gradient(circle at 12% 10%, rgba(255,255,255,0.88), transparent 38%),
-      linear-gradient(145deg, #E8FFF1, #CFF8DE) !important;
-    color: #677064 !important;
-    box-shadow:
-      0 10px 18px rgba(34, 197, 94, 0.12),
-      inset 0 3px 0 rgba(255,255,255,0.78),
-      inset 0 -7px 12px rgba(22, 163, 74, 0.08) !important;
-  }
-
-  .ops-answer-title {
-    color: #677064;
-    font-family: var(--font-heading);
-    font-size: clamp(0.86rem, 2.2vmin, 1.06rem);
-    font-weight: 900;
-    white-space: nowrap;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.82);
-  }
-
-  .ops-answer-stats {
-    display: inline-flex;
-    align-items: center;
-    gap: clamp(0.35rem, 1.3vw, 0.55rem);
-    white-space: nowrap;
-    min-width: 0;
-  }
-
-  .ops-answer-stat {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.22rem;
-    font-family: var(--font-heading);
-    font-size: clamp(0.86rem, 2.2vmin, 1.02rem);
-    font-weight: 900;
-    line-height: 1;
-  }
-
-  .ops-answer-stat.is-correct {
-    color: #15803D;
-  }
-
-  .ops-answer-stat.is-wrong {
-    color: #DC2626;
-  }
-
-  .ops-answer-icon {
-    width: 1.25em;
-    height: 1.25em;
-    display: grid;
-    place-items: center;
-    border-radius: 0.32em;
-    color: #fff;
-    font-size: 0.78em;
-    box-shadow:
-      inset 0 2px 0 rgba(255,255,255,0.42),
-      inset 0 -3px 5px rgba(0,0,0,0.16),
-      0 3px 6px rgba(55,110,30,0.12);
-  }
-
-  .ops-answer-icon.is-correct {
-    background: linear-gradient(145deg, #8EF3A8, #22C55E 62%, #16A34A);
-  }
-
-  .ops-answer-icon.is-wrong {
-    background: linear-gradient(145deg, #FF9AAE, #F43F5E 62%, #BE123C);
-  }
-
-  .ops-answer-muted {
-    color: #94A3B8;
-    font-weight: 700;
-  }
-
-  .ops-answer-divider {
-    color: #B7C5BB;
-    font-weight: 800;
-  }
-
-  .ops-stat-check,
-  .ops-stat-trophy {
-    width: 30px;
-    height: 30px;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-  }
-
-  .ops-stat-check {
-    background: linear-gradient(145deg, #9AF2B3, #22C55E);
-    box-shadow: inset 0 3px 0 rgba(255,255,255,0.38), inset 0 -5px 8px rgba(0,0,0,0.16);
-  }
-
-  .ops-stat-trophy {
-    background: linear-gradient(145deg, #FFE98A, #FACC15 58%, #D59B17);
-    box-shadow: inset 0 3px 0 rgba(255,255,255,0.42), inset 0 -5px 8px rgba(0,0,0,0.18);
-  }
-
-  .ops-progress-wrap {
-    display: flex;
-    align-items: center;
-    gap: 0.65rem;
-    flex: 1 1 220px;
-    min-width: 0;
-    max-width: min(46vw, 300px);
-  }
-
-  .ops-progress-track {
-    flex: 1;
-    height: clamp(16px, 2.5vh, 22px);
-    padding: 4px;
-    border-radius: 999px;
-    background: #E7EFE3;
-    box-shadow:
-      inset 0 3px 7px rgba(55,110,30,0.12),
-      inset 0 -2px 5px rgba(255,255,255,0.78);
-    overflow: hidden;
-  }
-
-  .ops-progress-fill {
-    height: 100%;
-    border-radius: inherit;
-    background: linear-gradient(90deg, #FFE98A, #FACC15 42%, #FFB86C);
-    box-shadow:
-      0 0 12px rgba(250, 204, 21, 0.42),
-      inset 0 2px 0 rgba(255,255,255,0.38),
-      inset 0 -3px 6px rgba(174, 101, 18, 0.16);
-    transition: width 0.3s ease-out;
-  }
-
-  .ops-progress-count {
-    color: #A66F00;
-    font-size: 0.92rem;
-    font-weight: 900;
-    min-width: 36px;
-    text-align: right;
-  }
-
-  .ops-settings-puck {
-    position: absolute;
-    top: clamp(0.55rem, 1.6dvh, 0.85rem);
-    right: clamp(0.55rem, 1.8vw, 0.95rem);
-    z-index: 12;
-    width: clamp(36px, 5.6dvh, 44px);
-    height: clamp(36px, 5.6dvh, 44px);
-    display: grid;
-    place-items: center;
-    border: 1px solid rgba(227, 236, 224, 0.95);
-    border-radius: 50%;
-    background: linear-gradient(145deg, #FFFFFF, #F4F8F2);
-    color: #677064;
-    cursor: pointer;
-    box-shadow:
-      0 8px 16px rgba(55, 110, 30, 0.13),
-      0 4px 0 #DDE8DA,
-      inset 0 2px 0 rgba(255,255,255,0.9),
-      inset 0 -5px 10px rgba(55,110,30,0.06);
-    transition: transform 0.16s cubic-bezier(.34,1.56,.64,1), box-shadow 0.16s ease;
-  }
-
-  .ops-settings-puck:hover {
-    transform: translateY(-2px);
-  }
-
-  .ops-settings-puck:active {
-    transform: translateY(2px);
-    box-shadow:
-      0 4px 10px rgba(55, 110, 30, 0.1),
-      0 2px 0 #DDE8DA,
-      inset 0 5px 10px rgba(55,110,30,0.1);
-  }
-
   .ops-settings-overlay {
     position: fixed;
     inset: 0;
@@ -725,535 +205,6 @@ const getOpsClayStyles = () => `
     cursor: not-allowed;
   }
 
-  @media (max-width: 600px) {
-    .ops-settings-overlay {
-      padding: 12px;
-    }
-
-    .ops-settings-panel {
-      width: min(100%, calc(100vw - 24px));
-      padding: 18px;
-    }
-
-    .ops-settings-title {
-      font-size: 26px;
-    }
-
-    .ops-settings-close {
-      width: 42px;
-      height: 42px;
-    }
-
-    .ops-settings-footer {
-      grid-template-columns: 1fr;
-    }
-
-    .ops-game-shell .duo-home-header {
-      min-height: 60px !important;
-      padding: 0.5rem 0.65rem !important;
-    }
-
-    .ops-game-shell .duo-home-header > button {
-      width: 42px !important;
-      height: 42px !important;
-    }
-
-    .ops-question-zone {
-      margin-inline: 0.65rem !important;
-      padding: 0.85rem 0.6rem !important;
-    }
-
-    .ops-icons-container {
-      flex-direction: row !important;
-    }
-
-    .ops-icon-group {
-      max-width: 6.6rem !important;
-      min-width: 4.8rem !important;
-    }
-
-    .ops-icon-operator {
-      min-width: 2.7rem;
-      min-height: 2.7rem;
-    }
-
-    .ops-answer-zone {
-      padding-inline: 0.65rem !important;
-    }
-
-    .ops-choices-grid {
-      gap: 0.55rem !important;
-    }
-
-    .ops-choice-btn {
-      min-height: 5.1rem;
-      border-bottom-width: 6px !important;
-    }
-
-    .ops-footer-stats {
-      margin-inline: 0.65rem;
-      flex-wrap: nowrap;
-      gap: 0.5rem;
-    }
-
-    .ops-progress-wrap {
-      min-width: 0;
-      flex: 1;
-    }
-
-    .ops-answer-record {
-      flex-wrap: wrap;
-      row-gap: 0.35rem !important;
-    }
-  }
-
-  @media (min-width: 900px) and (min-height: 700px) {
-    .ops-choices-grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-    }
-
-    .ops-choice-btn {
-      min-height: clamp(5rem, 13dvh, 7.2rem);
-    }
-  }
-
-  @media (max-width: 390px) {
-    .ops-game-shell .duo-home-header {
-      gap: 0.42rem !important;
-    }
-
-    .ops-game-shell .duo-home-stats {
-      gap: 0.3rem !important;
-    }
-
-    .ops-game-shell .duo-home-stats button {
-      padding-inline: 6px !important;
-    }
-
-    .ops-question-zone,
-    .ops-footer-stats {
-      width: calc(100% - 0.8rem);
-    }
-
-    .ops-answer-zone {
-      padding-inline: 0.4rem !important;
-    }
-
-    .ops-footer-stats {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .ops-progress-wrap {
-      max-width: none;
-      width: 100%;
-    }
-  }
-
-  @media (max-height: 720px) {
-    .ops-question-zone {
-      margin-top: 0.35rem !important;
-      padding-block: clamp(0.55rem, 1.7dvh, 0.85rem) !important;
-      border-radius: clamp(20px, 4vw, 30px);
-    }
-
-    .ops-question-label {
-      margin-bottom: 0.35rem !important;
-    }
-
-    .ops-icon-emoji {
-      width: clamp(1.1rem, 4dvh, 1.8rem);
-      height: clamp(1.1rem, 4dvh, 1.8rem);
-    }
-
-    .ops-icon-operator {
-      min-width: clamp(2rem, 6dvh, 3rem);
-      min-height: clamp(2rem, 6dvh, 3rem);
-      font-size: clamp(1.45rem, 4.8dvh, 2.2rem) !important;
-    }
-
-    .ops-question-expr {
-      font-size: clamp(2rem, 8dvh, 4rem) !important;
-    }
-
-    .ops-answer-zone {
-      padding-block: clamp(0.45rem, 1.3dvh, 0.7rem) !important;
-      gap: 0.55rem !important;
-    }
-
-    .ops-choice-btn {
-      min-height: clamp(3.9rem, 14dvh, 5.4rem);
-      padding-block: 0.7rem !important;
-    }
-
-    .ops-footer-stats {
-      padding-block: clamp(0.42rem, 1.15dvh, 0.65rem) !important;
-      margin-bottom: calc(0.28rem + var(--safe-bottom));
-    }
-  }
-
-  @media (max-height: 610px) {
-    .ops-icons-container {
-      display: none !important;
-    }
-
-    .ops-question-zone {
-      flex: 0.85 1 auto !important;
-    }
-
-    .ops-feedback-bar {
-      padding: 0.55rem !important;
-      font-size: 0.92rem !important;
-    }
-  }
-
-  @media (max-height: 560px) and (orientation: landscape) {
-    .ops-game-board {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(220px, 0.85fr);
-      grid-template-rows: minmax(0, 1fr) auto;
-      gap: clamp(0.4rem, 1.5vw, 0.75rem);
-      padding: 0.45rem;
-    }
-
-    .ops-question-zone {
-      width: 100%;
-      height: 100%;
-      margin: 0 !important;
-    }
-
-    .ops-answer-zone {
-      align-self: center;
-      padding: 0 !important;
-    }
-
-    .ops-choices-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    }
-
-    .ops-footer-stats {
-      grid-column: 1 / -1;
-      width: 100%;
-      margin: 0;
-    }
-  }
-
-  .ops-game-shell {
-    --game-bg: #ECFAF5;
-    --surface: #FFFFFF;
-    --surface-soft: #F8FCFA;
-    --primary: #27B668;
-    --primary-dark: #159653;
-    --primary-soft: #E5F7EE;
-    --text-primary: #172B4D;
-    --text-secondary: #74849A;
-    --text-muted: #9AA7B7;
-    --border: #DCE7E3;
-    --correct: #27B668;
-    --wrong: #FF4D55;
-    --reward: #FFBE18;
-    --progress-track: #E4E9E7;
-    --object-size: clamp(28px, min(6vw, 6vh), 56px);
-    width: 100% !important;
-    height: 100dvh !important;
-    min-height: 100dvh !important;
-    max-width: 100vw !important;
-    overflow: hidden !important;
-    display: flex !important;
-    flex-direction: column !important;
-    box-sizing: border-box !important;
-    background: linear-gradient(180deg, #ECFAF5 0%, #F7FCF9 100%) !important;
-    font-family: "Nunito", "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  }
-
-  .ops-ref-header {
-    width: min(100%, 1100px);
-    margin-inline: auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: clamp(8px, 2vw, 18px);
-    padding: max(clamp(6px, 1vh, 12px), env(safe-area-inset-top)) clamp(12px, 3vw, 28px) clamp(6px, 1vh, 12px);
-    flex-shrink: 0;
-    min-width: 0;
-  }
-
-  .ops-ref-header-left,
-  .ops-ref-rewards {
-    display: flex;
-    align-items: center;
-    min-width: 0;
-  }
-
-  .ops-ref-header-left {
-    gap: clamp(8px, 2vw, 14px);
-    flex: 1 1 auto;
-  }
-
-  .ops-ref-back {
-    width: clamp(44px, 10vw, 64px);
-    height: clamp(44px, 10vw, 64px);
-    border-radius: 50%;
-    background: #FFFFFF;
-    border: 1px solid #E2ECE8;
-    color: var(--text-primary);
-    box-shadow: 0 3px 10px rgba(25, 65, 50, 0.08);
-    display: grid;
-    place-items: center;
-    flex: 0 0 auto;
-    transition: transform 160ms ease, box-shadow 160ms ease;
-  }
-
-  .ops-ref-back:active {
-    transform: translateY(2px);
-  }
-
-  .ops-ref-subject-icon {
-    width: clamp(44px, 10vw, 64px);
-    height: clamp(44px, 10vw, 64px);
-    border-radius: clamp(12px, 3vw, 18px);
-    background: var(--primary);
-    color: #FFFFFF;
-    display: grid;
-    place-items: center;
-    flex: 0 0 auto;
-    box-shadow: 0 4px 10px rgba(39, 182, 104, 0.18);
-  }
-
-  .ops-ref-title-block {
-    min-width: 0;
-  }
-
-  .ops-ref-title-block h1 {
-    margin: 0;
-    font-family: inherit;
-    font-size: clamp(18px, 3.5vw, 30px);
-    font-weight: 800;
-    line-height: 1.1;
-    letter-spacing: 0;
-    color: var(--text-primary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .ops-ref-title-block p {
-    margin: 0;
-    font-size: clamp(13px, 2.5vw, 20px);
-    font-weight: 700;
-    line-height: 1.2;
-    color: var(--text-secondary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .ops-ref-rewards {
-    gap: clamp(6px, 1.3vw, 14px);
-    flex: 0 0 auto;
-    white-space: nowrap;
-  }
-
-  .ops-ref-reward-pill {
-    display: flex;
-    align-items: center;
-    gap: clamp(4px, 1vw, 8px);
-    padding: clamp(6px, 1vw, 10px) clamp(8px, 2vw, 14px);
-    background: #FFFFFF;
-    border: 1px solid #E6EEEB;
-    border-radius: 999px;
-    box-shadow: 0 2px 8px rgba(31, 78, 60, 0.07);
-    color: var(--text-primary);
-    font-size: clamp(16px, 3vw, 24px);
-    font-weight: 900;
-    line-height: 1;
-  }
-
-  .ops-ref-reward-icon.is-star { color: #FFBE18; }
-  .ops-ref-reward-icon.is-heart { color: #FF4D55; }
-  .ops-ref-reward-icon.is-gem { color: #2BBDF7; }
-
-  .ops-game-board {
-    width: min(100%, 1100px) !important;
-    height: 100% !important;
-    flex: 1 1 auto !important;
-    min-height: 0 !important;
-    margin-inline: auto !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: clamp(8px, 1.2vh, 14px) !important;
-    padding: 0 clamp(12px, 3vw, 28px) max(clamp(6px, 1vh, 14px), env(safe-area-inset-bottom)) !important;
-    overflow: hidden !important;
-  }
-
-  .ops-question-zone {
-    width: 100% !important;
-    flex: 1 1 auto !important;
-    min-height: 0 !important;
-    margin: 0 !important;
-    padding: clamp(14px, 2.5vh, 28px) clamp(16px, 4vw, 40px) !important;
-    border: 1px solid rgba(210, 230, 221, 0.9) !important;
-    border-radius: clamp(22px, 5vw, 36px) !important;
-    background: rgba(255, 255, 255, 0.96) !important;
-    box-shadow: 0 6px 20px rgba(31, 78, 60, 0.08) !important;
-    display: flex !important;
-    flex-direction: column !important;
-    overflow: hidden !important;
-  }
-
-  .ops-question-top {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex: 0 0 auto;
-  }
-
-  .ops-question-counter {
-    display: inline-flex;
-    align-items: center;
-    padding: clamp(6px, 1vh, 10px) clamp(12px, 3vw, 18px);
-    background: #E6F6EF;
-    border-radius: 999px;
-    color: #14784C;
-    font-size: clamp(13px, 2.5vw, 18px);
-    font-weight: 900;
-    line-height: 1.2;
-  }
-
-  .ops-settings-puck {
-    position: absolute !important;
-    top: clamp(14px, 2.5vh, 28px) !important;
-    right: clamp(16px, 4vw, 40px) !important;
-    width: clamp(40px, 9vw, 56px) !important;
-    height: clamp(40px, 9vw, 56px) !important;
-    border-radius: 50% !important;
-    background: #F8FCFA !important;
-    border: 1px solid #DFEBE6 !important;
-    color: var(--text-primary) !important;
-    box-shadow: 0 2px 8px rgba(31, 78, 60, 0.06) !important;
-    flex: 0 0 auto;
-  }
-
-  .ops-question-label {
-    margin: auto 0 0 !important;
-    max-width: 100% !important;
-    color: var(--text-primary) !important;
-    font-family: inherit !important;
-    font-size: clamp(20px, min(4.5vw, 5.3vh), 38px) !important;
-    font-weight: 900 !important;
-    line-height: 1.1 !important;
-    letter-spacing: 0.02em !important;
-    text-align: center !important;
-    text-transform: uppercase !important;
-    text-shadow: none !important;
-  }
-
-  .ops-question-subtitle {
-    margin: 4px 0 0 !important;
-    color: #708198 !important;
-    font-size: clamp(13px, min(2.8vw, 3vh), 20px) !important;
-    font-weight: 700 !important;
-    line-height: 1.3 !important;
-    text-align: center !important;
-  }
-
-  .ops-icons-container {
-    width: 100% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: clamp(18px, 5vw, 60px) !important;
-    margin: clamp(8px, 2vh, 24px) 0 clamp(8px, 1.6vh, 18px) !important;
-    flex-wrap: nowrap !important;
-    min-width: 0 !important;
-  }
-
-  .ops-icon-group {
-    display: grid !important;
-    grid-template-columns: repeat(3, var(--object-size)) !important;
-    gap: clamp(4px, 1vw, 10px) !important;
-    width: auto !important;
-    min-width: 0 !important;
-    max-width: none !important;
-    justify-content: center !important;
-    flex: 0 1 auto !important;
-  }
-
-  .ops-icon-emoji {
-    width: var(--object-size) !important;
-    height: var(--object-size) !important;
-    display: grid !important;
-    place-items: center !important;
-    border-radius: 0 !important;
-    color: inherit !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    font-size: calc(var(--object-size) * 0.92) !important;
-    line-height: 1 !important;
-    overflow: visible !important;
-  }
-
-  .ops-icon-operator {
-    min-width: 0 !important;
-    min-height: 0 !important;
-    width: clamp(48px, 11vw, 76px) !important;
-    height: clamp(48px, 11vw, 76px) !important;
-    border-radius: 50% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    background: #EAF8F1 !important;
-    color: #20A866 !important;
-    font-size: clamp(28px, 7vw, 48px) !important;
-    font-weight: 900 !important;
-    box-shadow: none !important;
-    text-shadow: none !important;
-    flex: 0 0 auto !important;
-  }
-
-  .ops-question-expr {
-    max-width: 100% !important;
-    margin: 0 auto auto !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    flex-wrap: nowrap !important;
-    gap: clamp(10px, 2.5vw, 24px) !important;
-    color: var(--text-primary) !important;
-    font-family: inherit !important;
-    font-size: clamp(48px, min(11vw, 12vh), 90px) !important;
-    font-weight: 900 !important;
-    line-height: 0.95 !important;
-    letter-spacing: 0 !important;
-    white-space: nowrap !important;
-    text-shadow: none !important;
-  }
-
-  .ops-question-op,
-  .ops-question-mark {
-    color: #20A866 !important;
-    padding: 0 !important;
-    transform: none !important;
-  }
-
-  .ops-question-equals {
-    color: #758392 !important;
-    margin: 0 !important;
-    text-shadow: none !important;
-  }
-
-  .ops-answer-zone {
-    width: 100% !important;
-    padding: 0 !important;
-    flex: 0 0 auto !important;
-    overflow: visible !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: clamp(8px, 1.2vh, 14px) !important;
-  }
-
   .ops-typing-form {
     display: flex !important;
     flex-direction: row !important;
@@ -1353,556 +304,124 @@ const getOpsClayStyles = () => `
     opacity: 1 !important;
   }
 
-  .ops-choices-grid {
-    width: 100%;
-    display: grid !important;
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-    gap: clamp(8px, 1.5vw, 14px) !important;
+
+  .ops-game-shell {
+    --primary: #08b65b; --text-primary: #091b44; --text-secondary: #78879e;
+    --object-size: clamp(28px, min(8.5vw, 6dvh), 78px);
+    --object-columns: 3;
+    --object-gap: clamp(4px, 1vw, 12px);
+    width: 100%; min-width: 0; height: 100dvh; max-height: 100dvh; overflow: hidden;
+    padding: clamp(8px, 2dvh, 24px) clamp(8px, 3vw, 32px);
+    background: radial-gradient(ellipse at center, #f5fffb, #eafff6);
+    color: var(--text-primary); font-family: 'Fredoka', sans-serif; font-variant-numeric: tabular-nums;
+    display: flex; flex-direction: column; gap: clamp(6px, 1dvh, 14px);
   }
-
-  .ops-choice-btn {
-    min-height: clamp(58px, 8vh, 82px) !important;
-    border-radius: clamp(18px, 3vw, 26px) !important;
-    border: 1px solid #DCE7E3 !important;
-    border-bottom: 4px solid #CAD7D2 !important;
-    background: #FFFFFF !important;
-    box-shadow: 0 3px 12px rgba(31, 78, 60, 0.06) !important;
+  .ops-game-shell *, .ops-game-shell *::before, .ops-game-shell *::after { box-sizing: border-box; }
+  .ops-game-shell button { cursor: pointer; }
+  .ops-game-shell button:focus-visible { outline: 3px solid #188cc5; outline-offset: 4px; }
+  .ops-game-shell button:disabled { cursor: default; }
+  .ops-ref-header { width: 100%; max-width: 1190px; min-width: 0; margin: 0 auto; display: flex; align-items: center; flex: 0 0 auto; gap: clamp(4px, 1.2vw, 20px); }
+  .ops-ref-header-left { display: flex; align-items: center; gap: clamp(5px, 1.5vw, 18px); min-width: 0; flex: 1 1 auto; }
+  .ops-ref-rewards { display: flex; align-items: center; gap: clamp(3px, 0.8vw, 12px); min-width: 0; margin-left: auto; flex: 0 0 auto; flex-wrap: nowrap; }
+  .ops-ref-back { width: clamp(36px, 5.3vw, 58px); aspect-ratio: 1; flex-shrink: 0; border: 0; border-radius: 50%; background: white; color: var(--text-primary); display: grid; place-items: center; box-shadow: 0 5px 18px #135c3910; }
+  .ops-ref-back svg { width: clamp(19px, 2.8vw, 28px); }
+  .ops-ref-subject-icon { display: none; }
+  .ops-ref-title-block { min-width: 0; }
+  .ops-ref-title-block h1 { margin: 0; font: 800 clamp(18px, 2.5vw, 32px)/1 'Baloo 2', sans-serif; color: var(--text-primary); white-space: nowrap; }
+  .ops-ref-title-block p { margin: 0; font-size: clamp(12px, 1.6vw, 20px); line-height: 1.1; color: #6f8097; white-space: nowrap; }
+  .ops-ref-reward-pill { display: flex; align-items: center; justify-content: center; gap: clamp(2px, 0.5vw, 8px); min-height: 36px; padding: clamp(5px, 0.8vw, 10px); border: 0; border-radius: 99px; background: white; color: var(--text-primary); font: 800 clamp(15px, 1.8vw, 25px)/1 'Baloo 2', sans-serif; white-space: nowrap; box-shadow: 0 5px 18px #135c3910; }
+  .ops-ref-reward-pill svg { width: clamp(17px, 2vw, 28px); height: auto; }
+  .ops-ref-reward-icon.is-star { color: #ffb800; }
+  .ops-ref-reward-icon.is-heart { color: #ff515f; }
+  .ops-ref-reward-icon.is-gem { color: #16bafa; }
+  .ops-game-shell .ops-game-board { width: 100%; max-width: 1292px; min-height: 0; margin: 0 auto; padding: clamp(10px, 1.6dvh, 22px) clamp(12px, 2.8vw, 40px); background: white; border-radius: clamp(24px, 2.8vw, 40px); box-shadow: 0 8px 30px #126b3b0c; display: flex; flex-direction: column; gap: clamp(6px, 1.2dvh, 16px); flex: 1; }
+  .ops-board-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .ops-answer-record, .ops-answer-stat { display: flex; align-items: center; gap: 8px; }
+  .ops-answer-record { flex-wrap: wrap; gap: clamp(5px, 1vw, 14px); font-size: clamp(12px, 1.4vw, 20px); }
+  .ops-answer-title { font-weight: 600; }
+  .ops-answer-stat { color: #09b65a; }
+  .ops-answer-stat.is-wrong { color: #ff3947; }
+  .ops-answer-muted { color: #74839b; }
+  .ops-answer-icon { width: clamp(24px, 2.8vw, 38px); aspect-ratio: 1; border: 5px solid #dbf9e7; border-radius: 50%; display: grid; place-items: center; background: #08b65b; color: white; }
+  .is-wrong .ops-answer-icon { background: #ff3947; border-color: #ffe1e2; }
+  .ops-answer-icon svg { width: 80%; height: 80%; }
+  .ops-answer-divider { height: 36px; width: 2px; background: #dce2eb; }
+  .ops-settings-puck { position: static; width: clamp(40px, 4.5vw, 60px); aspect-ratio: 1; flex-shrink: 0; display: grid; place-items: center; background: linear-gradient(white, #f7fafc); color: var(--text-primary); border: 2px solid #e7edf4; border-radius: 50%; box-shadow: 0 4px 10px #09234708; }
+  .ops-settings-puck svg { width: clamp(24px, 2.6vw, 30px); }
+  .ops-game-shell .ops-question-zone { width: 100%; min-width: 0; min-height: 0; margin: 0; padding: clamp(6px, 1.5dvh, 20px) clamp(4px, 2vw, 24px); flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ops-game-shell .ops-question-label { margin: 0; color: var(--text-primary); font: 800 clamp(23px, min(4.2vw, 5dvh), 56px)/1.1 'Baloo 2', sans-serif; text-transform: uppercase; letter-spacing: 0; text-align: center; text-wrap: balance; }
+  .ops-question-subtitle { margin: 4px 0 0; color: var(--text-secondary); font-size: clamp(14px, 2vw, 28px); text-align: center; }
+  .ops-game-shell .ops-icons-container { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; justify-items: center; gap: clamp(8px, 3vw, 45px) !important; margin: clamp(14px, 3dvh, 36px) 0; width: 100%; min-height: 0; }
+  .ops-game-shell .ops-icon-group { display: flex; flex-wrap: wrap; gap: var(--object-gap); width: 100%; max-width: calc(var(--object-columns) * var(--object-size) + (var(--object-columns) - 1) * var(--object-gap)); min-width: 0; justify-content: center; align-content: center; }
+  .ops-game-shell .ops-icons-container:has(.ops-icon-emoji:nth-child(n + 10)) { --object-size: clamp(20px, min(6vw, 4dvh), 44px); --object-columns: 4; --object-gap: 2px; }
+  .ops-icon-emoji { width: var(--object-size); height: var(--object-size); display: grid; place-items: center; font-size: var(--object-size); line-height: 1; filter: hue-rotate(8deg) saturate(1.1) drop-shadow(0 6px 5px #44218420); }
+  .ops-game-shell .ops-icons-container .ops-icon-operator { width: clamp(42px, 8vw, 96px); aspect-ratio: 1; flex-shrink: 0; display: grid; place-items: center; border-radius: 50%; background: #e0faee; color: #08b65b !important; font: 800 clamp(36px, 6vw, 78px)/1 'Baloo 2', sans-serif !important; }
+  .ops-game-shell .ops-question-expr { max-width: 100%; margin: 0; gap: clamp(6px, 1.6vw, 24px); font: 800 clamp(38px, min(8.2vw, 10dvh), 108px)/1 'Baloo 2', sans-serif; color: var(--text-primary); }
+  .ops-question-op, .ops-question-mark { color: #08b65b; padding: 0; transform: none; }
+  .ops-question-equals { color: #738196; }
+  .ops-game-shell .ops-answer-zone { width: 100%; padding: 0; gap: 8px; flex: 0 0 auto; }
+  .ops-game-shell .ops-continue-wrong { margin-top: 0; padding: clamp(7px, 1dvh, 12px); font-size: clamp(15px, 1.8vw, 20px); }
+  .ops-game-shell .ops-choices-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(6px, 1vw, 14px); }
+  .ops-game-shell .ops-choice-btn { min-width: 0; min-height: clamp(56px, 11dvh, 116px); padding: 10px; border: 2px solid #d9e2ee; border-radius: 18px; background: linear-gradient(white, #f3f7fa); box-shadow: 0 5px 12px #19395708; display: grid; place-items: center; transition: transform 160ms, border-color 160ms, background 160ms; }
+  .ops-game-shell .ops-choice-value { font: 800 clamp(32px, 4.2vw, 56px)/1 'Baloo 2', sans-serif; color: var(--text-primary); }
+  .ops-game-shell .ops-choice-correct { background: #dcfce7; border-color: #08b65b; }
+  .ops-game-shell .ops-choice-wrong { background: #ffe2e5; border-color: #ff3947; }
+  .ops-game-shell .ops-choice-correct .ops-choice-value { color: #07843f; }
+  .ops-game-shell .ops-choice-wrong .ops-choice-value { color: #c92336; }
+  .ops-progress-wrap { width: 100%; display: flex; align-items: center; gap: clamp(10px, 2vw, 24px); margin-top: 0; flex: 0 0 auto; }
+  .ops-progress-track { flex: 1; height: clamp(12px, 1.6dvh, 18px); background: #e5eaf1; border-radius: 99px; overflow: hidden; }
+  .ops-progress-fill { height: 100%; background: linear-gradient(90deg, #08b65b, #0ac765); border-radius: inherit; transition: width 300ms; }
+  .ops-progress-count { font: 800 clamp(18px, 2vw, 28px)/1 'Baloo 2', sans-serif; white-space: nowrap; }
+  .ops-game-shell .ops-feedback-bar { position: static; margin: 0; width: 100%; padding: clamp(6px, 1dvh, 12px); border-radius: 14px; }
+  @media (hover: hover) { .ops-choice-btn:hover:not(:disabled) { border-color: #08b65b; background: #f0fff6; } }
+  @media (max-width: 600px) {
+    .ops-game-shell { padding: 8px 8px max(8px, env(safe-area-inset-bottom)); gap: 6px; }
+    .ops-ref-header { flex-wrap: nowrap; gap: 4px; }
+    .ops-ref-header-left { gap: 5px; }
+    .ops-ref-rewards { gap: 3px; }
+    .ops-ref-reward-pill { padding: 5px; gap: 2px; }
+    .ops-game-shell .ops-game-board { gap: 8px; }
+    .ops-answer-record { gap: 6px; }
+    .ops-answer-stat { gap: 4px; }
+    .ops-answer-icon { border-width: 4px; }
+    .ops-answer-divider { height: 24px; }
+    .ops-answer-title { width: 100%; }
+    .ops-game-shell .ops-choices-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .ops-game-shell .ops-question-expr { font-size: clamp(46px, min(14vw, 9dvh), 72px); }
+    .ops-game-shell .ops-question-label { font-size: clamp(28px, 8vw, 40px); }
+    .ops-settings-overlay { padding: 12px; }
+    .ops-settings-panel { padding: 20px 16px; }
+    .ops-settings-title { font-size: 24px; }
+    .ops-game-shell .ops-submit-btn { flex-basis: 96px !important; font-size: 18px !important; }
+    .ops-typing-input-shell { padding-inline: 10px; gap: 8px; }
+    .ops-pencil-icon { width: 22px; }
   }
-
-  .ops-choice-value {
-    color: var(--text-primary) !important;
-    font-family: inherit !important;
-    text-shadow: none !important;
+  @media (min-width: 601px) and (max-height: 800px) {
+    .ops-game-shell { --object-size: clamp(24px, 5.5dvh, 44px); padding-block: 20px; }
+    .ops-ref-back { width: 54px; }
+    .ops-ref-reward-pill { padding: 12px 18px; }
+    .ops-ref-title-block h1 { font-size: 32px; }
+    .ops-ref-title-block p { font-size: 20px; }
+    .ops-settings-puck { width: 48px; }
+    .ops-game-shell .ops-game-board { gap: 16px; }
+    .ops-game-shell .ops-question-expr { font-size: clamp(36px, 9dvh, 72px); }
+    .ops-question-subtitle { font-size: 20px; }
   }
-
-  .ops-footer-stats {
-    width: 100% !important;
-    max-width: none !important;
-    align-self: stretch !important;
-    margin: 0 !important;
-    padding: clamp(8px, 1.2vh, 14px) clamp(12px, 3vw, 22px) !important;
-    background: rgba(255, 255, 255, 0.94) !important;
-    border: 1px solid #DDEBE5 !important;
-    border-radius: clamp(20px, 4vw, 30px) !important;
-    box-shadow: 0 3px 12px rgba(31, 78, 60, 0.06) !important;
-    flex: 0 0 auto !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    justify-content: flex-start !important;
-    gap: clamp(6px, 1vh, 10px) !important;
-  }
-
-  .ops-answer-record {
-    width: 100% !important;
-    min-height: 32px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    gap: clamp(6px, 1.5vw, 12px) !important;
-    padding: 0 !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    color: var(--text-secondary) !important;
-    white-space: nowrap !important;
-  }
-
-  .ops-answer-title {
-    color: var(--text-primary) !important;
-    font-family: inherit !important;
-    font-size: clamp(12px, 2.5vw, 17px) !important;
-    font-weight: 900 !important;
-    text-shadow: none !important;
-  }
-
-  .ops-answer-stats {
-    display: flex !important;
-    align-items: center !important;
-    gap: clamp(6px, 1.5vw, 12px) !important;
-    min-width: 0 !important;
-  }
-
-  .ops-answer-stat {
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: clamp(4px, 1vw, 7px) !important;
-    font-family: inherit !important;
-    font-size: clamp(12px, 2.5vw, 17px) !important;
-    font-weight: 900 !important;
-  }
-
-  .ops-answer-icon {
-    width: clamp(26px, 6vw, 34px) !important;
-    height: clamp(26px, 6vw, 34px) !important;
-    border-radius: 8px !important;
-    display: grid !important;
-    place-items: center !important;
-    color: #FFFFFF !important;
-    font-size: 0 !important;
-    box-shadow: none !important;
-  }
-
-  .ops-answer-icon.is-correct {
-    background: #27B668 !important;
-  }
-
-  .ops-answer-icon.is-wrong {
-    background: #FF4D55 !important;
-  }
-
-  .ops-answer-icon.is-correct::before {
-    content: "✓";
-    font-size: clamp(18px, 4vw, 24px);
-    line-height: 1;
-  }
-
-  .ops-answer-icon.is-wrong::before {
-    content: "×";
-    font-size: clamp(18px, 4vw, 24px);
-    line-height: 1;
-  }
-
-  .ops-answer-stat.is-correct {
-    color: #159653 !important;
-  }
-
-  .ops-answer-stat.is-wrong {
-    color: #E93E46 !important;
-  }
-
-  .ops-answer-muted {
-    color: var(--text-secondary) !important;
-    font-weight: 800 !important;
-  }
-
-  .ops-answer-divider {
-    width: 1px !important;
-    height: 26px !important;
-    background: #CBD5D1 !important;
-    color: transparent !important;
-    margin-inline: clamp(2px, 1vw, 8px) !important;
-  }
-
-  .ops-progress-wrap {
-    width: 100% !important;
-    max-width: none !important;
-    display: grid !important;
-    grid-template-columns: auto minmax(0, 1fr) auto !important;
-    align-items: center !important;
-    gap: clamp(10px, 2vw, 16px) !important;
-    padding: 0 !important;
-    background: transparent !important;
-    border: 0 !important;
-    box-shadow: none !important;
-  }
-
-  .ops-stat-trophy {
-    width: clamp(40px, 9vw, 58px) !important;
-    height: clamp(40px, 9vw, 58px) !important;
-    border-radius: 50% !important;
-    background: linear-gradient(180deg, #FFD84D, #FFB515) !important;
-    display: grid !important;
-    place-items: center !important;
-    color: #9A6A00 !important;
-    box-shadow: 0 2px 6px rgba(180, 120, 0, 0.12) !important;
-    font-size: clamp(22px, 5vw, 30px) !important;
-    line-height: 1 !important;
-  }
-
-  .ops-progress-track {
-    width: 100% !important;
-    height: clamp(12px, 2vh, 18px) !important;
-    padding: 0 !important;
-    background: #E5EBE8 !important;
-    border-radius: 999px !important;
-    overflow: hidden !important;
-    box-shadow: none !important;
-  }
-
-  .ops-progress-fill {
-    height: 100% !important;
-    background: var(--primary) !important;
-    border-radius: inherit !important;
-    box-shadow: none !important;
-    transition: width 300ms ease !important;
-  }
-
-  .ops-progress-count {
-    min-width: 0 !important;
-    color: var(--text-primary) !important;
-    font-size: clamp(16px, 3vw, 22px) !important;
-    font-weight: 900 !important;
-    white-space: nowrap !important;
-  }
-
-  .ops-footer-stats.mgf-footer {
-    padding: clamp(6px, 0.9vh, 10px) clamp(12px, 3vw, 22px) !important;
-    border-radius: clamp(18px, 4vw, 26px) !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    gap: clamp(8px, 1.6vw, 16px) !important;
-    min-height: 0 !important;
-  }
-
-  .ops-footer-stats .mgf-answer-row {
-    width: auto !important;
-    flex: 0 0 auto !important;
-    min-height: 0 !important;
-    gap: clamp(6px, 1.2vw, 10px) !important;
-  }
-
-  .ops-footer-stats .mgf-progress-row {
-    width: auto !important;
-    flex: 1 1 auto !important;
-    min-width: 0 !important;
-    display: grid !important;
-    grid-template-columns: auto minmax(0, 1fr) auto !important;
-    gap: clamp(8px, 1.6vw, 16px) !important;
-  }
-
-  .ops-footer-stats .mgf-title,
-  .ops-footer-stats .mgf-stat {
-    font-size: clamp(12px, 1.7vw, 17px) !important;
-  }
-
-  .ops-footer-stats .mgf-stat {
-    padding: 0 !important;
-    border: 0 !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    gap: clamp(4px, 0.7vw, 7px) !important;
-  }
-
-  .ops-footer-stats .mgf-icon {
-    width: clamp(24px, 4vw, 34px) !important;
-    height: clamp(24px, 4vw, 34px) !important;
-  }
-
-  .ops-footer-stats .mgf-divider {
-    height: clamp(22px, 3.8vh, 30px) !important;
-    margin-inline: clamp(2px, 0.8vw, 8px) !important;
-  }
-
-  .ops-footer-stats .mgf-trophy {
-    width: clamp(32px, 5.2vw, 44px) !important;
-    height: clamp(32px, 5.2vw, 44px) !important;
-  }
-
-  .ops-footer-stats .mgf-track {
-    height: clamp(12px, 1.7vh, 18px) !important;
-  }
-
-  .ops-footer-stats .mgf-count {
-    font-size: clamp(15px, 2.3vw, 22px) !important;
-  }
-
-  .ops-feedback-bar {
-    position: fixed !important;
-    top: max(8px, env(safe-area-inset-top)) !important;
-    left: 50% !important;
-    right: auto !important;
-    transform: translateX(-50%) !important;
-    width: min(92vw, 420px) !important;
-    border-radius: 999px !important;
-    padding: 10px 16px !important;
-    box-shadow: 0 8px 20px rgba(31, 78, 60, 0.14) !important;
-    z-index: 70 !important;
-  }
-
-  @media (max-height: 700px) {
-    .ops-game-shell {
-      --object-size: clamp(20px, min(4.4vw, 4.5vh), 34px);
-    }
-
-    .ops-ref-header {
-      padding-block: 4px;
-    }
-
-    .ops-question-zone {
-      padding: 10px clamp(14px, 3vw, 24px) !important;
-    }
-
-    .ops-question-label {
-      margin: clamp(4px, 0.9vh, 10px) 0 0 !important;
-      font-size: clamp(17px, min(3.6vw, 4.6vh), 28px) !important;
-      line-height: 1.05 !important;
-    }
-
-    .ops-question-subtitle {
-      margin-top: 2px !important;
-      font-size: clamp(12px, min(2.4vw, 2.6vh), 17px) !important;
-      line-height: 1.15 !important;
-    }
-
-    .ops-icons-container {
-      gap: clamp(10px, 3vw, 34px) !important;
-      margin-block: clamp(2px, 0.6vh, 7px) !important;
-    }
-
-    .ops-icon-group {
-      gap: clamp(3px, 0.8vw, 7px) !important;
-    }
-
-    .ops-icon-operator {
-      width: clamp(42px, 9vw, 62px) !important;
-      height: clamp(42px, 9vw, 62px) !important;
-      font-size: clamp(26px, 6vw, 40px) !important;
-    }
-
-    .ops-question-expr {
-      margin: 0 auto !important;
-      font-size: clamp(38px, min(9vw, 9.5vh), 68px) !important;
-      line-height: 0.9 !important;
-      gap: clamp(8px, 2vw, 18px) !important;
-    }
-
-    .ops-typing-input-shell {
-      height: clamp(54px, 8vh, 68px);
-    }
-
-    .ops-submit-btn {
-      height: clamp(52px, 7.5vh, 64px) !important;
-    }
-
-    .ops-footer-stats {
-      padding: 6px clamp(10px, 2vw, 18px) !important;
-    }
-  }
-
-  @media (max-height: 600px) {
-    .ops-game-shell {
-      --object-size: clamp(16px, min(3.7vw, 3.8vh), 28px);
-    }
-
-    .ops-question-zone {
-      padding-block: 6px !important;
-    }
-
-    .ops-question-label {
-      margin-top: 2px !important;
-      font-size: clamp(14px, min(3vw, 3.5vh), 21px) !important;
-    }
-
-    .ops-question-subtitle {
-      margin-top: 1px !important;
-      font-size: clamp(10px, min(2vw, 2.2vh), 13px) !important;
-      line-height: 1.1 !important;
-    }
-
-    .ops-icons-container {
-      gap: clamp(8px, 2.2vw, 22px) !important;
-      margin-block: 1px !important;
-    }
-
-    .ops-icon-group {
-      gap: clamp(2px, 0.5vw, 5px) !important;
-    }
-
-    .ops-icon-operator {
-      width: clamp(32px, 6.5vw, 44px) !important;
-      height: clamp(32px, 6.5vw, 44px) !important;
-      font-size: clamp(22px, 4.5vw, 30px) !important;
-    }
-
-    .ops-question-expr {
-      font-size: clamp(28px, min(6.7vw, 6.8vh), 46px) !important;
-      line-height: 0.88 !important;
-      gap: clamp(6px, 1.4vw, 14px) !important;
-    }
-
-    .ops-typing-input-shell,
-    .ops-submit-btn {
-      height: 50px !important;
-    }
-
-    .ops-footer-stats {
-      gap: 4px !important;
-    }
-  }
-
-  @media (max-height: 480px) {
-    .ops-game-shell {
-      --object-size: clamp(13px, min(3vw, 3.2vh), 22px);
-    }
-
-    .ops-question-counter {
-      padding: 4px 10px;
-      font-size: clamp(11px, 2.1vw, 14px);
-    }
-
-    .ops-settings-puck {
-      width: clamp(32px, 7vw, 40px) !important;
-      height: clamp(32px, 7vw, 40px) !important;
-    }
-
-    .ops-question-label {
-      font-size: clamp(12px, min(2.7vw, 3vh), 18px) !important;
-      line-height: 1 !important;
-    }
-
-    .ops-question-subtitle {
-      font-size: clamp(9px, min(1.8vw, 2vh), 12px) !important;
-    }
-
-    .ops-icons-container {
-      gap: clamp(6px, 1.7vw, 16px) !important;
-      margin-block: 0 !important;
-    }
-
-    .ops-icon-operator {
-      width: clamp(28px, 5.4vw, 36px) !important;
-      height: clamp(28px, 5.4vw, 36px) !important;
-      font-size: clamp(19px, 3.8vw, 26px) !important;
-    }
-
-    .ops-question-expr {
-      font-size: clamp(24px, min(5.6vw, 5.8vh), 38px) !important;
-      gap: clamp(5px, 1vw, 10px) !important;
-    }
-  }
-
-  @media (max-width: 560px) {
-    .ops-typing-form {
-      gap: 7px !important;
-    }
-
-    .ops-typing-input-shell {
-      height: 52px;
-      padding-inline: 12px;
-    }
-
-    .ops-pencil-icon {
-      width: 21px;
-      height: 21px;
-    }
-
-    .ops-typing-input {
-      font-size: 16px !important;
-    }
-
-    .ops-submit-btn {
-      height: 52px !important;
-      flex-basis: 118px !important;
-      font-size: 17px !important;
-    }
-
-    .ops-footer-stats.mgf-footer {
-      gap: clamp(5px, 1.3vw, 8px) !important;
-      padding-inline: 8px !important;
-    }
-
-    .ops-footer-stats .mgf-title,
-    .ops-footer-stats .mgf-stat {
-      font-size: 11px !important;
-    }
-
-    .ops-footer-stats .mgf-stat {
-      gap: 3px !important;
-    }
-
-    .ops-footer-stats .mgf-icon {
-      width: 22px !important;
-      height: 22px !important;
-    }
-
-    .ops-footer-stats .mgf-muted {
-      font-size: 0.72em !important;
-    }
-
-    .ops-footer-stats .mgf-divider {
-      height: 20px !important;
-      margin-inline: 1px !important;
-    }
-
-    .ops-footer-stats .mgf-progress-row {
-      gap: 6px !important;
-    }
-
-    .ops-footer-stats .mgf-trophy {
-      width: 28px !important;
-      height: 28px !important;
-    }
-
-    .ops-footer-stats .mgf-count {
-      font-size: 13px !important;
-    }
-  }
-
-  @media (max-width: 720px) {
-    .ops-ref-rewards {
-      gap: 5px;
-    }
-
-    .ops-ref-reward-pill {
-      padding-inline: 8px;
-    }
-
-    .ops-ref-title-block h1 {
-      max-width: 28vw;
-    }
-
-    .ops-choices-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    }
-  }
-
-  @media (min-width: 600px) {
-    .ops-footer-stats {
-      flex: 0 0 auto !important;
-      height: auto !important;
-      min-height: 0 !important;
-      max-height: clamp(96px, 18vh, 145px) !important;
-      justify-content: flex-start !important;
-      overflow: visible !important;
-    }
-
-    .ops-answer-record {
-      flex: 0 0 auto !important;
-      min-height: 30px !important;
-    }
-
-    .ops-progress-wrap {
-      flex: 0 0 auto !important;
-    }
-  }
-
-  @media (max-width: 430px) {
-    .ops-ref-subject-icon {
-      display: none;
-    }
-
-    .ops-ref-reward-pill svg {
-      width: 22px;
-      height: 22px;
-    }
-
-    .ops-ref-reward-pill {
-      font-size: 16px;
-      padding-inline: 7px;
-      gap: 3px;
-    }
-  }
-
   @media (max-width: 360px) {
-    .ops-game-board,
-    .ops-ref-header {
-      padding-inline: 10px !important;
-    }
-
-    .ops-ref-header-left {
-      gap: 6px;
-    }
-
-    .ops-icons-container {
-      gap: 14px !important;
-    }
-
-    .ops-answer-record,
-    .ops-answer-stats {
-      gap: 4px !important;
-    }
+    .ops-ref-title-block h1 { font-size: 17px; }
+    .ops-ref-reward-pill { font-size: 14px; padding: 4px; }
+    .ops-ref-reward-pill svg { width: 16px; }
   }
+  @media (max-height: 650px) {
+    .ops-game-shell { --object-size: clamp(18px, 3.5dvh, 25px); }
+    .ops-game-shell .ops-game-board { padding-block: 8px; gap: 5px; }
+    .ops-game-shell .ops-question-zone { padding-block: 3px; }
+    .ops-game-shell .ops-icons-container { margin-block: 4px; }
+    .ops-game-shell .ops-icons-container { --object-columns: 4; --object-gap: 2px; }
+    .ops-game-shell .ops-choice-btn { min-height: clamp(52px, 9dvh, 60px); padding: 6px; }
+  }
+  .ops-game-board:has(.ops-feedback-bar) .ops-icons-container { margin-block: 8px; }
+  @media (prefers-reduced-motion: reduce) { .ops-game-shell *, .ops-game-shell *::before, .ops-game-shell *::after { animation: none !important; transition: none !important; } }
 `;
 
 // ─── Streak Popup ──────────────────────────────────────────────────────────────
@@ -2278,27 +797,29 @@ export default function MathOperationsGame({
       )}
 
       <MathGameBody className="ops-game-board">
-      {/* ── Question Zone ── */}
-      <div className="ops-question-zone">
-        <div className="ops-question-top">
-          <span className="ops-question-counter">
-            {language === 'bm' ? `Soalan ${questionNumber} / ${STREAK_MILESTONE}` : `Question ${questionNumber} / ${STREAK_MILESTONE}`}
+      <div className="ops-board-toolbar">
+        <div className="ops-answer-record" aria-live="polite">
+          <span className="ops-answer-title">{language === 'bm' ? 'Jawapan :' : 'Answer :'}</span>
+          <span className="ops-answer-stat is-correct">
+            <span className="ops-answer-icon"><Check strokeWidth={3} aria-hidden="true" /></span>
+            <span>{correctCount}</span><span className="ops-answer-muted">{language === 'bm' ? 'Betul' : 'Correct'}</span>
+          </span>
+          <span className="ops-answer-divider" aria-hidden="true" />
+          <span className="ops-answer-stat is-wrong">
+            <span className="ops-answer-icon"><X strokeWidth={3} aria-hidden="true" /></span>
+            <span>{wrongCount}</span><span className="ops-answer-muted">{language === 'bm' ? 'Salah' : 'Wrong'}</span>
           </span>
         </div>
-        <button
-          type="button"
-          className="ops-settings-puck"
-          onClick={() => setIsSettingsOpen(true)}
-          aria-label={language === 'bm' ? 'Buka tetapan permainan' : 'Open game settings'}
-        >
-          <Settings size={26} strokeWidth={2.5} aria-hidden="true" />
+        <button type="button" className="ops-settings-puck" onClick={() => setIsSettingsOpen(true)}
+          aria-label={language === 'bm' ? 'Buka tetapan permainan' : 'Open game settings'}>
+          <Settings size={30} strokeWidth={2.5} aria-hidden="true" />
         </button>
-
+      </div>
+      <div className="ops-question-zone">
         <p className="ops-question-label">
-          {language === 'bm' ? 'Berapakah hasilnya?' : 'What is the answer?'}
-        </p>
-        <p className="ops-question-subtitle">
-          {language === 'bm' ? 'Kira jumlah objek dan jawab soalan.' : 'Count the objects and answer.'}
+          {language === 'bm'
+            ? `Berapakah hasil ${({ '+': 'Tambah', '-': 'Tolak', '×': 'Darab', '÷': 'Bahagi' })[displaySymbol] || operationTitle}?`
+            : `What is the result of ${({ '+': 'addition', '-': 'subtraction', '×': 'multiplication', '÷': 'division' })[displaySymbol] || operationTitle.toLowerCase()}?`}
         </p>
 
         {/* ── Icons Visual ── */}
@@ -2329,7 +850,7 @@ export default function MathOperationsGame({
 
         <div
           className="ops-question-expr ops-question-row"
-          style={{ color: feedback === 'correct' ? '#46A302' : feedback === 'wrong' ? '#CC3B3B' : '#3C3C3C', display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'nowrap' }}
+          style={{ color: feedback === 'correct' ? '#46A302' : feedback === 'wrong' ? '#CC3B3B' : 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'nowrap' }}
         >
           <span>{problem.num1}</span>
           <span className="ops-question-op">{displaySymbol}</span>
@@ -2425,14 +946,14 @@ export default function MathOperationsGame({
       )}
 
       {/* ── Footer Stats ── */}
-      <MathGameFooter
-        language={language}
-        correctCount={correctCount}
-        wrongCount={wrongCount}
-        progress={progressInGroup}
-        milestone={STREAK_MILESTONE}
-        className="ops-footer-stats"
-      />
+      <div className="ops-progress-wrap">
+        <div className="ops-progress-track" role="progressbar"
+          aria-label={language === 'bm' ? 'Kemajuan soalan' : 'Question progress'}
+          aria-valuemin={0} aria-valuemax={STREAK_MILESTONE} aria-valuenow={questionNumber}>
+          <div className="ops-progress-fill" style={{ width: `${(questionNumber / STREAK_MILESTONE) * 100}%` }} />
+        </div>
+        <span className="ops-progress-count">{questionNumber}/{STREAK_MILESTONE}</span>
+      </div>
       </MathGameBody>
       <HeartShopModal isOpen={isHeartShopOpen} onClose={() => setIsHeartShopOpen(false)} onPurchase={handleRewardPurchase} language={language} />
     </MathGameShell>

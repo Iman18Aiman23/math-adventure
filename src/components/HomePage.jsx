@@ -80,7 +80,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
   };
 
   useEffect(() => {
-    if (panel === 'account' || panel === 'settings') popoverRef.current?.querySelector('button')?.focus();
+    if (panel === 'account' || panel === 'settings') popoverRef.current?.querySelector('button')?.focus({ preventScroll: true });
   }, [panel]);
 
   if (showRobotInterface) {
@@ -100,7 +100,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
         <button type="button" className="ih-points" aria-label={`${gameState?.totalXP ?? 0} XP — ${bm ? 'Lihat kemajuan' : 'View progress'}`} aria-expanded={panel === 'progress'} aria-controls="ih-progress-panel" onClick={event => togglePanel('progress', event)}><Star aria-hidden="true" /><span>{gameState?.totalXP ?? 0}</span></button>
         <button type="button" className="ih-account" aria-expanded={panel === 'account' || panel === 'settings'} aria-controls="ih-account-panel" onClick={event => togglePanel('account', event)}>
           <span className="ih-avatar"><UserRound aria-hidden="true" /></span>
-          <span className="ih-account-copy"><strong>{bm ? 'Hai' : 'Hi'}, {name}</strong><span>{bm ? 'Teruskan belajar!' : 'Keep learning!'}</span></span><ChevronDown size={19} />
+          <ChevronDown size={19} />
         </button>
         {panel && <section ref={popoverRef} className={`ih-popover ${panel === 'account' ? 'ih-account-menu' : ''}`} id={panel === 'progress' ? 'ih-progress-panel' : 'ih-account-panel'} aria-label={panel === 'progress' ? (bm ? 'Kemajuan pembelajaran' : 'Learning progress') : (bm ? 'Akaun dan tetapan' : 'Account and settings')}>
           {panel === 'progress' ? <>
@@ -114,6 +114,10 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
             <h2>{bm ? 'Aktiviti terkini' : 'Recent activity'}</h2><p>{bm ? 'Belum ada aktiviti' : 'No recent activity'}</p>
             <StatsBar forceBundled={true} variant="mb" />
           </> : panel === 'account' ? <>
+            <div className="ih-account-greeting">
+              <span className="ih-avatar"><UserRound aria-hidden="true" /></span>
+              <span className="ih-account-copy"><strong>{bm ? 'Hai' : 'Hi'}, {name}</strong><span>{bm ? 'Teruskan belajar!' : 'Keep learning!'}</span></span>
+            </div>
             <nav aria-label={bm ? 'Menu akaun' : 'Account menu'}>
               <button type="button" onClick={() => selectAccountAction(() => onTabChange?.('profile'))}><UserRound />{bm ? 'Profil Saya' : 'My Profile'}</button>
               <button type="button" onClick={() => selectAccountAction(onHome)}><GraduationCap />{bm ? 'Kursus Saya' : 'My Courses'}</button>

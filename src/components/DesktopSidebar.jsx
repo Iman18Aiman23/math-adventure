@@ -46,6 +46,7 @@ export default function DesktopSidebar({
 }) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const settingsRef = useRef(null);
+  const showExtendedNav = false;
 
   const { completedTopics } = useGamification('mt');
   const completedCount = Object.values(completedTopics || {})
@@ -121,7 +122,7 @@ export default function DesktopSidebar({
             ].map(({ id, label, icon: Icon }) => (
               <button key={id} type="button" className={`home-quick-link ${activeTab === 'learn' && (id === 'jawi' ? isJawi : currentSubject === id) ? 'active' : ''}`} onClick={() => onSelectSubject?.(id)}>{React.createElement(Icon)}<span>{label}</span></button>
             ))}
-            {!simplified && <><div className="sidebar-nav-divider" />
+            {showExtendedNav && <><div className="sidebar-nav-divider" />
             <button type="button" className={`home-quick-link ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => onTabChange?.('profile')}><UserRound /><span>{language === 'bm' ? 'Profil' : 'Profile'}</span></button>
             <button type="button" className="home-quick-link" onClick={() => onHome?.()}>
               <GraduationCap size={22} />
@@ -142,7 +143,7 @@ export default function DesktopSidebar({
             </>}
           </nav>
 
-          {!simplified && <div className="home-coach-footer">
+          {showExtendedNav && <div className="home-coach-footer">
             <div className="sidebar-utility-row">
               <div className="home-top-actions">
                 <StatsBar forceBundled={true} variant="mb" />

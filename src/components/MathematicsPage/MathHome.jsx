@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { ArrowLeft, ChevronRight, Star } from 'lucide-react';
+import React from 'react';
+import { ArrowLeft, ChevronRight } from 'lucide-react';
 import './MathHome.css';
 import useBrowserBack from '../../hooks/useBrowserBack';
-import { getStars } from '../../utils/gameStatsManager';
+import HomeHeaderActions from '../_shared/HomeHeaderActions';
 import { MathTopicArtwork, MathBookMascot } from './MathHomeArtwork';
 
 const SUB_GAMES = [
@@ -16,19 +16,23 @@ const SUB_GAMES = [
     bm: 'Cabaran merentasi semua topik. Lengkapkan unit dan buka tahap baharu.', eng: 'Complete units, collect stars and unlock new levels.' },
 ];
 
-export default function MathHome({ onSelectSubGame, onBack, language = 'bm' }) {
+export default function MathHome({
+  onSelectSubGame,
+  onBack,
+  language = 'bm',
+  playerName,
+  gameState,
+  streak = 0,
+  onTabChange,
+  onHome,
+  onOpenReports,
+  onToggleLang,
+  theme,
+  themes,
+  onThemeChange,
+}) {
   const bm = language === 'bm';
   const handleBack = useBrowserBack(onBack);
-  const [stars, setStars] = useState(getStars);
-  useEffect(() => {
-    const refresh = () => setStars(getStars());
-    window.addEventListener('storage', refresh);
-    window.addEventListener('focus', refresh);
-    return () => {
-      window.removeEventListener('storage', refresh);
-      window.removeEventListener('focus', refresh);
-    };
-  }, []);
 
   return (
     <main className="mh-screen" aria-label={bm ? 'Matematik' : 'Mathematics'}>
@@ -36,7 +40,7 @@ export default function MathHome({ onSelectSubGame, onBack, language = 'bm' }) {
         <header className="mh-header">
           <button type="button" className="mh-back" onClick={handleBack} aria-label={bm ? 'Kembali' : 'Back'}><ArrowLeft aria-hidden="true" /></button>
           <h1>{bm ? 'Matematik' : 'Mathematics'}</h1>
-          <span className="mh-score" aria-label={`${stars} ${bm ? 'bintang' : 'stars'}`}><Star aria-hidden="true" /><span>{stars}</span></span>
+          <HomeHeaderActions language={language} playerName={playerName} gameState={gameState} streak={streak} onTabChange={onTabChange} onHome={onHome} onOpenReports={onOpenReports} onToggleLang={onToggleLang} theme={theme} themes={themes} onThemeChange={onThemeChange} />
         </header>
         <section className="mh-hero" aria-labelledby="mh-hero-title">
           <div className="mh-hero-copy">
