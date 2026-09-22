@@ -8,7 +8,7 @@ import { playSound } from '../../utils/soundManager';
 import { useGameStateContext } from '../../App';
 import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
 import { getTimeGameClayStyles } from './timeGameClayStyles';
-import { MathGameBody, MathGameFooter, MathGameHeader, MathGameShell } from './MathGameLayout';
+import { MathGameToolbar, MathGameBody, MathGameHeader, MathGameProgress, MathGameShell } from './MathGameLayout';
 
 // ─── Web Speech API voice helper ───────────────────────────────────────────────
 function speak(text, { pitch = 1.4, rate = 1.05, volume = 1 } = {}) {
@@ -252,7 +252,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
 
   if (!currentQuestion) {
     return (
-      <MathGameShell className="ops-game-shell time-ref-game" styles={getTimeGameClayStyles()}>
+      <MathGameShell className="ops-game-shell time-ref-game math-game-screen" styles={getTimeGameClayStyles()}>
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="ops-loading-spinner" />
         </div>
@@ -265,7 +265,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
   const accentDark  = '#7B2CBF';
 
   return (
-    <MathGameShell className="ops-game-shell time-ref-game" styles={getTimeGameClayStyles()}>
+    <MathGameShell className="ops-game-shell time-ref-game math-game-screen" styles={getTimeGameClayStyles()}>
       {/* Streak popup */}
       {showStreak && (
         <StreakPopup streak={streak} language={language} onClose={() => setShowStreak(false)} />
@@ -412,8 +412,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
         </div>
       </div>
 
-      {/* ── Question Zone ── */}
-      <div className="ops-question-zone" style={{ position: 'relative' }}>
+      <MathGameToolbar language={language} correctCount={correctCount} wrongCount={wrongCount}>
         <button
           onClick={() => setShowReference(true)}
           className="time-ref-help"
@@ -429,7 +428,8 @@ export default function MonthsGame({ onBack, onHome, language }) {
         >
           <Settings size={26} strokeWidth={2.5} aria-hidden="true" />
         </button>
-        
+      </MathGameToolbar>
+      <div className="ops-question-zone">
         <p className="ops-question-label">
            {currentQuestion.prompt}
         </p>
@@ -530,12 +530,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
       )}
 
       {/* ── Footer Stats ── */}
-      <MathGameFooter
-        language={language}
-        correctCount={correctCount}
-        wrongCount={wrongCount}
-        progress={showStreak && streak % 10 === 0 && streak > 0 ? 10 : streak % 10}
-      />
+      <MathGameProgress language={language} progress={showStreak && streak % 10 === 0 && streak > 0 ? 10 : streak % 10 + 1} />
 
       </MathGameBody>
       {showReference && createPortal(

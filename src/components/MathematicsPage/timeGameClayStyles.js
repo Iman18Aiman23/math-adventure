@@ -420,26 +420,6 @@ export const getTimeGameClayStyles = () => `
     overflow: hidden;
   }
 
-  .time-ref-game .ops-choice-btn:nth-child(1) {
-    background: linear-gradient(145deg, #F7FFF9, #DDFBE8) !important;
-    border-bottom-color: #20A458 !important;
-  }
-
-  .time-ref-game .ops-choice-btn:nth-child(2) {
-    background: linear-gradient(145deg, #F7FCFF, #DDF3FF) !important;
-    border-bottom-color: #188CC5 !important;
-  }
-
-  .time-ref-game .ops-choice-btn:nth-child(3) {
-    background: linear-gradient(145deg, #FFFDF5, #FFF3CF) !important;
-    border-bottom-color: #D59B17 !important;
-  }
-
-  .time-ref-game .ops-choice-btn:nth-child(4) {
-    background: linear-gradient(145deg, #FFF7F7, #FFE0E0) !important;
-    border-bottom-color: #D94B4B !important;
-  }
-
   .time-ref-game .ops-choice-label {
     top: 8px !important;
     left: 10px !important;

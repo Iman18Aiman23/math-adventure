@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowLeft, Calculator, CircleCheck, CircleX, Diamond, Heart, Star, Trophy } from 'lucide-react';
 import AppHeader from '../AppHeader';
+import './MathGamePage.css';
 
 export function MathGameShell({ className, styles, children }) {
   return (
@@ -85,6 +86,39 @@ export function MathGameHeader({
 
 export function MathGameBody({ className = 'ops-game-board', children }) {
   return <main className={className}>{children}</main>;
+}
+
+export function MathGameToolbar({ language, correctCount, wrongCount, children }) {
+  return (
+    <div className="math-game-toolbar">
+      <MathGameAnswerRecord language={language} correctCount={correctCount} wrongCount={wrongCount} />
+      <div className="math-toolbar-actions">{children}</div>
+    </div>
+  );
+}
+
+export function MathGameAnswerRecord({ language, correctCount, wrongCount }) {
+  const bm = language === 'bm';
+  return (
+    <div className="math-answer-record" aria-live="polite">
+      <span className="math-answer-title">{bm ? 'Jawapan :' : 'Answer :'}</span>
+      <span className="math-answer-stat is-correct"><span className="math-answer-icon"><CircleCheck aria-hidden="true" /></span><span>{correctCount}</span><span className="math-answer-muted">{bm ? 'Betul' : 'Correct'}</span></span>
+      <span className="math-answer-divider" aria-hidden="true" />
+      <span className="math-answer-stat is-wrong"><span className="math-answer-icon"><CircleX aria-hidden="true" /></span><span>{wrongCount}</span><span className="math-answer-muted">{bm ? 'Salah' : 'Wrong'}</span></span>
+    </div>
+  );
+}
+
+export function MathGameProgress({ language, progress, milestone = 10 }) {
+  const current = Math.min(progress, milestone);
+  return (
+    <div className="math-progress-wrap">
+      <div className="math-progress-track" role="progressbar" aria-label={language === 'bm' ? 'Kemajuan soalan' : 'Question progress'} aria-valuemin={0} aria-valuemax={milestone} aria-valuenow={current}>
+        <div className="math-progress-fill" style={{ width: `${(current / milestone) * 100}%` }} />
+      </div>
+      <span className="math-progress-count">{current}/{milestone}</span>
+    </div>
+  );
 }
 
 export function MathGameFooter({

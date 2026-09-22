@@ -1,0 +1,166 @@
+/* Use the same app frame as MathHome while retaining each game's own controls. */
+.app-container:has(.math-game-screen) { height: 100dvh; }
+.app-container:has(.math-game-screen) .app-content { min-height: 0; }
+.view-container:has(> .math-game-screen) { overflow: hidden; }
+.view-container > .math-game-screen { max-width: 100%; }
+
+.math-game-screen.cmg-shell,
+.math-game-screen.time-ref-game {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+.math-game-screen .math-answer-record {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: clamp(5px, 1vw, 14px);
+  color: #091b44;
+  font: 600 clamp(11px, 1.4vw, 18px)/1.15 'Fredoka', sans-serif;
+  flex: 0 0 auto;
+}
+.math-game-screen .math-answer-title { font-weight: 700; }
+.math-game-screen .math-answer-stat { display: inline-flex; align-items: center; gap: 5px; color: #08a956; }
+.math-game-screen .math-answer-stat.is-wrong { color: #ef3948; }
+.math-game-screen .math-answer-icon { width: clamp(22px, 2.8vw, 34px); aspect-ratio: 1; border-radius: 50%; background: #dbf9e7; display: grid; place-items: center; }
+.math-game-screen .is-wrong .math-answer-icon { background: #ffe1e2; }
+.math-game-screen .math-answer-icon svg { width: 70%; height: 70%; fill: currentColor; stroke: white; stroke-width: 2.5; }
+.math-game-screen .math-answer-muted { color: #74839b; }
+.math-game-screen .math-answer-divider { width: 2px; height: 30px; background: #dce2eb; }
+.math-game-screen .math-progress-wrap { width: 100%; display: flex; align-items: center; gap: clamp(8px, 2vw, 20px); flex: 0 0 auto; }
+.math-game-screen .math-progress-track { flex: 1; height: clamp(12px, 1.6dvh, 18px); border-radius: 99px; background: #e5eaf1; overflow: hidden; }
+.math-game-screen .math-progress-fill { height: 100%; border-radius: inherit; background: #08b65b; transition: width 300ms ease; }
+.math-game-screen .math-progress-count { color: #091b44; font: 800 clamp(16px, 2vw, 26px)/1 'Baloo 2', sans-serif; white-space: nowrap; }
+.math-game-screen .math-answer-footer { width: 100%; display: flex; flex-direction: column; gap: clamp(8px, 1.3dvh, 16px); flex: 0 0 auto; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.math-game-screen.time-ref-game .ops-game-board { width: 100% !important; max-width: 1292px !important; gap: clamp(6px, 1.2dvh, 16px) !important; padding: clamp(10px, 1.6dvh, 22px) clamp(12px, 2.8vw, 40px) !important; border-radius: clamp(24px, 2.8vw, 40px); background: white; box-shadow: 0 8px 30px #126b3b0c; }
+.math-game-screen.time-ref-game .ops-question-zone { flex: 1 1 auto !important; padding: clamp(6px, 1.5dvh, 20px) clamp(4px, 2vw, 24px) !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; }
+.math-game-screen.time-ref-game .ops-answer-zone { flex: 0 0 auto !important; overflow: visible !important; }
+.math-game-screen.time-ref-game .ops-choices-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: clamp(6px, 1vw, 14px) !important; }
+.math-game-screen.time-ref-game .ops-choice-btn { min-height: clamp(56px, 11dvh, 116px) !important; padding: 10px !important; border: 2px solid #d9e2ee !important; border-radius: 18px !important; background: linear-gradient(white, #f3f7fa) !important; box-shadow: 0 5px 12px #19395708 !important; transition: transform 160ms, border-color 160ms, background 160ms !important; }
+.math-game-screen.time-ref-game .ops-choice-btn.ops-choice-correct { background: #dcfce7 !important; border-color: #08b65b !important; }
+.math-game-screen.time-ref-game .ops-choice-btn.ops-choice-wrong { background: #ffe2e5 !important; border-color: #ff3947 !important; }
+.math-game-screen.time-ref-game .ops-choice-btn.ops-choice-correct .ops-choice-value { color: #07843f !important; }
+.math-game-screen.time-ref-game .ops-choice-btn.ops-choice-wrong .ops-choice-value { color: #c92336 !important; }
+.math-game-screen.time-ref-game .ops-clock-choice { min-height: clamp(80px, 15dvh, 130px) !important; padding: 4px !important; }
+.math-game-screen.time-ref-game .ops-clock-choice svg { width: clamp(60px, 11dvh, 100px); height: auto; max-width: 100%; }
+.math-game-screen.time-ref-game .ops-choice-value { color: #091b44 !important; font: 800 clamp(18px, 3.2vw, 40px)/1.1 'Baloo 2', sans-serif !important; }
+.math-game-screen.time-ref-game .ops-choice-label { background: #eaf0f7 !important; border-radius: 50% !important; color: #64748b !important; }
+.math-game-screen.time-ref-game .ops-typing-form { flex-direction: row !important; align-items: stretch !important; gap: clamp(8px, 1.2dvh, 14px) !important; }
+.math-game-screen.time-ref-game .ops-typing-input-shell { flex: 1 1 auto !important; min-width: 0 !important; width: auto !important; min-height: clamp(58px, 8dvh, 78px) !important; border: 2px solid #dce5e3 !important; border-radius: clamp(18px, 3vw, 26px) !important; box-shadow: 0 3px 0 #d7e4df, 0 8px 16px #1f4e3c0f !important; }
+.math-game-screen.time-ref-game .ops-typing-input-shell:focus-within { border-color: #08b65b !important; box-shadow: 0 3px 0 #9ce3ba, 0 0 0 3px #27b6681f !important; }
+.math-game-screen.time-ref-game .ops-submit-btn { width: auto !important; min-height: clamp(58px, 8dvh, 78px) !important; padding: 0 clamp(14px, 2vw, 24px) !important; flex: 0 0 clamp(110px, 30%, 190px) !important; border-radius: clamp(18px, 3vw, 26px) !important; font-size: clamp(18px, 3vw, 28px) !important; }
+.math-game-screen.time-ref-game .ops-continue-wrong { min-height: 50px !important; border-radius: 18px !important; }
+.math-game-screen.time-ref-game .duo-home-header { width: min(100%, 1190px) !important; }
+.math-game-screen.time-ref-game .duo-home-header > button { width: clamp(36px, 5.3vw, 58px) !important; height: auto !important; aspect-ratio: 1; }
+.math-game-screen.time-ref-game .app-header-topic > div:first-child { display: none !important; }
+.math-game-screen.time-ref-game .duo-home-stats button { border: 0 !important; box-shadow: 0 5px 18px #135c3910 !important; }
+
+.math-game-screen.cmg-shell { --digit-border: #d9e2ee; --active-digit: #08b65b; }
+.math-game-screen.cmg-shell .cmg-ref-subject-icon { display: none; }
+.math-game-screen.cmg-shell .cmg-ref-back { width: clamp(36px, 5.3vw, 58px); height: auto; aspect-ratio: 1; }
+.math-game-screen.cmg-shell .cmg-ref-title-block h1 { font-size: clamp(18px, 2.5vw, 32px); }
+.math-game-screen.cmg-shell .cmg-ref-title-block p { font-size: clamp(12px, 1.6vw, 20px); }
+.math-game-screen.cmg-shell .cmg-ref-reward-pill { border: 0; box-shadow: 0 5px 18px #135c3910; }
+.math-game-screen.cmg-shell .cmg-question-counter { width: min(76%, 400px); padding: 0; border-radius: 0; background: transparent; }
+.math-game-screen.cmg-shell .cmg-main { width: 100% !important; max-width: 1292px !important; gap: 0 !important; }
+.math-game-screen.cmg-shell .math-unified-board { width: 100%; min-height: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: clamp(6px, 1.2dvh, 16px); padding: clamp(10px, 1.6dvh, 22px) clamp(12px, 2.8vw, 40px); border-radius: clamp(24px, 2.8vw, 40px); background: white; box-shadow: 0 8px 30px #126b3b0c; overflow: hidden; }
+.math-game-screen.cmg-shell .cmg-card { border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; padding: clamp(6px, 1.5dvh, 20px) clamp(4px, 2vw, 24px) !important; }
+.math-game-screen.cmg-shell .cmg-answer-footer { padding: 0; }
+.math-game-screen.cmg-shell .cmg-action-area { width: 100%; flex-direction: row !important; flex-wrap: nowrap !important; }
+.math-game-screen.cmg-shell .cmg-action-area .cmg-btn { width: auto !important; min-width: 0 !important; flex: 1 1 0; margin: 0 !important; }
+.math-game-screen.cmg-shell .cmg-action-area .cmg-reset-btn { background: linear-gradient(white, #f3f7fa) !important; color: #091b44 !important; border: 2px solid #d9e2ee !important; box-shadow: 0 5px 12px #19395708 !important; }
+.math-game-screen.cmg-shell .cmg-action-area .cmg-primary-btn { background: linear-gradient(180deg, #36c875, #22aa60) !important; color: white !important; border: 0 !important; box-shadow: 0 5px 0 #168d4d, 0 8px 14px #1978461f !important; }
+.math-game-screen.cmg-shell .cmg-action-area .cmg-primary-btn:disabled { background: #b9dec9 !important; color: #ffffffcc !important; box-shadow: 0 4px 0 #9bc7ad !important; }
+.math-game-screen.cmg-shell .cmg-next-btn { width: 100%; min-height: 54px; border: 2px solid #d9e2ee !important; border-radius: 18px !important; background: linear-gradient(white, #f3f7fa) !important; color: #091b44 !important; box-shadow: 0 5px 12px #19395708 !important; }
+.math-game-screen.cmg-shell .cmg-work-area input[type="text"]:focus { border-color: #08b65b !important; background: #f0fff6 !important; box-shadow: 0 0 0 3px #27b6681f !important; }
+
+@media (max-width: 600px) {
+  .math-game-screen .math-answer-record { gap: 5px; }
+  .math-game-screen .math-answer-title { width: 100%; }
+  .math-game-screen .math-answer-divider { height: 24px; }
+  .math-game-screen.cmg-shell .cmg-question-counter { width: min(72%, 280px); }
+  .math-game-screen.cmg-shell .math-unified-board { padding: 9px 10px; }
+  .math-game-screen.cmg-shell .cmg-action-area .cmg-btn { padding-inline: 8px !important; }
+  .math-game-screen.time-ref-game .ops-choices-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .math-game-screen.time-ref-game .ops-typing-form { flex-direction: column !important; }
+  .math-game-screen.time-ref-game .ops-submit-btn { width: 100% !important; flex-basis: auto !important; }
+}
+
+/* MathHome keeps the app navigation in its own row below the page. */
+.app-container:has(.math-game-screen) .cosmic-nav { position: relative; flex-shrink: 0; padding: 0 8px env(safe-area-inset-bottom, 0px); background: white; }
+.app-container:has(.math-game-screen) .nav-glass { border: 0; border-top: 1px solid #e8edf2; border-radius: 18px 18px 0 0; padding: 3px; box-shadow: none; }
+.app-container:has(.math-game-screen) .nav-item { min-height: clamp(52px, 7dvh, 68px); padding: 6px 0; gap: 4px; }
+.app-container:has(.math-game-screen) .nav-sphere { width: 28px; height: 28px; background: transparent; box-shadow: none; transform: none; }
+.app-container:has(.math-game-screen) .nav-label { opacity: 1; transform: none; font-family: Inter, sans-serif; font-weight: 500; font-size: clamp(9px, 2.4vw, 12px); color: #73859f; letter-spacing: 0; }
+.app-container:has(.math-game-screen) .nav-item.active .nav-label { color: #16985e; }
+.app-container:has(.math-game-screen) .nav-item.active::after { content: ''; position: absolute; bottom: 0; width: 28px; height: 3px; border-radius: 3px; background: #22a96b; }
+.app-container:has(.math-game-screen) .nav-orbit,
+.app-container:has(.math-game-screen) .nav-sphere::before,
+.app-container:has(.math-game-screen) .nav-glass::before,
+.app-container:has(.math-game-screen) .nav-badge { display: none; }
+.app-container:has(.math-game-screen) .nav-icon-wrap { filter: none; color: #879ab4; }
+.app-container:has(.math-game-screen) .nav-item.active .nav-icon-wrap { color: #13a567; }
+.app-container:has(.math-game-screen) .nav-item:focus-visible { outline: 2px solid #22a96b; outline-offset: -2px; border-radius: 8px; }
+
+@media (max-height: 500px) {
+  .app-container:has(.math-game-screen) .nav-item { min-height: 48px; padding: 2px 0; gap: 2px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-container:has(.math-game-screen) .cosmic-nav * { transition: none !important; animation: none !important; }
+}
+
+/* Shared gameplay rows: toolbar, question, centered answer area, progress. */
+.math-game-screen.ops-game-shell { height: 100% !important; min-height: 0 !important; }
+.math-game-screen .math-game-toolbar {
+  container-type: inline-size;
+  width: 100%; min-width: 0; flex: 0 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: clamp(4px, 1vw, 12px);
+}
+.math-game-screen .math-game-toolbar .math-answer-record {
+  min-width: 0; flex: 0 1 auto; flex-wrap: nowrap; white-space: nowrap;
+  font-size: clamp(9px, 2.4cqw, 18px); gap: clamp(3px, .9cqw, 10px);
+}
+.math-game-screen .math-game-toolbar .math-answer-title { width: auto; }
+.math-game-screen .math-game-toolbar .math-answer-stat { gap: clamp(2px, .7cqw, 6px); }
+.math-game-screen .math-game-toolbar .math-answer-icon { width: clamp(16px, 4.5cqw, 30px); flex-shrink: 0; }
+.math-game-screen .math-game-toolbar .math-answer-divider { height: clamp(18px, 5cqw, 30px); flex-shrink: 0; }
+.math-game-screen .math-toolbar-actions { display: flex; align-items: center; gap: clamp(4px, 1cqw, 10px); flex-shrink: 0; }
+.math-game-screen .math-game-toolbar .math-toolbar-actions > button {
+  position: static !important; inset: auto !important;
+  width: clamp(28px, 7cqw, 48px) !important; height: clamp(28px, 7cqw, 48px) !important;
+  padding: 4px !important; border: 2px solid #e7edf4 !important; border-radius: 50% !important;
+  background: linear-gradient(white, #f7fafc) !important; box-shadow: 0 4px 10px #09234708 !important;
+  color: #091b44 !important; font-size: clamp(20px, 5cqw, 30px) !important;
+  display: grid !important; place-items: center !important;
+}
+.math-game-screen .math-game-toolbar .math-toolbar-actions > button svg { width: 80%; height: 80%; }
+.math-game-screen .math-game-toolbar .time-game-mode-row { flex-wrap: nowrap; }
+.math-game-screen .math-game-toolbar .ops-mode-pill { min-height: 30px; padding: 4px 6px !important; gap: 3px !important; }
+.math-game-screen .math-game-toolbar .ops-mode-pill span { font-size: clamp(8px, 2cqw, 13px) !important; white-space: nowrap; }
+.math-game-screen .math-game-toolbar .ops-mode-pill span:last-child { display: none; }
+.math-game-screen.cmg-shell .cmg-card > .math-game-toolbar { position: absolute; top: 0; left: 0; }
+.math-game-screen.cmg-shell .cmg-card.is-multiply::before { display: none; }
+
+.math-game-screen.ops-game-shell .ops-question-zone { flex: 1.4 1 0 !important; }
+.math-game-screen.ops-game-shell .ops-answer-zone {
+  flex: 1 1 0 !important; min-height: min-content; width: 100%; padding: 0 !important;
+  display: flex; flex-direction: column; justify-content: center; gap: 8px;
+}
+.math-game-screen.cmg-shell .cmg-card { flex: 1.6 1 0 !important; }
+.math-game-screen.cmg-shell .cmg-answer-footer { flex: .7 1 0; min-height: min-content; justify-content: center; }
+
+/* Shared neutral choices and feedback colors for all four games. */
+.math-game-screen .ops-answer-zone .ops-choice-btn {
+  border: 2px solid #d9e2ee !important; background: linear-gradient(white, #f3f7fa) !important;
+  box-shadow: 0 5px 12px #19395708 !important; border-radius: 18px !important;
+}
+.math-game-screen .ops-answer-zone .ops-choice-btn.ops-choice-correct { background: #dcfce7 !important; border-color: #08b65b !important; }
+.math-game-screen .ops-answer-zone .ops-choice-btn.ops-choice-wrong { background: #ffe2e5 !important; border-color: #ff3947 !important; }
+@media (hover: hover) {
+  .math-game-screen .ops-answer-zone .ops-choice-btn:hover:not(:disabled) { border-color: #08b65b !important; background: #f0fff6 !important; }
+}

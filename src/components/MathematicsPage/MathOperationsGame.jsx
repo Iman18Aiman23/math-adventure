@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import confetti from 'canvas-confetti';
-import { Check, Pencil, SendHorizontal, Settings, X } from 'lucide-react';
+import { Pencil, SendHorizontal, Settings, X } from 'lucide-react';
 import { generateProblem } from '../../utils/mathLogic';
 import { playSound } from '../../utils/soundManager';
 import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
 import useBrowserBack from '../../hooks/useBrowserBack';
 import HeartShopModal from '../HeartShopModal';
-import { MathGameBody, MathGameHeader, MathGameShell } from './MathGameLayout';
+import { MathGameToolbar, MathGameBody, MathGameHeader, MathGameShell } from './MathGameLayout';
 
 // ─── Web Speech API voice helper ───────────────────────────────────────────────
 function speak(text, { pitch = 1.4, rate = 1.05, volume = 1 } = {}) {
@@ -727,7 +727,7 @@ export default function MathOperationsGame({
 
   if (!problem) {
     return (
-      <MathGameShell className="ops-game-shell" styles={getOpsClayStyles()}>
+      <MathGameShell className="ops-game-shell math-game-screen" styles={getOpsClayStyles()}>
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="ops-loading-spinner" />
         </div>
@@ -742,7 +742,7 @@ export default function MathOperationsGame({
   const questionNumber = Math.min(progressInGroup + 1, STREAK_MILESTONE);
 
   return (
-    <MathGameShell className="ops-game-shell" styles={getOpsClayStyles()}>
+    <MathGameShell className="ops-game-shell math-game-screen" styles={getOpsClayStyles()}>
 
       {/* Streak popup */}
       {showStreak && (
@@ -797,24 +797,12 @@ export default function MathOperationsGame({
       )}
 
       <MathGameBody className="ops-game-board">
-      <div className="ops-board-toolbar">
-        <div className="ops-answer-record" aria-live="polite">
-          <span className="ops-answer-title">{language === 'bm' ? 'Jawapan :' : 'Answer :'}</span>
-          <span className="ops-answer-stat is-correct">
-            <span className="ops-answer-icon"><Check strokeWidth={3} aria-hidden="true" /></span>
-            <span>{correctCount}</span><span className="ops-answer-muted">{language === 'bm' ? 'Betul' : 'Correct'}</span>
-          </span>
-          <span className="ops-answer-divider" aria-hidden="true" />
-          <span className="ops-answer-stat is-wrong">
-            <span className="ops-answer-icon"><X strokeWidth={3} aria-hidden="true" /></span>
-            <span>{wrongCount}</span><span className="ops-answer-muted">{language === 'bm' ? 'Salah' : 'Wrong'}</span>
-          </span>
-        </div>
+      <MathGameToolbar language={language} correctCount={correctCount} wrongCount={wrongCount}>
         <button type="button" className="ops-settings-puck" onClick={() => setIsSettingsOpen(true)}
           aria-label={language === 'bm' ? 'Buka tetapan permainan' : 'Open game settings'}>
           <Settings size={30} strokeWidth={2.5} aria-hidden="true" />
         </button>
-      </div>
+      </MathGameToolbar>
       <div className="ops-question-zone">
         <p className="ops-question-label">
           {language === 'bm'

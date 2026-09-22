@@ -8,7 +8,7 @@ import { LOCALIZATION } from '../../utils/localization';
 import { useGameStateContext } from '../../App';
 import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
 import { getTimeGameClayStyles } from './timeGameClayStyles';
-import { MathGameBody, MathGameFooter, MathGameHeader, MathGameShell } from './MathGameLayout';
+import { MathGameToolbar, MathGameBody, MathGameHeader, MathGameProgress, MathGameShell } from './MathGameLayout';
 
 // ─── Web Speech API voice helper ───────────────────────────────────────────────
 function speak(text, { pitch = 1.4, rate = 1.05, volume = 1 } = {}) {
@@ -186,7 +186,7 @@ export default function ClockGame({ onBack, onHome, language }) {
 
   if (!currentQuestion) {
     return (
-      <MathGameShell className="ops-game-shell time-ref-game" styles={getTimeGameClayStyles()}>
+      <MathGameShell className="ops-game-shell time-ref-game math-game-screen" styles={getTimeGameClayStyles()}>
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="ops-loading-spinner" />
         </div>
@@ -199,7 +199,7 @@ export default function ClockGame({ onBack, onHome, language }) {
   const accentDark  = '#3BAEA5';
 
   return (
-    <MathGameShell className="ops-game-shell time-ref-game" styles={getTimeGameClayStyles()}>
+    <MathGameShell className="ops-game-shell time-ref-game math-game-screen" styles={getTimeGameClayStyles()}>
       {/* Streak popup */}
       {showStreak && (
         <StreakPopup streak={streak} language={language} onClose={() => setShowStreak(false)} />
@@ -219,6 +219,7 @@ export default function ClockGame({ onBack, onHome, language }) {
       />
 
       <MathGameBody className="ops-game-board">
+      <MathGameToolbar language={language} correctCount={correctCount} wrongCount={wrongCount}>
       {/* ── Mode pill toggles the gamemode ── */}
       <div className="time-game-mode-row" style={{ display: 'flex', gap: '0.5rem', padding: 0, justifyContent: 'center' }}>
         <button
@@ -235,6 +236,8 @@ export default function ClockGame({ onBack, onHome, language }) {
       </div>
 
       {/* ── Question Zone ── */}
+      </MathGameToolbar>
+
       <div className="ops-question-zone">
         <p className="ops-question-label">
            {clockMode === 'analog-to-digital' 
@@ -298,7 +301,7 @@ export default function ClockGame({ onBack, onHome, language }) {
                   key={`${opt.hour}-${opt.minute}-${opt.id}`}
                   onClick={() => handleAnswer(opt)}
                   disabled={!!feedback}
-                  className={`ops-choice-btn ops-choice-${state}`}
+                  className={`ops-choice-btn ops-choice-${state} ops-clock-choice`}
                   style={state === 'idle' ? { '--accent': accentColor, '--accent-dark': accentDark, minHeight: 'clamp(78px, 15dvh, 130px)', padding: 0 } : { minHeight: 'clamp(78px, 15dvh, 130px)', padding: 0 }}
                 >
                   <div style={{ pointerEvents: 'none', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -338,12 +341,7 @@ export default function ClockGame({ onBack, onHome, language }) {
       )}
 
       {/* ── Footer Stats ── */}
-      <MathGameFooter
-        language={language}
-        correctCount={correctCount}
-        wrongCount={wrongCount}
-        progress={showStreak && streak % 10 === 0 && streak > 0 ? 10 : streak % 10}
-      />
+      <MathGameProgress language={language} progress={showStreak && streak % 10 === 0 && streak > 0 ? 10 : streak % 10 + 1} />
       </MathGameBody>
     </MathGameShell>
   );

@@ -5,7 +5,7 @@ import { playSound } from '../../utils/soundManager';
 import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
 import useBrowserBack from '../../hooks/useBrowserBack';
 import HeartShopModal from '../HeartShopModal';
-import { MathGameBody, MathGameFooter, MathGameHeader, MathGameShell } from './MathGameLayout';
+import { MathGameToolbar, MathGameBody, MathGameHeader, MathGameProgress, MathGameShell } from './MathGameLayout';
 
 const STREAK_MILESTONE = 10;
 
@@ -1300,20 +1300,9 @@ export default function ColumnMathGame({ onBack, language }) {
         const styles = getComputedStyle(card);
         const width = card.clientWidth - parseFloat(styles.paddingLeft) - parseFloat(styles.paddingRight);
         const bottom = parseFloat(styles.paddingBottom);
-        const settings = card.querySelector('.cmg-card-settings');
-        const counter = card.querySelector('.cmg-question-counter');
-        const info = card.querySelector('.cmg-card-info');
-        const headerTop = Math.max(settings.offsetTop + settings.offsetHeight, counter.offsetTop + counter.offsetHeight) + 8;
-        const infoTop = info.offsetTop + info.offsetHeight + 8;
-        // Use the largest space that keeps the working clear of the counter and buttons.
-        const besideWidth = Math.max(1, 2 * (info.offsetLeft - card.clientWidth / 2 - 8));
-        const besideScale = Math.min(1, besideWidth / workWidth, (card.clientHeight - headerTop - bottom) / workHeight);
-        const belowScale = Math.min(1, width / workWidth, (card.clientHeight - infoTop - bottom) / workHeight);
-        const corridorWidth = Math.max(0, Math.min(besideWidth, 2 * (card.clientWidth / 2 - counter.offsetLeft - counter.offsetWidth - 8)));
-        const paddingTop = parseFloat(styles.paddingTop);
-        const corridorScale = Math.min(1, corridorWidth / workWidth, (card.clientHeight - paddingTop - bottom) / workHeight);
-        const candidates = [{ scale: besideScale, top: headerTop }, { scale: belowScale, top: infoTop }, { scale: corridorScale, top: paddingTop }];
-        const { scale, top } = candidates.reduce((best, candidate) => candidate.scale > best.scale ? candidate : best);
+        const toolbar = card.querySelector('.math-game-toolbar');
+        const top = toolbar.offsetTop + toolbar.offsetHeight + 8;
+        const scale = Math.min(1, width / workWidth, Math.max(0, card.clientHeight - top - bottom) / workHeight);
         const viewport = work.parentElement;
         const nextTop = `${top}px`;
         const nextBottom = `${bottom}px`;
@@ -1327,6 +1316,7 @@ export default function ColumnMathGame({ onBack, language }) {
     const observer = new ResizeObserver(fit);
     observer.observe(card);
     observer.observe(work);
+    observer.observe(card.querySelector('.math-game-toolbar'));
     fit();
     return () => { observer.disconnect(); cancelAnimationFrame(frame); };
   }, [problem]);
@@ -2033,7 +2023,7 @@ export default function ColumnMathGame({ onBack, language }) {
   };
 
   return (
-    <MathGameShell className="cmg-shell">
+    <MathGameShell className="cmg-shell math-game-screen">
       <style>{`
         ${getColumnMathStyles()}
         @keyframes cmg-pop { 0%{transform:scale(0.92);opacity:0;} 60%{transform:scale(1.02);} 100%{transform:scale(1);opacity:1;} }
@@ -2367,6 +2357,7 @@ export default function ColumnMathGame({ onBack, language }) {
           </div>
         </div>
 
+        <div className="math-unified-board">
         {/* Column problem card — main focus, dominant on desktop */}
         <div
           ref={cardRef}
@@ -2388,10 +2379,7 @@ export default function ColumnMathGame({ onBack, language }) {
           {/* Top color stripe themed by operation */}
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: isDesktop ? '8px' : '6px', background: opTheme.stripe, borderTopLeftRadius: '21px', borderTopRightRadius: '21px' }} />
 
-          <div className="cmg-question-counter">
-            {bm ? 'Soalan' : 'Question'} {questionNumber} / {STREAK_MILESTONE}
-          </div>
-
+          <MathGameToolbar language={language} correctCount={correctCount} wrongCount={wrongCount}>
           <button
             type="button"
             className="cmg-card-settings"
@@ -2429,6 +2417,8 @@ export default function ColumnMathGame({ onBack, language }) {
           >
             i
           </button>
+
+          </MathGameToolbar>
 
           <div className="cmg-work-viewport">
           <div ref={workRef} className={`cmg-work-area ${isDivision ? 'is-division' : ''}`} style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: totalW, margin: '0 auto' }}>
@@ -3009,6 +2999,7 @@ export default function ColumnMathGame({ onBack, language }) {
           </div>
         )}
 
+        <div className="math-answer-footer cmg-answer-footer">
         {/* Submit button (while playing) */}
         {status === 'playing' && (() => {
           let ready = false;
@@ -3036,7 +3027,7 @@ export default function ColumnMathGame({ onBack, language }) {
             <div className="cmg-action-area" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
               <button
                 onClick={resetFields}
-                className="cmg-btn"
+                className="cmg-btn cmg-reset-btn"
                 style={{
                   padding: isDesktop ? '0.7rem 2.5rem' : '0.95rem 3rem',
                   background: '#FF9500',
@@ -3058,7 +3049,7 @@ export default function ColumnMathGame({ onBack, language }) {
                 onClick={submitAnswer}
                 onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); submitAnswer(); } }}
                 disabled={!ready}
-                className={`cmg-btn ${ready ? 'cmg-submit-ready' : ''}`}
+                className={`cmg-btn cmg-primary-btn ${ready ? 'cmg-submit-ready' : ''}`}
                 style={{
                   padding: isDesktop ? '0.7rem 2.5rem' : '0.95rem 3rem',
                   background: ready ? '#58CC02' : '#E5E5E5',
@@ -3093,7 +3084,7 @@ export default function ColumnMathGame({ onBack, language }) {
               <span style={{ fontSize: '1.4rem' }}>😅</span>
               <span>{bm ? `Jawapan betul ialah ${problem.answer}` : `Correct answer is ${problem.answer}`}</span>
             </div>
-            <button onClick={newProblem} className="cmg-btn" style={{
+            <button onClick={newProblem} className="cmg-btn cmg-next-btn" style={{
               padding: isDesktop ? '0.75rem 2.4rem' : '1rem 2.6rem', background: '#1CB0F6', color: '#fff',
               fontWeight: 900, fontSize: '1rem', letterSpacing: '0.04em', textTransform: 'uppercase',
               borderRadius: '16px', border: 'none', borderBottom: '4px solid #0E8FD0', cursor: 'pointer',
@@ -3105,15 +3096,11 @@ export default function ColumnMathGame({ onBack, language }) {
           </>
         )}
 
-      </MathGameBody>
+        </div>
+        <MathGameProgress language={language} progress={questionNumber} milestone={STREAK_MILESTONE} />
+        </div>
 
-      <MathGameFooter
-        language={language}
-        correctCount={correctCount}
-        wrongCount={wrongCount}
-        progress={progressInGroup}
-        milestone={STREAK_MILESTONE}
-      />
+      </MathGameBody>
       <HeartShopModal isOpen={isHeartShopOpen} onClose={() => setIsHeartShopOpen(false)} onPurchase={handleRewardPurchase} language={language} />
     </MathGameShell>
   );
