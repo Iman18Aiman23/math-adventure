@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ArrowLeft, RefreshCw, SkipForward, X } from 'lucide-react';
+import { ArrowLeft, RefreshCw, SkipForward, Mic, Volume2 } from 'lucide-react';
 import SpeechManager from '../../services/SpeechManager';
 import { getShuffledItems, checkBilingualMatch } from '../../data/curriculum/index';
 import { useGameStateContext } from '../../App';
 import MascotIcon from '../icons/MascotIcon';
 import confetti from 'canvas-confetti';
+import { playSound } from '../../utils/soundManager';
+import SpeakHeaderArtwork from './SpeakHeaderArtwork';
+import './BMSpeakGame.css';
 
 const ITEMS_PER_ROUND = 10;
 const MAX_ATTEMPTS    = 3;
@@ -207,13 +210,10 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
   // ── Result handlers ────────────────────────────────────────────────────────
   const handleCorrect = () => {
     setScore(s => s + 1);
-    setStreak(s => {
-      const next = s + 1;
-      if (next > 0 && next % 5 === 0) {
-        confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
-      }
-      return next;
-    });
+    const milestone = (streak + 1) % 5 === 0;
+    setStreak(s => s + 1);
+    playSound(milestone ? 'streak' : 'correct');
+    confetti({ particleCount: milestone ? 150 : 40, spread: milestone ? 100 : 60, origin: { y: 0.6 }, scalar: 0.8 });
     setAttempts(0);
     setPhase(PHASE_CORRECT);
     gameState?.addWin?.(10);
@@ -253,10 +253,7 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
     SpeechManager.stop();
     listenActiveRef.current = false;
     setMicError(null);
-    speak(langData.prompt, lang).then(() => {
-      if (isMobile) setPhase(PHASE_READY);
-      else { setPhase(PHASE_LISTENING); }
-    });
+    setPhase(PHASE_SPEAKING);
   };
 
   const handleSkip = () => {
@@ -359,309 +356,112 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
     category === 'common_objects' ? (item.icon || '?') :
     langData ? (langData.word || langData.syllable || item.text || '') : (item.text || '');
 
-  // Colors
-  const cardBorder = isCorrect ? '#58CC02' : isWrong ? '#FF4B4B' : '#E5E5E5';
-  const cardBg     = isCorrect ? '#F0FFF0' : isWrong ? '#FFF0F0' : '#FFFFFF';
+  const canSpeak = phase === PHASE_READY || isListening;
+  const canNavigate = canSpeak || phase === PHASE_SPEAKING;
+  const progress = items.length ? Math.min(index + 1, items.length) : 0;
+  const title = language === 'bm' ? 'Dengar dan Sebut' : 'Listen and Say';
+  const descriptions = {
+    bm_kv: ['Dengar, sebut dan ulang suku kata mudah seperti ba, ca, da.', 'Listen, say and repeat simple syllables like ba, ca, da.'],
+    bm_kvk: ['Dengar, sebut dan ulang suku kata tertutup seperti kan, man, cat.', 'Listen, say and repeat closed syllables like kan, man, cat.'],
+    en_long_vowels: ['Dengar, sebut dan ulang bunyi vokal Bahasa Inggeris.', 'Listen, say and repeat English long vowel sounds.'],
+    numbers: ['Dengar, sebut dan ulang nombor dari 1 hingga 100.', 'Listen, say and repeat numbers from 1 to 100.'],
+    common_objects: ['Dengar, sebut dan ulang nama objek di sekeliling kita.', 'Listen, say and repeat the names of everyday objects.'],
+  };
+  let status = language === 'bm' ? 'Tekan untuk Bercakap' : 'Tap to Speak';
+  if (isListening) status = language === 'bm' ? 'Bercakap sekarang...' : 'Speak now...';
+  else if (phase === PHASE_SPEAKING) status = language === 'bm' ? 'Dengar dahulu...' : 'Listen first...';
+  else if (isCorrect) status = language === 'bm' ? 'Betul! Hebat!' : 'Correct! Great!';
+  else if (phase === PHASE_CROSSLANG) status = lang === 'en' ? "That's Malay! Try English." : 'Itu English! Cuba BM.';
+  else if (isWrong) status = language === 'bm' ? 'Cuba lagi!' : 'Try again!';
+
+  let errorMessage = '';
+  if (phase === PHASE_READY && micError === 'perm') {
+    errorMessage = language === 'bm'
+      ? (isIOS ? 'Benarkan mikrofon untuk Safari di Tetapan, kemudian cuba lagi.' : 'Benarkan akses mikrofon dalam pelayar, kemudian cuba lagi.')
+      : (isIOS ? 'Allow microphone for Safari in Settings, then try again.' : 'Allow microphone access in your browser, then try again.');
+  } else if (phase === PHASE_READY && micError === 'net') {
+    errorMessage = language === 'bm' ? 'Sambungan internet diperlukan untuk suara. Cuba lagi.' : 'Voice needs an internet connection. Try again.';
+  } else if (phase === PHASE_READY && micError === 'nospeech') {
+    errorMessage = language === 'bm' ? 'Tak dengar suara. Cuba lagi!' : "Didn't hear you. Try again!";
+  }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'auto', background: '#fff', position: 'relative' }}>
-
-      {/* ── Header matching Math Operations style ── */}
-      <div style={{ background: '#fff', borderBottom: '2px solid #E5E5E5', padding: '0 0.85rem', height: '60px', display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
-        <button onClick={() => { SpeechManager.stop(); SpeechManager.stopSpeaking(); onBack(); }} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center', padding: '6px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>
-          <X size={22} />
+    <div className="bm-speak-game">
+      <header className="bm-speak-hero">
+        <button className="bm-speak-back" aria-label={language === 'bm' ? 'Kembali' : 'Back'}
+          onClick={() => { SpeechManager.stop(); SpeechManager.stopSpeaking(); onBack(); }}>
+          <ArrowLeft size={19} strokeWidth={3} />
         </button>
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-          <span style={{ fontSize: '1.15rem' }}>🗣️</span>
-          <span style={{ fontWeight: 900, fontSize: '0.98rem', color: '#3C3C3C', letterSpacing: '0.01em' }}>
-            {CAT_LABELS[category] || category}
-          </span>
+        <SpeakHeaderArtwork />
+        <div className="bm-speak-heading">
+          <span className="bm-speak-category">{(CAT_LABELS[category] || category).replace(/^[^A-Za-z]+/, '')}</span>
+          <h1>{title}</h1>
+          <p>{descriptions[category]?.[language === 'bm' ? 0 : 1]}</p>
         </div>
-        <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFF6D6', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#B58800', border: '1.5px solid #FFE08A' }}>
-            <span style={{ fontSize: '0.85rem' }}>⭐</span>
-            <span>{score}</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#FFEAD0', borderRadius: '999px', fontWeight: 900, fontSize: '0.82rem', color: '#D9610B', border: '1.5px solid #FFC081' }}>
-            <span style={{ fontSize: '0.85rem' }}>🔥</span>
-            <span>{streak}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Sub-header: language toggle ── */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', padding: '0.75rem 1rem', background: '#f7f7f7', borderBottom: '1px solid #E5E5E5', flexShrink: 0 }}>
-        <button onClick={handleToggleLang}
-          style={{ background: '#fff', border: '2px solid #E5E5E5', borderRadius: '999px', padding: '4px 14px', fontWeight: 800, fontSize: '0.8rem', color: '#1CB0F6', cursor: 'pointer' }}>
+        <button className="bm-speak-language" onClick={handleToggleLang} disabled={!canNavigate}
+          aria-label={lang === 'ms' ? 'Switch to English' : 'Tukar ke Bahasa Melayu'}>
           {lang === 'ms' ? 'BM → EN' : 'EN → BM'}
         </button>
-      </div>
+      </header>
 
-      {/* ── Scrollable content ── */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '1.5rem 1rem', gap: '1rem', overflow: 'visible' }}>
-
-        {/* Item card */}
-        <div style={{
-          background: cardBg,
-          border: `3px solid ${cardBorder}`,
-          borderRadius: '24px',
-          padding: '2rem 1.5rem',
-          textAlign: 'center',
-          width: '100%',
-          maxWidth: '480px',
-          transition: 'background 0.3s, border-color 0.3s',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
-          position: 'relative'
-        }}>
+      <main className="bm-speak-content">
+        <section className={['bm-speak-card', isCorrect ? 'is-correct' : isWrong ? 'is-wrong' : ''].join(' ')} aria-label={title}>
           {category === 'common_objects' && (
-            <button
-              onClick={() => setShowHint(h => !h)}
-              style={{
-                position: 'absolute',
-                top: '12px',
-                right: '12px',
-                background: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: '1.4rem',
-                padding: '4px',
-                color: '#1CB0F6',
-                transition: 'transform 0.1s'
-              }}
-              title="Show Hint"
-            >
-              💡
-            </button>
+            <button className="bm-speak-hint" onClick={() => setShowHint(h => !h)}
+              aria-label={language === 'bm' ? 'Tunjuk petunjuk' : 'Show hint'} aria-pressed={showHint}>💡</button>
           )}
-
-          {/* Hint / hint text at top */}
-          {langData?.prompt && (
-            <p style={{ fontSize: '0.82rem', fontWeight: 700, color: '#AFAFAF', marginBottom: '0.75rem', letterSpacing: '0.3px', padding: '0 2rem' }}>
-              {langData.prompt}
-            </p>
-          )}
-
-          {/* Big display text / emoji */}
-          <div style={{
-            fontSize: category === 'common_objects' ? '5rem' : category === 'numbers' ? 'clamp(1.8rem, 6vw, 2.8rem)' : 'clamp(2.5rem, 14vw, 4.5rem)',
-            lineHeight: 1.2,
-            fontWeight: 900,
-            color: isCorrect ? '#46A302' : isWrong ? '#CC3B3B' : '#3C3C3C',
-            animation: phase === PHASE_IDLE || phase === PHASE_SPEAKING ? 'bounce 2.5s ease-in-out infinite' : 'none',
-            fontFamily: category === 'numbers' ? '"Nunito", sans-serif' : 'inherit',
-            transition: 'color 0.3s',
-            overflowWrap: 'break-word',
-            wordBreak: 'break-word',
-            maxWidth: '100%',
-          }}>
-            {displayText || '⏳'}
-          </div>
-
-          {/* Hint: show answer when max attempts reached or showHint is true */}
-          {((attempts >= MAX_ATTEMPTS) || showHint) && langData && (
-            <div style={{ marginTop: '0.75rem', background: '#EDD9FF', borderRadius: '12px', padding: '0.5rem 1rem' }}>
-              <span style={{ fontWeight: 800, color: '#9B59B6', fontSize: '1.2rem' }}>
-                {langData.word || langData.syllable}
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* Phase indicator / mic state */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', minHeight: '80px', justifyContent: 'center' }}>
-
-          {/* Listening pulsing ring */}
-          {isListening && (
-            <div style={{ position: 'relative', width: 72, height: 72, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <div style={{ position: 'absolute', width: 72, height: 72, borderRadius: '50%', background: 'rgba(28,176,246,0.15)', animation: 'pulseRing 1.2s ease-out infinite' }} />
-              <div style={{ position: 'absolute', width: 56, height: 56, borderRadius: '50%', background: 'rgba(28,176,246,0.2)', animation: 'pulseRing 1.2s ease-out 0.3s infinite' }} />
-              <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#1CB0F6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.8rem', boxShadow: '0 4px 12px rgba(28,176,246,0.4)' }}>
-                🎤
-              </div>
-            </div>
-          )}
-          {isListening && (
-            <p style={{ fontWeight: 800, color: '#1CB0F6', fontSize: '0.9rem' }}>
-              {language === 'bm' ? 'Bercakap sekarang...' : 'Speak now...'}
-            </p>
-          )}
-
-          {/* Speaking / loading */}
-          {phase === PHASE_SPEAKING && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#AFAFAF', fontWeight: 700, fontSize: '0.9rem' }}>
-              <span style={{ animation: 'bounce 1s ease-in-out infinite', fontSize: '1.4rem' }}>🔊</span>
-              <span>{language === 'bm' ? 'Mendengar arahan...' : 'Playing prompt...'}</span>
-            </div>
-          )}
-
-          {/* Ready to tap — error states first */}
-          {phase === PHASE_READY && micError === 'perm' && (
-            <p style={{ fontWeight: 700, color: '#CC3B3B', fontSize: '0.85rem', textAlign: 'center', maxWidth: '340px', lineHeight: 1.4 }}>
-              🎤 {language === 'bm'
-                ? (isIOS
-                    ? 'Benarkan mikrofon untuk Safari di Tetapan, kemudian tekan 🎤 sekali lagi.'
-                    : 'Benarkan akses mikrofon dalam pelayar, kemudian tekan 🎤 sekali lagi.')
-                : (isIOS
-                    ? 'Allow microphone for Safari in Settings, then tap 🎤 again.'
-                    : 'Please allow microphone access in your browser, then tap 🎤 again.')}
-            </p>
-          )}
-          {phase === PHASE_READY && micError === 'net' && (
-            <p style={{ fontWeight: 700, color: '#CC3B3B', fontSize: '0.85rem', textAlign: 'center', maxWidth: '340px', lineHeight: 1.4 }}>
-              📡 {language === 'bm'
-                ? 'Sambungan internet diperlukan untuk suara. Cuba lagi.'
-                : 'Voice needs an internet connection. Try again.'}
-            </p>
-          )}
-          {phase === PHASE_READY && micError === 'nospeech' && (
-            <p style={{ fontWeight: 700, color: '#D9610B', fontSize: '0.85rem', textAlign: 'center' }}>
-              {language === 'bm' ? 'Tak dengar suara. Cuba lagi! 🎤' : "Didn't hear you. Try again! 🎤"}
-            </p>
-          )}
-          {phase === PHASE_READY && !micError && (
-            <p style={{ fontWeight: 700, color: '#AFAFAF', fontSize: '0.88rem' }}>
-              {language === 'bm' ? 'Tekan 🎤 untuk bercakap' : 'Tap 🎤 to speak'}
-              {attempts > 0 && ` (${language === 'bm' ? 'Cuba' : 'Try'} ${attempts + 1}/${MAX_ATTEMPTS})`}
-            </p>
-          )}
-
-          {/* Feedback text */}
-          {lastHeard && (phase === PHASE_WRONG || phase === PHASE_CORRECT) && (
-            <p style={{ fontWeight: 700, fontSize: '0.85rem', color: isCorrect ? '#46A302' : '#CC3B3B' }}>
-              "{lastHeard}"
-            </p>
-          )}
-          {phase === PHASE_CROSSLANG && (
-            <p style={{ fontWeight: 700, fontSize: '0.85rem', color: '#CE82FF', textAlign: 'center' }}>
-              {lang === 'en' ? "That's Malay! Try English 🔄" : "Itu English! Cuba BM 🔄"}
-            </p>
-          )}
-        </div>
-
-        {/* Aux buttons: Repeat (left) | Skip (right) */}
-        {(phase === PHASE_READY || phase === PHASE_LISTENING || phase === PHASE_SPEAKING) && (
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-            <button onClick={handleRepeat}
-              style={{
-                width: 52, height: 52, borderRadius: '50%',
-                background: '#fff', border: '2px solid #E5E5E5',
-                borderBottom: '4px solid #D0D0D0', display: 'flex',
-                alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-                transition: 'transform 0.1s', boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-              }}
-              title="Repeat prompt">
-              <RefreshCw size={22} color="#FF9600" />
-            </button>
-            <button onClick={handleSkip}
-              style={{
-                width: 52, height: 52, borderRadius: '50%',
-                background: '#fff', border: '2px solid #E5E5E5',
-                borderBottom: '4px solid #D0D0D0', display: 'flex',
-                alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-                transition: 'transform 0.1s', boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-              }}
-              title="Skip">
-              <SkipForward size={22} color="#FF4B4B" />
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* ── Footer Stats Bar - Standard Layout ── */}
-      <div className="ops-footer-stats">
-        <div className="ops-stat-chip">
-          <span>✅</span>
-          <span>{index}</span>
-          <span style={{ color: '#AFAFAF', fontSize: '0.7rem' }}>
-            {language === 'bm' ? 'dijawab' : 'answered'}
-          </span>
-        </div>
-        <div className="ops-stat-chip ops-stat-chip-highlight" style={{ gap: '8px' }}>
-          <span>🏆</span>
-          <div style={{ width: '80px', height: '8px', background: 'rgba(204, 119, 0, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
-            <div style={{ width: `${Math.min((index / items.length) * 100, 100)}%`, height: '100%', background: '#FFB800', borderRadius: '4px', transition: 'width 0.3s ease-out' }} />
-          </div>
-          <span style={{ color: '#CC7700', fontSize: '0.9rem', fontWeight: 900, minWidth: '40px', textAlign: 'right' }}>
-            {Math.min(index, items.length)}/{items.length}
-          </span>
-        </div>
-      </div>
-
-      {/* ── Bottom: large MIC tap button (mobile) ── */}
-      {(phase === PHASE_READY || phase === PHASE_LISTENING || phase === PHASE_CORRECT || phase === PHASE_WRONG) && (
-        <div style={{ padding: '1rem 1.5rem', paddingBottom: 'calc(1rem + env(safe-area-inset-bottom, 0px))', background: '#fff', borderTop: '2px solid #E5E5E5', flexShrink: 0 }}>
-          {phase === PHASE_READY && (
-            <button
-              onClick={() => {
-                // iOS: recognition.start() must fire directly in this onClick (no await)
-                startListening();
-              }}
-              className="btn-primary w-full"
-              style={{
-                padding: '1.1rem',
-                fontSize: '1.1rem',
-                background: '#1CB0F6',
-                borderBottomColor: '#0B8DC0',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-              }}
-            >
-              🎤 {language === 'bm' ? 'Tekan untuk Bercakap' : 'Tap to Speak'}
-            </button>
-          )}
-
-          {phase === PHASE_LISTENING && (
-            <button
-              onClick={() => { SpeechManager.stop(); listenActiveRef.current = false; setPhase(PHASE_READY); }}
-              className="btn-secondary w-full"
-              style={{ padding: '1.1rem', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
-            >
-              ⏸ {language === 'bm' ? 'Berhenti' : 'Stop'}
-            </button>
-          )}
-
-          {(phase === PHASE_CORRECT || phase === PHASE_WRONG) && (
-            <button
-              disabled
-              className="btn-primary w-full"
-              style={{
-                padding: '1.1rem', fontSize: '1.1rem',
-                background: '#1CB0F6',
-                borderBottomColor: '#0B8DC0',
-                opacity: 0.45, cursor: 'not-allowed',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-              }}
-            >
-              🎤 {language === 'bm' ? 'Tekan untuk Bercakap' : 'Tap to Speak'}
-            </button>
-          )}
-        </div>
-      )}
-
-      {/* Desktop: auto-listening, feedback drawer style */}
-      {!isMobile && (phase === PHASE_CORRECT || phase === PHASE_WRONG || phase === PHASE_CROSSLANG) && (
-        <div className={`feedback-drawer ${isCorrect ? 'correct' : 'wrong'}`}>
-          <div className="drawer-mascot">{phase === PHASE_CROSSLANG ? '🔄' : <MascotIcon size={60} />}</div>
-          <div className="drawer-content">
-            <div className="drawer-label">
-              {isCorrect ? (language === 'bm' ? 'Betul! Hebat!' : 'Correct! Great!') :
-               phase === PHASE_CROSSLANG ? (language === 'bm' ? 'Cuba Bahasa Melayu!' : 'Try English!') :
-               (language === 'bm' ? 'Cuba lagi!' : 'Try again!')}
-            </div>
-            {lastHeard && <div className="drawer-answer">"{lastHeard}"</div>}
-          </div>
-          <button className="drawer-btn" onClick={() => isCorrect ? advanceItem() : setPhase(PHASE_LISTENING)}>
-            {isCorrect ? (language === 'bm' ? 'Terus' : 'Continue') : (language === 'bm' ? 'Cuba' : 'Retry')}
+          <p className="bm-speak-prompt">{langData?.prompt || '\u00a0'}</p>
+          <div className={['bm-speak-word', category === 'numbers' ? 'is-number' : ''].join(' ')}>{displayText || '…'}</div>
+          <button className="bm-speak-speaker" onClick={handleRepeat} disabled={!canSpeak}
+            aria-label={language === 'bm' ? 'Dengar sebutan' : 'Hear pronunciation'}>
+            <span aria-hidden="true" className="bm-speak-rays" />
+            <Volume2 size={29} fill="currentColor" strokeWidth={2.4} />
+            <span aria-hidden="true" className="bm-speak-rays bm-speak-rays-right" />
           </button>
-        </div>
-      )}
+          {(attempts >= MAX_ATTEMPTS || showHint) && langData && (
+            <p className="bm-speak-answer">{langData.word || langData.syllable}</p>
+          )}
+        </section>
 
-      {/* Pulse ring animation */}
-      <style>{`
-        @keyframes pulseRing {
-          0%   { transform: scale(0.8); opacity: 0.8; }
-          100% { transform: scale(1.6); opacity: 0; }
-        }
-      `}</style>
+        <div className="bm-speak-controls">
+          <button className={['bm-speak-mic', isListening ? 'is-listening' : ''].join(' ')}
+            disabled={!canSpeak} aria-pressed={isListening}
+            aria-label={isListening ? (language === 'bm' ? 'Berhenti' : 'Stop') : (language === 'bm' ? 'Tekan untuk Bercakap' : 'Tap to Speak')}
+            onClick={() => {
+              if (isListening) {
+                SpeechManager.stop();
+                listenActiveRef.current = false;
+                setPhase(PHASE_READY);
+              } else {
+                // recognition.start() must remain inside the user gesture for iOS.
+                startListening();
+              }
+            }}>
+            <Mic size={34} strokeWidth={2.3} aria-hidden="true" />
+          </button>
+          <div className={['bm-speak-status', isWrong || errorMessage ? 'is-error' : ''].join(' ')} role="status" aria-live="polite">
+            <p>{errorMessage || status}</p>
+            {lastHeard && (isWrong || isCorrect) && <p className="bm-speak-heard">“{lastHeard}”</p>}
+            {phase === PHASE_READY && attempts > 0 && <p className="bm-speak-attempt">{language === 'bm' ? 'Cuba' : 'Try'} {Math.min(attempts + 1, MAX_ATTEMPTS)}/{MAX_ATTEMPTS}</p>}
+          </div>
+          <div className="bm-speak-actions">
+            <button onClick={handleRepeat} disabled={!canSpeak} aria-label={language === 'bm' ? 'Ulang sebutan' : 'Repeat prompt'}>
+              <RefreshCw size={21} strokeWidth={2.5} />
+            </button>
+            <button onClick={handleSkip} disabled={!canNavigate} aria-label={language === 'bm' ? 'Langkau' : 'Skip'}>
+              <SkipForward size={21} strokeWidth={2.5} />
+            </button>
+          </div>
+        </div>
+      </main>
+
+      <footer className="bm-speak-footer">
+        <div className="bm-speak-progress" role="progressbar" aria-label={language === 'bm' ? 'Kemajuan' : 'Progress'}
+          aria-valuemin={0} aria-valuemax={items.length || ITEMS_PER_ROUND} aria-valuenow={progress}>
+          <span style={{ width: (items.length ? progress / items.length * 100 : 0) + '%' }} />
+        </div>
+        <span className="bm-speak-count">{progress}/{items.length || ITEMS_PER_ROUND}</span>
+      </footer>
     </div>
   );
 }

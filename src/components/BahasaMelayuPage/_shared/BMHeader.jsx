@@ -1,7 +1,7 @@
 import React from 'react';
 import useBrowserBack from '../../../hooks/useBrowserBack';
 
-export default function BMHeader({ onBack, language, title, sectionLabel, sticky }) {
+export default function BMHeader({ onBack, language, title, sectionLabel, sticky, actions }) {
   const handleBack = useBrowserBack(onBack);
 
   return (
@@ -21,6 +21,8 @@ export default function BMHeader({ onBack, language, title, sectionLabel, sticky
           min-height: 44px;
         }
         .bm-header-row::after { content: ''; flex: 0 1 88px; }
+        .bm-header-row--actions::after { display: none; }
+        .bm-header-actions { flex: 0 0 88px; display: flex; justify-content: flex-end; }
         .bm-header-back {
           flex-shrink: 0;
           display: flex; align-items: center; gap: 4px;
@@ -35,6 +37,7 @@ export default function BMHeader({ onBack, language, title, sectionLabel, sticky
         @media (max-width: 480px) {
           .bm-header-back-label { display: none; }
           .bm-header-row::after { flex-basis: 42px; }
+          .bm-header-actions { flex-basis: 42px; }
         }
         .bm-header-title {
           flex: 1; min-width: 0;
@@ -56,14 +59,15 @@ export default function BMHeader({ onBack, language, title, sectionLabel, sticky
       `}</style>
 
       <div className={`bm-header${sticky ? ' bm-header--sticky' : ''}`}>
-        <div className="bm-header-row">
-          <button className="bm-header-back" onClick={handleBack}>
+        <div className={`bm-header-row${actions ? ' bm-header-row--actions' : ''}`}>
+          <button type="button" className="bm-header-back" onClick={handleBack} aria-label={language === 'bm' ? 'Kembali' : 'Back'}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
             <span className="bm-header-back-label">{language === 'bm' ? 'Kembali' : 'Back'}</span>
           </button>
           <span className="bm-header-title">{title}</span>
+          {actions && <div className="bm-header-actions">{actions}</div>}
         </div>
         {sectionLabel && (
           <div className="bm-header-section-label">{sectionLabel}</div>

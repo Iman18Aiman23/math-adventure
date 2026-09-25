@@ -1,224 +1,39 @@
-import React, { useState, useEffect, useMemo, useTransition } from 'react';
-import './ReadingPage.css';
-import { Play } from 'lucide-react';
+import React, { useId, useTransition } from 'react';
 import { playHoverSound } from '../../utils/soundManager';
 import { useGameStateContext } from '../../App';
-import { getGameData } from '../../utils/gameStatsManager';
 import LoadingSpinner from '../LoadingSpinner';
-const KVLearningPage = React.lazy(() => import('./KVLearningPage'));
-const KVKLearningPage = React.lazy(() => import('./KVKLearningPage'));
-import { OpenBookIcon } from '../icons/GameIcons';
-import {
-  LearnKVWordsIcon,
-  LearnKVKWordsIcon,
-  SpellingwordsIcon,
-  EnglishPhonicsIcon,
-} from '../icons/LearningIcons';
-import PageLayout from '../PageLayout';
-import { RobotDefs, RobotHeadReading } from '../SubjectRobots';
+import SubjectMenuLayout from '../_shared/SubjectMenuLayout';
 import { useBrowserBackHandler } from '../../hooks/useBrowserBack';
 import LearnWords from './LearnWords';
 import LongSentences from './LongSentences';
+const KVLearningPage = React.lazy(() => import('./KVLearningPage'));
+const KVKLearningPage = React.lazy(() => import('./KVKLearningPage'));
 
-// ── Design System ────────────────────────────────────────────────────────────
-const DESIGN_SYSTEM = {
-  colors: {
-    bg: '#FFFDF8',
-    surface: '#FFFFFF',
-    ink: '#111827',
-    ink2: '#374151',
-    muted: '#6B7280',
-    hair: '#E5E7EB',
-  },
-  bezel: {
-    1: '#FFFFFF',
-    2: '#F4EFE6',
-    3: '#D9D0BD',
-  },
-  levels: {
-    1: { c1: '#FFF0CC', c2: '#FF9600', c3: '#D47A00', cd: '#8F5300' },
-    2: { c1: '#D0F0FF', c2: '#1CB0F6', c3: '#0B8DC0', cd: '#06628A' },
-    3: { c1: '#EDD9FF', c2: '#CE82FF', c3: '#9B59B6', cd: '#6E3B85' },
-    4: { c1: '#E6FFD4', c2: '#58CC02', c3: '#46A302', cd: '#2E6B00' },
-  },
-  stats: {
-    star: '#FFC800',
-    heart: '#FF4B4B',
-    gem: '#1CB0F6',
-  },
+// Display the exact supplied artwork as SVG viewports, keeping all UI text and controls live.
+const REFERENCE_ART = import.meta.env.BASE_URL + 'images/reading/membaca-reference.png';
+const ART_BOUNDS = {
+  robot: '535 108 448 371',
+  kv: '71 579 187 128',
+  kvk: '71 749 187 129',
+  words: '71 905 187 130',
+  sentences: '71 1079 187 131',
+  challenge: '72 1250 184 122',
 };
+function ReadingArt({ name, className = '' }) {
+  const clipId = useId();
+  const [x, y, width, height] = ART_BOUNDS[name].split(' ');
+  return <svg className={className} viewBox={ART_BOUNDS[name]} aria-hidden="true" focusable="false">
+    <defs><clipPath id={clipId}><rect x={x} y={y} width={width} height={height} /></clipPath></defs>
+    <image href={REFERENCE_ART} width="1024" height="1536" clipPath={`url(#${clipId})`} />
+  </svg>;
+}
 
-// ── Script button config ──────────────────────────────────────────────────────
-const SCRIPTS = [
-  { key: 'RUMI', label: 'RUMI', color: '#1CB0F6', bg: '#D0F0FF' },
-  { key: 'ENG',  label: 'ENG',  color: '#FF9600', bg: '#FFF0CC' },
-  { key: 'JAWI', label: 'JAWI', color: '#CE82FF', bg: '#EDD9FF' },
-];
-
-// ── Level tile illustrations ────────────────────────────────────────────
-const getTileIllustration = (level) => {
-  switch (level) {
-    case 1: return <LearnKVWordsIcon size={200} />;
-    case 2: return <LearnKVKWordsIcon size={200} />;
-    case 3: return <SpellingwordsIcon size={200} />;
-    case 4: return <EnglishPhonicsIcon size={200} />;
-    default: return null;
-  }
-};
-
-export default function ReadingPage({ onBack, language }) {
-  // ── State ─────────────────────────────────────────────────────────────
-  const [selectedLevel, setSelectedLevel] = useState(null);
+export default function ReadingPage({ onBack, language = 'bm', selectedLevel = null, onSelectLevel: setSelectedLevel, ...accountProps }) {
   useBrowserBackHandler(selectedLevel ? () => setSelectedLevel(null) : onBack);
-  // Keep the level menu visible while a lazy level chunk (KV/KVK) loads.
   const [isPending, startTransition] = useTransition();
-  const [displayHearts, setDisplayHearts] = useState(3);
-  const [displayGems, setDisplayGems] = useState(0);
-  const [displayStars, setDisplayStars] = useState(0);
-
   const gameState = useGameStateContext();
+  const bm = language === 'bm';
 
-  // Load game stats
-  useEffect(() => {
-    const gameData = getGameData();
-    setDisplayHearts(gameData.hearts);
-    setDisplayGems(gameData.gems);
-    setDisplayStars(gameData.stars);
-  }, []);
-
-  // Global Styles — must be declared before any early returns to obey Rules of Hooks
-  const globalStyles = useMemo(() => `
-    @keyframes floaty { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-6px) rotate(2deg); } }
-    @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-    @keyframes nudge { 0%,90%,100% { transform: rotate(-1deg); } 45% { transform: rotate(1deg); } }
-    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    @keyframes pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.15); opacity: 0.8; } }
-
-    svg .bob1 { animation: bob 2.2s ease-in-out infinite; }
-    svg .bob2 { animation: bob 2.2s ease-in-out infinite 0.6s; }
-
-    /* Robot arm waving animations */
-    svg .rbt1-wave { animation: nudge 0.8s ease-in-out infinite; transform-origin: 160px 220px; }
-    svg .rbt2-wave { animation: nudge 0.8s ease-in-out infinite; transform-origin: 160px 220px; }
-    svg .rbt3-wave { animation: nudge 0.8s ease-in-out infinite; transform-origin: 160px 220px; }
-    svg .rbt4-wave { animation: nudge 0.8s ease-in-out infinite; transform-origin: 160px 220px; }
-
-    * { box-sizing: border-box; }
-
-    /* Tile illustration container (sized to fit inside .rp-illo band) */
-    .tile-illustration {
-      width: 110px;
-      height: 90px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    @media (max-width: 560px) {
-      .tile-illustration {
-        width: 95px;
-        height: 80px;
-      }
-    }
-
-    /* Illustration blocks (Ba, Ca, Ma, kan) */
-    .tile-block-lg { width: 45px; height: 45px; }
-    .tile-block-md { width: 42px; height: 42px; }
-
-    @media (max-width: 560px) {
-      .tile-block-lg { width: 38px; height: 38px; }
-      .tile-block-md { width: 36px; height: 36px; }
-    }
-
-    /* Responsive Flashcard */
-    .flashcard-container {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-
-    .flashcard-box {
-      width: 100%;
-      max-width: 500px;
-      border-radius: 28px;
-      padding: 3rem 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 380px;
-      justify-content: center;
-      margin: 0 auto;
-    }
-
-    @media (max-width: 768px) {
-      .flashcard-box {
-        max-width: 100%;
-        padding: 2rem 1.5rem;
-        min-height: 320px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .flashcard-box {
-        padding: 1.5rem 1rem;
-        min-height: 280px;
-      }
-    }
-
-    /* Responsive Controls */
-    .nav-controls {
-      display: flex;
-      gap: 0.75rem;
-      margin-top: 1rem;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    @media (max-width: 480px) {
-      .nav-controls {
-        gap: 0.5rem;
-      }
-    }
-
-    /* Mobile: Full width, no side padding */
-    @media (max-width: 768px) {
-      body, html {
-        overflow-x: hidden;
-      }
-    }
-
-    /* Landscape orientation on mobile */
-    @media (orientation: landscape) and (max-height: 500px) {
-      body, html {
-        margin: 0 !important;
-        padding: 0 !important;
-        overflow-x: hidden;
-        width: 100% !important;
-      }
-      .reading-page-wrapper {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-      }
-      .landscape-content {
-        padding: 0 !important;
-        width: 100% !important;
-        margin: 0 !important;
-      }
-    }
-  `, []);
-
-  // Memoize SVG illustrations — update when language changes
-  const tileIllustrations = useMemo(() => ({
-    1: getTileIllustration(1),
-    2: getTileIllustration(2),
-    3: getTileIllustration(3),
-    4: getTileIllustration(4),
-  }), [language]);
-
-  // ── Route Tahap 1 → dedicated KV page ─────────────────────────────────
   if (selectedLevel === 1) {
     return (
       <React.Suspense fallback={<LoadingSpinner />}>
@@ -252,56 +67,30 @@ export default function ReadingPage({ onBack, language }) {
     startTransition(() => setSelectedLevel(level));
   };
 
-  // View: Level Selection
-  if (!selectedLevel) {
-    const levelData = [
-      { level: 1, num: 1, capTitle: language === 'bm' ? 'Suku Kata KV'  : 'KV Syllables'   },
-      { level: 2, num: 2, capTitle: language === 'bm' ? 'Suku Kata KVK' : 'KVK Syllables'  },
-      { level: 3, num: 3, capTitle: language === 'bm' ? 'Baca Perkataan': 'Read Words'     },
-      { level: 4, num: 4, capTitle: language === 'bm' ? 'Baca Ayat'     : 'Read Sentences' },
-    ];
-
-    const heroSubtitle = language === 'bm'
-      ? 'Dari suku kata ke ayat penuh — satu langkah pada satu masa!'
-      : 'From syllables to full sentences — one step at a time!';
-
-    const hintContent = (
-      <>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-        {language === 'bm' ? 'Pilih tahap untuk mula belajar!' : 'Pick a level to start learning!'}
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF1F7A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-      </>
-    );
-
-    const gridTiles = levelData.map((lvl) => (
-      <button
-        key={lvl.level}
-        className={`rp-icon-card level-${lvl.level}`}
-        onClick={() => handleSelectLevel(lvl.level)}
-        onMouseEnter={playHoverSound}
-        type="button"
-      >
-        {tileIllustrations[lvl.level]}
-      </button>
-    ));
-
-    return (
-      <>
-        {isPending && <LoadingSpinner overlay />}
-        <RobotDefs />
-        <style>{globalStyles}</style>
-        <PageLayout
-          classPrefix="rp"
-          heroIcon={<RobotHeadReading style={{ width: 120, height: 80 }} />}
-          heroTitle={language === 'bm' ? 'Belajar Membaca' : 'Learn to Read'}
-          heroSubtitle={heroSubtitle}
-          sectionLabel={language === 'bm' ? 'Pilih Tahap' : 'Choose Level'}
-          hintText={hintContent}
-          onBack={onBack}
-        >
-          {gridTiles}
-        </PageLayout>
-      </>
-    );
-  }
+  const levels = [
+    [1, bm ? 'Suku Kata (KV)' : 'KV Syllables', bm ? 'Kenali dan baca suku kata mudah seperti ba, ca, da.' : 'Learn simple open syllables such as ba, ca, da.', 'kv'],
+    [2, bm ? 'Suku Kata (KVK)' : 'KVK Syllables', bm ? 'Baca suku kata tertutup seperti kan, man, cat.' : 'Read closed syllables such as kan, man, cat.', 'kvk'],
+    [3, bm ? 'Perkataan' : 'Words', bm ? 'Baca dan fahami perkataan seharian dengan mudah.' : 'Read and understand everyday words with ease.', 'words'],
+    [4, bm ? 'Ayat Mudah' : 'Simple Sentences', bm ? 'Baca dan fahami ayat ringkas dalam kehidupan seharian.' : 'Read and understand sentences from everyday life.', 'sentences'],
+    [5, bm ? 'Cabaran Membaca' : 'Reading Challenge', bm ? 'Uji kefahaman anda dengan pelbagai soalan dan naik tahap!' : 'Test your understanding with questions and level up!', 'challenge'],
+  ];
+  const cardThemes = ['blue', 'red', 'mint', 'purple', 'gold'];
+  return <SubjectMenuLayout
+    {...accountProps} language={language} gameState={gameState} onBack={onBack} onHome={onBack}
+    pending={isPending && <LoadingSpinner overlay />}
+    title={bm ? 'Membaca' : 'Reading'}
+    eyebrow={bm ? 'MEMBACA' : 'READING'}
+    heroTitle={bm ? 'Jom belajar Membaca!' : "Let's learn to read!"}
+    description={bm ? 'Dari suku kata ke ayat penuh - satu langkah pada satu masa!' : 'From syllables to full sentences - one step at a time!'}
+    encouragement={bm ? 'Baca dengan yakin, dunia lebih menarik!' : 'Read with confidence and discover more.'}
+    mascot={<ReadingArt name="robot" />}
+    sectionTitle={bm ? 'Pilih Tahap' : 'Choose a Level'}
+    sectionDescription={bm ? 'Pilih tahap untuk mula belajar.' : 'Pick a level to start learning.'}
+    topics={levels.map(([level, title, description, art]) => ({
+      id: level, title, description, theme: cardThemes[level - 1],
+      visual: <ReadingArt name={art} />, disabled: level === 5,
+      onMouseEnter: level === 5 ? undefined : playHoverSound,
+    }))}
+    onSelect={handleSelectLevel}
+  />;
 }

@@ -1,160 +1,79 @@
-import React, { useState } from 'react';
-import './BMPage.css';
+import React, { Suspense, useTransition } from 'react';
 import { LOCALIZATION } from '../../utils/localization';
 import { useGameStateContext } from '../../App';
 import SpeechManager from '../../services/SpeechManager';
-import BMSpeakGame from './BMSpeakGame';
-import PageLayout from '../PageLayout';
-import { MusicNoteIcon } from '../icons/GameIcons';
-import { RobotDefs, RobotHeadSpeaking } from '../SubjectRobots';
 import { useBrowserBackHandler } from '../../hooks/useBrowserBack';
-import {
-  LearnKVWordsIcon,
-  LearnKVKWordsIcon,
-  EnglishPhonicsIcon,
-  Number1to100Icon,
-  ObjectsIcon,
-} from '../icons/LearningIcons';
-const ILLOS = {
-  bm_kv: <LearnKVWordsIcon size={200} />,
-  bm_kvk: <LearnKVKWordsIcon size={200} />,
-  en_long_vowels: <EnglishPhonicsIcon size={200} />,
-  numbers: <Number1to100Icon size={200} />,
-  common_objects: <ObjectsIcon size={200} />,
-};
+import SubjectMenuLayout from '../_shared/SubjectMenuLayout';
+import LoadingSpinner from '../LoadingSpinner';
+import BMMenuArtwork from './BMMenuArtwork';
 
-/**
- * BMPage — Bahasa Melayu Speak & Play
- *
- * Two views:
- * 1. Category Selection (React) — Duolingo flat-card menu
- * 2. BMSpeakGame (pure React) — Instant load, no Phaser/canvas
- */
-
+const BMSpeakGame = React.lazy(() => import('./BMSpeakGame'));
 const CATEGORIES = [
-  {
-    key: 'bm_kv',
-    num: 1,
-    tClass: 'cat-kv',
-    titleKey: 'bm_kv',
-  },
-  {
-    key: 'bm_kvk',
-    num: 2,
-    tClass: 'cat-kvk',
-    titleKey: 'bm_kvk',
-  },
-  {
-    key: 'en_long_vowels',
-    num: 3,
-    tClass: 'cat-phonics',
-    titleKey: 'en_long_vowels',
-  },
-  {
-    key: 'numbers',
-    num: 4,
-    tClass: 'cat-numbers',
-    titleKey: 'numbers',
-  },
-  {
-    key: 'common_objects',
-    num: 5,
-    tClass: 'cat-objects',
-    titleKey: 'common_objects',
-  },
+  { id: 'bm_kv', theme: 'blue', bm: 'Suku Kata (KV)', en: 'KV Syllables',
+    descBm: 'Dengar dan sebut suku kata mudah seperti ba, ca, da.',
+    descEn: 'Listen and say open syllables such as ba, ca, da.' },
+  { id: 'bm_kvk', theme: 'red', bm: 'Suku Kata (KVK)', en: 'KVK Syllables',
+    descBm: 'Dengar dan sebut suku kata tertutup seperti kan, man, cat.',
+    descEn: 'Listen and say closed syllables such as kan, man, cat.' },
+  { id: 'en_long_vowels', theme: 'mint', bm: 'Bunyi Huruf Bahasa Inggeris', en: 'English Phonics',
+    descBm: 'Dengar dan sebut bunyi huruf dengan betul.',
+    descEn: 'Listen and practise English sounds and long vowels.' },
+  { id: 'numbers', theme: 'gold', bm: 'Nombor 1 – 100', en: 'Numbers 1 – 100',
+    descBm: 'Dengar dan sebut nombor dari 1 hingga 100.',
+    descEn: 'Listen and say numbers from 1 to 100.' },
+  { id: 'common_objects', theme: 'purple', bm: 'Objek', en: 'Objects',
+    descBm: 'Dengar dan sebut nama objek seharian dengan jelas.',
+    descEn: 'Listen and clearly say the names of everyday objects.' },
 ];
 
-export default function BMPage({ onBack, onHome, language }) {
-  const t = LOCALIZATION[language].bmPage;
+export default function BMPage({
+  onBack, onHome, language = 'bm', selectedCategory = null, onSelectCategory, ...accountProps
+}) {
+  const bm = language === 'bm';
+  const t = LOCALIZATION[bm ? 'bm' : 'eng'].bmPage;
   const gameState = useGameStateContext();
-
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  useBrowserBackHandler(selectedCategory ? () => setSelectedCategory(null) : onBack);
+  const [isPending, startTransition] = useTransition();
+  useBrowserBackHandler(selectedCategory ? () => onSelectCategory(null) : onBack);
   const isSupported = SpeechManager.isSupported();
-  const unsupportedReason = SpeechManager.getUnsupportedReason();
+  const unsupportedReason = SpeechManager.getUnsupportedReason() || t.notSupported;
 
-  // ── Game View ──────────────────────────────────────────────────────────────
   if (selectedCategory) {
-    return (
-      <BMSpeakGame
-        category={selectedCategory}
-        language={language}
-        onBack={() => setSelectedCategory(null)}
-      />
-    );
+    return <Suspense fallback={<LoadingSpinner />}>
+      <BMSpeakGame category={selectedCategory} language={language} onBack={() => onSelectCategory(null)} />
+    </Suspense>;
   }
 
-  // ── Category Selection ─────────────────────────────────────────────────────
-  const heroSubtitle = (
-    <>
-      {t.heroSubtitle}
-      <span aria-hidden="true">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-      </span>
-    </>
-  );
-
-  const hintContent = (
-    <>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD60A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-      {language === 'bm' ? 'Pilih kategori untuk mula bercakap!' : 'Pick a category to start speaking!'}
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF1F7A"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-    </>
-  );
-
-  const gridContent = (
-    <>
-      {!isSupported && (
-        <div className="bm-warning-card">
-          <span style={{ fontSize: '1.5rem' }}>⚠️</span>
-          <p>{unsupportedReason || t.notSupported}</p>
-        </div>
-      )}
-      {CATEGORIES.map((cat) => (
-        <button
-          key={cat.key}
-          className={`bp-icon-card ${cat.tClass}`}
-          onClick={() => isSupported && setSelectedCategory(cat.key)}
-          disabled={!isSupported}
-          type="button"
-          style={{ opacity: !isSupported ? 0.5 : 1 }}
-        >
-          {ILLOS[cat.key]}
-        </button>
-      ))}
-    </>
-  );
-
-  const additionalSection = (
-    <div className="bm-howto">
-      <div className="bm-howto-title">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFB300" aria-hidden="true">
-          <path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/>
-        </svg>
-        {t.howToPlayTitle}
-      </div>
-      <div className="bm-howto-steps">
-        <div className="bm-howto-step"><span className="bm-step-num">1</span><span>{t.howToStep1}</span></div>
-        <div className="bm-howto-step"><span className="bm-step-num">2</span><span>{t.howToStep2}</span></div>
-        <div className="bm-howto-step"><span className="bm-step-num">3</span><span>{t.howToStep3}</span></div>
-      </div>
-    </div>
-  );
-
-  return (
-    <>
-      <RobotDefs />
-      <PageLayout
-        classPrefix="bp"
-        heroIcon={<RobotHeadSpeaking style={{ width: 140, height: 100 }} />}
-        heroSubtitle={heroSubtitle}
-        sectionLabel={language === 'bm' ? 'Pilih Kategori' : 'Choose Category'}
-        hintText={hintContent}
-        onBack={onBack}
-        additionalSection={additionalSection}
-      >
-        {gridContent}
-      </PageLayout>
-    </>
-  );
+  return <SubjectMenuLayout
+    {...accountProps} language={language} gameState={gameState} onBack={onBack} onHome={onHome || onBack}
+    pending={isPending && <LoadingSpinner overlay />}
+    title={bm ? 'Sebutan' : 'Speaking'}
+    eyebrow={bm ? 'SEBUTAN' : 'SPEAKING'}
+    heroTitle={bm ? 'Jom belajar Sebutan!' : "Let's practise speaking!"}
+    description={bm ? 'Dengar, sebut dan ulang. Latih sebutan dengan jelas dan yakin!' : 'Listen, speak and repeat. Practise speaking clearly and confidently!'}
+    encouragement={t.heroSubtitle}
+    heroBackground="radial-gradient(circle at 104% 94%, #c0e8ff 0 28%, transparent 28.2%), linear-gradient(115deg, #eff9ff, #dbf2ff)"
+    mascot={<BMMenuArtwork topic="robot" />}
+    sectionTitle={bm ? 'Pilih Kategori' : 'Choose a Category'}
+    sectionDescription={bm ? 'Pilih kategori untuk mula belajar.' : 'Pick a category to start learning.'}
+    notice={!isSupported ? unsupportedReason : undefined}
+    topics={CATEGORIES.map(category => ({
+      id: category.id, theme: category.theme,
+      title: category[bm ? 'bm' : 'en'],
+      description: category[bm ? 'descBm' : 'descEn'],
+      visual: <BMMenuArtwork topic={category.id} />,
+      disabled: !isSupported,
+      disabledLabel: bm ? 'Tidak disokong' : 'Not supported',
+      disabledReason: unsupportedReason,
+    }))}
+    onSelect={category => { if (isSupported) startTransition(() => onSelectCategory(category)); }}
+    additionalContent={
+      <details className="mh-menu-help">
+        <summary>{t.howToPlayTitle}</summary>
+        <ol><li>{t.howToStep1}</li><li>{t.howToStep2}</li><li>{t.howToStep3}</li></ol>
+        <dl>{CATEGORIES.map(category => <div key={category.id}>
+          <dt>{t.categories[category.id].title}</dt><dd>{t.categories[category.id].desc}</dd>
+        </div>)}</dl>
+      </details>
+    }
+  />;
 }

@@ -1,11 +1,7 @@
-import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { LOCALIZATION } from '../../utils/localization';
-import useBrowserBack from '../../hooks/useBrowserBack';
-import HomeHeaderActions from '../_shared/HomeHeaderActions';
+import SubjectMenuLayout from '../_shared/SubjectMenuLayout';
 import TimeMathMascot from './TimeMathMascot';
 import TimeMenuArtwork from './TimeMenuArtwork';
-import './MathHome.css';
-import './TimeGameMenu.css';
 
 const TIME_GAMES = [
   { id: 'month-learning', theme: 'blue', titleKey: 'monthLearning', descKey: 'monthLearningDesc' },
@@ -13,56 +9,20 @@ const TIME_GAMES = [
   { id: 'clock', theme: 'mint', titleKey: 'timeAdventure', descKey: 'timeAdventureDesc' },
 ];
 
-export default function TimeGameMenu({
-  onStart,
-  onBack,
-  language = 'bm',
-  playerName,
-  gameState,
-  streak = 0,
-  onTabChange,
-  onHome,
-  onOpenReports,
-  onToggleLang,
-  theme,
-  themes,
-  onThemeChange,
-}) {
+export default function TimeGameMenu({ onStart, onBack, language = 'bm', ...accountProps }) {
   const bm = language === 'bm';
   const t = LOCALIZATION[bm ? 'bm' : 'eng'].time;
-  const handleBack = useBrowserBack(onBack);
-
-  return (
-    <main className="mh-screen time-menu-shell" aria-label={bm ? 'Bulan & Masa' : 'Clock & Time'}>
-      <div className="mh-wrap">
-        <header className="mh-header">
-          <button type="button" className="mh-back" onClick={handleBack} aria-label={bm ? 'Kembali' : 'Back'}><ArrowLeft aria-hidden="true" /></button>
-          <h1>{bm ? 'Bulan & Masa' : 'Clock & Time'}</h1>
-          <HomeHeaderActions language={language} playerName={playerName} gameState={gameState} streak={streak} onTabChange={onTabChange} onHome={onHome} onOpenReports={onOpenReports} onToggleLang={onToggleLang} theme={theme} themes={themes} onThemeChange={onThemeChange} />
-        </header>
-        <section className="mh-hero" aria-labelledby="time-menu-hero-title">
-          <div className="mh-hero-copy">
-            <p className="mh-eyebrow">{bm ? 'BULAN & MASA' : 'CLOCK & TIME'}</p>
-            <h2 id="time-menu-hero-title">{bm ? 'Jom kenali masa!' : 'Let’s explore time!'}</h2>
-            <p className="mh-description">{bm ? 'Kenali 12 bulan dan belajar membaca jam.' : 'Discover 12 months and learn to read the clock.'}</p>
-            <p className="mh-encouragement">{bm ? 'Setiap hari, ada sesuatu yang baharu untuk dipelajari!' : 'Every day brings something new to learn!'}</p>
-          </div>
-          <div className="mh-mascot" aria-hidden="true"><TimeMathMascot /></div>
-        </section>
-        <div className="mh-section-heading">
-          <h2 id="time-menu-topics-title">{bm ? 'Pilih Aktiviti' : 'Choose activity'}</h2>
-          <p>{bm ? 'Pilih aktiviti untuk mula belajar.' : 'Pick an activity to start learning.'}</p>
-        </div>
-        <section className="mh-topic-grid time-menu-list" aria-labelledby="time-menu-topics-title">
-          {TIME_GAMES.map(game => (
-            <button key={game.id} type="button" className={`mh-topic-card time-menu-card mh-${game.theme}`} onClick={() => onStart(game.id)}>
-              <span className="mh-topic-visual" aria-hidden="true"><TimeMenuArtwork topic={game.id} /></span>
-              <span className="mh-topic-copy"><span className="mh-topic-title">{t[game.titleKey]}</span><span className="mh-topic-description">{t[game.descKey]}</span></span>
-              <span className="mh-arrow" aria-hidden="true"><ChevronRight /></span>
-            </button>
-          ))}
-        </section>
-      </div>
-    </main>
-  );
+  return <SubjectMenuLayout
+    {...accountProps} onBack={onBack} language={language}
+    title={bm ? 'Bulan & Masa' : 'Clock & Time'}
+    eyebrow={bm ? 'BULAN & MASA' : 'CLOCK & TIME'}
+    heroTitle={bm ? 'Jom kenali masa!' : "Let's explore time!"}
+    description={bm ? 'Kenali 12 bulan dan belajar membaca jam.' : 'Discover 12 months and learn to read the clock.'}
+    encouragement={bm ? 'Setiap hari, ada sesuatu yang baharu untuk dipelajari!' : 'Every day brings something new to learn!'}
+    mascot={<TimeMathMascot />}
+    sectionTitle={bm ? 'Pilih Aktiviti' : 'Choose activity'}
+    sectionDescription={bm ? 'Pilih aktiviti untuk mula belajar.' : 'Pick an activity to start learning.'}
+    topics={TIME_GAMES.map(game => ({ id: game.id, theme: game.theme, title: t[game.titleKey], description: t[game.descKey], visual: <TimeMenuArtwork topic={game.id} /> }))}
+    onSelect={onStart}
+  />;
 }

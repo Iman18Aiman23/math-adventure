@@ -16,6 +16,7 @@ const LevelUpToast = React.lazy(() => import('./components/LevelUpToast'));
 const WelcomeModal = React.lazy(() => import('./components/WelcomeModal'));
 import DesktopSidebar from './components/DesktopSidebar';
 import CosmicMobileNav from './components/CosmicMobileNav';
+import SubjectMenuFooter from './components/_shared/SubjectMenuFooter';
 const ReadingPage = React.lazy(() => import('./components/ReadingPage/ReadingPage'));
 const EarlyExplorersHome = React.lazy(() => import('./components/AgeGroup-4-6/EarlyExplorersHome'));
 const Grade1AdventurersHome = React.lazy(() => import('./components/AgeGroup-7/Grade1AdventurersHome'));
@@ -461,6 +462,8 @@ export default function App() {
   const [savedNavigation] = useState(loadNavigationState);
   const [playerName,     setPlayerName]     = useState(() => loadPlayerName());
   const [currentSubject, setCurrentSubject] = useState(savedNavigation.currentSubject);
+  const [readingLevel, setReadingLevel] = useState(null);
+  const [speakingCategory, setSpeakingCategory] = useState(null);
   const [mathSubGame,    setMathSubGame]    = useState(savedNavigation.mathSubGame);
   const [dateTimeSubGame,setDateTimeSubGame]= useState(savedNavigation.dateTimeSubGame);
   const [isPlaying,      setIsPlaying]      = useState(savedNavigation.isPlaying);
@@ -501,7 +504,7 @@ export default function App() {
   const viewContainerRef = useRef(null);
   useEffect(() => {
     if (viewContainerRef.current) viewContainerRef.current.scrollTop = 0;
-  }, [islamModule, islamTopic, islamYear, matematikModule, matematikTopic, matematikYear, bmModule, bmTopic, bmYear, currentAgeGroup, currentAgeGame]);
+  }, [readingLevel, speakingCategory, islamModule, islamTopic, islamYear, matematikModule, matematikTopic, matematikYear, bmModule, bmTopic, bmYear, currentAgeGroup, currentAgeGame]);
 
   // Stop any in-flight TTS when navigating away from a page. Most leaf games
   // don't cancel speech on unmount, so a long reading would keep playing after
@@ -511,7 +514,7 @@ export default function App() {
     return () => SpeechManager.stopSpeaking();
   }, [activeTab, currentSubject, mathSubGame, dateTimeSubGame, isPlaying, selectedAssessment,
       currentAgeGroup, currentAgeGame, islamModule, islamTopic, matematikModule, matematikTopic,
-      bmModule, bmTopic]);
+      bmModule, bmTopic, speakingCategory]);
 
   // useTransition keeps the current screen visible while a lazy game chunk
   // loads, so navigation never blanks to a fallback for fast loads. isPending
@@ -559,7 +562,7 @@ export default function App() {
 
   const handleBackToMenu   = () => setIsPlaying(false);
   const handleStartTimeGame= (gameId) => { setDateTimeSubGame(gameId); setIsPlaying(true); };
-  const handleBackToHome   = () => { setIsPlaying(false); setMathSubGame(null); setDateTimeSubGame(null); setCurrentSubject(null); setCurrentAgeGroup(null); setCurrentAgeGame(null); setIslamModule(null); setIslamTopic(null); setMatematikModule(null); setMatematikTopic(null); setMatematikYear(1); setBmModule(null); setBmTopic(null); setBmYear(1); setActiveTab('learn'); };
+  const handleBackToHome   = () => { setReadingLevel(null); setSpeakingCategory(null); setIsPlaying(false); setMathSubGame(null); setDateTimeSubGame(null); setCurrentSubject(null); setCurrentAgeGroup(null); setCurrentAgeGame(null); setIslamModule(null); setIslamTopic(null); setMatematikModule(null); setMatematikTopic(null); setMatematikYear(1); setBmModule(null); setBmTopic(null); setBmYear(1); setActiveTab('learn'); };
   const handleToggleMute   = () => { const m = !isMuted; setIsMuted(m); setMuted(m); };
   const handleToggleLang   = () => setLanguage(l => l === 'bm' ? 'eng' : 'bm');
 
@@ -584,6 +587,12 @@ export default function App() {
 
   const inActiveQuiz = isPlaying || (currentSubject === 'math' && mathSubGame === 'operations');
   const viewKey = `${activeTab}-${currentSubject}-${mathSubGame}-${dateTimeSubGame}-${isPlaying}-${selectedAssessment?.id}`;
+
+  const isSubjectMenu = activeTab === 'learn' && (
+    (currentSubject === 'reading' && readingLevel === null)
+    || (currentSubject === 'bm' && speakingCategory === null)
+    || (currentSubject === 'math' && (!mathSubGame || (mathSubGame === 'datetime' && !isPlaying)))
+  );
 
   // Hide sidebar during game play, assessment, or inside age-group games
   const shouldHideSidebar = inActiveQuiz || (currentSubject === 'math' && mathSubGame === 'faq') || selectedAssessment || !!currentAgeGame
@@ -692,7 +701,11 @@ export default function App() {
           onThemeChange={setCurrentTheme}
         />;
       case 'bm':
-        return <BMPage onBack={handleBackToHome} onHome={handleBackToHome} language={language} />;
+        return <BMPage onBack={handleBackToHome} onHome={handleBackToHome} language={language}
+          selectedCategory={speakingCategory} onSelectCategory={setSpeakingCategory}
+          playerName={playerName} streak={streak} onTabChange={handleTabChange} onToggleLang={handleToggleLang}
+          onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
+          theme={THEMES[currentTheme]} themes={THEMES} onThemeChange={setCurrentTheme} />;
       case 'matematik-kssr':
         // ── Topic games ──
         if (matematikTopic === 'banding-banyak-sedikit') return <BandingBanyakSedikit onBack={() => setMatematikTopic(null)} language={language} />;
@@ -1367,7 +1380,10 @@ export default function App() {
           </Suspense>
         );
       case 'reading':
-        return <ReadingPage onBack={handleBackToHome} language={language} />;
+        return <ReadingPage onBack={handleBackToHome} language={language} selectedLevel={readingLevel} onSelectLevel={setReadingLevel} streak={streak}
+          playerName={playerName} onTabChange={handleTabChange} onToggleLang={handleToggleLang}
+          onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
+          theme={THEMES[currentTheme]} themes={THEMES} onThemeChange={setCurrentTheme} />;
       default:
         // Age-group routing takes precedence over the default home screen.
         if (currentAgeGame === 'alphabet-safari') {
@@ -1389,7 +1405,12 @@ export default function App() {
           return <AlphabetExpress onBack={() => setCurrentAgeGame(null)} language={language} theme={THEMES[currentTheme]} />;
         }
         if (currentAgeGame === 'alphabet-cards') {
-          return <KVLearningPage46 onBack={() => setCurrentAgeGame(null)} language={language} />;
+          return <KVLearningPage46 onBack={() => setCurrentAgeGame(null)} onComplete={() => navigate(() => {
+            setCurrentAgeGame(null);
+            setCurrentAgeGroup(null);
+            setReadingLevel(null);
+            setCurrentSubject('reading');
+          })} language={language} />;
         }
         if (currentAgeGame === 'number-cards') {
           return <NumberCards onBack={() => setCurrentAgeGame(null)} language={language} />;
@@ -1725,7 +1746,12 @@ export default function App() {
           </div>
 
           {/* CosmicMobileNav — rendered outside view-container so position:fixed works correctly */}
-          {!inActiveQuiz && !selectedAssessment && !currentAgeGame && !currentAgeGroup && (!currentSubject || (currentSubject === 'math' && (!mathSubGame || mathSubGame === 'journey' || (mathSubGame === 'datetime' && !isPlaying)))) && (
+          {isSubjectMenu ? (
+            <SubjectMenuFooter activeTab={activeTab} language={language}
+              onTabChange={handleTabChange} onHome={handleBackToHome}
+              onToggleLang={handleToggleLang} theme={THEMES[currentTheme]}
+              themes={THEMES} onThemeChange={setCurrentTheme} />
+          ) : !inActiveQuiz && !selectedAssessment && !currentAgeGame && !currentAgeGroup && (!currentSubject || (currentSubject === 'math' && (!mathSubGame || mathSubGame === 'journey' || (mathSubGame === 'datetime' && !isPlaying)))) && (
             <CosmicMobileNav
               appearance={currentSubject === 'math' ? 'math' : activeTab === 'learn' && !currentSubject && !currentAgeGroup ? 'home' : 'default'}
               activeTab={activeTab}

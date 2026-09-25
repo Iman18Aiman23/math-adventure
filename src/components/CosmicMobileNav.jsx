@@ -203,7 +203,7 @@ export default function CosmicMobileNav({
                 <div className="nav-sphere">
                   <div className="nav-orbit" />
                   <span className="nav-icon-wrap">
-                    {React.createElement(appearance === 'math' ? ({ learn: BookOpen, leaderboard: Trophy, profile: UserRound, achievement: Medal }[tab.id]) : tab.icon, { size: 22, 'aria-hidden': true })}
+                    {React.createElement((appearance === 'math' || appearance === 'reading') ? ({ learn: BookOpen, leaderboard: Trophy, profile: UserRound, achievement: Medal }[tab.id]) : tab.icon, { size: 22, 'aria-hidden': true })}
                   </span>
                   {tab.badge && <div className="nav-badge show" />}
                 </div>
@@ -224,7 +224,7 @@ export default function CosmicMobileNav({
                 <div className="nav-sphere">
                   <div className="nav-orbit" />
                   <span className="nav-icon-wrap">
-                    {appearance === 'math' ? <Settings size={22} aria-hidden="true" /> : <GearsIcon size={22} />}
+                    {(appearance === 'math' || appearance === 'reading') ? <Settings size={22} aria-hidden="true" /> : <GearsIcon size={22} />}
                   </span>
                 </div>
                 <span className="nav-label">{language === 'bm' ? 'Tetapan' : 'Settings'}</span>
