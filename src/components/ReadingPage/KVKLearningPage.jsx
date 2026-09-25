@@ -1,74 +1,70 @@
-import React, { useState, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, Volume2 } from 'lucide-react';
-import bm_kvk_complete, { KVK_LETTERS, getKVKSeriesByLetter } from '../../data/curriculum/bm_kvk';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { ChevronLeft, ChevronRight, Volume2, Settings, Check } from 'lucide-react';
+import { KVK_LETTERS, getKVKSeriesByLetter } from '../../data/curriculum/bm_kvk';
 import SpeechManager from '../../services/SpeechManager';
-import BackButton from '../BackButton';
+import BMHeader from '../../components/BahasaMelayuPage/_shared/BMHeader';
+import './KVLearningPage.css';
+import KVCompletion from './KVCompletion';
 
-// ── Vowel row labels (shown under the KVK badge) ─────────────────────────────
-const SLOT_COLORS = ['#FF9600', '#1CB0F6', '#58CC02', '#CE82FF', '#FF4B4B', '#00C2A8'];
-const SLOT_BG     = ['#FFF4E0', '#E0F4FF', '#E6FFD4', '#F3DDFF', '#FFE0E0', '#D4FFF8'];
-
-// ── Tile palette — mirrors ReadingPage rp-tile color variants ─────────────────
-const TILE_PALETTE = [
-  { base: '#FF9600', light: '#FFD9A0', deep: '#8F5300' },
-  { base: '#1CB0F6', light: '#A0E4FF', deep: '#0B6EA0' },
-  { base: '#58CC02', light: '#B4F576', deep: '#2E7001' },
-  { base: '#CE82FF', light: '#ECD0FF', deep: '#7A3FA0' },
-  { base: '#FF4B4B', light: '#FFB0B0', deep: '#A01010' },
-  { base: '#00C2A8', light: '#A0F0E8', deep: '#007A6A' },
+const CARD_PALETTE = [
+  { color: '#EF4444', tint: '#FEF2F2' },
+  { color: '#F59E0B', tint: '#FFFBEB' },
+  { color: '#10B981', tint: '#ECFDF5' },
+  { color: '#3B82F6', tint: '#EFF6FF' },
+  { color: '#8B5CF6', tint: '#F5F3FF' },
+  { color: '#EC4899', tint: '#FDF2F8' },
+  { color: '#14B8A6', tint: '#F0FDFA' },
 ];
 
-// ── Script button config ──────────────────────────────────────────────────────
 const SCRIPTS = [
   { key: 'RUMI', label: 'RUMI', color: '#1CB0F6', bg: '#D0F0FF' },
-  { key: 'ENG',  label: 'ENG',  color: '#FF9600', bg: '#FFF0CC' },
+  { key: 'ENG', label: 'ENG', color: '#FF9600', bg: '#FFF0CC' },
   { key: 'JAWI', label: 'JAWI', color: '#CE82FF', bg: '#EDD9FF' },
 ];
 
-// Derive consonant letter from kvk field (e.g. 'ban' → 'B')
-const getLetter = (item) => item.kvk[0].toUpperCase();
-
-export default function KVKLearningPage({ onBack, language }) {
-  // ── State ─────────────────────────────────────────────────────────────────
+export default function KVKLearningPage({ onBack, onComplete = onBack, language, title = language === 'bm' ? 'Suku Kata KVK' : 'KVK Syllables' }) {
   const [selectedLetter, setSelectedLetter] = useState(null);
-  const [cardIndex,      setCardIndex]      = useState(0);
-  const [script,         setScript]         = useState('RUMI');
-  const [activeSyl,      setActiveSyl]      = useState(null);
+  const [cardIndex, setCardIndex] = useState(0);
+  const [script, setScript] = useState('RUMI');
+  const settingsRef = useRef(null);
   const [seriesComplete, setSeriesComplete] = useState(false);
 
-  // ── Series data ───────────────────────────────────────────────────────────
-  const seriesItems      = selectedLetter ? getKVKSeriesByLetter(selectedLetter) : [];
-  const currentItem      = seriesItems[cardIndex] ?? null;
+  useEffect(() => {
+    const dismiss = (event) => {
+      const menu = settingsRef.current;
+      if (!menu?.open) return;
+      if (event.type === 'keydown' && event.key === 'Escape') {
+        menu.open = false;
+        menu.querySelector('summary').focus();
+      } else if (event.type === 'pointerdown' && !menu.contains(event.target)) {
+        menu.open = false;
+      }
+    };
+    document.addEventListener('pointerdown', dismiss);
+    document.addEventListener('keydown', dismiss);
+    return () => {
+      document.removeEventListener('pointerdown', dismiss);
+      document.removeEventListener('keydown', dismiss);
+    };
+  }, []);
+
+  const seriesItems = selectedLetter ? getKVKSeriesByLetter(selectedLetter) : [];
+  const currentItem = seriesItems[cardIndex] ?? null;
   const currentLetterIdx = KVK_LETTERS.indexOf(selectedLetter);
 
-  // ── Display helpers ───────────────────────────────────────────────────────
-  const getDisplayText = (item) => {
-    if (!item) return '';
-    if (script === 'RUMI') return item.ms?.word ?? '';
-    if (script === 'ENG')  return item.en?.word ?? '';
-    if (script === 'JAWI') return item.jawi?.word ?? '';
-    return '';
-  };
-
-  // Slot color/bg for current card (cycles safely)
-  const slotIdx   = cardIndex % SLOT_COLORS.length;
-  const slotColor = SLOT_COLORS[slotIdx];
-  const slotBg    = SLOT_BG[slotIdx];
-
-  // ── Speak helper ─────────────────────────────────────────────────────────
   const speak = useCallback((item) => {
     if (!item) return;
     const text = script === 'ENG' ? item.en?.word : item.ms?.word;
     const lang = script === 'ENG' ? 'en-US' : 'ms-MY';
     SpeechManager.speak(text, lang);
-    setActiveSyl(cardIndex);
-  }, [script, cardIndex]);
+  }, [script]);
 
-  // ── Navigation ────────────────────────────────────────────────────────────
   const handleNext = () => {
     if (cardIndex < seriesItems.length - 1) {
-      setCardIndex(c => c + 1);
-      setActiveSyl(null);
+      setCardIndex(index => index + 1);
+    } else if (currentLetterIdx < KVK_LETTERS.length - 1) {
+      setSelectedLetter(KVK_LETTERS[currentLetterIdx + 1]);
+      setCardIndex(0);
     } else {
       setSeriesComplete(true);
     }
@@ -76,28 +72,17 @@ export default function KVKLearningPage({ onBack, language }) {
 
   const handlePrev = () => {
     if (cardIndex > 0) {
-      setCardIndex(c => c - 1);
-      setActiveSyl(null);
-    }
-  };
-
-  const handleNextLetter = () => {
-    const nextIdx = currentLetterIdx + 1;
-    if (nextIdx < KVK_LETTERS.length) {
-      setSelectedLetter(KVK_LETTERS[nextIdx]);
-      setCardIndex(0);
-      setActiveSyl(null);
-      setSeriesComplete(false);
-      setScript('RUMI');
-    } else {
-      onBack();
+      setCardIndex(index => index - 1);
+    } else if (currentLetterIdx > 0) {
+      const previousLetter = KVK_LETTERS[currentLetterIdx - 1];
+      setSelectedLetter(previousLetter);
+      setCardIndex(getKVKSeriesByLetter(previousLetter).length - 1);
     }
   };
 
   const handleSelectLetter = (letter) => {
     setSelectedLetter(letter);
     setCardIndex(0);
-    setActiveSyl(null);
     setSeriesComplete(false);
     setScript('RUMI');
   };
@@ -105,112 +90,62 @@ export default function KVKLearningPage({ onBack, language }) {
   const handleBackToLetters = () => {
     setSelectedLetter(null);
     setCardIndex(0);
-    setActiveSyl(null);
     setSeriesComplete(false);
   };
 
-  const nextLetter = KVK_LETTERS[currentLetterIdx + 1] ?? null;
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // ── VIEW 1: Letter Picker ────────────────────────────────────────────────
-  // ─────────────────────────────────────────────────────────────────────────
   if (!selectedLetter) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto',
+      <div className="kv-picker" style={{
         background: 'radial-gradient(ellipse 75% 55% at 0% 0%, rgba(134,239,172,.18) 0%, transparent 70%), radial-gradient(ellipse 75% 55% at 100% 0%, rgba(251,146,60,.18) 0%, transparent 70%), radial-gradient(ellipse 75% 55% at 0% 100%, rgba(122,227,255,.16) 0%, transparent 70%), radial-gradient(ellipse 75% 55% at 100% 100%, rgba(196,181,253,.18) 0%, transparent 70%), #FFFDF8',
       }}>
         <style>{`
-          .kvk-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+          .kv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+          @media (min-width: 500px) { .kv-grid { grid-template-columns: repeat(4, 1fr); gap: 14px; } }
+          @media (min-width: 760px) { .kv-grid { grid-template-columns: repeat(5, 1fr); gap: 16px; } }
+          .kv-letter-tile {
+            aspect-ratio: 1 / 1.05; width: 100%; container-type: inline-size; overflow: hidden; position: relative;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: clamp(2px, 1vh, 8px); padding: clamp(6px, 1.4vh, 14px) 4px;
+            background: linear-gradient(180deg, var(--kt) 0%, #fff 72%); border: 2.5px solid var(--kc-border);
+            border-radius: clamp(14px, 2.6vh, 22px); box-shadow: 0 clamp(3px, 0.6vh, 5px) 0 var(--kc-under), 0 10px 22px -14px rgba(0,0,0,.18);
+            cursor: pointer; font-family: inherit; transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+            -webkit-tap-highlight-color: transparent; animation: kvTileIn .5s cubic-bezier(.34,1.56,.64,1) forwards;
           }
-          @media (min-width: 500px) { .kvk-grid { grid-template-columns: repeat(4, 1fr); gap: 14px; } }
-          @media (min-width: 760px) { .kvk-grid { grid-template-columns: repeat(5, 1fr); gap: 16px; } }
-          .kvk-letter-tile {
-            position: relative; border: 0; padding: 0;
-            aspect-ratio: 1 / 1.05; width: 100%;
-            container-type: inline-size;
-            border-radius: 24px; cursor: pointer; font-family: inherit;
-            overflow: hidden;
-            transition: transform .25s cubic-bezier(.34,1.56,.64,1);
-            -webkit-tap-highlight-color: transparent;
-            /* Resting state visible — entrance only fades IN (iOS-safe). */
-            animation: kvkTileIn .5s cubic-bezier(.34,1.56,.64,1) forwards;
-          }
-          @keyframes kvkTileIn {
-            0%   { opacity: 0; transform: translateY(22px) scale(.94); }
-            70%  { opacity: 1; transform: translateY(-4px) scale(1.02); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-          }
-          .kvk-letter-tile:hover  { transform: translateY(-6px) rotate(-1.2deg); }
-          .kvk-letter-tile:active { transform: translateY(5px) rotate(0deg); transition: transform .1s ease; }
-          .kvk-letter-tile::before {
-            content: ""; position: absolute; inset: 0;
-            background-image: radial-gradient(rgba(255,255,255,.18) 1.4px, transparent 1.6px);
-            background-size: 18px 18px; opacity: .65; pointer-events: none; z-index: 1;
-          }
-          .kvk-letter-tile::after {
-            content: ""; position: absolute; top: 6px; left: 10px; right: 10px; height: 38%;
-            border-radius: 20px 20px 0 0;
-            background: linear-gradient(180deg, rgba(255,255,255,.42) 0%, rgba(255,255,255,.06) 75%, transparent 100%);
-            pointer-events: none; z-index: 1;
-          }
-          .kvk-tile-letter {
-            position: absolute; inset: 0; padding-bottom: 28%;
-            display: flex; align-items: center; justify-content: center; z-index: 2;
-            font-family: 'Fredoka','Baloo 2',sans-serif; font-weight: 700;
-            font-size: 60cqi; line-height: 1; color: #fff;
-            text-shadow: 0 2px 0 rgba(0,0,0,.18);
-          }
-          .kvk-tile-cap {
-            position: absolute; bottom: 8px; left: 8px; right: 8px; z-index: 4;
-            background: #fff; border-radius: 14px; padding: 6px 10px;
-            box-shadow: 0 3px 0 rgba(0,0,0,.10);
-            text-align: center; font-family: 'Fredoka',sans-serif; font-weight: 700;
-            font-size: 0.8rem; line-height: 1;
-          }
-          .kvk-section-label {
-            font-family: 'Fredoka',sans-serif; font-weight: 700; font-size: 1.05rem;
-            color: #374151; text-align: center; letter-spacing: .04em;
-            margin: 12px 0 16px;
-            display: flex; align-items: center; gap: 14px; justify-content: center;
-          }
-          .kvk-section-label::before, .kvk-section-label::after {
-            content: ""; height: 3px; flex: 1; max-width: 80px; border-radius: 999px;
-            background: linear-gradient(90deg, rgba(34,197,94,.6), rgba(249,115,22,.7), rgba(60,203,255,.7), rgba(139,92,246,.6));
-          }
-          @media (max-width: 400px) {
-            .kvk-letter-tile { border-radius: 18px; }
-            .kvk-tile-cap { bottom: 5px; left: 5px; right: 5px; padding: 5px 6px; font-size: 0.68rem; border-radius: 10px; }
-          }
+          @keyframes kvTileIn { 0% { opacity: 0; transform: translateY(22px) scale(.94); } 70% { opacity: 1; transform: translateY(-4px) scale(1.02); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+          @media (hover: hover) { .kv-letter-tile:hover { border-color: var(--kc); transform: translateY(-2px); } }
+          .kv-letter-tile:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--kc-under), 0 4px 10px -8px rgba(0,0,0,.18); }
+          .kv-tile-letter { font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 48cqi; line-height: 1; color: var(--kc); display: flex; align-items: baseline; }
+          .kv-tile-letter small { font-size: .58em; font-weight: 800; opacity: .5; margin-left: 3px; }
+          .kv-tile-cap { background: #fff; border-radius: 10cqi; padding: 5cqi 8cqi; box-shadow: 0 2px 0 rgba(0,0,0,.08); text-align: center; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 18cqi; line-height: 1; }
+          @media (max-width: 400px) { .kv-letter-tile { border-radius: 20px; padding: clamp(5px, 1.2vh, 10px) 3px; } .kv-tile-letter { font-size: 40cqi; } .kv-tile-cap { padding: 4cqi 6cqi; font-size: 16cqi; border-radius: 8cqi; } }
         `}</style>
-
-        <BackButton onClick={onBack} />
-
-        <div style={{ padding: '68px 0.75rem 1.5rem', maxWidth: '600px', margin: '0 auto', width: '100%' }}>
-          <div className="kvk-section-label">
-            {language === 'bm' ? 'Pilih Huruf untuk Belajar' : 'Select a Letter to Learn'}
-          </div>
-
-          <div className="kvk-grid">
+        <BMHeader
+          onBack={onBack}
+          language={language}
+          title={title}
+          sectionLabel={language === 'bm' ? 'Pilih Huruf untuk Belajar' : 'Select a Letter to Learn'}
+        />
+        <div className="kv-picker-body">
+          <div className="kv-grid">
             {KVK_LETTERS.map((letter, idx) => {
-              const pal = TILE_PALETTE[idx % TILE_PALETTE.length];
+              const pal = CARD_PALETTE[idx % CARD_PALETTE.length];
+              const series = getKVKSeriesByLetter(letter);
               return (
                 <button
                   type="button"
                   key={letter}
-                  className="kvk-letter-tile"
+                  className="kv-letter-tile"
                   onClick={() => handleSelectLetter(letter)}
                   style={{
-                    background: `linear-gradient(165deg, ${pal.light} 0%, ${pal.base} 60%, ${pal.deep} 100%)`,
+                    '--kc': pal.color,
+                    '--kt': pal.tint,
+                    '--kc-border': `${pal.color}33`,
+                    '--kc-under': `${pal.color}2e`,
                     animationDelay: `${0.04 + idx * 0.025}s`,
                   }}
                 >
-                  <span className="kvk-tile-letter">{letter}</span>
-                  <span className="kvk-tile-cap" style={{ color: pal.deep }}>
-                    {getKVKSeriesByLetter(letter).length} kad
-                  </span>
+                  <span className="kv-tile-letter">{letter}<small>{letter.toLowerCase()}</small></span>
+                  <span className="kv-tile-cap" style={{ color: pal.color }}>{series.length} kad</span>
                 </button>
               );
             })}
@@ -220,290 +155,62 @@ export default function KVKLearningPage({ onBack, language }) {
     );
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // ── VIEW 2: Series Complete ──────────────────────────────────────────────
-  // ─────────────────────────────────────────────────────────────────────────
-  if (seriesComplete) {
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#fff' }}>
-        <BackButton onClick={handleBackToLetters} />
+  if (seriesComplete) return <KVCompletion language={language} onReturn={onComplete} />;
 
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', gap: '1.5rem', textAlign: 'center' }}>
-          <div style={{ fontSize: '5rem', animation: 'kvkBounce 1.5s ease-in-out infinite' }}>🎉</div>
-          <h2 style={{ fontSize: '1.8rem', fontWeight: 900, color: '#3C3C3C', margin: 0 }}>
-            Siri <span style={{ color: '#58CC02' }}>{selectedLetter}</span> Selesai!
-          </h2>
-          <p style={{ color: '#AFAFAF', fontWeight: 700, fontSize: '0.95rem', margin: 0 }}>
-            {nextLetter
-              ? (language === 'bm' ? `Teruskan dengan Siri ${nextLetter}` : `Continue with Letter ${nextLetter} Series`)
-              : (language === 'bm' ? 'Tahniah! Semua huruf selesai!' : 'All letters complete!')}
-          </p>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', maxWidth: '320px' }}>
-            {nextLetter && (
-              <button type="button" onClick={handleNextLetter} style={{
-                width: '100%', padding: '1.1rem',
-                background: '#58CC02', color: '#fff',
-                border: 'none', borderBottom: '6px solid #46A302',
-                borderRadius: '16px', fontWeight: 900, fontSize: '1.1rem',
-                cursor: 'pointer',
-                transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                boxShadow: '0 6px 0 rgba(0,0,0,0.1), inset 0 -2px 0 rgba(0,0,0,0.1)',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 0 rgba(0,0,0,0.15), inset 0 -2px 0 rgba(0,0,0,0.1)'; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 0 rgba(0,0,0,0.1), inset 0 -2px 0 rgba(0,0,0,0.1)'; }}
-              onMouseDown={e => { e.currentTarget.style.transform = 'translateY(0px)'; e.currentTarget.style.boxShadow = '0 2px 0 rgba(0,0,0,0.08), inset 0 -1px 0 rgba(0,0,0,0.1)'; }}
-              onMouseUp={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 0 rgba(0,0,0,0.15), inset 0 -2px 0 rgba(0,0,0,0.1)'; }}
-              >
-                Siri {nextLetter} →
-              </button>
-            )}
-            <button type="button" onClick={handleBackToLetters} style={{
-              width: '100%', padding: '1rem',
-              background: '#fff', color: '#3C3C3C',
-              border: '2px solid #E5E5E5', borderBottom: '6px solid #D0D0D0',
-              borderRadius: '16px', fontWeight: 800, fontSize: '1rem',
-              cursor: 'pointer',
-              transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
-              boxShadow: '0 6px 0 rgba(0,0,0,0.08), inset 0 -2px 0 rgba(0,0,0,0.05)',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 0 rgba(0,0,0,0.12), inset 0 -2px 0 rgba(0,0,0,0.05)'; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 0 rgba(0,0,0,0.08), inset 0 -2px 0 rgba(0,0,0,0.05)'; }}
-            onMouseDown={e => { e.currentTarget.style.transform = 'translateY(0px)'; e.currentTarget.style.boxShadow = '0 2px 0 rgba(0,0,0,0.06), inset 0 -1px 0 rgba(0,0,0,0.05)'; }}
-            onMouseUp={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 0 rgba(0,0,0,0.12), inset 0 -2px 0 rgba(0,0,0,0.05)'; }}
-            >
-              {language === 'bm' ? '← Pilih Huruf Lain' : '← Pick Another Letter'}
-            </button>
-          </div>
-        </div>
-
-        <style>{`@keyframes kvkBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }`}</style>
-      </div>
-    );
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // ── VIEW 3: Flashcard ────────────────────────────────────────────────────
-  // ─────────────────────────────────────────────────────────────────────────
-  const displayText = getDisplayText(currentItem);
-  const isJawi      = script === 'JAWI';
-  const isActive    = activeSyl === cardIndex;
+  const isJawi = script === 'JAWI';
+  const cap = (value) => value ? value.charAt(0).toUpperCase() + value.slice(1) : '';
+  const capKVK = currentItem?.kvk ? cap(currentItem.kvk) : '';
+  const msWord = cap(currentItem?.ms?.word);
+  const enWord = cap(currentItem?.en?.word);
+  const jawiWord = currentItem?.jawi?.word ?? '';
+  const mainWord = script === 'ENG' ? enWord : script === 'JAWI' ? jawiWord : msWord;
+  const subWord = script === 'ENG' || script === 'JAWI' ? msWord : enWord;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#F7F7F7' }}>
-
-      <BackButton onClick={handleBackToLetters} />
-
-      {/* ── Centered content ── */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0.5rem 1rem', gap: '0.5rem', overflowY: 'auto' }}>
-        {/* ── Script Toggle ── */}
-        <div style={{ display: 'flex', gap: 'clamp(0.3rem, 2vw, 0.75rem)', justifyContent: 'center', width: '100%', maxWidth: '400px', padding: 'clamp(0.5rem, 2vw, 1rem)' }}>
-          {SCRIPTS.map(s => (
-            <button type="button" key={s.key} onClick={() => { setScript(s.key); setActiveSyl(null); }} style={{
-              flex: 1, maxWidth: 100, padding: '0.5rem 0',
-              margin: 'clamp(0.2rem, 1vw, 0.5rem)',
-              background: script === s.key ? s.color : '#fff',
-              color:      script === s.key ? '#fff'   : s.color,
-              border:     `2px solid ${s.color}`,
-              borderBottom: `5px solid ${s.color}`,
-              borderRadius: '12px', fontWeight: 900, fontSize: '0.85rem',
-              cursor: 'pointer', transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
-              boxShadow: script === s.key ? `0 6px 0 rgba(0,0,0,0.12), inset 0 -2px 0 rgba(0,0,0,0.1)` : 'none',
-              transform: script === s.key ? 'translateY(-2px)' : 'translateY(0)',
-              onMouseEnter: null,
-            }}
-            onMouseEnter={script === s.key ? undefined : (e) => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
-            onMouseLeave={script === s.key ? undefined : (e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
-            onMouseDown={script === s.key ? undefined : (e) => { e.currentTarget.style.transform = 'translateY(0px)'; }}
-            onMouseUp={script === s.key ? undefined : (e) => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
-            >
-              {s.label}
-            </button>
-          ))}
-        </div>
-
-        {/* ── Slot label ── */}
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <div style={{
-            background: slotBg, color: slotColor,
-            borderRadius: '999px', padding: '3px 14px',
-            fontWeight: 800, fontSize: '0.78rem', letterSpacing: '0.5px',
-          }}>
-            {currentItem?.kvk?.toUpperCase()} — {cardIndex + 1} / {seriesItems.length}
-          </div>
-        </div>
-
-        {/* ── Main Card ── */}
-        <div style={{
-          width: '100%', maxWidth: '400px',
-          background: '#fff', borderRadius: '28px',
-          border: `3px solid ${slotBg}`,
-          boxShadow: `0 8px 0 ${slotColor}33`,
-          padding: '1.5rem 1.5rem 1.75rem', textAlign: 'center',
-          position: 'relative', minHeight: '220px',
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        }}>
-          {/* Sound button */}
-          <button type="button" onClick={() => speak(currentItem)} title="Play sound" style={{
-            position: 'absolute', top: 12, right: 12,
-            background: slotBg, border: 'none', borderRadius: '50%',
-            width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer', color: slotColor, transition: 'transform 0.1s',
-          }}
-            onMouseDown={e => e.currentTarget.style.transform = 'scale(0.88)'}
-            onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
-            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-          >
-            <Volume2 size={19} />
-          </button>
-
-          {/* KVK syllable badge */}
-          <div style={{
-            background: slotColor, color: '#fff',
-            borderRadius: '10px', padding: '3px 16px',
-            fontWeight: 900, fontSize: '1rem', marginBottom: '0.75rem',
-            letterSpacing: '2px',
-          }}>
-            {currentItem?.kvk?.toUpperCase()}
-          </div>
-
-          {/* Emoji icon */}
-          <div style={{ fontSize: '3rem', lineHeight: 1.2, marginBottom: '0.5rem', animation: 'kvkBounce 2.5s ease-in-out infinite' }}>
-            {currentItem?.icon}
-          </div>
-
-          {/* Main word text */}
-          <div onClick={() => speak(currentItem)} style={{
-            fontSize: isJawi
-              ? 'clamp(2rem, 10vw, 3rem)'
-              : 'clamp(2rem, 10vw, 3.2rem)',
-            fontWeight: 900, lineHeight: 1.2,
-            color: isActive ? slotColor : '#3C3C3C',
-            direction: isJawi ? 'rtl' : 'ltr',
-            fontFamily: isJawi ? '"Lateef", "Noto Naskh Arabic", serif' : 'inherit',
-            cursor: 'pointer',
-            transition: 'color 0.2s, transform 0.15s',
-            transform: isActive ? 'scale(1.06)' : 'scale(1)',
-            wordBreak: 'break-word', maxWidth: '100%',
-          }}>
-            {displayText}
-          </div>
-
-          {/* Helper hints */}
-          {script === 'JAWI' && (
-            <p style={{ fontSize: '0.88rem', color: '#AFAFAF', fontWeight: 700, marginTop: '0.5rem', margin: '0.5rem 0 0' }}>
-              {currentItem?.ms?.word}
-            </p>
-          )}
-          {script === 'ENG' && (
-            <p style={{ fontSize: '0.82rem', color: '#AFAFAF', fontWeight: 700, marginTop: '0.4rem' }}>
-              BM: {currentItem?.ms?.word}
-            </p>
-          )}
-          {script === 'RUMI' && (
-            <p style={{ fontSize: '0.78rem', color: '#AFAFAF', fontWeight: 700, marginTop: '0.4rem' }}>
-              {currentItem?.kvk?.toUpperCase()} — {currentItem?.ms?.prompt}
-            </p>
-          )}
-        </div>
-
-        {/* ── Mini syllable strip ── */}
-        <div style={{ display: 'flex', gap: 'clamp(0.2rem, 1.5vw, 0.5rem)', width: '100%', maxWidth: '400px', overflowX: 'auto', padding: 'clamp(0.5rem, 2vw, 1rem)', margin: '0 auto', justifyContent: 'center', alignItems: 'center' }}>
-          {seriesItems.map((it, i) => {
-            const isA = i === cardIndex;
-            const isDone = i < cardIndex;
-            const c = SLOT_COLORS[i % SLOT_COLORS.length];
-            const b = SLOT_BG[i % SLOT_BG.length];
-            return (
-              <button type="button" key={it.id} onClick={() => { setCardIndex(i); setActiveSyl(null); }} style={{
-                flex: '1 0 auto', minWidth: 44, maxWidth: 64,
-                padding: '0.35rem 0.1rem',
-                margin: 'clamp(0.15rem, 1vw, 0.35rem)',
-                background: isA ? c : isDone ? b : '#fff',
-                color: isA ? '#fff' : isDone ? c : '#AFAFAF',
-                border: `2px solid ${isA ? c : isDone ? c : '#E5E5E5'}`,
-                borderBottom: `4px solid ${isA ? c : isDone ? c : '#D0D0D0'}`,
-                borderRadius: '10px', fontWeight: 900, fontSize: '0.72rem',
-                cursor: 'pointer', transition: 'all 0.12s cubic-bezier(0.34, 1.56, 0.64, 1)', textAlign: 'center',
-                boxShadow: isA ? `0 4px 0 rgba(0,0,0,0.12)` : '0 2px 0 rgba(0,0,0,0.06)',
-              }}
-              onMouseEnter={isA ? undefined : (e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 0 rgba(0,0,0,0.1)'; }}
-              onMouseLeave={isA ? undefined : (e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 0 rgba(0,0,0,0.06)'; }}
-              >
-                {it.kvk.toUpperCase()}
-                {isDone && <div style={{ fontSize: '0.58rem' }}>✓</div>}
+    <div className="kv-learning">
+      <BMHeader onBack={handleBackToLetters} language={language} title={title} actions={
+        <details className="kv-settings" ref={settingsRef}>
+          <summary aria-label={language === 'bm' ? 'Tetapan' : 'Settings'} title={language === 'bm' ? 'Tetapan' : 'Settings'}>
+            <Settings size={21} aria-hidden="true" />
+          </summary>
+          <div className="kv-settings-panel" role="group" aria-label={language === 'bm' ? 'Pilihan bahasa dan tulisan' : 'Language and script'}>
+            <span className="kv-settings-label">{language === 'bm' ? 'Bahasa & tulisan' : 'Language & script'}</span>
+            {SCRIPTS.map(option => (
+              <button type="button" key={option.key} aria-pressed={script === option.key} onClick={() => {
+                setScript(option.key);
+                settingsRef.current.open = false;
+                settingsRef.current.querySelector('summary').focus();
+              }}>
+                {option.label}{script === option.key && <Check size={17} aria-hidden="true" />}
               </button>
-            );
-          })}
+            ))}
+          </div>
+        </details>
+      } />
+      <main className="kv-learning-body">
+        <article className="kv-flashcard" aria-label={mainWord}>
+          <div className="kv-flashcard-letters kv-flashcard-letters--syllable">
+            <span>{capKVK}</span><small>{currentItem?.kvk}</small>
+          </div>
+          <div className="kv-flashcard-picture" aria-hidden="true">{currentItem?.icon}</div>
+          <div className="kv-flashcard-word" dir={isJawi ? 'rtl' : 'ltr'} lang={isJawi ? 'ms-Arab' : script === 'ENG' ? 'en' : 'ms'}>{mainWord}</div>
+          <div className="kv-flashcard-translation" lang={script === 'RUMI' ? 'en' : 'ms'}>{subWord}</div>
+          <button type="button" className="kv-listen" onClick={() => speak(currentItem)}>
+            <Volume2 size={24} aria-hidden="true" />
+            {language === 'bm' ? 'Tekan untuk dengar' : 'Tap to listen'}
+          </button>
+        </article>
+      </main>
+      <footer className="kv-learning-footer">
+        <div className="kv-learning-nav">
+          <button type="button" className="kv-previous" onClick={handlePrev} disabled={cardIndex === 0 && currentLetterIdx === 0}>
+            <ChevronLeft size={20} aria-hidden="true" />{language === 'bm' ? 'Sebelumnya' : 'Previous'}
+          </button>
+          <button type="button" className="kv-next" onClick={handleNext}>
+            {language === 'bm' ? 'Seterusnya' : 'Next'}<ChevronRight size={20} aria-hidden="true" />
+          </button>
         </div>
-      </div>
-
-      {/* ── Bottom Nav ── */}
-      <div style={{
-        display: 'flex', gap: 'clamp(0.5rem, 2vw, 1rem)', padding: 'clamp(0.6rem, 2vw, 1rem)',
-        paddingBottom: 'calc(clamp(0.6rem, 2vw, 1rem) + env(safe-area-inset-bottom, 0px))',
-        background: '#fff', borderTop: '2px solid #E5E5E5', flexShrink: 0,
-      }}>
-        <button type="button" onClick={handlePrev} disabled={cardIndex === 0} style={{
-          flex: '0 0 50px', height: '50px', borderRadius: '14px',
-          margin: 'clamp(0.3rem, 1.5vw, 0.5rem)',
-          background: cardIndex === 0 ? '#f0f0f0' : '#fff',
-          border: `2px solid ${cardIndex === 0 ? '#E5E5E5' : '#D0D0D0'}`,
-          borderBottom: `5px solid ${cardIndex === 0 ? '#E5E5E5' : '#C0C0C0'}`,
-          color: cardIndex === 0 ? '#C0C0C0' : '#3C3C3C',
-          cursor: cardIndex === 0 ? 'not-allowed' : 'pointer',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          transition: cardIndex === 0 ? 'none' : 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
-          boxShadow: cardIndex === 0 ? 'none' : '0 5px 0 rgba(0,0,0,0.08)',
-        }}
-        onMouseEnter={cardIndex === 0 ? undefined : (e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 0 rgba(0,0,0,0.12)'; }}
-        onMouseLeave={cardIndex === 0 ? undefined : (e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 5px 0 rgba(0,0,0,0.08)'; }}
-        onMouseDown={cardIndex === 0 ? undefined : (e) => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 2px 0 rgba(0,0,0,0.06)'; }}
-        >
-          <ChevronLeft size={22} />
-        </button>
-
-        <button type="button" onClick={() => speak(currentItem)} style={{
-          flex: 1, height: '50px', borderRadius: '14px',
-          margin: 'clamp(0.3rem, 1.5vw, 0.5rem)',
-          background: slotBg, color: slotColor,
-          border: `2px solid ${slotColor}44`, borderBottom: `5px solid ${slotColor}`,
-          fontWeight: 900, fontSize: '1rem', cursor: 'pointer',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem',
-          transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
-          boxShadow: `0 5px 0 rgba(0,0,0,0.08), inset 0 -2px 0 rgba(0,0,0,0.08)`,
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = `0 8px 0 rgba(0,0,0,0.12), inset 0 -2px 0 rgba(0,0,0,0.08)`; }}
-        onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 5px 0 rgba(0,0,0,0.08), inset 0 -2px 0 rgba(0,0,0,0.08)`; }}
-        onMouseDown={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = `0 2px 0 rgba(0,0,0,0.06), inset 0 -1px 0 rgba(0,0,0,0.08)`; }}
-        >
-          <Volume2 size={18} />
-          {language === 'bm' ? 'Dengar' : 'Listen'}
-        </button>
-
-        <button type="button" onClick={handleNext} style={{
-          flex: '0 0 auto', padding: '0 1.1rem', height: '50px', borderRadius: '14px',
-          margin: 'clamp(0.3rem, 1.5vw, 0.5rem)',
-          background: cardIndex === seriesItems.length - 1 ? '#58CC02' : slotColor,
-          color: '#fff', border: 'none',
-          borderBottom: `5px solid ${cardIndex === seriesItems.length - 1 ? '#46A302' : slotColor}CC`,
-          fontWeight: 900, fontSize: '1rem', cursor: 'pointer',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem',
-          transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
-          boxShadow: '0 5px 0 rgba(0,0,0,0.12), inset 0 -2px 0 rgba(0,0,0,0.1)',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 0 rgba(0,0,0,0.15), inset 0 -2px 0 rgba(0,0,0,0.1)'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 5px 0 rgba(0,0,0,0.12), inset 0 -2px 0 rgba(0,0,0,0.1)'; }}
-        onMouseDown={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 2px 0 rgba(0,0,0,0.1), inset 0 -1px 0 rgba(0,0,0,0.1)'; }}
-        >
-          {cardIndex === seriesItems.length - 1
-            ? (language === 'bm' ? 'Siap ✓' : 'Done ✓')
-            : (language === 'bm' ? 'Seterusnya' : 'Next')}
-          {cardIndex < seriesItems.length - 1 && <ChevronRight size={19} />}
-        </button>
-      </div>
-
-      <style>{`@keyframes kvkBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }`}</style>
+      </footer>
     </div>
   );
 }

@@ -71,14 +71,14 @@
 }
 .kv-settings-panel button:hover, .kv-settings-panel button[aria-pressed='true'] { background: #fff0f3; color: #c91d40; }
 .kv-learning-body {
-  flex: 1; min-height: 0; padding: clamp(4px, 2cqh, 20px) 12px;
+  flex: 1; min-height: 0; padding: clamp(12px, 3cqh, 28px) clamp(12px, 3vw, 32px);
   container: kv-body / size;
-  display: flex; flex-direction: column; align-items: center;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
 }
 .kv-flashcard {
-  flex-shrink: 0; box-sizing: border-box; width: 100%; max-width: 425px; margin: auto 0;
-  display: flex; flex-direction: column; align-items: center; text-align: center;
-  padding: clamp(6px, 3cqh, 18px) 20px; border: 1.5px solid #ffc6d1; border-radius: 28px;
+  flex-shrink: 0; box-sizing: border-box; width: 100%; max-width: 560px; margin: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(8px, 1.6cqh, 18px); text-align: center;
+  padding: clamp(18px, 4cqh, 34px) clamp(18px, 3vw, 34px); border: 1.5px solid #ffc6d1; border-radius: clamp(24px, 3vw, 34px);
   background: radial-gradient(ellipse at 50% 38%, #fff8f9, #ffedf0);
   box-shadow: 0 8px 26px #e84a6810;
 }
@@ -91,17 +91,17 @@
 .kv-flashcard-letters--syllable { font-size: min(18cqw, 24cqh, 100px); letter-spacing: -2px; }
 .kv-flashcard-picture {
   font-family: 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif;
-  font-size: min(24cqw, 23cqh, 96px); line-height: 1.25; margin: min(1cqh, 6px) 0 min(1cqh, 4px);
+  font-size: min(28cqw, 28cqh, 116px); line-height: 1.15; margin: 0;
   filter: drop-shadow(0 5px 3px #8f344018);
 }
-.kv-flashcard-word { max-width: 100%; overflow-wrap: anywhere; color: #10234b; font: 800 clamp(20px, 6cqh, 30px)/1.15 'Baloo 2', sans-serif; }
+.kv-flashcard-word { max-width: 100%; overflow-wrap: anywhere; color: #10234b; font: 800 clamp(26px, 7cqh, 40px)/1.12 'Baloo 2', sans-serif; }
 .kv-flashcard-word[dir='rtl'] { font-family: 'Amiri', serif; font-size: clamp(24px, 7cqh, 36px); line-height: 1.5; }
-.kv-flashcard-translation { color: #6c7e9a; font-size: clamp(14px, 4cqh, 19px); font-weight: 600; line-height: 1.3; }
+.kv-flashcard-translation { color: #6c7e9a; font-size: clamp(17px, 4.5cqh, 24px); font-weight: 600; line-height: 1.25; }
 .kv-listen {
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-  margin-top: min(2cqh, 8px); max-width: 100%; min-height: 44px; padding: clamp(5px, 2cqh, 11px) 22px; border: 0; border-radius: 999px;
+  margin-top: clamp(4px, .8cqh, 10px); max-width: 100%; min-height: clamp(48px, 6cqh, 60px); padding: clamp(8px, 1.5cqh, 14px) clamp(22px, 3vw, 34px); border: 0; border-radius: 999px;
   background: linear-gradient(180deg, #ff496a, #ff3055); color: #fff;
-  font: 800 18px/1.4 'Baloo 2', sans-serif; cursor: pointer;
+  font: 800 clamp(18px, 2.2vw, 22px)/1.2 'Baloo 2', sans-serif; cursor: pointer;
   box-shadow: inset 0 2px 2px #ffffff30;
 }
 .kv-listen svg { flex-shrink: 0; }
@@ -123,6 +123,25 @@
   .kv-flashcard { padding-inline: 12px; }
   .kv-listen { font-size: 16px; padding: 11px 16px; }
   .kv-learning-nav button { font-size: 14px; }
+}
+@media (max-width: 480px) {
+  .kv-learning { background: #fff; }
+  .kv-learning-body { padding: 0 10px; }
+  .kv-flashcard {
+    width: 100%; max-width: none; min-height: 0; gap: 7px;
+    padding: 0 4px; border: 0; border-radius: 0; background: transparent; box-shadow: none;
+  }
+  .kv-flashcard-picture { font-size: min(40vw, 142px); line-height: 1; }
+  .kv-flashcard-word { font-size: clamp(30px, 10vw, 42px); line-height: 1.08; }
+  .kv-flashcard-translation { font-size: clamp(21px, 6vw, 26px); line-height: 1.15; }
+  .kv-listen {
+    width: min(100%, 278px); min-height: 52px; margin-top: 10px;
+    padding: 10px 18px; font-size: clamp(17px, 5vw, 20px); gap: 9px;
+  }
+  .kv-listen svg { width: 25px; height: 25px; }
+  .kv-learning-footer { padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px)); }
+  .kv-learning-nav { width: 100%; max-width: none; gap: 8px; }
+  .kv-learning-nav button { min-height: 42px; border-radius: 12px; font-size: 14px; }
 }
 /* Let the learning stage fill desktop space instead of retaining phone dimensions. */
 @container kv-body (min-width: 841px) and (min-height: 291px) {
