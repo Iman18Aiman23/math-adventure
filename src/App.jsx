@@ -1721,7 +1721,7 @@ export default function App() {
             '--theme-planet-ring': THEMES[currentTheme].planetRing,
           }}
         >
-          {!playerName && <Suspense fallback={null}><WelcomeModal onSave={handleSaveName} /></Suspense>}
+          {!playerName && <Suspense fallback={null}><WelcomeModal onSave={handleSaveName} language={language} onLanguageChange={setLanguage} /></Suspense>}
           <Suspense fallback={null}><LevelUpToast level={levelUpInfo?.newLevel} onDismiss={clearLevelUp} /></Suspense>
           {/* XP reward toast — centered within .app-container (offset from the
               desktop sidebar automatically since this is inside the container). */}

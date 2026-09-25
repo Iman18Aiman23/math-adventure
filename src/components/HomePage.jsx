@@ -4,6 +4,7 @@ import { AGE_GROUPS } from '../data/ageCurriculum';
 import { playHoverSound } from '../utils/soundManager';
 import ImanAILogo from './_shared/ImanAILogo';
 import StatsBar from './_shared/StatsBar';
+import './_shared/SubjectMenuLayout.css';
 import './HomePage.css';
 
 const HomePagePrototype = React.lazy(() => import('./HomePagePrototype'));
@@ -95,7 +96,6 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
   return (
     <div className="ih-root" style={{ '--ih-art': `url("${import.meta.env.BASE_URL}images/home/robots.webp")` }}>
       <header className="ih-header" ref={headerRef}>
-        <button type="button" className="ih-mobile-settings" aria-label={bm ? 'Buka menu akaun' : 'Open account menu'} aria-expanded={panel === 'account' || panel === 'settings'} aria-controls="ih-account-panel" onClick={event => togglePanel('account', event)}><UserRound size={20} /></button>
         <button type="button" className="ih-mobile-logo" onClick={onHome} aria-label="ImanAI — Home"><ImanAILogo language={language} /></button>
         <button type="button" className="ih-points" aria-label={`${gameState?.totalXP ?? 0} XP — ${bm ? 'Lihat kemajuan' : 'View progress'}`} aria-expanded={panel === 'progress'} aria-controls="ih-progress-panel" onClick={event => togglePanel('progress', event)}><Star aria-hidden="true" /><span>{gameState?.totalXP ?? 0}</span></button>
         <button type="button" className="ih-account" aria-expanded={panel === 'account' || panel === 'settings'} aria-controls="ih-account-panel" onClick={event => togglePanel('account', event)}>
@@ -137,6 +137,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
             {themes && onThemeChange && <><h2>{bm ? 'Tema' : 'Theme'}</h2><div className="ih-themes">{Object.entries(themes).map(([id, option]) => <button type="button" key={id} aria-pressed={theme?.key === option.key} onClick={() => onThemeChange(id)}><span style={{ background: option.swatch || option.heroBg }} />{option.label}</button>)}</div></>}
           </>}
         </section>}
+        <button type="button" className="ih-mobile-settings" aria-label={bm ? 'Tetapan' : 'Settings'} aria-expanded={panel === 'settings'} aria-controls="ih-account-panel" onClick={event => togglePanel('settings', event)}><Settings size={20} aria-hidden="true" /></button>
       </header>
 
       <section className="ih-hero" aria-labelledby="ih-welcome-title">
@@ -153,15 +154,15 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
 
       <section className="ih-subjects" aria-labelledby="ih-subject-heading">
         <div className="ih-section-heading"><h2 id="ih-subject-heading">{bm ? 'SUBJEK' : 'SUBJECTS'}</h2><p>{bm ? 'Pilih subjek kegemaran anda.' : 'Choose your favourite subject.'}</p></div>
-        <div className="ih-subject-grid">
+        <div className="ih-subject-grid mh-topic-grid">
           {SUBJECTS.map(subject => <button
-            type="button" key={subject.id} className={`ih-subject ih-subject--${subject.tone}`}
+            type="button" key={subject.id} className={`ih-subject mh-topic-card ih-subject--${subject.tone}`}
             aria-labelledby={`ih-title-${subject.id}`} aria-describedby={`ih-desc-${subject.id}`}
             onClick={() => subject.id === 'robot' ? setShowRobotInterface(true) : onSelectSubject(subject.id)} onMouseEnter={playHoverSound}
           >
-            <span className="ih-subject-scene"><RobotArt index={subject.art} /></span>
-            <span className="ih-subject-content"><span className="ih-subject-title" id={`ih-title-${subject.id}`}>{subject.title[langIndex]}</span><span className="ih-subject-desc" id={`ih-desc-${subject.id}`}>{subject.desc[langIndex]}</span></span>
-            <span className="ih-card-arrow" aria-hidden="true"><ChevronRight size={20} /></span>
+            <span className="ih-subject-scene mh-topic-visual"><RobotArt index={subject.art} /></span>
+            <span className="ih-subject-content mh-topic-copy"><span className="ih-subject-title mh-topic-title" id={`ih-title-${subject.id}`}>{subject.title[langIndex]}</span><span className="ih-subject-desc mh-topic-description" id={`ih-desc-${subject.id}`}>{subject.desc[langIndex]}</span></span>
+            <span className="mh-card-action"><span>{bm ? 'Mula Belajar' : 'Start Learning'}</span><span className="mh-arrow" aria-hidden="true"><ChevronRight size={20} /></span></span>
           </button>)}
         </div>
       </section>

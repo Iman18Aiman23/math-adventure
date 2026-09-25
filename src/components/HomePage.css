@@ -19,6 +19,17 @@
 .ih-root button { -webkit-tap-highlight-color: transparent; }
 .ih-header { position: relative; z-index: 5; display: flex; align-items: center; justify-content: flex-end; gap: 24px; min-width: 0; }
 .ih-top-actions-cluster { position: relative; display: flex; align-items: center; justify-content: flex-end; gap: clamp(8px, .8vw, 14px); min-width: 0; }
+/* Match the compact mobile header reference. */
+@media (max-width: 767px), (max-height: 500px) and (pointer: coarse) {
+  .ih-root > .ih-header { gap: 6px; margin-right: -10px; }
+  .ih-header > .ih-mobile-logo { display: block; width: 130px; min-width: 90px; margin-right: auto; padding: 0; background: transparent; }
+  .ih-header > .ih-points { flex-shrink: 0; min-width: 58px; max-width: 84px; height: 36px; min-height: 36px; padding: 5px 10px; font-size: 16px; background: #f8fcff; border-color: #e6effa; }
+  .ih-header > .ih-account { flex-shrink: 0; height: 36px; min-height: 36px; padding: 3px 7px 3px 4px; gap: 3px; background: #f8fcff; border-color: #e6effa; }
+  .ih-header > .ih-account .ih-avatar { width: 26px; height: 26px; border-width: 1px; }
+  .ih-header > .ih-account .ih-avatar svg { width: 23px; height: 23px; }
+  .ih-header > .ih-account > svg { width: 16px; }
+  .ih-header > .ih-mobile-settings { display: grid; place-items: center; flex: 0 0 36px; width: 36px; height: 36px; padding: 0; border: 1px solid #e6effa; border-radius: 50%; background: #f8fcff; color: #6b88ae; }
+}
 .ih-mobile-logo, .ih-mobile-settings { display: none; }
 .ih-points { display: inline-flex; justify-content: center; align-items: center; gap: 9px; min-height: 40px; min-width: 76px; max-width: 160px; padding: 7px 16px; border: 1px solid white; border-radius: 28px; background: #edfff3; color: var(--ih-ink); font-size: 19px; font-weight: 800; box-shadow: 0 2px 9px #5795bd0a; }
 .ih-points span { overflow: hidden; text-overflow: ellipsis; }
@@ -76,92 +87,22 @@
 
 .ih-subjects, .ih-ages { display: flex; flex-direction: column; gap: 10px; min-height: 0; min-width: 0; }
 .ih-subjects { container: subjects / inline-size; }
-/* One control, with a horizontal layout at every container width. */
-.ih-subject-grid {
-  display: grid;
-  flex-shrink: 0;
-  grid-template-columns: minmax(0, 1fr);
-  grid-auto-rows: 1fr;
-  gap: clamp(10px, 1.4cqi, 18px);
-  min-width: 0;
-}
+/* MathHome owns card borders, surfaces, typography and interaction styles.
+   Only the palette varies to coordinate with each robot's accessories. */
+.ih-subjects { --menu-card-height: clamp(96px, 14.2dvh, 144px); --mh-navy: #0b1b44; --mh-muted: #667a98; }
+.ih-subject-grid { min-width: 0; flex-shrink: 0; }
 .ih-subject {
-  --card-ink: #ff7912;
-  --card-bg: #fff3cf;
-  --card-edge: #ffdda0;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: clamp(8px, 1.2cqi, 16px);
-  width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-  padding: clamp(9px, 1.2cqi, 15px);
-  border: 1px solid var(--card-edge);
-  border-radius: clamp(17px, 2cqi, 25px);
-  background: var(--card-bg);
-  color: white;
-  text-align: left;
-  isolation: isolate;
-  position: relative;
-  box-shadow: 0 3px 10px #477bb00a;
-  cursor: pointer;
-  transition: transform 160ms ease, border-color 160ms ease;
+  --mh-card: #fff9ee; --mh-border: #f5e3c7; --mh-accent: #c77815; --mh-tint: #ffedcc;
+  min-width: 0; box-sizing: border-box; cursor: pointer;
 }
-/* The inset colour connects the illustration, copy and arrow. */
-.ih-subject::before {
-  content: '';
-  position: absolute;
-  inset: clamp(8px, 1cqi, 12px);
-  z-index: -1;
-  border-radius: clamp(12px, 1.5cqi, 19px);
-  background: linear-gradient(105deg, #ffffff70, transparent 65%), var(--card-ink);
-}
-.ih-subject--speaking { --card-ink: #ed438e; --card-bg: #ffe1f0; --card-edge: #ffc6e4; }
-.ih-subject--math { --card-ink: #3475ef; --card-bg: #dceaff; --card-edge: #bcd5ff; }
-.ih-subject--islam { --card-ink: #00aa7f; --card-bg: #cefae9; --card-edge: #aceed7; }
-.ih-subject--kssr { --card-ink: #00a5c1; --card-bg: #cdf7fc; --card-edge: #a6eaf5; }
-.ih-subject--malay { --card-ink: #8050ec; --card-bg: #e8ddff; --card-edge: #d4c0fc; }
-.ih-subject--robot { --card-ink: #f7a009; --card-bg: #fff1bc; --card-edge: #ffe099; }
-.ih-subject-scene {
-  display: grid;
-  place-items: center;
-  width: clamp(66px, 8cqi, 132px);
-  aspect-ratio: 1;
-  min-width: 0;
-  border-radius: 16px;
-  background: #ffffff26;
-}
-/* Existing artwork is a square sprite: equal dimensions preserve each full cell. */
-.ih-subject-scene > .ih-art { width: 100%; height: auto; aspect-ratio: 1; }
-.ih-subject-content { display: grid; gap: 6px; min-width: 0; padding-block: 8px; }
-.ih-subject-title {
-  font: 800 clamp(14px, 1.5cqi, 23px)/1.15 'Outfit', sans-serif;
-  overflow-wrap: anywhere;
-}
-.ih-subject-desc {
-  font-size: clamp(12px, 1.05cqi, 16px);
-  line-height: 1.4;
-  color: #fffffff2;
-  overflow-wrap: anywhere;
-}
-.ih-card-arrow {
-  display: grid;
-  place-items: center;
-  width: clamp(30px, 3.2cqi, 48px);
-  aspect-ratio: 1;
-  margin-right: 5px;
-  border-radius: 50%;
-  background: #ffffffd9;
-  color: var(--card-ink);
-}
-.ih-card-arrow svg { width: 65%; height: 65%; stroke-width: 3; }
-@container subjects (min-width: 480px) {
-  .ih-subject-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@container subjects (min-width: 880px) {
-  .ih-subject-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
+.ih-subject--speaking { --mh-card: #fff4f9; --mh-border: #f5dce9; --mh-accent: #cc4386; --mh-tint: #fce0ee; }
+.ih-subject--math { --mh-card: #f6f3ff; --mh-border: #e4dcfa; --mh-accent: #7950ce; --mh-tint: #e9dfff; }
+.ih-subject--islam { --mh-card: #f1fbf7; --mh-border: #d9f1e7; --mh-accent: #18a97b; --mh-tint: #d5f2e7; }
+.ih-subject--kssr { --mh-card: #f2f8ff; --mh-border: #dcebfa; --mh-accent: #2f80ed; --mh-tint: #dcebff; }
+.ih-subject--malay { --mh-card: #f6f1ff; --mh-border: #dfceff; --mh-accent: #8944d8; --mh-tint: #e8dcff; }
+.ih-subject--robot { --mh-card: #fff9e9; --mh-border: #f3e4bc; --mh-accent: #bb850b; --mh-tint: #ffedaf; }
+.ih-subject-scene > .ih-art { width: 100%; max-width: 120px; height: auto; aspect-ratio: 1; }
+.ih-subject-desc { overflow-wrap: anywhere; }
 
 .ih-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; min-height: 24px; }
 .ih-section-heading h2 { display: flex; align-items: center; gap: 10px; font: 750 18px/1.2 'Outfit', sans-serif; white-space: nowrap; letter-spacing: .1px; }
@@ -182,38 +123,16 @@
 .ih-return { display: flex; align-items: center; gap: 8px; margin: 12px; padding: 10px 15px; border-radius: 10px; color: #0b644f; background: #e6f9f0; }
 
 @media (hover: hover) {
-  .ih-subject:hover { transform: translateY(-2px); border-color: var(--card-ink); }
   .ih-age:hover { transform: translateY(-2px); border-color: var(--age-color); }
   .ih-points:hover, .ih-account:hover { filter: brightness(.97); }
 }
-.ih-subject:active, .ih-age:active { transform: translateY(1px); }
+.ih-subject:active { transform: scale(.99); }
+.ih-age:active { transform: translateY(1px); }
 
 @media (min-width: 768px) {
   #root:has(.ih-root) { padding: 12px; background: radial-gradient(ellipse at 30% 20%, #c8e8fc, #edf8ff 80%); }
   .app-home:has(.ih-root) { border-radius: 0 23px 23px 0; }
   .view-container:has(> .ih-root) { overflow-y: auto; }
-  #root:has(.ih-root) .desktop-sidebar { height: 100%; padding: 16px; gap: 10px; border-radius: 23px 0 0 23px; border-right: 1px solid #eaf2fa; background: #fcfeff; }
-  #root:has(.ih-root) .sidebar-logo { padding: 0; margin: 0; }
-  #root:has(.ih-root) .home-coach-progress { display: grid; grid-template-columns: 44px 1fr; column-gap: 10px; padding: 10px; border-radius: 13px; background: linear-gradient(120deg, #effbff, #f7fcff); border-color: #e0f0fa; }
-  #root:has(.ih-root) .home-coach-progress::before { content: attr(data-progress); grid-row: 1 / 3; display: grid; place-items: center; border-radius: 50%; width: 44px; height: 44px; background: radial-gradient(closest-side, #f7fcff 82%, transparent 85%), conic-gradient(#124838 var(--progress), #cce9f5 0); font-size: 11px; font-weight: 800; }
-  #root:has(.ih-root) .home-progress-label { margin: 3px 0 5px; align-items: center; font-size: 11px; color: #0e254d; }
-  #root:has(.ih-root) .home-progress-label strong { display: none; }
-  #root:has(.ih-root) .home-progress-track { height: 7px; }
-  #root:has(.ih-root) .sidebar-continue { min-height: 40px; padding: 8px 12px; border-radius: 11px; font-size: 13px; box-shadow: none; background: linear-gradient(110deg, #00b887, #00a271); }
-  #root:has(.ih-root) .sidebar-play-icon { display: block; fill: #fff; flex-shrink: 0; }
-  #root:has(.ih-root) .sidebar-continue > span { flex: 1; text-align: left; }
-  #root:has(.ih-root) .sidebar-motivation { display: flex; align-items: center; gap: 10px; padding: 12px 10px; min-height: 57px; border-radius: 12px; background: #f5fbff; border: 1px solid #e5eff8; text-align: left; color: #42658f; font-size: 11px; }
-  #root:has(.ih-root) .sidebar-motivation > svg:first-child { fill: #ffce24; color: #f8af07; flex-shrink: 0; }
-  #root:has(.ih-root) .sidebar-motivation > span { flex: 1; }
-  #root:has(.ih-root) .sidebar-motivation small { display: block; margin-top: 4px; font-size: 10px; }
-  #root:has(.ih-root) .sidebar-menu-panel { flex: 1; min-height: 0; gap: 8px; }
-  #root:has(.ih-root) .home-quick-nav { gap: clamp(1px, .4dvh, 4px); padding: 2px; }
-  #root:has(.ih-root) .home-quick-link { min-height: clamp(26px, 4.3dvh, 44px); padding: 5px 10px; gap: 14px; border-radius: 8px; color: #3d6292; font-size: 13px; }
-  #root:has(.ih-root) .home-quick-link.active { color: #009b70; background: #e0f9f0; }
-  #root:has(.ih-root) .home-quick-link svg { width: 21px; height: 21px; flex-basis: 21px; }
-  #root:has(.ih-root) .sidebar-nav-divider { margin: 5px 0; }
-  #root:has(.ih-root) .home-coach-footer { margin-top: 0; padding-top: 6px; border-top: 0; }
-  #root:has(.ih-root) .home-settings-btn, #root:has(.ih-root) .home-top-actions .sb-bundle-btn { min-height: 38px; }
 }
 
 /* Desktop proportions use both available width and height. */
@@ -237,41 +156,17 @@
   .ih-section-heading h2 { font-size: clamp(18px, 1.35vw, 25px); font-weight: 800; }
   .ih-section-heading p { font-size: clamp(11px, .85vw, 15px); }
   .ih-subjects, .ih-ages { gap: clamp(7px, 1dvh, 12px); min-height: min-content; }
-  .ih-subject-grid { gap: clamp(8px, 1.2dvh, 16px); }
-  .ih-subject { min-height: clamp(92px, calc(14dvh - 12px), 180px); padding: clamp(9px, 1.2dvh, 15px); gap: clamp(8px, .9cqi, 16px); }
-  .ih-subject-scene { width: clamp(64px, min(8cqi, 11dvh), 145px); }
-  .ih-subject-title { font-size: clamp(15px, 1.55cqi, 25px); }
-  .ih-subject-desc { font-size: clamp(12px, 1.1cqi, 17px); }
-  .ih-subject-content { padding-block: 3px; gap: 5px; }
   .ih-age { min-height: clamp(64px, 8dvh, 112px); padding: clamp(8px, 1dvh, 14px); gap: clamp(8px, .9vw, 16px); }
   .ih-age-badge { flex-basis: clamp(42px, 3.4vw, 62px); height: clamp(46px, 6dvh, 66px); }
   .ih-age-badge svg { width: 76%; height: 76%; }
   .ih-age-copy strong { font-size: clamp(13px, .95vw, 17px); font-weight: 700; }
   .ih-age-copy > span { font-size: clamp(12px, .85vw, 15px); }
-  #root:has(.ih-root) .desktop-sidebar { --desktop-sidebar-width: clamp(310px, 18vw, 340px); padding: clamp(12px, 1.6dvh, 22px); gap: clamp(7px, 1.2dvh, 15px); }
-  #root:has(.ih-root) .sidebar-logo { justify-content: center; }
-  #root:has(.ih-root) .sidebar-logo .imanai-logo { width: min(100%, clamp(180px, 28dvh, 270px)); max-width: 100%; margin: auto; }
-  #root:has(.ih-root) .home-coach-progress { grid-template-columns: clamp(44px, 5.7dvh, 60px) 1fr; padding: clamp(9px, 1.3dvh, 15px); }
-  #root:has(.ih-root) .home-coach-progress::before { width: clamp(44px, 5.7dvh, 60px); height: clamp(44px, 5.7dvh, 60px); font-size: 14px; }
-  #root:has(.ih-root) .home-progress-label { font-size: clamp(12px, .9vw, 15px); }
-  #root:has(.ih-root) .home-progress-track { height: 9px; }
-  #root:has(.ih-root) .sidebar-continue { min-height: clamp(42px, 5.5dvh, 56px); font-size: clamp(14px, 1vw, 18px); padding: 9px 14px; }
-  #root:has(.ih-root) .sidebar-menu-panel { flex: 1; min-height: 0; gap: clamp(5px, .8dvh, 10px); }
-  #root:has(.ih-root) .home-quick-nav { gap: clamp(0px, calc((100dvh - 760px) / 60), 6px); }
-  #root:has(.ih-root) .home-quick-link { min-height: clamp(32px, 4.6dvh, 54px); font-size: clamp(15px, 1.05vw, 20px); font-weight: 500; padding: 5px 10px; }
-  #root:has(.ih-root) .home-quick-link.active { font-weight: 700; }
-  #root:has(.ih-root) .home-quick-link svg { width: clamp(22px, 1.45vw, 28px); height: clamp(22px, 1.45vw, 28px); flex-basis: clamp(22px, 1.45vw, 28px); }
-  #root:has(.ih-root) .home-settings-btn, #root:has(.ih-root) .home-top-actions .sb-bundle-btn { min-height: clamp(38px, 5dvh, 50px); font-size: clamp(13px, .95vw, 17px); }
-  #root:has(.ih-root) .sidebar-motivation { margin-top: auto; min-height: clamp(48px, 7dvh, 78px); padding: 10px; font-size: clamp(12px, .85vw, 16px); }
-  #root:has(.ih-root) .sidebar-motivation small { font-size: clamp(11px, .75vw, 14px); }
 }
 .ih-ages { padding: clamp(8px, 1dvh, 14px); border: 1px solid #dceefa; border-radius: 20px; background: #ffffff80; box-shadow: 0 2px 10px #477bb007; }
 @media (min-width: 768px) and (max-width: 1279px) {
   /* Tall tablets must not allocate their spare viewport height to the hero. */
   .ih-root { height: auto; min-height: 100%; flex: none; align-content: start; grid-template-rows: 40px clamp(190px, 24vw, 240px) auto auto; }
-  #root:has(.ih-root) .desktop-sidebar { --desktop-sidebar-width: clamp(224px, 24vw, 260px); }
   .ih-age-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .ih-subject { min-height: 96px; }
   .ih-hero-copy { width: 58%; padding-left: 18px; }
   .ih-hero h1 { font-size: clamp(28px, 3.2vw, 38px); }
   .ih-hero-art { right: 0; }
@@ -305,13 +200,13 @@
   .ih-mobile-nav button:focus-visible { outline: 2px solid #1578c6; outline-offset: 1px; border-radius: 5px; }
   .ih-mobile-nav .is-active { color: #00a77b; font-weight: 700; }
   .ih-mobile-nav .is-active span { border-radius: 12px; background: #e8fbf3; padding: 1px 6px; }
-  .ih-root { height: auto; min-height: 100%; flex: none; grid-template-rows: 58px 180px auto auto; gap: 16px; padding: 0 14px calc(88px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(#f2fbff, white 230px); }
+  .ih-root { height: auto; min-height: 100%; flex: none; grid-template-rows: 68px 180px auto auto; gap: 16px; padding: 0 14px calc(88px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(#f2fbff, white 230px); }
   .ih-header { justify-content: flex-end; gap: 8px; }
   .ih-top-actions-cluster { display: contents; }
   .ih-mobile-logo, .ih-mobile-settings { display: none; }
   .ih-popover {
     position: fixed;
-    top: calc(58px + env(safe-area-inset-top, 0px));
+    top: calc(68px + env(safe-area-inset-top, 0px));
     right: 12px;
     left: auto;
     z-index: 200;

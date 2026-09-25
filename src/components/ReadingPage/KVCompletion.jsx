@@ -1,5 +1,7 @@
 import { useEffect, useRef, useId } from 'react';
 import { ArrowRight } from 'lucide-react';
+import { playSound } from '../../utils/soundManager';
+import './KVLearningPage.css';
 
 export default function KVCompletion({ language, onReturn }) {
   const dialogRef = useRef(null);
@@ -10,6 +12,7 @@ export default function KVCompletion({ language, onReturn }) {
     const previousFocus = document.activeElement;
     const dialog = dialogRef.current;
     dialog.showModal();
+    playSound('streak');
     return () => {
       dialog.close();
       previousFocus?.focus();

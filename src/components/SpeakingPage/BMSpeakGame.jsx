@@ -3,11 +3,11 @@ import { ArrowLeft, RefreshCw, SkipForward, Mic, Volume2 } from 'lucide-react';
 import SpeechManager from '../../services/SpeechManager';
 import { getShuffledItems, checkBilingualMatch } from '../../data/curriculum/index';
 import { useGameStateContext } from '../../App';
-import MascotIcon from '../icons/MascotIcon';
 import confetti from 'canvas-confetti';
 import { playSound } from '../../utils/soundManager';
 import SpeakHeaderArtwork from './SpeakHeaderArtwork';
 import './BMSpeakGame.css';
+import KVCompletion from '../ReadingPage/KVCompletion';
 
 const ITEMS_PER_ROUND = 10;
 const MAX_ATTEMPTS    = 3;
@@ -39,7 +39,6 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
   const [items,       setItems]       = useState([]);
   const [index,       setIndex]       = useState(0);
   const [phase,       setPhase]       = useState(PHASE_IDLE);
-  const [score,       setScore]       = useState(0);
   const [streak,      setStreak]      = useState(0);
   const [attempts,    setAttempts]    = useState(0);
   const [lang,        setLang]        = useState(category === 'en_long_vowels' ? 'en' : 'ms');       // 'ms' | 'en'
@@ -66,7 +65,6 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
     const loaded = getShuffledItems(category, ITEMS_PER_ROUND);
     setItems(loaded);
     setIndex(0);
-    setScore(0);
     setStreak(0);
     setAttempts(0);
     setLang(category === 'en_long_vowels' ? 'en' : 'ms');
@@ -209,7 +207,6 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
 
   // ── Result handlers ────────────────────────────────────────────────────────
   const handleCorrect = () => {
-    setScore(s => s + 1);
     const milestone = (streak + 1) % 5 === 0;
     setStreak(s => s + 1);
     playSound(milestone ? 'streak' : 'correct');
@@ -275,47 +272,7 @@ export default function BMSpeakGame({ category, onBack, language = 'bm' }) {
 
   // ── Complete screen ────────────────────────────────────────────────────────
   if (phase === PHASE_COMPLETE) {
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', flex: 1, background: '#fff' }}>
-        <div className="game-header">
-          <div className="header-section left">
-            <button onClick={onBack} style={{ background: 'transparent', color: '#AFAFAF', display: 'flex', alignItems: 'center' }}>
-              <ArrowLeft size={22} />
-            </button>
-          </div>
-          <div className="header-section middle">
-            <span className="header-title">🗣️ {CAT_LABELS[category] || category}</span>
-          </div>
-          <div className="header-section right" />
-        </div>
-
-        <div className="lesson-complete fade-in">
-          <div className="lesson-complete-mascot">
-            <MascotIcon size={100} />
-          </div>
-          <h2 className="lesson-complete-title win">
-            {language === 'bm' ? 'Tahniah! 🎉' : 'Well Done! 🎉'}
-          </h2>
-          <div className="lesson-complete-stats">
-            <div className="lesson-stat-chip">
-              <div className="lesson-stat-chip-label">Score</div>
-              <div className="lesson-stat-chip-value" style={{ color: '#FFC800' }}>⭐ {score}</div>
-            </div>
-            <div className="lesson-stat-chip">
-              <div className="lesson-stat-chip-label">Best Streak</div>
-              <div className="lesson-stat-chip-value" style={{ color: '#FF9600' }}>🔥 {streak}</div>
-            </div>
-            <div className="lesson-stat-chip">
-              <div className="lesson-stat-chip-label">+XP</div>
-              <div className="lesson-stat-chip-value" style={{ color: '#58CC02' }}>{score * 10}</div>
-            </div>
-          </div>
-          <button className="btn-primary w-full" style={{ marginTop: '1rem', padding: '1.1rem' }} onClick={onBack}>
-            {language === 'bm' ? 'Kembali' : 'Back to Menu'}
-          </button>
-        </div>
-      </div>
-    );
+    return <KVCompletion language={language} onReturn={onBack} />;
   }
 
   // ── Not supported ──────────────────────────────────────────────────────────

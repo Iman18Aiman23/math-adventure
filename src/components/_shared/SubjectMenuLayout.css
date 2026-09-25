@@ -182,6 +182,7 @@
   .mh-section-heading h2 { font-size: 20px; }
   .mh-topic-title { font-size: 15px; }
 }
+
 .mh-purple { --mh-card: #f6f1ff; --mh-border: #dfceff; --mh-accent: #8944d8; --mh-tint: #e8dcff; }
 .mh-topic-card:disabled { cursor: not-allowed; opacity: .65; }
 .subject-menu-footer { flex-shrink: 0; background: white; }
@@ -263,4 +264,18 @@
 }
 @media (orientation: landscape) and (max-height: 500px) {
   .mh-topic-card { display: grid; }
+}
+
+/* Keep subject menus aligned with the HomePage desktop rhythm. */
+@media (min-width: 768px) {
+  .mh-screen {
+    padding: 0 clamp(16px, 1.6vw, 30px) clamp(10px, 1.4dvh, 20px);
+    overflow-y: auto;
+    --menu-hero-height: clamp(160px, calc(62.5dvh - 290px), 190px);
+  }
+  .mh-wrap {
+    max-width: none;
+    gap: clamp(8px, 1dvh, 14px);
+    grid-template-rows: 36px var(--menu-hero-height) 36px auto;
+  }
 }
