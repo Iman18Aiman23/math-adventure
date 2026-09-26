@@ -9,6 +9,7 @@ import LearnWords from './LearnWords';
 import LongSentences from './LongSentences';
 const KVLearningPage = React.lazy(() => import('./KVLearningPage'));
 const KVKLearningPage = React.lazy(() => import('./KVKLearningPage'));
+const ReadingJourney = React.lazy(() => import('./games/ReadingJourney'));
 
 // Display the exact supplied artwork as SVG viewports, keeping all UI text and controls live.
 const REFERENCE_ART = import.meta.env.BASE_URL + 'images/reading/membaca-reference.png';
@@ -63,6 +64,12 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
   }
 
   // ── Handler ───────────────────────────────────────────────────────────
+  if (selectedLevel === 5) {
+    return <React.Suspense fallback={<LoadingSpinner />}>
+      <ReadingJourney onBack={() => setSelectedLevel(null)} language={language} />
+    </React.Suspense>;
+  }
+
   const handleSelectLevel = (level) => {
     playHoverSound();
     startTransition(() => setSelectedLevel(level));
@@ -92,8 +99,8 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
     sectionDescription={bm ? 'Pilih tahap untuk mula belajar.' : 'Pick a level to start learning.'}
     topics={levels.map(([level, title, description, art]) => ({
       id: level, title, description, theme: cardThemes[level - 1],
-      visual: <ReadingArt name={art} />, disabled: level === 5,
-      onMouseEnter: level === 5 ? undefined : playHoverSound,
+      visual: <ReadingArt name={art} />,
+      onMouseEnter: playHoverSound,
     }))}
     onSelect={handleSelectLevel}
   />

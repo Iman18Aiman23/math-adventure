@@ -57,7 +57,11 @@ try {
       await page.screenshot({ path: `${output}/${subject}-${subGame || 'menu'}-${width}.png`, fullPage: true });
       await page.locator('.mh-topic-card').last().scrollIntoViewIfNeeded();
       if (subject === 'reading') {
-        assert(await page.locator('.mh-topic-card').last().isDisabled());
+        assert(await page.locator('.mh-topic-card').last().isEnabled());
+        await page.locator('.mh-topic-card').last().click();
+        await page.locator('.rg-journey').waitFor();
+        await page.getByRole('button', { name: 'Kembali', exact: true }).click();
+        await page.locator('.mh-screen').waitFor();
         await page.locator('.mh-topic-card').nth(2).click();
         await page.locator('.mh-screen').waitFor({ state: 'detached' });
         assert.equal(await page.locator('.subject-menu-footer').count(), 0);

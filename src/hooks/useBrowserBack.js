@@ -91,8 +91,9 @@ export default function useBrowserBack(onBack) {
   const handlerRef = useBrowserBackHandler(onBack);
 
   return useCallback(() => {
-    if (!handlerRef.current) return;
-    if (guardArmed) window.history.back();
-    else handlerRef.current();
+    // In-app navigation is state-driven. A button tap should not depend on an
+    // asynchronous history traversal or dispatch another registered handler.
+    // Keep the guard armed for the browser/device Back button's popstate event.
+    handlerRef.current?.();
   }, [handlerRef]);
 }

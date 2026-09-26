@@ -1,0 +1,9 @@
+# Reading journey artwork
+
+Saved asset: `public/images/reading/journey-clay-atlas.png` (1254 × 1254 transparent PNG).
+
+Created with the built-in imagegen tool using the user's attached screenshot as a style reference. `ReadingJourneyArt.jsx` renders separately clipped viewports from this cached atlas. Navigation, hero title, headings, descriptions, numbers and buttons remain live HTML.
+
+Final prompt:
+
+> Use the attached screenshot ONLY as style reference. Create a SINGLE TRANSPARENT PNG SPRITE ATLAS for this reading journey website. 4 columns x 4 rows, exactly 16 equal square cells, ideally 1536x1536. No grid lines, no backgrounds, no UI, no captions. Every object centered inside its own cell with generous 14% clear transparent padding; no object crosses cell boundary. Glossy soft rounded 3D clay toy style identical to the reference, blue/red/yellow accents, soft shadows. Row1 col1: open cream ABC book on bright blue cover with three small floating gold stars (hero); col2: bright green sprout in a small mound of brown soil; col3: chunky gold star; col4: gold medal with blue ribbon. Row2 col1: shiny blue diamond; col2: gold trophy; col3: colorful chunky letters ABC with tiny golden rays; col4: closed lavender padlock. Row3 col1: two interlocking pink and blue puzzle pieces; col2: blue and orange toy syllable cubes labelled ba and ca; col3: pink and yellow flashcards labelled ba and ma; col4: three blue red yellow cubes labelled k a n. Row4 col1: three letter tiles k a ?; col2: a blue t-shirt; col3: three word tiles labelled Saya makan nasi; col4: open storybook with a tiny cat illustration. These are individual isolated decorative objects forming one consistent atlas, not a screenshot. Real transparent alpha background. Preserve the playful polished toy look of attached reference.
