@@ -14,6 +14,7 @@ export default function HomeHeaderActions({
   theme,
   themes,
   onThemeChange,
+  showMobileSettings = false,
 }) {
   const [panel, setPanel] = useState(null);
   const popoverRef = useRef(null);
@@ -96,6 +97,7 @@ export default function HomeHeaderActions({
           {themes && onThemeChange && <><h2>{bm ? 'Tema' : 'Theme'}</h2><div className="ih-themes">{Object.entries(themes).map(([id, option]) => <button type="button" key={id} aria-pressed={theme?.key === option.key} onClick={() => onThemeChange(id)}><span style={{ background: option.swatch || option.heroBg }} />{option.label}</button>)}</div></>}
         </>}
       </section>}
+      {showMobileSettings && <button type="button" className="ih-mobile-settings" aria-label={bm ? 'Tetapan' : 'Settings'} aria-expanded={panel === 'settings'} aria-controls="ih-account-panel" onClick={event => togglePanel('settings', event)}><Settings size={20} aria-hidden="true" /></button>}
     </div>
   );
 }

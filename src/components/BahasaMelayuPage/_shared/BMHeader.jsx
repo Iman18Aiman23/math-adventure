@@ -41,15 +41,16 @@ export default function BMHeader({ onBack, language, title, sectionLabel, sticky
           .bm-header-back:hover { background: #F1F5F9; }
         }
         @media (max-width: 480px) {
-          .bm-header { padding: 5px 10px 7px; }
-          .bm-header-row { min-height: 44px; }
+          .bm-header { padding: clamp(4px, 1.25vw, 6px) clamp(8px, 2.5vw, 10px) clamp(5px, 1.75vw, 7px); }
+          .bm-header-row { width: 100%; min-width: 0; min-height: clamp(38px, 11.5vw, 44px); flex-wrap: nowrap; gap: clamp(2px, 1vw, 4px); }
           .bm-header-back-label { display: none; }
-          .bm-header-row::after { flex-basis: 44px; }
-          .bm-header-actions { flex-basis: 44px; }
-          .bm-header-back svg { width: 22px; height: 22px; }
-          .bm-header-title { font-size: 14px; }
-          .bm-header-actions .kv-settings summary { width: 42px; height: 42px; border-radius: 12px; }
-          .bm-header-actions .kv-settings summary svg { width: 22px; height: 22px; }
+          .bm-header-row::after { flex-basis: clamp(30px, 10vw, 42px); }
+          .bm-header-actions { min-width: 0; flex-basis: clamp(30px, 10vw, 42px); }
+          .bm-header-back { padding-inline: clamp(6px, 2vw, 10px); }
+          .bm-header-back svg { width: clamp(18px, 5.5vw, 22px); height: clamp(18px, 5.5vw, 22px); }
+          .bm-header-title { font-size: clamp(12px, 3.5vw, 14px); }
+          .bm-header-actions .kv-settings summary { width: clamp(30px, 10vw, 42px); height: clamp(30px, 10vw, 42px); border-radius: clamp(10px, 2.5vw, 12px); }
+          .bm-header-actions .kv-settings summary svg { width: clamp(18px, 5.5vw, 22px); height: clamp(18px, 5.5vw, 22px); }
         }
         .bm-header-title {
           flex: 1; min-width: 0;

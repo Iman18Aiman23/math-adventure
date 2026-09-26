@@ -2,13 +2,14 @@ import { useId } from 'react';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
 import useBrowserBack from '../../hooks/useBrowserBack';
 import HomeHeaderActions from './HomeHeaderActions';
+import { PageHeader, PageHero } from './PageHeaderHero';
 import './SubjectMenuLayout.css';
 
 // DesktopSidebar and SubjectMenuFooter are owned by App, outside its scroll area.
 export default function SubjectMenuLayout({
   title, eyebrow, heroTitle, description, encouragement, mascot,
   sectionTitle, sectionDescription, topics, onSelect, onBack,
-  language = 'bm', pending, notice, additionalContent, heroBackground, ...accountProps
+  language = 'bm', pending, notice, additionalContent, heroBackground, sharedPageChrome = false, ...accountProps
 }) {
   const id = useId();
   const handleBack = useBrowserBack(onBack);
@@ -19,12 +20,12 @@ export default function SubjectMenuLayout({
       {pending}
       {notice && <div className="mh-menu-notice" role="status">{notice}</div>}
       <div className="mh-wrap">
-        <header className="mh-header">
+        {sharedPageChrome ? <PageHeader {...accountProps} title={title} onBack={handleBack} language={language} /> : <header className="mh-header">
           <button type="button" className="mh-back" onClick={handleBack} aria-label={language === 'bm' ? 'Kembali' : 'Back'}><ArrowLeft aria-hidden="true" /></button>
           <h1>{title}</h1>
           <HomeHeaderActions {...accountProps} language={language} />
-        </header>
-        <section className="mh-hero" aria-labelledby={`${id}-hero`} style={heroBackground ? { background: heroBackground } : undefined}>
+        </header>}
+        {sharedPageChrome ? <PageHero {...{ eyebrow, heroTitle, description, encouragement, mascot, heroBackground }} /> : <section className="mh-hero" aria-labelledby={`${id}-hero`} style={heroBackground ? { background: heroBackground } : undefined}>
           <div className="mh-hero-copy">
             <p className="mh-eyebrow">{eyebrow}</p>
             <h2 id={`${id}-hero`}>{heroTitle}</h2>
@@ -32,7 +33,7 @@ export default function SubjectMenuLayout({
             <p className="mh-encouragement">{encouragement}</p>
           </div>
           <div className="mh-mascot" aria-hidden="true">{mascot}</div>
-        </section>
+        </section>}
         <div className="mh-section-heading">
           <h2 id={`${id}-topics`}>{sectionTitle}</h2>
           <p>{sectionDescription}</p>

@@ -3,6 +3,7 @@ import { playHoverSound } from '../../utils/soundManager';
 import { useGameStateContext } from '../../App';
 import LoadingSpinner from '../LoadingSpinner';
 import SubjectMenuLayout from '../_shared/SubjectMenuLayout';
+import { HomePageLayoutStyles } from '../HomePage';
 import { useBrowserBackHandler } from '../../hooks/useBrowserBack';
 import LearnWords from './LearnWords';
 import LongSentences from './LongSentences';
@@ -75,7 +76,10 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
     [5, bm ? 'Cabaran Membaca' : 'Reading Challenge', bm ? 'Uji kefahaman anda dengan pelbagai soalan dan naik tahap!' : 'Test your understanding with questions and level up!', 'challenge'],
   ];
   const cardThemes = ['blue', 'red', 'mint', 'purple', 'gold'];
-  return <SubjectMenuLayout
+  return <div className="rp-layout iman-layout">
+    <HomePageLayoutStyles />
+    <SubjectMenuLayout
+    sharedPageChrome
     {...accountProps} language={language} gameState={gameState} onBack={onBack} onHome={onBack}
     pending={isPending && <LoadingSpinner overlay />}
     title={bm ? 'Membaca' : 'Reading'}
@@ -92,5 +96,6 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
       onMouseEnter: level === 5 ? undefined : playHoverSound,
     }))}
     onSelect={handleSelectLevel}
-  />;
+  />
+  </div>;
 }

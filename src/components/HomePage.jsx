@@ -1,13 +1,109 @@
-import React, { useState, useEffect, useRef, Suspense } from 'react';
-import { ChevronDown, ChevronRight, Settings, Star, UserRound, ArrowLeft, GraduationCap, Trophy, Medal, Flag, LogOut } from 'lucide-react';
+import React, { useState, Suspense } from 'react';
+import { ChevronRight, Star, ArrowLeft } from 'lucide-react';
 import { AGE_GROUPS } from '../data/ageCurriculum';
 import { playHoverSound } from '../utils/soundManager';
-import ImanAILogo from './_shared/ImanAILogo';
-import StatsBar from './_shared/StatsBar';
+import { PageHeader, PageHero } from './_shared/PageHeaderHero';
 import './_shared/SubjectMenuLayout.css';
 import './HomePage.css';
 
 const HomePagePrototype = React.lazy(() => import('./HomePagePrototype'));
+// Home owns the layout standard; Reading mounts the same scoped styles.
+// Keep the existing app scroll container and all subject-menu behavior intact.
+export function HomePageLayoutStyles() {
+  return <style>{`
+    #root:has(.iman-layout) { padding: 0; background: #fff; }
+    .app-container:has(.iman-layout) { min-width: 0; border-radius: 0; background: #fff; }
+    .view-container:has(.iman-layout) { overflow-y: auto; overflow-x: hidden; background: #fff; }
+    .rp-layout { display: contents; }
+    .ih-root.iman-layout, .rp-layout > .mh-screen {
+      --page-gap: clamp(14px, 1.6vw, 22px);
+      box-sizing: border-box; width: 100%; max-width: none; height: auto;
+      min-height: 100%; flex: 0 0 auto; container: iman-page / inline-size;
+      padding: 12px clamp(14px, 1.6vw, 28px) 32px;
+      background: #fff; overflow: visible;
+    }
+    .ih-root.iman-layout { display: flex; flex-direction: column; gap: var(--page-gap); }
+    .ih-root.iman-layout > :not(style), .rp-layout .mh-wrap {
+      width: 100%; max-width: 1200px; min-width: 0; margin-inline: auto;
+    }
+    .rp-layout .mh-wrap { display: flex; flex-direction: column; gap: var(--page-gap); padding: 0; }
+    .iman-layout :is(.ih-header, .mh-header) { width: 100%; min-height: 44px; margin-block: 0; margin-right: auto; }
+    .rp-layout .mh-header { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+    .rp-layout .mh-header h1 { font: 800 clamp(18px, 2vw, 26px)/1.2 'Outfit', sans-serif; }
+    .iman-layout :is(.ih-hero, .mh-hero) {
+      box-sizing: border-box; width: 100%; height: auto; min-height: 210px;
+      border: 1px solid #d5ebe2; border-radius: clamp(18px, 2vw, 26px);
+      padding: clamp(18px, 2vw, 28px); box-shadow: none;
+    }
+    .iman-layout .ih-hero-copy { width: 52%; min-width: 0; padding: 0; }
+    .iman-layout .ih-hero h1 { font-size: clamp(28px, 3.2vw, 44px); }
+    .iman-layout :is(.ih-hero-lead, .mh-description) { font-size: clamp(13px, 1.2vw, 16px); line-height: 1.5; }
+    .iman-layout .ih-hero-art { width: 180px; height: auto; max-width: 34%; right: 17%; bottom: 0; }
+    .iman-layout .ih-hero-note { right: 4%; font-size: clamp(13px, 1.5vw, 20px); }
+    .rp-layout .mh-hero { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 20px; }
+    .rp-layout .mh-hero h2 { font: 800 clamp(26px, 3.2vw, 40px)/1.12 'Outfit', sans-serif; }
+    .rp-layout .mh-description { max-width: 490px; margin-top: 10px; font-weight: 400; }
+    .rp-layout .mh-encouragement { display: block; margin-top: 12px; padding: 0; background: none; font-size: 13px; line-height: 1.5; }
+    .rp-layout .mh-mascot { position: relative; inset: auto; contain: none; width: 100%; height: auto; margin: 0; align-self: center; }
+    .rp-layout .mh-mascot > svg { width: 100%; max-width: 220px; height: auto; max-height: none; }
+    .iman-layout :is(.ih-subjects, .ih-ages) { gap: var(--page-gap); }
+    .iman-layout :is(.ih-section-heading, .mh-section-heading) { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 28px; }
+    .iman-layout :is(.ih-section-heading, .mh-section-heading) h2 { margin: 0; font: 800 clamp(17px, 1.5vw, 22px)/1.25 'Outfit', sans-serif; }
+    .iman-layout :is(.ih-section-heading, .mh-section-heading) p { display: block; margin: 0; max-width: 48%; font-size: clamp(11px, 1vw, 14px); line-height: 1.4; text-align: right; }
+    .iman-layout .ih-ages { padding: 0; border: 0; background: none; box-shadow: none; }
+    .iman-layout .mh-topic-grid { display: grid; grid-template-columns: minmax(0, 1fr); grid-auto-rows: 1fr; gap: var(--page-gap); padding: 0; }
+    .iman-layout .mh-topic-card {
+      display: grid; grid-template-columns: 70px minmax(0, 1fr) 36px;
+      height: auto; min-height: 124px; gap: 12px; padding: 16px;
+      border-radius: 20px; box-shadow: 0 2px 5px #102a5605;
+    }
+    @container iman-page (max-width: 380px) {
+      .iman-layout .mh-topic-card { min-height: clamp(124px, calc(504px - 100cqw), 184px); }
+    }
+    .iman-layout .mh-topic-visual { grid-area: auto; contain: none; width: 100%; height: 76px; flex: none; }
+    .iman-layout .mh-topic-visual svg { width: 100%; height: auto; max-height: 90px; }
+    .iman-layout .mh-topic-copy { grid-area: auto; width: 100%; min-height: 0; gap: 6px; text-align: left; align-self: center; }
+    .iman-layout .mh-topic-title { min-height: 0; font: 800 18px/1.25 'Outfit', sans-serif; }
+    .iman-layout .mh-topic-description { display: block; height: auto; overflow: visible; margin: 0; font: 400 13px/1.5 'Inter', sans-serif; }
+    .iman-layout .mh-coming-soon { display: block; }
+    .iman-layout .mh-card-action { position: static; display: grid; width: 36px; height: 36px; padding: 0; border: 0; background: none; box-shadow: none; }
+    .iman-layout .mh-card-action > span:first-child { display: none; }
+    .iman-layout .mh-card-action .mh-arrow { grid-area: auto; width: 36px; height: 36px; box-shadow: none; }
+    @container iman-page (min-width: 560px) {
+      .iman-layout .mh-topic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .iman-layout .mh-topic-card { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 14px; padding: 20px; }
+      .iman-layout .mh-topic-visual { height: 100px; flex: 0 0 100px; }
+      .iman-layout .mh-topic-visual svg { max-width: 130px; max-height: 100px; }
+      .iman-layout .mh-topic-copy { flex: 1; text-align: center; }
+      .iman-layout .mh-card-action { display: flex; justify-content: space-between; gap: 8px; width: 100%; height: auto; min-height: 44px; margin-top: auto; padding: 4px 5px 4px 14px; border: 1px solid var(--mh-border); border-radius: 999px; background: var(--mh-tint); color: var(--mh-accent); font: 700 14px/1.3 'Outfit', sans-serif; white-space: normal; }
+      .iman-layout .mh-card-action > span:first-child { display: inline; }
+      .iman-layout .mh-coming-soon { display: none; }
+      .iman-layout .mh-card-action .mh-arrow { flex: 0 0 34px; width: 34px; height: 34px; }
+    }
+    @container iman-page (min-width: 900px) {
+      .iman-layout .mh-topic-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @container iman-page (max-width: 559px) {
+      .iman-layout .ih-hero-copy { width: 60%; }
+      .iman-layout .ih-hero-art { right: 0; bottom: 0; }
+      .iman-layout .ih-hero-note { top: 12px; right: 12px; font-size: 11px; }
+      .rp-layout .mh-hero { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 10px; }
+      .rp-layout .mh-hero h2 { font-size: 26px; }
+      .rp-layout .mh-header { grid-template-columns: 44px minmax(0, 1fr) auto; }
+      .rp-layout .mh-header h1 { position: absolute; left: 50%; transform: translateX(-50%); max-width: calc(100% - 100px); top: 2px; }
+      .rp-layout .mh-header { min-height: 76px; align-items: end; }
+      .rp-layout .mh-header .ih-top-actions-cluster { grid-column: 3; }
+      .iman-layout .ih-age-grid { grid-template-columns: minmax(0, 1fr); }
+    }
+    @media (min-width: 768px) {
+      #root:has(.iman-layout) .desktop-sidebar { position: sticky; top: 0; height: 100vh; height: 100dvh; flex-shrink: 0; }
+    }
+    @media (max-width: 767px), (max-height: 500px) and (pointer: coarse) {
+      .ih-root.iman-layout { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+      .rp-layout > .mh-screen { padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
+    }
+  `}</style>;
+}
 const SUBJECTS = [
   { id: 'reading', tone: 'reading', title: ['MEMBACA', 'READING'], desc: ['Kuasai kemahiran membaca dengan seronok!', 'Master reading skills while having fun!'], art: 0 },
   { id: 'bm', tone: 'speaking', title: ['SEBUTAN', 'SPEAKING'], desc: ['Perbaiki sebutan dengan yakin!', 'Improve pronunciation with confidence!'], art: 1 },
@@ -40,49 +136,12 @@ function AgeBadge({ index }) {
     </svg>
   );
 }
-
 export default function HomePage({ onSelectSubject, onSelectAgeGroup, language = 'bm', playerName, gameState, streak = 0, onTabChange, onHome, onOpenReports, onToggleLang, theme, themes, onThemeChange }) {
   const [showRobotInterface, setShowRobotInterface] = useState(false);
-  const [panel, setPanel] = useState(null);
-  const headerRef = useRef(null);
-  const popoverRef = useRef(null);
-  const triggerRef = useRef(null);
   const bm = language === 'bm';
   const langIndex = bm ? 0 : 1;
   const name = playerName || 'Iman';
   const currentLevel = gameState?.level ?? 1;
-
-  useEffect(() => {
-    if (!panel) return;
-    const dismiss = (event) => {
-      if (event.type === 'keydown') {
-        if (event.key !== 'Escape') return;
-        triggerRef.current?.focus();
-      } else if (popoverRef.current?.contains(event.target) || triggerRef.current?.contains(event.target)) return;
-      setPanel(null);
-    };
-    document.addEventListener('pointerdown', dismiss);
-    document.addEventListener('keydown', dismiss);
-    return () => {
-      document.removeEventListener('pointerdown', dismiss);
-      document.removeEventListener('keydown', dismiss);
-    };
-  }, [panel]);
-
-  const togglePanel = (next, event) => {
-    triggerRef.current = event.currentTarget;
-    setPanel(previous => previous === next || (next === 'account' && previous === 'settings') ? null : next);
-  };
-
-  const selectAccountAction = (action) => {
-    setPanel(null);
-    triggerRef.current?.focus();
-    action?.();
-  };
-
-  useEffect(() => {
-    if (panel === 'account' || panel === 'settings') popoverRef.current?.querySelector('button')?.focus({ preventScroll: true });
-  }, [panel]);
 
   if (showRobotInterface) {
     return <div className="ih-robot-interface">
@@ -94,63 +153,21 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
   }
 
   return (
-    <div className="ih-root" style={{ '--ih-art': `url("${import.meta.env.BASE_URL}images/home/robots.webp")` }}>
-      <header className="ih-header" ref={headerRef}>
-        <button type="button" className="ih-mobile-logo" onClick={onHome} aria-label="ImanAI — Home"><ImanAILogo language={language} /></button>
-        <button type="button" className="ih-points" aria-label={`${gameState?.totalXP ?? 0} XP — ${bm ? 'Lihat kemajuan' : 'View progress'}`} aria-expanded={panel === 'progress'} aria-controls="ih-progress-panel" onClick={event => togglePanel('progress', event)}><Star aria-hidden="true" /><span>{gameState?.totalXP ?? 0}</span></button>
-        <button type="button" className="ih-account" aria-expanded={panel === 'account' || panel === 'settings'} aria-controls="ih-account-panel" onClick={event => togglePanel('account', event)}>
-          <span className="ih-avatar"><UserRound aria-hidden="true" /></span>
-          <ChevronDown size={19} />
-        </button>
-        {panel && <section ref={popoverRef} className={`ih-popover ${panel === 'account' ? 'ih-account-menu' : ''}`} id={panel === 'progress' ? 'ih-progress-panel' : 'ih-account-panel'} aria-label={panel === 'progress' ? (bm ? 'Kemajuan pembelajaran' : 'Learning progress') : (bm ? 'Akaun dan tetapan' : 'Account and settings')}>
-          {panel === 'progress' ? <>
-            <h2>{bm ? 'Matlamat harian' : 'Daily goal'}</h2>
-            <strong>{bm ? 'Selesaikan 1 aktiviti' : 'Complete 1 activity'}</strong>
-            <p>{bm ? 'Sedikit demi sedikit, kamu pasti boleh.' : 'A little progress every day adds up.'}</p>
-            <h2>{bm ? 'Kemajuan mingguan' : 'Weekly progress'}</h2>
-            <div className="ih-week" aria-hidden="true">{Array.from({ length: 7 }, (_, i) => <span key={i} className={i < Math.min(streak, 7) ? 'is-done' : ''} />)}</div>
-            <p>{streak} {bm ? 'hari berturut-turut' : 'day streak'}</p>
-            <h2>{bm ? 'Tahap semasa' : 'Current level'}</h2><p>Level {currentLevel}</p>
-            <h2>{bm ? 'Aktiviti terkini' : 'Recent activity'}</h2><p>{bm ? 'Belum ada aktiviti' : 'No recent activity'}</p>
-            <StatsBar forceBundled={true} variant="mb" />
-          </> : panel === 'account' ? <>
-            <div className="ih-account-greeting">
-              <span className="ih-avatar"><UserRound aria-hidden="true" /></span>
-              <span className="ih-account-copy"><strong>{bm ? 'Hai' : 'Hi'}, {name}</strong><span>{bm ? 'Teruskan belajar!' : 'Keep learning!'}</span></span>
-            </div>
-            <nav aria-label={bm ? 'Menu akaun' : 'Account menu'}>
-              <button type="button" onClick={() => selectAccountAction(() => onTabChange?.('profile'))}><UserRound />{bm ? 'Profil Saya' : 'My Profile'}</button>
-              <button type="button" onClick={() => selectAccountAction(onHome)}><GraduationCap />{bm ? 'Kursus Saya' : 'My Courses'}</button>
-              <button type="button" onClick={() => selectAccountAction(() => onTabChange?.('leaderboard'))}><Trophy />{bm ? 'Papan Juara' : 'Leaderboard'}</button>
-              <button type="button" onClick={() => selectAccountAction(() => onTabChange?.('achievement'))}><Medal />{bm ? 'Pencapaian Saya' : 'My Achievements'}</button>
-              <button type="button" onClick={() => selectAccountAction(onOpenReports)}><Flag />{bm ? 'Laporan' : 'Reports'}</button>
-              <hr />
-              <button type="button" onClick={() => setPanel('settings')}><Settings />{bm ? 'Tetapan' : 'Settings'}</button>
-              <button type="button" className="ih-logout" disabled title={bm ? 'Log keluar belum tersedia' : 'Logout is not available yet'}><LogOut />{bm ? 'Log Keluar' : 'Log Out'}</button>
-            </nav>
-          </> : <>
-            <button type="button" className="ih-profile-link" onClick={() => setPanel('account')}><ArrowLeft size={18} />{bm ? 'Tetapan' : 'Settings'}</button>
-            {onToggleLang && <><h2>{bm ? 'Bahasa' : 'Language'}</h2><div className="ih-language">
-              <button type="button" aria-pressed={bm} onClick={() => { if (!bm) onToggleLang(); }}>Bahasa Melayu</button>
-              <button type="button" aria-pressed={!bm} onClick={() => { if (bm) onToggleLang(); }}>English</button>
-            </div></>}
-            {themes && onThemeChange && <><h2>{bm ? 'Tema' : 'Theme'}</h2><div className="ih-themes">{Object.entries(themes).map(([id, option]) => <button type="button" key={id} aria-pressed={theme?.key === option.key} onClick={() => onThemeChange(id)}><span style={{ background: option.swatch || option.heroBg }} />{option.label}</button>)}</div></>}
-          </>}
-        </section>}
-        <button type="button" className="ih-mobile-settings" aria-label={bm ? 'Tetapan' : 'Settings'} aria-expanded={panel === 'settings'} aria-controls="ih-account-panel" onClick={event => togglePanel('settings', event)}><Settings size={20} aria-hidden="true" /></button>
-      </header>
-
-      <section className="ih-hero" aria-labelledby="ih-welcome-title">
-        <div className="ih-hero-copy">
-          <p className="ih-eyebrow">{bm ? 'SELAMAT DATANG' : 'WELCOME'}</p>
-          <h1 id="ih-welcome-title" title={`${bm ? 'Hei' : 'Hey'}, ${name}!`}>{bm ? 'Hei' : 'Hey'}, {name}! <span aria-hidden="true">👋</span></h1>
-          <p className="ih-hero-lead">{bm ? 'Teruskan perjalanan belajar anda bersama ImanAI!' : 'Continue your learning adventure with ImanAI!'}</p>
-          <span className="ih-level"><Star size={20} aria-hidden="true" /> LEVEL {currentLevel}</span>
-        </div>
-        <div className="ih-hero-art"><RobotArt index={7} /></div>
-        <p className="ih-hero-note" aria-hidden="true">{bm ? <>Belajar<br />Hari Ini,<br />Lebih Hebat<br />Esok!</> : <>Learn Today,<br />Shine Brighter<br />Tomorrow!</>}</p>
-        <Star className="ih-hero-star" aria-hidden="true" />
-      </section>
+    <div className="ih-root iman-layout" style={{ '--ih-art': `url("${import.meta.env.BASE_URL}images/home/robots.webp")` }}>
+      <HomePageLayoutStyles />
+      <PageHeader {...{ language, playerName, gameState, streak, onTabChange, onHome, onOpenReports, onToggleLang, theme, themes, onThemeChange }} />
+      <PageHero home titleId="ih-welcome-title"
+        eyebrow={bm ? 'SELAMAT DATANG' : 'WELCOME'}
+        titleText={`${bm ? 'Hei' : 'Hey'}, ${name}!`}
+        heroTitle={<>{bm ? 'Hei' : 'Hey'}, {name}! <span aria-hidden="true">👋</span></>}
+        description={bm ? 'Teruskan perjalanan belajar anda bersama ImanAI!' : 'Continue your learning adventure with ImanAI!'}
+        encouragement={<span className="ih-level"><Star size={20} aria-hidden="true" /> LEVEL {currentLevel}</span>}
+        mascot={<RobotArt index={7} />}
+        decoration={<>
+          <p className="ih-hero-note" aria-hidden="true">{bm ? <>Belajar<br />Hari Ini,<br />Lebih Hebat<br />Esok!</> : <>Learn Today,<br />Shine Brighter<br />Tomorrow!</>}</p>
+          <Star className="ih-hero-star" aria-hidden="true" />
+        </>}
+      />
 
       <section className="ih-subjects" aria-labelledby="ih-subject-heading">
         <div className="ih-section-heading"><h2 id="ih-subject-heading">{bm ? 'SUBJEK' : 'SUBJECTS'}</h2><p>{bm ? 'Pilih subjek kegemaran anda.' : 'Choose your favourite subject.'}</p></div>

@@ -1,4 +1,5 @@
 import SubjectMenuLayout from '../_shared/SubjectMenuLayout';
+import { HomePageLayoutStyles } from '../HomePage';
 import { MathTopicArtwork, MathBookMascot } from './MathHomeArtwork';
 
 const SUB_GAMES = [
@@ -14,7 +15,10 @@ const SUB_GAMES = [
 
 export default function MathHome({ onSelectSubGame, onBack, language = 'bm', ...accountProps }) {
   const bm = language === 'bm';
-  return <SubjectMenuLayout
+  return <div className="rp-layout iman-layout">
+    <HomePageLayoutStyles />
+    <SubjectMenuLayout
+    sharedPageChrome
     {...accountProps} onBack={onBack} language={language}
     title={bm ? 'Matematik' : 'Mathematics'}
     eyebrow={bm ? 'MATEMATIK' : 'MATHEMATICS'}
@@ -26,5 +30,6 @@ export default function MathHome({ onSelectSubGame, onBack, language = 'bm', ...
     sectionDescription={bm ? 'Pilih topik untuk mula belajar.' : 'Pick a topic to start learning.'}
     topics={SUB_GAMES.map(game => ({ ...game, description: game[bm ? 'bm' : 'eng'], visual: <MathTopicArtwork topic={game.id} /> }))}
     onSelect={onSelectSubGame}
-  />;
+  />
+  </div>;
 }

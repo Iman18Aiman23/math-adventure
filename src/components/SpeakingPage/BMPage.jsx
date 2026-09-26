@@ -5,6 +5,7 @@ import SpeechManager from '../../services/SpeechManager';
 import { useBrowserBackHandler } from '../../hooks/useBrowserBack';
 import SubjectMenuLayout from '../_shared/SubjectMenuLayout';
 import LoadingSpinner from '../LoadingSpinner';
+import { HomePageLayoutStyles } from '../HomePage';
 import BMMenuArtwork from './BMMenuArtwork';
 
 const BMSpeakGame = React.lazy(() => import('./BMSpeakGame'));
@@ -43,7 +44,10 @@ export default function BMPage({
     </Suspense>;
   }
 
-  return <SubjectMenuLayout
+  return <div className="rp-layout iman-layout">
+    <HomePageLayoutStyles />
+    <SubjectMenuLayout
+    sharedPageChrome
     {...accountProps} language={language} gameState={gameState} onBack={onBack} onHome={onHome || onBack}
     pending={isPending && <LoadingSpinner overlay />}
     title={bm ? 'Sebutan' : 'Speaking'}
@@ -75,5 +79,6 @@ export default function BMPage({
         </div>)}</dl>
       </details>
     }
-  />;
+  />
+  </div>;
 }
