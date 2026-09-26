@@ -324,7 +324,7 @@ const AssessmentPage = React.lazy(() => import('./pages/AssessmentPage'));
 import { getMuted, setMuted, preloadSounds, unlockAudio, playHoverSound } from './utils/soundManager';
 import SpeechManager from './services/SpeechManager';
 import { useGameState } from './hooks/useGameState';
-import { loadPlayerName, savePlayerName, recordLogin, calcStreak, loadNavigationState, saveNavigationState } from './services/storageService';
+import { loadPlayerName, savePlayerName, clearPlayerName, loadAppearanceMode, saveAppearanceMode, recordLogin, calcStreak, loadNavigationState, saveNavigationState } from './services/storageService';
 import { getGameData } from './utils/gameStatsManager';
 import { baseAssessments } from './data/curriculum/assessment';
 import { markTopicCompleted } from './components/BahasaMelayuPage/_shared/useModuleProgress';
@@ -478,6 +478,7 @@ export default function App() {
   const [currentAgeGroup, setCurrentAgeGroup] = useState(savedNavigation.currentAgeGroup);
   const [currentAgeGame, setCurrentAgeGame] = useState(savedNavigation.currentAgeGame);
   const [currentTheme, setCurrentTheme] = useState('cosmic');
+  const [colorMode, setColorMode] = useState(loadAppearanceMode);
   const [islamModule, setIslamModule] = useState(savedNavigation.islamModule);
   const [islamTopic,  setIslamTopic]  = useState(savedNavigation.islamTopic);
   const [islamYear,   setIslamYear]   = useState(savedNavigation.islamYear);
@@ -487,6 +488,11 @@ export default function App() {
   const [bmModule, setBmModule] = useState(savedNavigation.bmModule);
   const [bmTopic,  setBmTopic]  = useState(savedNavigation.bmTopic);
   const [bmYear,   setBmYear]   = useState(savedNavigation.bmYear);
+
+  useEffect(() => {
+    document.documentElement.dataset.colorMode = colorMode;
+    saveAppearanceMode(colorMode);
+  }, [colorMode]);
 
   useEffect(() => {
     saveNavigationState({
@@ -563,6 +569,7 @@ export default function App() {
   const handleBackToMenu   = () => setIsPlaying(false);
   const handleStartTimeGame= (gameId) => { setDateTimeSubGame(gameId); setIsPlaying(true); };
   const handleBackToHome   = () => { setReadingLevel(null); setSpeakingCategory(null); setIsPlaying(false); setMathSubGame(null); setDateTimeSubGame(null); setCurrentSubject(null); setCurrentAgeGroup(null); setCurrentAgeGame(null); setIslamModule(null); setIslamTopic(null); setMatematikModule(null); setMatematikTopic(null); setMatematikYear(1); setBmModule(null); setBmTopic(null); setBmYear(1); setActiveTab('learn'); };
+  const handleLogout       = () => { SpeechManager.stopSpeaking(); clearPlayerName(); handleBackToHome(); setSelectedAssessment(null); setPlayerName(null); };
   const handleToggleMute   = () => { const m = !isMuted; setIsMuted(m); setMuted(m); };
   const handleToggleLang   = () => setLanguage(l => l === 'bm' ? 'eng' : 'bm');
 
@@ -650,6 +657,9 @@ export default function App() {
           gameState={gameState}
           streak={streak}
           onTabChange={handleTabChange}
+          onLogout={handleLogout}
+          colorMode={colorMode}
+          onColorModeChange={setColorMode}
           onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
           onToggleLang={handleToggleLang}
           theme={THEMES[currentTheme]}
@@ -669,6 +679,9 @@ export default function App() {
             gameState={gameState}
             streak={streak}
             onTabChange={handleTabChange}
+            onLogout={handleLogout}
+            colorMode={colorMode}
+            onColorModeChange={setColorMode}
             onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
             onToggleLang={handleToggleLang}
             theme={THEMES[currentTheme]}
@@ -694,6 +707,9 @@ export default function App() {
           gameState={gameState}
           streak={streak}
           onTabChange={handleTabChange}
+          onLogout={handleLogout}
+          colorMode={colorMode}
+          onColorModeChange={setColorMode}
           onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
           onToggleLang={handleToggleLang}
           theme={THEMES[currentTheme]}
@@ -704,6 +720,8 @@ export default function App() {
         return <BMPage onBack={handleBackToHome} onHome={handleBackToHome} language={language}
           selectedCategory={speakingCategory} onSelectCategory={setSpeakingCategory}
           playerName={playerName} streak={streak} onTabChange={handleTabChange} onToggleLang={handleToggleLang}
+          onLogout={handleLogout}
+          colorMode={colorMode} onColorModeChange={setColorMode}
           onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
           theme={THEMES[currentTheme]} themes={THEMES} onThemeChange={setCurrentTheme} />;
       case 'matematik-kssr':
@@ -817,9 +835,8 @@ export default function App() {
                 onModuleChange={(id) => navigate(() => { setMatematikModule(id); setMatematikTopic(null); })}
                 onProfile={() => handleTabChange('profile')}
                 onToggleLanguage={handleToggleLang}
-                appTheme={THEMES[currentTheme]}
-                themes={THEMES}
-                onThemeChange={setCurrentTheme}
+                colorMode={colorMode}
+                onColorModeChange={setColorMode}
                 onSelectTopic={(id) => navigate(() => setMatematikTopic(id))}>
                 {hubComponent}
               </MatematikModulePage>
@@ -1382,6 +1399,8 @@ export default function App() {
       case 'reading':
         return <ReadingPage onBack={handleBackToHome} language={language} selectedLevel={readingLevel} onSelectLevel={setReadingLevel} streak={streak}
           playerName={playerName} onTabChange={handleTabChange} onToggleLang={handleToggleLang}
+          onLogout={handleLogout}
+          colorMode={colorMode} onColorModeChange={setColorMode}
           onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
           theme={THEMES[currentTheme]} themes={THEMES} onThemeChange={setCurrentTheme} />;
       default:
@@ -1659,6 +1678,9 @@ export default function App() {
           streak={streak}
           activeTab={activeTab}
           onTabChange={handleTabChange}
+          onLogout={handleLogout}
+          colorMode={colorMode}
+          onColorModeChange={setColorMode}
           onHome={handleBackToHome}
           onToggleLang={handleToggleLang}
           theme={THEMES[currentTheme]}
@@ -1707,8 +1729,8 @@ export default function App() {
             })}
             onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
             theme={THEMES[currentTheme]}
-            onThemeChange={setCurrentTheme}
-            themes={THEMES}
+            colorMode={colorMode}
+            onColorModeChange={setColorMode}
           />
         )}
 
@@ -1750,7 +1772,7 @@ export default function App() {
             <SubjectMenuFooter activeTab={activeTab} language={language}
               onTabChange={handleTabChange} onHome={handleBackToHome}
               onToggleLang={handleToggleLang} theme={THEMES[currentTheme]}
-              themes={THEMES} onThemeChange={setCurrentTheme} />
+              colorMode={colorMode} onColorModeChange={setColorMode} />
           ) : !inActiveQuiz && !selectedAssessment && !currentAgeGame && !currentAgeGroup && (!currentSubject || (currentSubject === 'math' && (!mathSubGame || mathSubGame === 'journey' || (mathSubGame === 'datetime' && !isPlaying)))) && (
             <CosmicMobileNav
               appearance={currentSubject === 'math' ? 'math' : activeTab === 'learn' && !currentSubject && !currentAgeGroup ? 'home' : 'default'}
@@ -1760,8 +1782,8 @@ export default function App() {
               onHome={handleBackToHome}
               onToggleLang={handleToggleLang}
               theme={THEMES[currentTheme]}
-              themes={THEMES}
-              onThemeChange={setCurrentTheme}
+              colorMode={colorMode}
+              onColorModeChange={setColorMode}
             />
           )}
         </div>

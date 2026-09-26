@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, ChevronDown, Flag, GraduationCap, LogOut, Medal, Settings, Star, Trophy, UserRound } from 'lucide-react';
+import { ArrowLeft, ChevronDown, Flag, GraduationCap, LogOut, Medal, Moon, Settings, Star, Sun, Trophy, UserRound } from 'lucide-react';
 import StatsBar from './StatsBar';
 
 export default function HomeHeaderActions({
@@ -10,11 +10,10 @@ export default function HomeHeaderActions({
   onTabChange,
   onHome,
   onOpenReports,
+  onLogout,
   onToggleLang,
-  theme,
-  themes,
-  onThemeChange,
-  showMobileSettings = false,
+  colorMode = 'light',
+  onColorModeChange,
 }) {
   const [panel, setPanel] = useState(null);
   const popoverRef = useRef(null);
@@ -46,7 +45,7 @@ export default function HomeHeaderActions({
 
   const togglePanel = (next, event) => {
     triggerRef.current = event.currentTarget;
-    setPanel(previous => previous === next || (next === 'account' && previous === 'settings') ? null : next);
+    setPanel(previous => previous === next ? null : next);
   };
 
   const selectAccountAction = (action) => {
@@ -86,7 +85,7 @@ export default function HomeHeaderActions({
             <button type="button" onClick={() => selectAccountAction(onOpenReports)}><Flag />{bm ? 'Laporan' : 'Reports'}</button>
             <hr />
             <button type="button" onClick={() => setPanel('settings')}><Settings />{bm ? 'Tetapan' : 'Settings'}</button>
-            <button type="button" className="ih-logout" disabled title={bm ? 'Log keluar belum tersedia' : 'Logout is not available yet'}><LogOut />{bm ? 'Log Keluar' : 'Log Out'}</button>
+            <button type="button" className="ih-logout" onClick={() => selectAccountAction(onLogout)}><LogOut />{bm ? 'Log Keluar' : 'Log Out'}</button>
           </nav>
         </> : <>
           <button type="button" className="ih-profile-link" onClick={() => setPanel('account')}><ArrowLeft size={18} />{bm ? 'Tetapan' : 'Settings'}</button>
@@ -94,10 +93,12 @@ export default function HomeHeaderActions({
             <button type="button" aria-pressed={bm} onClick={() => { if (!bm) onToggleLang(); }}>Bahasa Melayu</button>
             <button type="button" aria-pressed={!bm} onClick={() => { if (bm) onToggleLang(); }}>English</button>
           </div></>}
-          {themes && onThemeChange && <><h2>{bm ? 'Tema' : 'Theme'}</h2><div className="ih-themes">{Object.entries(themes).map(([id, option]) => <button type="button" key={id} aria-pressed={theme?.key === option.key} onClick={() => onThemeChange(id)}><span style={{ background: option.swatch || option.heroBg }} />{option.label}</button>)}</div></>}
+          {onColorModeChange && <><h2>{bm ? 'Paparan' : 'Appearance'}</h2><div className="ih-appearance">
+            <button type="button" aria-pressed={colorMode === 'light'} onClick={() => onColorModeChange('light')}><Sun aria-hidden="true" />{bm ? 'Cerah' : 'Light'}</button>
+            <button type="button" aria-pressed={colorMode === 'dark'} onClick={() => onColorModeChange('dark')}><Moon aria-hidden="true" />{bm ? 'Gelap' : 'Dark'}</button>
+          </div></>}
         </>}
       </section>}
-      {showMobileSettings && <button type="button" className="ih-mobile-settings" aria-label={bm ? 'Tetapan' : 'Settings'} aria-expanded={panel === 'settings'} aria-controls="ih-account-panel" onClick={event => togglePanel('settings', event)}><Settings size={20} aria-hidden="true" /></button>}
     </div>
   );
 }

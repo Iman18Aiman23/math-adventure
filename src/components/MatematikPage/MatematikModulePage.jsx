@@ -9,9 +9,8 @@ export default function MatematikModulePage({
   onSelectTopic,
   onProfile,
   onToggleLanguage,
-  appTheme,
-  themes,
-  onThemeChange,
+  colorMode,
+  onColorModeChange,
   children,
   language,
 }) {
@@ -34,9 +33,8 @@ export default function MatematikModulePage({
         onBack={onBack}
         onProfile={onProfile}
         onToggleLanguage={onToggleLanguage}
-        theme={appTheme}
-        themes={themes}
-        onThemeChange={onThemeChange}
+        colorMode={colorMode}
+        onColorModeChange={onColorModeChange}
         language={language}
       />
       <main className="mt-module-content" ref={contentRef}>
@@ -1178,6 +1176,10 @@ export default function MatematikModulePage({
           0%, 100% { transform: translateY(0) rotate(-1deg); }
           50% { transform: translateY(-7px) rotate(1deg); }
         }
+        html[data-color-mode='dark'] .mt-module-page { background: #0F172A; color: #E8EEF8; }
+        html[data-color-mode='dark'] .mt-module-content :is(.pi-mhub-page, .pi-mhub-dashboard, .pi-mhub-lesson-button, .pi-mhub-quick-link) { background-color: #17243B !important; color: #E8EEF8 !important; border-color: #35445D !important; }
+        html[data-color-mode='dark'] .mt-module-content :is(h1, h2, h3, strong) { color: #F4F7FB !important; }
+        html[data-color-mode='dark'] .mt-module-content :is(p, small, .pi-mhub-lesson-desc) { color: #B7C4D8 !important; }
         @media (prefers-reduced-motion: reduce) {
           .mt-module-content,
           .mt-module-content .pi-mhub-coach-art svg,

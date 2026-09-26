@@ -102,6 +102,28 @@ export function HomePageLayoutStyles() {
       .ih-root.iman-layout { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
       .rp-layout > .mh-screen { padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
     }
+    html[data-color-mode='dark'] { color-scheme: dark; background: #0b1220; }
+    html[data-color-mode='dark'] #root:has(.iman-layout),
+    html[data-color-mode='dark'] .app-container:has(.iman-layout),
+    html[data-color-mode='dark'] .app-container:has(.iman-layout) .app-content,
+    html[data-color-mode='dark'] .view-container:has(.iman-layout),
+    html[data-color-mode='dark'] .ih-root.iman-layout,
+    html[data-color-mode='dark'] .rp-layout > .mh-screen { background: #0f172a; color: #e8eef8; }
+    html[data-color-mode='dark'] .iman-layout :is(.ip-header h1, .ih-section-heading h2, .mh-section-heading h2, .ih-hero h1, .mh-hero h2, .mh-topic-title, .ih-age-copy strong) { color: #f4f7fb; }
+    html[data-color-mode='dark'] .iman-layout :is(.ih-section-heading p, .mh-section-heading p, .ih-hero-lead, .mh-description, .mh-encouragement, .mh-topic-description, .ih-age-copy > span) { color: #b7c4d8; }
+    html[data-color-mode='dark'] .iman-layout :is(.ih-hero, .mh-hero) { background: #17243b !important; border-color: #33445f; }
+    html[data-color-mode='dark'] .iman-layout .mh-topic-card { background: color-mix(in srgb, var(--mh-accent) 10%, #131e32) !important; border-color: color-mix(in srgb, var(--mh-accent) 34%, #334155); }
+    html[data-color-mode='dark'] .iman-layout .ih-age { background: #17243b; border-color: #33445f; color: #f4f7fb; }
+    html[data-color-mode='dark'] .iman-layout :is(.ih-points, .ih-account, .mh-back) { background: #17243b; border-color: #33445f; color: #e8eef8; }
+    html[data-color-mode='dark'] .ih-popover { background: #172033; border-color: #35445d; color: #e8eef8; box-shadow: 0 18px 44px #02061780; }
+    html[data-color-mode='dark'] .ih-popover :is(p, .ih-account-greeting) { color: #b7c4d8; border-color: #35445d; }
+    html[data-color-mode='dark'] .ih-popover :is(button, .ih-account-menu button) { background: #111b2d; border-color: #35445d; color: #dce6f5; }
+    html[data-color-mode='dark'] .ih-popover [aria-pressed='true'] { background: #164e3d; border-color: #34d399; color: #ecfdf5; }
+    html[data-color-mode='dark'] .desktop-sidebar { background: #101827; border-color: #29364b; color: #e8eef8; }
+    html[data-color-mode='dark'] .desktop-sidebar :is(.home-quick-link, .home-settings-btn) { color: #b9c7db; }
+    html[data-color-mode='dark'] .subject-menu-footer,
+    html[data-color-mode='dark'] .app-container:has(.iman-layout) .cosmic-nav,
+    html[data-color-mode='dark'] .app-container:has(.iman-layout) .nav-glass { background: #101827; border-color: #29364b; }
   `}</style>;
 }
 const SUBJECTS = [
@@ -136,7 +158,7 @@ function AgeBadge({ index }) {
     </svg>
   );
 }
-export default function HomePage({ onSelectSubject, onSelectAgeGroup, language = 'bm', playerName, gameState, streak = 0, onTabChange, onHome, onOpenReports, onToggleLang, theme, themes, onThemeChange }) {
+export default function HomePage({ onSelectSubject, onSelectAgeGroup, language = 'bm', playerName, gameState, streak = 0, onTabChange, onHome, onOpenReports, onLogout, onToggleLang, colorMode, onColorModeChange }) {
   const [showRobotInterface, setShowRobotInterface] = useState(false);
   const bm = language === 'bm';
   const langIndex = bm ? 0 : 1;
@@ -155,7 +177,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
   return (
     <div className="ih-root iman-layout" style={{ '--ih-art': `url("${import.meta.env.BASE_URL}images/home/robots.webp")` }}>
       <HomePageLayoutStyles />
-      <PageHeader {...{ language, playerName, gameState, streak, onTabChange, onHome, onOpenReports, onToggleLang, theme, themes, onThemeChange }} />
+      <PageHeader {...{ language, playerName, gameState, streak, onTabChange, onHome, onOpenReports, onLogout, onToggleLang, colorMode, onColorModeChange }} />
       <PageHero home titleId="ih-welcome-title"
         eyebrow={bm ? 'SELAMAT DATANG' : 'WELCOME'}
         titleText={`${bm ? 'Hei' : 'Hey'}, ${name}!`}

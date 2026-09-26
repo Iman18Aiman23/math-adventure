@@ -1,5 +1,5 @@
 import React from 'react';
-import { Settings, UserRound } from 'lucide-react';
+import { Moon, Settings, Sun, UserRound } from 'lucide-react';
 import { playHoverSound } from '../../utils/soundManager';
 import StatsBar from '../_shared/StatsBar';
 
@@ -47,9 +47,8 @@ export default function MatematikModuleNavBar({
   onBack,
   onProfile,
   onToggleLanguage,
-  theme,
-  themes,
-  onThemeChange,
+  colorMode = 'light',
+  onColorModeChange,
   language = 'bm',
 }) {
   const isT1 = year === 1;
@@ -92,7 +91,7 @@ export default function MatematikModuleNavBar({
     };
   }, []);
 
-  const hasSettings = onToggleLanguage || (themes && onThemeChange);
+  const hasSettings = onToggleLanguage || onColorModeChange;
 
   return (
     <header className="mt-module-header" style={{ '--accent': accent, '--accent-d': accentD }}>
@@ -344,31 +343,15 @@ export default function MatematikModuleNavBar({
           background: var(--accent-d);
           box-shadow: 0 4px 10px color-mix(in srgb, var(--accent-d) 24%, transparent);
         }
-        .mt-settings-language:focus-visible,
-        .mt-settings-swatch:focus-visible {
+        html[data-color-mode='dark'] .mt-top-bar,
+        html[data-color-mode='dark'] .mt-settings-popover { background: #172033; border-color: #35445D; color: #E8EEF8; }
+        html[data-color-mode='dark'] .mt-settings-heading,
+        html[data-color-mode='dark'] .mt-settings-label { color: #E8EEF8; }
+        html[data-color-mode='dark'] .mt-settings-language { background: #111B2D; border-color: #35445D; color: #DCE6F5; }
+        html[data-color-mode='dark'] .mt-settings-language.active { background: #164E3D; border-color: #34D399; color: #ECFDF5; }
+        .mt-settings-language:focus-visible {
           outline: 3px solid color-mix(in srgb, var(--accent) 55%, #fff);
           outline-offset: 2px;
-        }
-        .mt-settings-swatches {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-        .mt-settings-swatch {
-          width: 34px;
-          height: 34px;
-          padding: 0;
-          border: 3px solid #fff;
-          border-radius: 11px;
-          background: var(--swatch);
-          box-shadow: 0 0 0 1px #DDE5DA;
-          cursor: pointer;
-          transition: transform .16s ease, box-shadow .16s ease;
-        }
-        .mt-settings-swatch:hover { transform: translateY(-2px); }
-        .mt-settings-swatch.active {
-          transform: translateY(-1px);
-          box-shadow: 0 0 0 3px var(--accent-d);
         }
         @media (min-width: 1181px) {
           .mt-top-module {
@@ -870,21 +853,12 @@ export default function MatematikModuleNavBar({
                       </div>
                     </div>
                   ) : null}
-                  {themes && onThemeChange ? (
+                  {onColorModeChange ? (
                     <div className="mt-settings-group">
-                      <span className="mt-settings-label">{language === 'bm' ? 'Tema aplikasi' : 'App theme'}</span>
-                      <div className="mt-settings-swatches">
-                        {Object.values(themes).map(item => (
-                          <button
-                            key={item.key}
-                            type="button"
-                            className={`mt-settings-swatch${theme?.key === item.key ? ' active' : ''}`}
-                            style={{ '--swatch': item.swatch }}
-                            onClick={() => onThemeChange(item.key)}
-                            aria-label={item.label}
-                            title={item.label}
-                          />
-                        ))}
+                      <span className="mt-settings-label">{language === 'bm' ? 'Paparan' : 'Appearance'}</span>
+                      <div className="mt-settings-languages">
+                        <button type="button" className={`mt-settings-language${colorMode === 'light' ? ' active' : ''}`} onClick={() => onColorModeChange('light')}><Sun size={17} />{language === 'bm' ? 'Cerah' : 'Light'}</button>
+                        <button type="button" className={`mt-settings-language${colorMode === 'dark' ? ' active' : ''}`} onClick={() => onColorModeChange('dark')}><Moon size={17} />{language === 'bm' ? 'Gelap' : 'Dark'}</button>
                       </div>
                     </div>
                   ) : null}

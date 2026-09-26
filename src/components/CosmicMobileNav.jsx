@@ -1,4 +1,4 @@
-import { BookOpen, Trophy, UserRound, Medal, Settings, House } from 'lucide-react';
+import { BookOpen, Trophy, UserRound, Medal, Settings, House, Moon, Sun } from 'lucide-react';
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { GradCapIcon, TrophyIcon, ProfileIcon, MedalIcon, GearsIcon } from './icons/GameIcons';
 
@@ -22,8 +22,8 @@ export default function CosmicMobileNav({
   onHome,
   onToggleLang,
   theme,
-  themes,
-  onThemeChange,
+  colorMode = 'light',
+  onColorModeChange,
 }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const settingsRef = useRef(null);
@@ -58,9 +58,9 @@ export default function CosmicMobileNav({
     }
   };
 
-  const handleThemePick = (key) => {
+  const handleAppearancePick = (mode) => {
     if (navigator.vibrate) navigator.vibrate(15);
-    onThemeChange?.(key);
+    onColorModeChange?.(mode);
   };
 
   const handleLanguagePick = (lang) => {
@@ -69,7 +69,7 @@ export default function CosmicMobileNav({
     onToggleLang?.();
   };
 
-  const hasSettings = (themes && onThemeChange) || onToggleLang;
+  const hasSettings = onColorModeChange || onToggleLang;
 
   const accentColor = theme?.swatch    || '#6366F1';
   const glowColor   = theme?.heroBorder || '#a5b4fc';
@@ -81,7 +81,7 @@ export default function CosmicMobileNav({
     '--nav-glow-rgb':   hexToRgb(glowColor),
   }), [accentColor, glowColor]);
 
-  // Home uses the reference's five destinations. Language/theme controls remain
+  // Home uses the reference's five destinations. Language/appearance controls remain
   // available through the homepage header; other pages retain their existing nav.
   if (appearance === 'home') {
     const homeTabs = [
@@ -100,7 +100,7 @@ export default function CosmicMobileNav({
 
   return (
     <>
-      {/* Settings popup (language + theme) */}
+      {/* Settings popup (language + appearance) */}
       {settingsOpen && hasSettings && (
         <>
           <div ref={settingsRef} style={{
@@ -112,7 +112,7 @@ export default function CosmicMobileNav({
             flexDirection: 'column',
             gap: '10px',
             padding: '14px 18px',
-            background: '#ffffff',
+            background: colorMode === 'dark' ? '#172033' : '#ffffff',
             borderRadius: '24px',
             border: `1.5px solid rgba(${hexToRgb(accentColor)}, 0.2)`,
             boxShadow: `0 12px 32px rgba(17,24,39,0.16), 0 0 0 1px rgba(${hexToRgb(glowColor)}, 0.12), 0 -6px 20px rgba(${hexToRgb(glowColor)}, 0.1)`,
@@ -132,9 +132,9 @@ export default function CosmicMobileNav({
                         flex: 1,
                         padding: '8px 14px',
                         borderRadius: '999px',
-                        border: isActive ? '2px solid #1F2937' : '2px solid rgba(0,0,0,0.08)',
-                        background: isActive ? '#1F2937' : '#F3F4F6',
-                        color: isActive ? '#ffffff' : '#374151',
+                        border: isActive ? `2px solid ${colorMode === 'dark' ? '#34D399' : '#1F2937'}` : `2px solid ${colorMode === 'dark' ? '#35445D' : 'rgba(0,0,0,0.08)'}`,
+                        background: isActive ? (colorMode === 'dark' ? '#164E3D' : '#1F2937') : (colorMode === 'dark' ? '#111B2D' : '#F3F4F6'),
+                        color: isActive ? '#ffffff' : (colorMode === 'dark' ? '#DCE6F5' : '#374151'),
                         fontFamily: 'var(--font-body)',
                         fontWeight: 700,
                         fontSize: 13,
@@ -150,34 +150,15 @@ export default function CosmicMobileNav({
               </div>
             )}
 
-            {onToggleLang && themes && onThemeChange && (
+            {onToggleLang && onColorModeChange && (
               <div style={{ height: 1, background: 'rgba(0,0,0,0.08)', margin: '2px 4px' }} />
             )}
 
-            {themes && onThemeChange && (
-              <div style={{ display: 'flex', gap: 14, justifyContent: 'center', padding: '4px 0' }}>
-                {Object.values(themes).map(t => {
-                  const isActive = theme?.key === t.key;
-                  return (
-                    <button
-                      key={t.key}
-                      onClick={() => handleThemePick(t.key)}
-                      title={t.label}
-                      style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: '50%',
-                        background: t.swatch,
-                        border: isActive ? '3px solid #1F2937' : '2px solid rgba(0,0,0,0.08)',
-                        boxShadow: isActive ? '0 0 0 3px rgba(0,0,0,0.06)' : 'none',
-                        cursor: 'pointer',
-                        transition: 'transform 0.15s ease',
-                        padding: 0,
-                        flexShrink: 0,
-                        transform: isActive ? 'scale(1.1)' : 'scale(1)',
-                      }}
-                    />
-                  );
+            {onColorModeChange && (
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                {[['light', Sun, language === 'bm' ? 'Cerah' : 'Light'], ['dark', Moon, language === 'bm' ? 'Gelap' : 'Dark']].map(([mode, Icon, label]) => {
+                  const isActive = colorMode === mode;
+                  return <button key={mode} onClick={() => handleAppearancePick(mode)} aria-pressed={isActive} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '9px 12px', borderRadius: 12, border: isActive ? '2px solid #10B981' : `1px solid ${colorMode === 'dark' ? '#35445D' : '#D7E0EA'}`, background: isActive ? (colorMode === 'dark' ? '#164E3D' : '#E8FAF2') : (colorMode === 'dark' ? '#111B2D' : '#F5F8FB'), color: colorMode === 'dark' ? '#E8EEF8' : '#263A57', fontWeight: 700, cursor: 'pointer' }}>{React.createElement(Icon, { size: 17 })}{label}</button>;
                 })}
               </div>
             )}

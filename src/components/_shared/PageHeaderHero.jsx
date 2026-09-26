@@ -16,23 +16,29 @@ export function PageHeader({ title, onBack, language = 'bm', ...accountProps }) 
       .iman-layout .ip-header .ih-account .ih-avatar svg { width: 27px; height: 27px; }
       .iman-layout .ip-header .ih-account > svg { width: 19px; height: 19px; }
       .iman-layout .ip-header > h1 { position: static; transform: none; max-width: none; margin: 0; font: 800 clamp(18px, 2vw, 26px)/1.2 'Outfit', sans-serif; text-align: center; }
-      .iman-layout .ip-header .ih-mobile-settings { display: none; }
       .iman-layout .ip-hero { height: 260px; min-height: 260px; flex-shrink: 0; }
       @container iman-page (max-width: 559px) {
-        .iman-layout .ip-hero { height: 320px; min-height: 320px; }
-        .iman-layout .ip-header { min-height: 76px; align-items: end; grid-template-columns: minmax(0, 1fr) auto; }
-        .iman-layout .ip-header > h1 { position: absolute; left: 50%; top: 0; transform: translateX(-50%); }
-        .iman-layout .ip-header .ih-top-actions-cluster { grid-column: 2; gap: 6px; }
+        .iman-layout .ip-hero { height: 240px; min-height: 240px; padding: 16px; }
+        .iman-layout .ip-hero .mh-hero-copy h2 { font-size: 23px; line-height: 1.12; }
+        .iman-layout .ip-hero .mh-description, .iman-layout .ip-hero .mh-encouragement { font-size: 12px; line-height: 1.4; margin-top: 8px; }
+        .iman-layout .ip-header { min-height: 44px; align-items: center; grid-template-columns: 38px minmax(0, 1fr) auto; gap: 6px; }
+        .iman-layout .ip-header.ih-header { grid-template-columns: minmax(0, 1fr) auto; }
+        .iman-layout .ip-header > h1 { position: static; left: auto; top: auto; transform: none; min-width: 0; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .iman-layout .ip-header .ih-top-actions-cluster { grid-column: 3; gap: 6px; }
+        .iman-layout .ip-header.ih-header .ih-top-actions-cluster { grid-column: 2; }
         .iman-layout .ip-header .ih-points { min-width: 60px; max-width: 84px; padding-inline: 8px; }
         .iman-layout .ip-header .ih-mobile-logo { display: block; width: 100%; max-width: 110px; min-width: 0; padding: 0; background: transparent; }
-        .iman-layout .ip-header .ih-mobile-settings { display: grid; place-items: center; width: 32px; height: 44px; padding: 0; border: 1px solid #e6effa; border-radius: 22px; background: #f8fcff; color: #6b88ae; }
+      }
+      @container iman-page (max-width: 331px) {
+        .iman-layout .ip-hero { height: 260px; min-height: 260px; }
+        .iman-layout .ip-header > h1 { font-size: 14px; }
       }
     `}</style>
     {title ? <>
       <button type="button" className="mh-back" onClick={onBack} aria-label={language === 'bm' ? 'Kembali' : 'Back'}><ArrowLeft aria-hidden="true" /></button>
       <h1>{title}</h1>
     </> : <button type="button" className="ih-mobile-logo" onClick={accountProps.onHome} aria-label="ImanAI — Home"><ImanAILogo language={language} /></button>}
-    <HomeHeaderActions {...accountProps} language={language} showMobileSettings={!title} />
+    <HomeHeaderActions {...accountProps} language={language} />
   </header>;
 }
 

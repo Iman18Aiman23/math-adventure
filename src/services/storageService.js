@@ -20,6 +20,7 @@
 const STORAGE_KEY = 'mathAdventureData';
 const PLAYER_KEY  = 'mathAdventurePlayer';
 const NAVIGATION_KEY = 'mathAdventureNavigation:v1';
+const APPEARANCE_KEY = 'mathAdventureAppearance';
 
 const DEFAULT_GAME_STATE = {
   totalXP: 0,
@@ -105,6 +106,21 @@ export function loadPlayerName() {
 export function savePlayerName(name) {
   try { localStorage.setItem(PLAYER_KEY, name.trim()); }
   catch (err) { console.warn('[storageService] Failed to save player name:', err); }
+}
+
+export function clearPlayerName() {
+  try { localStorage.removeItem(PLAYER_KEY); }
+  catch (err) { console.warn('[storageService] Failed to clear player name:', err); }
+}
+
+export function loadAppearanceMode() {
+  try { return localStorage.getItem(APPEARANCE_KEY) === 'dark' ? 'dark' : 'light'; }
+  catch { return 'light'; }
+}
+
+export function saveAppearanceMode(mode) {
+  try { localStorage.setItem(APPEARANCE_KEY, mode === 'dark' ? 'dark' : 'light'); }
+  catch (err) { console.warn('[storageService] Failed to save appearance:', err); }
 }
 
 // ── Per-game state ─────────────────────────────────────────────────────────

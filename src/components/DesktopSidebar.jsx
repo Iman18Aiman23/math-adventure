@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { GraduationCap, Trophy, Medal, Settings, Flag, ChevronRight, House, BookOpen, Mic, Calculator, Moon, UserRound, Crown, Play } from 'lucide-react';
+import { GraduationCap, Trophy, Medal, Settings, Flag, ChevronRight, House, BookOpen, Mic, Calculator, Moon, Sun, UserRound, Crown, Play } from 'lucide-react';
 import useGamification from '../hooks/useGamification';
 import StatsBar from './_shared/StatsBar';
 import ImanAILogo from './_shared/ImanAILogo';
@@ -40,7 +40,7 @@ const MT_T1_TOPICS = [
 export default function DesktopSidebar({
   activeTab, onTabChange, language, onToggleLanguage,
   onHome, onOpenReports,
-  theme, onThemeChange, themes,
+  colorMode = 'light', onColorModeChange,
   onContinueLearning, currentSubject, onSelectSubject, isJawi = false,
   simplified = false,
 }) {
@@ -76,7 +76,7 @@ export default function DesktopSidebar({
     }
   }, [isSettingsOpen]);
 
-  const hasSettings = onToggleLanguage || (themes && onThemeChange);
+  const hasSettings = onToggleLanguage || onColorModeChange;
 
   return (
     <>
@@ -183,23 +183,14 @@ export default function DesktopSidebar({
                       <span>English</span>
                     </button>
                   </div>
-                  {themes && onThemeChange && (
+                  {onColorModeChange && (
                     <>
                       <div className="mt-settings-heading" style={{ marginTop: '4px' }}>
-                        {language === 'bm' ? 'Tema Angkasa' : 'Theme'}
+                        {language === 'bm' ? 'Paparan' : 'Appearance'}
                       </div>
                       <div className="mt-theme-list">
-                        {Object.entries(themes).map(([tid, t]) => (
-                          <button
-                            key={tid}
-                            className={`mt-theme-btn ${theme?.key === t.key ? 'active' : ''}`}
-                            onClick={() => { onThemeChange(tid); setIsSettingsOpen(false); }}
-                            style={{ '--t-bg': t.heroBg }}
-                          >
-                            <span className="mt-theme-color-dot" />
-                            <span>{t.label}</span>
-                          </button>
-                        ))}
+                        <button className={`mt-theme-btn ${colorMode === 'light' ? 'active' : ''}`} onClick={() => { onColorModeChange('light'); setIsSettingsOpen(false); }}><Sun size={16} /><span>{language === 'bm' ? 'Cerah' : 'Light'}</span></button>
+                        <button className={`mt-theme-btn ${colorMode === 'dark' ? 'active' : ''}`} onClick={() => { onColorModeChange('dark'); setIsSettingsOpen(false); }}><Moon size={16} /><span>{language === 'bm' ? 'Gelap' : 'Dark'}</span></button>
                       </div>
                     </>
                   )}
