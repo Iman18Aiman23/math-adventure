@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, createContext, useContext, Suspense, useTransition } from 'react';
 import HomePage from './components/HomePage';
+import { canAccessSubject, hasFullSubjectAccess } from './utils/subjectAccess';
 import LoadingSpinner from './components/LoadingSpinner';
 import { MatematikNavContext } from './components/MatematikPage/_shared/MatematikNavContext';
 import { useBrowserBackFallback } from './hooks/useBrowserBack';
@@ -461,7 +462,10 @@ export default function App() {
   const isDesktop = useIsDesktop();
   const [savedNavigation] = useState(loadNavigationState);
   const [playerName,     setPlayerName]     = useState(() => loadPlayerName());
-  const [currentSubject, setCurrentSubject] = useState(savedNavigation.currentSubject);
+  const [currentSubject, setCurrentSubject] = useState(() =>
+    savedNavigation.currentSubject === 'matematik-reports' || canAccessSubject(playerName, savedNavigation.currentSubject)
+      ? savedNavigation.currentSubject : null
+  );
   const [readingLevel, setReadingLevel] = useState(null);
   const [speakingCategory, setSpeakingCategory] = useState(null);
   const [mathSubGame,    setMathSubGame]    = useState(savedNavigation.mathSubGame);
@@ -475,8 +479,8 @@ export default function App() {
   const [selectedAssessment, setSelectedAssessment] = useState(() =>
     baseAssessments.find(({ id }) => id === savedNavigation.selectedAssessmentId) || null
   );
-  const [currentAgeGroup, setCurrentAgeGroup] = useState(savedNavigation.currentAgeGroup);
-  const [currentAgeGame, setCurrentAgeGame] = useState(savedNavigation.currentAgeGame);
+  const [currentAgeGroup, setCurrentAgeGroup] = useState(() => hasFullSubjectAccess(playerName) ? savedNavigation.currentAgeGroup : null);
+  const [currentAgeGame, setCurrentAgeGame] = useState(() => hasFullSubjectAccess(playerName) ? savedNavigation.currentAgeGame : null);
   const [currentTheme, setCurrentTheme] = useState('cosmic');
   const [colorMode, setColorMode] = useState(loadAppearanceMode);
   const [islamModule, setIslamModule] = useState(savedNavigation.islamModule);
@@ -609,11 +613,21 @@ export default function App() {
   const renderContent = () => {
     if (activeTab === 'leaderboard') return (
       <Suspense fallback={<LoadingSpinner />}>
-        <LeaderboardHome language={language} gameState={gameState} theme={THEMES[currentTheme]} />
+        <LeaderboardHome language={language} gameState={gameState} playerName={playerName} streak={streak}
+          onTabChange={handleTabChange} onHome={handleBackToHome} onLogout={handleLogout}
+          onToggleLang={handleToggleLang} colorMode={colorMode} onColorModeChange={setColorMode}
+          onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })} />
       </Suspense>
     );
     if (activeTab === 'profile') {
-      return <ProfileHome playerName={playerName} gameState={gameState} language={language} streak={streak} />;
+      return <ProfileHome key={playerName || 'guest'} playerName={playerName} gameState={gameState} language={language} streak={streak}
+        onTabChange={handleTabChange} onHome={handleBackToHome} onLogout={handleLogout}
+        onToggleLang={handleToggleLang} colorMode={colorMode} onColorModeChange={setColorMode}
+        onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
+        onSelectSubject={(subject) => {
+          if (!canAccessSubject(playerName, subject)) return;
+          navigate(() => { handleBackToHome(); setCurrentSubject(subject === 'jawi' ? 'pendidikan-islam-v1' : subject); if (subject === 'jawi') setIslamModule('jawi'); });
+        }} />;
     }
     if (activeTab === 'achievement') {
       // If an assessment is selected, show AssessmentPage
@@ -625,6 +639,10 @@ export default function App() {
         <AchievementHome
           onBack={handleBackToHome}
           onHome={handleBackToHome}
+          playerName={playerName} streak={streak}
+          onTabChange={handleTabChange} onLogout={handleLogout}
+          onToggleLang={handleToggleLang} colorMode={colorMode} onColorModeChange={setColorMode}
+          onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
           language={language}
           gameState={gameState}
           onTakeAssessment={(achievement) => {
@@ -1670,8 +1688,8 @@ export default function App() {
         }
         return <HomePage
           onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
-          onSelectSubject={(s) => navigate(() => setCurrentSubject(s))}
-          onSelectAgeGroup={(g) => navigate(() => setCurrentAgeGroup(g))}
+          onSelectSubject={(s) => { if (canAccessSubject(playerName, s)) navigate(() => setCurrentSubject(s)); }}
+          onSelectAgeGroup={(g) => { if (hasFullSubjectAccess(playerName)) navigate(() => setCurrentAgeGroup(g)); }}
           language={language}
           playerName={playerName}
           gameState={gameState}
@@ -1720,6 +1738,7 @@ export default function App() {
             currentSubject={currentSubject}
             isJawi={currentSubject === 'pendidikan-islam-v1' && islamModule === 'jawi'}
             onSelectSubject={(subject) => navigate(() => {
+              if (!canAccessSubject(playerName, subject)) return;
               handleBackToHome();
               if (subject === 'jawi') {
                 setCurrentSubject('pendidikan-islam-v1');
@@ -1768,7 +1787,7 @@ export default function App() {
           </div>
 
           {/* CosmicMobileNav — rendered outside view-container so position:fixed works correctly */}
-          {isSubjectMenu ? (
+          {isSubjectMenu || activeTab === 'profile' || activeTab === 'leaderboard' || (activeTab === 'achievement' && !selectedAssessment) ? (
             <SubjectMenuFooter activeTab={activeTab} language={language}
               onTabChange={handleTabChange} onHome={handleBackToHome}
               onToggleLang={handleToggleLang} theme={THEMES[currentTheme]}

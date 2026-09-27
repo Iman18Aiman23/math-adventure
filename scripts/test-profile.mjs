@@ -1,0 +1,88 @@
+// Usage: node scripts/test-profile.mjs <path to playwright package>
+import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
+import { mkdirSync } from 'node:fs';
+const require = createRequire(import.meta.url);
+const { chromium } = require(process.argv[2] || 'playwright');
+const browser = await chromium.launch({ executablePath: 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', headless: true });
+const output = 'node_modules/.cache/profile-checks';
+mkdirSync(output, { recursive: true });
+const errors = [];
+try {
+  const page = await browser.newPage();
+  page.on('pageerror', error => errors.push(error.message));
+  await page.addInitScript(() => {
+    if (sessionStorage.getItem('profile-test-seeded')) return;
+    sessionStorage.setItem('profile-test-seeded', '1');
+    localStorage.setItem('mathAdventurePlayer', 'ImanAI');
+    localStorage.setItem('mathAdventureNavigation:v1', JSON.stringify({ activeTab: 'profile' }));
+  });
+  await page.goto('http://127.0.0.1:5173/math-adventure/');
+  await page.locator('.pf-root').waitFor();
+  await page.evaluate(() => document.fonts.ready);
+  await page.locator('.pf-metrics[aria-busy="false"]').waitFor();
+  for (const [width, height] of [[390, 844], [320, 568], [430, 932], [768, 1024], [941, 1672], [1024, 768], [1366, 768], [1586, 992], [1920, 1080]]) {
+    await page.setViewportSize({ width, height });
+    await page.evaluate(() => { document.querySelector('.view-container').scrollTop = 0; });
+    await page.waitForTimeout(150);
+    const overflows = await page.evaluate(() => [...document.querySelectorAll('.pf-wrap, .pf-hero, .pf-metrics, .pf-panel, .pf-fields')].filter(el => el.scrollWidth > el.clientWidth + 2).map(el => ({ selector: el.className, width: el.clientWidth, scroll: el.scrollWidth })));
+    assert.deepEqual(overflows, [], `${width}px overflow`);
+    assert.equal(await page.locator('.pf-hero img').evaluateAll(images => images.every(img => img.complete && img.naturalWidth > 0)), true);
+    if (width < 768) assert.equal(await page.locator('.subject-menu-footer .cosmic-nav').isVisible(), true);
+    await page.screenshot({ path: `${output}/${width}.png`, fullPage: true });
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole('button', { name: 'Edit nama', exact: true }).click();
+  await page.getByLabel('Nama paparan', { exact: true }).fill('Aiman');
+  await page.getByRole('button', { name: 'Simpan', exact: true }).click();
+  assert.equal(await page.locator('.pf-name strong').textContent(), 'Aiman');
+  assert.equal(await page.evaluate(() => localStorage.getItem('mathAdventurePlayer')), 'ImanAI', 'Display-name edits must not change subject access');
+  await page.getByRole('button', { name: 'Edit emel', exact: true }).click();
+  await page.locator('.pf-dialog input').fill('aiman@example.com');
+  await page.getByRole('button', { name: 'Simpan', exact: true }).click();
+  await page.reload();
+  await page.locator('.pf-root').waitFor();
+  assert.equal(await page.locator('.pf-name strong').textContent(), 'Aiman');
+  assert.match(await page.locator('.pf-fields').textContent(), /aiman@example.com/);
+  await page.getByLabel('Tempoh aktiviti').selectOption('30');
+  assert.match(await page.locator('.pf-activity-panel h3').textContent(), /Bulanan/);
+  await page.locator('.pf-activity-panel .pf-link').click();
+  assert.equal(await page.locator('.pf-dialog:modal .pf-detail-list li').count(), 30);
+  await page.keyboard.press('Escape');
+  assert.equal(await page.locator('.pf-dialog').isVisible(), false);
+  await page.locator('.pf-wallet').click();
+  await page.screenshot({ path: `${output}/wallet.png` });
+  await page.reload();
+  await page.locator('.pf-root').waitFor();
+  await page.locator('input[type="file"]').setInputFiles('public/images/profile/graduate-tablet.png');
+  await page.waitForFunction(() => document.querySelector('.pf-avatar img').src.startsWith('data:image/png'));
+  await page.locator('input[type="file"]').setInputFiles({ name: 'invalid.txt', mimeType: 'text/plain', buffer: Buffer.from('invalid') });
+  assert.match(await page.locator('.pf-error').textContent(), /PNG/);
+  await page.evaluate(() => {
+    const now = new Date();
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    const store = JSON.parse(localStorage.getItem('math-adventure-v2')) || {};
+    store.subjects = { reading: { topics: { 'suku-kata-kv': { crownLevel: 1, bestScore: 7, bestTotal: 10, lastPracticed: now.toISOString() } } }, mt: { topics: { tambah: { crownLevel: 1, bestScore: 10, bestTotal: 10, lastPracticed: now.toISOString() } } } };
+    store.dailyLogs = { [today]: { xp: 45, sessions: [{ source: 'topic_completion', subject: 'reading', topicId: 'suku-kata-kv', timestamp: now.toISOString() }] } };
+    localStorage.setItem('math-adventure-v2', JSON.stringify(store));
+    window.dispatchEvent(new Event('gamification-sync'));
+  });
+  await page.waitForFunction(() => document.querySelector('.pf-progress-row strong').textContent === '70%');
+  assert.equal(await page.locator('.pf-metric strong').nth(1).textContent(), '2');
+  assert.match(await page.locator('.pf-sessions-panel').textContent(), /suku kata kv/);
+  await page.setViewportSize({ width: 1586, height: 992 });
+  await page.screenshot({ path: `${output}/populated-desktop.png` });
+  await page.locator('.pf-root .ih-account').click();
+  await page.getByRole('button', { name: 'Tetapan', exact: true }).click();
+  await page.getByRole('button', { name: 'English', exact: true }).click();
+  assert.equal(await page.locator('#pf-title').textContent(), 'My Profile');
+  await page.getByRole('button', { name: 'Dark', exact: true }).click();
+  await page.keyboard.press('Escape');
+  await page.screenshot({ path: `${output}/dark-desktop.png` });
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.locator('.pf-sessions-panel .pf-session').click();
+  await page.waitForFunction(() => !document.querySelector('.pf-root'));
+  assert.match(await page.locator('.view-container').textContent(), /Reading|Membaca/);
+  assert.deepEqual(errors, []);
+  console.log('Profile responsive layouts, editing, persistence, filters, dialogs, mobile menu, and runtime checks passed.');
+} finally { await browser.close(); }

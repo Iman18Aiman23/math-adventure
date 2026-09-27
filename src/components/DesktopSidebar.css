@@ -1,3 +1,12 @@
+.desktop-sidebar.desktop-sidebar .home-quick-link:disabled {
+  opacity: 0.45;
+  filter: grayscale(1);
+  cursor: not-allowed;
+  transform: none;
+  background: transparent;
+  box-shadow: none;
+}
+
 /* Scoped to the shared desktop navigation; game and mobile styles stay local. */
 .desktop-sidebar.desktop-sidebar {
   display: flex;

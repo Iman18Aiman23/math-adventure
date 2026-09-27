@@ -1,6 +1,7 @@
 import React, { useState, Suspense } from 'react';
 import { ChevronRight, Star, ArrowLeft } from 'lucide-react';
 import { AGE_GROUPS } from '../data/ageCurriculum';
+import { canAccessSubject, hasFullSubjectAccess } from '../utils/subjectAccess';
 import { playHoverSound } from '../utils/soundManager';
 import { PageHeader, PageHero } from './_shared/PageHeaderHero';
 import './_shared/SubjectMenuLayout.css';
@@ -98,6 +99,26 @@ export function HomePageLayoutStyles() {
     @media (min-width: 768px) {
       #root:has(.iman-layout) .desktop-sidebar { position: sticky; top: 0; height: 100vh; height: 100dvh; flex-shrink: 0; }
     }
+    @media (max-width: 767px) {
+      .ih-root.iman-layout .ih-subject-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .ih-root.iman-layout .ih-subject {
+        position: relative; display: grid; grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: 48px 1fr; align-items: start; justify-content: stretch;
+        min-height: 0; gap: 8px; padding: clamp(10px, 2.5vw, 16px); border-radius: 16px;
+      }
+      .ih-root.iman-layout .ih-subject-scene { width: 48px; height: 48px; }
+      .ih-root.iman-layout .ih-subject-content { align-self: start; text-align: left; gap: 4px; }
+      .ih-root.iman-layout .ih-subject-title { font-size: clamp(13px, 3.3vw, 17px); line-height: 1.2; }
+      .ih-root.iman-layout .ih-subject-desc { font-size: clamp(11px, 2.7vw, 13px); line-height: 1.4; }
+      .ih-root.iman-layout .ih-subject .mh-card-action {
+        position: absolute; top: 12px; right: 12px; display: grid;
+        width: 26px; height: 26px; min-height: 0; margin: 0; padding: 0;
+        border: 0; background: none;
+      }
+      .ih-root.iman-layout .ih-subject .mh-card-action > span:first-child { display: none; }
+      .ih-root.iman-layout .ih-subject .mh-arrow { width: 26px; height: 26px; }
+      .ih-root.iman-layout .ih-subject .mh-arrow svg { width: 16px; height: 16px; }
+    }
     @media (max-width: 767px), (max-height: 500px) and (pointer: coarse) {
       .ih-root.iman-layout { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
       .rp-layout > .mh-screen { padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
@@ -165,7 +186,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
   const name = playerName || 'Iman';
   const currentLevel = gameState?.level ?? 1;
 
-  if (showRobotInterface) {
+  if (showRobotInterface && hasFullSubjectAccess(playerName)) {
     return <div className="ih-robot-interface">
       <button type="button" className="ih-return" onClick={() => setShowRobotInterface(false)}><ArrowLeft size={18} />{bm ? 'Kembali ke Home' : 'Back to Home'}</button>
       <Suspense fallback={<p role="status">{bm ? 'Memuatkan…' : 'Loading…'}</p>}>
@@ -197,7 +218,8 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
           {SUBJECTS.map(subject => <button
             type="button" key={subject.id} className={`ih-subject mh-topic-card ih-subject--${subject.tone}`}
             aria-labelledby={`ih-title-${subject.id}`} aria-describedby={`ih-desc-${subject.id}`}
-            onClick={() => subject.id === 'robot' ? setShowRobotInterface(true) : onSelectSubject(subject.id)} onMouseEnter={playHoverSound}
+            disabled={!canAccessSubject(playerName, subject.id)}
+            onClick={() => subject.id === 'robot' ? setShowRobotInterface(true) : onSelectSubject(subject.id)} onMouseEnter={canAccessSubject(playerName, subject.id) ? playHoverSound : undefined}
           >
             <span className="ih-subject-scene mh-topic-visual"><RobotArt index={subject.art} /></span>
             <span className="ih-subject-content mh-topic-copy"><span className="ih-subject-title mh-topic-title" id={`ih-title-${subject.id}`}>{subject.title[langIndex]}</span><span className="ih-subject-desc mh-topic-description" id={`ih-desc-${subject.id}`}>{subject.desc[langIndex]}</span></span>
@@ -209,7 +231,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
       <section className="ih-ages" aria-labelledby="ih-age-heading">
         <div className="ih-section-heading"><h2 id="ih-age-heading">{bm ? 'KUMPULAN UMUR' : 'AGE GROUPS'}</h2><p>{bm ? 'Pilih kumpulan umur yang sesuai.' : 'Choose the right age group.'}</p></div>
         <div className="ih-age-grid">
-          {AGE_GROUPS.map((group, index) => <button type="button" key={group.id} className={`ih-age ih-age--${index}`} onClick={() => onSelectAgeGroup?.(group.id)} onMouseEnter={playHoverSound}>
+          {AGE_GROUPS.map((group, index) => <button type="button" key={group.id} className={`ih-age ih-age--${index}`} disabled={!hasFullSubjectAccess(playerName)} onClick={() => onSelectAgeGroup?.(group.id)} onMouseEnter={hasFullSubjectAccess(playerName) ? playHoverSound : undefined}>
             <span className="ih-age-badge"><AgeBadge index={index} /></span>
             <span className="ih-age-copy"><strong>{group.title[bm ? 'bm' : 'eng']}</strong><span>{group.subtitle[bm ? 'bm' : 'eng']}</span></span>
             <ChevronRight className="ih-age-arrow" size={19} aria-hidden="true" />

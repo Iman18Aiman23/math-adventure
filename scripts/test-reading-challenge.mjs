@@ -137,6 +137,8 @@ createRoot(document.getElementById('root')).render(React.createElement(React.Str
     }
     console.log(`${width}px: all 15 levels fit horizontally, footer visible, touch targets passed`);
   }
+  // Keep the audio checks deterministic and cover every open syllable.
+  await page.addInitScript(() => { Math.random = () => 0.999; });
   await page.goto(`${url}?level=1`);
   await page.locator('.rg-audio').waitFor();
   await page.evaluate(async () => {
@@ -146,19 +148,61 @@ createRoot(document.getElementById('root')).render(React.createElement(React.Str
     speech.speak = (text, language) => { window.audioCalls.push({text, language}); return new Promise(resolve => { window.finishAudio = resolve; }); };
     speech.stopSpeaking = () => { window.audioStops++; };
   });
-  await page.locator('.rg-audio').click();
-  assert(await page.locator('.rg-audio').isDisabled());
-  await page.evaluate(() => window.finishAudio());
-  await page.locator('.rg-audio').click();
-  assert.equal(await page.evaluate(() => window.audioCalls.length), 2);
-  assert.equal(await page.evaluate(() => window.audioCalls[0].language), 'ms-MY');
-  await page.evaluate(() => window.finishAudio());
-  const id = await page.locator('.rg-question').getAttribute('data-question-id');
-  const answer = questionsForLevel(1).find(q => q.id === id).answer;
-  await page.locator('.rg-option').getByText(answer, {exact:true}).click();
-  await page.getByRole('button', {name:'Semak', exact:true}).click();
-  await page.getByRole('button', {name:'Teruskan', exact:true}).click();
+  const expectedClips = {
+    ba: 'syllables/ba-a.mp3', bi: 'syllables/ba-i.mp3', bu: 'syllables/ba-u.mp3',
+    ca: 'hijaiyah/ca.mp3', da: 'syllables/dal-a.mp3', ma: 'syllables/mim-a.mp3',
+    mi: 'syllables/mim-i.mp3', ku: 'syllables/kaf-u.mp3', sa: 'syllables/sin-a.mp3',
+  };
+  await page.evaluate(async clips => {
+    const context = new AudioContext();
+    for (const clip of Object.values(clips)) {
+      const response = await fetch(`/math-adventure/audio/${clip}`);
+      if (!response.ok) throw new Error(`Missing recording: ${clip}`);
+      const buffer = await context.decodeAudioData(await response.arrayBuffer());
+      if (buffer.duration <= 0) throw new Error(`Empty recording: ${clip}`);
+    }
+    await context.close();
+    window.clipPlays = 0;
+    window.clipPauses = 0;
+    HTMLMediaElement.prototype.play = function () {
+      window.lastClip = this;
+      window.clipPlays++;
+      return window.rejectClip ? Promise.reject(new Error('Playback failed')) : Promise.resolve();
+    };
+    HTMLMediaElement.prototype.pause = function () { window.clipPauses++; };
+  }, expectedClips);
+  for (const question of questionsForLevel(1)) {
+    const syllable = question.answer;
+    const clip = expectedClips[syllable];
+    const ttsCallsBefore = await page.evaluate(() => window.audioCalls.length);
+    await page.locator('.rg-audio').click();
+    assert(await page.locator('.rg-audio').isDisabled());
+    if (clip) {
+      assert((await page.evaluate(() => window.lastClip.src)).endsWith(`/audio/${clip}`));
+      assert.equal(await page.evaluate(() => window.audioCalls.length), ttsCallsBefore, `${syllable} must not use TTS`);
+      const playsBefore = await page.evaluate(() => window.clipPlays);
+      await page.evaluate(() => window.lastClip.onended());
+      await page.locator('.rg-audio').click();
+      assert.equal(await page.evaluate(() => window.clipPlays), playsBefore + 1);
+      if (syllable === 'bu') {
+        await page.evaluate(() => { window.lastClip.onended(); window.rejectClip = true; });
+        await page.locator('.rg-audio').click();
+        await page.getByRole('status').filter({ hasText: 'Audio tidak dapat dimainkan' }).waitFor();
+        assert(await page.locator('.rg-audio').isEnabled());
+        assert.equal(await page.evaluate(() => window.audioCalls.length), ttsCallsBefore, 'Failed clips must not fall back to spelling');
+        await page.evaluate(() => { window.rejectClip = false; });
+        await page.locator('.rg-audio').click();
+      }
+    } else {
+      assert.deepEqual(await page.evaluate(() => window.audioCalls.at(-1)), { text: syllable, language: 'ms-MY' });
+      await page.evaluate(() => window.finishAudio());
+    }
+    await page.locator('.rg-option').getByText(syllable, { exact: true }).click();
+    await page.getByRole('button', { name: 'Semak', exact: true }).click();
+    await page.getByRole('button', { name: 'Teruskan', exact: true }).click();
+    if (clip) assert(await page.evaluate(() => window.clipPauses > 0 && window.lastClip.onended === null));
+  }
   assert(await page.evaluate(() => window.audioStops > 0));
-  console.log('Malay audio, busy state, replay and question-change cleanup passed.');
+  console.log('All nine syllable recordings decode and select correctly; busy state, replay, failure retry and cleanup passed.');
   assert.deepEqual(errors, []);
 } finally { await browser?.close(); await server.close(); }

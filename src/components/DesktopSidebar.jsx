@@ -4,6 +4,7 @@ import useGamification from '../hooks/useGamification';
 import StatsBar from './_shared/StatsBar';
 import ImanAILogo from './_shared/ImanAILogo';
 import './DesktopSidebar.css';
+import { canAccessSubject } from '../utils/subjectAccess';
 
 const MT_MODULE2_DRILL_TYPES = [
   'kt-gabung', 'kt-garis', 'kt-perkataan', 'kt-ayat',
@@ -42,7 +43,7 @@ export default function DesktopSidebar({
   onHome, onOpenReports,
   colorMode = 'light', onColorModeChange,
   onContinueLearning, currentSubject, onSelectSubject, isJawi = false,
-  simplified = false,
+  simplified = false, playerName,
 }) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const settingsRef = useRef(null);
@@ -120,7 +121,7 @@ export default function DesktopSidebar({
               { id: 'math', label: language === 'bm' ? 'Matematik' : 'Mathematics', icon: Calculator },
               { id: 'jawi', label: 'Jawi', icon: Moon },
             ].map(({ id, label, icon: Icon }) => (
-              <button key={id} type="button" className={`home-quick-link ${activeTab === 'learn' && (id === 'jawi' ? isJawi : currentSubject === id) ? 'active' : ''}`} onClick={() => onSelectSubject?.(id)}>{React.createElement(Icon)}<span>{label}</span></button>
+              <button key={id} type="button" disabled={!canAccessSubject(playerName, id)} className={`home-quick-link ${activeTab === 'learn' && (id === 'jawi' ? isJawi : currentSubject === id) ? 'active' : ''}`} onClick={() => onSelectSubject?.(id)}>{React.createElement(Icon)}<span>{label}</span></button>
             ))}
             {showExtendedNav && <><div className="sidebar-nav-divider" />
             <button type="button" className={`home-quick-link ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => onTabChange?.('profile')}><UserRound /><span>{language === 'bm' ? 'Profil' : 'Profile'}</span></button>

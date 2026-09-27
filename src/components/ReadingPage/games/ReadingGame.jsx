@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import confetti from 'canvas-confetti';
-import { MathGameShell, MathGameHeader, MathGameBody, MathGameAnswerRecord, MathGameProgress } from '../../MathematicsPage/MathGameLayout';
+import { MathGameShell, MathGameHeader, MathGameBody, MathGameToolbar, MathGameProgress } from '../../MathematicsPage/MathGameLayout';
 import HeartShopModal from '../../HeartShopModal';
 import { getGameData, addCorrectAnswer, deductHeart } from '../../../utils/gameStatsManager';
 import { playSound } from '../../../utils/soundManager';
@@ -42,7 +42,7 @@ export default function ReadingGame({ levelId, language = 'bm', onBack, onComple
   useEffect(() => {
     started.current = Date.now();
     heading.current?.focus({ preventScroll: true });
-    const board = heading.current?.closest('.rg-board');
+    const board = heading.current?.closest('.rg-content');
     if (board) board.scrollTop = 0;
     return () => SpeechManager.stopSpeaking();
   }, [index]);
@@ -99,6 +99,8 @@ export default function ReadingGame({ levelId, language = 'bm', onBack, onComple
       hearts={rewards.hearts} gems={rewards.gems} stars={rewards.stars} onRewardsClick={() => setShop(true)} />
     {shop && <HeartShopModal isOpen onClose={() => setShop(false)} onPurchase={setRewards} language={language} />}
     <MathGameBody className="rg-board">
+      <MathGameToolbar language={language} correctCount={correct} wrongCount={wrong} />
+      <div className="rg-content">
       {finished ? <section className="rg-completion">
         <span className="rg-trophy" aria-hidden="true">🏆</span>
         <h2 ref={heading} tabIndex={-1}>{levelId === 15 ? (bm ? 'Kamu kini Reading Hero!' : 'You are a Reading Hero!') : (bm ? 'Tahniah!' : 'Well done!')}</h2>
@@ -148,10 +150,10 @@ export default function ReadingGame({ levelId, language = 'bm', onBack, onComple
           </button>
         </div>
       </>}
+      </div>
+      <footer className="rg-footer">
+        <MathGameProgress language={language} progress={finished ? questions.length : index + (feedback?.correct ? 1 : 0)} milestone={questions.length} />
+      </footer>
     </MathGameBody>
-    <footer className="rg-footer">
-      <MathGameAnswerRecord language={language} correctCount={correct} wrongCount={wrong} />
-      <MathGameProgress language={language} progress={finished ? questions.length : index + (feedback?.correct ? 1 : 0)} milestone={questions.length} />
-    </footer>
   </MathGameShell>;
 }

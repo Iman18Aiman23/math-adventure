@@ -254,6 +254,15 @@
   .ih-hero-note { font-size: 10px; }
 }
 
+.ih-root.iman-layout .ih-subject:disabled,
+.ih-root.iman-layout .ih-age:disabled {
+  opacity: 0.45;
+  filter: grayscale(1);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ih-root *, .ih-root *::before, .ih-root *::after { animation: none !important; transition: none !important; }
 }

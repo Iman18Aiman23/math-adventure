@@ -37,19 +37,31 @@
 .rg-ref-reward-pill { display: flex; align-items: center; justify-content: center; gap: 4px; min-width: 44px; min-height: 44px; padding: 6px 9px; border: 0; border-radius: 20px; background: white; color: #102d53; font-size: 18px; font-weight: 800; }
 .rg-ref-reward-pill svg { width: 19px; height: 19px; }
 .rg-ref-reward-icon.is-star { color: #e8ab16; }.rg-ref-reward-icon.is-heart { color: #ed5b68; }.rg-ref-reward-icon.is-gem { color: #299ac1; }
-.rg-board { width: 100%; max-width: 1100px; min-height: 0; margin: 0 auto; padding: clamp(12px, 2dvh, 24px) clamp(12px, 3vw, 32px); border-radius: 28px; background: white; box-shadow: 0 5px 20px #126b3b09; display: flex; flex-direction: column; flex: 1; overflow-y: auto; overflow-x: hidden; gap: 10px; }
-.rg-question { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; margin: auto 0; }
-.rg-question h2 { margin: 0; max-width: 760px; font-size: clamp(20px, 2.6vw, 30px); line-height: 1.25; }
-.rg-target { max-width: 100%; margin: 0; font: 700 clamp(40px, 7vw, 68px)/1.2 'Fredoka', sans-serif; overflow-wrap: anywhere; }
-.rg-target.is-sentence { font-size: clamp(22px, 3vw, 34px); line-height: 1.5; }
+.rg-board { width: 100%; max-width: 1100px; min-height: 0; margin: 0 auto; padding: clamp(12px, 2dvh, 24px) clamp(12px, 3vw, 32px); border-radius: 28px; background: white; box-shadow: 0 5px 20px #126b3b09; display: flex; flex-direction: column; flex: 1; overflow: hidden; gap: 10px; }
+.rg-content { display: flex; flex-direction: column; flex: 1; min-height: 0; min-width: 0; gap: clamp(10px, 1.6dvh, 18px); overflow-y: auto; overflow-x: hidden; padding: 4px; scrollbar-gutter: stable both-edges; }
+.rg-question { width: 100%; min-width: 0; text-align: center; display: flex; flex: 1 0 auto; flex-direction: column; justify-content: center; align-items: center; gap: clamp(12px, 2dvh, 24px); margin: 0; padding: clamp(16px, 3dvh, 36px) 0; }
+.rg-question .rg-eyebrow { font-size: clamp(13px, 2vw, 17px); }
+.rg-question h2 { margin: 0; width: 100%; max-width: 900px; font-size: clamp(26px, 4.5vw, 44px); line-height: 1.25; text-wrap: balance; overflow-wrap: anywhere; }
+.rg-target { max-width: 100%; margin: 0; font: 700 clamp(56px, 10vw, 104px)/1.15 'Fredoka', sans-serif; overflow-wrap: anywhere; }
+.rg-target.is-sentence { font-size: clamp(26px, 4vw, 42px); line-height: 1.45; text-wrap: balance; }
 .rg-picture { display: inline-grid; place-items: center; width: clamp(68px, 13dvh, 130px); aspect-ratio: 1; max-width: 100%; font-size: clamp(52px, 10dvh, 98px); line-height: 1.1; }
 .rg-scene { display: block; width: clamp(140px, 25dvh, 230px); max-width: 100%; height: auto; flex-shrink: 0; }
-.rg-audio { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 10px 22px; background: #e6f5ff; border: 2px solid #98cee9; border-radius: 16px; color: #155d89; font-size: 20px; font-weight: 700; }
+.rg-audio-wrap { max-width: 100%; }
+.rg-audio { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(6px, 1dvh, 12px); min-height: 48px; padding: 8px 16px; background: transparent; border: 0; border-radius: 20px; color: #167bc4; font-size: clamp(16px, 2.5vw, 21px); font-weight: 700; }
+.rg-audio-icon { position: relative; display: grid; place-items: center; width: clamp(64px, 10vw, 88px); aspect-ratio: 1; border-radius: 50%; background: #effaff; box-shadow: 0 0 0 5px #f7fcff; transition: transform 180ms ease, background 180ms ease; }
+.rg-audio-icon svg { width: 52%; height: 52%; fill: #168bff; stroke: #168bff; stroke-width: 2.5; }
+.rg-audio-icon::before, .rg-audio-icon::after { content: ''; position: absolute; top: 18%; width: 10px; height: 4px; border-radius: 4px; background: #ffd335; box-shadow: 0 9px 0 -1px #ffd335; }
+.rg-audio-icon::before { left: -8px; transform: rotate(15deg); }
+.rg-audio-icon::after { right: -8px; transform: rotate(-15deg); }
+.rg-audio:active:not(:disabled) .rg-audio-icon { transform: scale(.94); }
+.rg-audio[aria-busy='true'] .rg-audio-icon { animation: rg-audio-pulse 1s ease-in-out infinite alternate; }
 .rg-audio:disabled { opacity: .7; }
+@keyframes rg-audio-pulse { to { box-shadow: 0 0 0 10px #e4f5ff; } }
+@media (hover: hover) { .rg-audio:hover:not(:disabled) .rg-audio-icon { background: #dff3ff; transform: scale(1.06); } }
 .rg-audio-wrap p { max-width: 500px; font-size: 15px; }
 .rg-story { max-width: 720px; width: 100%; padding: 12px 20px; border-left: 4px solid #97cce2; border-radius: 12px; background: #f1f8fc; text-align: left; }
-.rg-story p { margin: 6px 0; font-size: clamp(18px, 2.1vw, 25px); line-height: 1.65; }
-.rg-interaction { width: 100%; max-width: 800px; margin: auto auto 0; }
+.rg-story p { margin: 6px 0; font-size: clamp(20px, 2.8vw, 30px); line-height: 1.6; }
+.rg-interaction { width: 100%; max-width: 800px; margin: 0 auto; }
 .rg-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(8px, 1.2vw, 14px); }
 .rg-options:has(> :nth-child(4)) { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .rg-options.is-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -71,8 +83,12 @@
 .rg-feedback.is-correct { color: #207943; }.rg-feedback.is-wrong { color: #af3945; }
 .rg-primary { min-height: 48px; width: min(100%, 440px); padding: 10px 18px; border: 0; border-bottom: 4px solid #177342; border-radius: 16px; background: #219454; color: white; font-size: 20px; font-weight: 800; }
 .rg-primary:disabled { background: #d2e6db; border-color: #bdd2c6; color: #527261; }
-.rg-footer { width: 100%; max-width: 1100px; margin: 0 auto; padding: 8px 12px max(8px, env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 22px; flex: 0 0 auto; }
-.rg-footer .math-progress-wrap { flex: 1; min-width: 0; }
+/* Match the operations board: answer toolbar first, progress footer last. */
+.rg-content > .rg-question, .rg-content > .rg-interaction, .rg-content > .rg-completion { flex-shrink: 0; }
+.rg-footer { width: 100%; margin-top: clamp(12px, 3dvh, 32px); padding: 0; flex: 0 0 auto; }
+.rg-footer .math-progress-wrap { gap: clamp(10px, 2vw, 24px); }
+.rg-footer .math-progress-fill { background: linear-gradient(90deg, #08b65b, #0ac765); }
+.rg-footer .math-progress-count { font-size: clamp(18px, 2vw, 28px); font-variant-numeric: tabular-nums; }
 .rg-completion { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; margin: auto; padding: 20px 0; }
 .rg-completion h2 { margin: 0; font-size: clamp(28px, 4vw, 44px); }.rg-completion p { margin: 0; line-height: 1.5; }
 .rg-trophy { font-size: 64px; }.rg-stars { color: #b47a00; font-size: 46px; }
@@ -83,13 +99,12 @@
   .rg-levels { grid-template-columns: 1fr; }.rg-level { gap: 8px; padding: 16px; }
   .rg-ref-header { gap: 6px; }.rg-ref-rewards { gap: 3px; }.rg-ref-reward-pill { padding: 4px; font-size: 14px; }
   .rg-ref-reward-pill svg { width: 15px; height: 15px; }.rg-ref-header-left { gap: 6px; }
-  .rg-board { border-radius: 20px; gap: 8px; }.rg-footer { flex-direction: column; align-items: stretch; gap: 8px; padding: 4px; }
-  .rg-footer .math-answer-title { width: auto; }.rg-footer .math-answer-record { font-size: 13px; }
+  .rg-board { border-radius: 20px; gap: 8px; }
   .rg-option { padding: 10px 8px; }.rg-options:has(> :nth-child(4)):not(.is-grid) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .rg-options.is-scenes { gap: 6px; }.rg-options.is-scenes .rg-option { padding: 10px 3px; }
-  .rg-story { padding: 8px 12px; }.rg-question { gap: 6px; }
-  .rg-question > .rg-picture { width: 72px; font-size: 56px; }
-  .rg-question > .rg-scene { width: 150px; }
+  .rg-story { padding: 8px 12px; }
+  .rg-question > .rg-picture { width: clamp(80px, 18vw, 126px); font-size: clamp(64px, 14vw, 98px); }
+  .rg-question > .rg-scene { width: clamp(160px, 34vw, 230px); }
 }
 @media (max-width: 360px) { .rg-ref-header { flex-wrap: wrap; }.rg-ref-rewards { margin-left: auto; }.rg-ref-title-block p { font-size: 13px; }.rg-ref-reward-pill { min-height: 44px; } }
 @media (prefers-reduced-motion: reduce) { .rg-shell *, .rg-journey * { animation: none !important; transition: none !important; } }
