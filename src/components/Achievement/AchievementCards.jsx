@@ -40,10 +40,8 @@ export function AchievementCard({ achievement, index, isUnlocked, onDownload, on
  const bm = language === 'bm';
  const name = typeof achievement.name === 'object' ? achievement.name[bm ? 'bm' : 'eng'] : achievement.name;
  const description = typeof achievement.description === 'object' ? achievement.description[bm ? 'bm' : 'eng'] : achievement.description;
- const art = achievement.art || (['subtraction', 'multiplication', 'division'].includes(achievement.topic) ? achievement.topic : 'scholar');
  return <article className={`ac-assessment ac-tone-${tones[index % tones.length]}`}>
   <span className="ac-lock" role="img" aria-label={isUnlocked ? (bm ? 'Selesai' : 'Completed') : (bm ? 'Belum dicapai' : 'Not yet earned')}>{isUnlocked ? '✅' : '🔒'}</span>
-  <div className="ac-assessment-art"><AchievementArt name={art === 'gems' ? 'scholar' : art} />{art === 'gems' && <AchievementArt name="blueGem" className="ac-gem-overlay" />}</div>
   <h2>{name}</h2><p className="ac-subtitle">{description?.replace(' : ', ' · ')}</p>
   <span className={`ac-difficulty ac-difficulty-${achievement.level || 'medium'}`}>{achievement.level === 'easy' ? '☀️' : '⚡'} {achievement.level === 'easy' ? 'EASY' : 'MEDIUM'}</span>
   <dl className="ac-stats">{[['⏱️', achievement.duration, bm ? 'MINIT' : 'MINUTES'], ['❓', achievement.totalQuestions, bm ? 'SOALAN' : 'QUESTIONS'], ['🎯', achievement.scoreTarget, bm ? 'SASARAN' : 'TARGET']].map(([icon, value, label]) => <div key={label}><dt><span aria-hidden="true">{icon}</span><span>{label}</span></dt><dd>{value ?? '—'}</dd></div>)}</dl>
