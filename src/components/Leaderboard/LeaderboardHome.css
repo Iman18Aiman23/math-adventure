@@ -6,6 +6,7 @@
 .lb-shell .ip-header .ih-mobile-logo { display: block; width: 130px; padding: 0; background: transparent; }
 .lb-art { display: block; flex-shrink: 0; overflow: hidden; }
 .lb-hero { display: flex; align-items: center; position: relative; isolation: isolate; overflow: hidden; min-height: 110px; border: 1px solid #d7f0df; border-radius: 16px; background: linear-gradient(112deg, #f5fbed, #ddfcf0); padding: 18px 12px; gap: 12px; }
+.lb-shell .ip-header + .lb-hero { margin-top: 16px; }
 .lb-hero::after { content: ''; position: absolute; z-index: -1; inset: 0; background: #bdf8e0; opacity: .35; clip-path: polygon(100% 0,100% 100%,53% 100%,78% 28%); }
 .lb-hero-trophy { width: 42px; }
 .lb-hero-copy { position: relative; z-index: 1; width: 62%; }
@@ -151,3 +152,23 @@
 }
 
 .lb-hero-robot { z-index: 0; }
+
+/* Match the dashboard hero height while scaling the complete robot artwork
+   within the hero instead of cropping it beyond the lower edge. */
+.lb-hero { height: clamp(200px, calc(10vw + 160px), 300px); min-height: 0; }
+.lb-hero-copy { width: 48%; }
+.lb-hero-robot {
+  top: 50%;
+  right: 2%;
+  bottom: auto;
+  width: 34%;
+  height: auto;
+  max-width: 34%;
+  max-height: 88%;
+  transform: translateY(-50%);
+  object-fit: contain;
+  mask-image: none;
+}
+@container iman-page (max-width: 380px) {
+  .lb-hero-copy { width: 44%; }
+}

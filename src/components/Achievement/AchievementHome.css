@@ -5,6 +5,7 @@
 .ac-art { display: block; overflow: hidden; flex-shrink: 0; }
 .ac-desktop-art, .ac-desktop-title { display: none; }
 .ac-hero { position: relative; isolation: isolate; display: flex; align-items: center; gap: 12px; min-height: 108px; padding: 15px 12px; border-radius: 15px; border: 1px solid #d9eee6; overflow: hidden; background: linear-gradient(105deg,#f1fcf7,#e5fbf5); }
+.ac-root .ip-header + .ac-hero { margin-top: 16px; }
 .ac-hero::before { content: ''; position: absolute; inset: 0; background: #c3f8dc; opacity: .45; clip-path: polygon(100% 0,100% 100%,52% 100%,80% 25%); z-index: -1; }
 .ac-hero-icon { width: 48px; mix-blend-mode: multiply; }
 .ac-hero-copy { width: 53%; position: relative; z-index: 1; }
@@ -60,7 +61,7 @@
  .ac-wrap { padding: 12px 24px 32px; }
  .ac-hero { min-height: 165px; border-radius: 19px; padding: 22px; gap: 22px; }
  .ac-hero-icon { width: 88px; }
- .ac-hero-copy { width: 50%; }
+ .ac-hero-copy { width: 40%; }
  .ac-tabs { gap: 12px; margin: 14px 0; }
  .ac-tabs button { min-height: 57px; border-radius: 13px; gap: 14px; }
  .ac-tabs button > span { font-size: 25px; }
@@ -163,3 +164,26 @@
 @media (hover: hover) { .ac-completed-downloads button:not(:disabled):hover { filter: brightness(1.06); } .ac-completed-preview:hover .ac-completed-name { color: #1167a1; } }
 .ac-completed-downloads button:not(:disabled):active { transform: translateY(1px); }
 @media (prefers-reduced-motion: reduce) { .ac-completed-downloads button { transition: none; } }
+
+/* Keep the hero height consistent across dashboard pages and fit each robot
+   sprite to the available space without cropping its body. */
+.ac-hero { height: clamp(200px, calc(10vw + 160px), 300px); min-height: 0; }
+.ac-hero-copy { width: 50%; }
+.ac-hero-robot {
+  top: 50%;
+  right: 2%;
+  bottom: auto;
+  width: 34%;
+  height: auto;
+  max-width: 34%;
+  max-height: 88%;
+  transform: translateY(-50%);
+  object-fit: contain;
+  mask-image: none;
+}
+@container iman-page (max-width: 380px) {
+  .ac-hero-copy { width: 38%; }
+}
+@container iman-page (min-width: 381px) and (max-width: 1000px) {
+  .ac-hero-copy { width: 34%; }
+}

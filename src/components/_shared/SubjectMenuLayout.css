@@ -116,20 +116,20 @@
   .mh-description { font-size: 12px; }
 }
 /* Shared navigation styling for subject menus and dashboard pages. */
-.app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root) .cosmic-nav { position: relative; flex-shrink: 0; padding: 0 8px env(safe-area-inset-bottom, 0px); background: white; }
-.app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root) .nav-glass { border: 0; border-top: 1px solid #e8edf2; border-radius: 18px 18px 0 0; padding: 3px; box-shadow: none; }
-.app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root) .nav-item { min-height: clamp(52px, 7dvh, 68px); padding: 6px 0; gap: 4px; }
-.app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root) .nav-sphere { width: 28px; height: 28px; background: transparent; box-shadow: none; transform: none; }
-.app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root) .nav-label { opacity: 1; transform: none; font-family: Inter, sans-serif; font-weight: 500; font-size: clamp(9px, 2.4vw, 12px); color: #73859f; letter-spacing: 0; }
-.app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root) .nav-item.active .nav-label { color: #16985e; }
-.app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root) .nav-item.active::after { content: ''; position: absolute; bottom: 0; width: 28px; height: 3px; border-radius: 3px; background: #22a96b; }
-.app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root) .nav-orbit, .app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root) .nav-sphere::before, .app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root) .nav-glass::before, .app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root) .nav-badge { display: none; }
-.app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root) .nav-item:focus-visible { outline: 2px solid #22a96b; outline-offset: -2px; border-radius: 8px; }
-@media (prefers-reduced-motion: reduce) { .mh-screen *, .ac-root *, .lb-shell *, .pf-root *, .app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root) .cosmic-nav * { transition: none !important; animation: none !important; } }
+.app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root, .subject-menu-footer) .cosmic-nav { position: relative; flex-shrink: 0; padding: 0 8px env(safe-area-inset-bottom, 0px); background: white; }
+.app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root, .subject-menu-footer) .nav-glass { border: 0; border-top: 1px solid #e8edf2; border-radius: 18px 18px 0 0; padding: 3px; box-shadow: none; }
+.app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root, .subject-menu-footer) .nav-item { min-height: clamp(52px, 7dvh, 68px); padding: 6px 0; gap: 4px; }
+.app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root, .subject-menu-footer) .nav-sphere { width: 28px; height: 28px; background: transparent; box-shadow: none; transform: none; }
+.app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root, .subject-menu-footer) .nav-label { opacity: 1; transform: none; font-family: Inter, sans-serif; font-weight: 500; font-size: clamp(9px, 2.4vw, 12px); color: #73859f; letter-spacing: 0; }
+.app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root, .subject-menu-footer) .nav-item.active .nav-label { color: #16985e; }
+.app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root, .subject-menu-footer) .nav-item.active::after { content: ''; position: absolute; bottom: 0; width: 28px; height: 3px; border-radius: 3px; background: #22a96b; }
+.app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root, .subject-menu-footer) .nav-orbit, .app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root, .subject-menu-footer) .nav-sphere::before, .app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root, .subject-menu-footer) .nav-glass::before, .app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root, .subject-menu-footer) .nav-badge { display: none; }
+.app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root, .subject-menu-footer) .nav-item:focus-visible { outline: 2px solid #22a96b; outline-offset: -2px; border-radius: 8px; }
+@media (prefers-reduced-motion: reduce) { .mh-screen *, .ac-root *, .lb-shell *, .pf-root *, .app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root, .subject-menu-footer) .cosmic-nav * { transition: none !important; animation: none !important; } }
 
-.app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root) .nav-icon-wrap { filter: none; color: #879ab4; }
-.app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root) .nav-item.active .nav-icon-wrap { color: #13a567; }
-@media (max-height: 500px) { .app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root) .nav-item { min-height: 48px; padding: 2px 0; gap: 2px; } }
+.app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root, .subject-menu-footer) .nav-icon-wrap { filter: none; color: #879ab4; }
+.app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root, .subject-menu-footer) .nav-item.active .nav-icon-wrap { color: #13a567; }
+@media (max-height: 500px) { .app-container:has(.mh-screen, .ac-root, .lb-shell, .pf-root, .subject-menu-footer) .nav-item { min-height: 48px; padding: 2px 0; gap: 2px; } }
 
 @media (max-width: 350px) { .mh-hero { grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); } }
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { BookOpen, Mic, Calculator, Moon, Star, Trophy, CalendarDays, ChartNoAxesColumnIncreasing, Clock3, ChevronRight, Pencil, Camera, UserRound, Mail, Flame, X, Heart, Gem } from 'lucide-react';
+import { BookOpen, Mic, Calculator, Moon, Star, Trophy, CalendarDays, ChartNoAxesColumnIncreasing, Clock3, ChevronRight, Pencil, Camera, Flame, X, Heart, Gem } from 'lucide-react';
 import { PageHeader } from '../_shared/PageHeaderHero';
 import { HomePageLayoutStyles } from '../HomePage';
 import HeartShopModal from '../HeartShopModal';
@@ -35,7 +35,7 @@ export default function ProfileHome({ playerName, gameState, language = 'bm', st
   const profileKey = `iman-profile:${playerName || 'guest'}`;
   const [profile, setProfile] = useState(() => readProfile(profileKey));
   const [editor, setEditor] = useState(null);
-  const [draft, setDraft] = useState('');
+  const [draft, setDraft] = useState({ name: '', email: '' });
   const [error, setError] = useState('');
   const [detail, setDetail] = useState(null);
   const [isHeartShopOpen, setIsHeartShopOpen] = useState(false);
@@ -61,7 +61,12 @@ export default function ProfileHome({ playerName, gameState, language = 'bm', st
     try { localStorage.setItem(profileKey, JSON.stringify(next)); setProfile(next); setError(''); return true; }
     catch { setError(t('Maklumat tidak dapat disimpan. Cuba gambar yang lebih kecil.', 'Could not save. Try a smaller image.')); return false; }
   };
-  const edit = (field, event) => { triggerRef.current = event.currentTarget; setDraft(profile[field] || (field === 'name' ? name : '')); setError(''); setEditor(field); };
+  const editProfile = event => {
+    triggerRef.current = event.currentTarget;
+    setDraft({ name, email: profile.email || '' });
+    setError('');
+    setEditor('profile');
+  };
   const openDetail = (kind, event) => { triggerRef.current = event?.currentTarget; setDetail(kind); };
   const close = () => { setEditor(null); setDetail(null); setError(''); };
   const upload = event => {
@@ -117,9 +122,8 @@ export default function ProfileHome({ playerName, gameState, language = 'bm', st
       <PageHeader {...accountProps} {...{ playerName, gameState, language, streak, onTabChange, onHome }} />
       <section className="pf-hero" aria-labelledby="pf-title">
         <div className="pf-avatar-wrap"><div className="pf-avatar"><img src={profile.avatar || ROBOT} alt={t('Gambar profil', 'Profile picture')} /></div><button type="button" className="pf-camera" aria-label={t('Tukar gambar profil', 'Change profile photo')} onClick={() => uploadRef.current?.click()}><Camera size={21} /></button><input ref={uploadRef} type="file" accept="image/png,image/jpeg,image/webp" hidden onChange={upload} /></div>
-        <div className="pf-identity"><h1 id="pf-title">{t('Profil Saya', 'My Profile')}</h1><div className="pf-name"><strong>{name}</strong><button type="button" aria-label={t('Edit nama', 'Edit name')} onClick={event => edit('name', event)}><Pencil size={18} /></button></div><div className="pf-pills"><span><Star fill="#ffd12f" color="#efa200" size={23} /> LEVEL {gameState?.level || 1}</span><span><Flame fill="#ff792d" color="#ef521b" size={24} />{streak} {t('Hari Streak', 'Day Streak')}</span></div>
-          <div className="pf-fields"><div><UserRound /><span><small>{t('Nama Pengguna', 'Username')}</small><strong>{playerName || 'ImanAI'}</strong></span></div><div><Mail /><span><small>{t('Emel', 'Email')}</small><strong>{profile.email || t('Tambah emel', 'Add email')}</strong></span><button type="button" aria-label={t('Edit emel', 'Edit email')} onClick={event => edit('email', event)}><Pencil size={18} /></button></div></div>
-        </div><img className="pf-hero-mascot" src={ROBOT} alt="" />
+        <div className="pf-identity"><h1 id="pf-title">{t('Profil Saya', 'My Profile')}</h1><div className="pf-name"><strong>{name}</strong><button type="button" aria-label={t('Edit profil', 'Edit profile')} onClick={editProfile}><Pencil size={18} /></button></div></div>
+        <div className="pf-pills"><span><Star fill="#ffd12f" color="#efa200" size={23} /><span>LEVEL<strong>{gameState?.level || 1}</strong></span></span><span><Flame fill="#ff792d" color="#ef521b" size={24} /><span><strong>{streak}</strong>{t('Hari Streak', 'Day Streak')}</span></span></div>
       </section>
       {error && !editor && <p className="pf-error" role="alert">{error}</p>}
       <div className="pf-dashboard-heading"><div><h2>{t('Dashboard Ibu Bapa', 'Parent Dashboard')}</h2><p>{t('Lihat perkembangan pembelajaran anak anda dengan mudah.', 'Follow your child’s learning progress at a glance.')}</p></div><label className="pf-period"><CalendarDays size={19} /><select aria-label={t('Tempoh aktiviti', 'Activity period')} value={days} onChange={event => setDays(Number(event.target.value))}><option value={7}>{t('7 Hari Terakhir', 'Last 7 Days')}</option><option value={30}>{t('30 Hari Terakhir', 'Last 30 Days')}</option></select></label></div>
@@ -133,8 +137,18 @@ export default function ProfileHome({ playerName, gameState, language = 'bm', st
       </div>
       <button type="button" className="pf-wallet" onClick={() => setIsHeartShopOpen(true)}><Heart size={17} />{rewards.hearts} {t('Nyawa', 'Hearts')}<Gem size={17} />{rewards.gems} {t('Permata', 'Gems')}<Star size={17} />{rewards.stars} {t('Bintang', 'Stars')}<ChevronRight size={16} /></button>
     </div>
-    <dialog className="pf-dialog" ref={dialogRef} onCancel={close} onClick={event => { if (event.target === event.currentTarget) close(); }}><div className="pf-dialog-heading"><h2>{editor ? (editor === 'name' ? t('Edit nama paparan', 'Edit display name') : t('Edit emel', 'Edit email')) : detail === 'progress' ? t('Kemajuan Mengikut Subjek', 'Progress by Subject') : detail === 'activity' ? t('Aktiviti Pembelajaran', 'Learning Activity') : t('Sesi Terakhir', 'Recent Sessions')}</h2><button type="button" onClick={close} aria-label={t('Tutup', 'Close')}><X /></button></div>
-      {editor ? <form onSubmit={event => { event.preventDefault(); if (draft.trim() && saveProfile({ ...profile, [editor]: draft.trim() })) close(); }}><label>{editor === 'name' ? t('Nama paparan', 'Display name') : t('Emel', 'Email')}<input autoFocus type={editor === 'email' ? 'email' : 'text'} required maxLength={editor === 'email' ? 254 : 50} value={draft} onChange={event => setDraft(event.target.value)} /></label>{error && <p role="alert" className="pf-error">{error}</p>}<button type="submit" className="pf-save">{t('Simpan', 'Save')}</button></form> : detail === 'sessions' ? renderSessions(sessions) : detail === 'activity' ? <><p>{t('XP direkodkan untuk tempoh yang dipilih.', 'Recorded XP for the selected period.')}</p><ul className="pf-detail-list">{daily.map(day => <li key={localDate(day.date)}><span>{day.date.toLocaleDateString(bm ? 'ms-MY' : 'en-GB')}</span><strong>{day.xp} XP</strong></li>)}</ul></> : <><p>{t('Peratus berdasarkan skor terbaik dalam topik yang telah dicuba.', 'Percentages reflect best scores in attempted topics.')}</p><ul className="pf-detail-list">{subjectRows.map(subject => <li key={subject.id}><span>{subject.title[bm ? 0 : 1]}</span><strong>{subject.progress}%</strong></li>)}</ul></>}
+    <dialog className="pf-dialog" ref={dialogRef} onCancel={close} onClick={event => { if (event.target === event.currentTarget) close(); }}><div className="pf-dialog-heading"><h2>{editor ? t('Edit profil', 'Edit profile') : detail === 'progress' ? t('Kemajuan Mengikut Subjek', 'Progress by Subject') : detail === 'activity' ? t('Aktiviti Pembelajaran', 'Learning Activity') : t('Sesi Terakhir', 'Recent Sessions')}</h2><button type="button" onClick={close} aria-label={t('Tutup', 'Close')}><X /></button></div>
+      {editor ? <form onSubmit={event => {
+        event.preventDefault();
+        const nextName = draft.name.trim();
+        const nextEmail = draft.email.trim();
+        if (nextName && saveProfile({ ...profile, name: nextName, email: nextEmail })) close();
+      }}>
+        <label>{t('Nama pengguna', 'Display name')}<input autoFocus type="text" required maxLength={50} value={draft.name} onChange={event => setDraft(current => ({ ...current, name: event.target.value }))} /></label>
+        <label>{t('Emel', 'Email')}<input type="email" maxLength={254} placeholder={t('Tambah emel', 'Add email')} value={draft.email} onChange={event => setDraft(current => ({ ...current, email: event.target.value }))} /></label>
+        {error && <p role="alert" className="pf-error">{error}</p>}
+        <button type="submit" className="pf-save">{t('Simpan', 'Save')}</button>
+      </form> : detail === 'sessions' ? renderSessions(sessions) : detail === 'activity' ? <><p>{t('XP direkodkan untuk tempoh yang dipilih.', 'Recorded XP for the selected period.')}</p><ul className="pf-detail-list">{daily.map(day => <li key={localDate(day.date)}><span>{day.date.toLocaleDateString(bm ? 'ms-MY' : 'en-GB')}</span><strong>{day.xp} XP</strong></li>)}</ul></> : <><p>{t('Peratus berdasarkan skor terbaik dalam topik yang telah dicuba.', 'Percentages reflect best scores in attempted topics.')}</p><ul className="pf-detail-list">{subjectRows.map(subject => <li key={subject.id}><span>{subject.title[bm ? 0 : 1]}</span><strong>{subject.progress}%</strong></li>)}</ul></>}
     </dialog>
     <HeartShopModal isOpen={isHeartShopOpen} onClose={() => setIsHeartShopOpen(false)} language={language} />
   </main>;
