@@ -225,6 +225,7 @@ export default function ClockGame({ onBack, onHome, language }) {
         <button
           onClick={handleModeChange}
           className="ops-mode-pill"
+          title={bm ? 'Tukar antara membaca jam analog dan digital.' : 'Switch between reading analog and digital clocks.'}
           style={{ cursor: 'pointer', background: accentColor + '15', border: `2px solid ${accentColor}40` }}
         >
           <Clock size={14} color={accentColor} />

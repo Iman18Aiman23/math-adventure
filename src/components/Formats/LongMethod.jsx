@@ -41,7 +41,7 @@ const LongMethod = ({ question, answer, onChange, onSubmit, disabled, autoFocus 
         fontWeight: 600,
         color: '#666',
         marginBottom: '1rem'
-      }}>
+      }} title="Work out the answer using the written column method.">
         Solve using long method
       </div>
 

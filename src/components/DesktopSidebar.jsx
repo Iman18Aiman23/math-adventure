@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { GraduationCap, Trophy, Medal, Settings, Flag, ChevronRight, House, BookOpen, Mic, Calculator, Moon, Sun, UserRound, Crown, Play } from 'lucide-react';
+import { GraduationCap, Trophy, Medal, Settings, Flag, ChevronRight, BookOpen, Mic, Calculator, Moon, Sun, UserRound, Crown, Map, Swords, House, Play } from 'lucide-react';
 import useGamification from '../hooks/useGamification';
 import StatsBar from './_shared/StatsBar';
 import ImanAILogo from './_shared/ImanAILogo';
@@ -100,29 +100,26 @@ export default function DesktopSidebar({
           </div>
         </div>
 
-        <button 
-          className="sidebar-continue" 
-          onClick={() => {
-            if (onContinueLearning) onContinueLearning();
-            else onHome();
-          }}
-          type="button"
-        >
-          <Play className="sidebar-play-icon" size={16} aria-hidden="true" />
+        <button type="button" className="sidebar-continue" onClick={onContinueLearning || onHome}>
+          <Play className="sidebar-play-icon" size={19} aria-hidden="true" />
           <span>{language === 'bm' ? 'Teruskan belajar' : 'Continue learning'}</span>
-          <ChevronRight className="sidebar-continue-arrow" size={20} strokeWidth={3} />
+          <ChevronRight className="sidebar-continue-arrow" size={19} aria-hidden="true" />
         </button>
+
         <div className="sidebar-menu-panel">
           <nav className="home-quick-nav" aria-label={language === 'bm' ? 'Menu utama' : 'Main menu'}>
-            <button type="button" className={`home-quick-link ${activeTab === 'learn' && !currentSubject ? 'active' : ''}`} onClick={onHome}><House /><span>Home</span></button>
+            <button type="button" className={`home-quick-link home-quick-home ${activeTab === 'learn' && !currentSubject ? 'active' : ''}`} onClick={() => onHome?.()}><House /><span>Home</span></button>
             {[
               { id: 'reading', label: language === 'bm' ? 'Membaca' : 'Reading', icon: BookOpen },
               { id: 'bm', label: language === 'bm' ? 'Sebutan' : 'Speaking', icon: Mic },
               { id: 'math', label: language === 'bm' ? 'Matematik' : 'Mathematics', icon: Calculator },
               { id: 'jawi', label: 'Jawi', icon: Moon },
             ].map(({ id, label, icon: Icon }) => (
-              <button key={id} type="button" disabled={!canAccessSubject(playerName, id)} className={`home-quick-link ${activeTab === 'learn' && (id === 'jawi' ? isJawi : currentSubject === id) ? 'active' : ''}`} onClick={() => onSelectSubject?.(id)}>{React.createElement(Icon)}<span>{label}</span></button>
+              <button key={id} type="button" disabled={!canAccessSubject(playerName, id)} className={`home-quick-link home-quick-${id} ${activeTab === 'learn' && (id === 'jawi' ? isJawi : currentSubject === id) ? 'active' : ''}`} onClick={() => onSelectSubject?.(id)}>{React.createElement(Icon)}<span>{label}</span></button>
             ))}
+            <div className="sidebar-nav-divider" />
+            <button type="button" className="home-quick-link home-quick-journey" onClick={() => onSelectSubject?.('math')}><Map /><span>{language === 'bm' ? 'Perjalanan' : 'Journey'}</span></button>
+            <button type="button" className={`home-quick-link home-quick-challenges ${activeTab === 'achievement' ? 'active' : ''}`} onClick={() => onTabChange?.('achievement')}><Swords /><span>{language === 'bm' ? 'Cabaran' : 'Challenges'}</span></button>
             {showExtendedNav && <><div className="sidebar-nav-divider" />
             <button type="button" className={`home-quick-link ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => onTabChange?.('profile')}><UserRound /><span>{language === 'bm' ? 'Profil' : 'Profile'}</span></button>
             <button type="button" className="home-quick-link" onClick={() => onHome?.()}>

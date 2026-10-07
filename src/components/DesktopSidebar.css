@@ -47,6 +47,8 @@
 .desktop-sidebar .sidebar-play-icon, .desktop-sidebar .sidebar-motivation { display: none; }
 .desktop-sidebar .sidebar-menu-panel { display: flex; flex: 1; flex-direction: column; min-height: 0; padding: 0; background: transparent; border: 0; box-shadow: none; }
 .desktop-sidebar .home-quick-nav { display: grid; gap: 4px; overflow-y: auto; min-height: 0; padding: 3px; scrollbar-width: thin; }
+.desktop-sidebar .sidebar-section-label { padding: 10px 12px 3px; color: #8193a8; font-size: 11px; font-weight: 800; letter-spacing: .09em; }
+.desktop-sidebar .sidebar-section-label-activity { margin-top: 9px; border-top: 1px solid #e7eef5; padding-top: 14px; }
 .desktop-sidebar .home-quick-link { display: flex; align-items: center; gap: 14px; min-height: 40px; width: 100%; padding: 8px 12px; border: 1px solid transparent; border-radius: 12px; background: transparent; color: #5c7393; text-align: left; font-size: 14px; font-weight: 600; box-shadow: none; transition: background 150ms, border-color 150ms; }
 .desktop-sidebar .home-quick-link svg { width: 23px; height: 23px; flex: 0 0 23px; padding: 0; background: transparent; color: #607b9a; }
 .desktop-sidebar .home-quick-link.active { color: #078653; background: #e5f5ef; border-color: transparent; box-shadow: none; }
@@ -231,4 +233,83 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .desktop-sidebar *, .desktop-sidebar *::before, .desktop-sidebar *::after { animation: none !important; transition: none !important; }
+}
+
+/* Playful, readable desktop sidebar treatment. */
+@media (min-width: 768px) {
+  .desktop-sidebar.desktop-sidebar {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border: 1px solid rgba(206, 229, 241, .9);
+    background:
+      radial-gradient(circle at 12% 82%, rgba(255, 221, 105, .48) 0 2px, transparent 3px),
+      radial-gradient(circle at 84% 76%, rgba(255, 225, 111, .56) 0 3px, transparent 4px),
+      radial-gradient(circle at 28% 68%, rgba(93, 207, 202, .26) 0 2px, transparent 3px),
+      linear-gradient(180deg, #effaff 0%, #ffffff 35%, #f5fbff 77%, #edfbf8 100%);
+    box-shadow: inset -1px 0 rgba(255,255,255,.9), 8px 0 28px rgba(61, 131, 164, .08);
+  }
+  .desktop-sidebar::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    inset: auto -12% -2px -12%;
+    height: 32%;
+    opacity: .82;
+    background:
+      radial-gradient(ellipse 58% 74% at 12% 100%, #a8efda 0 68%, transparent 70%),
+      radial-gradient(ellipse 56% 63% at 58% 110%, #c9f3e7 0 68%, transparent 70%),
+      radial-gradient(ellipse 48% 78% at 104% 100%, #b6eee0 0 68%, transparent 70%);
+  }
+  .desktop-sidebar > * { position: relative; z-index: 1; }
+  .desktop-sidebar .home-coach-progress {
+    border-color: rgba(199, 229, 240, .9);
+    background: rgba(255, 255, 255, .72);
+    box-shadow: inset 0 1px 0 #fff;
+  }
+  .desktop-sidebar .home-coach-progress::before {
+    color: #254b78;
+    background: radial-gradient(closest-side, #f9feff 79%, transparent 82%), conic-gradient(from -35deg, #20bdd0 var(--progress), #cce9f2 0);
+    box-shadow: 0 2px 8px rgba(32, 150, 178, .12);
+  }
+  .desktop-sidebar .home-progress-track { background: #dceaf1; }
+  .desktop-sidebar .home-progress-track span { background: linear-gradient(90deg, #28b8da, #18c68f); }
+  .desktop-sidebar .sidebar-continue {
+    min-height: clamp(44px, 5.6dvh, 58px);
+    border-radius: 13px;
+    background: linear-gradient(180deg, #19c98d, #0aa978);
+    box-shadow: 0 4px 10px rgba(8, 160, 111, .2), inset 0 1px rgba(255,255,255,.28);
+    font-size: clamp(14px, .95vw, 17px);
+  }
+  .desktop-sidebar .sidebar-play-icon { animation: sidebar-play-glow 1.8s ease-in-out infinite; }
+  .desktop-sidebar .home-quick-nav { gap: clamp(2px, .55dvh, 7px); padding: 2px 0; }
+  .desktop-sidebar .home-quick-link {
+    min-height: clamp(36px, 4.7dvh, 49px);
+    border-radius: 12px;
+    color: #244a76;
+    font-weight: 600;
+    transition: background 170ms ease, transform 170ms ease, box-shadow 170ms ease;
+  }
+  .desktop-sidebar .home-quick-link svg { padding: 4px; border-radius: 9px; stroke-width: 2.5; }
+  .desktop-sidebar .home-quick-home svg { color: #2875c9; background: #d8edff; }
+  .desktop-sidebar .home-quick-reading svg { color: #f05f70; background: #ffe1e5; }
+  .desktop-sidebar .home-quick-bm svg { color: #10a995; background: #d9f7ee; }
+  .desktop-sidebar .home-quick-math svg { color: #0ca878; background: #d8f5e9; }
+  .desktop-sidebar .home-quick-jawi svg { color: #ff9c22; background: #fff0d6; }
+  .desktop-sidebar .home-quick-journey svg { color: #1685ed; background: #dceeff; }
+  .desktop-sidebar .home-quick-challenges svg { color: #8c55e8; background: #eee2ff; }
+  .desktop-sidebar .home-quick-link.active { color: #07865d; background: rgba(218, 248, 236, .9); box-shadow: inset 0 0 0 1px rgba(117, 220, 174, .2); }
+  .desktop-sidebar .sidebar-nav-divider { margin: clamp(7px, 1.2dvh, 13px) 8px; background: #dfedf4; }
+  .desktop-sidebar .sidebar-motivation {
+    border-color: rgba(255,255,255,.9);
+    background: rgba(255,255,255,.75);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 5px 18px rgba(51, 139, 135, .09), inset 0 1px 0 #fff;
+  }
+  .desktop-sidebar .sidebar-motivation small { color: #7489a0; }
+  @keyframes sidebar-play-glow {
+    0%, 100% { filter: drop-shadow(0 0 0 rgba(255,255,255,0)); transform: scale(1); }
+    50% { filter: drop-shadow(0 0 5px rgba(255,255,255,.9)); transform: scale(1.08); }
+  }
 }

@@ -4,5 +4,6 @@ export function hasFullSubjectAccess(username) {
 }
 
 export function canAccessSubject(username, subject) {
-  return hasFullSubjectAccess(username) || ['reading', 'bm', 'math'].includes(subject);
+  return hasFullSubjectAccess(username)
+    || ['reading', 'bm', 'math', 'jawi', 'pendidikan-islam-v1'].includes(subject);
 }

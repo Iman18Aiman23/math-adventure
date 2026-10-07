@@ -85,7 +85,6 @@ const getOpsClayStyles = () => `
     line-height: 1.02;
   }
 
-  .ops-settings-subtitle,
   .ops-settings-help {
     margin: 0;
     color: #7B8EA8;
@@ -93,13 +92,8 @@ const getOpsClayStyles = () => `
     line-height: 1.25;
   }
 
-  .ops-settings-subtitle {
-    margin-top: 4px;
-    font-size: clamp(14px, 2.1vw, 17px);
-  }
-
   .ops-settings-help {
-    font-size: clamp(12px, 1.7vw, 15px);
+    display: none;
   }
 
   .ops-settings-close {
@@ -132,7 +126,7 @@ const getOpsClayStyles = () => `
 
   .ops-settings-section-head {
     display: grid;
-    gap: 3px;
+    gap: 0;
   }
 
   .ops-settings-options {
@@ -513,8 +507,7 @@ function GameMenu({
     <div>
       <div className="ops-settings-group">
         <div className="ops-settings-section-head">
-          <div className="ops-settings-label">{bm ? 'Tahap' : 'Level'}</div>
-          <p className="ops-settings-help">{bm ? 'Pilih tahap kesukaran soalan.' : 'Choose question difficulty.'}</p>
+          <div className="ops-settings-label" title={bm ? 'Pilih tahap kesukaran soalan.' : 'Choose question difficulty.'}>{bm ? 'Tahap' : 'Level'}</div>
         </div>
         <div className="ops-settings-options">
           {DIFFICULTIES.map(d => (
@@ -524,8 +517,7 @@ function GameMenu({
       </div>
       <div className="ops-settings-group">
         <div className="ops-settings-section-head">
-          <div className="ops-settings-label">{bm ? 'Operasi' : 'Operation'}</div>
-          <p className="ops-settings-help">{bm ? 'Pilih operasi matematik.' : 'Choose a math operation.'}</p>
+          <div className="ops-settings-label" title={bm ? 'Pilih operasi matematik.' : 'Choose a math operation.'}>{bm ? 'Operasi' : 'Operation'}</div>
         </div>
         <div className="ops-settings-options">
           {[OPERATIONS[4], ...OPERATIONS.slice(0, 4)].map(op => (
@@ -537,8 +529,7 @@ function GameMenu({
       </div>
       <div className="ops-settings-group">
         <div className="ops-settings-section-head">
-          <div className="ops-settings-label">{bm ? 'Nombor' : 'Numbers'}</div>
-          <p className="ops-settings-help">{bm ? 'Pilih julat nombor.' : 'Choose number range.'}</p>
+          <div className="ops-settings-label" title={bm ? 'Pilih julat nombor.' : 'Choose number range.'}>{bm ? 'Nombor' : 'Numbers'}</div>
         </div>
         <div className="ops-settings-options">
           {['random', ...NUMBERS].map(n => {
@@ -549,8 +540,7 @@ function GameMenu({
       </div>
       <div className="ops-settings-group">
         <div className="ops-settings-section-head">
-          <div className="ops-settings-label">{bm ? 'Cara Menjawab' : 'Answer Method'}</div>
-          <p className="ops-settings-help">{bm ? 'Pilih cara menjawab soalan.' : 'Choose how to answer questions.'}</p>
+          <div className="ops-settings-label" title={bm ? 'Pilih cara menjawab soalan.' : 'Choose how to answer questions.'}>{bm ? 'Cara Menjawab' : 'Answer Method'}</div>
         </div>
         <div className="ops-settings-options">
           {INPUT_MODES.map(m => (
@@ -769,10 +759,7 @@ export default function MathOperationsGame({
           <div className="ops-settings-panel">
             <div className="ops-settings-panel-head">
               <div>
-                <h2 className="ops-settings-title">{language === 'bm' ? 'Tetapan Permainan' : 'Game Settings'}</h2>
-                <p className="ops-settings-subtitle">
-                  {language === 'bm' ? 'Laraskan pilihan mengikut tahap dan gaya pembelajaran anda.' : 'Adjust choices for your level and learning style.'}
-                </p>
+                <h2 className="ops-settings-title" title={language === 'bm' ? 'Laraskan pilihan mengikut tahap dan gaya pembelajaran anda.' : 'Adjust choices for your level and learning style.'}>{language === 'bm' ? 'Tetapan Permainan' : 'Game Settings'}</h2>
               </div>
               <button
                 type="button"

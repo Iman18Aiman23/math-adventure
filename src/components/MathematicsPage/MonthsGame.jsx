@@ -289,10 +289,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
           <div className="ops-settings-panel">
             <div className="ops-settings-panel-head">
               <div>
-                <h2 className="ops-settings-title">{bm ? 'Tetapan Permainan' : 'Game Settings'}</h2>
-                <p className="ops-settings-subtitle">
-                  {bm ? 'Laraskan pilihan mengikut tahap dan gaya pembelajaran anda.' : 'Adjust choices for your level and learning style.'}
-                </p>
+                <h2 className="ops-settings-title" title={bm ? 'Laraskan pilihan mengikut tahap dan gaya pembelajaran anda.' : 'Adjust choices for your level and learning style.'}>{bm ? 'Tetapan Permainan' : 'Game Settings'}</h2>
               </div>
               <button type="button" className="ops-settings-close" onClick={() => setIsSettingsOpen(false)} aria-label={bm ? 'Tutup tetapan' : 'Close settings'}>
                 <X size={22} strokeWidth={2.5} aria-hidden="true" />
@@ -301,8 +298,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
 
             <div className="ops-settings-group">
               <div className="ops-settings-section-head">
-                <div className="ops-settings-label">{bm ? 'Mode' : 'Mode'}</div>
-                <p className="ops-settings-help">{bm ? 'Pilih jenis soalan kalendar.' : 'Choose the calendar question type.'}</p>
+                <div className="ops-settings-label" title={bm ? 'Pilih jenis soalan kalendar.' : 'Choose the calendar question type.'}>{bm ? 'Mode' : 'Mode'}</div>
               </div>
               <div className="ops-settings-options">
                 {[
@@ -330,8 +326,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
 
             <div className="ops-settings-group">
               <div className="ops-settings-section-head">
-                <div className="ops-settings-label">{bm ? 'Cara Menjawab' : 'Answer Method'}</div>
-                <p className="ops-settings-help">{bm ? 'Pilih cara menjawab soalan.' : 'Choose how to answer questions.'}</p>
+                <div className="ops-settings-label" title={bm ? 'Pilih cara menjawab soalan.' : 'Choose how to answer questions.'}>{bm ? 'Cara Menjawab' : 'Answer Method'}</div>
               </div>
               <div className="ops-settings-options">
                 {[

@@ -171,77 +171,63 @@ html[data-color-mode='dark'] .pf-root .pf-wallet { background: #18263d; }
 html[data-color-mode='dark'] .pf-root .pf-error { color: #ff9daa; }
 @media (prefers-reduced-motion: reduce) { .pf-root *, .pf-root *::before, .pf-root *::after { animation: none !important; transition: none !important; } }
 
-/* Keep the profile, identity, and stats in three distinct hero columns. */
+/* Responsive profile hero: scale with the available page width, not the viewport. */
 .pf-hero {
-  height: clamp(200px, calc(10vw + 160px), 300px);
-  min-height: 0;
-  padding: clamp(12px, 2vw, 24px);
+  min-height: clamp(240px, 45cqi, 370px);
+  height: auto;
+  grid-template-columns: clamp(88px, 18cqi, 150px) minmax(0, 1fr) clamp(120px, 24cqi, 220px);
+  gap: clamp(10px, 2.4cqi, 28px);
+  padding: clamp(16px, 3.2cqi, 36px);
   align-items: center;
 }
-.pf-avatar-wrap { width: 100%; height: auto; aspect-ratio: 1; margin-top: 0; align-self: center; }
-.pf-pills > span { white-space: normal; }
-.pf-pills > span > span { min-width: 0; }
-@media (max-width: 767px) {
-  .pf-camera { width: clamp(22px, 6vw, 32px); height: clamp(22px, 6vw, 32px); border-width: 2px; }
-  .pf-camera svg { width: clamp(12px, 2.8vw, 16px); }
+.pf-avatar-wrap { width: 100%; max-width: 150px; height: auto; aspect-ratio: 1; margin: 0; align-self: center; }
+.pf-camera { width: clamp(30px, 5.5cqi, 52px); height: clamp(30px, 5.5cqi, 52px); }
+.pf-camera svg { width: clamp(16px, 2.5cqi, 25px); }
+.pf-identity { min-width: 0; }
+.pf-identity h1 { font-size: clamp(22px, 4.8cqi, 38px); overflow-wrap: anywhere; }
+.pf-name { gap: clamp(4px, 1.5cqi, 14px); margin-top: clamp(4px, 1.2cqi, 12px); font-size: clamp(20px, 8cqi, 64px); line-height: 1.06; }
+.pf-name button svg { width: clamp(18px, 3cqi, 30px); height: clamp(18px, 3cqi, 30px); }
+.pf-pills { gap: clamp(8px, 1.8cqi, 18px); }
+.pf-pills > span {
+  min-width: 0;
+  min-height: clamp(58px, 13cqi, 120px);
+  gap: clamp(6px, 1.6cqi, 16px);
+  padding: clamp(8px, 1.8cqi, 18px);
+  border-radius: 999px;
+  font-size: clamp(12px, 3.3cqi, 28px);
+  line-height: 1.05;
+  white-space: normal;
 }
-@media (max-width: 479px) {
-  .pf-hero { grid-template-columns: 58px minmax(0, 1fr) 88px; gap: 8px; }
-  .pf-avatar-wrap { max-width: 58px; }
-  .pf-identity h1 { font-size: clamp(20px, 6vw, 24px); }
-  .pf-name { font-size: 16px; }
-  .pf-pills { gap: 6px; }
-  .pf-pills > span { gap: 3px; padding: 5px 6px; font-size: 10px; }
-  .pf-pills > span + span { font-size: 9px; }
-  .pf-pills svg { width: 15px; height: 15px; }
+.pf-pills > span + span { font-size: clamp(11px, 3cqi, 25px); }
+.pf-pills > span > svg {
+  box-sizing: border-box;
+  flex: 0 0 clamp(36px, 8cqi, 74px);
+  width: clamp(36px, 8cqi, 74px);
+  height: clamp(36px, 8cqi, 74px);
+  padding: clamp(6px, 1.5cqi, 14px);
+  border-radius: 50%;
+  background: #e2f9e9;
 }
-@media (max-width: 350px) {
-  .pf-pills > span { gap: 2px; padding-inline: 4px; font-size: 9px; }
-  .pf-pills > span + span { font-size: 8px; }
-  .pf-pills svg { width: 12px; height: 12px; }
+.pf-pills > span + span > svg { background: #ffe8dc; }
+.pf-pills > span > span { display: flex; flex-direction: column; flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+.pf-pills > span > span > strong { font-size: clamp(20px, 5.2cqi, 44px); line-height: 1.05; }
+
+@media (max-width: 600px) {
+  .pf-hero { grid-template-columns: 64px minmax(0, 1fr); min-height: 0; column-gap: 12px; row-gap: 14px; padding: 16px; }
+  .pf-avatar-wrap { width: 64px; }
+  .pf-identity h1 { font-size: clamp(21px, 6vw, 30px); }
+  .pf-name { font-size: clamp(20px, 7vw, 34px); }
+  .pf-pills { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pf-pills > span { justify-content: center; min-height: 62px; font-size: 14px; padding: 8px 10px; }
+  .pf-pills > span + span { font-size: 13px; }
+  .pf-pills > span > svg { flex-basis: 42px; width: 42px; height: 42px; padding: 8px; }
+  .pf-pills > span > span > strong { font-size: 22px; }
 }
-@media (min-width: 480px) and (max-width: 1099px) {
-  .pf-hero {
-    grid-template-columns: clamp(72px, 9vw, 130px) minmax(0, 1fr) clamp(92px, 15vw, 150px);
-    gap: 12px;
-    padding: 16px 12px;
-  }
-  .pf-avatar-wrap { max-width: 110px; }
-}
-@media (min-width: 768px) {
-  .pf-hero {
-    height: clamp(300px, 36vw, 510px);
-    grid-template-columns: minmax(140px, .95fr) minmax(0, 1.9fr) minmax(200px, 1.25fr);
-    gap: clamp(18px, 3.8vw, 54px);
-    padding: clamp(20px, 4.5vw, 64px);
-  }
-  .pf-avatar-wrap { width: min(100%, clamp(140px, 20vw, 290px)); max-width: none; }
-  .pf-camera { width: clamp(48px, 5.7vw, 80px); height: clamp(48px, 5.7vw, 80px); }
-  .pf-camera svg { width: clamp(25px, 3.2vw, 44px); }
-  .pf-identity h1 { font-size: clamp(28px, 3.2vw, 46px); }
-  .pf-name { gap: clamp(8px, 1vw, 15px); margin-top: clamp(6px, 1vw, 14px); font-size: clamp(28px, 6vw, 84px); line-height: 1.1; }
-  .pf-name button { padding: 5px; }
-  .pf-name button svg { width: clamp(22px, 3.5vw, 50px); height: clamp(22px, 3.5vw, 50px); }
-  .pf-pills { gap: clamp(12px, 1.7vw, 24px); }
-  .pf-pills > span {
-    min-height: clamp(92px, 11.7vw, 166px);
-    gap: clamp(12px, 1.6vw, 22px);
-    padding: clamp(12px, 1.8vw, 25px);
-    border-radius: 999px;
-    font-size: clamp(22px, 2.7vw, 38px);
-    line-height: 1.05;
-  }
-  .pf-pills > span + span { font-size: clamp(20px, 2.5vw, 35px); }
-  .pf-pills > span > svg {
-    box-sizing: border-box;
-    flex: 0 0 clamp(56px, 8vw, 112px);
-    width: clamp(56px, 8vw, 112px);
-    height: clamp(56px, 8vw, 112px);
-    padding: clamp(10px, 1.4vw, 20px);
-    border-radius: 50%;
-    background: #e2f9e9;
-  }
-  .pf-pills > span + span > svg { background: #ffe8dc; }
-  .pf-pills > span > span { display: flex; flex-direction: column; }
-  .pf-pills > span > span > strong { font-size: clamp(34px, 4.5vw, 64px); line-height: 1.05; }
+@media (max-width: 360px) {
+  .pf-hero { grid-template-columns: 54px minmax(0, 1fr); gap: 10px; padding: 12px; }
+  .pf-avatar-wrap { width: 54px; }
+  .pf-camera { width: 26px; height: 26px; }
+  .pf-pills > span { gap: 6px; padding: 7px; font-size: 12px; }
+  .pf-pills > span + span { font-size: 11px; }
+  .pf-pills > span > svg { flex-basis: 34px; width: 34px; height: 34px; }
 }
