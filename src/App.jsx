@@ -125,6 +125,7 @@ const DataT3          = React.lazy(() => import('./components/MatematikPage/Tahu
 const KebarangkalianT3 = React.lazy(() => import('./components/MatematikPage/Tahun3/Module3_StatistikKebarangkalian/KebarangkalianT3'));
 const PecahanAsasT1 = React.lazy(() => import('./components/MatematikPage/Tahun1/Module1_Nombor/PecahanAsasT1'));
 const ProfileHome = React.lazy(() => import('./components/Profile/ProfileHome'));
+const Laporan = React.lazy(() => import('./components/Profile/Laporan'));
 const PendidikanIslamHomePage = React.lazy(() => import('./components/PendidikanIslamPage/PendidikanIslamHomePage'));
 const MatematikHomePage = React.lazy(() => import('./components/MatematikPage/MatematikHomePage'));
 const QuestionIssueReportsPage = React.lazy(() => import('./components/MatematikPage/QuestionIssueReportsPage'));
@@ -475,6 +476,7 @@ export default function App() {
   const [isMuted,        setIsMuted]        = useState(getMuted());
   const [language,       setLanguage]       = useState('bm');
   const [activeTab,      setActiveTab]      = useState(savedNavigation.activeTab);
+  const [achievementSection, setAchievementSection] = useState('assessments');
   const [streak,         setStreak]         = useState(0);
   const [selectedAssessment, setSelectedAssessment] = useState(() =>
     baseAssessments.find(({ id }) => id === savedNavigation.selectedAssessmentId) || null
@@ -629,6 +631,16 @@ export default function App() {
           navigate(() => { handleBackToHome(); setCurrentSubject(subject === 'jawi' ? 'pendidikan-islam-v1' : subject); if (subject === 'jawi') setIslamModule('jawi'); });
         }} />;
     }
+    if (activeTab === 'laporan') return <Suspense fallback={<LoadingSpinner />}>
+      <Laporan key={playerName || 'guest'} playerName={playerName} gameState={gameState} language={language} streak={streak}
+        onTabChange={handleTabChange} onHome={handleBackToHome} onLogout={handleLogout}
+        onToggleLang={handleToggleLang} colorMode={colorMode} onColorModeChange={setColorMode}
+        onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
+        onSelectSubject={(subject) => {
+          if (!canAccessSubject(playerName, subject)) return;
+          navigate(() => { handleBackToHome(); setCurrentSubject(subject === 'jawi' ? 'pendidikan-islam-v1' : subject); if (subject === 'jawi') setIslamModule('jawi'); });
+        }} />
+    </Suspense>;
     if (activeTab === 'achievement') {
       // If an assessment is selected, show AssessmentPage
       if (selectedAssessment) {
@@ -637,6 +649,8 @@ export default function App() {
       // Otherwise show achievement home
       return <Suspense fallback={<LoadingSpinner />}>
         <AchievementHome
+          initialTab={achievementSection}
+          onSectionChange={setAchievementSection}
           onBack={handleBackToHome}
           onHome={handleBackToHome}
           playerName={playerName} streak={streak}
@@ -1730,6 +1744,8 @@ export default function App() {
             simplified={activeTab === 'learn' && !currentSubject && !currentAgeGroup}
             activeTab={activeTab}
             onTabChange={handleTabChange}
+            achievementSection={achievementSection}
+            onSelectAchievementSection={(section) => navigate(() => { setAchievementSection(section); setSelectedAssessment(null); setActiveTab('achievement'); })}
             language={language}
             onToggleLanguage={handleToggleLang}
             playerName={playerName}

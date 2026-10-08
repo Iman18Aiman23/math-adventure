@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { GraduationCap, Trophy, Medal, Settings, Flag, ChevronRight, BookOpen, Mic, Calculator, Moon, Sun, UserRound, Crown, Map, Swords, House, Play } from 'lucide-react';
+import { GraduationCap, Trophy, Medal, Settings, Flag, ChevronRight, BookOpen, Mic, Calculator, Moon, Sun, UserRound, Crown, Swords, House, Play } from 'lucide-react';
 import useGamification from '../hooks/useGamification';
 import StatsBar from './_shared/StatsBar';
 import ImanAILogo from './_shared/ImanAILogo';
@@ -43,7 +43,7 @@ export default function DesktopSidebar({
   onHome, onOpenReports,
   colorMode = 'light', onColorModeChange,
   onContinueLearning, currentSubject, onSelectSubject, isJawi = false,
-  simplified = false, playerName,
+  onSelectAchievementSection, achievementSection = 'assessments', simplified = false, playerName,
 }) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const settingsRef = useRef(null);
@@ -108,7 +108,9 @@ export default function DesktopSidebar({
 
         <div className="sidebar-menu-panel">
           <nav className="home-quick-nav" aria-label={language === 'bm' ? 'Menu utama' : 'Main menu'}>
-            <button type="button" className={`home-quick-link home-quick-home ${activeTab === 'learn' && !currentSubject ? 'active' : ''}`} onClick={() => onHome?.()}><House /><span>Home</span></button>
+            <button type="button" className={`home-quick-link home-quick-home ${activeTab === 'learn' && !currentSubject ? 'active' : ''}`} onClick={() => onHome?.()}><House /><span>{language === 'bm' ? 'Laman Utama' : 'Home'}</span></button>
+            <div className="sidebar-nav-divider" />
+            <button type="button" className="home-quick-link home-quick-courses" onClick={() => onHome?.()}><GraduationCap size={22} /><span>{language === 'bm' ? 'Kursus Saya' : 'My Courses'}</span></button>
             {[
               { id: 'reading', label: language === 'bm' ? 'Membaca' : 'Reading', icon: BookOpen },
               { id: 'bm', label: language === 'bm' ? 'Sebutan' : 'Speaking', icon: Mic },
@@ -118,23 +120,12 @@ export default function DesktopSidebar({
               <button key={id} type="button" disabled={!canAccessSubject(playerName, id)} className={`home-quick-link home-quick-${id} ${activeTab === 'learn' && (id === 'jawi' ? isJawi : currentSubject === id) ? 'active' : ''}`} onClick={() => onSelectSubject?.(id)}>{React.createElement(Icon)}<span>{label}</span></button>
             ))}
             <div className="sidebar-nav-divider" />
-            <button type="button" className="home-quick-link home-quick-journey" onClick={() => onSelectSubject?.('math')}><Map /><span>{language === 'bm' ? 'Perjalanan' : 'Journey'}</span></button>
-            <button type="button" className={`home-quick-link home-quick-challenges ${activeTab === 'achievement' ? 'active' : ''}`} onClick={() => onTabChange?.('achievement')}><Swords /><span>{language === 'bm' ? 'Cabaran' : 'Challenges'}</span></button>
+            <button type="button" className={`home-quick-link home-quick-challenges ${activeTab === 'achievement' && achievementSection === 'assessments' ? 'active' : ''}`} onClick={() => onSelectAchievementSection?.('assessments')}><Swords /><span>{language === 'bm' ? 'Cabaran' : 'Challenges'}</span></button>
+            <button type="button" className={`home-quick-link home-quick-leaderboard ${activeTab === 'leaderboard' ? 'active' : ''}`} onClick={() => onTabChange?.('leaderboard')}><Trophy size={22} /><span>{language === 'bm' ? 'Papan Juara' : 'Leaderboard'}</span></button>
+            <button type="button" className={`home-quick-link home-quick-achievements ${activeTab === 'achievement' && achievementSection === 'achievements' ? 'active' : ''}`} onClick={() => onSelectAchievementSection?.('achievements')}><Medal size={22} /><span>{language === 'bm' ? 'Pencapaian Saya' : 'My Achievements'}</span></button>
             {showExtendedNav && <><div className="sidebar-nav-divider" />
-            <button type="button" className={`home-quick-link ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => onTabChange?.('profile')}><UserRound /><span>{language === 'bm' ? 'Profil' : 'Profile'}</span></button>
-            <button type="button" className="home-quick-link" onClick={() => onHome?.()}>
-              <GraduationCap size={22} />
-              <span>{language === 'bm' ? 'Kursus' : 'Course'}</span>
-            </button>
-            <button type="button" className={`home-quick-link ${activeTab === 'leaderboard' ? 'active' : ''}`} onClick={() => onTabChange?.('leaderboard')}>
-              <Trophy size={22} />
-              <span>{language === 'bm' ? 'Papan Juara' : 'Leaderboard'}</span>
-            </button>
-            <button type="button" className={`home-quick-link ${activeTab === 'achievement' ? 'active' : ''}`} onClick={() => onTabChange?.('achievement')}>
-              <Medal size={22} />
-              <span>{language === 'bm' ? 'Pencapaian' : 'Achievement'}</span>
-            </button>
-            <button type="button" className={`home-quick-link ${currentSubject === 'matematik-reports' ? 'active' : ''}`} onClick={() => onOpenReports?.()}>
+            <button type="button" className={`home-quick-link home-quick-profile ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => onTabChange?.('profile')}><UserRound /><span>{language === 'bm' ? 'Profil' : 'Profile'}</span></button>
+            <button type="button" className={`home-quick-link home-quick-reports ${currentSubject === 'matematik-reports' ? 'active' : ''}`} onClick={() => onOpenReports?.()}>
               <Flag size={22} />
               <span>{language === 'bm' ? 'Laporan' : 'Reports'}</span>
             </button>

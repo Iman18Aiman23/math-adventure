@@ -2,11 +2,10 @@
 .lb-shell { width: 100%; max-width: none; min-height: 100%; flex: 0 0 auto; color: #0c2255; font-family: 'Fredoka', sans-serif; container: iman-page / inline-size; }
 .lb-shell * { box-sizing: border-box; }
 .lb-wrap { width: 100%; max-width: 1440px; margin: 0 auto; padding: 10px 14px 28px; }
-.lb-shell .ip-header { margin: 0 0 12px; }
-.lb-shell .ip-header .ih-mobile-logo { display: block; width: 130px; padding: 0; background: transparent; }
+.lb-shell .bm-header { margin: 0 0 12px; }
 .lb-art { display: block; flex-shrink: 0; overflow: hidden; }
 .lb-hero { display: flex; align-items: center; position: relative; isolation: isolate; overflow: hidden; min-height: 110px; border: 1px solid #d7f0df; border-radius: 16px; background: linear-gradient(112deg, #f5fbed, #ddfcf0); padding: 18px 12px; gap: 12px; }
-.lb-shell .ip-header + .lb-hero { margin-top: 16px; }
+.lb-shell .bm-header + .lb-hero { margin-top: 16px; }
 .lb-hero::after { content: ''; position: absolute; z-index: -1; inset: 0; background: #bdf8e0; opacity: .35; clip-path: polygon(100% 0,100% 100%,53% 100%,78% 28%); }
 .lb-hero-trophy { width: 42px; }
 .lb-hero-copy { position: relative; z-index: 1; width: 62%; }
@@ -60,7 +59,7 @@
 .lb-demo-note { margin: 14px 0 0; color: #71839c; font-size: 11px; text-align: center; }
 .lb-personal { padding: 12px; background: #f2fbf7; border-radius: 12px; font-size: 14px; }
 @container iman-page (min-width: 560px) and (max-width: 1000px) {
-  .lb-wrap { padding: 16px 4% 36px; }
+  .lb-wrap { padding-top: 12px; }
   .lb-hero { min-height: 24.5cqw; padding: 25px 3.5%; gap: 3.5%; border-radius: 30px; }
   .lb-hero-trophy { width: 13%; }
   .lb-hero-copy { width: 51%; }
@@ -83,9 +82,8 @@
   .lb-cell svg { width: 34px; height: 34px; }
 }
 @container iman-page (min-width: 1001px) {
-  .lb-wrap { padding: 6px 26px 32px; }
-  .lb-shell .ip-header { margin-bottom: 14px; }
-  .lb-shell .ip-header .ih-mobile-logo { display: none; }
+  .lb-wrap { padding-top: 8px; }
+  .lb-shell .bm-header { margin-bottom: 14px; }
   .lb-hero { min-height: 140px; padding: 22px 36px; gap: 22px; border-radius: 20px; }
   .lb-hero-trophy { width: 66px; }
   .lb-hero-copy { width: 67%; }
@@ -145,7 +143,7 @@
 .lb-subject-math .lb-art { clip-path: inset(4% 10% 4% round 15%); }
 .lb-subject-jawi .lb-art { clip-path: polygon(52% 5%, 45% 21%, 47% 40%, 63% 54%, 88% 55%, 94% 50%, 96% 61%, 81% 85%, 54% 97%, 26% 88%, 7% 65%, 4% 37%, 21% 14%, 43% 4%); }
 @container iman-page (min-width: 1001px) {
-  .lb-shell .ip-header { margin-bottom: 34px; }
+  .lb-shell .bm-header { margin-bottom: 34px; }
   .lb-hero-copy { width: 67%; }
   .lb-hero h1 { font-size: 44px; }
   .lb-hero-robot { bottom: -16px; width: 220px; }
@@ -171,4 +169,16 @@
 }
 @container iman-page (max-width: 380px) {
   .lb-hero-copy { width: 44%; }
+}
+
+/* Match MathHome's shared PageHero dimensions. */
+.lb-hero { height: 260px; min-height: 260px; }
+@container iman-page (max-width: 559px) {
+  .lb-hero { height: 240px; min-height: 240px; }
+}
+@container iman-page (max-width: 331px) {
+  .lb-hero { height: 260px; min-height: 260px; }
+}
+@container iman-page (min-width: 1001px) and (max-width: 1049px) {
+  .lb-wrap { padding-top: 12px; }
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, ChevronDown, Flag, GraduationCap, LogOut, Medal, Moon, Settings, Star, Sun, Trophy, UserRound } from 'lucide-react';
+import { ArrowLeft, ChevronDown, Flag, LogOut, Moon, Settings, Star, Sun, UserRound } from 'lucide-react';
 import StatsBar from './StatsBar';
 
 export default function HomeHeaderActions({
@@ -79,10 +79,7 @@ export default function HomeHeaderActions({
           </div>
           <nav aria-label={bm ? 'Menu akaun' : 'Account menu'}>
             <button type="button" onClick={() => selectAccountAction(() => onTabChange?.('profile'))}><UserRound />{bm ? 'Profil Saya' : 'My Profile'}</button>
-            <button type="button" onClick={() => selectAccountAction(onHome)}><GraduationCap />{bm ? 'Kursus Saya' : 'My Courses'}</button>
-            <button type="button" onClick={() => selectAccountAction(() => onTabChange?.('leaderboard'))}><Trophy />{bm ? 'Papan Juara' : 'Leaderboard'}</button>
-            <button type="button" onClick={() => selectAccountAction(() => onTabChange?.('achievement'))}><Medal />{bm ? 'Pencapaian Saya' : 'My Achievements'}</button>
-            <button type="button" onClick={() => selectAccountAction(onOpenReports)}><Flag />{bm ? 'Laporan' : 'Reports'}</button>
+            <button type="button" onClick={() => selectAccountAction(() => onTabChange?.('laporan'))}><Flag />{bm ? 'Laporan' : 'Reports'}</button>
             <hr />
             <button type="button" onClick={() => setPanel('settings')}><Settings />{bm ? 'Tetapan' : 'Settings'}</button>
             <button type="button" className="ih-logout" onClick={() => selectAccountAction(onLogout)}><LogOut />{bm ? 'Log Keluar' : 'Log Out'}</button>

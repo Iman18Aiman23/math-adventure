@@ -292,13 +292,28 @@
     transition: background 170ms ease, transform 170ms ease, box-shadow 170ms ease;
   }
   .desktop-sidebar .home-quick-link svg { padding: 4px; border-radius: 9px; stroke-width: 2.5; }
-  .desktop-sidebar .home-quick-home svg { color: #2875c9; background: #d8edff; }
+  .desktop-sidebar .home-quick-home svg { color: #087e9b; background: #d9f7ff; }
+  .desktop-sidebar .home-quick-courses svg { color: #5865c8; background: #e5e7ff; }
   .desktop-sidebar .home-quick-reading svg { color: #f05f70; background: #ffe1e5; }
-  .desktop-sidebar .home-quick-bm svg { color: #10a995; background: #d9f7ee; }
+  .desktop-sidebar .home-quick-bm svg { color: #8b50bd; background: #f2e3ff; }
   .desktop-sidebar .home-quick-math svg { color: #0ca878; background: #d8f5e9; }
   .desktop-sidebar .home-quick-jawi svg { color: #ff9c22; background: #fff0d6; }
-  .desktop-sidebar .home-quick-journey svg { color: #1685ed; background: #dceeff; }
   .desktop-sidebar .home-quick-challenges svg { color: #8c55e8; background: #eee2ff; }
+  .desktop-sidebar .home-quick-link.home-quick-leaderboard svg { color: #d18a00; background: #fff0c2; }
+  .desktop-sidebar .home-quick-link.home-quick-achievements svg { color: #e34f83; background: #ffe0ec; }
+  .desktop-sidebar .home-quick-profile svg { color: #187f68; background: #daf5e9; }
+  .desktop-sidebar .home-quick-reports svg { color: #a94b35; background: #ffe5d9; }
+  .desktop-sidebar .home-quick-link.active.home-quick-home svg { color: #087e9b; }
+  .desktop-sidebar .home-quick-link.active.home-quick-courses svg { color: #5865c8; }
+  .desktop-sidebar .home-quick-link.active.home-quick-reading svg { color: #f05f70; }
+  .desktop-sidebar .home-quick-link.active.home-quick-bm svg { color: #8b50bd; }
+  .desktop-sidebar .home-quick-link.active.home-quick-math svg { color: #0ca878; }
+  .desktop-sidebar .home-quick-link.active.home-quick-jawi svg { color: #ff9c22; }
+  .desktop-sidebar .home-quick-link.active.home-quick-challenges svg { color: #8c55e8; }
+  .desktop-sidebar .home-quick-link.active.home-quick-leaderboard svg { color: #d18a00; }
+  .desktop-sidebar .home-quick-link.active.home-quick-achievements svg { color: #e34f83; }
+  .desktop-sidebar .home-quick-link.active.home-quick-profile svg { color: #187f68; }
+  .desktop-sidebar .home-quick-link.active.home-quick-reports svg { color: #a94b35; }
   .desktop-sidebar .home-quick-link.active { color: #07865d; background: rgba(218, 248, 236, .9); box-shadow: inset 0 0 0 1px rgba(117, 220, 174, .2); }
   .desktop-sidebar .sidebar-nav-divider { margin: clamp(7px, 1.2dvh, 13px) 8px; background: #dfedf4; }
   .desktop-sidebar .sidebar-motivation {

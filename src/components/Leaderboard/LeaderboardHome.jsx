@@ -3,7 +3,9 @@ import { CircleCheck, Timer } from 'lucide-react';
 import { getGameData } from '../../utils/gameStatsManager';
 import { loadPlayerName } from '../../services/storageService';
 import { HomePageLayoutStyles } from '../HomePage';
-import { PageHeader } from '../_shared/PageHeaderHero';
+import BMHeader from '../BahasaMelayuPage/_shared/BMHeader';
+import HomeHeaderActions from '../_shared/HomeHeaderActions';
+import ImanAILogo from '../_shared/ImanAILogo';
 import './LeaderboardHome.css';
 
 // Artwork windows from the supplied reference. Text and ranking data remain live HTML.
@@ -63,7 +65,12 @@ export default function LeaderboardHome({ language = 'bm', gameState, ...account
   return <main className="lb-shell iman-layout">
     <HomePageLayoutStyles />
     <div className="lb-wrap">
-      <PageHeader {...accountProps} language={language} gameState={gameState} />
+      <BMHeader
+        language={language}
+        title={t('Papan Juara', 'Leaderboard')}
+        leading={<button type="button" className="ih-mobile-logo" onClick={accountProps.onHome} aria-label="ImanAI — Home"><ImanAILogo language={language} /></button>}
+        actions={<HomeHeaderActions {...accountProps} language={language} gameState={gameState} />}
+      />
       <section className="lb-hero" aria-labelledby="lb-title">
         <Artwork name="trophy" className="lb-hero-trophy" />
         <div className="lb-hero-copy"><h1 id="lb-title">{t('Papan Juara', 'Leaderboard')}</h1>

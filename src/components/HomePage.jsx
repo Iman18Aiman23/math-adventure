@@ -4,6 +4,7 @@ import { AGE_GROUPS } from '../data/ageCurriculum';
 import { canAccessSubject, hasFullSubjectAccess } from '../utils/subjectAccess';
 import { playHoverSound } from '../utils/soundManager';
 import { PageHeader, PageHero } from './_shared/PageHeaderHero';
+import './_shared/PageContainer.css';
 import './_shared/SubjectMenuLayout.css';
 import './HomePage.css';
 
@@ -16,16 +17,18 @@ export function HomePageLayoutStyles() {
     .app-container:has(.iman-layout) { min-width: 0; border-radius: 0; background: #fff; }
     .view-container:has(.iman-layout) { overflow-y: auto; overflow-x: hidden; background: #fff; }
     .rp-layout { display: contents; }
-    .ih-root.iman-layout, .rp-layout > .mh-screen {
+    .ih-root.iman-layout, .rp-layout > .mh-screen, .pf-root.iman-layout {
       --page-gap: clamp(14px, 1.6vw, 22px);
       box-sizing: border-box; width: 100%; max-width: none; height: auto;
       min-height: 100%; flex: 0 0 auto; container: iman-page / inline-size;
-      padding: 12px clamp(14px, 1.6vw, 28px) 32px;
       background: #fff; overflow: visible;
     }
     .ih-root.iman-layout { display: flex; flex-direction: column; gap: var(--page-gap); }
-    .ih-root.iman-layout > :not(style), .rp-layout .mh-wrap {
-      width: 100%; max-width: 1200px; min-width: 0; margin-inline: auto;
+    .ih-root.iman-layout > :not(style) {
+      width: 100%; max-width: 1400px; min-width: 0; margin-inline: auto;
+    }
+    .rp-layout .mh-wrap, .pf-root.iman-layout > .pf-wrap {
+      width: 100%; max-width: 1400px; min-width: 0; margin-inline: auto;
     }
     .rp-layout .mh-wrap { display: flex; flex-direction: column; gap: var(--page-gap); padding: 0; }
     .iman-layout :is(.ih-header, .mh-header) { width: 100%; min-height: 44px; margin-block: 0; margin-right: auto; }
@@ -196,10 +199,10 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
   }
 
   return (
-    <div className="ih-root iman-layout" style={{ '--ih-art': `url("${import.meta.env.BASE_URL}images/home/robots.webp")` }}>
+    <div className="ih-root iman-layout page-layout-root" style={{ '--ih-art': `url("${import.meta.env.BASE_URL}images/home/robots.webp")` }}>
       <HomePageLayoutStyles />
-      <PageHeader {...{ language, playerName, gameState, streak, onTabChange, onHome, onOpenReports, onLogout, onToggleLang, colorMode, onColorModeChange }} />
-      <PageHero home titleId="ih-welcome-title"
+      <PageHeader className="page-container" {...{ language, playerName, gameState, streak, onTabChange, onHome, onOpenReports, onLogout, onToggleLang, colorMode, onColorModeChange }} />
+      <PageHero className="page-container" home titleId="ih-welcome-title"
         eyebrow={bm ? 'SELAMAT DATANG' : 'WELCOME'}
         titleText={`${bm ? 'Hei' : 'Hey'}, ${name}!`}
         heroTitle={<>{bm ? 'Hei' : 'Hey'}, {name}! <span aria-hidden="true">👋</span></>}
@@ -212,7 +215,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
         </>}
       />
 
-      <section className="ih-subjects" aria-labelledby="ih-subject-heading">
+      <section className="ih-subjects page-container" aria-labelledby="ih-subject-heading">
         <div className="ih-section-heading"><h2 id="ih-subject-heading">{bm ? 'SUBJEK' : 'SUBJECTS'}</h2><p>{bm ? 'Pilih subjek kegemaran anda.' : 'Choose your favourite subject.'}</p></div>
         <div className="ih-subject-grid mh-topic-grid">
           {SUBJECTS.map(subject => <button
@@ -228,7 +231,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
         </div>
       </section>
 
-      <section className="ih-ages" aria-labelledby="ih-age-heading">
+      <section className="ih-ages page-container" aria-labelledby="ih-age-heading">
         <div className="ih-section-heading"><h2 id="ih-age-heading">{bm ? 'KUMPULAN UMUR' : 'AGE GROUPS'}</h2><p>{bm ? 'Pilih kumpulan umur yang sesuai.' : 'Choose the right age group.'}</p></div>
         <div className="ih-age-grid">
           {AGE_GROUPS.map((group, index) => <button type="button" key={group.id} className={`ih-age ih-age--${index}`} disabled={!hasFullSubjectAccess(playerName)} onClick={() => onSelectAgeGroup?.(group.id)} onMouseEnter={hasFullSubjectAccess(playerName) ? playHoverSound : undefined}>

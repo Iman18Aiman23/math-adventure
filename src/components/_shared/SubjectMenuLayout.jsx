@@ -4,6 +4,7 @@ import useBrowserBack from '../../hooks/useBrowserBack';
 import HomeHeaderActions from './HomeHeaderActions';
 import { PageHeader, PageHero } from './PageHeaderHero';
 import './SubjectMenuLayout.css';
+import './PageContainer.css';
 
 // DesktopSidebar and SubjectMenuFooter are owned by App, outside its scroll area.
 export default function SubjectMenuLayout({
@@ -16,10 +17,10 @@ export default function SubjectMenuLayout({
   const comingSoon = language === 'bm' ? 'Segera Hadir' : 'Coming Soon';
 
   return (
-    <main className="mh-screen" aria-label={title}>
+    <main className={`mh-screen${sharedPageChrome ? ' page-layout-root' : ''}`} aria-label={title}>
       {pending}
       {notice && <div className="mh-menu-notice" role="status">{notice}</div>}
-      <div className="mh-wrap">
+      <div className="mh-wrap page-container">
         {sharedPageChrome ? <PageHeader {...accountProps} title={title} onBack={handleBack} language={language} /> : <header className="mh-header">
           <button type="button" className="mh-back" onClick={handleBack} aria-label={language === 'bm' ? 'Kembali' : 'Back'}><ArrowLeft aria-hidden="true" /></button>
           <h1>{title}</h1>

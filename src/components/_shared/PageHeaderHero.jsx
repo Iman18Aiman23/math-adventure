@@ -3,8 +3,8 @@ import { ArrowLeft } from 'lucide-react';
 import ImanAILogo from './ImanAILogo';
 import HomeHeaderActions from './HomeHeaderActions';
 
-export function PageHeader({ title, onBack, language = 'bm', ...accountProps }) {
-  return <header className={`ip-header ${title ? 'mh-header' : 'ih-header'}`}>
+export function PageHeader({ title, onBack, language = 'bm', className = '', ...accountProps }) {
+  return <header className={`ip-header ${title ? 'mh-header' : 'ih-header'} ${className}`.trim()}>
     <style>{`
       .iman-layout .ip-header { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; min-height: 44px; gap: 8px; }
       .iman-layout .ip-header .ih-top-actions-cluster { display: flex; grid-column: 3; justify-self: end; position: relative; gap: 10px; flex-shrink: 0; }
@@ -42,11 +42,11 @@ export function PageHeader({ title, onBack, language = 'bm', ...accountProps }) 
   </header>;
 }
 
-export function PageHero({ home = false, titleId, eyebrow, heroTitle, titleText, description, encouragement, mascot, decoration, heroBackground }) {
+export function PageHero({ home = false, className = '', titleId, eyebrow, heroTitle, titleText, description, encouragement, mascot, decoration, heroBackground }) {
   const id = useId();
   const headingId = titleId || `${id}-hero`;
   const Heading = home ? 'h1' : 'h2';
-  return <section className={`ip-hero ${home ? 'ih-hero' : 'mh-hero'}`} aria-labelledby={headingId} style={heroBackground ? { background: heroBackground } : undefined}>
+  return <section className={`ip-hero ${home ? 'ih-hero' : 'mh-hero'} ${className}`.trim()} aria-labelledby={headingId} style={heroBackground ? { background: heroBackground } : undefined}>
     <div className={home ? 'ih-hero-copy' : 'mh-hero-copy'}>
       <p className={home ? 'ih-eyebrow' : 'mh-eyebrow'}>{eyebrow}</p>
       <Heading id={headingId} title={titleText}>{heroTitle}</Heading>

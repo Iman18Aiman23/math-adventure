@@ -1,0 +1,15 @@
+/* Shared content width and horizontal gutters for full-width subject pages. */
+.page-layout-root {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  padding: 12px clamp(14px, 1.6vw, 28px) 32px;
+}
+
+.page-container {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1400px;
+  margin-inline: auto;
+  padding-inline: 0;
+}

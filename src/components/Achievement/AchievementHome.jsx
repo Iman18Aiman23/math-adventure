@@ -1,6 +1,8 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { HomePageLayoutStyles } from '../HomePage';
-import { PageHeader } from '../_shared/PageHeaderHero';
+import BMHeader from '../BahasaMelayuPage/_shared/BMHeader';
+import HomeHeaderActions from '../_shared/HomeHeaderActions';
+import ImanAILogo from '../_shared/ImanAILogo';
 import { loadPlayerName } from '../../services/storageService';
 import AchievementArt from './AchievementArt';
 import { AchievementCard, BadgeCard, CompletedAchievementCard } from './AchievementCards';
@@ -525,8 +527,9 @@ const CertificateModal = ({ achievement, playerName, gameState, language, onClos
   );
 };
 
-export default function AchievementHome({ language = 'bm', gameState, onTakeAssessment, ...accountProps }) {
-  const [currentTab, setCurrentTab] = useState('assessments');
+export default function AchievementHome({ language = 'bm', gameState, onTakeAssessment, initialTab = 'assessments', onSectionChange, ...accountProps }) {
+  const [currentTab, setCurrentTab] = useState(initialTab);
+  useEffect(() => { setCurrentTab(initialTab); }, [initialTab]);
   const legacyData = useMemo(() => getGameData(), []);
   const rewards = useGamification('mt');
   const gameData = {
@@ -673,14 +676,19 @@ export default function AchievementHome({ language = 'bm', gameState, onTakeAsse
     const index = tabs.findIndex(tab => tab[0] === currentTab);
     const next = event.key === 'ArrowRight' ? (index + 1) % 3 : event.key === 'ArrowLeft' ? (index + 2) % 3 : event.key === 'Home' ? 0 : event.key === 'End' ? 2 : null;
     if (next === null) return;
-    event.preventDefault(); setCurrentTab(tabs[next][0]);
+    event.preventDefault(); setCurrentTab(tabs[next][0]); onSectionChange?.(tabs[next][0]);
     event.currentTarget.parentElement.children[next].focus();
   };
   return (
     <main className="ac-root iman-layout">
       <HomePageLayoutStyles />
       <div className="ac-wrap">
-        <PageHeader {...accountProps} language={language} gameState={gameState} />
+        <BMHeader
+          language={language}
+          title={title}
+          leading={<button type="button" className="ih-mobile-logo" onClick={accountProps.onHome} aria-label="ImanAI — Home"><ImanAILogo language={language} /></button>}
+          actions={<HomeHeaderActions {...accountProps} language={language} gameState={gameState} />}
+        />
         <section className={'ac-hero ac-hero-' + currentTab} aria-labelledby="ac-title">
           <AchievementArt name={assessmentTab ? 'clipboard' : currentTab === 'achievements' ? 'trophy' : 'medal'} className="ac-hero-icon ac-mobile-art" />
           <AchievementArt name={assessmentTab ? 'clipboard' : 'trophy'} className="ac-hero-icon ac-desktop-art" />
@@ -689,7 +697,7 @@ export default function AchievementHome({ language = 'bm', gameState, onTakeAsse
           <AchievementArt name={assessmentTab ? 'assessmentRobot' : 'trophyRobot'} className="ac-hero-robot ac-desktop-art" />
         </section>
         <div className="ac-tabs" role="tablist" aria-label={bm ? 'Pencapaian Saya' : 'My Achievements'}>
-          {tabs.map(([id, icon, label]) => <button key={id} type="button" role="tab" id={'ac-tab-' + id} aria-controls="ac-panel" aria-selected={currentTab === id} tabIndex={currentTab === id ? 0 : -1} onKeyDown={onTabKeyDown} onClick={() => setCurrentTab(id)}><span aria-hidden="true">{icon}</span>{label}</button>)}
+          {tabs.map(([id, icon, label]) => <button key={id} type="button" role="tab" id={'ac-tab-' + id} aria-controls="ac-panel" aria-selected={currentTab === id} tabIndex={currentTab === id ? 0 : -1} onKeyDown={onTabKeyDown} onClick={() => { setCurrentTab(id); onSectionChange?.(id); }}><span aria-hidden="true">{icon}</span>{label}</button>)}
         </div>
         <section id="ac-panel" role="tabpanel" aria-labelledby={'ac-tab-' + currentTab} tabIndex={0}>
           {currentTab === 'badges' ? <div className="ac-grid ac-badge-grid">{BADGE_CONFIG.map((badge, index) => <BadgeCard key={badge.id} badge={badge} index={index} progress={(badge.type === 'streak' ? gameData.streak : gameData.gems) || 0} onDownload={handleDownloadBadge} language={language} isDownloading={downloadingBadge === badge.id} />)}</div>

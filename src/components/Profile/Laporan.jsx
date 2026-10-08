@@ -7,6 +7,7 @@ import { getGameData } from '../../utils/gameStatsManager';
 import { useGamificationRepo } from '../../contexts/GamificationContext';
 import { getUserId } from '../../services/UserId';
 import './ProfileHome.css';
+import './Laporan.css';
 import '../_shared/PageContainer.css';
 
 const SUBJECTS = [
@@ -26,7 +27,7 @@ function Panel({ title, Icon, action, onAction, children, className = '' }) {
   return <section className={`pf-panel ${className}`}><div className="pf-panel-heading"><h3>{React.createElement(Icon, { 'aria-hidden': true })}{title}</h3><button type="button" className="pf-link" onClick={onAction}>{action}<ChevronRight size={16} /></button></div>{children}</section>;
 }
 
-export default function ProfileHome({ playerName, gameState, language = 'bm', streak = 0, onTabChange, onHome, onSelectSubject, ...accountProps }) {
+export default function Laporan({ playerName, gameState, language = 'bm', streak = 0, onTabChange, onHome, onSelectSubject, ...accountProps }) {
   const bm = language === 'bm';
   const t = (ms, en) => bm ? ms : en;
   const repo = useGamificationRepo();
@@ -117,14 +118,20 @@ export default function ProfileHome({ playerName, gameState, language = 'bm', st
     return <button type="button" className="pf-session" key={`${session.timestamp}-${index}`} onClick={() => onSelectSubject?.(subject.id)}><span className={`pf-subject-icon pf-${subject.tone}`}>{React.createElement(subject.Icon)}</span><span className="pf-session-copy"><strong>{subject.title[bm ? 0 : 1]} · {session.topicId?.replaceAll('-', ' ') || t('Latihan', 'Exercise')}</strong><small>{t('Latihan selesai', 'Exercise complete')}</small></span><time dateTime={session.timestamp}>{new Date(session.timestamp).toLocaleDateString(bm ? 'ms-MY' : 'en-GB', { day: 'numeric', month: 'short' })}<small>{new Date(session.timestamp).toLocaleTimeString(bm ? 'ms-MY' : 'en-GB', { hour: '2-digit', minute: '2-digit' })}</small></time><ChevronRight size={17} /></button>;
   })}</div> : <p className="pf-empty">{t('Belum ada sesi. Jom mulakan pembelajaran!', 'No sessions yet. Let’s start learning!')}<button type="button" className="pf-link" onClick={onHome}>{t('Mula belajar', 'Start learning')}<ChevronRight size={16} /></button></p>;
 
-  return <main className="pf-root iman-layout page-layout-root">
+  return <main className="pf-root laporan-root iman-layout page-layout-root">
     <HomePageLayoutStyles />
     <div className="pf-wrap page-container">
       <PageHeader {...accountProps} {...{ playerName, gameState, language, streak, onTabChange, onHome }} />
-      <section className="pf-hero" aria-labelledby="pf-title">
-        <div className="pf-avatar-wrap"><div className="pf-avatar"><img src={profile.avatar || ROBOT} alt={t('Gambar profil', 'Profile picture')} /></div><button type="button" className="pf-camera" aria-label={t('Tukar gambar profil', 'Change profile photo')} onClick={() => uploadRef.current?.click()}><Camera size={21} /></button><input ref={uploadRef} type="file" accept="image/png,image/jpeg,image/webp" hidden onChange={upload} /></div>
-        <div className="pf-identity"><h1 id="pf-title">{t('Profil Saya', 'My Profile')}</h1><div className="pf-name"><strong>{name}</strong><button type="button" aria-label={t('Edit profil', 'Edit profile')} onClick={editProfile}><Pencil size={18} /></button></div></div>
-        <div className="pf-pills"><span><Star fill="#ffd12f" color="#efa200" size={23} /><span>LEVEL<strong>{gameState?.level || 1}</strong></span></span><span><Flame fill="#ff792d" color="#ef521b" size={24} /><span><strong>{streak}</strong>{t('Hari Streak', 'Day Streak')}</span></span></div>
+      <section className="pf-hero laporan-hero" aria-labelledby="pf-title">
+        <div className="laporan-welcome">
+          <div className="laporan-greeting"><span>{t('LAPORAN', 'REPORT')}</span><h1 id="pf-title">{t('Prestasi Pembelajaran', 'Learning Performance')}</h1></div>
+        </div>
+        <div className="laporan-hero-stats">
+          <article><span><Star size={17} />{t('Tahap', 'Level')}</span><strong>{gameState?.level || 1}</strong><small>{t('Tahap semasa', 'Current level')}</small></article>
+          <article><span><Flame size={17} />{t('Streak', 'Streak')}</span><strong>{streak}<i>{t('hari', 'days')}</i></strong><small>{t('Hari berturut-turut', 'Days in a row')}</small></article>
+          <article><span><Trophy size={17} />{t('Latihan selesai', 'Exercises')}</span><strong>{completed.length}</strong><small>{t('Dalam tempoh dipilih', 'In selected period')}</small></article>
+          <article><span><Star size={17} />{t('Bintang', 'Stars')}</span><strong>{rewards.stars || 0}</strong><small>{t('Jumlah terkumpul', 'All-time total')}</small></article>
+        </div>
       </section>
       {error && !editor && <p className="pf-error" role="alert">{error}</p>}
       <div className="pf-dashboard-heading"><div><h2>{t('Dashboard Ibu Bapa', 'Parent Dashboard')}</h2><p>{t('Lihat perkembangan pembelajaran anak anda dengan mudah.', 'Follow your child’s learning progress at a glance.')}</p></div><label className="pf-period"><CalendarDays size={19} /><select aria-label={t('Tempoh aktiviti', 'Activity period')} value={days} onChange={event => setDays(Number(event.target.value))}><option value={7}>{t('7 Hari Terakhir', 'Last 7 Days')}</option><option value={30}>{t('30 Hari Terakhir', 'Last 30 Days')}</option></select></label></div>

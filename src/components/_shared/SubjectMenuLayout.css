@@ -4,11 +4,11 @@
 .view-container:has(> .mh-screen) { overflow-y: auto; overflow-x: hidden; }
 .view-container > .mh-screen { max-width: 100%; }
 .mh-screen {
-  --mh-navy: #0b1b44; --mh-muted: #667a98; width: 100%; min-height: 100%; overflow-x: hidden; overflow-y: visible; container-type: inline-size; background: #fcfefe; color: var(--mh-navy); font-family: 'Inter', sans-serif; padding: clamp(8px, 1.6dvh, 20px) clamp(12px, 2.4vw, 40px);
+  --mh-navy: #0b1b44; --mh-muted: #667a98; width: 100%; min-height: 100%; overflow-x: hidden; overflow-y: visible; container-type: inline-size; background: #fcfefe; color: var(--mh-navy); font-family: 'Inter', sans-serif; padding-block: clamp(8px, 1.6dvh, 20px);
 }
 .mh-screen *, .mh-screen *::before, .mh-screen *::after { box-sizing: border-box; min-width: 0; }
 .mh-wrap {
-  width: 100%; max-width: 1400px; min-height: 0; margin: auto; display: grid; gap: clamp(8px, 1.8dvh, 22px);
+  min-height: 0; display: grid; gap: clamp(8px, 1.8dvh, 22px);
 }
 .mh-header { position: relative; z-index: 2; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(6px, 1cqw, 14px); }
 .mh-header h1 { font: 800 clamp(18px, 3cqw, 30px)/1.2 'Nunito', 'Outfit', sans-serif; margin: 0; color: var(--mh-navy); text-align: center; overflow-wrap: anywhere; }
@@ -57,7 +57,7 @@
 @media (max-width: 767px) {
   .mh-screen { background: #fff; padding: 0; }
   .mh-wrap {
-    width: 100%; gap: clamp(8px, 1.45dvh, 12px); padding: clamp(10px, 1.8dvh, 16px); border: 0; border-radius: 0; background: #fff; box-shadow: none;
+    width: 100%; gap: clamp(8px, 1.45dvh, 12px); padding-block: clamp(10px, 1.8dvh, 16px); border: 0; border-radius: 0; background: #fff; box-shadow: none;
   }
   .mh-header { position: relative; grid-template-columns: 38px minmax(0, 1fr) auto; }
   .mh-header h1 { text-align: center; font-weight: 900; font-size: clamp(16px, 4.4cqw, 22px); }

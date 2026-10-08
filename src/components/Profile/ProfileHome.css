@@ -1,8 +1,8 @@
 /* Mobile first. The app owns scrolling and the shared MathHome bottom menu. */
 .view-container > .pf-root { width: 100%; max-width: none; }
-.pf-root { --pf-ink: #081b52; --pf-muted: #7389b4; width: 100%; min-height: 100%; flex: 0 0 auto; padding: 12px 14px 100px; color: var(--pf-ink); background: #fff; font: 400 14px/1.4 'Inter', sans-serif; container: iman-page / inline-size; }
+.pf-root { --pf-ink: #081b52; --pf-muted: #7389b4; width: 100%; min-height: 100%; flex: 0 0 auto; padding: 0 0 100px; color: var(--pf-ink); background: #fff; font: 400 14px/1.4 'Inter', sans-serif; container: iman-page / inline-size; }
 .pf-root *, .pf-root *::before, .pf-root *::after { box-sizing: border-box; }
-.pf-wrap { width: 100%; max-width: 1400px; margin-inline: auto; display: flex; flex-direction: column; gap: 16px; }
+.pf-wrap { display: flex; flex-direction: column; gap: 16px; }
 .pf-root button, .pf-root input, .pf-root select { font: inherit; }
 .pf-root button { -webkit-tap-highlight-color: transparent; }
 .pf-root button:focus-visible, .pf-root select:focus-visible, .pf-root input:focus-visible { outline: 3px solid #008cda; outline-offset: 3px; }
@@ -96,7 +96,6 @@
 .pf-detail-list { list-style: none; padding: 0; margin: 12px 0 0; }
 .pf-detail-list li { display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid #e5edf5; }
 @media (min-width: 480px) {
-  .pf-root { padding-inline: 24px; }
   .pf-hero { grid-template-columns: clamp(72px, 9vw, 130px) minmax(0, 1fr) clamp(92px, 15vw, 180px); padding: 24px 20px; gap: clamp(10px, 1.6vw, 22px); }
   .pf-avatar-wrap { width: 100%; height: auto; aspect-ratio: 1; }
   .pf-camera { width: 44px; height: 44px; }
@@ -122,7 +121,7 @@
   .pf-session small, .pf-session time { font-size: 12px; }
 }
 @media (min-width: 768px) {
-  .pf-root { padding: 12px 20px 24px; }
+  .pf-root { padding-bottom: 24px; }
   .pf-dashboard-heading h2 { font-size: 28px; }
   .pf-dashboard-heading p { font-size: 15px; }
   .pf-period select { font-size: 13px; }
@@ -230,4 +229,13 @@ html[data-color-mode='dark'] .pf-root .pf-error { color: #ff9daa; }
   .pf-pills > span { gap: 6px; padding: 7px; font-size: 12px; }
   .pf-pills > span + span { font-size: 11px; }
   .pf-pills > span > svg { flex-basis: 34px; width: 34px; height: 34px; }
+}
+
+/* Match MathHome's shared PageHero dimensions. */
+.pf-hero { height: 260px; min-height: 260px; }
+@container iman-page (max-width: 559px) {
+  .pf-hero { height: 240px; min-height: 240px; }
+}
+@container iman-page (max-width: 331px) {
+  .pf-hero { height: 260px; min-height: 260px; }
 }
