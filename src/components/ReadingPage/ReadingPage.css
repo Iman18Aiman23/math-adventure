@@ -20,3 +20,34 @@
   object-position: center bottom;
   align-self: flex-end;
 }
+
+/* Keep the five level artworks in the same square frame, even when their
+   source crops have different proportions. */
+.rp-layout .mh-topic-visual {
+  width: min(100%, 120px);
+  aspect-ratio: 1;
+  height: auto;
+  justify-self: center;
+  align-self: center;
+}
+.rp-layout .mh-topic-visual img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+@container (min-width: 900px) {
+  .rp-layout .mh-topic-visual {
+    width: min(100%, 120px);
+    height: auto;
+    flex: 0 0 auto;
+  }
+}
+@media (max-width: 767px) {
+  .rp-layout .mh-topic-visual {
+    width: clamp(54px, 17vw, 70px);
+    height: auto;
+    flex: 0 0 auto;
+  }
+  .rp-layout .mh-topic-visual img { max-height: none; }
+}

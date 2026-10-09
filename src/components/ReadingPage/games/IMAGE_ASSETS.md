@@ -1,6 +1,6 @@
 # Reading journey artwork
 
-Saved asset: `public/images/reading/journey-clay-atlas.png` (1254 × 1254 transparent PNG).
+Saved asset: `public/images/reading/journey-clay-atlas.webp` (1254 × 1254 transparent WebP).
 
 Created with the built-in imagegen tool using the user's attached screenshot as a style reference. `ReadingJourneyArt.jsx` renders separately clipped viewports from this cached atlas. Navigation, hero title, headings, descriptions, numbers and buttons remain live HTML.
 

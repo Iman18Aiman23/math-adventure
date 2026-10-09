@@ -1,5 +1,32 @@
 /* ── BMPage Category Tiles — mirrors JawiPage UI/UX ── */
 
+.mh-mascot > .bm-menu-robot-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 350px;
+  max-height: 400px;
+  object-fit: contain;
+  object-position: center bottom;
+  align-self: flex-end;
+}
+.mh-topic-visual > .bm-menu-category-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: 140px;
+  object-fit: contain;
+}
+@container (min-width: 900px) {
+  .mh-topic-visual > .bm-menu-category-art {
+    width: min(100%, 120px);
+    max-height: min(19dvh, 120px);
+  }
+}
+@media (max-width: 767px) {
+  .mh-topic-visual > .bm-menu-category-art { max-height: 64px; }
+}
+
 /* ── Background ── */
 .bp-body {
   background:

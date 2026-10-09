@@ -7,6 +7,7 @@ import SubjectMenuLayout from '../_shared/SubjectMenuLayout';
 import LoadingSpinner from '../LoadingSpinner';
 import { HomePageLayoutStyles } from '../HomePage';
 import BMMenuArtwork from './BMMenuArtwork';
+import './BMPage.css';
 
 const BMSpeakGame = React.lazy(() => import('./BMSpeakGame'));
 const CATEGORIES = [

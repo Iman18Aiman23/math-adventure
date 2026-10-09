@@ -28,7 +28,7 @@ export default function KVCompletion({ language, onReturn }) {
         }
       }}>
       <div className="kv-completion-art" aria-hidden="true">
-        <img src={import.meta.env.BASE_URL + 'images/reading/kv-completion-robot-light.png'} alt="" className="kv-happy-robot" />
+        <img src={import.meta.env.BASE_URL + 'images/reading/kv-completion-robot-light.webp'} alt="" className="kv-happy-robot" />
       </div>
       <div className="kv-completion-copy">
         <h2 id={titleId}>{isMalay ? <>Semua Siri <span>Selesai!</span></> : <>All Series <span>Complete!</span></>}</h2>

@@ -1,6 +1,6 @@
 import React, { useId } from 'react';
 
-const ATLAS = `${import.meta.env.BASE_URL}images/reading/journey-clay-atlas.png`;
+const ATLAS = `${import.meta.env.BASE_URL}images/reading/journey-clay-atlas.webp`;
 // Independent SVG viewports keep the atlas's artwork separate from live UI.
 const BOUNDS = {
   book: '15 30 340 290', sprout: '355 50 250 250', star: '650 60 260 255',

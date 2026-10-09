@@ -1,4 +1,4 @@
-import React, { useId, useTransition } from 'react';
+import React, { useTransition } from 'react';
 import { playHoverSound } from '../../utils/soundManager';
 import { useGameStateContext } from '../../App';
 import LoadingSpinner from '../LoadingSpinner';
@@ -12,24 +12,16 @@ const KVLearningPage = React.lazy(() => import('./KVLearningPage'));
 const KVKLearningPage = React.lazy(() => import('./KVKLearningPage'));
 const ReadingJourney = React.lazy(() => import('./games/ReadingJourney'));
 
-// Display the exact supplied artwork as SVG viewports, keeping all UI text and controls live.
-const REFERENCE_ART = import.meta.env.BASE_URL + 'images/reading/membaca-reference.png';
-const HERO_ROBOT_ART = import.meta.env.BASE_URL + 'images/reading/HeroRobotIcon.png';
-const ART_BOUNDS = {
-  robot: '535 108 448 371',
-  kv: '71 579 187 128',
-  kvk: '71 749 187 129',
-  words: '71 905 187 130',
-  sentences: '71 1079 187 131',
-  challenge: '72 1250 184 122',
+const HERO_ROBOT_ART = import.meta.env.BASE_URL + 'images/reading/HeroRobotIcon.webp';
+const LEVEL_ART = {
+  kv: 'SukuKata KV.webp',
+  kvk: 'SukuKata KVK.webp',
+  words: 'Ayat Pendek.webp',
+  sentences: 'Ayat Panjang.webp',
+  challenge: 'Trophy.webp',
 };
-function ReadingArt({ name, className = '' }) {
-  const clipId = useId();
-  const [x, y, width, height] = ART_BOUNDS[name].split(' ');
-  return <svg className={className} viewBox={ART_BOUNDS[name]} aria-hidden="true" focusable="false">
-    <defs><clipPath id={clipId}><rect x={x} y={y} width={width} height={height} /></clipPath></defs>
-    <image href={REFERENCE_ART} width="1024" height="1536" clipPath={`url(#${clipId})`} />
-  </svg>;
+function ReadingArt({ name }) {
+  return <img src={`${import.meta.env.BASE_URL}images/reading/${encodeURIComponent(LEVEL_ART[name])}`} alt="" />;
 }
 
 export default function ReadingPage({ onBack, language = 'bm', selectedLevel = null, onSelectLevel: setSelectedLevel, ...accountProps }) {
