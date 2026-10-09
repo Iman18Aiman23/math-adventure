@@ -1803,7 +1803,7 @@ export default function App() {
           </div>
 
           {/* CosmicMobileNav — rendered outside view-container so position:fixed works correctly */}
-          {isSubjectMenu || activeTab === 'profile' || activeTab === 'leaderboard' || (activeTab === 'achievement' && !selectedAssessment) ||
+          {isSubjectMenu || activeTab === 'profile' || activeTab === 'laporan' || activeTab === 'leaderboard' || (activeTab === 'achievement' && !selectedAssessment) ||
           (!inActiveQuiz && !selectedAssessment && !currentAgeGame && !currentAgeGroup && activeTab === 'learn' && !currentSubject) ? (
             <SubjectMenuFooter activeTab={activeTab} language={language}
               onTabChange={handleTabChange} onHome={handleBackToHome}

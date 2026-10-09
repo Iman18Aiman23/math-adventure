@@ -7,12 +7,14 @@ import { HomePageLayoutStyles } from '../HomePage';
 import { useBrowserBackHandler } from '../../hooks/useBrowserBack';
 import LearnWords from './LearnWords';
 import LongSentences from './LongSentences';
+import './ReadingPage.css';
 const KVLearningPage = React.lazy(() => import('./KVLearningPage'));
 const KVKLearningPage = React.lazy(() => import('./KVKLearningPage'));
 const ReadingJourney = React.lazy(() => import('./games/ReadingJourney'));
 
 // Display the exact supplied artwork as SVG viewports, keeping all UI text and controls live.
 const REFERENCE_ART = import.meta.env.BASE_URL + 'images/reading/membaca-reference.png';
+const HERO_ROBOT_ART = import.meta.env.BASE_URL + 'images/reading/HeroRobotIcon.png';
 const ART_BOUNDS = {
   robot: '535 108 448 371',
   kv: '71 579 187 128',
@@ -94,7 +96,7 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
     heroTitle={bm ? 'Jom belajar Membaca!' : "Let's learn to read!"}
     description={bm ? 'Dari suku kata ke ayat penuh - satu langkah pada satu masa!' : 'From syllables to full sentences - one step at a time!'}
     encouragement={bm ? 'Baca dengan yakin, dunia lebih menarik!' : 'Read with confidence and discover more.'}
-    mascot={<ReadingArt name="robot" />}
+    mascot={<img className="rp-hero-robot" src={HERO_ROBOT_ART} width="424" height="370" alt="" />}
     sectionTitle={bm ? 'Pilih Tahap' : 'Choose a Level'}
     sectionDescription={bm ? 'Pilih tahap untuk mula belajar.' : 'Pick a level to start learning.'}
     topics={levels.map(([level, title, description, art]) => ({

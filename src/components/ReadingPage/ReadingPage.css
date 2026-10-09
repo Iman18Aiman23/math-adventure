@@ -1,1 +1,22 @@
 /* Menu styles are owned by the shared SubjectMenuLayout component. */
+.rp-layout .mh-hero {
+  padding-bottom: 0;
+}
+
+.rp-layout .mh-mascot {
+  align-self: stretch;
+  align-items: flex-end;
+  height: 100%;
+  margin-bottom: 0;
+}
+
+.rp-layout .mh-mascot > .rp-hero-robot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 350px;
+  max-height: 400px;
+  object-fit: contain;
+  object-position: center bottom;
+  align-self: flex-end;
+}
