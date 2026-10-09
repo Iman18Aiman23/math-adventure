@@ -194,7 +194,7 @@
   .app-home:has(.ih-root) { border-radius: 0; }
   .view-container:has(> .ih-root) { overflow-y: auto; }
   .view-container:has(> .ih-root) { scroll-padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)); }
-  .ih-root { height: auto; min-height: 100%; flex: none; grid-template-rows: 68px 180px auto auto; gap: 16px; padding-block: 0 calc(88px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(#f2fbff, white 230px); }
+  .ih-root { height: auto; min-height: 100%; flex: none; grid-template-rows: 68px 180px auto auto; gap: 16px; padding-block: 12px calc(88px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(#f2fbff, white 230px); }
   .ih-header { justify-content: flex-end; gap: 8px; }
   .ih-top-actions-cluster { display: contents; }
   .ih-mobile-logo { display: none; }

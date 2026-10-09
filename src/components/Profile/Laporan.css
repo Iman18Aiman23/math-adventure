@@ -1,4 +1,5 @@
-.laporan-root .laporan-hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(300px, 1fr); gap: 24px; padding: 24px; border-color: #dce7f0; border-radius: 20px; background: linear-gradient(115deg, #f8fbff 0%, #eef5fb 55%, #e9f7f2 100%); }
+.laporan-content { min-width: 0; }
+.laporan-root .laporan-hero { display: grid; width: 100%; grid-template-columns: minmax(0, 1.1fr) minmax(300px, 1fr); gap: 24px; padding: 24px; border-color: #dce7f0; border-radius: 20px; background: linear-gradient(115deg, #f8fbff 0%, #eef5fb 55%, #e9f7f2 100%); }
 .laporan-welcome { display: flex; align-items: center; gap: 18px; min-width: 0; }
 .laporan-root .pf-avatar-wrap { width: 82px; height: 82px; flex: 0 0 82px; align-self: center; margin: 0; }
 .laporan-greeting { min-width: 0; }
@@ -13,10 +14,10 @@
 .laporan-hero-stats article > strong { grid-column: 2; grid-row: 1 / span 2; color: #15334d; font: 800 25px/1 'Outfit', sans-serif; font-variant-numeric: tabular-nums; }
 .laporan-hero-stats article > strong i { margin-left: 3px; color: #72899b; font: 600 10px 'Inter', sans-serif; }
 .laporan-hero-stats article > small { color: #8395a4; font-size: 9px; }
-@media (max-width: 700px) {
+@container iman-page (max-width: 700px) {
   .laporan-root .laporan-hero { grid-template-columns: 1fr; gap: 18px; padding: 18px; }
 }
-@media (max-width: 380px) {
+@container iman-page (max-width: 380px) {
   .laporan-welcome { gap: 12px; }
   .laporan-root .pf-avatar-wrap { width: 62px; height: 62px; flex-basis: 62px; }
   .laporan-hero-stats article { padding: 9px; }

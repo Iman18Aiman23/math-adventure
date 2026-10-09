@@ -1,8 +1,6 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { HomePageLayoutStyles } from '../HomePage';
-import BMHeader from '../BahasaMelayuPage/_shared/BMHeader';
-import HomeHeaderActions from '../_shared/HomeHeaderActions';
-import ImanAILogo from '../_shared/ImanAILogo';
+import SubjectMenuLayout from '../_shared/SubjectMenuLayout';
 import { loadPlayerName } from '../../services/storageService';
 import AchievementArt from './AchievementArt';
 import { AchievementCard, BadgeCard, CompletedAchievementCard } from './AchievementCards';
@@ -680,22 +678,25 @@ export default function AchievementHome({ language = 'bm', gameState, onTakeAsse
     event.currentTarget.parentElement.children[next].focus();
   };
   return (
-    <main className="ac-root iman-layout">
+    <div className="rp-layout iman-layout">
       <HomePageLayoutStyles />
-      <div className="ac-wrap">
-        <BMHeader
-          language={language}
-          title={title}
-          leading={<button type="button" className="ih-mobile-logo" onClick={accountProps.onHome} aria-label="ImanAI — Home"><ImanAILogo language={language} /></button>}
-          actions={<HomeHeaderActions {...accountProps} language={language} gameState={gameState} />}
-        />
-        <section className={'ac-hero ac-hero-' + currentTab} aria-labelledby="ac-title">
+    <SubjectMenuLayout
+      title={title}
+      language={language}
+      sharedPageChrome
+      rootClassName="mh-screen page-layout-root ac-root iman-layout"
+      wrapClassName="mh-wrap page-container mh-wrap--custom-content"
+      contentClassName="ac-content"
+      gameState={gameState}
+      {...accountProps}
+      heroContent={<section className={'ac-hero ac-hero-' + currentTab} aria-labelledby="ac-title">
           <AchievementArt name={assessmentTab ? 'clipboard' : currentTab === 'achievements' ? 'trophy' : 'medal'} className="ac-hero-icon ac-mobile-art" />
           <AchievementArt name={assessmentTab ? 'clipboard' : 'trophy'} className="ac-hero-icon ac-desktop-art" />
           <div className="ac-hero-copy"><h1 id="ac-title"><span className="ac-mobile-title">{title}</span><span className="ac-desktop-title">{assessmentTab ? title : (bm ? 'Pencapaian Saya' : 'My Achievements')}</span></h1><p>{description}</p></div>
           <AchievementArt name={assessmentTab ? 'assessmentRobot' : currentTab === 'achievements' ? 'trophyRobot' : 'badgeRobot'} className="ac-hero-robot ac-mobile-art" />
           <AchievementArt name={assessmentTab ? 'assessmentRobot' : 'trophyRobot'} className="ac-hero-robot ac-desktop-art" />
-        </section>
+      </section>}
+    >
         <div className="ac-tabs" role="tablist" aria-label={bm ? 'Pencapaian Saya' : 'My Achievements'}>
           {tabs.map(([id, icon, label]) => <button key={id} type="button" role="tab" id={'ac-tab-' + id} aria-controls="ac-panel" aria-selected={currentTab === id} tabIndex={currentTab === id ? 0 : -1} onKeyDown={onTabKeyDown} onClick={() => { setCurrentTab(id); onSectionChange?.(id); }}><span aria-hidden="true">{icon}</span>{label}</button>)}
         </div>
@@ -704,7 +705,6 @@ export default function AchievementHome({ language = 'bm', gameState, onTakeAsse
             : assessmentTab ? <div className="ac-grid ac-assessment-grid">{[...pending, ...planned].map((achievement, index) => <AchievementCard key={achievement.id} achievement={achievement} index={index} isUnlocked={false} onDownload={handleDownloadAchievement} onView={setSelectedAchievement} language={language} isDownloading={downloadingBadge === achievement.id} onTakeAssessment={onTakeAssessment} />)}</div>
             : <div className="ac-completed-grid">{completed.map(achievement => <CompletedAchievementCard key={achievement.id} achievement={achievement} onDownload={handleDownloadAchievement} onView={setSelectedAchievement} language={language} isDownloading={downloadingBadge === achievement.id} />)}</div>}
         </section>
-      </div>
       {downloadingBadge && <div className="ac-loading" role="status" aria-live="polite"><MascotIcon size={70} /><p>{bm ? 'Menjana dokumen…' : 'Generating document…'}</p></div>}
 
       {/* Hidden ID Cards for Download — rendered only when a download is in progress */}
@@ -795,6 +795,7 @@ export default function AchievementHome({ language = 'bm', gameState, onTakeAsse
           }
         }
       `}</style>
-    </main>
+    </SubjectMenuLayout>
+    </div>
   );
 }

@@ -1,8 +1,8 @@
 /* Mobile first. The app owns scrolling and the shared MathHome bottom menu. */
 .view-container > .pf-root { width: 100%; max-width: none; }
-.pf-root { --pf-ink: #081b52; --pf-muted: #7389b4; width: 100%; min-height: 100%; flex: 0 0 auto; padding: 0 0 100px; color: var(--pf-ink); background: #fff; font: 400 14px/1.4 'Inter', sans-serif; container: iman-page / inline-size; }
+.pf-root { --pf-ink: #081b52; --pf-muted: #7389b4; width: 100%; min-height: 100%; flex: 0 0 auto; padding-bottom: 100px; color: var(--pf-ink); background: #fff; font: 400 14px/1.4 'Inter', sans-serif; container: iman-page / inline-size; }
 .pf-root *, .pf-root *::before, .pf-root *::after { box-sizing: border-box; }
-.pf-wrap { display: flex; flex-direction: column; gap: 16px; }
+.pf-content { display: flex; flex-direction: column; gap: 16px; }
 .pf-root button, .pf-root input, .pf-root select { font: inherit; }
 .pf-root button { -webkit-tap-highlight-color: transparent; }
 .pf-root button:focus-visible, .pf-root select:focus-visible, .pf-root input:focus-visible { outline: 3px solid #008cda; outline-offset: 3px; }

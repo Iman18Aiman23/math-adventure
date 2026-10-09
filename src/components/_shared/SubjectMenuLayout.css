@@ -85,6 +85,13 @@
   .mh-section-heading { gap: clamp(8px, 2vw, 14px); }
   .mh-section-heading p { max-width: 48%; }
 }
+/* Leave a compact gap below the mobile app header when the desktop sidebar is hidden. */
+@media (max-width: 767px) {
+  .mh-screen.page-layout-root { padding-top: 6px; }
+  /* Keep the shared page gutters after the base mobile .mh-screen reset. */
+  .mh-screen.page-layout-root { padding-inline: clamp(14px, 4vw, 22px); }
+  .mh-screen.page-layout-root > .mh-wrap { padding-top: 6px; }
+}
 @media (max-width: 767px) and (max-height: 740px) {
   .mh-wrap { gap: 8px; }
   .mh-hero { padding: 12px; }
@@ -269,7 +276,7 @@
 /* Keep subject menus aligned with the HomePage desktop rhythm. */
 @media (min-width: 768px) {
   .mh-screen {
-    padding: 0 clamp(16px, 1.6vw, 30px) clamp(10px, 1.4dvh, 20px);
+    padding: clamp(8px, 1.2dvh, 16px) clamp(16px, 1.6vw, 30px) clamp(10px, 1.4dvh, 20px);
     overflow-y: auto;
     --menu-hero-height: clamp(160px, calc(62.5dvh - 290px), 190px);
   }
@@ -277,5 +284,17 @@
     max-width: none;
     gap: clamp(8px, 1dvh, 14px);
     grid-template-rows: 36px var(--menu-hero-height) 36px auto;
+  }
+}
+
+.mh-wrap--custom-content {
+  grid-template-rows: auto auto auto;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+}
+
+@media (min-width: 768px) {
+  .mh-screen.pf-root {
+    padding: clamp(8px, 1.2dvh, 16px) clamp(16px, 1.6vw, 30px) clamp(10px, 1.4dvh, 20px);
   }
 }

@@ -2,10 +2,8 @@
 import { CircleCheck, Timer } from 'lucide-react';
 import { getGameData } from '../../utils/gameStatsManager';
 import { loadPlayerName } from '../../services/storageService';
+import SubjectMenuLayout from '../_shared/SubjectMenuLayout';
 import { HomePageLayoutStyles } from '../HomePage';
-import BMHeader from '../BahasaMelayuPage/_shared/BMHeader';
-import HomeHeaderActions from '../_shared/HomeHeaderActions';
-import ImanAILogo from '../_shared/ImanAILogo';
 import './LeaderboardHome.css';
 
 // Artwork windows from the supplied reference. Text and ranking data remain live HTML.
@@ -62,21 +60,24 @@ export default function LeaderboardHome({ language = 'bm', gameState, ...account
   const players = DEMO_PLAYERS;
   const myStars = gameData.stars || 0;
   const myRank = players.filter(player => player.stars >= myStars).length + 1;
-  return <main className="lb-shell iman-layout">
+  return <div className="rp-layout iman-layout">
     <HomePageLayoutStyles />
-    <div className="lb-wrap">
-      <BMHeader
-        language={language}
-        title={t('Papan Juara', 'Leaderboard')}
-        leading={<button type="button" className="ih-mobile-logo" onClick={accountProps.onHome} aria-label="ImanAI — Home"><ImanAILogo language={language} /></button>}
-        actions={<HomeHeaderActions {...accountProps} language={language} gameState={gameState} />}
-      />
-      <section className="lb-hero" aria-labelledby="lb-title">
+    <SubjectMenuLayout
+      title={t('Papan Juara', 'Leaderboard')}
+      language={language}
+      sharedPageChrome
+      rootClassName="mh-screen page-layout-root lb-shell"
+      wrapClassName="mh-wrap page-container mh-wrap--custom-content"
+      contentClassName="lb-content"
+      gameState={gameState}
+      {...accountProps}
+      heroContent={<section className="lb-hero" aria-labelledby="lb-title">
         <Artwork name="trophy" className="lb-hero-trophy" />
         <div className="lb-hero-copy"><h1 id="lb-title">{t('Papan Juara', 'Leaderboard')}</h1>
           <p>{t('Teruskan belajar dan bersaing dengan rakan-rakan!', 'Keep learning and compete with your friends!')}</p></div>
         <Artwork name="robot" className="lb-hero-robot" />
-      </section>
+      </section>}
+    >
       <nav className="lb-subjects" aria-label={t('Subjek papan juara', 'Leaderboard subjects')}>
         {SUBJECTS.map(([id, bm, en]) => <button type="button" key={id} className={`lb-subject lb-subject-${id}`} aria-pressed={subject === id} aria-controls="lb-rankings" onClick={() => setSubject(id)}>
           <Artwork name={id} /><span>{t(bm, en)}</span>
@@ -99,6 +100,6 @@ export default function LeaderboardHome({ language = 'bm', gameState, ...account
         <p className="lb-demo-note" role="status">{t('Pratonton kedudukan', 'Ranking preview')} · {SUBJECTS.find(item => item[0] === subject)[language === 'bm' ? 1 : 2]} · {t('Data contoh', 'Sample data')}</p>
         {myStars > 0 && <p className="lb-personal">{playerName} · {t('Bintang keseluruhan kamu', 'Your total stars')}: <strong>{myStars}</strong> · {t('Kedudukan contoh', 'Sample rank')}: #{myRank}</p>}
       </section>
-    </div>
-  </main>;
+    </SubjectMenuLayout>
+  </div>;
 }

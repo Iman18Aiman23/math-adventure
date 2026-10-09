@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { GraduationCap, Trophy, Medal, Settings, Flag, ChevronRight, BookOpen, Mic, Calculator, Moon, Sun, UserRound, Crown, Swords, House, Play } from 'lucide-react';
+import { Trophy, Medal, Settings, Flag, ChevronRight, BookOpen, Mic, Calculator, Moon, Sun, UserRound, Crown, Swords, House, Play } from 'lucide-react';
 import useGamification from '../hooks/useGamification';
 import StatsBar from './_shared/StatsBar';
 import ImanAILogo from './_shared/ImanAILogo';
@@ -110,7 +110,6 @@ export default function DesktopSidebar({
           <nav className="home-quick-nav" aria-label={language === 'bm' ? 'Menu utama' : 'Main menu'}>
             <button type="button" className={`home-quick-link home-quick-home ${activeTab === 'learn' && !currentSubject ? 'active' : ''}`} onClick={() => onHome?.()}><House /><span>{language === 'bm' ? 'Laman Utama' : 'Home'}</span></button>
             <div className="sidebar-nav-divider" />
-            <button type="button" className="home-quick-link home-quick-courses" onClick={() => onHome?.()}><GraduationCap size={22} /><span>{language === 'bm' ? 'Kursus Saya' : 'My Courses'}</span></button>
             {[
               { id: 'reading', label: language === 'bm' ? 'Membaca' : 'Reading', icon: BookOpen },
               { id: 'bm', label: language === 'bm' ? 'Sebutan' : 'Speaking', icon: Mic },

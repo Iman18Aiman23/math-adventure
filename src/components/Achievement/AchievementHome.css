@@ -1,11 +1,8 @@
 ﻿.ac-root { container: iman-page / inline-size; width: 100%; max-width: none; flex: 0 0 auto; min-height: 100%; background: #fff; color: #092650; font: 400 15px/1.4 'Fredoka', sans-serif; }
 .ac-root * { box-sizing: border-box; }
-.ac-wrap { max-width: 1440px; padding: 10px 14px 30px; margin-inline: auto; }
-.ac-root .bm-header { margin-bottom: 12px; }
 .ac-art { display: block; overflow: hidden; flex-shrink: 0; }
 .ac-desktop-art, .ac-desktop-title { display: none; }
 .ac-hero { position: relative; isolation: isolate; display: flex; align-items: center; gap: 12px; min-height: 108px; padding: 15px 12px; border-radius: 15px; border: 1px solid #d9eee6; overflow: hidden; background: linear-gradient(105deg,#f1fcf7,#e5fbf5); }
-.ac-root .bm-header + .ac-hero { margin-top: 16px; }
 .ac-hero::before { content: ''; position: absolute; inset: 0; background: #c3f8dc; opacity: .45; clip-path: polygon(100% 0,100% 100%,52% 100%,80% 25%); z-index: -1; }
 .ac-hero-icon { width: 48px; mix-blend-mode: multiply; }
 .ac-hero-copy { width: 53%; position: relative; z-index: 1; }
@@ -58,7 +55,6 @@
 .ac-downloads button { border: 1px solid var(--ac-border); background: white; color: #176b9c; border-radius: 7px; padding: 8px; min-height: 36px; font: 700 12px 'Outfit',sans-serif; cursor: pointer; }
 .ac-loading { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #102641dc; color: white; z-index: 10000; }
 @container iman-page (min-width: 560px) {
- .ac-wrap { padding: 12px 24px 32px; }
  .ac-hero { min-height: 165px; border-radius: 19px; padding: 22px; gap: 22px; }
  .ac-hero-icon { width: 88px; }
  .ac-hero-copy { width: 40%; }
@@ -87,8 +83,6 @@
  .ac-badge-art { width: 56px; height: 56px; }
 }
 @container iman-page (min-width: 1050px) {
- .ac-wrap { padding: 8px 24px 24px; }
- .ac-root .bm-header { margin-bottom: 14px; }
  .ac-hero { min-height: 134px; padding: 20px 36px; gap: 26px; }
  .ac-hero-icon { width: 80px; height: 85px; }
  .ac-hero-copy { width: 68%; }
@@ -124,7 +118,6 @@
 .ac-art-clipboard { clip-path: polygon(6% 14%,32% 14%,33% 2%,64% 2%,67% 14%,94% 14%,99% 23%,99% 93%,91% 99%,9% 99%,1% 92%,1% 23%); mix-blend-mode: normal; }
 .ac-art-trophy { clip-path: polygon(18% 6%,81% 6%,82% 15%,96% 18%,99% 32%,91% 48%,76% 58%,65% 66%,64% 73%,76% 77%,77% 86%,83% 92%,82% 99%,18% 99%,18% 90%,25% 84%,26% 76%,38% 72%,37% 64%,23% 58%,10% 47%,1% 33%,3% 19%,18% 15%); mix-blend-mode: normal; }
 @container iman-page (min-width: 1050px) {
- .ac-root .bm-header { margin-bottom: 26px; }
  .ac-badge:nth-child(2) h2 { color: #09549a; }
  .ac-badge:nth-child(11) h2 { color: #08779e; }
  .ac-assessment h2 { min-height: 0; font-size: 17px; }

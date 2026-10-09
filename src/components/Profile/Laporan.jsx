@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { BookOpen, Mic, Calculator, Moon, Star, Trophy, CalendarDays, ChartNoAxesColumnIncreasing, Clock3, ChevronRight, Pencil, Camera, Flame, X, Heart, Gem } from 'lucide-react';
-import { PageHeader } from '../_shared/PageHeaderHero';
+import SubjectMenuLayout from '../_shared/SubjectMenuLayout';
 import { HomePageLayoutStyles } from '../HomePage';
 import HeartShopModal from '../HeartShopModal';
 import { getGameData } from '../../utils/gameStatsManager';
@@ -8,7 +8,6 @@ import { useGamificationRepo } from '../../contexts/GamificationContext';
 import { getUserId } from '../../services/UserId';
 import './ProfileHome.css';
 import './Laporan.css';
-import '../_shared/PageContainer.css';
 
 const SUBJECTS = [
   { id: 'reading', keys: ['reading'], title: ['Membaca', 'Reading'], Icon: BookOpen, tone: 'blue', bar: 'gold' },
@@ -118,11 +117,19 @@ export default function Laporan({ playerName, gameState, language = 'bm', streak
     return <button type="button" className="pf-session" key={`${session.timestamp}-${index}`} onClick={() => onSelectSubject?.(subject.id)}><span className={`pf-subject-icon pf-${subject.tone}`}>{React.createElement(subject.Icon)}</span><span className="pf-session-copy"><strong>{subject.title[bm ? 0 : 1]} · {session.topicId?.replaceAll('-', ' ') || t('Latihan', 'Exercise')}</strong><small>{t('Latihan selesai', 'Exercise complete')}</small></span><time dateTime={session.timestamp}>{new Date(session.timestamp).toLocaleDateString(bm ? 'ms-MY' : 'en-GB', { day: 'numeric', month: 'short' })}<small>{new Date(session.timestamp).toLocaleTimeString(bm ? 'ms-MY' : 'en-GB', { hour: '2-digit', minute: '2-digit' })}</small></time><ChevronRight size={17} /></button>;
   })}</div> : <p className="pf-empty">{t('Belum ada sesi. Jom mulakan pembelajaran!', 'No sessions yet. Let’s start learning!')}<button type="button" className="pf-link" onClick={onHome}>{t('Mula belajar', 'Start learning')}<ChevronRight size={16} /></button></p>;
 
-  return <main className="pf-root laporan-root iman-layout page-layout-root">
+  return <div className="rp-layout iman-layout">
     <HomePageLayoutStyles />
-    <div className="pf-wrap page-container">
-      <PageHeader {...accountProps} {...{ playerName, gameState, language, streak, onTabChange, onHome }} />
-      <section className="pf-hero laporan-hero" aria-labelledby="pf-title">
+    <SubjectMenuLayout
+      title={t('Laporan', 'Reports')}
+      language={language}
+      sharedPageChrome
+      rootClassName="mh-screen page-layout-root pf-root laporan-root iman-layout"
+      wrapClassName="mh-wrap page-container mh-wrap--custom-content"
+      contentClassName="pf-content laporan-content"
+      gameState={gameState}
+      {...accountProps}
+      {...{ playerName, streak, onTabChange, onHome }}
+      heroContent={<section className="pf-hero laporan-hero" aria-labelledby="pf-title">
         <div className="laporan-welcome">
           <div className="laporan-greeting"><span>{t('LAPORAN', 'REPORT')}</span><h1 id="pf-title">{t('Prestasi Pembelajaran', 'Learning Performance')}</h1></div>
         </div>
@@ -132,7 +139,24 @@ export default function Laporan({ playerName, gameState, language = 'bm', streak
           <article><span><Trophy size={17} />{t('Latihan selesai', 'Exercises')}</span><strong>{completed.length}</strong><small>{t('Dalam tempoh dipilih', 'In selected period')}</small></article>
           <article><span><Star size={17} />{t('Bintang', 'Stars')}</span><strong>{rewards.stars || 0}</strong><small>{t('Jumlah terkumpul', 'All-time total')}</small></article>
         </div>
-      </section>
+      </section>}
+      overlayContent={<>
+        <dialog className="pf-dialog" ref={dialogRef} onCancel={close} onClick={event => { if (event.target === event.currentTarget) close(); }}><div className="pf-dialog-heading"><h2>{editor ? t('Edit profil', 'Edit profile') : detail === 'progress' ? t('Kemajuan Mengikut Subjek', 'Progress by Subject') : detail === 'activity' ? t('Aktiviti Pembelajaran', 'Learning Activity') : t('Sesi Terakhir', 'Recent Sessions')}</h2><button type="button" onClick={close} aria-label={t('Tutup', 'Close')}><X /></button></div>
+          {editor ? <form onSubmit={event => {
+            event.preventDefault();
+            const nextName = draft.name.trim();
+            const nextEmail = draft.email.trim();
+            if (nextName && saveProfile({ ...profile, name: nextName, email: nextEmail })) close();
+          }}>
+            <label>{t('Nama pengguna', 'Display name')}<input autoFocus type="text" required maxLength={50} value={draft.name} onChange={event => setDraft(current => ({ ...current, name: event.target.value }))} /></label>
+            <label>{t('Emel', 'Email')}<input type="email" maxLength={254} placeholder={t('Tambah emel', 'Add email')} value={draft.email} onChange={event => setDraft(current => ({ ...current, email: event.target.value }))} /></label>
+            {error && <p role="alert" className="pf-error">{error}</p>}
+            <button type="submit" className="pf-save">{t('Simpan', 'Save')}</button>
+          </form> : detail === 'sessions' ? renderSessions(sessions) : detail === 'activity' ? <><p>{t('XP direkodkan untuk tempoh yang dipilih.', 'Recorded XP for the selected period.')}</p><ul className="pf-detail-list">{daily.map(day => <li key={localDate(day.date)}><span>{day.date.toLocaleDateString(bm ? 'ms-MY' : 'en-GB')}</span><strong>{day.xp} XP</strong></li>)}</ul></> : <><p>{t('Peratus berdasarkan skor terbaik dalam topik yang telah dicuba.', 'Percentages reflect best scores in attempted topics.')}</p><ul className="pf-detail-list">{subjectRows.map(subject => <li key={subject.id}><span>{subject.title[bm ? 0 : 1]}</span><strong>{subject.progress}%</strong></li>)}</ul></>}
+        </dialog>
+        <HeartShopModal isOpen={isHeartShopOpen} onClose={() => setIsHeartShopOpen(false)} language={language} />
+      </>}
+    >
       {error && !editor && <p className="pf-error" role="alert">{error}</p>}
       <div className="pf-dashboard-heading"><div><h2>{t('Dashboard Ibu Bapa', 'Parent Dashboard')}</h2><p>{t('Lihat perkembangan pembelajaran anak anda dengan mudah.', 'Follow your child’s learning progress at a glance.')}</p></div><label className="pf-period"><CalendarDays size={19} /><select aria-label={t('Tempoh aktiviti', 'Activity period')} value={days} onChange={event => setDays(Number(event.target.value))}><option value={7}>{t('7 Hari Terakhir', 'Last 7 Days')}</option><option value={30}>{t('30 Hari Terakhir', 'Last 30 Days')}</option></select></label></div>
       {loadError && <p className="pf-error" role="alert">{t('Data pembelajaran tidak dapat dimuatkan. Muat semula halaman untuk cuba lagi.', 'Could not load learning data. Reload the page to try again.')}</p>}
@@ -144,20 +168,6 @@ export default function Laporan({ playerName, gameState, language = 'bm', streak
         <Panel title={t('Sesi Terakhir', 'Recent Sessions')} Icon={Clock3} action={t('Lihat Semua', 'View All')} onAction={event => openDetail('sessions', event)} className="pf-sessions-panel">{renderSessions(sessions.slice(0, 3))}</Panel>
       </div>
       <button type="button" className="pf-wallet" onClick={() => setIsHeartShopOpen(true)}><Heart size={17} />{rewards.hearts} {t('Nyawa', 'Hearts')}<Gem size={17} />{rewards.gems} {t('Permata', 'Gems')}<Star size={17} />{rewards.stars} {t('Bintang', 'Stars')}<ChevronRight size={16} /></button>
-    </div>
-    <dialog className="pf-dialog" ref={dialogRef} onCancel={close} onClick={event => { if (event.target === event.currentTarget) close(); }}><div className="pf-dialog-heading"><h2>{editor ? t('Edit profil', 'Edit profile') : detail === 'progress' ? t('Kemajuan Mengikut Subjek', 'Progress by Subject') : detail === 'activity' ? t('Aktiviti Pembelajaran', 'Learning Activity') : t('Sesi Terakhir', 'Recent Sessions')}</h2><button type="button" onClick={close} aria-label={t('Tutup', 'Close')}><X /></button></div>
-      {editor ? <form onSubmit={event => {
-        event.preventDefault();
-        const nextName = draft.name.trim();
-        const nextEmail = draft.email.trim();
-        if (nextName && saveProfile({ ...profile, name: nextName, email: nextEmail })) close();
-      }}>
-        <label>{t('Nama pengguna', 'Display name')}<input autoFocus type="text" required maxLength={50} value={draft.name} onChange={event => setDraft(current => ({ ...current, name: event.target.value }))} /></label>
-        <label>{t('Emel', 'Email')}<input type="email" maxLength={254} placeholder={t('Tambah emel', 'Add email')} value={draft.email} onChange={event => setDraft(current => ({ ...current, email: event.target.value }))} /></label>
-        {error && <p role="alert" className="pf-error">{error}</p>}
-        <button type="submit" className="pf-save">{t('Simpan', 'Save')}</button>
-      </form> : detail === 'sessions' ? renderSessions(sessions) : detail === 'activity' ? <><p>{t('XP direkodkan untuk tempoh yang dipilih.', 'Recorded XP for the selected period.')}</p><ul className="pf-detail-list">{daily.map(day => <li key={localDate(day.date)}><span>{day.date.toLocaleDateString(bm ? 'ms-MY' : 'en-GB')}</span><strong>{day.xp} XP</strong></li>)}</ul></> : <><p>{t('Peratus berdasarkan skor terbaik dalam topik yang telah dicuba.', 'Percentages reflect best scores in attempted topics.')}</p><ul className="pf-detail-list">{subjectRows.map(subject => <li key={subject.id}><span>{subject.title[bm ? 0 : 1]}</span><strong>{subject.progress}%</strong></li>)}</ul></>}
-    </dialog>
-    <HeartShopModal isOpen={isHeartShopOpen} onClose={() => setIsHeartShopOpen(false)} language={language} />
-  </main>;
+    </SubjectMenuLayout>
+  </div>;
 }
