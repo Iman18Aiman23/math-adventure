@@ -37,8 +37,16 @@
 .math-game-screen .math-answer-footer { width: 100%; display: flex; flex-direction: column; gap: clamp(8px, 1.3dvh, 16px); flex: 0 0 auto; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
 .math-game-screen.time-ref-game .ops-game-board { width: 100% !important; max-width: 1292px !important; gap: clamp(6px, 1.2dvh, 16px) !important; padding: clamp(10px, 1.6dvh, 22px) clamp(12px, 2.8vw, 40px) !important; border-radius: clamp(24px, 2.8vw, 40px); background: white; box-shadow: 0 8px 30px #126b3b0c; }
 .math-game-screen.time-ref-game .ops-question-zone { flex: 1 1 auto !important; padding: clamp(6px, 1.5dvh, 20px) clamp(4px, 2vw, 24px) !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; }
+.math-game-screen.clock-game-screen .ops-question-label {
+  font: 800 clamp(23px, min(4.2vw, 5dvh), 56px)/1.1 'Baloo 2', sans-serif !important;
+  letter-spacing: 0 !important;
+  text-transform: uppercase !important;
+}
+.math-game-screen.months-game-screen .ops-question-label { margin-bottom: clamp(20px, 3dvh, 34px) !important; }
+.math-game-screen.months-game-screen .ops-question-expr { margin-bottom: clamp(8px, 1.5dvh, 16px) !important; }
+.math-game-screen.months-game-screen .time-question-kicker { margin-top: clamp(8px, 1.5dvh, 14px) !important; }
 .math-game-screen.time-ref-game .ops-answer-zone { flex: 0 0 auto !important; overflow: visible !important; }
-.math-game-screen.time-ref-game .ops-choices-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: clamp(6px, 1vw, 14px) !important; }
+.math-game-screen.time-ref-game .ops-choices-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: clamp(6px, 1vw, 14px) !important; }
 .math-game-screen.time-ref-game .ops-choice-btn { min-height: clamp(56px, 11dvh, 116px) !important; padding: 10px !important; border: 2px solid #d9e2ee !important; border-radius: 18px !important; background: linear-gradient(white, #f3f7fa) !important; box-shadow: 0 5px 12px #19395708 !important; transition: transform 160ms, border-color 160ms, background 160ms !important; }
 .math-game-screen.time-ref-game .ops-choice-btn.ops-choice-correct { background: #dcfce7 !important; border-color: #08b65b !important; }
 .math-game-screen.time-ref-game .ops-choice-btn.ops-choice-wrong { background: #ffe2e5 !important; border-color: #ff3947 !important; }
@@ -48,22 +56,79 @@
 .math-game-screen.time-ref-game .ops-clock-choice svg { width: clamp(60px, 11dvh, 100px); height: auto; max-width: 100%; }
 .math-game-screen.time-ref-game .ops-choice-value { color: #091b44 !important; font: 800 clamp(18px, 3.2vw, 40px)/1.1 'Baloo 2', sans-serif !important; }
 .math-game-screen.time-ref-game .ops-choice-label { background: #eaf0f7 !important; border-radius: 50% !important; color: #64748b !important; }
-.math-game-screen.time-ref-game .ops-typing-form { flex-direction: row !important; align-items: stretch !important; gap: clamp(8px, 1.2dvh, 14px) !important; }
-.math-game-screen.time-ref-game .ops-typing-input-shell { flex: 1 1 auto !important; min-width: 0 !important; width: auto !important; min-height: clamp(58px, 8dvh, 78px) !important; border: 2px solid #dce5e3 !important; border-radius: clamp(18px, 3vw, 26px) !important; box-shadow: 0 3px 0 #d7e4df, 0 8px 16px #1f4e3c0f !important; }
+.math-game-screen.time-ref-game .ops-typing-form { flex-direction: column !important; align-items: stretch !important; gap: clamp(8px, 1.2dvh, 14px) !important; }
+.math-game-screen.time-ref-game .ops-typing-input-shell { flex: 0 0 auto !important; min-width: 0 !important; width: 100% !important; min-height: clamp(58px, 8dvh, 78px) !important; border: 2px solid #dce5e3 !important; border-radius: clamp(18px, 3vw, 26px) !important; box-shadow: 0 3px 0 #d7e4df, 0 8px 16px #1f4e3c0f !important; }
 .math-game-screen.time-ref-game .ops-typing-input-shell:focus-within { border-color: #08b65b !important; box-shadow: 0 3px 0 #9ce3ba, 0 0 0 3px #27b6681f !important; }
-.math-game-screen.time-ref-game .ops-submit-btn { width: auto !important; min-height: clamp(58px, 8dvh, 78px) !important; padding: 0 clamp(14px, 2vw, 24px) !important; flex: 0 0 clamp(110px, 30%, 190px) !important; border-radius: clamp(18px, 3vw, 26px) !important; font-size: clamp(18px, 3vw, 28px) !important; }
+.math-game-screen.time-ref-game .ops-submit-btn { width: 100% !important; min-height: clamp(58px, 8dvh, 78px) !important; padding: 0 clamp(14px, 2vw, 24px) !important; flex: 0 0 auto !important; border-radius: clamp(18px, 3vw, 26px) !important; font-size: clamp(18px, 3vw, 28px) !important; }
 .math-game-screen.time-ref-game .ops-continue-wrong { min-height: 50px !important; border-radius: 18px !important; }
-.math-game-screen.time-ref-game .duo-home-header { width: min(100%, 1190px) !important; }
-.math-game-screen.time-ref-game .duo-home-header > button { width: clamp(36px, 5.3vw, 58px) !important; height: auto !important; aspect-ratio: 1; }
-.math-game-screen.time-ref-game .app-header-topic > div:first-child { display: none !important; }
-.math-game-screen.time-ref-game .duo-home-stats button { border: 0 !important; box-shadow: 0 5px 18px #135c3910 !important; }
+.math-game-screen .math-game-body { width: 100%; max-width: 1292px; min-width: 0; min-height: 0; margin-inline: auto; flex: 1 1 auto; }
+.math-game-screen .math-game-question {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  box-sizing: border-box;
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.math-game-screen .ops-ref-header {
+  width: 100% !important;
+  max-width: 1292px !important;
+  min-width: 0 !important;
+  margin-inline: auto !important;
+  padding-inline: var(--math-header-content-inset, 0px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: clamp(4px, 1.2vw, 20px) !important;
+}
+.math-game-screen .ops-ref-header-left { display: flex; align-items: center; gap: clamp(5px, 1.5vw, 18px); min-width: 0; flex: 1 1 auto; }
+.math-game-screen .ops-ref-subject-icon { display: none !important; }
+.math-game-screen .ops-ref-back {
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: clamp(42px, 5.3vw, 54px) !important;
+  aspect-ratio: auto !important;
+  padding: 0 clamp(13px, 1.5vw, 20px) !important;
+  border-radius: 999px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  white-space: nowrap;
+  font: 800 clamp(14px, 1.5vw, 18px)/1 'Baloo 2', sans-serif !important;
+  color: #091b44 !important;
+  background: #fff !important;
+  border: 0 !important;
+  box-shadow: 0 5px 18px #135c3910 !important;
+}
+.math-game-screen .ops-ref-back svg { width: 18px; height: 18px; flex: 0 0 auto; }
+.math-game-screen .ops-ref-rewards { display: flex; align-items: center; gap: clamp(3px, 0.8vw, 12px); min-width: 0; margin-left: auto; flex: 0 0 auto; flex-wrap: nowrap; }
+.math-game-screen .ops-ref-reward-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(2px, 0.5vw, 8px);
+  min-height: 36px;
+  padding: clamp(5px, 0.8vw, 10px);
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  color: #091b44;
+  font: 800 clamp(15px, 1.8vw, 25px)/1 'Baloo 2', sans-serif;
+  white-space: nowrap;
+  box-shadow: 0 5px 18px #135c3910;
+}
+.math-game-screen .ops-ref-reward-pill svg { width: clamp(17px, 2vw, 28px); height: auto; }
+.math-game-screen .ops-ref-reward-icon.is-star { color: #ffb800; }
+.math-game-screen .ops-ref-reward-icon.is-heart { color: #ff515f; }
+.math-game-screen .ops-ref-reward-icon.is-gem { color: #16bafa; }
 
 .math-game-screen.cmg-shell { --digit-border: #d9e2ee; --active-digit: #08b65b; }
-.math-game-screen.cmg-shell .cmg-ref-subject-icon { display: none; }
-.math-game-screen.cmg-shell .cmg-ref-back { width: clamp(36px, 5.3vw, 58px); height: auto; aspect-ratio: 1; }
-.math-game-screen.cmg-shell .cmg-ref-title-block h1 { font-size: clamp(18px, 2.5vw, 32px); }
-.math-game-screen.cmg-shell .cmg-ref-title-block p { font-size: clamp(12px, 1.6vw, 20px); }
-.math-game-screen.cmg-shell .cmg-ref-reward-pill { border: 0; box-shadow: 0 5px 18px #135c3910; }
 .math-game-screen.cmg-shell .cmg-question-counter { width: min(76%, 400px); padding: 0; border-radius: 0; background: transparent; }
 .math-game-screen.cmg-shell .cmg-main { width: 100% !important; max-width: 1292px !important; gap: 0 !important; }
 .math-game-screen.cmg-shell .math-unified-board { width: 100%; min-height: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: clamp(6px, 1.2dvh, 16px); padding: clamp(10px, 1.6dvh, 22px) clamp(12px, 2.8vw, 40px); border-radius: clamp(24px, 2.8vw, 40px); background: white; box-shadow: 0 8px 30px #126b3b0c; overflow: hidden; }
@@ -78,6 +143,10 @@
 .math-game-screen.cmg-shell .cmg-work-area input[type="text"]:focus { border-color: #08b65b !important; background: #f0fff6 !important; box-shadow: 0 0 0 3px #27b6681f !important; }
 
 @media (max-width: 600px) {
+  .math-game-screen .ops-ref-header { flex-wrap: nowrap !important; gap: 4px !important; }
+  .math-game-screen .ops-ref-header-left { gap: 5px; }
+  .math-game-screen .ops-ref-rewards { gap: 3px; }
+  .math-game-screen .ops-ref-reward-pill { padding: 5px; gap: 2px; }
   .math-game-screen .math-answer-record { gap: 5px; }
   .math-game-screen .math-answer-title { width: 100%; }
   .math-game-screen .math-answer-divider { height: 24px; }
@@ -146,13 +215,46 @@
 .math-game-screen.cmg-shell .cmg-card > .math-game-toolbar { position: absolute; top: 0; left: 0; }
 .math-game-screen.cmg-shell .cmg-card.is-multiply::before { display: none; }
 
-.math-game-screen.ops-game-shell .ops-question-zone { flex: 1.4 1 0 !important; }
+.math-game-screen.ops-game-shell .ops-question-zone {
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center;
+}
 .math-game-screen.ops-game-shell .ops-answer-zone {
   flex: 1 1 0 !important; min-height: min-content; width: 100%; padding: 0 !important;
-  display: flex; flex-direction: column; justify-content: center; gap: 8px;
+  display: flex; flex-direction: column; align-items: stretch; justify-content: center; gap: 8px;
 }
-.math-game-screen.cmg-shell .cmg-card { flex: 1.6 1 0 !important; }
-.math-game-screen.cmg-shell .cmg-answer-footer { flex: .7 1 0; min-height: min-content; justify-content: center; }
+.math-game-screen.ops-game-shell .ops-answer-zone > .ops-choices-grid,
+.math-game-screen.ops-game-shell .ops-answer-zone > .ops-typing-form { width: 100%; }
+.math-game-screen.ops-game-shell .ops-choices-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+.math-game-screen.ops-game-shell .ops-typing-form {
+  width: 100%;
+  flex-direction: column !important;
+  align-items: stretch !important;
+}
+.math-game-screen.ops-game-shell .ops-typing-input-shell,
+.math-game-screen.ops-game-shell .ops-submit-btn {
+  width: 100% !important;
+  flex: 0 0 auto !important;
+}
+.math-game-screen.ops-game-shell .ops-typing-input-shell { position: relative; }
+.math-game-screen.ops-game-shell .ops-pencil-icon {
+  position: absolute;
+  left: clamp(14px, 3vw, 24px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+.math-game-screen.ops-game-shell .ops-typing-input {
+  flex: 0 0 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding-inline: 52px !important;
+  text-align: center !important;
+}
+.math-game-screen.cmg-shell .cmg-card { flex: 1 1 0 !important; }
+.math-game-screen.cmg-shell .cmg-answer-footer { flex: 1 1 0; min-height: min-content; justify-content: center; }
 
 /* Shared neutral choices and feedback colors for all four games. */
 .math-game-screen .ops-answer-zone .ops-choice-btn {

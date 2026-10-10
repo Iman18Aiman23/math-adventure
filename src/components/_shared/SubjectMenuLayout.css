@@ -23,8 +23,8 @@
 .mh-hero h2 { max-width: 600px; margin: 0; font: 800 clamp(25px, min(6cqw, 5dvh), 44px)/1.06 'Nunito', 'Outfit', sans-serif; letter-spacing: -.025em; color: var(--mh-navy); text-wrap: balance; }
 .mh-description { margin: clamp(7px, 1.3dvh, 16px) 0 0; max-width: 490px; color: var(--mh-muted); font-size: clamp(12px, 3.1vw, 17px); font-weight: 400; line-height: 1.35; }
 .mh-encouragement { margin: clamp(8px, 1.5dvh, 18px) 0 0; max-width: 380px; padding: clamp(8px, 1.2dvh, 14px) clamp(10px, 1.5vw, 20px); background: #ffffffcf; border-radius: 18px; font-size: clamp(11px, 2.8vw, 15px); font-weight: 500; line-height: 1.3; color: #536680; }
-.mh-mascot { height: 100%; min-height: 0; align-self: stretch; margin: 0; padding-block: 10px; display: flex; justify-content: center; align-items: center; position: relative; z-index: 1; overflow: hidden; }
-.mh-mascot > svg:not([width="0"]) { flex: none; width: min(100%, var(--dashboard-hero-art-width, 350px)); height: min(var(--dashboard-hero-art-height, 220px), 100%); max-width: var(--dashboard-hero-art-width, 350px); max-height: 100%; object-fit: contain; object-position: center; }
+.mh-mascot { height: 100%; min-height: 0; align-self: stretch; margin: 0; padding-block: 10px; display: flex; justify-content: flex-end; align-items: center; position: relative; z-index: 1; overflow: hidden; }
+.mh-mascot > svg:not([width="0"]) { flex: none; width: min(100%, var(--dashboard-hero-art-width, 350px)); height: min(var(--dashboard-hero-art-height, 220px), 100%); max-width: var(--dashboard-hero-art-width, 350px); max-height: 100%; object-fit: contain; object-position: right center; }
 .mh-mascot > img {
   display: block;
   flex: none;
@@ -34,7 +34,7 @@
   max-width: var(--dashboard-hero-art-width, 350px);
   max-height: 100%;
   object-fit: contain;
-  object-position: center;
+  object-position: right center;
   align-self: center;
 }
 .mh-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
@@ -181,7 +181,7 @@
 @media (orientation: landscape) and (max-height: 500px) {
   .mh-wrap { grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr); padding: 0; gap: 5px 10px; }
   .mh-hero { grid-template-columns: minmax(0, 1fr); }
-  .mh-mascot { position: absolute; right: 8px; bottom: 8px; width: 30%; height: 35%; }
+  .mh-mascot { position: absolute; right: 0; bottom: 8px; width: 30%; height: 35%; }
   .mh-hero-copy { align-self: start; }
   .mh-section-heading h2 { font-size: 18px; }
   .mh-topic-grid {  gap: 4px; }

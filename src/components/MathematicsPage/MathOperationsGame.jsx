@@ -6,7 +6,7 @@ import { playSound } from '../../utils/soundManager';
 import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
 import useBrowserBack from '../../hooks/useBrowserBack';
 import HeartShopModal from '../HeartShopModal';
-import { MathGameToolbar, MathGameBody, MathGameHeader, MathGameShell } from './MathGameLayout';
+import { MathGameToolbar, MathGameBody, MathGameHeader, MathGameQuestion, MathGameProgress, MathGameShell } from './MathGameLayout';
 
 // ─── Web Speech API voice helper ───────────────────────────────────────────────
 function speak(text, { pitch = 1.4, rate = 1.05, volume = 1 } = {}) {
@@ -53,7 +53,7 @@ const getOpsClayStyles = () => `
     display: grid;
     place-items: center;
     padding: clamp(14px, 3vw, 28px);
-    background: rgba(236, 250, 245, 0.72);
+    background: rgba(237, 242, 248, 0.78);
     backdrop-filter: blur(14px);
   }
 
@@ -304,9 +304,12 @@ const getOpsClayStyles = () => `
     --object-size: clamp(28px, min(8.5vw, 6dvh), 78px);
     --object-columns: 3;
     --object-gap: clamp(4px, 1vw, 12px);
+    --shell-inline-padding: clamp(8px, 3vw, 32px);
     width: 100%; min-width: 0; height: 100dvh; max-height: 100dvh; overflow: hidden;
-    padding: clamp(8px, 2dvh, 24px) clamp(8px, 3vw, 32px);
-    background: radial-gradient(ellipse at center, #f5fffb, #eafff6);
+    padding: clamp(8px, 2dvh, 24px) var(--shell-inline-padding);
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.98), transparent 58%),
+      linear-gradient(145deg, #f3f6fa 0%, #e9eef5 100%);
     color: var(--text-primary); font-family: 'Fredoka', sans-serif; font-variant-numeric: tabular-nums;
     display: flex; flex-direction: column; gap: clamp(6px, 1dvh, 14px);
   }
@@ -314,21 +317,7 @@ const getOpsClayStyles = () => `
   .ops-game-shell button { cursor: pointer; }
   .ops-game-shell button:focus-visible { outline: 3px solid #188cc5; outline-offset: 4px; }
   .ops-game-shell button:disabled { cursor: default; }
-  .ops-ref-header { width: 100%; max-width: 1190px; min-width: 0; margin: 0 auto; display: flex; align-items: center; flex: 0 0 auto; gap: clamp(4px, 1.2vw, 20px); }
-  .ops-ref-header-left { display: flex; align-items: center; gap: clamp(5px, 1.5vw, 18px); min-width: 0; flex: 1 1 auto; }
-  .ops-ref-rewards { display: flex; align-items: center; gap: clamp(3px, 0.8vw, 12px); min-width: 0; margin-left: auto; flex: 0 0 auto; flex-wrap: nowrap; }
-  .ops-ref-back { width: clamp(36px, 5.3vw, 58px); aspect-ratio: 1; flex-shrink: 0; border: 0; border-radius: 50%; background: white; color: var(--text-primary); display: grid; place-items: center; box-shadow: 0 5px 18px #135c3910; }
-  .ops-ref-back svg { width: clamp(19px, 2.8vw, 28px); }
-  .ops-ref-subject-icon { display: none; }
-  .ops-ref-title-block { min-width: 0; }
-  .ops-ref-title-block h1 { margin: 0; font: 800 clamp(18px, 2.5vw, 32px)/1 'Baloo 2', sans-serif; color: var(--text-primary); white-space: nowrap; }
-  .ops-ref-title-block p { margin: 0; font-size: clamp(12px, 1.6vw, 20px); line-height: 1.1; color: #6f8097; white-space: nowrap; }
-  .ops-ref-reward-pill { display: flex; align-items: center; justify-content: center; gap: clamp(2px, 0.5vw, 8px); min-height: 36px; padding: clamp(5px, 0.8vw, 10px); border: 0; border-radius: 99px; background: white; color: var(--text-primary); font: 800 clamp(15px, 1.8vw, 25px)/1 'Baloo 2', sans-serif; white-space: nowrap; box-shadow: 0 5px 18px #135c3910; }
-  .ops-ref-reward-pill svg { width: clamp(17px, 2vw, 28px); height: auto; }
-  .ops-ref-reward-icon.is-star { color: #ffb800; }
-  .ops-ref-reward-icon.is-heart { color: #ff515f; }
-  .ops-ref-reward-icon.is-gem { color: #16bafa; }
-  .ops-game-shell .ops-game-board { width: 100%; max-width: 1292px; min-height: 0; margin: 0 auto; padding: clamp(10px, 1.6dvh, 22px) clamp(12px, 2.8vw, 40px); background: white; border-radius: clamp(24px, 2.8vw, 40px); box-shadow: 0 8px 30px #126b3b0c; display: flex; flex-direction: column; gap: clamp(6px, 1.2dvh, 16px); flex: 1; }
+  .ops-game-shell .ops-game-board { width: 100%; max-width: 1292px; min-height: 0; margin: 0 auto; padding: clamp(10px, 1.6dvh, 22px) clamp(12px, 2.8vw, 40px); background: rgba(255, 255, 255, 0.96); border: 1px solid rgba(204, 214, 227, 0.72); border-radius: clamp(24px, 2.8vw, 40px); box-shadow: 0 16px 42px rgba(34, 55, 82, 0.08); display: flex; flex-direction: column; gap: clamp(6px, 1.2dvh, 16px); flex: 1; }
   .ops-board-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .ops-answer-record, .ops-answer-stat { display: flex; align-items: center; gap: 8px; }
   .ops-answer-record { flex-wrap: wrap; gap: clamp(5px, 1vw, 14px); font-size: clamp(12px, 1.4vw, 20px); }
@@ -350,7 +339,7 @@ const getOpsClayStyles = () => `
   .ops-game-shell .ops-icons-container:has(.ops-icon-emoji:nth-child(n + 10)) { --object-size: clamp(20px, min(6vw, 4dvh), 44px); --object-columns: 4; --object-gap: 2px; }
   .ops-icon-emoji { width: var(--object-size); height: var(--object-size); display: grid; place-items: center; font-size: var(--object-size); line-height: 1; filter: hue-rotate(8deg) saturate(1.1) drop-shadow(0 6px 5px #44218420); }
   .ops-game-shell .ops-icons-container .ops-icon-operator { width: clamp(42px, 8vw, 96px); aspect-ratio: 1; flex-shrink: 0; display: grid; place-items: center; border-radius: 50%; background: #e0faee; color: #08b65b !important; font: 800 clamp(36px, 6vw, 78px)/1 'Baloo 2', sans-serif !important; }
-  .ops-game-shell .ops-question-expr { max-width: 100%; margin: 0; gap: clamp(6px, 1.6vw, 24px); font: 800 clamp(38px, min(8.2vw, 10dvh), 108px)/1 'Baloo 2', sans-serif; color: var(--text-primary); }
+  .ops-game-shell .ops-question-expr { max-width: 100%; margin: clamp(24px, 4dvh, 42px) 0 0; gap: clamp(6px, 1.6vw, 24px); font: 800 clamp(38px, min(8.2vw, 10dvh), 108px)/1 'Baloo 2', sans-serif; color: var(--text-primary); }
   .ops-question-op, .ops-question-mark { color: #08b65b; padding: 0; transform: none; }
   .ops-question-equals { color: #738196; }
   .ops-game-shell .ops-answer-zone { width: 100%; padding: 0; gap: 8px; flex: 0 0 auto; }
@@ -362,18 +351,10 @@ const getOpsClayStyles = () => `
   .ops-game-shell .ops-choice-wrong { background: #ffe2e5; border-color: #ff3947; }
   .ops-game-shell .ops-choice-correct .ops-choice-value { color: #07843f; }
   .ops-game-shell .ops-choice-wrong .ops-choice-value { color: #c92336; }
-  .ops-progress-wrap { width: 100%; display: flex; align-items: center; gap: clamp(10px, 2vw, 24px); margin-top: 0; flex: 0 0 auto; }
-  .ops-progress-track { flex: 1; height: clamp(12px, 1.6dvh, 18px); background: #e5eaf1; border-radius: 99px; overflow: hidden; }
-  .ops-progress-fill { height: 100%; background: linear-gradient(90deg, #08b65b, #0ac765); border-radius: inherit; transition: width 300ms; }
-  .ops-progress-count { font: 800 clamp(18px, 2vw, 28px)/1 'Baloo 2', sans-serif; white-space: nowrap; }
   .ops-game-shell .ops-feedback-bar { position: static; margin: 0; width: 100%; padding: clamp(6px, 1dvh, 12px); border-radius: 14px; }
   @media (hover: hover) { .ops-choice-btn:hover:not(:disabled) { border-color: #08b65b; background: #f0fff6; } }
   @media (max-width: 600px) {
-    .ops-game-shell { padding: 8px 8px max(8px, env(safe-area-inset-bottom)); gap: 6px; }
-    .ops-ref-header { flex-wrap: nowrap; gap: 4px; }
-    .ops-ref-header-left { gap: 5px; }
-    .ops-ref-rewards { gap: 3px; }
-    .ops-ref-reward-pill { padding: 5px; gap: 2px; }
+    .ops-game-shell { --shell-inline-padding: 8px; padding: 8px var(--shell-inline-padding) max(8px, env(safe-area-inset-bottom)); gap: 6px; }
     .ops-game-shell .ops-game-board { gap: 8px; }
     .ops-answer-record { gap: 6px; }
     .ops-answer-stat { gap: 4px; }
@@ -392,7 +373,7 @@ const getOpsClayStyles = () => `
   }
   @media (min-width: 601px) and (max-height: 800px) {
     .ops-game-shell { --object-size: clamp(24px, 5.5dvh, 44px); padding-block: 20px; }
-    .ops-ref-back { width: 54px; }
+    .ops-ref-back { min-height: 48px; }
     .ops-ref-reward-pill { padding: 12px 18px; }
     .ops-ref-title-block h1 { font-size: 32px; }
     .ops-ref-title-block p { font-size: 20px; }
@@ -618,11 +599,6 @@ export default function MathOperationsGame({
     }
   }, []);
 
-  const problemIcon = useMemo(() => {
-    if (!problem) return null;
-    return '🫐';
-  }, [problem]);
-
   const handleAnswer = useCallback((userAnswer) => {
     if (feedback || isAnimating) return;
     const correct = Number(userAnswer) === problem.answer;
@@ -747,7 +723,7 @@ export default function MathOperationsGame({
         classPrefix="ops"
         onBack={handleBack}
         language={language}
-        subtitle={operationTitle}
+        showTitle={false}
         hearts={hearts}
         gems={gems}
         stars={stars}
@@ -790,38 +766,12 @@ export default function MathOperationsGame({
           <Settings size={30} strokeWidth={2.5} aria-hidden="true" />
         </button>
       </MathGameToolbar>
-      <div className="ops-question-zone">
+      <MathGameQuestion className="ops-question-zone">
         <p className="ops-question-label">
           {language === 'bm'
             ? `Berapakah hasil ${({ '+': 'Tambah', '-': 'Tolak', '×': 'Darab', '÷': 'Bahagi' })[displaySymbol] || operationTitle}?`
             : `What is the result of ${({ '+': 'addition', '-': 'subtraction', '×': 'multiplication', '÷': 'division' })[displaySymbol] || operationTitle.toLowerCase()}?`}
         </p>
-
-        {/* ── Icons Visual ── */}
-        {problem.num1 <= 20 && problem.num2 <= 20 && problemIcon && (
-          <div className="ops-icons-container">
-            {/* Number 1 Icons */}
-            <div className="ops-icon-group">
-              {Array.from({ length: problem.num1 }).map((_, i) => (
-                <span key={`n1-${i}`} className="ops-icon-emoji">{problemIcon}</span>
-             ))}
-              {problem.num1 === 0 && <span className="ops-icon-emoji" style={{ opacity: 0 }}>{problemIcon}</span>}
-            </div>
-
-            {/* Operator */}
-            <div className="ops-icon-operator" style={{ color: accentColor }}>
-              {displaySymbol}
-            </div>
-
-            {/* Number 2 Icons */}
-            <div className="ops-icon-group">
-              {Array.from({ length: problem.num2 }).map((_, i) => (
-                <span key={`n2-${i}`} className="ops-icon-emoji">{problemIcon}</span>
-              ))}
-              {problem.num2 === 0 && <span className="ops-icon-emoji" style={{ opacity: 0 }}>{problemIcon}</span>}
-            </div>
-          </div>
-        )}
 
         <div
           className="ops-question-expr ops-question-row"
@@ -833,7 +783,7 @@ export default function MathOperationsGame({
           <span className="ops-question-equals">=</span>
           <span className="ops-question-mark">?</span>
         </div>
-      </div>
+      </MathGameQuestion>
 
       {/* ── Answer Zone ── */}
       <div className="ops-answer-zone">
@@ -921,14 +871,7 @@ export default function MathOperationsGame({
       )}
 
       {/* ── Footer Stats ── */}
-      <div className="ops-progress-wrap">
-        <div className="ops-progress-track" role="progressbar"
-          aria-label={language === 'bm' ? 'Kemajuan soalan' : 'Question progress'}
-          aria-valuemin={0} aria-valuemax={STREAK_MILESTONE} aria-valuenow={questionNumber}>
-          <div className="ops-progress-fill" style={{ width: `${(questionNumber / STREAK_MILESTONE) * 100}%` }} />
-        </div>
-        <span className="ops-progress-count">{questionNumber}/{STREAK_MILESTONE}</span>
-      </div>
+      <MathGameProgress language={language} progress={questionNumber} milestone={STREAK_MILESTONE} />
       </MathGameBody>
       <HeartShopModal isOpen={isHeartShopOpen} onClose={() => setIsHeartShopOpen(false)} onPurchase={handleRewardPurchase} language={language} />
     </MathGameShell>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { ArrowLeft, Calculator, CircleCheck, CircleX, Diamond, Heart, Star, Trophy } from 'lucide-react';
 import AppHeader from '../AppHeader';
 import './MathGamePage.css';
@@ -20,6 +20,7 @@ export function MathGameHeader({
   language,
   title = 'Matematik',
   subtitle,
+  showTitle = true,
   icon,
   hearts,
   gems,
@@ -53,17 +54,20 @@ export function MathGameHeader({
           onClick={onBack}
           aria-label={language === 'bm' ? 'Kembali' : 'Back'}
         >
-          <ArrowLeft size={28} strokeWidth={3} aria-hidden="true" />
+          <ArrowLeft size={18} strokeWidth={3} aria-hidden="true" />
+          <span>{language === 'bm' ? 'Kembali' : 'Back'}</span>
         </button>
 
         <div className={`${classPrefix}-ref-subject-icon`} aria-hidden="true">
           <Calculator size={30} strokeWidth={2.7} />
         </div>
 
-        <div className={`${classPrefix}-ref-title-block`}>
-          <h1>{title}</h1>
-          {subtitle && <p>{subtitle}</p>}
-        </div>
+        {showTitle && (
+          <div className={`${classPrefix}-ref-title-block`}>
+            <h1>{title}</h1>
+            {subtitle && <p>{subtitle}</p>}
+          </div>
+        )}
       </div>
 
       <div className={`${classPrefix}-ref-rewards`} aria-label={rewardsLabel}>
@@ -85,8 +89,21 @@ export function MathGameHeader({
 }
 
 export function MathGameBody({ className = 'ops-game-board', children }) {
-  return <main className={className}>{children}</main>;
+  return <main className={`math-game-body ${className}`}>{children}</main>;
 }
+
+export const MathGameQuestion = forwardRef(function MathGameQuestion(
+  { as: Element = 'section', className = '', children, ...props },
+  ref,
+) {
+  return (
+    <Element ref={ref} className={`math-game-question ${className}`.trim()} {...props}>
+      {children}
+    </Element>
+  );
+});
+
+MathGameQuestion.displayName = 'MathGameQuestion';
 
 export function MathGameToolbar({ language, correctCount, wrongCount, children }) {
   return (

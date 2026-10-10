@@ -101,6 +101,7 @@
 .ih-subject--malay { --mh-card: #f6f1ff; --mh-border: #dfceff; --mh-accent: #8944d8; --mh-tint: #e8dcff; }
 .ih-subject--robot { --mh-card: #fff9e9; --mh-border: #f3e4bc; --mh-accent: #bb850b; --mh-tint: #ffedaf; }
 .ih-subject-scene > .ih-art { width: 100%; max-width: 120px; height: auto; aspect-ratio: 1; }
+.ih-subject-scene > .ih-reading-art { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
 .ih-subject-desc { overflow-wrap: anywhere; }
 
 .ih-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; min-height: 24px; }

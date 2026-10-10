@@ -722,7 +722,20 @@ export default function App() {
           />;
           if (dateTimeSubGame === 'months')          return <MonthsGame    onBack={handleBackToMenu} onHome={handleBackToHome} language={language} />;
           if (dateTimeSubGame === 'clock')           return <ClockGame     onBack={handleBackToMenu} onHome={handleBackToHome} language={language} />;
-          if (dateTimeSubGame === 'month-learning')  return <MonthLearning onBack={handleBackToMenu} onHome={handleBackToHome} language={language} />;
+          if (dateTimeSubGame === 'month-learning')  return <MonthLearning
+            onBack={handleBackToMenu}
+            onHome={handleBackToHome}
+            language={language}
+            playerName={playerName}
+            gameState={gameState}
+            streak={streak}
+            onTabChange={handleTabChange}
+            onLogout={handleLogout}
+            colorMode={colorMode}
+            onColorModeChange={setColorMode}
+            onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
+            onToggleLang={handleToggleLang}
+          />;
         }
         if (mathSubGame === 'faq') {
           return <ColumnMathGame onBack={() => setMathSubGame(null)} language={language} />;

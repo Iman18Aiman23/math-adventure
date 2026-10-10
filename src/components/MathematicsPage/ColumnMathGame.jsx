@@ -5,7 +5,7 @@ import { playSound } from '../../utils/soundManager';
 import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
 import useBrowserBack from '../../hooks/useBrowserBack';
 import HeartShopModal from '../HeartShopModal';
-import { MathGameToolbar, MathGameBody, MathGameHeader, MathGameProgress, MathGameShell } from './MathGameLayout';
+import { MathGameToolbar, MathGameBody, MathGameHeader, MathGameQuestion, MathGameProgress, MathGameShell } from './MathGameLayout';
 
 const STREAK_MILESTONE = 10;
 
@@ -76,7 +76,10 @@ const CHEERS_EN = ['Great!', 'Excellent!', 'Fantastic!', 'Amazing!', 'Incredible
 
 const getColumnMathStyles = () => `
   .cmg-shell {
-    --game-bg: #ECFAF5;
+    --math-header-content-inset: clamp(12px, 3vw, 28px);
+    padding-top: clamp(8px, 2dvh, 24px) !important;
+    gap: clamp(6px, 1dvh, 14px) !important;
+    --game-bg: #F3F6FA;
     --surface: #FFFFFF;
     --surface-soft: #F8FCFA;
     --primary: #27B668;
@@ -103,7 +106,9 @@ const getColumnMathStyles = () => `
     overflow: hidden !important;
     display: flex !important;
     flex-direction: column !important;
-    background: linear-gradient(180deg, #ECFAF5 0%, #F7FCF9 100%) !important;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.98), transparent 58%),
+      linear-gradient(145deg, #F3F6FA 0%, #E9EEF5 100%) !important;
     color: var(--navy);
     font-family: "Nunito", "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     box-sizing: border-box;
@@ -115,106 +120,8 @@ const getColumnMathStyles = () => `
     box-sizing: border-box;
   }
 
-  .cmg-ref-header {
-    width: min(100%, 1100px);
-    margin-inline: auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: clamp(8px, 2vw, 18px);
-    padding: max(clamp(6px, 1vh, 14px), env(safe-area-inset-top)) clamp(12px, 3vw, 28px) clamp(6px, 1vh, 12px);
-    flex-shrink: 0;
-    min-width: 0;
-  }
-
-  .cmg-ref-header-left,
-  .cmg-ref-rewards {
-    display: flex;
-    align-items: center;
-    min-width: 0;
-  }
-
-  .cmg-ref-header-left {
-    gap: clamp(8px, 2vw, 14px);
-    flex: 1 1 auto;
-  }
-
-  .cmg-ref-back {
-    width: clamp(44px, 10vw, 62px);
-    height: clamp(44px, 10vw, 62px);
-    border-radius: 50%;
-    background: #FFFFFF;
-    border: 1px solid #E1ECE7;
-    color: var(--navy);
-    box-shadow: 0 3px 10px rgba(31, 78, 60, 0.08);
-    display: grid;
-    place-items: center;
-    flex: 0 0 auto;
-    cursor: pointer;
-  }
-
-  .cmg-ref-subject-icon {
-    width: clamp(44px, 10vw, 62px);
-    height: clamp(44px, 10vw, 62px);
-    border-radius: clamp(12px, 3vw, 18px);
-    background: linear-gradient(180deg, #35C878, #18A85C);
-    color: #FFFFFF;
-    display: grid;
-    place-items: center;
-    flex: 0 0 auto;
-  }
-
-  .cmg-ref-title-block {
-    min-width: 0;
-  }
-
-  .cmg-ref-title-block h1 {
-    margin: 0;
-    color: var(--navy);
-    font-size: clamp(19px, 4vw, 30px);
-    font-weight: 800;
-    line-height: 1.05;
-    white-space: nowrap;
-  }
-
-  .cmg-ref-title-block p {
-    margin: 0;
-    color: var(--text-secondary);
-    font-size: clamp(13px, 2.8vw, 19px);
-    font-weight: 600;
-    line-height: 1.15;
-    white-space: nowrap;
-  }
-
-  .cmg-ref-rewards {
-    gap: clamp(6px, 1.3vw, 14px);
-    flex: 0 0 auto;
-    white-space: nowrap;
-  }
-
-  .cmg-ref-reward-pill {
-    display: flex;
-    align-items: center;
-    gap: clamp(4px, 1vw, 8px);
-    padding: clamp(6px, 1vw, 10px) clamp(8px, 2vw, 14px);
-    background: #FFFFFF;
-    border: 1px solid #E5EEEA;
-    border-radius: 999px;
-    box-shadow: 0 2px 8px rgba(31, 78, 60, 0.07);
-    color: var(--navy);
-    font-size: clamp(16px, 3vw, 24px);
-    font-weight: 900;
-    line-height: 1;
-    cursor: pointer;
-  }
-
-  .cmg-ref-reward-icon.is-star { color: #FFBE18; }
-  .cmg-ref-reward-icon.is-heart { color: #FF4D55; }
-  .cmg-ref-reward-icon.is-gem { color: #2BBDF7; }
-
   .cmg-main {
     width: min(100%, 1100px) !important;
-    height: 100% !important;
     min-height: 0 !important;
     flex: 1 1 auto !important;
     margin-inline: auto !important;
@@ -593,10 +500,6 @@ const getColumnMathStyles = () => `
       --math-font: clamp(38px, min(9vw, 6.5vh), 66px);
     }
 
-    .cmg-ref-header {
-      padding-block: 4px;
-    }
-
     .cmg-card {
       padding-block: 12px !important;
     }
@@ -637,38 +540,6 @@ const getColumnMathStyles = () => `
 
   }
 
-  @media (max-width: 720px) {
-    .cmg-ref-rewards {
-      gap: 5px;
-    }
-
-    .cmg-ref-reward-pill {
-      padding-inline: 8px;
-    }
-
-    .cmg-ref-title-block h1 {
-      max-width: 30vw;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
-
-  @media (max-width: 430px) {
-    .cmg-ref-subject-icon {
-      display: none;
-    }
-
-    .cmg-ref-reward-pill svg {
-      width: 22px;
-      height: 22px;
-    }
-
-    .cmg-ref-reward-pill {
-      font-size: 16px;
-      padding-inline: 7px;
-      gap: 3px;
-    }
-  }
 `;
 
 // Keep this component identity stable so division inputs retain their DOM nodes
@@ -2003,15 +1874,6 @@ export default function ColumnMathGame({ onBack, language }) {
   const displayOp = problem.op;
   const isMultiply = problem.op === '×';
   const isDivision = problem.op === '÷';
-  const operationSubtitle = isMultiply
-    ? (bm ? 'Darab' : 'Multiplication')
-    : problem.op === '-'
-      ? (bm ? 'Tolak Panjang' : 'Long Subtraction')
-      : problem.op === '+'
-        ? (bm ? 'Tambah Panjang' : 'Long Addition')
-        : isDivision
-          ? (bm ? 'Bahagi Panjang' : 'Long Division')
-          : 'Matematik';
   const progressInGroup = showStreak && streak % STREAK_MILESTONE === 0 && streak > 0 ? STREAK_MILESTONE : streak % STREAK_MILESTONE;
   const questionNumber = Math.min(progressInGroup + 1, STREAK_MILESTONE);
   const correctCount = Math.floor(score / 10);
@@ -2198,10 +2060,10 @@ export default function ColumnMathGame({ onBack, language }) {
       )}
 
       <MathGameHeader
-        classPrefix="cmg"
+        classPrefix="ops"
         onBack={handleBack}
         language={language}
-        subtitle={operationSubtitle}
+        showTitle={false}
         hearts={hearts}
         gems={gems}
         stars={stars}
@@ -2359,7 +2221,8 @@ export default function ColumnMathGame({ onBack, language }) {
 
         <div className="math-unified-board">
         {/* Column problem card — main focus, dominant on desktop */}
-        <div
+        <MathGameQuestion
+          as="div"
           ref={cardRef}
           key={`${problem.num1}-${problem.num2}-${problem.op}`}
           className={`cmg-card ${isMultiply ? 'is-multiply' : ''} ${status === 'wrong' ? 'cmg-shake' : ''}`}
@@ -2982,7 +2845,7 @@ export default function ColumnMathGame({ onBack, language }) {
 
           </div>
           </div>
-        </div>
+        </MathGameQuestion>
 
         {/* Borrow guidance message */}
         {lockMessage && status === 'playing' && (

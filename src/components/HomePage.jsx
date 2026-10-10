@@ -42,7 +42,13 @@ export function HomePageLayoutStyles() {
     .iman-layout .ih-hero-copy { width: 52%; min-width: 0; padding: 0; }
     .iman-layout .ih-hero h1 { font-size: clamp(28px, 3.2vw, 44px); }
     .iman-layout :is(.ih-hero-lead, .mh-description) { font-size: clamp(13px, 1.2vw, 16px); line-height: 1.5; }
-    .iman-layout .ih-hero-art { width: 180px; height: auto; max-width: 34%; right: 17%; bottom: 0; }
+    .iman-layout .ih-hero-art { width: min(50%, var(--dashboard-hero-art-width, 350px)); height: 100%; max-width: var(--dashboard-hero-art-width, 350px); right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; }
+    .iman-layout .ih-hero-art > img {
+      display: block; width: min(100%, var(--dashboard-hero-art-width, 350px));
+      height: min(var(--dashboard-hero-art-height, 220px), 100%);
+      max-width: var(--dashboard-hero-art-width, 350px); max-height: 100%;
+      object-fit: contain; object-position: center;
+    }
     .iman-layout .ih-hero-note { right: 4%; font-size: clamp(13px, 1.5vw, 20px); }
     .rp-layout .mh-hero { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 20px; }
     .rp-layout .mh-hero h2 { font: 800 clamp(26px, 3.2vw, 40px)/1.12 'Outfit', sans-serif; }
@@ -89,7 +95,7 @@ export function HomePageLayoutStyles() {
     }
     @container iman-page (max-width: 559px) {
       .iman-layout .ih-hero-copy { width: 60%; }
-      .iman-layout .ih-hero-art { right: 0; bottom: 0; }
+      .iman-layout .ih-hero-art { width: 36%; right: 0; bottom: 0; }
       .iman-layout .ih-hero-note { top: 12px; right: 12px; font-size: 11px; }
       .rp-layout .mh-hero { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 10px; }
       .rp-layout .mh-hero h2 { font-size: 26px; }
@@ -208,9 +214,8 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
         heroTitle={<>{bm ? 'Hei' : 'Hey'}, {name}! <span aria-hidden="true">👋</span></>}
         description={bm ? 'Teruskan perjalanan belajar anda bersama ImanAI!' : 'Continue your learning adventure with ImanAI!'}
         encouragement={<span className="ih-level"><Star size={20} aria-hidden="true" /> LEVEL {currentLevel}</span>}
-        mascot={<RobotArt index={7} />}
+        mascot={<img src={`${import.meta.env.BASE_URL}images/home/Robot%20HomePage.webp`} alt="" />}
         decoration={<>
-          <p className="ih-hero-note" aria-hidden="true">{bm ? <>Belajar<br />Hari Ini,<br />Lebih Hebat<br />Esok!</> : <>Learn Today,<br />Shine Brighter<br />Tomorrow!</>}</p>
           <Star className="ih-hero-star" aria-hidden="true" />
         </>}
       />
@@ -220,11 +225,13 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
         <div className="ih-subject-grid mh-topic-grid">
           {SUBJECTS.map(subject => <button
             type="button" key={subject.id} className={`ih-subject mh-topic-card ih-subject--${subject.tone}`}
-            aria-labelledby={`ih-title-${subject.id}`} aria-describedby={`ih-desc-${subject.id}`}
+            aria-label={subject.title[langIndex]} aria-describedby={`ih-desc-${subject.id}`}
             disabled={!canAccessSubject(playerName, subject.id)}
             onClick={() => subject.id === 'robot' ? setShowRobotInterface(true) : onSelectSubject(subject.id)} onMouseEnter={canAccessSubject(playerName, subject.id) ? playHoverSound : undefined}
           >
-            <span className="ih-subject-scene mh-topic-visual"><RobotArt index={subject.art} /></span>
+            <span className="ih-subject-scene mh-topic-visual">{subject.id === 'reading'
+              ? <img className="ih-reading-art" src={`${import.meta.env.BASE_URL}images/home/Reading.webp`} alt="" aria-hidden="true" />
+              : <RobotArt index={subject.art} />}</span>
             <span className="ih-subject-content mh-topic-copy"><span className="ih-subject-title mh-topic-title" id={`ih-title-${subject.id}`}>{subject.title[langIndex]}</span><span className="ih-subject-desc mh-topic-description" id={`ih-desc-${subject.id}`}>{subject.desc[langIndex]}</span></span>
             <span className="mh-card-action"><span>{bm ? 'Mula Belajar' : 'Start Learning'}</span><span className="mh-arrow" aria-hidden="true"><ChevronRight size={20} /></span></span>
           </button>)}

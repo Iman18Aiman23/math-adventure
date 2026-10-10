@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import confetti from 'canvas-confetti';
-import { CalendarDays, X, HelpCircle, Keyboard, Layers, MousePointerClick, Pencil, Settings } from 'lucide-react';
+import { X, HelpCircle, Keyboard, Layers, MousePointerClick, Pencil, Settings } from 'lucide-react';
 import { MONTHS } from '../../utils/timeData';
 import { LOCALIZATION } from '../../utils/localization';
 import { playSound } from '../../utils/soundManager';
-import { useGameStateContext } from '../../App';
 import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
 import { getTimeGameClayStyles } from './timeGameClayStyles';
-import { MathGameToolbar, MathGameBody, MathGameHeader, MathGameProgress, MathGameShell } from './MathGameLayout';
+import { MathGameToolbar, MathGameBody, MathGameHeader, MathGameQuestion, MathGameProgress, MathGameShell } from './MathGameLayout';
 
 // ─── Web Speech API voice helper ───────────────────────────────────────────────
 function speak(text, { pitch = 1.4, rate = 1.05, volume = 1 } = {}) {
@@ -53,7 +52,6 @@ function StreakPopup({ streak, language, onClose }) {
 }
 
 export default function MonthsGame({ onBack, onHome, language }) {
-  const gameState = useGameStateContext();
   const t = LOCALIZATION[language].monthsGame;
   const bm = language === 'bm';
 
@@ -252,7 +250,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
 
   if (!currentQuestion) {
     return (
-      <MathGameShell className="ops-game-shell time-ref-game math-game-screen" styles={getTimeGameClayStyles()}>
+      <MathGameShell className="ops-game-shell time-ref-game months-game-screen math-game-screen" styles={getTimeGameClayStyles()}>
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="ops-loading-spinner" />
         </div>
@@ -265,23 +263,19 @@ export default function MonthsGame({ onBack, onHome, language }) {
   const accentDark  = '#7B2CBF';
 
   return (
-    <MathGameShell className="ops-game-shell time-ref-game math-game-screen" styles={getTimeGameClayStyles()}>
+    <MathGameShell className="ops-game-shell time-ref-game months-game-screen math-game-screen" styles={getTimeGameClayStyles()}>
       {/* Streak popup */}
       {showStreak && (
         <StreakPopup streak={streak} language={language} onClose={() => setShowStreak(false)} />
       )}
 
       <MathGameHeader
-        variant="app"
         onBack={onBack}
-        gameState={gameState}
         language={language}
+        showTitle={false}
         hearts={hearts}
         gems={gems}
         stars={stars}
-        icon={<CalendarDays size={26} strokeWidth={2.7} aria-hidden="true" />}
-        title="Matematik"
-        subtitle={bm ? 'Bulan dan Kalendar' : 'Months and Calendar'}
       />
 
       {isSettingsOpen && (
@@ -424,7 +418,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
           <Settings size={26} strokeWidth={2.5} aria-hidden="true" />
         </button>
       </MathGameToolbar>
-      <div className="ops-question-zone">
+      <MathGameQuestion className="ops-question-zone">
         <p className="ops-question-label">
            {currentQuestion.prompt}
         </p>
@@ -437,7 +431,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
                 {currentQuestion.subtitle}
             </div>
         )}
-      </div>
+      </MathGameQuestion>
 
       {/* ── Answer Zone ── */}
       <div className="ops-answer-zone">
@@ -467,8 +461,7 @@ export default function MonthsGame({ onBack, onHome, language }) {
           </form>
         ) : (
           <div className="ops-choices-grid">
-            {currentQuestion.options.map((opt, idx) => {
-              const labels = ['A', 'B', 'C', 'D'];
+            {currentQuestion.options.map((opt) => {
               let state = 'idle';
               if (feedback === 'correct' && opt === currentQuestion.answer) state = 'correct';
               else if (feedback === 'incorrect') {
@@ -492,7 +485,6 @@ export default function MonthsGame({ onBack, onHome, language }) {
                   className={`ops-choice-btn ops-choice-${state}`}
                   style={state === 'idle' ? { '--accent': accentColor, '--accent-dark': accentDark } : undefined}
                 >
-                  <span className="ops-choice-label">{labels[idx]}</span>
                   <span className="ops-choice-value" style={{ fontSize: currentFontScale }}>{visibleOpt}</span>
                 </button>
               );

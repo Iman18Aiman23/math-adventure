@@ -1,1 +1,13 @@
-/* Menu styles are owned by the shared SubjectMenuLayout component. */
+/* Header geometry and responsive spacing come from the MathHome layout blueprint. */
+.time-game-menu .mh-header .ip-back-label { white-space: nowrap; }
+
+.time-game-menu .mh-mascot > .time-game-menu-robot {
+  display: block;
+  width: min(100%, var(--dashboard-hero-art-width, 350px));
+  height: min(var(--dashboard-hero-art-height, 220px), 100%);
+  max-width: var(--dashboard-hero-art-width, 350px);
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
+  align-self: flex-end;
+}

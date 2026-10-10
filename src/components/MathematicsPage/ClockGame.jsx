@@ -5,10 +5,9 @@ import { generateClockProblem } from '../../utils/timeData';
 import AnalogClock from './AnalogClock';
 import { playSound } from '../../utils/soundManager';
 import { LOCALIZATION } from '../../utils/localization';
-import { useGameStateContext } from '../../App';
 import { getGameData, addCorrectAnswer, deductHeart } from '../../utils/gameStatsManager';
 import { getTimeGameClayStyles } from './timeGameClayStyles';
-import { MathGameToolbar, MathGameBody, MathGameHeader, MathGameProgress, MathGameShell } from './MathGameLayout';
+import { MathGameToolbar, MathGameBody, MathGameHeader, MathGameQuestion, MathGameProgress, MathGameShell } from './MathGameLayout';
 
 // ─── Web Speech API voice helper ───────────────────────────────────────────────
 function speak(text, { pitch = 1.4, rate = 1.05, volume = 1 } = {}) {
@@ -53,7 +52,6 @@ function StreakPopup({ streak, language, onClose }) {
 }
 
 export default function ClockGame({ onBack, onHome, language }) {
-  const gameState = useGameStateContext();
   const bm = language === 'bm';
   const t = LOCALIZATION[language].clockGame;
 
@@ -186,7 +184,7 @@ export default function ClockGame({ onBack, onHome, language }) {
 
   if (!currentQuestion) {
     return (
-      <MathGameShell className="ops-game-shell time-ref-game math-game-screen" styles={getTimeGameClayStyles()}>
+      <MathGameShell className="ops-game-shell time-ref-game clock-game-screen math-game-screen" styles={getTimeGameClayStyles()}>
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="ops-loading-spinner" />
         </div>
@@ -199,23 +197,19 @@ export default function ClockGame({ onBack, onHome, language }) {
   const accentDark  = '#3BAEA5';
 
   return (
-    <MathGameShell className="ops-game-shell time-ref-game math-game-screen" styles={getTimeGameClayStyles()}>
+    <MathGameShell className="ops-game-shell time-ref-game clock-game-screen math-game-screen" styles={getTimeGameClayStyles()}>
       {/* Streak popup */}
       {showStreak && (
         <StreakPopup streak={streak} language={language} onClose={() => setShowStreak(false)} />
       )}
 
       <MathGameHeader
-        variant="app"
         onBack={onBack}
-        gameState={gameState}
         language={language}
+        showTitle={false}
         hearts={hearts}
         gems={gems}
         stars={stars}
-        icon={<Clock size={26} strokeWidth={2.7} aria-hidden="true" />}
-        title="Matematik"
-        subtitle={bm ? 'Jam dan Masa' : 'Clock and Time'}
       />
 
       <MathGameBody className="ops-game-board">
@@ -239,7 +233,7 @@ export default function ClockGame({ onBack, onHome, language }) {
       {/* ── Question Zone ── */}
       </MathGameToolbar>
 
-      <div className="ops-question-zone">
+      <MathGameQuestion className="ops-question-zone">
         <p className="ops-question-label">
            {clockMode === 'analog-to-digital' 
               ? (bm ? 'Pukul berapakah ini?' : 'What time is it?')
@@ -258,15 +252,14 @@ export default function ClockGame({ onBack, onHome, language }) {
             {currentQuestion.displayTime}
           </div>
         )}
-      </div>
+      </MathGameQuestion>
 
       {/* ── Answer Zone ── */}
       <div className="ops-answer-zone">
         <div className="ops-choices-grid">
           {clockMode === 'analog-to-digital' ? (
             // Render Text Buttons
-            currentQuestion.options.map((opt, idx) => {
-              const labels = ['A', 'B', 'C', 'D'];
+            currentQuestion.options.map((opt) => {
               let state = 'idle';
               if (feedback === 'correct' && opt === currentQuestion.answer) state = 'correct';
               else if (feedback === 'incorrect') {
@@ -282,7 +275,6 @@ export default function ClockGame({ onBack, onHome, language }) {
                   className={`ops-choice-btn ops-choice-${state}`}
                   style={state === 'idle' ? { '--accent': accentColor, '--accent-dark': accentDark } : undefined}
                 >
-                  <span className="ops-choice-label">{labels[idx]}</span>
                   <span className="ops-choice-value">{opt}</span>
                 </button>
               );

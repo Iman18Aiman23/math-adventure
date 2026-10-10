@@ -9,8 +9,12 @@ export const getTimeGameClayStyles = () => `
     overflow: hidden !important;
     display: flex !important;
     flex-direction: column !important;
+    gap: clamp(6px, 1dvh, 14px) !important;
+    padding: clamp(8px, 2dvh, 24px) clamp(8px, 3vw, 32px) !important;
     box-sizing: border-box !important;
-    background: linear-gradient(180deg, #ECFAF5 0%, #F7FCF9 100%) !important;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.98), transparent 58%),
+      linear-gradient(145deg, #F3F6FA 0%, #E9EEF5 100%) !important;
     font-family: "Nunito", "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
 
@@ -20,47 +24,7 @@ export const getTimeGameClayStyles = () => `
     box-sizing: border-box;
   }
 
-  .time-ref-game .duo-home-header {
-    width: min(100%, 1100px) !important;
-    margin-inline: auto !important;
-    min-height: clamp(54px, 8.5dvh, 68px) !important;
-    padding: max(clamp(6px, 1dvh, 12px), env(safe-area-inset-top)) clamp(12px, 3vw, 28px) clamp(6px, 1dvh, 12px) !important;
-    flex-wrap: nowrap !important;
-    border-bottom: 0 !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    position: relative;
-    z-index: 20;
-  }
-
-  .time-ref-game .duo-home-header > button {
-    width: clamp(44px, 10vw, 64px) !important;
-    height: clamp(44px, 10vw, 64px) !important;
-    border: 1px solid #E2ECE8 !important;
-    background: #FFFFFF !important;
-    color: var(--text-primary) !important;
-    box-shadow: 0 3px 10px rgba(25, 65, 50, 0.08) !important;
-  }
-
-  .time-ref-game .duo-home-stats {
-    gap: clamp(6px, 1.3vw, 14px) !important;
-    white-space: nowrap !important;
-  }
-
-  .time-ref-game .duo-home-stats button {
-    min-height: clamp(36px, 5.5dvh, 42px) !important;
-    padding: clamp(6px, 1vw, 10px) clamp(8px, 2vw, 14px) !important;
-    border: 1px solid #E6EEEB !important;
-    border-radius: 999px !important;
-    background: #FFFFFF !important;
-    box-shadow: 0 2px 8px rgba(31, 78, 60, 0.07) !important;
-    font-size: clamp(16px, 3vw, 24px) !important;
-    font-weight: 900 !important;
-  }
-
   .time-ref-game .ops-game-board {
-    width: min(100%, 1100px) !important;
-    height: 100% !important;
     flex: 1 1 auto !important;
     min-height: 0 !important;
     margin-inline: auto !important;
@@ -718,10 +682,6 @@ export const getTimeGameClayStyles = () => `
   }
 
   @media (max-height: 700px) {
-    .time-ref-game .duo-home-header {
-      padding-block: 4px !important;
-    }
-
     .time-ref-game .ops-question-zone {
       padding: 10px clamp(14px, 3vw, 24px) !important;
     }
@@ -778,20 +738,8 @@ export const getTimeGameClayStyles = () => `
     }
   }
 
-  @media (max-width: 430px) {
-    .time-ref-game .duo-home-stats {
-      gap: 5px !important;
-    }
-
-    .time-ref-game .duo-home-stats button {
-      padding-inline: 8px !important;
-      font-size: 16px !important;
-    }
-  }
-
   @media (max-width: 360px) {
-    .time-ref-game .ops-game-board,
-    .time-ref-game .duo-home-header {
+    .time-ref-game .ops-game-board {
       padding-inline: 10px !important;
     }
   }
