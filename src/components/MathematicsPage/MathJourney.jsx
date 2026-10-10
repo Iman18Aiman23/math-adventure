@@ -3,7 +3,6 @@ import confetti from 'canvas-confetti';
 import {
   ArrowLeft,
   Check,
-  ChevronRight,
   Clock3,
   Diamond,
   Heart,
@@ -25,6 +24,7 @@ import './MathJourney.css';
 
 const JOURNEY_KEY = 'mathJourneyProgress';
 const VERSION = 1;
+const MATH_HERO_IMAGE = `${import.meta.env.BASE_URL}images/mathematic/Cabaran%20Math%20HeroSection%20without%20background.webp`;
 
 const REWARD_RULES = {
   normal: [
@@ -286,7 +286,8 @@ function StarsDisplay({ count = 0 }) {
   );
 }
 
-function ExitChallengeDialog({ onCancel, onLeave }) {
+function ExitChallengeDialog({ onCancel, onLeave, language = 'bm' }) {
+  const bm = language === 'bm';
   const dialogRef = useRef(null);
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -296,26 +297,28 @@ function ExitChallengeDialog({ onCancel, onLeave }) {
   return (
     <dialog ref={dialogRef} className="mj-exit-dialog" aria-labelledby="mj-exit-title" aria-describedby="mj-exit-description" onCancel={event => { event.preventDefault(); onCancel(); }}>
       <span className="mj-exit-icon" aria-hidden="true"><ArrowLeft size={28} /></span>
-      <h2 id="mj-exit-title">Keluar daripada cabaran?</h2>
-      <p id="mj-exit-description">Jawapan dalam cabaran ini tidak akan disimpan. Tahap yang telah diselesaikan dan ganjaran terdahulu akan kekal.</p>
+      <h2 id="mj-exit-title">{bm ? 'Keluar daripada cabaran?' : 'Leave this challenge?'}</h2>
+      <p id="mj-exit-description">{bm ? 'Jawapan dalam cabaran ini tidak akan disimpan. Tahap yang telah diselesaikan dan ganjaran terdahulu akan kekal.' : 'Your answers in this attempt will not be saved. Completed levels and previous rewards will remain.'}</p>
       <div className="mj-exit-actions">
-        <button type="button" className="mj-primary" onClick={onCancel} autoFocus>Teruskan cabaran</button>
-        <button type="button" className="mj-secondary" onClick={onLeave}>Keluar cabaran</button>
+        <button type="button" className="mj-primary" onClick={onCancel} autoFocus>{bm ? 'Teruskan cabaran' : 'Continue challenge'}</button>
+        <button type="button" className="mj-secondary" onClick={onLeave}>{bm ? 'Keluar cabaran' : 'Leave challenge'}</button>
       </div>
     </dialog>
   );
 }
 
-function JourneyHeader({ title, stars, diamonds, lives, onBack }) {
+function JourneyHeader({ title, stars, diamonds, lives, onBack, language = 'bm' }) {
+  const bm = language === 'bm';
   return (
     <header className="mj-header">
-      <button type="button" className="mj-back" onClick={onBack} aria-label="Kembali">
-        <ArrowLeft size={24} strokeWidth={3} aria-hidden="true" />
+      <button type="button" className="mj-back" onClick={onBack} aria-label={bm ? 'Kembali' : 'Back'}>
+        <ArrowLeft size={20} strokeWidth={3} aria-hidden="true" />{title === '' && <span>{bm ? 'Kembali' : 'Back'}</span>}
       </button>
       <h1>{title}</h1>
-      {lives != null && <span className="mj-lives mj-header-lives" aria-label={`${lives} nyawa`}>{[0, 1, 2].map(i => <Heart key={i} size={24} fill="currentColor" className={i < lives ? '' : 'is-empty'} aria-hidden="true" />)}</span>}
+      {lives != null && <span className="mj-lives mj-header-lives" aria-label={`${lives} ${bm ? 'nyawa' : 'lives'}`}>{[0, 1, 2].map(i => <Heart key={i} size={24} fill="currentColor" className={i < lives ? '' : 'is-empty'} aria-hidden="true" />)}</span>}
       <div className="mj-counters">
         <span className="mj-counter"><Star size={20} fill="currentColor" />{stars}</span>
+        {title === '' && <span className="mj-counter is-heart" aria-label={bm ? '3 nyawa' : '3 lives'}><Heart size={19} fill="currentColor" /><b>3</b></span>}
         <span className="mj-counter is-diamond"><Diamond size={18} fill="currentColor" />{diamonds}</span>
       </div>
     </header>
@@ -364,7 +367,42 @@ function QuestionVisual({ question }) {
   );
 }
 
-export default function MathJourney({ onBack }) {
+const UNIT_PRESENTATION = [
+  { titleEn: 'Core Operations', descriptionEn: 'Build confidence with addition and subtraction.', theme: 'mint', art: <img src={`${import.meta.env.BASE_URL}images/mathematic/Asas%20Matematik.webp`} alt="" /> },
+  { titleEn: 'Numbers & Operations', descriptionEn: 'Practise a wider range of number operations.', theme: 'gold', art: 'x' },
+  { titleEn: 'Clock & Time', descriptionEn: 'Read clocks and tell the time.', theme: 'blue', art: <img src={`${import.meta.env.BASE_URL}images/mathematic/Jam%20dan%20Masa.webp`} alt="" /> },
+  { titleEn: 'Long Method', descriptionEn: 'Solve calculations using the written method.', theme: 'purple', art: '=' },
+  { titleEn: 'Mixed Challenges', descriptionEn: 'Bring every topic together.', theme: 'teal', art: '*' },
+];
+
+function levelName(level, bm) {
+  if (bm) return level.title.replace('Unit Challenge', 'Cabaran Unit').replace('Mixed challenge', 'Cabaran campuran').replace('Final Mathematics Challenge', 'Cabaran Akhir Matematik');
+  const names = {
+    'Tambah 1-5': 'Add 1 to 5', 'Tambah 1-10': 'Add 1 to 10', 'Tolak 1-5': 'Subtract 1 to 5', 'Tolak 1-10': 'Subtract 1 to 10',
+    'Tambah 1-20': 'Add 1 to 20', 'Tolak 1-20': 'Subtract 1 to 20', 'Darab asas': 'Basic multiplication', 'Bahagi asas': 'Basic division',
+    'Kenali jam': 'Meet the clock', 'Jam penuh': 'Full hour', 'Setengah jam': 'Half past', 'Minit': 'Minutes',
+    'Tambah panjang': 'Long addition', 'Tolak panjang': 'Long subtraction', 'Darab panjang': 'Long multiplication', 'Bahagi panjang': 'Long division',
+    'Operasi campuran': 'Mixed operations', 'Jam & masa': 'Clock & time', 'Kaedah panjang': 'Written method',
+    'Cabaran Unit 2': 'Unit 2 challenge', 'Cabaran Unit 3': 'Unit 3 challenge', 'Cabaran Unit 4': 'Unit 4 challenge',
+    'Mixed challenge': 'Mixed challenge', 'Final Mathematics Challenge': 'Final maths challenge',
+  };
+  return names[level.title] || level.title;
+}
+
+function questionPrompt(question, bm) {
+  if (bm) return question.prompt;
+  if (question.type === 'clock') return 'What time is it?';
+  if (question.type === 'long') return 'Solve using the written method.';
+  return 'What is the answer?';
+}
+
+function questionEquation(question, bm) {
+  if (question.type === 'clock') return `${bm ? 'Masa ialah' : 'The time is'} ${question.expression}`;
+  return question.equation;
+}
+
+export default function MathJourney({ onBack, language = 'bm' }) {
+  const bm = language === 'bm';
   const [journey, setJourney] = useState(loadJourney);
   const [view, setView] = useState({ name: 'overview' });
   const [globalRewards, setGlobalRewards] = useState(() => getGameData());
@@ -389,9 +427,9 @@ export default function MathJourney({ onBack }) {
     setView({ name: 'unit', unitId: unit.id });
   };
 
-  const openLevelInfo = (unit, level, status) => {
+  const openLevelInfo = (unit, level, status, returnTo = 'unit') => {
     if (status === 'locked') return;
-    setView({ name: 'info', unitId: unit.id, levelId: level.id });
+    setView({ name: 'info', unitId: unit.id, levelId: level.id, returnTo });
   };
 
   const startChallenge = (unit, level) => {
@@ -406,7 +444,7 @@ export default function MathJourney({ onBack }) {
       feedback: null,
       selected: null,
     });
-    setView({ name: 'challenge', unitId: unit.id, levelId: level.id });
+    setView({ name: 'challenge', unitId: unit.id, levelId: level.id, returnTo: view.returnTo || 'unit' });
   };
 
   const finishAttempt = (finalAttempt) => {
@@ -465,7 +503,7 @@ export default function MathJourney({ onBack }) {
 
     setAttempt({ ...finalAttempt, passed, earnedStars, earnedDiamonds });
     const completedNow = passed && level.unitChallenge && nextJourney.completedUnits.includes(unit.id);
-    setView({ name: completedNow ? 'unit-complete' : 'result', unitId: unit.id, levelId: level.id });
+    setView({ name: completedNow ? 'unit-complete' : 'result', unitId: unit.id, levelId: level.id, returnTo: view.returnTo });
   };
 
   const chooseAnswer = (answer) => {
@@ -506,65 +544,79 @@ export default function MathJourney({ onBack }) {
     }
     if (view.name === 'overview') onBack();
     else if (view.name === 'unit') setView({ name: 'overview' });
-    else if (view.name === 'info') setView({ name: 'unit', unitId: activeUnit.id });
+    else if (view.returnTo === 'overview') setView({ name: 'overview' });
     else setView({ name: 'unit', unitId: activeUnit.id });
   };
 
   useBrowserBackHandler(goBack);
 
   return (
-    <main className={`mj-screen is-${view.name}`} aria-label="Math Journey">
-      {exitDialogOpen && <ExitChallengeDialog onCancel={() => setExitDialogOpen(false)} onLeave={() => {
+    <main className={`mj-screen is-${view.name}`} aria-label={bm ? 'Cabaran Matematik' : 'Math Challenge'}>
+      {exitDialogOpen && <ExitChallengeDialog language={language} onCancel={() => setExitDialogOpen(false)} onLeave={() => {
         setExitDialogOpen(false);
         setAttempt(null);
-        setView({ name: 'info', unitId: activeUnit.id, levelId: activeLevel.id });
+        setView({ name: 'info', unitId: activeUnit.id, levelId: activeLevel.id, returnTo: view.returnTo });
       }} />}
       <div className="mj-shell">
         <JourneyHeader
-          title={view.name === 'overview' ? 'Math Journey' : activeUnit.title}
+          title={view.name === 'overview' ? '' : (bm ? activeUnit.title : (UNIT_PRESENTATION[JOURNEY_UNITS.indexOf(activeUnit)]?.titleEn || activeUnit.title))}
           stars={stars}
           diamonds={diamonds}
           lives={view.name === 'challenge' ? attempt?.lives : null}
           onBack={goBack}
+          language={language}
         />
 
         {view.name === 'overview' && (
           <section className="mj-panel mj-overview">
             <div className="mj-hero">
-              <svg className="mj-landscape" viewBox="0 0 600 150" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70Q100 10 220 78T440 65T600 60V150H0Z" fill="#b9eaa1" /><path d="M0 110Q130 55 280 112T600 91V150H0Z" fill="#84d28b" /><path d="M280 150Q410 116 350 98T456 69" stroke="#e3f4bc" strokeWidth="17" fill="none" /><path d="M459 73V24" stroke="#52789a" strokeWidth="4" /><path d="M461 24Q478 13 491 25V43Q477 31 461 42Z" fill="#ff586c" /><path d="M39 92V62M555 95V68" stroke="#68a96f" strokeWidth="5" /><ellipse cx="39" cy="56" rx="14" ry="21" fill="#6ec477" /><ellipse cx="555" cy="61" rx="12" ry="18" fill="#68c17b" /></svg>
-              <div className="mj-hero-mascot" aria-hidden="true"><JourneyMascot /></div>
-              <div>
-                <p className="mj-kicker">TEROKA • BELAJAR • BERJAYA</p>
-                <h2>Cabaran Matematik</h2>
-                <p className="mj-hero-description">Lengkapkan unit, kumpul bintang dan buka tahap baharu!</p>
-                <ProgressBar value={totals.pct} />
-                <p className="mj-progress-copy">{totals.completed} / {totals.total} tahap selesai</p>
+              <div className="mj-hero-copy">
+                <p className="mj-kicker">{bm ? 'TEROKA • BELAJAR • BERJAYA' : 'EXPLORE • LEARN • ACHIEVE'}</p>
+                <h2>{bm ? 'Cabaran Matematik' : 'Math Challenge'}</h2>
+                <p className="mj-hero-description">{bm ? 'Jom selesaikan cabaran, kuasai nombor dan bina masa depan yang lebih hebat!' : 'Solve challenges, master numbers and build a brighter future!'}</p>
+                <div className="mj-hero-progress"><Star size={22} fill="currentColor" /><ProgressBar value={totals.pct} /><b>{totals.completed}/{totals.total} {bm ? 'tahap selesai' : 'levels complete'}</b></div>
               </div>
+              <div className="mj-hero-mascot" aria-hidden="true"><img src={MATH_HERO_IMAGE} alt="" /></div>
+              <svg className="mj-landscape" viewBox="0 0 600 150" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70Q100 10 220 78T440 65T600 60V150H0Z" fill="#b9eaa1" /><path d="M0 110Q130 55 280 112T600 91V150H0Z" fill="#84d28b" /></svg>
             </div>
             <div className="mj-unit-list">
               {JOURNEY_UNITS.map((unit, index) => {
                 const status = getUnitStatus(unit, journey);
                 const progress = unitProgress(unit, journey);
+                const presentation = UNIT_PRESENTATION[index];
                 return (
-                  <button
-                    type="button"
-                    key={unit.id}
-                    className={`mj-unit-card is-${status}`}
-                    onClick={() => openUnit(unit)}
-                    disabled={status === 'locked'}
-                  >
-                    <span className="mj-node">{status === 'completed' ? <Check /> : status === 'locked' ? <Lock /> : <SourceIcon level={unit.levels[0]} index={index} />}</span>
-                    <span className="mj-unit-copy">
-                      <b>Unit {index + 1}</b>
-                      <span>{unit.title}</span>
-                      <ProgressBar value={progress.pct} />
-                    </span>
-                    <span className="mj-unit-pct">{progress.pct}%</span>
-                    <ChevronRight className="mj-unit-arrow" />
-                  </button>
+                  <section className={`mj-unit-row mj-theme-${presentation.theme} is-${status}`} key={unit.id} aria-labelledby={`mj-unit-${unit.id}`}>
+                    <button type="button" className="mj-unit-card" onClick={() => openUnit(unit)} disabled={status === 'locked'}>
+                      <span className="mj-unit-art" aria-hidden="true">{presentation.art}</span>
+                      <span className="mj-unit-copy">
+                        <b>Unit {index + 1}</b>
+                        <strong id={`mj-unit-${unit.id}`}>{bm ? unit.title : presentation.titleEn}</strong>
+                        <span>{bm ? unit.description : presentation.descriptionEn}</span>
+                      </span>
+                      <span className="mj-unit-completion"><Check size={14} /> {progress.completed}/{progress.total} {bm ? 'selesai' : 'complete'}</span>
+                    </button>
+                    <div className="mj-level-cards">
+                      {unit.levels.map((level, levelIndex) => {
+                        const levelStatus = getLevelStatus(unit, levelIndex, journey);
+                        const done = journey.completedLevels[level.id];
+                        const unitLocked = status === 'locked';
+                        const lockCopy = unitLocked
+                          ? (bm ? `Selesaikan unit ${index}` : `Complete unit ${index}`)
+                          : (bm ? `Selesaikan tahap ${levelIndex}` : `Complete level ${levelIndex}`);
+                        return <button type="button" key={level.id} className={`mj-level-card is-${levelStatus}`} onClick={() => openLevelInfo(unit, level, levelStatus, 'overview')} disabled={levelStatus === 'locked'} aria-label={`${levelName(level, bm)}${levelStatus === 'locked' ? `, ${lockCopy}` : ''}`}>
+                          <span className="mj-card-number">{levelIndex + 1}</span>
+                          <strong className="mj-level-title">{levelName(level, bm)}</strong>
+                          <span className="mj-level-symbol"><SourceIcon level={level} index={levelIndex} /></span>
+                          {levelStatus === 'completed' ? <StarsDisplay count={Math.min(3, done?.stars || 0)} /> : <span className="mj-card-stars" aria-label={bm ? 'Belum mendapat bintang' : 'No stars earned yet'}><Star /><Star /><Star /></span>}
+                          <span className="mj-level-action">{levelStatus === 'locked' ? <><Lock size={13} />{lockCopy}</> : levelStatus === 'completed' ? <><RotateCcw size={14} />{bm ? 'Main lagi' : 'Play again'}</> : <><span aria-hidden="true">{'\u25B6'}</span>{bm ? 'Mula' : 'Start'}</>}</span>
+                        </button>;
+                      })}
+                    </div>
+                  </section>
                 );
               })}
             </div>
+            <div className="mj-overall-progress"><b>{bm ? 'Kemajuan keseluruhan' : 'Overall progress'}</b><ProgressBar value={totals.pct} /><span><Star size={18} fill="currentColor" /> {totals.completed}/{totals.total}</span></div>
           </section>
         )}
 
@@ -572,13 +624,13 @@ export default function MathJourney({ onBack }) {
           <section className="mj-panel mj-unit-page">
             <div className="mj-unit-top">
               <div>
-                <p className="mj-kicker">Unit {JOURNEY_UNITS.findIndex(unit => unit.id === activeUnit.id) + 1}</p>
-                <h2>{activeUnit.title}</h2>
-                <p>{activeUnit.description}</p>
+                <p className="mj-kicker">{bm ? 'Unit' : 'Unit'} {JOURNEY_UNITS.findIndex(unit => unit.id === activeUnit.id) + 1}</p>
+                <h2>{bm ? activeUnit.title : UNIT_PRESENTATION[JOURNEY_UNITS.indexOf(activeUnit)].titleEn}</h2>
+                <p>{bm ? activeUnit.description : UNIT_PRESENTATION[JOURNEY_UNITS.indexOf(activeUnit)].descriptionEn}</p>
               </div>
               <div className="mj-unit-progress">
                 <strong>{unitProgress(activeUnit, journey).completed} / {activeUnit.levels.length}</strong>
-                <span>lengkap</span>
+                <span>{bm ? 'lengkap' : 'complete'}</span>
               </div>
             </div>
             <ProgressBar value={unitProgress(activeUnit, journey).pct} />
@@ -595,15 +647,15 @@ export default function MathJourney({ onBack }) {
                     disabled={status === 'locked'}
                   >
                     <span className="mj-level-dot">{status === 'completed' ? <Check /> : status === 'locked' ? <Lock /> : <SourceIcon level={level} index={index} />}</span>
-                    <span className="mj-level-title">{level.title}</span>
-                    {status === 'completed' ? <StarsDisplay count={Math.min(3, done?.stars || 0)} /> : <span className="mj-level-action">{status === 'current' ? 'Mula' : 'Terkunci'}</span>}
+                    <span className="mj-level-title">{levelName(level, bm)}</span>
+                    {status === 'completed' ? <StarsDisplay count={Math.min(3, done?.stars || 0)} /> : <span className="mj-level-action">{status === 'current' ? (bm ? 'Mula' : 'Start') : (bm ? 'Terkunci' : 'Locked')}</span>}
                   </button>
                 );
               })}
             </div>
             <div className="mj-hint">
               <span className="mj-mini-mascot" aria-hidden="true"><JourneyMascot pose="celebrate" /></span>
-              <span>Teruskan usaha, anda boleh!</span>
+              <span>{bm ? 'Teruskan usaha, anda boleh!' : 'Keep going. You can do it!'}</span>
             </div>
           </section>
         )}
@@ -613,18 +665,18 @@ export default function MathJourney({ onBack }) {
             <div className="mj-info-content">
               <div className="mj-info-main">
                 <div className="mj-info-icon" aria-hidden="true">{activeLevel.operation === 'subtract' ? <Minus /> : activeLevel.operation === 'add' ? <Plus /> : <Trophy />}</div>
-                <h2>Cabaran Level {activeUnit.levels.findIndex(level => level.id === activeLevel.id) + 1}</h2>
-                <p>{activeLevel.title}</p>
+                <h2>{bm ? 'Cabaran Tahap' : 'Level Challenge'} {activeUnit.levels.findIndex(level => level.id === activeLevel.id) + 1}</h2>
+                <p>{levelName(activeLevel, bm)}</p>
               </div>
               <div className="mj-rules">
-                <span><Clock3 /> {activeLevel.questionCount} soalan</span>
-                <span><Heart /> {activeLevel.lives} nyawa</span>
-                <span><Check /> Jawab dengan pilihan</span>
-                <span><Star /> Dapatkan {Math.ceil(activeLevel.questionCount * activeLevel.passScore)}/{activeLevel.questionCount} untuk lulus</span>
+                <span><Clock3 /> {activeLevel.questionCount} {bm ? 'soalan' : 'questions'}</span>
+                <span><Heart /> {activeLevel.lives} {bm ? 'nyawa' : 'lives'}</span>
+                <span><Check /> {bm ? 'Jawab dengan pilihan' : 'Choose an answer'}</span>
+                <span><Star /> {bm ? 'Dapatkan' : 'Get'} {Math.ceil(activeLevel.questionCount * activeLevel.passScore)}/{activeLevel.questionCount} {bm ? 'untuk lulus' : 'to pass'}</span>
               </div>
-              <div className="mj-tip"><b>Tips</b><span>Fikir dengan teliti. Anda boleh lakukannya!</span></div>
+              <div className="mj-tip"><b>{bm ? 'Tips' : 'Tip'}</b><span>{bm ? 'Fikir dengan teliti. Anda boleh lakukannya!' : 'Take your time and think it through.'}</span></div>
             </div>
-            <button type="button" className="mj-primary" onClick={() => startChallenge(activeUnit, activeLevel)}>Mula Cabaran!</button>
+            <button type="button" className="mj-primary" onClick={() => startChallenge(activeUnit, activeLevel)}>{bm ? 'Mula Cabaran!' : 'Start Challenge'}</button>
           </section>
         )}
 
@@ -638,25 +690,25 @@ export default function MathJourney({ onBack }) {
             <div className="mj-feedback-symbol">
               {attempt.feedback === 'correct' ? <Check /> : <X />}
             </div>
-            <h2>{attempt.feedback === 'correct' ? 'Betul!' : 'Hampir betul!'}</h2>
-            <p className={attempt.feedback === 'correct' ? 'mj-correct-equation' : undefined}>{attempt.feedback === 'correct' ? attempt.questions[attempt.index].equation : 'Jawapan yang betul ialah:'}</p>
-            {attempt.feedback === 'wrong' && <div className="mj-feedback-answer">{attempt.questions[attempt.index].equation}</div>}
+            <h2>{attempt.feedback === 'correct' ? (bm ? 'Betul!' : 'Correct!') : (bm ? 'Hampir betul!' : 'Not quite!')}</h2>
+            <p className={attempt.feedback === 'correct' ? 'mj-correct-equation' : undefined}>{attempt.feedback === 'correct' ? questionEquation(attempt.questions[attempt.index], bm) : (bm ? 'Jawapan yang betul ialah:' : 'The correct answer is:')}</p>
+            {attempt.feedback === 'wrong' && <div className="mj-feedback-answer">{questionEquation(attempt.questions[attempt.index], bm)}</div>}
             <button type="button" className={attempt.feedback === 'correct' ? 'mj-primary' : 'mj-danger'} onClick={nextQuestion}>
-              {attempt.lives <= 0 || attempt.index >= attempt.questions.length - 1 ? 'Lihat Keputusan' : 'Soalan Seterusnya'}
+              {attempt.lives <= 0 || attempt.index >= attempt.questions.length - 1 ? (bm ? 'Lihat Keputusan' : 'See Results') : (bm ? 'Soalan Seterusnya' : 'Next Question')}
             </button>
-            {attempt.feedback === 'wrong' && <span className="mj-life-note"><Heart size={20} fill="currentColor" /> 1 nyawa berkurang.</span>}
+            {attempt.feedback === 'wrong' && <span className="mj-life-note"><Heart size={20} fill="currentColor" /> {bm ? '1 nyawa berkurang.' : '1 life lost.'}</span>}
           </section>
         )}
 
         {view.name === 'challenge' && attempt && !attempt.feedback && (
           <section className="mj-panel mj-challenge">
             <div className="mj-challenge-top">
-              <span>Soalan {attempt.index + 1} / {attempt.questions.length}</span>
+              <span>{bm ? 'Soalan' : 'Question'} {attempt.index + 1} / {attempt.questions.length}</span>
               <span className="mj-lives">{[0, 1, 2].map(i => <Heart key={i} size={24} fill="currentColor" className={i < attempt.lives ? '' : 'is-empty'} />)}</span>
             </div>
             <ProgressBar value={((attempt.index + 1) / attempt.questions.length) * 100} />
             <div className="mj-question-card">
-              <p>{attempt.questions[attempt.index].prompt}</p>
+              <p>{questionPrompt(attempt.questions[attempt.index], bm)}</p>
               <QuestionVisual question={attempt.questions[attempt.index]} />
             </div>
             <div className="mj-options">
@@ -677,11 +729,11 @@ export default function MathJourney({ onBack }) {
         {view.name === 'result' && attempt && (
           <section className="mj-panel mj-result">
             <Trophy className="mj-result-trophy" size={74} fill="currentColor" />
-            <h2>{attempt.passed ? 'Syabas!' : 'Cuba Lagi!'}</h2>
-            <p>{attempt.passed ? 'Anda telah menyelesaikan cabaran!' : 'Anda hampir berjaya.'}</p>
+            <h2>{attempt.passed ? (bm ? 'Syabas!' : 'Well done!') : (bm ? 'Cuba Lagi!' : 'Try again!')}</h2>
+            <p>{attempt.passed ? (bm ? 'Anda telah menyelesaikan cabaran!' : 'You completed the challenge!') : (bm ? 'Anda hampir berjaya.' : 'You were close. Give it another try.')}</p>
             <div className="mj-score-card">
               <strong>{attempt.correct} / {activeLevel.questionCount}</strong>
-              <span>{Math.round((attempt.correct / activeLevel.questionCount) * 100)}% Betul</span>
+              <span>{Math.round((attempt.correct / activeLevel.questionCount) * 100)}% {bm ? 'Betul' : 'Correct'}</span>
               <StarsDisplay count={attempt.passed ? Math.min(3, rewardFor(activeLevel, attempt.correct / activeLevel.questionCount).stars) : 0} />
             </div>
             <div className="mj-rewards">
@@ -689,8 +741,8 @@ export default function MathJourney({ onBack }) {
               <span><Diamond fill="currentColor" /> +{attempt.earnedDiamonds || 0}</span>
             </div>
             <div className="mj-actions">
-              <button type="button" className="mj-secondary" onClick={() => startChallenge(activeUnit, activeLevel)}><RotateCcw size={18} /> Cuba Lagi</button>
-              <button type="button" className="mj-primary" onClick={() => setView({ name: 'unit', unitId: activeUnit.id })}>Teruskan</button>
+              <button type="button" className="mj-secondary" onClick={() => startChallenge(activeUnit, activeLevel)}><RotateCcw size={18} /> {bm ? 'Cuba Lagi' : 'Replay'}</button>
+              <button type="button" className="mj-primary" onClick={() => setView({ name: 'unit', unitId: activeUnit.id })}>{bm ? 'Teruskan' : 'Continue'}</button>
             </div>
           </section>
         )}
@@ -698,8 +750,8 @@ export default function MathJourney({ onBack }) {
         {view.name === 'unit-complete' && attempt && (
           <section className="mj-panel mj-complete">
             <div className="mj-complete-mascot" aria-hidden="true"><JourneyMascot pose="celebrate" /></div>
-            <h2>Unit {JOURNEY_UNITS.findIndex(unit => unit.id === activeUnit.id) + 1} Selesai!</h2>
-            <p>Hebat! {JOURNEY_UNITS[JOURNEY_UNITS.findIndex(unit => unit.id === activeUnit.id) + 1] ? 'Unit seterusnya kini dibuka.' : 'Anda telah menamatkan Math Journey.'}</p>
+            <h2>{bm ? `Unit ${JOURNEY_UNITS.findIndex(unit => unit.id === activeUnit.id) + 1} Selesai!` : `Unit ${JOURNEY_UNITS.findIndex(unit => unit.id === activeUnit.id) + 1} Complete!`}</h2>
+            <p>{JOURNEY_UNITS[JOURNEY_UNITS.findIndex(unit => unit.id === activeUnit.id) + 1] ? (bm ? 'Unit seterusnya kini dibuka.' : 'The next unit is now unlocked.') : (bm ? 'Anda telah menamatkan Math Journey.' : 'You have completed Math Journey.')}</p>
             <div className="mj-rewards">
               <span><Star fill="currentColor" /> +{attempt.earnedStars || 0}</span>
               <span><Diamond fill="currentColor" /> +{attempt.earnedDiamonds || 0}</span>
@@ -708,7 +760,7 @@ export default function MathJourney({ onBack }) {
               const nextUnit = JOURNEY_UNITS[JOURNEY_UNITS.findIndex(unit => unit.id === activeUnit.id) + 1];
               setView(nextUnit ? { name: 'unit', unitId: nextUnit.id } : { name: 'overview' });
             }}>
-              Teruskan
+              {bm ? 'Teruskan' : 'Continue'}
             </button>
           </section>
         )}
