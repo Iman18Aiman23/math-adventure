@@ -19,9 +19,9 @@ export function PageHeader({ title, onBack, language = 'bm', className = '', ...
       .iman-layout .ip-header:has(> .mh-back) > h1 { display: none; }
       .iman-layout .ip-header .mh-back { justify-self: start; width: max-content; min-width: 112px; height: 44px; padding: 0 14px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; border-radius: 999px; white-space: nowrap; }
       .iman-layout .ip-header .ip-back-label { display: inline; font-size: 14px; font-weight: 700; }
-      .iman-layout .ip-hero { height: 260px; min-height: 260px; flex-shrink: 0; }
+      .iman-layout .ip-hero { height: var(--dashboard-hero-height, 260px); min-height: var(--dashboard-hero-height, 260px); flex-shrink: 0; }
       @container iman-page (max-width: 559px) {
-        .iman-layout .ip-hero { height: 240px; min-height: 240px; padding: 16px; }
+        .iman-layout .ip-hero { height: var(--dashboard-hero-height-compact, 240px); min-height: var(--dashboard-hero-height-compact, 240px); padding: 16px; }
         .iman-layout .ip-hero .mh-hero-copy h2 { font-size: 23px; line-height: 1.12; }
         .iman-layout .ip-hero .mh-description, .iman-layout .ip-hero .mh-encouragement { font-size: 12px; line-height: 1.4; margin-top: 8px; }
         .iman-layout .ip-header { min-height: 44px; align-items: center; grid-template-columns: 38px minmax(0, 1fr) auto; gap: 6px; }
@@ -38,7 +38,7 @@ export function PageHeader({ title, onBack, language = 'bm', className = '', ...
         .iman-layout .ip-header .ih-mobile-logo { display: block; width: 100%; max-width: 110px; min-width: 0; padding: 0; background: transparent; }
       }
       @container iman-page (max-width: 331px) {
-        .iman-layout .ip-hero { height: 260px; min-height: 260px; }
+        .iman-layout .ip-hero { height: var(--dashboard-hero-height-narrow, 260px); min-height: var(--dashboard-hero-height-narrow, 260px); }
         .iman-layout .ip-header > h1 { font-size: 14px; }
       }
     `}</style>

@@ -668,6 +668,11 @@ export default function AchievementHome({ language = 'bm', gameState, onTakeAsse
   ].map(([name, description, level, art], i) => ({ id: 'planned-' + i, name, description, level, art, comingSoon: true }));
   const tabs = [['assessments', '📋', bm ? 'Penilaian' : 'Assessments'], ['badges', '🎯', bm ? 'Lencana' : 'Badges'], ['achievements', '🧾', bm ? 'Pencapaian' : 'Achievements']];
   const assessmentTab = currentTab === 'assessments';
+  const heroRobot = currentTab === 'badges'
+    ? 'Robot%20badges.webp'
+    : currentTab === 'achievements'
+      ? 'Robot%20Achievement.webp'
+      : 'Robot%20Assestment.webp';
   const title = assessmentTab ? (bm ? 'Penilaian' : 'Assessments') : currentTab === 'badges' ? (bm ? 'Lencana' : 'Badges') : (bm ? 'Pencapaian Saya' : 'My Achievements');
   const description = assessmentTab ? (bm ? 'Uji pengetahuan anda dan capai tahap lebih tinggi!' : 'Test your knowledge and reach a higher level!') : currentTab === 'achievements' ? (bm ? 'Kumpul laporan pencapaian anda dan lihat perkembangan pembelajaran!' : 'Collect your achievement reports and see your learning progress!') : (bm ? 'Kumpul lencana, capai matlamat dan jadilah lebih hebat!' : 'Collect badges, reach your goals and keep growing!');
   const onTabKeyDown = event => {
@@ -693,8 +698,7 @@ export default function AchievementHome({ language = 'bm', gameState, onTakeAsse
           <AchievementArt name={assessmentTab ? 'clipboard' : currentTab === 'achievements' ? 'trophy' : 'medal'} className="ac-hero-icon ac-mobile-art" />
           <AchievementArt name={assessmentTab ? 'clipboard' : 'trophy'} className="ac-hero-icon ac-desktop-art" />
           <div className="ac-hero-copy"><h1 id="ac-title"><span className="ac-mobile-title">{title}</span><span className="ac-desktop-title">{assessmentTab ? title : (bm ? 'Pencapaian Saya' : 'My Achievements')}</span></h1><p>{description}</p></div>
-          <AchievementArt name={assessmentTab ? 'assessmentRobot' : currentTab === 'achievements' ? 'trophyRobot' : 'badgeRobot'} className="ac-hero-robot ac-mobile-art" />
-          <AchievementArt name={assessmentTab ? 'assessmentRobot' : 'trophyRobot'} className="ac-hero-robot ac-desktop-art" />
+          <img className="ac-hero-robot" src={`${import.meta.env.BASE_URL}images/achievement/${heroRobot}`} alt="" />
       </section>}
     >
         <div className="ac-tabs" role="tablist" aria-label={bm ? 'Pencapaian Saya' : 'My Achievements'}>

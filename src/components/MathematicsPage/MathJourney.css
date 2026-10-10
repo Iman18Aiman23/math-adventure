@@ -1188,7 +1188,7 @@
   .mj-overview { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); grid-template-rows: minmax(0, 1fr); gap: 24px; }
   .mj-hero { grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) auto; align-content: center; padding: 24px; }
   .mj-hero-mascot { height: 100%; }
-  .mj-hero-mascot > img { max-height: 32dvh; }
+  .mj-hero-mascot > img { height: var(--dashboard-hero-art-height, 88%); max-height: var(--dashboard-hero-art-height, 88%); }
   .mj-hero-description { max-width: 40ch; }
   .mj-challenge { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); gap: 18px 24px; }
   .mj-challenge-top, .mj-challenge > .mj-progress { grid-column: 1 / -1; }
@@ -1341,7 +1341,7 @@
 .mj-hero-progress .mj-progress { margin: 0; height: 13px; background: #d8f4e6; }
 .mj-hero-progress .mj-progress span { background: linear-gradient(90deg, #10ad69, #28cc87); }
 .mj-hero-mascot { position: relative; height: 100%; z-index: 1; }
-.mj-hero-mascot > img { display: block; width: min(100%, 340px); max-height: min(250px, 100%); height: auto; object-fit: contain; object-position: center bottom; }
+.mj-hero-mascot > img { display: block; width: min(100%, 350px); height: var(--dashboard-hero-art-height, 88%); max-height: var(--dashboard-hero-art-height, 88%); object-fit: contain; object-position: center bottom; }
 .mj-math-float { position: absolute; z-index: 2; color: #0ab574; font: 900 clamp(28px, 4vw, 54px)/1 'Baloo 2', sans-serif; text-shadow: 0 2px #fff; }
 .mj-float-plus { top: 3%; left: 3%; transform: rotate(-12deg); }
 .mj-float-times { right: 3%; top: 35%; color: #f3a700; transform: rotate(12deg); }
@@ -1492,7 +1492,7 @@
   .mj-hero-progress > svg { width: 18px; }
   .mj-hero-progress b { grid-column: 2; font-size: 10px; }
   .mj-hero-progress .mj-progress { grid-column: 2; grid-row: 2; height: 6px; }
-  .mj-hero-mascot > img { max-height: 154px; }
+  .mj-hero-mascot > img { max-height: var(--dashboard-hero-art-height, 88%); }
   .mj-math-float { font-size: 25px; }
   .mj-unit-row { display: block; padding: 8px; border-radius: 17px; }
   .mj-screen.is-overview .mj-unit-row .mj-unit-card { width: 100%; min-height: 88px; grid-template-columns: 52px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; gap: 2px 8px; padding: 7px; text-align: left; }
@@ -1552,6 +1552,64 @@
 @container (max-width: 660px) {
   .mj-screen.is-overview .mj-hero { grid-template-columns: minmax(0, 1fr) 115px; }
   .mj-screen.is-overview .mj-hero h2 { font-size: clamp(30px, 7cqw, 42px); }
-  .mj-screen.is-overview .mj-hero-mascot > img { max-height: 145px; }
+  .mj-screen.is-overview .mj-hero-mascot > img { max-height: var(--dashboard-hero-art-height, 88%); }
   .mj-screen.is-overview .mj-level-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Use the same hero track and contained robot size as the subject dashboards. */
+.mj-screen.is-overview .mj-hero {
+  height: var(--dashboard-hero-height, 260px);
+  min-height: var(--dashboard-hero-height, 260px);
+  grid-template-columns: minmax(0, 1fr) minmax(150px, 34%);
+  grid-template-rows: minmax(0, 1fr);
+  align-items: center;
+}
+.mj-screen.is-overview .mj-hero-copy { grid-column: 1; grid-row: 1; min-width: 0; }
+.mj-screen.is-overview .mj-hero-mascot {
+  grid-column: 2;
+  grid-row: 1;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  place-items: center;
+}
+.mj-screen.is-overview .mj-hero-mascot > img {
+  width: min(100%, 350px);
+  height: var(--dashboard-hero-art-height, 88%);
+  max-height: var(--dashboard-hero-art-height, 88%);
+  object-fit: contain;
+  object-position: center;
+}
+@media (max-width: 760px) {
+  .mj-screen.is-overview .mj-hero {
+    height: var(--dashboard-hero-height-compact, 240px);
+    min-height: var(--dashboard-hero-height-compact, 240px);
+    grid-template-columns: minmax(0, 1fr) minmax(92px, 27%);
+  }
+}
+@container (max-width: 660px) {
+  .mj-screen.is-overview .mj-hero { grid-template-columns: minmax(0, 1fr) minmax(92px, 27%); }
+}
+@media (max-width: 390px) {
+  .mj-screen.is-overview .mj-hero { grid-template-columns: minmax(0, 1fr) minmax(82px, 26%); }
+}
+@container (max-width: 331px) {
+  .mj-screen.is-overview .mj-hero {
+    height: var(--dashboard-hero-height-narrow, 260px);
+    min-height: var(--dashboard-hero-height-narrow, 260px);
+  }
+}
+
+/* Keep the full journey mascot inside the shared hero frame. */
+.mj-screen.is-overview .mj-hero { overflow: hidden; }
+.mj-screen.is-overview .mj-hero-mascot { place-items: end center; overflow: visible; }
+.mj-screen.is-overview .mj-hero-mascot > img {
+  width: min(100%, var(--dashboard-hero-art-width, 350px));
+  height: min(var(--dashboard-hero-art-height, 220px), 100%);
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
+  transform: none;
 }

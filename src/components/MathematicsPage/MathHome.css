@@ -1,1 +1,11 @@
-/* Menu styles are owned by the shared SubjectMenuLayout component. */
+/* Menu layout comes from SubjectMenuLayout; scope the math hero artwork here. */
+.mt-home .mh-mascot > .mt-hero-robot {
+  display: block;
+  width: min(100%, var(--dashboard-hero-art-width, 350px));
+  height: min(var(--dashboard-hero-art-height, 220px), 100%);
+  max-width: var(--dashboard-hero-art-width, 350px);
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
+  align-self: flex-end;
+}

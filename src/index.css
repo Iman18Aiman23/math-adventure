@@ -4,6 +4,11 @@
    DESIGN TOKENS — Modern & Playful Palette
    ============================================= */
 :root {
+  --dashboard-hero-height: 260px;
+  --dashboard-hero-height-compact: 240px;
+  --dashboard-hero-height-narrow: 260px;
+  --dashboard-hero-art-width: 350px;
+  --dashboard-hero-art-height: 220px;
   --font-heading: 'Outfit', sans-serif;
   --font-body: 'Inter', sans-serif;
 
@@ -98,6 +103,15 @@
   --color-error:   var(--danger);
   --radius-card:   var(--border-radius-lg);
   --shadow-card:   var(--shadow-sm);
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  :root {
+    --dashboard-hero-height: 220px;
+    --dashboard-hero-height-compact: 220px;
+    --dashboard-hero-height-narrow: 220px;
+    --dashboard-hero-art-height: 200px;
+  }
 }
 
 /* =============================================

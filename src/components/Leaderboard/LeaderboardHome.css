@@ -83,7 +83,6 @@
   .lb-hero-copy { width: 67%; }
   .lb-hero h1 { font-size: clamp(30px, 2.8cqw, 44px); }
   .lb-hero p { font-size: 20px; }
-  .lb-hero-robot { width: 245px; right: 25px; bottom: -32px; }
   .lb-subjects { margin: 16px 0 30px; gap: 10px; }
   .lb-subject { min-height: 58px; border-radius: 17px; font-size: 19px; gap: 17px; }
   .lb-subject .lb-art { width: 36px; height: 36px; }
@@ -139,7 +138,6 @@
 @container iman-page (min-width: 1001px) {
   .lb-hero-copy { width: 67%; }
   .lb-hero h1 { font-size: 44px; }
-  .lb-hero-robot { bottom: -16px; width: 220px; }
 }
 
 .lb-hero-robot { z-index: 0; }
@@ -152,12 +150,13 @@
   top: 50%;
   right: 2%;
   bottom: auto;
-  width: 34%;
-  height: auto;
-  max-width: 34%;
-  max-height: 88%;
+  width: min(42%, 350px);
+  height: var(--dashboard-hero-art-height, 88%);
+  max-width: min(42%, 350px);
+  max-height: var(--dashboard-hero-art-height, 88%);
   transform: translateY(-50%);
   object-fit: contain;
+  object-position: center;
   mask-image: none;
 }
 @container iman-page (max-width: 380px) {
@@ -165,12 +164,26 @@
 }
 
 /* Match MathHome's shared PageHero dimensions. */
-.lb-hero { height: 260px; min-height: 260px; }
+.lb-hero { height: var(--dashboard-hero-height, 260px); min-height: var(--dashboard-hero-height, 260px); }
 @container iman-page (max-width: 559px) {
-  .lb-hero { height: 240px; min-height: 240px; }
+  .lb-hero { height: var(--dashboard-hero-height-compact, 240px); min-height: var(--dashboard-hero-height-compact, 240px); }
 }
 @container iman-page (max-width: 331px) {
-  .lb-hero { height: 260px; min-height: 260px; }
+  .lb-hero { height: var(--dashboard-hero-height-narrow, 260px); min-height: var(--dashboard-hero-height-narrow, 260px); }
+}
+/* Shared hero art frame, fully contained by the hero panel. */
+.lb-hero { overflow: hidden; }
+.lb-hero-robot {
+  top: 50%;
+  right: 2%;
+  bottom: auto;
+  width: min(42%, var(--dashboard-hero-art-width, 350px));
+  height: min(var(--dashboard-hero-art-height, 220px), 100%);
+  max-width: var(--dashboard-hero-art-width, 350px);
+  max-height: 100%;
+  transform: translateY(-50%);
+  object-fit: contain;
+  object-position: center;
 }
 @container iman-page (min-width: 1001px) and (max-width: 1049px) {
 }

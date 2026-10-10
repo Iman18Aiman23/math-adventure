@@ -2,13 +2,13 @@
 
 .mh-mascot > .bm-menu-robot-art {
   display: block;
-  width: 100%;
-  height: 100%;
-  max-width: 350px;
-  max-height: 400px;
+  width: min(100%, var(--dashboard-hero-art-width, 350px));
+  height: min(var(--dashboard-hero-art-height, 220px), 100%);
+  max-width: var(--dashboard-hero-art-width, 350px);
+  max-height: min(var(--dashboard-hero-art-height, 220px), calc(var(--dashboard-hero-height, 260px) - 40px));
   object-fit: contain;
-  object-position: center bottom;
-  align-self: flex-end;
+  object-position: center;
+  align-self: center;
 }
 .mh-topic-visual > .bm-menu-category-art {
   display: block;

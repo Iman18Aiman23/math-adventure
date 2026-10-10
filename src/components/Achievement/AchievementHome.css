@@ -89,7 +89,6 @@
  .ac-hero h1 { font-size: 44px; }
  .ac-hero p { font-size: 19px; }
  .ac-hero-robot { width: 27%; right: 3%; }
- .ac-hero-assessments .ac-hero-robot { width: 175px; right: 6%; }
  .ac-mobile-art, .ac-mobile-title { display: none; }
  .ac-desktop-art, .ac-desktop-title { display: block; }
  .ac-tabs { margin: 12px 0 18px; gap: 14px; }
@@ -165,12 +164,13 @@
   top: 50%;
   right: 2%;
   bottom: auto;
-  width: 34%;
-  height: auto;
-  max-width: 34%;
-  max-height: 88%;
+  width: min(42%, 350px);
+  height: var(--dashboard-hero-art-height, 88%);
+  max-width: min(42%, 350px);
+  max-height: var(--dashboard-hero-art-height, 88%);
   transform: translateY(-50%);
   object-fit: contain;
+  object-position: center;
   mask-image: none;
 }
 @container iman-page (max-width: 380px) {
@@ -181,10 +181,24 @@
 }
 
 /* Match MathHome's shared PageHero dimensions. */
-.ac-hero { height: 260px; min-height: 260px; }
+.ac-hero { height: var(--dashboard-hero-height, 260px); min-height: var(--dashboard-hero-height, 260px); }
 @container iman-page (max-width: 559px) {
-  .ac-hero { height: 240px; min-height: 240px; }
+  .ac-hero { height: var(--dashboard-hero-height-compact, 240px); min-height: var(--dashboard-hero-height-compact, 240px); }
 }
 @container iman-page (max-width: 331px) {
-  .ac-hero { height: 260px; min-height: 260px; }
+  .ac-hero { height: var(--dashboard-hero-height-narrow, 260px); min-height: var(--dashboard-hero-height-narrow, 260px); }
+}
+/* Shared hero art frame, fully contained by the hero panel. */
+.ac-hero { overflow: hidden; }
+.ac-hero-robot {
+  top: 50%;
+  right: 2%;
+  bottom: auto;
+  width: min(42%, var(--dashboard-hero-art-width, 350px));
+  height: min(var(--dashboard-hero-art-height, 220px), 100%);
+  max-width: var(--dashboard-hero-art-width, 350px);
+  max-height: 100%;
+  transform: translateY(-50%);
+  object-fit: contain;
+  object-position: center;
 }

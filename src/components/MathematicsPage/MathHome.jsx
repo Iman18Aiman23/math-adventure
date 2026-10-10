@@ -1,6 +1,9 @@
 import SubjectMenuLayout from '../_shared/SubjectMenuLayout';
 import { HomePageLayoutStyles } from '../HomePage';
-import { MathTopicArtwork, MathBookMascot } from './MathHomeArtwork';
+import { MathTopicArtwork } from './MathHomeArtwork';
+import './MathHome.css';
+
+const MATH_HERO_ART = `${import.meta.env.BASE_URL}images/mathematic/Robot%20Math.webp`;
 
 const SUB_GAMES = [
   { id: 'operations', theme: 'blue', title: 'Math Operation',
@@ -15,7 +18,7 @@ const SUB_GAMES = [
 
 export default function MathHome({ onSelectSubGame, onBack, language = 'bm', ...accountProps }) {
   const bm = language === 'bm';
-  return <div className="rp-layout iman-layout">
+  return <div className="rp-layout iman-layout mt-home">
     <HomePageLayoutStyles />
     <SubjectMenuLayout
     sharedPageChrome
@@ -25,7 +28,7 @@ export default function MathHome({ onSelectSubGame, onBack, language = 'bm', ...
     heroTitle={bm ? 'Jom belajar Matematik!' : "Let's learn Mathematics!"}
     description={bm ? 'Terokai operasi, kaedah pengiraan dan masa.' : 'Explore operations, calculation methods and time.'}
     encouragement={bm ? 'Setiap langkah membawa anda lebih dekat kepada kejayaan!' : 'Every step brings you closer to success!'}
-    mascot={<MathBookMascot />}
+    mascot={<img className="mt-hero-robot" src={MATH_HERO_ART} alt="" />}
     sectionTitle={bm ? 'Pilih Topik' : 'Choose a topic'}
     sectionDescription={bm ? 'Pilih topik untuk mula belajar.' : 'Pick a topic to start learning.'}
     topics={SUB_GAMES.map(game => ({ ...game, description: game[bm ? 'bm' : 'eng'], visual: <MathTopicArtwork topic={game.id} /> }))}
