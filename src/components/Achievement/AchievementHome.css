@@ -205,3 +205,32 @@
   object-fit: contain;
   object-position: center;
 }
+
+/* Match the Reading Journey headline and subtitle treatment. */
+.ac-hero-copy .ac-hero-kicker { display: none; }
+.ac-hero h1 {
+  margin: 0 0 10px;
+  color: #06165b;
+  font: 800 clamp(35px, 5.4vw, 70px)/1.08 'Baloo 2', sans-serif;
+  letter-spacing: -1.9px;
+  text-wrap: balance;
+}
+.ac-hero h1 .ac-mobile-title > span,
+.ac-hero h1 .ac-desktop-title > span {
+  color: #06165b;
+  paint-order: stroke fill;
+  -webkit-text-stroke: 5px white;
+  filter: drop-shadow(0 2px 0 #c6def5) drop-shadow(0 3px 2px #447dba24);
+}
+.ac-hero h1 .ac-mobile-title > span:last-child,
+.ac-hero h1 .ac-desktop-title > span:last-child { color: #0089f9; }
+.ac-hero-copy > p:not(.ac-hero-kicker) {
+  color: #58769a;
+  font: 600 clamp(16px, 2vw, 23px)/1.4 'Baloo 2', sans-serif;
+}
+@media (max-width: 767px) {
+  .ac-hero h1 { font-size: clamp(32px, 6.5vw, 45px); letter-spacing: -.8px; }
+  .ac-hero h1 .ac-mobile-title > span,
+  .ac-hero h1 .ac-desktop-title > span { -webkit-text-stroke-width: 4px; }
+  .ac-hero-copy > p:not(.ac-hero-kicker) { font-size: 15px; }
+}

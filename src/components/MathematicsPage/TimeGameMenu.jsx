@@ -23,7 +23,7 @@ export default function TimeGameMenu({ onStart, onBack, language = 'bm', ...acco
       rootClassName="mh-screen page-layout-root time-game-menu"
       title={bm ? 'Bulan & Masa' : 'Clock & Time'}
       eyebrow={bm ? 'BULAN & MASA' : 'CLOCK & TIME'}
-      heroTitle={bm ? 'Jom kenali masa!' : "Let's explore time!"}
+      heroTitle={bm ? <><span>Jom kenali</span> <span>masa!</span></> : <><span>Let's explore</span> <span>time!</span></>}
       description={bm ? 'Kenali 12 bulan dan belajar membaca jam.' : 'Discover 12 months and learn to read the clock.'}
       encouragement={bm ? 'Setiap hari, ada sesuatu yang baharu untuk dipelajari!' : 'Every day brings something new to learn!'}
       mascot={<img className="time-game-menu-robot" src={TIME_HERO_ART} alt="" />}

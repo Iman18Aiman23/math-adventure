@@ -45,7 +45,7 @@ export default function BMPage({
     </Suspense>;
   }
 
-  return <div className="rp-layout iman-layout">
+  return <div className="rp-layout iman-layout bm-menu-page">
     <HomePageLayoutStyles />
     <SubjectMenuLayout
     sharedPageChrome

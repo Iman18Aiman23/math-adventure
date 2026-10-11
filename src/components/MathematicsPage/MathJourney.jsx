@@ -572,7 +572,7 @@ export default function MathJourney({ onBack, language = 'bm' }) {
             <div className="mj-hero">
               <div className="mj-hero-copy">
                 <p className="mj-kicker">{bm ? 'TEROKA • BELAJAR • BERJAYA' : 'EXPLORE • LEARN • ACHIEVE'}</p>
-                <h2>{bm ? 'Cabaran Matematik' : 'Math Challenge'}</h2>
+                <h2>{bm ? <><span>Cabaran</span> <span>Matematik</span></> : <><span>Math</span> <span>Challenge</span></>}</h2>
                 <p className="mj-hero-description">{bm ? 'Jom selesaikan cabaran, kuasai nombor dan bina masa depan yang lebih hebat!' : 'Solve challenges, master numbers and build a brighter future!'}</p>
                 <div className="mj-hero-progress"><Star size={22} fill="currentColor" /><ProgressBar value={totals.pct} /><b>{totals.completed}/{totals.total} {bm ? 'tahap selesai' : 'levels complete'}</b></div>
               </div>

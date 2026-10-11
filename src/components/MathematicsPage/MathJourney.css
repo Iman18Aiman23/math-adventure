@@ -1613,3 +1613,33 @@
   object-position: center;
   transform: none;
 }
+
+/* Match the Reading Journey headline and subtitle treatment. */
+.mj-screen.is-overview .mj-hero .mj-kicker { display: none; }
+.mj-screen.is-overview .mj-hero h2 {
+  margin: 0;
+  color: #06165b;
+  font: 800 clamp(35px, 5.4vw, 70px)/1.08 'Baloo 2', sans-serif;
+  letter-spacing: -1.9px;
+  text-wrap: balance;
+  text-shadow: none;
+}
+.mj-screen.is-overview .mj-hero h2 > span {
+  display: inline-block;
+  color: #06165b;
+  paint-order: stroke fill;
+  -webkit-text-stroke: 5px white;
+  filter: drop-shadow(0 2px 0 #c6def5) drop-shadow(0 3px 2px #447dba24);
+}
+.mj-screen.is-overview .mj-hero h2 > span:last-child { color: #0089f9; }
+.mj-screen.is-overview .mj-hero .mj-hero-description {
+  max-width: 48ch;
+  margin: 10px 0 12px;
+  color: #58769a;
+  font: 600 clamp(16px, 2vw, 23px)/1.4 'Baloo 2', sans-serif;
+}
+@media (max-width: 767px) {
+  .mj-screen.is-overview .mj-hero h2 { font-size: clamp(32px, 6.5vw, 45px); letter-spacing: -.8px; }
+  .mj-screen.is-overview .mj-hero h2 > span { -webkit-text-stroke-width: 4px; }
+  .mj-screen.is-overview .mj-hero .mj-hero-description { font-size: 15px; }
+}

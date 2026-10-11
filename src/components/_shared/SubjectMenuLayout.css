@@ -275,6 +275,123 @@
 .mh-menu-help dd { margin: 0; }
 @media (min-width: 768px) { .subject-menu-footer { display: none; } }
 
+/* Match the reading journey's clay headline and supporting copy on the
+   Reading, Speaking, Mathematics, and Time menu hero banners. */
+.rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-screen .mh-hero .mh-eyebrow {
+  display: none;
+}
+.rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-screen .mh-hero .mh-hero-copy h2 {
+  margin: 0;
+  color: #06165b;
+  font: 800 clamp(35px, 5.4vw, 70px)/1.08 'Baloo 2', sans-serif;
+  letter-spacing: -1.9px;
+  text-wrap: balance;
+}
+.rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-screen .mh-hero .mh-hero-copy h2 > span {
+  display: inline-block;
+  color: #06165b;
+  paint-order: stroke fill;
+  -webkit-text-stroke: 5px white;
+  filter: drop-shadow(0 2px 0 #c6def5) drop-shadow(0 3px 2px #447dba24);
+}
+.rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-screen .mh-hero .mh-hero-copy h2 > span:last-child {
+  color: #0089f9;
+}
+.rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-screen .mh-hero .mh-description {
+  margin-top: 10px;
+  color: #58769a;
+  font: 600 clamp(16px, 2vw, 23px)/1.4 'Baloo 2', sans-serif;
+}
+@media (max-width: 767px) {
+  .rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-screen .mh-hero .mh-hero-copy h2 {
+    font-size: clamp(32px, 6.5vw, 45px);
+    letter-spacing: -.8px;
+  }
+  .rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-screen .mh-hero .mh-hero-copy h2 > span {
+    -webkit-text-stroke-width: 4px;
+  }
+  .rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-screen .mh-hero .mh-description {
+    font-size: 15px;
+  }
+}
+
+/* Mobile cards for the main learning menus follow the HomePage subject-card
+   pattern: artwork, centered title, then a visible centered action pill. */
+@media (max-width: 767px) {
+  .rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-screen {
+    --menu-card-height: 148px;
+  }
+  .rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-topic-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-topic-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px;
+    text-align: center;
+  }
+  .rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-topic-visual {
+    width: 48px;
+    height: 48px;
+    min-height: 48px;
+    flex: 0 0 48px;
+  }
+  .rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-topic-visual img,
+  .rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-topic-visual svg {
+    max-width: 100%;
+    max-height: 48px;
+  }
+  .rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-topic-copy {
+    width: 100%;
+    flex: 0 0 auto;
+    align-self: center;
+    gap: 0;
+    text-align: center;
+  }
+  .rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-topic-title {
+    min-height: 0;
+    font-size: clamp(13px, 3.5vw, 16px);
+    line-height: 1.15;
+  }
+  .rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-topic-description {
+    display: none;
+  }
+  .rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-card-action {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 32px;
+    height: 32px;
+    margin-top: auto;
+    padding: 3px 30px;
+    border: 1px solid var(--mh-border);
+    border-radius: 999px;
+    background: var(--mh-tint);
+    color: var(--mh-accent);
+    box-shadow: none;
+    font: 700 12px/1.2 'Outfit', sans-serif;
+    white-space: nowrap;
+  }
+  .rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-card-action > span:first-child {
+    display: inline;
+    flex: 1;
+    text-align: center;
+  }
+  .rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-card-action .mh-arrow {
+    position: absolute;
+    right: 3px;
+    width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+    box-shadow: none;
+  }
+}
+
 /* Fixed reference tracks: text and topic count must never redistribute height.
    Additional topics extend the scroll area using the same card dimensions. */
 .mh-screen {
