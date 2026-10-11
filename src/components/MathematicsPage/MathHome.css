@@ -1,4 +1,23 @@
 /* Menu layout comes from SubjectMenuLayout; scope the math hero artwork here. */
+.mt-home .mh-hero .mh-eyebrow {
+  color: #168354;
+  font: 800 clamp(10px, 1.3vw, 14px)/1.2 'Baloo 2', sans-serif;
+  letter-spacing: .1em;
+}
+.mt-home.rp-layout .mh-hero .mh-hero-copy h2 {
+  color: #0b6844;
+  font: 800 clamp(30px, 4.6dvh, 48px)/1.08 'Baloo 2', 'Outfit', sans-serif;
+  letter-spacing: -.045em;
+}
+.mt-home .mh-hero-copy h2 > span {
+  display: inline-block;
+  color: #0b6844;
+  paint-order: stroke fill;
+  -webkit-text-stroke: 6px white;
+  filter: drop-shadow(0 2px 0 #c6edd8) drop-shadow(0 3px 2px #27644230);
+}
+.mt-home .mh-hero-copy h2 > span:last-child { color: #16a96b; }
+
 .mt-home .mh-mascot > .mt-hero-robot {
   display: block;
   width: min(100%, var(--dashboard-hero-art-width, 350px));

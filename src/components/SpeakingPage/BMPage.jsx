@@ -53,9 +53,8 @@ export default function BMPage({
     pending={isPending && <LoadingSpinner overlay />}
     title={bm ? 'Sebutan' : 'Speaking'}
     eyebrow={bm ? 'SEBUTAN' : 'SPEAKING'}
-    heroTitle={bm ? 'Jom belajar Sebutan!' : "Let's practise speaking!"}
+    heroTitle={bm ? <><span>Jom belajar</span> <span>Sebutan!</span></> : <><span>Let's practise</span> <span>speaking!</span></>}
     description={bm ? 'Dengar, sebut dan ulang. Latih sebutan dengan jelas dan yakin!' : 'Listen, speak and repeat. Practise speaking clearly and confidently!'}
-    encouragement={t.heroSubtitle}
     heroBackground="radial-gradient(circle at 104% 94%, #c0e8ff 0 28%, transparent 28.2%), linear-gradient(115deg, #eff9ff, #dbf2ff)"
     mascot={<BMMenuArtwork topic="robot" />}
     sectionTitle={bm ? 'Pilih Kategori' : 'Choose a Category'}

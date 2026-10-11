@@ -25,9 +25,8 @@ export default function MathHome({ onSelectSubGame, onBack, language = 'bm', ...
     {...accountProps} onBack={onBack} language={language}
     title={bm ? 'Matematik' : 'Mathematics'}
     eyebrow={bm ? 'MATEMATIK' : 'MATHEMATICS'}
-    heroTitle={bm ? 'Jom belajar Matematik!' : "Let's learn Mathematics!"}
+    heroTitle={bm ? <><span>Jom belajar</span> <span>Matematik!</span></> : <><span>Let's learn</span> <span>Mathematics!</span></>}
     description={bm ? 'Terokai operasi, kaedah pengiraan dan masa.' : 'Explore operations, calculation methods and time.'}
-    encouragement={bm ? 'Setiap langkah membawa anda lebih dekat kepada kejayaan!' : 'Every step brings you closer to success!'}
     mascot={<img className="mt-hero-robot" src={MATH_HERO_ART} alt="" />}
     sectionTitle={bm ? 'Pilih Topik' : 'Choose a topic'}
     sectionDescription={bm ? 'Pilih topik untuk mula belajar.' : 'Pick a topic to start learning.'}

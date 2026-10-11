@@ -77,17 +77,17 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
     [5, bm ? 'Cabaran Membaca' : 'Reading Challenge', bm ? 'Uji kefahaman anda dengan pelbagai soalan dan naik tahap!' : 'Test your understanding with questions and level up!', 'challenge'],
   ];
   const cardThemes = ['blue', 'red', 'mint', 'purple', 'gold'];
-  return <div className="rp-layout iman-layout">
+  return <div className="rp-layout iman-layout rp-reading-page">
     <HomePageLayoutStyles />
     <SubjectMenuLayout
     sharedPageChrome
+    heroClassName="rp-reading-hero"
     {...accountProps} language={language} gameState={gameState} onBack={onBack} onHome={onBack}
     pending={isPending && <LoadingSpinner overlay />}
     title={bm ? 'Membaca' : 'Reading'}
     eyebrow={bm ? 'MEMBACA' : 'READING'}
-    heroTitle={bm ? 'Jom belajar Membaca!' : "Let's learn to read!"}
+    heroTitle={bm ? <><span>Jom belajar</span> <span>Membaca!</span></> : <><span>Let's learn</span> <span>to read!</span></>}
     description={bm ? 'Dari suku kata ke ayat penuh - satu langkah pada satu masa!' : 'From syllables to full sentences - one step at a time!'}
-    encouragement={bm ? 'Baca dengan yakin, dunia lebih menarik!' : 'Read with confidence and discover more.'}
     mascot={<img className="rp-hero-robot" src={HERO_ROBOT_ART} width="424" height="370" alt="" />}
     sectionTitle={bm ? 'Pilih Tahap' : 'Choose a Level'}
     sectionDescription={bm ? 'Pilih tahap untuk mula belajar.' : 'Pick a level to start learning.'}

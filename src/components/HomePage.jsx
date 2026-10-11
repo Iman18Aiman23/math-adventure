@@ -209,9 +209,9 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
       <HomePageLayoutStyles />
       <PageHeader className="page-container" {...{ language, playerName, gameState, streak, onTabChange, onHome, onOpenReports, onLogout, onToggleLang, colorMode, onColorModeChange }} />
       <PageHero className="page-container" home titleId="ih-welcome-title"
-        eyebrow={bm ? 'SELAMAT DATANG' : 'WELCOME'}
+        eyebrow={bm ? 'TEROKA • BELAJAR • BERJAYA' : 'EXPLORE • LEARN • ACHIEVE'}
         titleText={`${bm ? 'Hei' : 'Hey'}, ${name}!`}
-        heroTitle={<>{bm ? 'Hei' : 'Hey'}, {name}! <span aria-hidden="true">👋</span></>}
+        heroTitle={<><span>{bm ? 'Hei' : 'Hey'},</span> <span>{name}!</span> <span aria-hidden="true">👋</span></>}
         description={bm ? 'Teruskan perjalanan belajar anda bersama ImanAI!' : 'Continue your learning adventure with ImanAI!'}
         encouragement={<span className="ih-level"><Star size={20} aria-hidden="true" /> LEVEL {currentLevel}</span>}
         mascot={<img src={`${import.meta.env.BASE_URL}images/home/Robot%20HomePage.webp`} alt="" />}

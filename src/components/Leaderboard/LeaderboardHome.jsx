@@ -73,7 +73,7 @@ export default function LeaderboardHome({ language = 'bm', gameState, ...account
       {...accountProps}
       heroContent={<section className="lb-hero" aria-labelledby="lb-title">
         <Artwork name="trophy" className="lb-hero-trophy" />
-        <div className="lb-hero-copy"><h1 id="lb-title">{t('Papan Juara', 'Leaderboard')}</h1>
+        <div className="lb-hero-copy"><p className="lb-hero-kicker">{t('TEROKA • BELAJAR • BERJAYA', 'EXPLORE • LEARN • ACHIEVE')}</p><h1 id="lb-title"><span>{t('Papan', 'Leader')}</span> <span>{t('Juara', 'board')}</span></h1>
           <p>{t('Teruskan belajar dan bersaing dengan rakan-rakan!', 'Keep learning and compete with your friends!')}</p></div>
         <img className="lb-hero-robot" src={`${import.meta.env.BASE_URL}images/leaderboard/Robot%20Leaderboard.webp`} alt="" />
       </section>}

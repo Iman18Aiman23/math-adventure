@@ -6,7 +6,10 @@
 .ac-hero::before { content: ''; position: absolute; inset: 0; background: #c3f8dc; opacity: .45; clip-path: polygon(100% 0,100% 100%,52% 100%,80% 25%); z-index: -1; }
 .ac-hero-icon { width: 48px; mix-blend-mode: multiply; }
 .ac-hero-copy { width: 53%; position: relative; z-index: 1; }
-.ac-hero h1 { margin: 0 0 7px; font: 800 clamp(22px,6cqw,44px)/1.08 'Outfit',sans-serif; letter-spacing: -.5px; }
+.ac-hero h1 { margin: 0 0 7px; color: #006b59; font: 800 clamp(22px,6cqw,44px)/1.08 'Baloo 2',sans-serif; letter-spacing: -.045em; }
+.ac-hero h1 .ac-mobile-title > span, .ac-hero h1 .ac-desktop-title > span { display: inline-block; color: #006b59; paint-order: stroke fill; -webkit-text-stroke: 6px white; filter: drop-shadow(0 2px 0 #bdebe1) drop-shadow(0 3px 2px #12645530); }
+.ac-hero h1 .ac-mobile-title > span:last-child, .ac-hero h1 .ac-desktop-title > span:last-child { color: #0aa889; }
+.ac-hero-copy .ac-hero-kicker { margin: 0 0 2px; color: #087b67; font: 800 clamp(9px,1.3cqw,14px)/1.2 'Baloo 2',sans-serif; letter-spacing: .1em; }
 .ac-hero p { margin: 0; color: #5b7ba6; font-size: clamp(10px,2.8cqw,19px); line-height: 1.4; font-weight: 500; }
 .ac-hero-robot { position: absolute; width: 30%; bottom: 0; right: 2%; mask-image: linear-gradient(90deg,transparent,#000 7%,#000 95%,transparent); }
 .ac-tabs { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 6px; margin: 10px 0; }

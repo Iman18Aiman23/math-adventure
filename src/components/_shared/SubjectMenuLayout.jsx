@@ -3,6 +3,7 @@ import { ArrowLeft, ChevronRight } from 'lucide-react';
 import useBrowserBack from '../../hooks/useBrowserBack';
 import HomeHeaderActions from './HomeHeaderActions';
 import { PageHeader, PageHero } from './PageHeaderHero';
+import { prioritizeHeroMascot } from './heroImage';
 import './SubjectMenuLayout.css';
 import './PageContainer.css';
 
@@ -11,7 +12,7 @@ export default function SubjectMenuLayout({
   title, eyebrow, heroTitle, description, encouragement, mascot,
   sectionTitle, sectionDescription, topics, onSelect, onBack,
   language = 'bm', pending, notice, additionalContent, heroBackground, sharedPageChrome = false,
-  rootClassName, wrapClassName, headerContent, heroContent, contentClassName, overlayContent, children, ...accountProps
+  rootClassName, wrapClassName, headerContent, heroContent, heroClassName = '', contentClassName, overlayContent, children, ...accountProps
 }) {
   const id = useId();
   // Dashboard pages can provide the app's home action as `onHome`; use it
@@ -29,14 +30,14 @@ export default function SubjectMenuLayout({
           <h1>{title}</h1>
           <HomeHeaderActions {...accountProps} language={language} />
         </header>)}
-        {heroContent ?? (sharedPageChrome ? <PageHero {...{ eyebrow, heroTitle, description, encouragement, mascot, heroBackground }} /> : <section className="mh-hero" aria-labelledby={`${id}-hero`} style={heroBackground ? { background: heroBackground } : undefined}>
+        {heroContent ?? (sharedPageChrome ? <PageHero {...{ eyebrow, heroTitle, description, encouragement, mascot, heroBackground }} className={heroClassName} /> : <section className={`mh-hero ${heroClassName}`.trim()} aria-labelledby={`${id}-hero`} style={heroBackground ? { background: heroBackground } : undefined}>
           <div className="mh-hero-copy">
             <p className="mh-eyebrow">{eyebrow}</p>
             <h2 id={`${id}-hero`}>{heroTitle}</h2>
             <p className="mh-description">{description}</p>
-            <p className="mh-encouragement">{encouragement}</p>
+            {encouragement && <p className="mh-encouragement">{encouragement}</p>}
           </div>
-          <div className="mh-mascot" aria-hidden="true">{mascot}</div>
+          <div className="mh-mascot" aria-hidden="true">{prioritizeHeroMascot(mascot)}</div>
         </section>)}
         {children !== undefined ? (contentClassName ? <div className={contentClassName}>{children}</div> : children) : <>
           <div className="mh-section-heading">

@@ -2,6 +2,7 @@ import { useId } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import ImanAILogo from './ImanAILogo';
 import HomeHeaderActions from './HomeHeaderActions';
+import { prioritizeHeroMascot } from './heroImage';
 
 export function PageHeader({ title, onBack, language = 'bm', className = '', ...accountProps }) {
   return <header className={`ip-header ${title ? 'mh-header' : 'ih-header'} ${className}`.trim()}>
@@ -59,9 +60,9 @@ export function PageHero({ home = false, className = '', titleId, eyebrow, heroT
       <p className={home ? 'ih-eyebrow' : 'mh-eyebrow'}>{eyebrow}</p>
       <Heading id={headingId} title={titleText}>{heroTitle}</Heading>
       <p className={home ? 'ih-hero-lead' : 'mh-description'}>{description}</p>
-      {home ? encouragement : <p className="mh-encouragement">{encouragement}</p>}
+      {home ? encouragement : encouragement && <p className="mh-encouragement">{encouragement}</p>}
     </div>
-    <div className={home ? 'ih-hero-art' : 'mh-mascot'} aria-hidden="true">{mascot}</div>
+    <div className={home ? 'ih-hero-art' : 'mh-mascot'} aria-hidden="true">{prioritizeHeroMascot(mascot)}</div>
     {decoration}
   </section>;
 }

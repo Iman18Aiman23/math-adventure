@@ -1,5 +1,26 @@
 /* ── BMPage Category Tiles — mirrors JawiPage UI/UX ── */
 
+.rp-layout .mh-hero .mh-eyebrow {
+  color: #2580b3;
+  font: 800 clamp(10px, 1.3vw, 14px)/1.2 'Baloo 2', sans-serif;
+  letter-spacing: .1em;
+}
+.rp-layout .mh-hero .mh-hero-copy h2 {
+  color: #123466;
+  font: 800 clamp(30px, 4.6dvh, 48px)/1.08 'Baloo 2', 'Outfit', sans-serif;
+  letter-spacing: -.045em;
+}
+.rp-layout .mh-hero-copy h2 > span {
+  display: inline-block;
+  color: #123466;
+  paint-order: stroke fill;
+  -webkit-text-stroke: 6px white;
+  filter: drop-shadow(0 2px 0 #c6def5) drop-shadow(0 3px 2px #447dba24);
+}
+.rp-layout .mh-hero-copy h2 > span:last-child {
+  color: #0089f9;
+}
+
 .mh-mascot > .bm-menu-robot-art {
   display: block;
   width: min(100%, var(--dashboard-hero-art-width, 350px));

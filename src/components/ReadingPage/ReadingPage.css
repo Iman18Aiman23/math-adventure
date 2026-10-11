@@ -1,9 +1,9 @@
 /* Menu styles are owned by the shared SubjectMenuLayout component. */
-.rp-layout .mh-hero {
+.rp-reading-page .rp-reading-hero {
   padding-bottom: 0;
 }
 
-.rp-layout .mh-mascot {
+.rp-reading-page .rp-reading-hero .mh-mascot {
   align-self: stretch;
   align-items: center;
   height: 100%;
@@ -11,7 +11,7 @@
   padding-block: 10px;
 }
 
-.rp-layout .mh-mascot > .rp-hero-robot {
+.rp-reading-page .rp-reading-hero .mh-mascot > .rp-hero-robot {
   display: block;
   width: min(100%, var(--dashboard-hero-art-width, 350px));
   height: min(var(--dashboard-hero-art-height, 220px), 100%);
