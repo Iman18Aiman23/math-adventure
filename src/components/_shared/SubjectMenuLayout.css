@@ -409,7 +409,29 @@
   .mh-topic-grid { grid-auto-rows: clamp(320px, 48dvh, 400px); }
 }
 @media (max-width: 767px) {
-  .mh-screen { --menu-hero-height: var(--dashboard-hero-height-compact, 240px); --menu-heading-height: 30px; }
+  .mh-screen .mh-hero .mh-description { display: none; }
+  .mh-screen { --menu-hero-height: 180px; --menu-heading-height: 30px; }
+  .mh-screen .mh-hero { padding-block: 8px; }
+  .mh-screen .mh-mascot { padding-block: 0; }
+  /* PageHeaderHero sets a separate fixed mobile height for shared page chrome. */
+  .mh-screen.page-layout-root .ip-hero { height: 180px; min-height: 180px; padding-block: 8px; }
+
+  /* These pages provide custom hero markup, so compact their own mobile panels. */
+  .mh-screen.page-layout-root.lb-shell .lb-hero,
+  .mh-screen.page-layout-root.ac-root .ac-hero,
+  .mh-screen.page-layout-root.pf-root .pf-hero { height: 180px; min-height: 180px; padding-block: 8px; }
+  .mh-screen.page-layout-root.lb-shell .lb-hero-copy > p:not(.lb-hero-kicker),
+  .mh-screen.page-layout-root.ac-root .ac-hero-copy > p:not(.ac-hero-kicker) { display: none; }
+
+  /* Keep the report stats readable while tightening the report hero. */
+  .mh-screen.page-layout-root.laporan-root .laporan-hero {
+    min-height: 180px;
+    padding: 12px;
+    gap: 10px;
+    grid-template-columns: minmax(0, .8fr) minmax(0, 1.4fr);
+  }
+  .mh-screen.page-layout-root.laporan-root .laporan-hero-stats { gap: 6px; }
+  .mh-screen.page-layout-root.laporan-root .laporan-hero-stats article { padding: 6px 8px; }
 }
 @media (orientation: landscape) and (max-height: 500px) {
   .mh-screen { --menu-hero-height: var(--dashboard-hero-height, 220px); }
