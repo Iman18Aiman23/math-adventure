@@ -319,7 +319,7 @@
    pattern: artwork, centered title, then a visible centered action pill. */
 @media (max-width: 767px) {
   .rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-screen {
-    --menu-card-height: 148px;
+    --menu-card-height: 160px;
   }
   .rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-topic-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -334,15 +334,15 @@
     text-align: center;
   }
   .rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-topic-visual {
-    width: 48px;
-    height: 48px;
-    min-height: 48px;
-    flex: 0 0 48px;
+    width: 56px;
+    height: 56px;
+    min-height: 56px;
+    flex: 0 0 56px;
   }
   .rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-topic-visual img,
   .rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-topic-visual svg {
     max-width: 100%;
-    max-height: 48px;
+    max-height: 56px;
   }
   .rp-layout.iman-layout:is(.rp-reading-page, .bm-menu-page, .mt-home, .time-game-menu-layout) .mh-topic-copy {
     width: 100%;
@@ -367,7 +367,7 @@
     width: 100%;
     min-height: 32px;
     height: 32px;
-    margin-top: auto;
+    margin-top: 0;
     padding: 3px 30px;
     border: 1px solid var(--mh-border);
     border-radius: 999px;
