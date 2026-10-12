@@ -234,18 +234,23 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
       <section className="ih-subjects page-container" aria-labelledby="ih-subject-heading">
         <div className="ih-section-heading"><h2 id="ih-subject-heading">{bm ? 'SUBJEK' : 'SUBJECTS'}</h2><p>{bm ? 'Pilih subjek kegemaran anda.' : 'Choose your favourite subject.'}</p></div>
         <div className="ih-subject-grid mh-topic-grid">
-          {SUBJECTS.map(subject => <button
-            type="button" key={subject.id} className={`ih-subject mh-topic-card ih-subject--${subject.tone}`}
-            aria-label={subject.title[langIndex]} aria-describedby={`ih-desc-${subject.id}`}
-            disabled={!canAccessSubject(playerName, subject.id)}
-            onClick={() => subject.id === 'robot' ? setShowRobotInterface(true) : onSelectSubject(subject.id)} onMouseEnter={canAccessSubject(playerName, subject.id) ? playHoverSound : undefined}
-          >
-            <span className="ih-subject-scene mh-topic-visual">{subject.id === 'reading'
-              ? <img className="ih-reading-art" src={`${import.meta.env.BASE_URL}images/home/Reading.webp`} alt="" aria-hidden="true" />
-              : <RobotArt index={subject.art} />}</span>
-            <span className="ih-subject-content mh-topic-copy"><span className="ih-subject-title mh-topic-title" id={`ih-title-${subject.id}`}>{subject.title[langIndex]}</span><span className="ih-subject-desc mh-topic-description" id={`ih-desc-${subject.id}`}>{subject.desc[langIndex]}</span></span>
-            <span className="mh-card-action"><span>{bm ? 'Mula Belajar' : 'Start Learning'}</span><span className="mh-arrow" aria-hidden="true"><ChevronRight size={20} /></span></span>
-          </button>)}
+          {SUBJECTS.map(subject => {
+            const canOpen = canAccessSubject(playerName, subject.id);
+            const startLabel = bm ? 'Mula' : 'Start';
+            const openSubject = () => subject.id === 'robot' ? setShowRobotInterface(true) : onSelectSubject(subject.id);
+            return <div key={subject.id} className={`ih-subject mh-topic-card ih-subject--${subject.tone} mh-image-button-card`}>
+              <button type="button" className="mh-image-art-button" aria-label={`${subject.title[langIndex]} — ${startLabel}`}
+                disabled={!canOpen} onClick={openSubject} onMouseEnter={canOpen ? playHoverSound : undefined}>
+                <span className="ih-subject-scene mh-topic-visual">{subject.id === 'reading'
+                  ? <img className="ih-reading-art" src={`${import.meta.env.BASE_URL}images/home/Reading.webp`} alt="" aria-hidden="true" />
+                  : <RobotArt index={subject.art} />}</span>
+              </button>
+              <button type="button" className="mh-image-card-action" aria-label={`${subject.title[langIndex]} — ${startLabel}`}
+                disabled={!canOpen} onClick={openSubject} onMouseEnter={canOpen ? playHoverSound : undefined}>
+                {startLabel}<span aria-hidden="true">&gt;</span>
+              </button>
+            </div>;
+          })}
         </div>
       </section>
 

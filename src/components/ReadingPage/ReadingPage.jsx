@@ -94,6 +94,7 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
     topics={levels.map(([level, title, description, art]) => ({
       id: level, title, description, theme: cardThemes[level - 1],
       visual: <ReadingArt name={art} />,
+      imageButton: true,
       onMouseEnter: playHoverSound,
     }))}
     onSelect={handleSelectLevel}

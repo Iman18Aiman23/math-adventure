@@ -265,6 +265,98 @@
 
 .mh-purple { --mh-card: #f6f1ff; --mh-border: #dfceff; --mh-accent: #8944d8; --mh-tint: #e8dcff; }
 .mh-topic-card:disabled { cursor: not-allowed; opacity: .65; }
+
+/* Image button menus show artwork and a separate Start control, without a card panel. */
+.mh-screen .mh-topic-grid .mh-image-button-card {
+  display: flex;
+  height: auto;
+  min-height: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: .5rem;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.mh-screen .mh-topic-grid .mh-image-art-button {
+  display: grid;
+  width: 9rem;
+  height: 9rem;
+  flex: 0 0 9rem;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 160ms ease;
+}
+.mh-screen .mh-topic-grid .mh-image-art-button img,
+.mh-screen .mh-topic-grid .mh-image-art-button svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.mh-screen .mh-topic-grid .mh-image-art-button:not(:disabled):hover { transform: scale(1.04); }
+.mh-screen .mh-topic-grid .mh-image-art-button:active { transform: scale(.97); }
+.mh-screen .mh-topic-grid .mh-image-card-action {
+  display: flex;
+  width: 9rem;
+  height: 2.75rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
+  margin: 0;
+  padding: .25rem .5rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, .25);
+  font: 700 1.05rem/1 'Outfit', sans-serif;
+  letter-spacing: .02em;
+  cursor: pointer;
+  transition: transform 160ms ease, background-color 160ms ease;
+}
+.mh-screen .mh-topic-grid .mh-image-card-action:not(:disabled):hover {
+  transform: translateY(-1px);
+  background: var(--primary-dark);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, .3);
+}
+.mh-screen .mh-topic-grid .mh-image-card-action:active { transform: scale(.98); box-shadow: 0 1px 4px rgba(99, 102, 241, .2); }
+.mh-screen .mh-topic-grid .mh-image-card-action > span {
+  display: grid;
+  width: 1.35rem;
+  height: 1.35rem;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .16);
+  font-size: 1rem;
+}
+.mh-screen .mh-topic-grid .mh-image-art-button:focus-visible,
+.mh-screen .mh-topic-grid .mh-image-card-action:focus-visible {
+  outline: 3px solid #1687d9;
+  outline-offset: 4px;
+}
+.mh-screen .mh-topic-grid .mh-image-art-button:disabled,
+.mh-screen .mh-topic-grid .mh-image-card-action:disabled { opacity: .55; cursor: not-allowed; }
+@media (min-width: 768px) and (max-width: 1099px) {
+  .mh-screen .mh-topic-grid .mh-image-art-button { width: 7rem; height: 7rem; flex-basis: 7rem; }
+  .mh-screen .mh-topic-grid .mh-image-card-action { width: 7rem; height: 2.5rem; font-size: 1rem; }
+}
+@media (max-width: 767px) {
+  .mh-screen .mh-topic-grid .mh-image-art-button { width: 7rem; height: 7rem; flex-basis: 7rem; }
+  .mh-screen .mh-topic-grid .mh-image-card-action { width: 7rem; height: 2.5rem; font-size: 1rem; }
+}
+@media (max-width: 359px) {
+  .mh-screen .mh-topic-grid .mh-image-art-button { width: 5.75rem; height: 5.75rem; flex-basis: 5.75rem; }
+  .mh-screen .mh-topic-grid .mh-image-card-action { width: 5.75rem; height: 2.25rem; font-size: .9rem; }
+}
 .subject-menu-footer { flex-shrink: 0; background: white; }
 .mh-menu-notice { max-width: 1400px; margin: 0 auto 12px; padding: 12px 16px; border-radius: 14px; background: #fff6db; color: #754f0b; font-size: 14px; }
 .mh-menu-help { grid-column: 1 / -1; padding: 16px; border: 1px solid #dcebfa; border-radius: 16px; color: var(--mh-muted); font-size: 14px; line-height: 1.5; }
@@ -508,5 +600,23 @@
 @media (min-width: 768px) {
   .mh-screen.pf-root {
     padding: clamp(8px, 1.2dvh, 16px) clamp(16px, 1.6vw, 30px) clamp(10px, 1.4dvh, 20px);
+  }
+}
+
+@media (max-width: 767px) {
+  .mh-screen .mh-topic-grid .mh-topic-card.mh-image-button-card {
+    display: flex;
+    height: auto;
+    min-height: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: .5rem;
+    padding: 0;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
   }
 }

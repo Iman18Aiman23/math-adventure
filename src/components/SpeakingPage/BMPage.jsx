@@ -65,6 +65,7 @@ export default function BMPage({
       title: category[bm ? 'bm' : 'en'],
       description: category[bm ? 'descBm' : 'descEn'],
       visual: <BMMenuArtwork topic={category.id} />,
+      imageButton: true,
       disabled: !isSupported,
       disabledLabel: bm ? 'Tidak disokong' : 'Not supported',
       disabledReason: unsupportedReason,

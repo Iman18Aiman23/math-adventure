@@ -28,3 +28,26 @@
   object-position: center;
   align-self: flex-end;
 }
+.rp-layout.iman-layout.mt-home .mh-image-card-action {
+  background: #16a96b;
+  border-color: #108653;
+  box-shadow: 0 2px 8px rgba(22, 169, 107, .24);
+}
+.rp-layout.iman-layout.mt-home .mh-image-card-action:not(:disabled):hover {
+  background: #108653;
+  box-shadow: 0 6px 16px rgba(22, 169, 107, .3);
+}
+.rp-layout.iman-layout.mt-home .mh-image-card-action:active { box-shadow: 0 1px 4px rgba(22, 169, 107, .2); }
+
+@media (min-width: 768px) {
+  .rp-layout.iman-layout.mt-home .mh-topic-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: auto;
+  }
+}
+@media (max-width: 767px) {
+  .rp-layout.iman-layout.mt-home .mh-topic-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: auto;
+  }
+}

@@ -31,23 +31,148 @@
   object-position: center;
   align-self: center;
 }
-.mh-topic-visual > .bm-menu-category-art {
+.mh-topic-visual > .bm-menu-category-art { display: block; object-fit: contain; }
+
+/* The artwork and its label are the only controls in each speaking item. */
+.rp-layout.iman-layout.bm-menu-page .mh-topic-grid {
+  width: 80%;
+  margin: 0 auto;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: auto;
+  gap: 2rem 3rem;
+  align-items: start;
+}
+.rp-layout.iman-layout.bm-menu-page .mh-topic-grid .mh-image-button-card,
+.rp-layout.iman-layout.bm-menu-page .mh-topic-grid .mh-image-button-card:hover {
+  display: flex;
+  width: 100%;
+  height: auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  padding: 0;
+  overflow: visible;
+  transform: none;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.rp-layout.iman-layout.bm-menu-page .mh-topic-grid .mh-image-button-card .mh-image-art-button {
+  display: grid;
+  width: 9rem;
+  height: 9rem;
+  flex: 0 0 9rem;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 160ms ease;
+}
+.rp-layout.iman-layout.bm-menu-page .mh-topic-grid .mh-image-art-button:not(:disabled):hover {
+  transform: scale(1.04);
+}
+.rp-layout.iman-layout.bm-menu-page .mh-topic-grid .mh-image-art-button:active {
+  transform: scale(.97);
+}
+.rp-layout.iman-layout.bm-menu-page .mh-topic-grid .mh-image-button-card .mh-image-art-button img {
   display: block;
   width: 100%;
   height: 100%;
-  max-height: 140px;
   object-fit: contain;
 }
-@container (min-width: 900px) {
-  .mh-topic-visual > .bm-menu-category-art {
-    width: min(100%, 120px);
-    max-height: min(19dvh, 120px);
-  }
+.rp-layout.iman-layout.bm-menu-page .mh-topic-grid .mh-image-button-card .mh-image-card-action {
+  display: flex;
+  width: 9rem;
+  height: 2.75rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #0075d1;
+  border-radius: 999px;
+  background: #0089f9;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 137, 249, .24);
+  font: 700 1.05rem/1 'Outfit', sans-serif;
+  letter-spacing: .02em;
+  cursor: pointer;
+  transition: transform 160ms ease, background-color 160ms ease;
+}
+.rp-layout.iman-layout.bm-menu-page .mh-topic-grid .mh-image-card-action:not(:disabled):hover {
+  transform: translateY(-1px);
+  background: #0674d1;
+  box-shadow: 0 6px 16px rgba(0, 137, 249, .3);
+}
+.rp-layout.iman-layout.bm-menu-page .mh-topic-grid .mh-image-card-action:active { transform: scale(.98); box-shadow: 0 1px 4px rgba(0, 137, 249, .2); }
+.rp-layout.iman-layout.bm-menu-page .mh-topic-grid .mh-image-card-action > span {
+  display: grid;
+  width: 1.35rem;
+  height: 1.35rem;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .16);
+  font-size: 1rem;
+}
+.rp-layout.iman-layout.bm-menu-page .mh-topic-grid .mh-image-art-button:focus-visible,
+.rp-layout.iman-layout.bm-menu-page .mh-topic-grid .mh-image-card-action:focus-visible {
+  outline: 3px solid #1687d9;
+  outline-offset: 4px;
+}
+.rp-layout.iman-layout.bm-menu-page .mh-topic-grid .mh-image-art-button:disabled,
+.rp-layout.iman-layout.bm-menu-page .mh-topic-grid .mh-image-card-action:disabled {
+  opacity: .55;
+  cursor: not-allowed;
 }
 @media (max-width: 767px) {
-  .mh-topic-visual > .bm-menu-category-art { max-height: 64px; }
+  .rp-layout.iman-layout.bm-menu-page .mh-topic-grid { width: 94%; gap: 1.5rem 1rem; }
+  .rp-layout.iman-layout.bm-menu-page .mh-topic-grid .mh-image-button-card .mh-image-art-button {
+    width: 7rem;
+    height: 7rem;
+    flex-basis: 7rem;
+  }
+  .rp-layout.iman-layout.bm-menu-page .mh-topic-grid .mh-image-button-card .mh-image-card-action {
+    width: 7rem;
+    height: 2.5rem;
+    font-size: 1rem;
+  }
 }
-
+@media (min-width: 768px) {
+  .rp-layout.iman-layout.bm-menu-page .mh-topic-grid {
+    width: 100%;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem 1.5rem;
+  }
+}
+@media (min-width: 768px) and (max-width: 1099px) {
+  .rp-layout.iman-layout.bm-menu-page .mh-topic-grid .mh-image-button-card .mh-image-art-button {
+    width: 7rem;
+    height: 7rem;
+    flex-basis: 7rem;
+  }
+  .rp-layout.iman-layout.bm-menu-page .mh-topic-grid .mh-image-button-card .mh-image-card-action {
+    width: 7rem;
+    height: 2.5rem;
+    font-size: 1rem;
+  }
+}
+@media (max-width: 359px) {
+  .rp-layout.iman-layout.bm-menu-page .mh-topic-grid { width: 100%; gap: 1.25rem .5rem; }
+  .rp-layout.iman-layout.bm-menu-page .mh-topic-grid .mh-image-button-card .mh-image-art-button {
+    width: 5.75rem;
+    height: 5.75rem;
+    flex-basis: 5.75rem;
+  }
+  .rp-layout.iman-layout.bm-menu-page .mh-topic-grid .mh-image-button-card .mh-image-card-action {
+    width: 5.75rem;
+    height: 2.25rem;
+    font-size: .9rem;
+  }
+}
 /* ── Background ── */
 .bp-body {
   background:

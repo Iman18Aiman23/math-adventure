@@ -30,7 +30,7 @@ export default function MathHome({ onSelectSubGame, onBack, language = 'bm', ...
     mascot={<img className="mt-hero-robot" src={MATH_HERO_ART} alt="" />}
     sectionTitle={bm ? 'Pilih Topik' : 'Choose a topic'}
     sectionDescription={bm ? 'Pilih topik untuk mula belajar.' : 'Pick a topic to start learning.'}
-    topics={SUB_GAMES.map(game => ({ ...game, description: game[bm ? 'bm' : 'eng'], visual: <MathTopicArtwork topic={game.id} /> }))}
+    topics={SUB_GAMES.map(game => ({ ...game, description: game[bm ? 'bm' : 'eng'], visual: <MathTopicArtwork topic={game.id} />, imageButton: true }))}
     onSelect={onSelectSubGame}
   />
   </div>;

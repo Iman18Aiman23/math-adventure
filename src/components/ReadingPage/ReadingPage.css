@@ -22,33 +22,26 @@
   align-self: center;
 }
 
-/* Keep the five level artworks in the same square frame, even when their
-   source crops have different proportions. */
-.rp-layout .mh-topic-visual {
-  width: min(100%, 120px);
-  aspect-ratio: 1;
-  height: auto;
-  justify-self: center;
-  align-self: center;
-}
-.rp-layout .mh-topic-visual img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-@container (min-width: 900px) {
-  .rp-layout .mh-topic-visual {
-    width: min(100%, 120px);
-    height: auto;
-    flex: 0 0 auto;
+/* Three levels per row while the desktop sidebar is present. */
+@media (min-width: 768px) {
+  .rp-layout.iman-layout.rp-reading-page .mh-topic-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: auto;
   }
+}
+.rp-layout.iman-layout.rp-reading-page .mh-image-card-action {
+  border-color: #0075d1;
+  background: #0089f9;
+  box-shadow: 0 2px 8px rgba(0, 137, 249, .24);
+}
+.rp-layout.iman-layout.rp-reading-page .mh-image-card-action:active { box-shadow: 0 1px 4px rgba(0, 137, 249, .2); }
+.rp-layout.iman-layout.rp-reading-page .mh-image-card-action:not(:disabled):hover {
+  background: #0674d1;
+  box-shadow: 0 6px 16px rgba(0, 137, 249, .3);
 }
 @media (max-width: 767px) {
-  .rp-layout .mh-topic-visual {
-    width: clamp(54px, 17vw, 70px);
-    height: auto;
-    flex: 0 0 auto;
+  .rp-layout.iman-layout.rp-reading-page .mh-topic-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: auto;
   }
-  .rp-layout .mh-topic-visual img { max-height: none; }
 }

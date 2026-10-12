@@ -2,8 +2,8 @@ const BASE = `${import.meta.env.BASE_URL}images/`;
 
 const ARTWORK = {
   robot: `speaking/HeroRobotSpeaking.webp`,
-  bm_kv: `reading/SukuKata KV.webp`,
-  bm_kvk: `reading/SukuKata KVK.webp`,
+  bm_kv: `speaking/Suku Kata (KV).webp`,
+  bm_kvk: `speaking/Suku Kata (KVK).webp`,
   en_long_vowels: `speaking/Bunyi Huruf Bahasa Inggeris.webp`,
   numbers: `speaking/Nombor 1 – 100.webp`,
   common_objects: `speaking/Objek.webp`,

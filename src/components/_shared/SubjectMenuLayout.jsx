@@ -45,7 +45,22 @@ export default function SubjectMenuLayout({
             <p>{sectionDescription}</p>
           </div>
           <section className="mh-topic-grid" aria-labelledby={`${id}-topics`}>
-            {topics.map(topic => (
+            {topics.map(topic => topic.imageButton ? (
+              <div key={topic.id} className={`mh-topic-card mh-${topic.theme} mh-image-button-card mh-image-button-${topic.id}`}>
+                <button type="button" className="mh-image-art-button" disabled={topic.disabled}
+                  onClick={() => onSelect(topic.id)} onMouseEnter={topic.onMouseEnter}
+                  title={topic.disabled ? (topic.disabledReason || topic.disabledLabel || comingSoon) : undefined}
+                  aria-label={`${topic.title}. ${language === 'bm' ? 'Mula' : 'Start'}`}>
+                  {topic.visual}
+                </button>
+                <button type="button" className="mh-image-card-action" disabled={topic.disabled}
+                  onClick={() => onSelect(topic.id)} onMouseEnter={topic.onMouseEnter}
+                  title={topic.disabled ? (topic.disabledReason || topic.disabledLabel || comingSoon) : undefined}>
+                  {topic.disabled ? (topic.disabledLabel || comingSoon) : language === 'bm' ? 'Mula' : 'Start'}
+                  <span aria-hidden="true">&gt;</span>
+                </button>
+              </div>
+            ) : (
               <button key={topic.id} type="button" className={`mh-topic-card mh-${topic.theme}`}
                 disabled={topic.disabled} onClick={() => onSelect(topic.id)} onMouseEnter={topic.onMouseEnter}
                 title={topic.disabled ? (topic.disabledReason || topic.disabledLabel || comingSoon) : undefined}>
