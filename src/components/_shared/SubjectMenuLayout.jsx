@@ -45,7 +45,18 @@ export default function SubjectMenuLayout({
             <p>{sectionDescription}</p>
           </div>
           <section className="mh-topic-grid" aria-labelledby={`${id}-topics`}>
-            {topics.map(topic => topic.imageButton ? (
+            {topics.map(topic => topic.compactTag ? (
+              <button key={topic.id} type="button" className={`mh-topic-card mh-${topic.theme} mh-compact-tag mh-compact-tag-${topic.id}`}
+                disabled={topic.disabled} onClick={() => onSelect(topic.id)} onMouseEnter={topic.onMouseEnter}
+                title={topic.disabled ? (topic.disabledReason || topic.disabledLabel || comingSoon) : undefined}>
+                <span className="mh-compact-tag-icon" aria-hidden="true">{topic.visual}</span>
+                <span className="mh-compact-tag-title">{topic.title}</span>
+                {topic.showAction !== false && <span className="mh-compact-tag-go">
+                  <span>{language === 'bm' ? 'Mula' : 'Start'}</span>
+                  <span className="mh-compact-tag-arrow" aria-hidden="true">&gt;</span>
+                </span>}
+              </button>
+            ) : topic.imageButton ? (
               <div key={topic.id} className={`mh-topic-card mh-${topic.theme} mh-image-button-card mh-image-button-${topic.id}`}>
                 <button type="button" className="mh-image-art-button" disabled={topic.disabled}
                   onClick={() => onSelect(topic.id)} onMouseEnter={topic.onMouseEnter}
@@ -53,12 +64,12 @@ export default function SubjectMenuLayout({
                   aria-label={`${topic.title}. ${language === 'bm' ? 'Mula' : 'Start'}`}>
                   {topic.visual}
                 </button>
-                <button type="button" className="mh-image-card-action" disabled={topic.disabled}
+                {topic.showAction !== false && <button type="button" className="mh-image-card-action" disabled={topic.disabled}
                   onClick={() => onSelect(topic.id)} onMouseEnter={topic.onMouseEnter}
                   title={topic.disabled ? (topic.disabledReason || topic.disabledLabel || comingSoon) : undefined}>
                   {topic.disabled ? (topic.disabledLabel || comingSoon) : language === 'bm' ? 'Mula' : 'Start'}
                   <span aria-hidden="true">&gt;</span>
-                </button>
+                </button>}
               </div>
             ) : (
               <button key={topic.id} type="button" className={`mh-topic-card mh-${topic.theme}`}

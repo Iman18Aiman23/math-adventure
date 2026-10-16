@@ -1,4 +1,5 @@
 import React, { useTransition } from 'react';
+import { BookOpen, BookMarked, Languages, FileText, Trophy } from 'lucide-react';
 import { playHoverSound } from '../../utils/soundManager';
 import { useGameStateContext } from '../../App';
 import LoadingSpinner from '../LoadingSpinner';
@@ -13,16 +14,7 @@ const KVKLearningPage = React.lazy(() => import('./KVKLearningPage'));
 const ReadingJourney = React.lazy(() => import('./games/ReadingJourney'));
 
 const HERO_ROBOT_ART = import.meta.env.BASE_URL + 'images/reading/HeroRobotIcon.webp';
-const LEVEL_ART = {
-  kv: 'SukuKata KV.webp',
-  kvk: 'SukuKata KVK.webp',
-  words: 'Ayat Pendek.webp',
-  sentences: 'Ayat Panjang.webp',
-  challenge: 'Trophy.webp',
-};
-function ReadingArt({ name }) {
-  return <img src={`${import.meta.env.BASE_URL}images/reading/${encodeURIComponent(LEVEL_ART[name])}`} alt="" />;
-}
+const LEVEL_ICONS = { kv: BookOpen, kvk: BookMarked, words: Languages, sentences: FileText, challenge: Trophy };
 
 export default function ReadingPage({ onBack, language = 'bm', selectedLevel = null, onSelectLevel: setSelectedLevel, ...accountProps }) {
   useBrowserBackHandler(selectedLevel ? () => setSelectedLevel(null) : onBack);
@@ -93,8 +85,9 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
     sectionDescription={bm ? 'Pilih tahap untuk mula belajar.' : 'Pick a level to start learning.'}
     topics={levels.map(([level, title, description, art]) => ({
       id: level, title, description, theme: cardThemes[level - 1],
-      visual: <ReadingArt name={art} />,
-      imageButton: true,
+      visual: React.createElement(LEVEL_ICONS[art], { size: 36, strokeWidth: 2 }),
+      compactTag: true,
+      showAction: false,
       onMouseEnter: playHoverSound,
     }))}
     onSelect={handleSelectLevel}

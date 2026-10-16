@@ -33,12 +33,35 @@
 .pf-period { display: flex; align-items: center; gap: 7px; padding: 10px 12px; min-height: 42px; border: 1px solid #d9e6f4; border-radius: 13px; color: #44699f; background: #fff; margin-left: auto; }
 .pf-period select { background: transparent; color: inherit; border: 0; font-size: 12px; max-width: 100%; cursor: pointer; }
 .pf-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.pf-mint { --pf-tint: #f3fff9; --pf-border: #c9f4df; --pf-disc: #c5f9df; --pf-color: #00b57c; }
-.pf-pink { --pf-tint: #fff5fa; --pf-border: #ffdaed; --pf-disc: #ffcae5; --pf-color: #fb2880; }
-.pf-purple { --pf-tint: #f8f4ff; --pf-border: #e5d8ff; --pf-disc: #e4d6ff; --pf-color: #7936ff; }
-.pf-blue { --pf-tint: #f0f9ff; --pf-border: #d1e9ff; --pf-disc: #d3efff; --pf-color: #009aff; }
-.pf-gold { --pf-tint: #fffaf0; --pf-border: #faedce; --pf-disc: #fff0bd; --pf-color: #ffac00; }
-.pf-metric { display: flex; align-items: center; gap: 9px; background: var(--pf-tint); border: 1px solid var(--pf-border); border-radius: 15px; padding: 13px 10px; min-width: 0; }
+.pf-mint { --pf-tint: #f3fff9; --pf-border: #c9f4df; --pf-disc: #c5f9df; --pf-color: #00b57c; --pf-hill-back: #9edcb2; --pf-hill-front: #77c994; }
+.pf-pink { --pf-tint: #fff5fa; --pf-border: #ffdaed; --pf-disc: #ffcae5; --pf-color: #fb2880; --pf-hill-back: #edb0cb; --pf-hill-front: #da8eb2; }
+.pf-purple { --pf-tint: #f8f4ff; --pf-border: #e5d8ff; --pf-disc: #e4d6ff; --pf-color: #7936ff; --pf-hill-back: #c4a9e4; --pf-hill-front: #a786d0; }
+.pf-blue { --pf-tint: #f0f9ff; --pf-border: #d1e9ff; --pf-disc: #d3efff; --pf-color: #009aff; --pf-hill-back: #9dcde5; --pf-hill-front: #78b5d3; }
+.pf-gold { --pf-tint: #fffaf0; --pf-border: #faedce; --pf-disc: #fff0bd; --pf-color: #ffac00; --pf-hill-back: #e8d18c; --pf-hill-front: #d2b35f; }
+.pf-metric {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--pf-tint) 78%, white), var(--pf-tint));
+  border: 1px solid var(--pf-border);
+  border-radius: 15px;
+  padding: 13px 10px;
+  height: 128px;
+  min-height: 128px;
+  min-width: 0;
+}
+.pf-metric::before, .pf-metric::after { position: absolute; z-index: 0; inset: 0; border-radius: inherit; content: ''; pointer-events: none; }
+.pf-metric::before {
+  background-image:
+    radial-gradient(circle at 88% 20%, #ffe58b 0 9%, transparent 9.5%),
+    radial-gradient(ellipse at 92% 118%, var(--pf-hill-back) 0 43%, transparent 43.5%);
+  opacity: .34;
+}
+.pf-metric::after { background: radial-gradient(ellipse at 12% 124%, var(--pf-hill-front) 0 45%, transparent 45.5%); opacity: .32; }
+.pf-metric-icon, .pf-metric > div { position: relative; z-index: 1; }
 .pf-metric > div { min-width: 0; }
 .pf-metric-icon { display: grid; place-items: center; width: 40px; height: 40px; flex: 0 0 40px; border-radius: 50%; font-size: 26px; background: var(--pf-disc); }
 .pf-metric h3 { font: 400 11px/1.3 'Inter', sans-serif; color: #4a6ba4; }
@@ -70,7 +93,7 @@
 .pf-chart-peak { background: linear-gradient(120deg, #00bd98, #00a984); }
 .pf-chart-bar > span { position: absolute; bottom: calc(100% + 5px); left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 10px; font-weight: 600; color: var(--pf-ink); }
 .pf-badges { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 7px; }
-.pf-badge { min-width: 0; background: var(--pf-tint); border: 1px solid var(--pf-border); border-radius: 12px; color: #244a82; padding: 10px 3px; text-align: center; cursor: pointer; }
+.pf-badge { height: 108px; min-width: 0; background: var(--pf-tint); border: 1px solid var(--pf-border); border-radius: 12px; color: #244a82; padding: 10px 3px; text-align: center; cursor: pointer; }
 .pf-badge > span:first-child { display: block; font-size: 28px; line-height: 1.3; margin-bottom: 5px; }
 .pf-badge > span:last-child { display: block; font-size: 9px; line-height: 1.4; overflow-wrap: anywhere; }
 .pf-badge-locked > span:first-child { filter: grayscale(.65); opacity: .55; }

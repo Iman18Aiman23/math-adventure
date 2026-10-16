@@ -1,4 +1,5 @@
 import React, { Suspense, useTransition } from 'react';
+import { BookOpen, BookMarked, Languages, Hash, Shapes } from 'lucide-react';
 import { LOCALIZATION } from '../../utils/localization';
 import { useGameStateContext } from '../../App';
 import SpeechManager from '../../services/SpeechManager';
@@ -11,19 +12,19 @@ import './BMPage.css';
 
 const BMSpeakGame = React.lazy(() => import('./BMSpeakGame'));
 const CATEGORIES = [
-  { id: 'bm_kv', theme: 'blue', bm: 'Suku Kata (KV)', en: 'KV Syllables',
+  { id: 'bm_kv', theme: 'blue', icon: BookOpen, bm: 'Suku Kata (KV)', en: 'KV Syllables',
     descBm: 'Dengar dan sebut suku kata mudah seperti ba, ca, da.',
     descEn: 'Listen and say open syllables such as ba, ca, da.' },
-  { id: 'bm_kvk', theme: 'red', bm: 'Suku Kata (KVK)', en: 'KVK Syllables',
+  { id: 'bm_kvk', theme: 'red', icon: BookMarked, bm: 'Suku Kata (KVK)', en: 'KVK Syllables',
     descBm: 'Dengar dan sebut suku kata tertutup seperti kan, man, cat.',
     descEn: 'Listen and say closed syllables such as kan, man, cat.' },
-  { id: 'en_long_vowels', theme: 'mint', bm: 'Bunyi Huruf Bahasa Inggeris', en: 'English Phonics',
+  { id: 'en_long_vowels', theme: 'mint', icon: Languages, bm: 'Bunyi Huruf Bahasa Inggeris', en: 'English Phonics',
     descBm: 'Dengar dan sebut bunyi huruf dengan betul.',
     descEn: 'Listen and practise English sounds and long vowels.' },
   { id: 'numbers', theme: 'gold', bm: 'Nombor 1 – 100', en: 'Numbers 1 – 100',
     descBm: 'Dengar dan sebut nombor dari 1 hingga 100.',
     descEn: 'Listen and say numbers from 1 to 100.' },
-  { id: 'common_objects', theme: 'purple', bm: 'Objek', en: 'Objects',
+  { id: 'common_objects', theme: 'purple', icon: Shapes, bm: 'Objek', en: 'Objects',
     descBm: 'Dengar dan sebut nama objek seharian dengan jelas.',
     descEn: 'Listen and clearly say the names of everyday objects.' },
 ];
@@ -64,8 +65,9 @@ export default function BMPage({
       id: category.id, theme: category.theme,
       title: category[bm ? 'bm' : 'en'],
       description: category[bm ? 'descBm' : 'descEn'],
-      visual: <BMMenuArtwork topic={category.id} />,
-      imageButton: true,
+      visual: React.createElement(category.icon || Hash, { size: 23, strokeWidth: 2 }),
+      compactTag: true,
+      showAction: false,
       disabled: !isSupported,
       disabledLabel: bm ? 'Tidak disokong' : 'Not supported',
       disabledReason: unsupportedReason,

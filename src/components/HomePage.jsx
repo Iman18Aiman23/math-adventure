@@ -1,5 +1,5 @@
 import React, { useState, Suspense } from 'react';
-import { ChevronRight, Star, ArrowLeft } from 'lucide-react';
+import { ChevronRight, Star, ArrowLeft, BookOpen, Mic2, Calculator, MoonStar, BookText, Languages, Bot } from 'lucide-react';
 import { AGE_GROUPS } from '../data/ageCurriculum';
 import { canAccessSubject, hasFullSubjectAccess } from '../utils/subjectAccess';
 import { playHoverSound } from '../utils/soundManager';
@@ -82,7 +82,6 @@ export function HomePageLayoutStyles() {
     .iman-layout .mh-coming-soon { display: block; }
     .iman-layout .mh-card-action { position: static; display: grid; width: 36px; height: 36px; padding: 0; border: 0; background: none; box-shadow: none; }
     .iman-layout .mh-card-action > span:first-child { display: none; }
-    .iman-layout .ih-subject .mh-card-action > span:first-child { flex: 1; text-align: center; }
     .iman-layout .mh-card-action .mh-arrow { grid-area: auto; width: 36px; height: 36px; box-shadow: none; }
     @container iman-page (min-width: 560px) {
       .iman-layout .mh-topic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -123,21 +122,6 @@ export function HomePageLayoutStyles() {
         display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start;
         min-height: 0; gap: 8px; padding: clamp(10px, 2.5vw, 16px); border-radius: 16px;
       }
-      .ih-root.iman-layout .ih-subject-scene { align-self: center; width: 48px; height: 48px; }
-      .ih-root.iman-layout .ih-subject-content { align-self: center; text-align: center; gap: 4px; }
-      .ih-root.iman-layout .ih-subject-title { font-size: clamp(13px, 3.3vw, 17px); line-height: 1.2; }
-      .ih-root.iman-layout .ih-subject-desc { font-size: clamp(11px, 2.7vw, 13px); line-height: 1.4; }
-      .ih-root.iman-layout .ih-subject-desc { display: none; }
-      .ih-root.iman-layout .ih-subject .mh-card-action {
-        position: static; display: flex; align-items: center; justify-content: space-between;
-        gap: 6px; width: 100%; height: auto; min-height: 34px; margin-top: auto;
-        padding: 3px 4px 3px 10px; border: 1px solid var(--mh-border);
-        border-radius: 999px; background: var(--mh-tint); color: var(--mh-accent);
-        font: 700 12px/1.2 'Outfit', sans-serif; white-space: normal;
-      }
-      .ih-root.iman-layout .ih-subject .mh-card-action > span:first-child { display: inline; }
-      .ih-root.iman-layout .ih-subject .mh-arrow { flex: 0 0 28px; width: 28px; height: 28px; }
-      .ih-root.iman-layout .ih-subject .mh-arrow svg { width: 16px; height: 16px; }
     }
     @media (max-width: 767px), (max-height: 500px) and (pointer: coarse) {
       .ih-root.iman-layout { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
@@ -176,10 +160,15 @@ const SUBJECTS = [
   { id: 'bm-kssr', tone: 'malay', title: ['B. MELAYU KSSR', 'MALAY KSSR'], desc: ['Ikut silibus BM KSSR Tahun 1–3!', 'Follow the Malay KSSR syllabus for Years 1–3!'], art: 5 },
   { id: 'robot', tone: 'robot', title: ['ROBOT & KOD', 'ROBOT & CODE'], desc: ['Belajar robotik dan kod dengan mudah!', 'Discover robotics and coding!'], art: 6 },
 ];
-
-function RobotArt({ index, className = '' }) {
-  return <span aria-hidden="true" className={`ih-art ${className}`} style={{ backgroundPosition: `${(index % 4) * 100 / 3}% ${index > 3 ? 100 : 0}%` }} />;
-}
+const SUBJECT_ICONS = {
+  reading: BookOpen,
+  bm: Mic2,
+  math: Calculator,
+  'pendidikan-islam-v1': MoonStar,
+  'matematik-kssr': Calculator,
+  'bm-kssr': Languages,
+  robot: Bot,
+};
 
 function AgeBadge({ index }) {
   return (
@@ -236,20 +225,14 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
         <div className="ih-subject-grid mh-topic-grid">
           {SUBJECTS.map(subject => {
             const canOpen = canAccessSubject(playerName, subject.id);
-            const startLabel = bm ? 'Mula' : 'Start';
             const openSubject = () => subject.id === 'robot' ? setShowRobotInterface(true) : onSelectSubject(subject.id);
-            return <div key={subject.id} className={`ih-subject mh-topic-card ih-subject--${subject.tone} mh-image-button-card`}>
-              <button type="button" className="mh-image-art-button" aria-label={`${subject.title[langIndex]} — ${startLabel}`}
-                disabled={!canOpen} onClick={openSubject} onMouseEnter={canOpen ? playHoverSound : undefined}>
-                <span className="ih-subject-scene mh-topic-visual">{subject.id === 'reading'
-                  ? <img className="ih-reading-art" src={`${import.meta.env.BASE_URL}images/home/Reading.webp`} alt="" aria-hidden="true" />
-                  : <RobotArt index={subject.art} />}</span>
-              </button>
-              <button type="button" className="mh-image-card-action" aria-label={`${subject.title[langIndex]} — ${startLabel}`}
-                disabled={!canOpen} onClick={openSubject} onMouseEnter={canOpen ? playHoverSound : undefined}>
-                {startLabel}<span aria-hidden="true">&gt;</span>
-              </button>
-            </div>;
+            const SubjectIcon = SUBJECT_ICONS[subject.id] || BookText;
+            return <button key={subject.id} type="button" className={`ih-subject ih-subject-card ih-subject--${subject.tone} mh-compact-tag`}
+              aria-label={subject.title[langIndex]} disabled={!canOpen} onClick={openSubject}
+                onMouseEnter={canOpen ? playHoverSound : undefined}>
+              <span className="ih-subject-icon mh-compact-tag-icon"><SubjectIcon size={36} strokeWidth={2} aria-hidden="true" /></span>
+              <span className="ih-subject-name mh-compact-tag-title">{subject.title[langIndex].toLocaleLowerCase().replace(/(^|\s)[\p{L}]/gu, letter => letter.toLocaleUpperCase())}</span>
+            </button>;
           })}
         </div>
       </section>
