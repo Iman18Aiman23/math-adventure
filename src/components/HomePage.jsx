@@ -1,5 +1,5 @@
 import React, { useState, Suspense } from 'react';
-import { ChevronRight, Star, ArrowLeft, BookOpen, Mic2, Calculator, MoonStar, BookText, Languages, Bot } from 'lucide-react';
+import { ChevronRight, Star, ArrowLeft, BookOpen, Mic, Calculator, MoonStar, Languages, Bot } from 'lucide-react';
 import { AGE_GROUPS } from '../data/ageCurriculum';
 import { canAccessSubject, hasFullSubjectAccess } from '../utils/subjectAccess';
 import { playHoverSound } from '../utils/soundManager';
@@ -162,13 +162,39 @@ const SUBJECTS = [
 ];
 const SUBJECT_ICONS = {
   reading: BookOpen,
-  bm: Mic2,
+  bm: Mic,
   math: Calculator,
   'pendidikan-islam-v1': MoonStar,
   'matematik-kssr': Calculator,
   'bm-kssr': Languages,
   robot: Bot,
 };
+
+function SubjectPlanetBackdrop({ tone }) {
+  const gradientId = `subject-planet-${tone}`;
+  return <svg className="ih-planet-backdrop" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id={gradientId} x1="15%" y1="10%" x2="85%" y2="90%">
+        <stop offset="0%" stopColor="color-mix(in srgb, var(--subject-nebula) 72%, white)" />
+        <stop offset="55%" stopColor="var(--subject-nebula)" />
+        <stop offset="100%" stopColor="var(--subject-border)" />
+      </linearGradient>
+      <linearGradient id={`${gradientId}-orbit`} x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="white" />
+        <stop offset="50%" stopColor="var(--subject-nebula)" />
+        <stop offset="100%" stopColor="var(--subject-border)" />
+      </linearGradient>
+    </defs>
+    <circle cx="48" cy="48" r="27" fill={`url(#${gradientId})`} stroke="white" strokeWidth="2.5" />
+    <path d="M31 40c7-9 20-12 31-7-4 1-8 4-11 8-6 7-14 10-23 8-2-3-1-6 3-9Z" fill="white" opacity=".26" />
+    <ellipse cx="48" cy="48" rx="39" ry="19" transform="rotate(-28 48 48)" fill="none" stroke={`url(#${gradientId}-orbit)`} strokeWidth="5" opacity=".95" />
+    <path d="m14 25 2.2 4.6 5 .7-3.6 3.5.9 5-4.5-2.4-4.5 2.4.9-5-3.6-3.5 5-.7Z" fill="#ffe477" />
+    <path d="m79 69 1.6 3.2 3.6.5-2.6 2.5.6 3.6-3.2-1.7-3.2 1.7.6-3.6-2.6-2.5 3.6-.5Z" fill="#fff" />
+    <circle cx="78" cy="27" r="3" fill="#ffdf74" />
+    <circle cx="20" cy="72" r="2.5" fill="white" />
+    <circle cx="72" cy="17" r="1.8" fill="var(--subject-border)" />
+  </svg>;
+}
 
 function AgeBadge({ index }) {
   return (
@@ -193,7 +219,6 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
   const bm = language === 'bm';
   const langIndex = bm ? 0 : 1;
   const name = playerName || 'Iman';
-  const currentLevel = gameState?.level ?? 1;
 
   if (showRobotInterface && hasFullSubjectAccess(playerName)) {
     return <div className="ih-robot-interface">
@@ -213,7 +238,6 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
         titleText={`${bm ? 'Hei' : 'Hey'}, ${name}!`}
         heroTitle={<><span>{bm ? 'Hei' : 'Hey'},</span> <span>{name}!</span> <span aria-hidden="true">👋</span></>}
         description={bm ? 'Teruskan perjalanan belajar anda bersama ImanAI!' : 'Continue your learning adventure with ImanAI!'}
-        encouragement={<span className="ih-level"><Star size={20} aria-hidden="true" /> LEVEL {currentLevel}</span>}
         mascot={<img src={`${import.meta.env.BASE_URL}images/home/Robot%20HomePage.webp`} alt="" />}
         decoration={<>
           <Star className="ih-hero-star" aria-hidden="true" />
@@ -226,12 +250,16 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
           {SUBJECTS.map(subject => {
             const canOpen = canAccessSubject(playerName, subject.id);
             const openSubject = () => subject.id === 'robot' ? setShowRobotInterface(true) : onSelectSubject(subject.id);
-            const SubjectIcon = SUBJECT_ICONS[subject.id] || BookText;
+            const SubjectIcon = SUBJECT_ICONS[subject.id] || Languages;
             return <button key={subject.id} type="button" className={`ih-subject ih-subject-card ih-subject--${subject.tone} mh-compact-tag`}
               aria-label={subject.title[langIndex]} disabled={!canOpen} onClick={openSubject}
                 onMouseEnter={canOpen ? playHoverSound : undefined}>
-              <span className="ih-subject-icon mh-compact-tag-icon"><SubjectIcon size={36} strokeWidth={2} aria-hidden="true" /></span>
-              <span className="ih-subject-name mh-compact-tag-title">{subject.title[langIndex].toLocaleLowerCase().replace(/(^|\s)[\p{L}]/gu, letter => letter.toLocaleUpperCase())}</span>
+              <div className="ih-subject-content card-container">
+                <div className="ih-subject-icon mh-compact-tag-icon icon-wrapper"><SubjectPlanetBackdrop tone={subject.tone} /><SubjectIcon size={38} strokeWidth={2.1} aria-hidden="true" /></div>
+                <div className="ih-subject-copy text-wrapper">
+                  <span className="ih-subject-name mh-compact-tag-title">{subject.title[langIndex].toLocaleLowerCase().replace(/(^|\s)[\p{L}]/gu, letter => letter.toLocaleUpperCase())}</span>
+                </div>
+              </div>
             </button>;
           })}
         </div>

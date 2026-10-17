@@ -86,8 +86,7 @@
 
 .ih-subjects, .ih-ages { display: flex; flex-direction: column; gap: 10px; min-height: 0; min-width: 0; }
 .ih-subjects { container: subjects / inline-size; }
-/* MathHome owns card borders, surfaces, typography and interaction styles.
-   Only the palette varies to coordinate with each robot's accessories. */
+/* Subject cards share a galaxy backdrop and use a different nebula tint per subject. */
 .ih-subjects { --menu-card-height: clamp(96px, 14.2dvh, 144px); --mh-navy: #0b1b44; --mh-muted: #667a98; }
 .ih-subject-grid { min-width: 0; flex-shrink: 0; }
 .ih-subject {
@@ -125,11 +124,12 @@
   overflow: hidden;
   background-color: var(--subject-bg);
   background-image:
-    radial-gradient(circle at 91% 13%, color-mix(in srgb, white 52%, transparent) 0 8%, transparent 8.5%),
-    radial-gradient(ellipse at 8% 100%, color-mix(in srgb, var(--subject-fg) 12%, transparent), transparent 46%),
-    linear-gradient(138deg, color-mix(in srgb, var(--subject-bg) 84%, white), var(--subject-bg) 58%, color-mix(in srgb, var(--subject-bg) 90%, var(--subject-fg)));
-  color: #06165b;
-  box-shadow: 0 2px 0 color-mix(in srgb, var(--subject-fg) 12%, transparent);
+    radial-gradient(ellipse at 12% 108%, color-mix(in srgb, var(--subject-nebula) 18%, transparent), transparent 49%),
+    radial-gradient(ellipse at 92% 3%, color-mix(in srgb, var(--subject-nebula) 22%, transparent), transparent 48%),
+    radial-gradient(ellipse at 50% 110%, color-mix(in srgb, white 58%, var(--subject-bg)) 0, transparent 67%),
+    linear-gradient(145deg, color-mix(in srgb, var(--subject-bg) 76%, white) 0%, var(--subject-bg) 62%, color-mix(in srgb, var(--subject-bg) 78%, var(--subject-nebula)) 100%);
+  color: var(--subject-fg);
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--subject-fg) 14%, transparent), inset 0 1px 0 #ffffffb8;
   font: 800 clamp(20px, min(2.8vw, 4dvh), 30px)/1.08 'Baloo 2', 'Outfit', sans-serif;
   letter-spacing: -.045em;
   text-align: center;
@@ -146,37 +146,110 @@
   pointer-events: none;
 }
 .ih-root.iman-layout .ih-subject-card::before {
-  background-image:
-    radial-gradient(circle at 82% 21%, var(--subject-sun) 0 8%, transparent 8.5%),
-    radial-gradient(ellipse at 88% 118%, var(--subject-hill-back) 0 42%, transparent 42.5%);
-  opacity: .76;
+  background:
+    linear-gradient(to bottom, transparent, color-mix(in srgb, var(--subject-fg) 42%, transparent) 24% 76%, transparent) 14% 20% / 1.5px 15px no-repeat,
+    linear-gradient(to right, transparent, color-mix(in srgb, var(--subject-fg) 42%, transparent) 24% 76%, transparent) 14% 20% / 15px 1.5px no-repeat,
+    radial-gradient(circle, color-mix(in srgb, var(--subject-fg) 38%, white) 0 1.5px, transparent 2px) 14% 20% / 4px 4px no-repeat,
+    linear-gradient(to bottom, transparent, color-mix(in srgb, var(--subject-fg) 36%, transparent) 24% 76%, transparent) 83% 42% / 1.5px 13px no-repeat,
+    linear-gradient(to right, transparent, color-mix(in srgb, var(--subject-fg) 36%, transparent) 24% 76%, transparent) 83% 42% / 13px 1.5px no-repeat,
+    radial-gradient(circle, color-mix(in srgb, var(--subject-fg) 38%, white) 0 1.5px, transparent 2px) 83% 42% / 4px 4px no-repeat,
+    linear-gradient(to bottom, transparent, color-mix(in srgb, var(--subject-fg) 36%, transparent) 24% 76%, transparent) 23% 76% / 1.5px 13px no-repeat,
+    linear-gradient(to right, transparent, color-mix(in srgb, var(--subject-fg) 36%, transparent) 24% 76%, transparent) 23% 76% / 13px 1.5px no-repeat,
+    radial-gradient(circle, color-mix(in srgb, var(--subject-fg) 38%, white) 0 1.5px, transparent 2px) 23% 76% / 4px 4px no-repeat,
+    linear-gradient(to bottom, transparent, color-mix(in srgb, var(--subject-fg) 36%, transparent) 24% 76%, transparent) 78% 84% / 1.5px 11px no-repeat,
+    linear-gradient(to right, transparent, color-mix(in srgb, var(--subject-fg) 36%, transparent) 24% 76%, transparent) 78% 84% / 11px 1.5px no-repeat,
+    radial-gradient(circle, color-mix(in srgb, var(--subject-fg) 38%, white) 0 1.5px, transparent 2px) 78% 84% / 4px 4px no-repeat,
+    radial-gradient(circle at 9% 18%, color-mix(in srgb, var(--subject-fg) 34%, white) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 24% 42%, color-mix(in srgb, var(--subject-fg) 28%, white) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 68% 14%, color-mix(in srgb, var(--subject-fg) 34%, white) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 76% 72%, color-mix(in srgb, var(--subject-fg) 28%, white) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 45% 86%, color-mix(in srgb, var(--subject-fg) 34%, white) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 14% 74%, color-mix(in srgb, var(--subject-fg) 28%, white) 0 1px, transparent 1.8px),
+    radial-gradient(ellipse at 18% 75%, color-mix(in srgb, var(--subject-nebula) 14%, transparent), transparent 45%),
+    radial-gradient(ellipse at 88% 25%, color-mix(in srgb, var(--subject-nebula) 12%, transparent), transparent 45%);
+  opacity: .78;
 }
 .ih-root.iman-layout .ih-subject-card::after {
-  background: radial-gradient(ellipse at 14% 122%, var(--subject-hill-front) 0 44%, transparent 44.5%);
-  opacity: .82;
+  inset: auto;
+  top: -69px;
+  right: -84px;
+  width: 174px;
+  height: 174px;
+  border: 1px solid color-mix(in srgb, var(--subject-nebula) 48%, white);
+  border-radius: 50%;
+  background:
+    linear-gradient(0deg, transparent 47%, color-mix(in srgb, var(--subject-fg) 34%, transparent) 48% 51%, transparent 52%) 50% 50% / 2px 48px no-repeat,
+    linear-gradient(90deg, transparent 46%, color-mix(in srgb, var(--subject-fg) 30%, transparent) 47% 51%, transparent 52%) 50% 50% / 38px 2px no-repeat,
+    radial-gradient(circle at 50% 50%, transparent 0 55%, color-mix(in srgb, var(--subject-nebula) 44%, transparent) 56% 57%, transparent 58%),
+    radial-gradient(circle at 50% 50%, transparent 0 72%, color-mix(in srgb, var(--subject-fg) 24%, transparent) 73% 74%, transparent 75%);
+  box-shadow: 0 0 0 10px color-mix(in srgb, var(--subject-nebula) 8%, transparent), 0 0 0 11px color-mix(in srgb, var(--subject-nebula) 20%, transparent), 0 0 24px color-mix(in srgb, var(--subject-nebula) 14%, transparent);
+  opacity: .76;
+  transform: rotate(-18deg) scaleX(1.12);
 }
-.ih-root.iman-layout .ih-subject-card .ih-subject-icon {
+.ih-root.iman-layout .ih-subject-card .card-container {
   position: relative;
   z-index: 1;
   display: grid;
-  width: 36px;
-  height: 36px;
-  flex: 0 0 36px;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  gap: 0;
+}
+.ih-root.iman-layout .ih-subject-card .ih-subject-icon {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-row: 1;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding-top: 8px;
   place-items: center;
   color: var(--subject-fg);
   filter: none;
   -webkit-text-stroke: 0;
 }
-.ih-root.iman-layout .ih-subject-card .ih-subject-icon svg { width: 100%; height: 100%; }
-.ih-root.iman-layout .ih-subject-card .ih-subject-name {
+.ih-root.iman-layout .ih-subject-card .ih-subject-icon > .ih-planet-backdrop {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  z-index: 0;
+  width: 144px;
+  height: 144px;
+  overflow: visible;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.ih-root.iman-layout .ih-subject-card .ih-subject-icon > svg:not(.ih-planet-backdrop) {
   position: relative;
   z-index: 1;
+  width: 36px;
+  height: 36px;
+  color: #fff;
+  filter: drop-shadow(0 2px 1px color-mix(in srgb, var(--subject-fg) 42%, transparent));
+}
+.ih-root.iman-layout .ih-subject-card .ih-subject-copy {
+  display: grid;
+  grid-row: 2;
+  place-items: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+.ih-root.iman-layout .ih-subject-card .ih-subject-name {
   display: block;
   box-sizing: border-box;
   width: 100%;
   flex: 0 0 auto;
   min-width: 0;
-  overflow: visible;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
   text-align: center;
   text-wrap: balance;
   white-space: normal;
@@ -187,16 +260,16 @@
   font: 800 clamp(24px, 2.8vw, 36px)/1.08 'Baloo 2', 'Outfit', sans-serif;
   letter-spacing: -.045em;
   paint-order: stroke fill;
-  -webkit-text-stroke: 1.25px #fff;
-  filter: drop-shadow(0 1px 0 color-mix(in srgb, var(--subject-fg) 18%, white)) drop-shadow(0 2px 1px color-mix(in srgb, var(--subject-fg) 15%, transparent));
+  -webkit-text-stroke: 1.5px #fff;
+  filter: drop-shadow(0 1px 0 color-mix(in srgb, var(--subject-fg) 28%, white)) drop-shadow(0 4px 3px color-mix(in srgb, var(--subject-fg) 38%, transparent)) drop-shadow(0 7px 6px color-mix(in srgb, var(--subject-fg) 24%, transparent));
 }
-.ih-subject--reading { --subject-bg: #a5eee5; --subject-border: #45c8ba; --subject-fg: #07534d; --subject-sun: #fff0a8; --subject-hill-back: #78d5b4; --subject-hill-front: #48bd98; }
-.ih-subject--speaking { --subject-bg: #ffc0dc; --subject-border: #e96fa5; --subject-fg: #74133f; --subject-sun: #fff0a8; --subject-hill-back: #e994ba; --subject-hill-front: #cf6f9f; }
-.ih-subject--math { --subject-bg: #cdbaff; --subject-border: #9672e8; --subject-fg: #3d1d78; --subject-sun: #fff0a8; --subject-hill-back: #b69ae8; --subject-hill-front: #9272cf; }
-.ih-subject--islam { --subject-bg: #a9eabd; --subject-border: #61bd7f; --subject-fg: #14552e; --subject-sun: #fff0a8; --subject-hill-back: #73d49a; --subject-hill-front: #45b77b; }
-.ih-subject--kssr { --subject-bg: #a9ddff; --subject-border: #5baee0; --subject-fg: #10486e; --subject-sun: #fff0a8; --subject-hill-back: #84c8eb; --subject-hill-front: #5da8d4; }
-.ih-subject--malay { --subject-bg: #d9b2ff; --subject-border: #a86cdb; --subject-fg: #502071; --subject-sun: #fff0a8; --subject-hill-back: #c39be8; --subject-hill-front: #a274ce; }
-.ih-subject--robot { --subject-bg: #ffdc73; --subject-border: #dfad24; --subject-fg: #604000; --subject-sun: #fff5c4; --subject-hill-back: #edc74e; --subject-hill-front: #d8a92f; }
+.ih-subject--reading { --subject-bg: #a5eee5; --subject-border: #45c8ba; --subject-fg: #07534d; --subject-nebula: #30aa9d; }
+.ih-subject--speaking { --subject-bg: #ffc0dc; --subject-border: #e96fa5; --subject-fg: #74133f; --subject-nebula: #c5447e; }
+.ih-subject--math { --subject-bg: #cdbaff; --subject-border: #9672e8; --subject-fg: #3d1d78; --subject-nebula: #7950ce; }
+.ih-subject--islam { --subject-bg: #a9eabd; --subject-border: #61bd7f; --subject-fg: #14552e; --subject-nebula: #18a97b; }
+.ih-subject--kssr { --subject-bg: #a9ddff; --subject-border: #5baee0; --subject-fg: #10486e; --subject-nebula: #2f80ed; }
+.ih-subject--malay { --subject-bg: #d9b2ff; --subject-border: #a86cdb; --subject-fg: #502071; --subject-nebula: #8944d8; }
+.ih-subject--robot { --subject-bg: #ffdc73; --subject-border: #dfad24; --subject-fg: #604000; --subject-nebula: #bb850b; }
 .ih-root.iman-layout .ih-subject-card:disabled { opacity: .8; filter: saturate(.82); cursor: not-allowed; }
 .ih-root.iman-layout .ih-subject-card:focus-visible { outline: 3px solid #1687d9; outline-offset: 3px; }
 @media (max-width: 767px) {
@@ -208,8 +281,9 @@
     gap: 8px;
     padding: 10px;
   }
-  .ih-root.iman-layout .ih-subject-card .ih-subject-icon { width: 32px; height: 32px; flex-basis: 32px; }
-  .ih-root.iman-layout .ih-subject-card .ih-subject-name { font-size: clamp(20px, 6vw, 30px); }
+  .ih-root.iman-layout .ih-subject-card .ih-subject-icon > .ih-planet-backdrop { width: 126px; height: 126px; }
+  .ih-root.iman-layout .ih-subject-card .ih-subject-icon > svg:not(.ih-planet-backdrop) { width: 32px; height: 32px; }
+  .ih-root.iman-layout .ih-subject-card .ih-subject-name { font-size: clamp(15px, 5.2vw, 24px); }
 }
 @media (hover: hover) {
   .ih-root.iman-layout .ih-subject-card:not(:disabled):hover { transform: translateY(-2px); filter: saturate(1.08); box-shadow: 0 5px 12px color-mix(in srgb, var(--subject-fg) 16%, transparent); }

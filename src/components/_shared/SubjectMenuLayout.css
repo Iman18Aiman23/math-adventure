@@ -497,6 +497,44 @@
   grid-template-rows: none; grid-auto-rows: var(--menu-card-height); align-content: start;
 }
 .mh-topic-card { height: 100%; }
+
+/* Reusable compact topic card layout shared by Maths, Reading, and Speaking. */
+.mh-screen .mh-topic-grid .mh-compact-tag .card-container {
+  display: grid;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  gap: 0;
+  position: relative;
+  z-index: 1;
+}
+.mh-screen .mh-topic-grid .mh-compact-tag .icon-wrapper {
+  display: grid;
+  grid-row: 1;
+  place-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding-top: 8px;
+  color: var(--tag-ink);
+}
+.mh-screen .mh-topic-grid .mh-compact-tag .icon-wrapper svg { width: 36px; height: 36px; }
+.mh-screen .mh-topic-grid .mh-compact-tag .text-wrapper {
+  display: grid;
+  grid-row: 2;
+  place-items: start center;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+@media (max-width: 767px) {
+  .mh-screen .mh-topic-grid .mh-compact-tag .icon-wrapper svg { width: 32px; height: 32px; }
+}
+
 @container (min-width: 900px) {
   .mh-topic-grid { grid-auto-rows: clamp(320px, 48dvh, 400px); }
 }

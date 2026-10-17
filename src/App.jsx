@@ -474,7 +474,7 @@ export default function App() {
   const [isPlaying,      setIsPlaying]      = useState(savedNavigation.isPlaying);
   const [gameConfig,     setGameConfig]     = useState(savedNavigation.gameConfig);
   const [isMuted,        setIsMuted]        = useState(getMuted());
-  const [language,       setLanguage]       = useState('bm');
+  const [language,       setLanguage]       = useState('eng');
   const [activeTab,      setActiveTab]      = useState(savedNavigation.activeTab);
   const [achievementSection, setAchievementSection] = useState('assessments');
   const [streak,         setStreak]         = useState(0);

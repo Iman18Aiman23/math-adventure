@@ -49,8 +49,12 @@ export default function SubjectMenuLayout({
               <button key={topic.id} type="button" className={`mh-topic-card mh-${topic.theme} mh-compact-tag mh-compact-tag-${topic.id}`}
                 disabled={topic.disabled} onClick={() => onSelect(topic.id)} onMouseEnter={topic.onMouseEnter}
                 title={topic.disabled ? (topic.disabledReason || topic.disabledLabel || comingSoon) : undefined}>
-                <span className="mh-compact-tag-icon" aria-hidden="true">{topic.visual}</span>
-                <span className="mh-compact-tag-title">{topic.title}</span>
+                <div className="mh-compact-tag-content card-container">
+                  <div className="mh-compact-tag-icon icon-wrapper" aria-hidden="true">{topic.visual}</div>
+                  <div className="mh-compact-tag-text text-wrapper">
+                    <span className="mh-compact-tag-title">{topic.title}</span>
+                  </div>
+                </div>
                 {topic.showAction !== false && <span className="mh-compact-tag-go">
                   <span>{language === 'bm' ? 'Mula' : 'Start'}</span>
                   <span className="mh-compact-tag-arrow" aria-hidden="true">&gt;</span>

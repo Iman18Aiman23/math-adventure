@@ -1,5 +1,5 @@
 import React, { Suspense, useTransition } from 'react';
-import { BookOpen, BookMarked, Languages, Hash, Shapes } from 'lucide-react';
+import { BookOpen, BookMarked, Languages, Hash, Shapes, ListOrdered } from 'lucide-react';
 import { LOCALIZATION } from '../../utils/localization';
 import { useGameStateContext } from '../../App';
 import SpeechManager from '../../services/SpeechManager';
@@ -21,7 +21,7 @@ const CATEGORIES = [
   { id: 'en_long_vowels', theme: 'mint', icon: Languages, bm: 'Bunyi Huruf Bahasa Inggeris', en: 'English Phonics',
     descBm: 'Dengar dan sebut bunyi huruf dengan betul.',
     descEn: 'Listen and practise English sounds and long vowels.' },
-  { id: 'numbers', theme: 'gold', bm: 'Nombor 1 – 100', en: 'Numbers 1 – 100',
+  { id: 'numbers', theme: 'gold', icon: ListOrdered, bm: 'Nombor 1 – 100', en: 'Numbers 1 – 100',
     descBm: 'Dengar dan sebut nombor dari 1 hingga 100.',
     descEn: 'Listen and say numbers from 1 to 100.' },
   { id: 'common_objects', theme: 'purple', icon: Shapes, bm: 'Objek', en: 'Objects',
