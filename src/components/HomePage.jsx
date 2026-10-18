@@ -1,5 +1,5 @@
 import React, { useState, Suspense } from 'react';
-import { ChevronRight, Star, ArrowLeft, BookOpen, Mic, Calculator, MoonStar, Languages, Bot } from 'lucide-react';
+import { ChevronRight, Star, ArrowLeft, BookOpen, Mic, Calculator, MoonStar, Languages, Bot, LockKeyhole } from 'lucide-react';
 import { AGE_GROUPS } from '../data/ageCurriculum';
 import { canAccessSubject, hasFullSubjectAccess } from '../utils/subjectAccess';
 import { playHoverSound } from '../utils/soundManager';
@@ -152,13 +152,13 @@ export function HomePageLayoutStyles() {
   `}</style>;
 }
 const SUBJECTS = [
-  { id: 'reading', tone: 'reading', title: ['MEMBACA', 'READING'], desc: ['Kuasai kemahiran membaca dengan seronok!', 'Master reading skills while having fun!'], art: 0 },
-  { id: 'bm', tone: 'speaking', title: ['SEBUTAN', 'SPEAKING'], desc: ['Perbaiki sebutan dengan yakin!', 'Improve pronunciation with confidence!'], art: 1 },
-  { id: 'math', tone: 'math', title: ['MATEMATIK', 'MATHEMATICS'], desc: ['Teroka dunia nombor dan logik!', 'Explore the world of numbers and logic!'], art: 2 },
-  { id: 'pendidikan-islam-v1', tone: 'islam', title: ['PENDIDIKAN ISLAM', 'ISLAMIC EDUCATION'], desc: ['Belajar Pendidikan Islam dengan mudah!', 'Learn Islamic Education with ease!'], art: 3 },
-  { id: 'matematik-kssr', tone: 'kssr', title: ['MATEMATIK KSSR', 'MATH KSSR'], desc: ['Ikut silibus KSSR Tahun 1–3!', 'Follow the KSSR syllabus for Years 1–3!'], art: 4 },
-  { id: 'bm-kssr', tone: 'malay', title: ['B. MELAYU KSSR', 'MALAY KSSR'], desc: ['Ikut silibus BM KSSR Tahun 1–3!', 'Follow the Malay KSSR syllabus for Years 1–3!'], art: 5 },
-  { id: 'robot', tone: 'robot', title: ['ROBOT & KOD', 'ROBOT & CODE'], desc: ['Belajar robotik dan kod dengan mudah!', 'Discover robotics and coding!'], art: 6 },
+  { id: 'reading', tone: 'reading', title: ['MEMBACA', 'READING'], desc: ['Kuasai kemahiran membaca dengan seronok!', 'Master reading skills while having fun!'], icon: 'images/home/icon-reading.webp' },
+  { id: 'bm', tone: 'speaking', title: ['SEBUTAN', 'SPEAKING'], desc: ['Perbaiki sebutan dengan yakin!', 'Improve pronunciation with confidence!'], icon: 'images/home/icon-speaking.webp' },
+  { id: 'math', tone: 'math', title: ['MATEMATIK', 'MATHEMATICS'], desc: ['Teroka dunia nombor dan logik!', 'Explore the world of numbers and logic!'], icon: 'images/home/icon-math-kssr.webp' },
+  { id: 'pendidikan-islam-v1', tone: 'islam', title: ['PENDIDIKAN ISLAM', 'ISLAMIC EDUCATION'], desc: ['Belajar Pendidikan Islam dengan mudah!', 'Learn Islamic Education with ease!'], icon: 'images/home/icon-islamic-education.webp' },
+  { id: 'matematik-kssr', tone: 'kssr', title: ['MATEMATIK KSSR', 'MATH KSSR'], desc: ['Ikut silibus KSSR Tahun 1–3!', 'Follow the KSSR syllabus for Years 1–3!'], icon: 'images/home/icon-mathematics.webp' },
+  { id: 'bm-kssr', tone: 'malay', title: ['B. MELAYU KSSR', 'MALAY KSSR'], desc: ['Ikut silibus BM KSSR Tahun 1–3!', 'Follow the Malay KSSR syllabus for Years 1–3!'], icon: 'images/home/icon-malay-kssr.webp' },
+  { id: 'robot', tone: 'robot', title: ['ROBOT & KOD', 'ROBOT & CODE'], desc: ['Belajar robotik dan kod dengan mudah!', 'Discover robotics and coding!'], icon: 'images/home/Robot-Code.webp' },
 ];
 const SUBJECT_ICONS = {
   reading: BookOpen,
@@ -175,24 +175,22 @@ function SubjectPlanetBackdrop({ tone }) {
   return <svg className="ih-planet-backdrop" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
     <defs>
       <linearGradient id={gradientId} x1="15%" y1="10%" x2="85%" y2="90%">
-        <stop offset="0%" stopColor="color-mix(in srgb, var(--subject-nebula) 72%, white)" />
-        <stop offset="55%" stopColor="var(--subject-nebula)" />
-        <stop offset="100%" stopColor="var(--subject-border)" />
+        <stop offset="0%" stopColor="color-mix(in srgb, var(--subject-planet) 86%, #172033)" />
+        <stop offset="52%" stopColor="color-mix(in srgb, var(--subject-planet) 94%, #172033)" />
+        <stop offset="100%" stopColor="color-mix(in srgb, var(--subject-planet) 82%, #111827)" />
       </linearGradient>
       <linearGradient id={`${gradientId}-orbit`} x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stopColor="white" />
-        <stop offset="50%" stopColor="var(--subject-nebula)" />
-        <stop offset="100%" stopColor="var(--subject-border)" />
+        <stop offset="48%" stopColor="color-mix(in srgb, var(--subject-planet) 38%, white)" />
+        <stop offset="100%" stopColor="white" />
       </linearGradient>
     </defs>
     <circle cx="48" cy="48" r="27" fill={`url(#${gradientId})`} stroke="white" strokeWidth="2.5" />
     <path d="M31 40c7-9 20-12 31-7-4 1-8 4-11 8-6 7-14 10-23 8-2-3-1-6 3-9Z" fill="white" opacity=".26" />
-    <ellipse cx="48" cy="48" rx="39" ry="19" transform="rotate(-28 48 48)" fill="none" stroke={`url(#${gradientId}-orbit)`} strokeWidth="5" opacity=".95" />
-    <path d="m14 25 2.2 4.6 5 .7-3.6 3.5.9 5-4.5-2.4-4.5 2.4.9-5-3.6-3.5 5-.7Z" fill="#ffe477" />
-    <path d="m79 69 1.6 3.2 3.6.5-2.6 2.5.6 3.6-3.2-1.7-3.2 1.7.6-3.6-2.6-2.5 3.6-.5Z" fill="#fff" />
-    <circle cx="78" cy="27" r="3" fill="#ffdf74" />
-    <circle cx="20" cy="72" r="2.5" fill="white" />
-    <circle cx="72" cy="17" r="1.8" fill="var(--subject-border)" />
+    <ellipse cx="48" cy="48" rx="39" ry="19" transform="rotate(-28 48 48)" fill="none" stroke={`url(#${gradientId}-orbit)`} strokeWidth="5" opacity="1" />
+    <path d="m13 22 2.1 4.2 4.7.7-3.4 3.3.8 4.7-4.2-2.2-4.2 2.2.8-4.7-3.4-3.3 4.7-.7Z" fill="#fff3a6" />
+    <path d="m81 67 1.4 2.9 3.2.5-2.3 2.2.5 3.2-2.8-1.5-2.9 1.5.6-3.2-2.4-2.2 3.3-.5Z" fill="white" />
+    <circle cx="78" cy="25" r="2.2" fill="#fff3a6" />
   </svg>;
 }
 
@@ -249,13 +247,17 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
         <div className="ih-subject-grid mh-topic-grid">
           {SUBJECTS.map(subject => {
             const canOpen = canAccessSubject(playerName, subject.id);
+            const subjectLabel = subject.title[langIndex];
             const openSubject = () => subject.id === 'robot' ? setShowRobotInterface(true) : onSelectSubject(subject.id);
             const SubjectIcon = SUBJECT_ICONS[subject.id] || Languages;
             return <button key={subject.id} type="button" className={`ih-subject ih-subject-card ih-subject--${subject.tone} mh-compact-tag`}
-              aria-label={subject.title[langIndex]} disabled={!canOpen} onClick={openSubject}
+              aria-label={`${subjectLabel}${canOpen ? '' : bm ? ' (terkunci)' : ' (locked)'}`} disabled={!canOpen} onClick={openSubject}
                 onMouseEnter={canOpen ? playHoverSound : undefined}>
+              {!canOpen && <span className="ih-subject-lock" aria-hidden="true"><LockKeyhole size={17} strokeWidth={2.5} /></span>}
               <div className="ih-subject-content card-container">
-                <div className="ih-subject-icon mh-compact-tag-icon icon-wrapper"><SubjectPlanetBackdrop tone={subject.tone} /><SubjectIcon size={38} strokeWidth={2.1} aria-hidden="true" /></div>
+                <div className="ih-subject-icon mh-compact-tag-icon icon-wrapper">
+                  {subject.icon ? <img src={`${import.meta.env.BASE_URL}${subject.icon}`} alt="" /> : <><SubjectPlanetBackdrop tone={subject.tone} /><SubjectIcon size={38} strokeWidth={2.1} aria-hidden="true" /></>}
+                </div>
                 <div className="ih-subject-copy text-wrapper">
                   <span className="ih-subject-name mh-compact-tag-title">{subject.title[langIndex].toLocaleLowerCase().replace(/(^|\s)[\p{L}]/gu, letter => letter.toLocaleUpperCase())}</span>
                 </div>
