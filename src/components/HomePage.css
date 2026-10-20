@@ -104,39 +104,33 @@
 .ih-subject-scene > .ih-reading-art { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
 .ih-subject-desc { overflow-wrap: anywhere; }
 
-/* Home subject cards follow the compact MathHome icon-and-title pattern. */
+/* Home subject cards use a compact horizontal icon-and-title layout. */
 .ih-root.iman-layout .ih-subject-grid .ih-subject-card {
   position: relative;
   isolation: isolate;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   box-sizing: border-box;
   width: 100%;
   min-width: 0;
-  height: 220px;
-  min-height: 220px;
-  max-height: 220px;
+  height: auto;
+  min-height: 104px;
+  max-height: none;
   align-items: center;
-  justify-content: center;
-  gap: 9px;
-  padding: 12px 14px;
-  border: 1px solid color-mix(in srgb, var(--subject-planet) 88%, white);
-  border-radius: 16px;
+  justify-content: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid color-mix(in srgb, var(--subject-planet) 26%, white);
+  border-radius: 18px;
   overflow: hidden;
-  background: color-mix(in srgb, var(--subject-planet) 8%, white);
+  background: color-mix(in srgb, var(--subject-planet) 5%, white);
   color: var(--subject-fg);
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--subject-planet) 34%, transparent),
-    inset 0 0 16px 1px color-mix(in srgb, var(--subject-planet) 6%, transparent),
-    0 0 0 1px color-mix(in srgb, var(--subject-planet) 42%, transparent),
-    0 0 9px 1px color-mix(in srgb, var(--subject-planet) 52%, transparent),
-    0 0 18px 3px color-mix(in srgb, var(--subject-planet) 36%, transparent),
-    0 0 28px 6px color-mix(in srgb, var(--subject-planet) 20%, transparent);
-  font: 800 clamp(20px, min(2.8vw, 4dvh), 30px)/1.08 'Baloo 2', 'Outfit', sans-serif;
-  letter-spacing: -.045em;
-  text-align: center;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--subject-planet) 9%, transparent);
+  font: 700 clamp(16px, 1.35vw, 20px)/1.25 'Baloo 2', 'Outfit', sans-serif;
+  letter-spacing: -.015em;
+  text-align: left;
   cursor: pointer;
-  transition: transform 160ms ease, filter 160ms ease, box-shadow 160ms ease;
+  transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
 }
 .ih-root.iman-layout .ih-subject-card .ih-subject-lock {
   position: absolute;
@@ -159,23 +153,26 @@
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-rows: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 64px minmax(0, 1fr) 32px;
+  grid-template-rows: minmax(0, 1fr);
   flex: 1 1 auto;
   width: 100%;
   min-width: 0;
   min-height: 0;
-  gap: 0;
+  align-items: center;
+  gap: 14px;
 }
 .ih-root.iman-layout .ih-subject-card .ih-subject-icon {
   position: relative;
   isolation: isolate;
   display: grid;
+  grid-column: 1;
   grid-row: 1;
   box-sizing: border-box;
-  width: 100%;
-  height: 100%;
+  width: 64px;
+  height: 64px;
   min-height: 0;
-  padding-top: 8px;
+  padding: 0;
   place-items: center;
   color: var(--subject-fg);
   filter: none;
@@ -185,44 +182,57 @@
   position: absolute;
   inset: 50% auto auto 50%;
   z-index: 0;
-  width: 144px;
-  height: 144px;
+  width: 76px;
+  height: 76px;
   overflow: visible;
   transform: translate(-50%, -50%);
-  filter:
-    drop-shadow(0 0 5px color-mix(in srgb, var(--subject-planet) 72%, white))
-    drop-shadow(0 0 13px color-mix(in srgb, var(--subject-planet) 48%, transparent));
+  filter: drop-shadow(0 2px 5px color-mix(in srgb, var(--subject-planet) 16%, transparent));
   pointer-events: none;
 }
 .ih-root.iman-layout .ih-subject-card .ih-subject-icon > svg:not(.ih-planet-backdrop) {
   position: relative;
   z-index: 1;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   color: #fff;
-  filter: drop-shadow(0 2px 1px color-mix(in srgb, var(--subject-fg) 42%, transparent));
+  filter: drop-shadow(0 1px 2px color-mix(in srgb, var(--subject-fg) 28%, transparent));
 }
 .ih-root.iman-layout .ih-subject-card .ih-subject-icon > img {
   position: relative;
   z-index: 1;
   display: block;
-  width: min(100%, 144px);
+  width: min(100%, 64px);
   aspect-ratio: 1;
   object-fit: contain;
-  filter:
-    drop-shadow(0 0 5px color-mix(in srgb, var(--subject-planet) 72%, transparent))
-    drop-shadow(0 0 12px color-mix(in srgb, var(--subject-planet) 52%, transparent))
-    drop-shadow(0 5px 8px color-mix(in srgb, var(--subject-planet) 30%, transparent));
+  filter: drop-shadow(0 2px 4px color-mix(in srgb, var(--subject-planet) 14%, transparent));
   pointer-events: none;
 }
 .ih-root.iman-layout .ih-subject-card .ih-subject-copy {
-  display: grid;
-  grid-row: 2;
-  place-items: center;
+  display: flex;
+  grid-column: 2;
+  grid-row: 1;
+  box-sizing: border-box;
+  align-items: center;
   width: 100%;
   min-width: 0;
   min-height: 0;
   overflow: hidden;
+}
+.ih-root.iman-layout .ih-subject-card .ih-subject-arrow {
+  display: grid;
+  grid-column: 3;
+  grid-row: 1;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--subject-planet) 12%, white);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--subject-planet) 9%, white);
+  color: color-mix(in srgb, var(--subject-planet) 76%, #172033);
+  transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease;
+}
+.ih-root.iman-layout .ih-subject-card .ih-subject-arrow svg {
+  display: block;
 }
 .ih-root.iman-layout .ih-subject-card .ih-subject-name {
   display: block;
@@ -230,20 +240,15 @@
   width: 100%;
   flex: 0 0 auto;
   min-width: 0;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  text-align: center;
-  text-wrap: balance;
+  text-align: left;
+  text-wrap: pretty;
   white-space: normal;
-  overflow-wrap: normal;
+  overflow-wrap: anywhere;
   word-break: normal;
-  hyphens: none;
+  hyphens: auto;
   color: #172033;
-  font: 800 clamp(24px, 2.8vw, 36px)/1.08 'Baloo 2', 'Outfit', sans-serif;
-  letter-spacing: -.045em;
+  font: 700 clamp(16px, 1.35vw, 20px)/1.25 'Baloo 2', 'Outfit', sans-serif;
+  letter-spacing: -.015em;
 }
 .ih-subject--reading { --subject-fg: #07534d; }
 .ih-subject--speaking { --subject-fg: #74133f; }
@@ -253,32 +258,34 @@
 .ih-subject--malay { --subject-fg: #502071; }
 .ih-subject--robot { --subject-fg: #10486e; }
 .ih-root.iman-layout .ih-subject-card:disabled { opacity: .8; filter: saturate(.82); cursor: not-allowed; }
-.ih-root.iman-layout .ih-subject-card:focus-visible { outline: 3px solid var(--subject-planet); outline-offset: 3px; }
+.ih-root.iman-layout .ih-subject-card:focus-visible { outline: 3px solid color-mix(in srgb, var(--subject-planet) 70%, white); outline-offset: 3px; }
 @media (max-width: 767px) {
   .ih-root.iman-layout .ih-subject-grid { column-gap: 10px; row-gap: 10px; }
   .ih-root.iman-layout .ih-subject-grid .ih-subject-card {
-    height: 190px;
-    min-height: 190px;
-    max-height: 190px;
-    gap: 8px;
-    padding: 10px;
+    min-height: 88px;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 16px;
   }
-  .ih-root.iman-layout .ih-subject-card .ih-subject-icon > .ih-planet-backdrop { width: 126px; height: 126px; }
-  .ih-root.iman-layout .ih-subject-card .ih-subject-icon > svg:not(.ih-planet-backdrop) { width: 32px; height: 32px; }
-  .ih-root.iman-layout .ih-subject-card .ih-subject-icon > img { width: min(100%, 126px); }
-  .ih-root.iman-layout .ih-subject-card .ih-subject-name { font-size: clamp(15px, 5.2vw, 24px); }
+  .ih-root.iman-layout .ih-subject-card .card-container { grid-template-columns: 48px minmax(0, 1fr) 28px; gap: 10px; }
+  .ih-root.iman-layout .ih-subject-card .ih-subject-icon { width: 48px; height: 48px; }
+  .ih-root.iman-layout .ih-subject-card .ih-subject-arrow { width: 28px; height: 28px; }
+  .ih-root.iman-layout .ih-subject-card .ih-subject-icon > .ih-planet-backdrop { width: 60px; height: 60px; }
+  .ih-root.iman-layout .ih-subject-card .ih-subject-icon > svg:not(.ih-planet-backdrop) { width: 28px; height: 28px; }
+  .ih-root.iman-layout .ih-subject-card .ih-subject-icon > img { width: min(100%, 48px); }
+  .ih-root.iman-layout .ih-subject-card .ih-subject-name { font-size: clamp(14px, 2.6vw, 18px); }
 }
 @media (hover: hover) {
   .ih-root.iman-layout .ih-subject-card:not(:disabled):hover {
     transform: translateY(-2px);
-    box-shadow:
-      inset 0 0 0 1px color-mix(in srgb, var(--subject-planet) 46%, transparent),
-      inset 0 0 18px 1px color-mix(in srgb, var(--subject-planet) 10%, transparent),
-      0 0 0 1px color-mix(in srgb, var(--subject-planet) 64%, transparent),
-      0 0 14px 2px color-mix(in srgb, var(--subject-planet) 68%, transparent),
-      0 0 24px 5px color-mix(in srgb, var(--subject-planet) 50%, transparent),
-      0 0 34px 8px color-mix(in srgb, var(--subject-planet) 32%, transparent),
-      0 5px 12px color-mix(in srgb, var(--subject-planet) 22%, transparent);
+    border-color: color-mix(in srgb, var(--subject-planet) 45%, white);
+    background: color-mix(in srgb, var(--subject-planet) 8%, white);
+    box-shadow: 0 6px 14px color-mix(in srgb, var(--subject-planet) 14%, transparent);
+  }
+  .ih-root.iman-layout .ih-subject-card:not(:disabled):hover .ih-subject-arrow {
+    transform: translateX(2px);
+    border-color: color-mix(in srgb, var(--subject-planet) 22%, white);
+    background: color-mix(in srgb, var(--subject-planet) 16%, white);
   }
 }
 
@@ -401,6 +408,11 @@
   .ih-root.iman-layout.page-layout-root .ih-subject-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-auto-rows: auto;
+  }
+}
+@media (max-width: 540px) {
+  .ih-root.iman-layout.page-layout-root .ih-subject-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 .ih-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; min-height: 24px; }
@@ -596,10 +608,16 @@
   transform: none;
 }
 html[data-color-mode='dark'] .ih-root.iman-layout .ih-subject-card {
-  border-color: color-mix(in srgb, var(--subject-planet) 54%, #33445f);
+  border-color: color-mix(in srgb, var(--subject-planet) 32%, #33445f);
   background: #17243b;
+  box-shadow: 0 2px 9px #02061730;
 }
 html[data-color-mode='dark'] .ih-root.iman-layout .ih-subject-card .ih-subject-name { color: #f4f7fb; }
+html[data-color-mode='dark'] .ih-root.iman-layout .ih-subject-card .ih-subject-arrow {
+  border-color: color-mix(in srgb, var(--subject-planet) 20%, #33445f);
+  background: color-mix(in srgb, var(--subject-planet) 13%, #17243b);
+  color: color-mix(in srgb, var(--subject-planet) 58%, #f4f7fb);
+}
 html[data-color-mode='dark'] .ih-root.iman-layout .ih-subject-card .ih-subject-icon > svg:not(.ih-planet-backdrop) { color: #fff; }
 
 @media (prefers-reduced-motion: reduce) {

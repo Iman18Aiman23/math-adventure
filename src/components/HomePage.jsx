@@ -117,11 +117,7 @@ export function HomePageLayoutStyles() {
       #root:has(.iman-layout) .desktop-sidebar { position: sticky; top: 0; height: 100vh; height: 100dvh; flex-shrink: 0; }
     }
     @media (max-width: 767px) {
-      .ih-root.iman-layout .ih-subject-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-      .ih-root.iman-layout .ih-subject {
-        display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start;
-        min-height: 0; gap: 8px; padding: clamp(10px, 2.5vw, 16px); border-radius: 16px;
-      }
+      .ih-root.iman-layout .ih-subject-grid { gap: 10px; }
     }
     @media (max-width: 767px), (max-height: 500px) and (pointer: coarse) {
       .ih-root.iman-layout { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
@@ -261,6 +257,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
                 <div className="ih-subject-copy text-wrapper">
                   <span className="ih-subject-name mh-compact-tag-title">{subject.title[langIndex].toLocaleLowerCase().replace(/(^|\s)[\p{L}]/gu, letter => letter.toLocaleUpperCase())}</span>
                 </div>
+                <span className="ih-subject-arrow" aria-hidden="true"><ChevronRight size={19} strokeWidth={2.6} /></span>
               </div>
             </button>;
           })}
