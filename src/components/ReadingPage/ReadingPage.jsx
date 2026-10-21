@@ -67,11 +67,11 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
   };
 
   const levels = [
-    [1, bm ? 'Suku Kata (KV)' : 'KV Syllables', bm ? 'Kenali dan baca suku kata mudah seperti ba, ca, da.' : 'Learn simple open syllables such as ba, ca, da.', 'kv'],
-    [2, bm ? 'Suku Kata (KVK)' : 'KVK Syllables', bm ? 'Baca suku kata tertutup seperti kan, man, cat.' : 'Read closed syllables such as kan, man, cat.', 'kvk'],
-    [3, bm ? 'Perkataan' : 'Words', bm ? 'Baca dan fahami perkataan seharian dengan mudah.' : 'Read and understand everyday words with ease.', 'words'],
-    [4, bm ? 'Ayat Mudah' : 'Simple Sentences', bm ? 'Baca dan fahami ayat ringkas dalam kehidupan seharian.' : 'Read and understand sentences from everyday life.', 'sentences'],
-    [5, bm ? 'Cabaran Membaca' : 'Reading Challenge', bm ? 'Uji kefahaman anda dengan pelbagai soalan dan naik tahap!' : 'Test your understanding with questions and level up!', 'challenge'],
+    { id: 1, title: bm ? 'Belajar Suku Kata KV' : 'Learn KV Syllables', subtitle: bm ? 'Gabungkan dua huruf bersama-sama!' : 'Blend two letters together!', art: 'kv' },
+    { id: 2, title: bm ? 'Bina Suku Kata KVK' : 'Build KVK Syllables', subtitle: bm ? 'Bunyikan perkataan tiga huruf!' : 'Sound out three-letter words!', art: 'kvk' },
+    { id: 3, title: bm ? 'Baca Perkataan' : 'Read Words', subtitle: bm ? 'Baca perkataan pertama anda!' : 'Read your very first words!', art: 'words' },
+    { id: 4, title: bm ? 'Tulis Ayat' : 'Write Sentences', subtitle: bm ? 'Gabungkan perkataan untuk membaca!' : 'Put words together to read!', art: 'sentences' },
+    { id: 5, title: bm ? 'Sertai Cabaran Membaca' : 'Take the Challenge', subtitle: bm ? 'Uji kemahiran membaca baharu anda!' : 'Test your new reading skills!', art: 'challenge' },
   ];
   const cardThemes = ['blue', 'red', 'mint', 'purple', 'gold'];
   return <div className="rp-layout iman-layout rp-reading-page">
@@ -88,8 +88,14 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
     mascot={<img className="rp-hero-robot" src={HERO_ROBOT_ART} width="424" height="370" alt="" />}
     sectionTitle={bm ? 'Pilih Tahap' : 'Choose a Level'}
     sectionDescription={bm ? 'Pilih tahap untuk mula belajar.' : 'Pick a level to start learning.'}
-    topics={levels.map(([level, title, description, art]) => ({
-      id: level, title, description, theme: cardThemes[level - 1],
+    topics={levels.map(({ id, title, subtitle, art }) => ({
+      id,
+      title: <span className="rp-level-copy">
+        {id === 5 && <span className="rp-level-ribbon">{bm ? 'TAHAP BONUS' : 'BOSS LEVEL'}</span>}
+        <span className="rp-level-title">{title}</span>
+        <span className="rp-level-subtitle">{subtitle}</span>
+      </span>,
+      theme: cardThemes[id - 1],
       visual: <img className="rp-level-art" src={LEVEL_ART[art]} alt="" />,
       compactTag: true,
       showAction: false,
