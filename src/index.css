@@ -11,6 +11,9 @@
   --dashboard-hero-art-height: 220px;
   --font-heading: 'Outfit', sans-serif;
   --font-body: 'Inter', sans-serif;
+  --learning-cta-green: #078653;
+  --learning-cta-green-dark: #066a47;
+  --learning-cta-green-gradient: linear-gradient(180deg, var(--learning-cta-green), var(--learning-cta-green-dark));
 
   /* Primary — Indigo (strong, modern) */
   --primary:       #6366F1;

@@ -42,7 +42,7 @@
 .desktop-sidebar .home-progress-label strong { color: #099b61; font-variant-numeric: tabular-nums; }
 .desktop-sidebar .home-progress-track { height: 9px; border-radius: 20px; background: #deebf2; overflow: hidden; }
 .desktop-sidebar .home-progress-track span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #0ab36b, #36d49a); }
-.desktop-sidebar .sidebar-continue { width: 100%; min-height: 48px; display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 12px 14px; border: 0; border-radius: 13px; background: linear-gradient(180deg, #1bc77f, #09aa65); color: white; font: 800 16px/1.2 'Outfit', sans-serif; box-shadow: 0 4px 0 #078c52; }
+.desktop-sidebar .sidebar-continue { width: 100%; min-height: 48px; display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 12px 14px; border: 0; border-radius: 13px; background: var(--learning-cta-green-gradient); color: #fff; font: 800 16px/1.2 'Outfit', sans-serif; font-weight: 800; box-shadow: 0 4px 0 #078c52; }
 .desktop-sidebar .sidebar-continue-arrow { flex-shrink: 0; }
 .desktop-sidebar .sidebar-play-icon, .desktop-sidebar .sidebar-motivation { display: none; }
 .desktop-sidebar .sidebar-menu-panel { display: flex; flex: 1; flex-direction: column; min-height: 0; padding: 0; background: transparent; border: 0; box-shadow: none; }
@@ -69,7 +69,7 @@
   .desktop-sidebar .sidebar-logo:hover { opacity: .82; }
   .desktop-sidebar .home-quick-link:hover { background: #edf6fb; border-color: #bed8ea; }
   .desktop-sidebar .home-quick-link.active:hover { background: #dff7ec; border-color: #69d5a6; }
-  .desktop-sidebar .sidebar-continue:hover { background: #09ad68; }
+  .desktop-sidebar .sidebar-continue:hover { background: var(--learning-cta-green-dark); }
   .desktop-sidebar .home-settings-btn:hover { color: #0b9f65; border-color: #79d9b0; }
 }
 @media (max-width: 1200px) {
@@ -138,7 +138,9 @@
     min-height: clamp(42px, 5.5dvh, 56px);
     padding: 9px 14px;
     border-radius: 11px;
-    background: linear-gradient(110deg, #00b887, #00a271);
+    background: var(--learning-cta-green-gradient);
+    color: #fff;
+    font-weight: 800;
     box-shadow: none;
     font-size: clamp(14px, 1vw, 18px);
   }
@@ -278,7 +280,9 @@
   .desktop-sidebar .sidebar-continue {
     min-height: clamp(44px, 5.6dvh, 58px);
     border-radius: 13px;
-    background: linear-gradient(180deg, #19c98d, #0aa978);
+    background: var(--learning-cta-green-gradient);
+    color: #fff;
+    font-weight: 800;
     box-shadow: 0 4px 10px rgba(8, 160, 111, .2), inset 0 1px rgba(255,255,255,.28);
     font-size: clamp(14px, .95vw, 17px);
   }

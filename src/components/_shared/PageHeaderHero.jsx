@@ -51,7 +51,7 @@ export function PageHeader({ title, onBack, language = 'bm', className = '', ...
   </header>;
 }
 
-export function PageHero({ home = false, className = '', titleId, eyebrow, heroTitle, titleText, description, encouragement, mascot, decoration, heroBackground }) {
+export function PageHero({ home = false, className = '', titleId, eyebrow, heroTitle, titleText, description, encouragement, mascot, decoration, heroBackground, action }) {
   const id = useId();
   const headingId = titleId || `${id}-hero`;
   const Heading = home ? 'h1' : 'h2';
@@ -61,6 +61,7 @@ export function PageHero({ home = false, className = '', titleId, eyebrow, heroT
       <Heading id={headingId} title={titleText}>{heroTitle}</Heading>
       <p className={home ? 'ih-hero-lead' : 'mh-description'}>{description}</p>
       {home ? encouragement : encouragement && <p className="mh-encouragement">{encouragement}</p>}
+      {action && <div className="ip-hero-action">{action}</div>}
     </div>
     <div className={home ? 'ih-hero-art' : 'mh-mascot'} aria-hidden="true">{prioritizeHeroMascot(mascot)}</div>
     {decoration}

@@ -21,7 +21,7 @@
 .ih-top-actions-cluster { position: relative; display: flex; align-items: center; justify-content: flex-end; gap: clamp(8px, .8vw, 14px); min-width: 0; }
 /* Match the compact mobile header reference. */
 @media (max-width: 767px), (max-height: 500px) and (pointer: coarse) {
-  .ih-root > .ih-header { gap: 6px; margin-right: -10px; }
+  .ih-root .ih-header { gap: 6px; margin-right: -10px; }
   .ih-header > .ih-mobile-logo { display: block; width: 130px; min-width: 90px; margin-right: auto; padding: 0; background: transparent; }
   .ih-header > .ih-points { flex-shrink: 0; min-width: 58px; max-width: 84px; height: 36px; min-height: 36px; padding: 5px 10px; font-size: 16px; background: #f8fcff; border-color: #e6effa; }
   .ih-header > .ih-account { flex-shrink: 0; height: 36px; min-height: 36px; padding: 3px 7px 3px 4px; gap: 3px; background: #f8fcff; border-color: #e6effa; }

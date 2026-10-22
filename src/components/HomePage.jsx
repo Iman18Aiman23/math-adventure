@@ -1,9 +1,11 @@
 import React, { useState, Suspense } from 'react';
-import { ChevronRight, Star, ArrowLeft, LockKeyhole } from 'lucide-react';
+import { ChevronRight, ArrowLeft, LockKeyhole } from 'lucide-react';
 import { AGE_GROUPS } from '../data/ageCurriculum';
 import { canAccessSubject, hasFullSubjectAccess } from '../utils/subjectAccess';
 import { playHoverSound } from '../utils/soundManager';
-import { PageHeader, PageHero } from './_shared/PageHeaderHero';
+import { PageHeader } from './_shared/PageHeaderHero';
+import SubjectMenuLayout from './_shared/SubjectMenuLayout';
+import StandardHeroBanner from './_shared/StandardHeroBanner';
 import './_shared/PageContainer.css';
 import './_shared/SubjectMenuLayout.css';
 import './HomePage.css';
@@ -23,9 +25,10 @@ export function HomePageLayoutStyles() {
       min-height: 100%; flex: 0 0 auto; container: iman-page / inline-size;
       background: #fff; overflow: visible;
     }
-    .ih-root.iman-layout { display: flex; flex-direction: column; gap: var(--page-gap); }
-    .ih-root.iman-layout > :not(style) {
+    .ih-root.iman-layout { display: flex; flex-direction: column; gap: 0; }
+    .ih-root.iman-layout > .ih-home-wrap {
       width: 100%; max-width: 1400px; min-width: 0; margin-inline: auto;
+      display: flex; flex: 1 0 auto; flex-direction: column; gap: var(--page-gap); padding: 0;
     }
     .rp-layout .mh-wrap, .pf-root.iman-layout > .pf-wrap {
       width: 100%; max-width: 1400px; min-width: 0; margin-inline: auto;
@@ -190,21 +193,25 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
   }
 
   return (
-    <div className="ih-root iman-layout page-layout-root" style={{ '--ih-art': `url("${import.meta.env.BASE_URL}images/home/robots.webp")` }}>
+    <>
       <HomePageLayoutStyles />
-      <PageHeader className="page-container" {...{ language, playerName, gameState, streak, onTabChange, onHome, onOpenReports, onLogout, onToggleLang, colorMode, onColorModeChange }} />
-      <PageHero className="page-container" home titleId="ih-welcome-title"
-        eyebrow={bm ? 'TEROKA • BELAJAR • BERJAYA' : 'EXPLORE • LEARN • ACHIEVE'}
-        titleText={`${bm ? 'Hei' : 'Hey'}, ${name}!`}
-        heroTitle={<><span>{bm ? 'Hei' : 'Hey'},</span> <span>{name}!</span> <span aria-hidden="true">👋</span></>}
-        description={bm ? 'Teruskan perjalanan belajar anda bersama ImanAI!' : 'Continue your learning adventure with ImanAI!'}
-        mascot={<img src={`${import.meta.env.BASE_URL}images/home/Robot%20HomePage.webp`} alt="" />}
-        decoration={<>
-          <Star className="ih-hero-star" aria-hidden="true" />
-        </>}
-      />
-
-      <section className="ih-subjects page-container" aria-labelledby="ih-subject-heading">
+      <SubjectMenuLayout
+        title={bm ? 'Laman Utama' : 'Home'}
+        rootClassName="ih-root iman-layout page-layout-root"
+        wrapClassName="ih-home-wrap page-container"
+        rootStyle={{ '--ih-art': `url("${import.meta.env.BASE_URL}images/home/robots.webp")` }}
+        language={language}
+        headerContent={<PageHeader className="page-container" {...{ language, playerName, gameState, streak, onTabChange, onHome, onOpenReports, onLogout, onToggleLang, colorMode, onColorModeChange }} />}
+        heroContent={<StandardHeroBanner
+          titlePrefix={bm ? 'Hei, ' : 'Hey, '}
+          titleHighlight={`${name}! 👋`}
+          subtitle={bm ? 'Teruskan perjalanan belajar anda bersama ImanAI!' : 'Continue your learning adventure with ImanAI!'}
+          ctaText={bm ? 'Teroka Subjek' : 'Explore Subjects'}
+          ctaOnClick={() => document.getElementById('ih-subjects')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+          mascotSrc={`${import.meta.env.BASE_URL}images/home/Robot%20HomePage.webp`}
+        />}
+      >
+      <section id="ih-subjects" className="ih-subjects page-container" aria-labelledby="ih-subject-heading">
         <div className="ih-section-heading"><h2 id="ih-subject-heading">{bm ? 'SUBJEK' : 'SUBJECTS'}</h2><p>{bm ? 'Pilih subjek kegemaran anda.' : 'Choose your favourite subject.'}</p></div>
         <div className="ih-subject-grid mh-topic-grid">
           {SUBJECTS.map(subject => {
@@ -240,6 +247,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
           </button>)}
         </div>
       </section>
-    </div>
+      </SubjectMenuLayout>
+    </>
   );
 }

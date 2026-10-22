@@ -1,8 +1,10 @@
 import React, { useTransition } from 'react';
 import { playHoverSound } from '../../utils/soundManager';
 import { useGameStateContext } from '../../App';
+import { useGameState } from '../../hooks/useGameState';
 import LoadingSpinner from '../LoadingSpinner';
 import SubjectMenuLayout from '../_shared/SubjectMenuLayout';
+import StandardHeroBanner from '../_shared/StandardHeroBanner';
 import { HomePageLayoutStyles } from '../HomePage';
 import { useBrowserBackHandler } from '../../hooks/useBrowserBack';
 import LearnWords from './LearnWords';
@@ -25,7 +27,9 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
   useBrowserBackHandler(selectedLevel ? () => setSelectedLevel(null) : onBack);
   const [isPending, startTransition] = useTransition();
   const gameState = useGameStateContext();
+  const readingChallengeState = useGameState('reading-challenge').gameState;
   const bm = language === 'bm';
+  const hasReadingProgress = readingChallengeState.unlockedItems.some(item => item.startsWith('reading-complete-'));
 
   if (selectedLevel === 1) {
     return (
@@ -66,6 +70,11 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
     startTransition(() => setSelectedLevel(level));
   };
 
+  const handleHeroAction = () => {
+    playHoverSound();
+    startTransition(() => setSelectedLevel(hasReadingProgress ? 5 : 1));
+  };
+
   const levels = [
     { id: 1, title: bm ? 'Belajar Suku Kata KV' : 'Learn KV Syllables', subtitle: bm ? 'Gabungkan dua huruf bersama-sama!' : 'Blend two letters together!', art: 'kv' },
     { id: 2, title: bm ? 'Bina Suku Kata KVK' : 'Build KVK Syllables', subtitle: bm ? 'Bunyikan perkataan tiga huruf!' : 'Sound out three-letter words!', art: 'kvk' },
@@ -78,14 +87,19 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
     <HomePageLayoutStyles />
     <SubjectMenuLayout
     sharedPageChrome
-    heroClassName="rp-reading-hero"
     {...accountProps} language={language} gameState={gameState} onBack={onBack} onHome={onBack}
     pending={isPending && <LoadingSpinner overlay />}
     title={bm ? 'Membaca' : 'Reading'}
-    eyebrow={bm ? 'MEMBACA' : 'READING'}
-    heroTitle={bm ? <><span>Jom belajar</span> <span>Membaca!</span></> : <><span>Let's learn</span> <span>to read!</span></>}
-    description={bm ? 'Dari suku kata ke ayat penuh - satu langkah pada satu masa!' : 'From syllables to full sentences - one step at a time!'}
-    mascot={<img className="rp-hero-robot" src={HERO_ROBOT_ART} width="424" height="370" alt="" />}
+    heroContent={<StandardHeroBanner
+      headingLevel="h2"
+      titlePrefix={bm ? 'Jom Belajar ' : "Let's Learn "}
+      titleHighlight={bm ? 'Membaca!' : 'To Read!'}
+      subtitle={bm ? 'Cantum bunyi, bina perkataan dan kuasai ayat langkah demi langkah.' : 'Blend sounds, build words, and master sentences step-by-step.'}
+      ctaText={hasReadingProgress ? (bm ? 'Teruskan Kursus' : 'Continue Course') : (bm ? 'Mula Pelajaran 1' : 'Start Lesson 1')}
+      ctaOnClick={handleHeroAction}
+      mascotSrc={HERO_ROBOT_ART}
+      className="rp-reading-hero"
+    />}
     sectionTitle={bm ? 'Pilih Tahap' : 'Choose a Level'}
     sectionDescription={bm ? 'Pilih tahap untuk mula belajar.' : 'Pick a level to start learning.'}
     topics={levels.map(({ id, title, subtitle, art }) => ({

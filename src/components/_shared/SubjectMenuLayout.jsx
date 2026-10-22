@@ -12,7 +12,7 @@ export default function SubjectMenuLayout({
   title, eyebrow, heroTitle, description, encouragement, mascot,
   sectionTitle, sectionDescription, topics, onSelect, onBack,
   language = 'bm', pending, notice, additionalContent, heroBackground, sharedPageChrome = false,
-  rootClassName, wrapClassName, headerContent, heroContent, heroClassName = '', contentClassName, overlayContent, children, ...accountProps
+  rootClassName, rootStyle, wrapClassName, headerContent, heroContent, heroAction, heroClassName = '', contentClassName, overlayContent, children, ...accountProps
 }) {
   const id = useId();
   // Dashboard pages can provide the app's home action as `onHome`; use it
@@ -21,7 +21,7 @@ export default function SubjectMenuLayout({
   const comingSoon = language === 'bm' ? 'Segera Hadir' : 'Coming Soon';
 
   return (
-    <main className={rootClassName || `mh-screen${sharedPageChrome ? ' page-layout-root' : ''}`} aria-label={title}>
+    <main className={rootClassName || `mh-screen${sharedPageChrome ? ' page-layout-root' : ''}`} style={rootStyle} aria-label={title}>
       {pending}
       {notice && <div className="mh-menu-notice" role="status">{notice}</div>}
       <div className={wrapClassName || 'mh-wrap page-container'}>
@@ -30,7 +30,7 @@ export default function SubjectMenuLayout({
           <h1>{title}</h1>
           <HomeHeaderActions {...accountProps} language={language} />
         </header>)}
-        {heroContent ?? (sharedPageChrome ? <PageHero {...{ eyebrow, heroTitle, description, encouragement, mascot, heroBackground }} className={heroClassName} /> : <section className={`mh-hero ${heroClassName}`.trim()} aria-labelledby={`${id}-hero`} style={heroBackground ? { background: heroBackground } : undefined}>
+        {heroContent !== undefined ? heroContent : (sharedPageChrome ? <PageHero {...{ eyebrow, heroTitle, description, encouragement, mascot, heroBackground, action: heroAction }} className={heroClassName} /> : <section className={`mh-hero ${heroClassName}`.trim()} aria-labelledby={`${id}-hero`} style={heroBackground ? { background: heroBackground } : undefined}>
           <div className="mh-hero-copy">
             <p className="mh-eyebrow">{eyebrow}</p>
             <h2 id={`${id}-hero`}>{heroTitle}</h2>
