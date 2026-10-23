@@ -3,6 +3,7 @@ import { CircleCheck, Timer } from 'lucide-react';
 import { getGameData } from '../../utils/gameStatsManager';
 import { loadPlayerName } from '../../services/storageService';
 import SubjectMenuLayout from '../_shared/SubjectMenuLayout';
+import FadeInImage from '../_shared/FadeInImage';
 import { HomePageLayoutStyles } from '../HomePage';
 import './LeaderboardHome.css';
 
@@ -75,7 +76,7 @@ export default function LeaderboardHome({ language = 'bm', gameState, ...account
         <Artwork name="trophy" className="lb-hero-trophy" />
         <div className="lb-hero-copy"><p className="lb-hero-kicker">{t('TEROKA • BELAJAR • BERJAYA', 'EXPLORE • LEARN • ACHIEVE')}</p><h1 id="lb-title"><span>{t('Papan', 'Leader')}</span> <span>{t('Juara', 'board')}</span></h1>
           <p>{t('Teruskan belajar dan bersaing dengan rakan-rakan!', 'Keep learning and compete with your friends!')}</p></div>
-        <img className="lb-hero-robot" src={`${import.meta.env.BASE_URL}images/leaderboard/Robot%20Leaderboard.webp`} alt="" />
+        <FadeInImage className="lb-hero-robot" src={`${import.meta.env.BASE_URL}images/leaderboard/Robot%20Leaderboard.webp`} alt="" />
       </section>}
     >
       <nav className="lb-subjects" aria-label={t('Subjek papan juara', 'Leaderboard subjects')}>

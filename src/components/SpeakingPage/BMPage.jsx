@@ -7,25 +7,25 @@ import SubjectMenuLayout from '../_shared/SubjectMenuLayout';
 import StandardHeroBanner from '../_shared/StandardHeroBanner';
 import LoadingSpinner from '../LoadingSpinner';
 import { HomePageLayoutStyles } from '../HomePage';
-import BMMenuArtwork from './BMMenuArtwork';
+import { getBMMenuArtworkSrc } from './BMMenuArtwork';
 import './BMPage.css';
 
 const BMSpeakGame = React.lazy(() => import('./BMSpeakGame'));
 const SPEAKING_HERO_ART = `${import.meta.env.BASE_URL}images/speaking/HeroRobotSpeaking.webp`;
 const CATEGORIES = [
-  { id: 'bm_kv', theme: 'blue', bm: 'Suku Kata (KV)', en: 'KV Syllables',
+  { id: 'bm_kv', bm: 'Suku Kata (KV)', en: 'KV Syllables',
     descBm: 'Gabungkan dua huruf bersama!',
     descEn: 'Blend two letters together!' },
-  { id: 'bm_kvk', theme: 'red', bm: 'Suku Kata (KVK)', en: 'KVK Syllables',
+  { id: 'bm_kvk', bm: 'Suku Kata (KVK)', en: 'KVK Syllables',
     descBm: 'Sebut bunyi perkataan tiga huruf!',
     descEn: 'Sound out three-letter words!' },
-  { id: 'en_long_vowels', theme: 'mint', bm: 'Bunyi Huruf Bahasa Inggeris', en: 'English Phonics',
+  { id: 'en_long_vowels', bm: 'Bunyi Huruf Bahasa Inggeris', en: 'English Phonics',
     descBm: 'Kenali bunyi huruf dan peraturannya!',
     descEn: 'Master letter sounds and rules!' },
-  { id: 'numbers', theme: 'gold', bm: 'Nombor 1 - 100', en: 'Numbers 1-100',
+  { id: 'numbers', bm: 'Nombor 1 - 100', en: 'Numbers 1-100',
     descBm: 'Berlatih menyebut nombor!',
     descEn: 'Practice saying your numbers!' },
-  { id: 'common_objects', theme: 'purple', bm: 'Objek', en: 'Objects',
+  { id: 'common_objects', bm: 'Objek', en: 'Objects',
     descBm: 'Sebut nama objek harian dengan yakin!',
     descEn: 'Name everyday items with confidence!' },
 ];
@@ -70,9 +70,9 @@ export default function BMPage({
     topicCardVariant="standard"
     topics={CATEGORIES.map(category => ({
       id: category.id,
-      description: category[bm ? 'descBm' : 'descEn'],
-      visual: <BMMenuArtwork topic={category.id} />,
       title: category[bm ? 'bm' : 'en'],
+      subtitle: category[bm ? 'descBm' : 'descEn'],
+      iconSrc: getBMMenuArtworkSrc(category.id),
     }))}
     onSelect={category => startTransition(() => onSelectCategory?.(category))}
     additionalContent={

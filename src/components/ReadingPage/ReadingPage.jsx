@@ -82,7 +82,6 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
     { id: 4, title: bm ? 'Tulis Ayat' : 'Write Sentences', subtitle: bm ? 'Gabungkan perkataan untuk membaca!' : 'Put words together to read!', art: 'sentences' },
     { id: 5, title: bm ? 'Sertai Cabaran Membaca' : 'Take the Challenge', subtitle: bm ? 'Uji kemahiran membaca baharu anda!' : 'Test your new reading skills!', art: 'challenge' },
   ];
-  const cardThemes = ['blue', 'red', 'mint', 'purple', 'gold'];
   return <div className="rp-layout iman-layout rp-reading-page">
     <HomePageLayoutStyles />
     <SubjectMenuLayout
@@ -102,17 +101,14 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
     />}
     sectionTitle={bm ? 'Pilih Tahap' : 'Choose a Level'}
     sectionDescription={bm ? 'Pilih tahap untuk mula belajar.' : 'Pick a level to start learning.'}
+    topicCardVariant="standard"
     topics={levels.map(({ id, title, subtitle, art }) => ({
       id,
-      title: <span className="rp-level-copy">
-        {id === 5 && <span className="rp-level-ribbon">{bm ? 'TAHAP BONUS' : 'BOSS LEVEL'}</span>}
-        <span className="rp-level-title">{title}</span>
-        <span className="rp-level-subtitle">{subtitle}</span>
-      </span>,
-      theme: cardThemes[id - 1],
-      visual: <img className="rp-level-art" src={LEVEL_ART[art]} alt="" />,
-      compactTag: true,
-      showAction: false,
+      title,
+      subtitle,
+      iconSrc: LEVEL_ART[art],
+      badge: id === 5 ? (bm ? 'TAHAP BONUS' : 'BOSS LEVEL') : null,
+      badgeClassName: id === 5 ? 'rp-level-ribbon' : '',
       onMouseEnter: playHoverSound,
     }))}
     onSelect={handleSelectLevel}

@@ -1,4 +1,5 @@
-.view-container > .rg-journey, .view-container > .rg-shell { max-width: 100%; }
+.view-container > .rg-journey { max-width: 100%; }
+.view-container > .rg-shell { max-width: var(--home-content-max, 1400px); margin-inline: auto; }
 .rg-journey, .rg-shell { width: 100%; min-width: 0; color: #102d53; background: #effaf5; font-family: 'Fredoka', sans-serif; }
 .rg-journey *, .rg-shell * { box-sizing: border-box; }
 .rg-journey button, .rg-shell button { font-family: 'Baloo 2', sans-serif; cursor: pointer; }

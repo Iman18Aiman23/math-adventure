@@ -5,6 +5,7 @@ import { canAccessSubject, hasFullSubjectAccess } from '../utils/subjectAccess';
 import { playHoverSound } from '../utils/soundManager';
 import { PageHeader } from './_shared/PageHeaderHero';
 import SubjectMenuLayout from './_shared/SubjectMenuLayout';
+import StandardCard from './_shared/StandardCard';
 import StandardHeroBanner from './_shared/StandardHeroBanner';
 import './_shared/PageContainer.css';
 import './_shared/SubjectMenuLayout.css';
@@ -27,11 +28,11 @@ export function HomePageLayoutStyles() {
     }
     .ih-root.iman-layout { display: flex; flex-direction: column; gap: 0; }
     .ih-root.iman-layout > .ih-home-wrap {
-      width: 100%; max-width: 1400px; min-width: 0; margin-inline: auto;
+      width: 100%; max-width: var(--home-content-max, 1400px); min-width: 0; margin-inline: auto;
       display: flex; flex: 1 0 auto; flex-direction: column; gap: var(--page-gap); padding: 0;
     }
     .rp-layout .mh-wrap, .pf-root.iman-layout > .pf-wrap {
-      width: 100%; max-width: 1400px; min-width: 0; margin-inline: auto;
+      width: 100%; max-width: var(--home-content-max, 1400px); min-width: 0; margin-inline: auto;
     }
     .rp-layout .mh-wrap { display: flex; flex-direction: column; gap: var(--page-gap); padding: 0; }
     .iman-layout :is(.ih-header, .mh-header) { width: 100%; min-height: 44px; margin-block: 0; margin-right: auto; }
@@ -218,21 +219,19 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
             const canOpen = canAccessSubject(playerName, subject.id);
             const subjectLabel = subject.title[langIndex];
             const openSubject = () => subject.id === 'robot' ? setShowRobotInterface(true) : onSelectSubject(subject.id);
-            return <button key={subject.id} type="button" className={`ih-subject ih-subject-card ih-subject--${subject.tone} mh-compact-tag${canOpen ? '' : ' is-locked'}`}
-              aria-label={`${subjectLabel}${canOpen ? '' : bm ? ' (terkunci)' : ' (locked)'}`} disabled={!canOpen} onClick={openSubject}
-                onMouseEnter={canOpen ? playHoverSound : undefined}>
-              <div className="ih-subject-content card-container">
-                <div className="ih-subject-icon mh-compact-tag-icon icon-wrapper">
-                  <img src={`${import.meta.env.BASE_URL}images/home/${subject.icon}`} alt="" />
-                </div>
-                <div className="ih-subject-copy text-wrapper">
-                  {!canOpen && <span className="ih-subject-locked-label">LOCKED</span>}
-                  <span className="ih-subject-name mh-compact-tag-title">{subject.title[langIndex].toLocaleLowerCase().replace(/(^|\s)[\p{L}]/gu, letter => letter.toLocaleUpperCase())}</span>
-                  <span className="ih-subject-subtitle">{subject.subtitle[langIndex]}</span>
-                </div>
-                {!canOpen && <span className="ih-subject-lock" aria-hidden="true"><LockKeyhole size={20} strokeWidth={2.4} /></span>}
-              </div>
-            </button>;
+            return <StandardCard
+              key={subject.id}
+              className={`ih-subject-card ih-subject--${subject.tone}${canOpen ? '' : ' is-locked'}`}
+              ariaLabel={`${subjectLabel}${canOpen ? '' : bm ? ' (terkunci)' : ' (locked)'}`}
+              title={subjectLabel.toLocaleLowerCase().replace(/(^|\s)[\p{L}]/gu, letter => letter.toLocaleUpperCase())}
+              subtitle={subject.subtitle[langIndex]}
+              iconSrc={`${import.meta.env.BASE_URL}images/home/${subject.icon}`}
+              badge={!canOpen ? 'LOCKED' : null}
+              trailing={!canOpen && <LockKeyhole size={20} strokeWidth={2.4} />}
+              isLocked={!canOpen}
+              onClick={openSubject}
+              onMouseEnter={canOpen ? playHoverSound : undefined}
+            />;
           })}
         </div>
       </section>

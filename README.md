@@ -1,6 +1,8 @@
-# Math Adventure
+# ImanAI / Math Adventure
 
-A fun math game for kids!
+A React learning app for children, with reading, speaking, mathematics, curriculum activities, assessments, and progress dashboards.
+
+For the repository map, navigation model, shared layouts, and feature flows, see the [Project Structure and Layout guide](docs/PROJECT_STRUCTURE_AND_LAYOUT.md).
 
 ## Getting Started
 
@@ -14,11 +16,24 @@ A fun math game for kids!
     npm run dev
     ```
 
-3.  **Build for production:**
+3.  **Build and preview for production:**
     ```bash
     npm run build
     npm run preview
     ```
+
+4.  **Check code style:**
+    ```bash
+    npm run lint
+    ```
+
+## Project References
+
+- [Project Structure and Layout](docs/PROJECT_STRUCTURE_AND_LAYOUT.md)
+- [UI/UX Documentation](docs/UI_UX_DOCUMENTATION.md)
+- [Math KSSR reference](src/components/MatematikPage/MATEMATIK.md)
+- [Pendidikan Islam reference](src/components/PendidikanIslamPage/PENDIDIKAN_ISLAM.md)
+- [Bahasa Melayu reference](src/components/BahasaMelayuPage/BAHASA_MELAYU.md)
 
 ## Troubleshooting
 

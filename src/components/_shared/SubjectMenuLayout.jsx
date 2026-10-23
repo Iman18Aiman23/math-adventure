@@ -3,6 +3,7 @@ import { ArrowLeft, ChevronRight } from 'lucide-react';
 import useBrowserBack from '../../hooks/useBrowserBack';
 import HomeHeaderActions from './HomeHeaderActions';
 import { PageHeader, PageHero } from './PageHeaderHero';
+import StandardCard from './StandardCard';
 import { prioritizeHeroMascot } from './heroImage';
 import './SubjectMenuLayout.css';
 import './PageContainer.css';
@@ -47,14 +48,11 @@ export default function SubjectMenuLayout({
           </div>
           <section className={`mh-topic-grid${topicCardVariant === 'standard' ? ' mh-standard-topic-grid' : ''}`} aria-labelledby={`${id}-topics`}>
             {topics.map(topic => topicCardVariant === 'standard' ? (
-              <button key={topic.id} type="button" className="mh-topic-card mh-standard-topic-card"
-                onClick={() => onSelect?.(topic.id)} onMouseEnter={topic.onMouseEnter}>
-                <span className="mh-standard-topic-icon" aria-hidden="true">{topic.visual}</span>
-                <span className="mh-standard-topic-copy">
-                  <span className="mh-standard-topic-title">{topic.title}</span>
-                  <span className="mh-standard-topic-description">{topic.description}</span>
-                </span>
-              </button>
+              <StandardCard key={topic.id} title={topic.title} subtitle={topic.subtitle}
+                iconSrc={topic.iconSrc} onClick={() => onSelect?.(topic.id)}
+                onMouseEnter={topic.onMouseEnter} isLocked={topic.isLocked}
+                className={topic.className} ariaLabel={topic.ariaLabel}
+                badge={topic.badge} badgeClassName={topic.badgeClassName} trailing={topic.trailing} />
             ) : topic.compactTag ? (
               <button key={topic.id} type="button" className={`mh-topic-card mh-${topic.theme} mh-compact-tag mh-compact-tag-${topic.id}`}
                 disabled={topic.disabled} onClick={() => onSelect(topic.id)} onMouseEnter={topic.onMouseEnter}

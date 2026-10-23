@@ -1,4 +1,5 @@
 import { useId } from 'react';
+import FadeInImage from './FadeInImage';
 import './StandardHeroBanner.css';
 
 const HEADING_TAGS = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
@@ -42,7 +43,7 @@ export default function StandardHeroBanner({
       </div>
       {mascotSrc && (
         <div className="standard-hero-banner__mascot" aria-hidden="true">
-          <img src={mascotSrc} alt="" />
+          <FadeInImage src={mascotSrc} alt="" />
         </div>
       )}
     </section>

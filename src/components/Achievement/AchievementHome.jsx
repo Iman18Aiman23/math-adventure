@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { HomePageLayoutStyles } from '../HomePage';
+import FadeInImage from '../_shared/FadeInImage';
 import SubjectMenuLayout from '../_shared/SubjectMenuLayout';
 import { loadPlayerName } from '../../services/storageService';
 import AchievementArt from './AchievementArt';
@@ -702,7 +703,7 @@ export default function AchievementHome({ language = 'bm', gameState, onTakeAsse
           <AchievementArt name={assessmentTab ? 'clipboard' : currentTab === 'achievements' ? 'trophy' : 'medal'} className="ac-hero-icon ac-mobile-art" />
           <AchievementArt name={assessmentTab ? 'clipboard' : 'trophy'} className="ac-hero-icon ac-desktop-art" />
           <div className="ac-hero-copy"><p className="ac-hero-kicker">{bm ? 'TEROKA • BELAJAR • BERJAYA' : 'EXPLORE • LEARN • ACHIEVE'}</p><h1 id="ac-title"><span className="ac-mobile-title">{heroHeading(title)}</span><span className="ac-desktop-title">{heroHeading(assessmentTab ? title : (bm ? 'Pencapaian Saya' : 'My Achievements'))}</span></h1><p>{description}</p></div>
-          <img className="ac-hero-robot" src={`${import.meta.env.BASE_URL}images/achievement/${heroRobot}`} alt="" />
+          <FadeInImage className="ac-hero-robot" src={`${import.meta.env.BASE_URL}images/achievement/${heroRobot}`} alt="" />
       </section>}
     >
         <div className="ac-tabs" role="tablist" aria-label={bm ? 'Pencapaian Saya' : 'My Achievements'}>

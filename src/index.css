@@ -4,6 +4,7 @@
    DESIGN TOKENS — Modern & Playful Palette
    ============================================= */
 :root {
+  --home-content-max: 1400px;
   --dashboard-hero-height: 260px;
   --dashboard-hero-height-compact: 240px;
   --dashboard-hero-height-narrow: 260px;
