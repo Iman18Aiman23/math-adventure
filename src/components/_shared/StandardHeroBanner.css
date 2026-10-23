@@ -111,6 +111,12 @@
   outline-offset: 3px;
 }
 
+.standard-hero-banner__cta:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .standard-hero-banner__mascot {
   grid-area: mascot;
   position: relative;

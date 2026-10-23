@@ -12,6 +12,7 @@ export default function SubjectMenuLayout({
   title, eyebrow, heroTitle, description, encouragement, mascot,
   sectionTitle, sectionDescription, topics, onSelect, onBack,
   language = 'bm', pending, notice, additionalContent, heroBackground, sharedPageChrome = false,
+  topicCardVariant = 'default',
   rootClassName, rootStyle, wrapClassName, headerContent, heroContent, heroAction, heroClassName = '', contentClassName, overlayContent, children, ...accountProps
 }) {
   const id = useId();
@@ -44,8 +45,17 @@ export default function SubjectMenuLayout({
             <h2 id={`${id}-topics`}>{sectionTitle}</h2>
             <p>{sectionDescription}</p>
           </div>
-          <section className="mh-topic-grid" aria-labelledby={`${id}-topics`}>
-            {topics.map(topic => topic.compactTag ? (
+          <section className={`mh-topic-grid${topicCardVariant === 'standard' ? ' mh-standard-topic-grid' : ''}`} aria-labelledby={`${id}-topics`}>
+            {topics.map(topic => topicCardVariant === 'standard' ? (
+              <button key={topic.id} type="button" className="mh-topic-card mh-standard-topic-card"
+                onClick={() => onSelect?.(topic.id)} onMouseEnter={topic.onMouseEnter}>
+                <span className="mh-standard-topic-icon" aria-hidden="true">{topic.visual}</span>
+                <span className="mh-standard-topic-copy">
+                  <span className="mh-standard-topic-title">{topic.title}</span>
+                  <span className="mh-standard-topic-description">{topic.description}</span>
+                </span>
+              </button>
+            ) : topic.compactTag ? (
               <button key={topic.id} type="button" className={`mh-topic-card mh-${topic.theme} mh-compact-tag mh-compact-tag-${topic.id}`}
                 disabled={topic.disabled} onClick={() => onSelect(topic.id)} onMouseEnter={topic.onMouseEnter}
                 title={topic.disabled ? (topic.disabledReason || topic.disabledLabel || comingSoon) : undefined}>

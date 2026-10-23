@@ -10,6 +10,7 @@ export default function StandardHeroBanner({
   ctaText,
   ctaLink,
   ctaOnClick,
+  ctaDisabled = false,
   mascotSrc,
   headingLevel = 'h1',
   className = '',
@@ -27,8 +28,8 @@ export default function StandardHeroBanner({
         {subtitle && <p className="standard-hero-banner__subtitle">{subtitle}</p>}
         {ctaText && (ctaOnClick || ctaLink) && (
           <div className="standard-hero-banner__action">
-            {ctaOnClick ? (
-              <button type="button" className="standard-hero-banner__cta" onClick={ctaOnClick}>
+            {ctaOnClick || ctaDisabled ? (
+              <button type="button" className="standard-hero-banner__cta" onClick={ctaOnClick} disabled={ctaDisabled}>
                 {ctaText}
               </button>
             ) : (

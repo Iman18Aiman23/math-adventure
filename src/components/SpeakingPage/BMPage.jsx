@@ -1,32 +1,33 @@
 import React, { Suspense, useTransition } from 'react';
-import { BookOpen, BookMarked, Languages, Hash, Shapes, ListOrdered } from 'lucide-react';
 import { LOCALIZATION } from '../../utils/localization';
 import { useGameStateContext } from '../../App';
 import SpeechManager from '../../services/SpeechManager';
 import { useBrowserBackHandler } from '../../hooks/useBrowserBack';
 import SubjectMenuLayout from '../_shared/SubjectMenuLayout';
+import StandardHeroBanner from '../_shared/StandardHeroBanner';
 import LoadingSpinner from '../LoadingSpinner';
 import { HomePageLayoutStyles } from '../HomePage';
 import BMMenuArtwork from './BMMenuArtwork';
 import './BMPage.css';
 
 const BMSpeakGame = React.lazy(() => import('./BMSpeakGame'));
+const SPEAKING_HERO_ART = `${import.meta.env.BASE_URL}images/speaking/HeroRobotSpeaking.webp`;
 const CATEGORIES = [
-  { id: 'bm_kv', theme: 'blue', icon: BookOpen, bm: 'Suku Kata (KV)', en: 'KV Syllables',
-    descBm: 'Dengar dan sebut suku kata mudah seperti ba, ca, da.',
-    descEn: 'Listen and say open syllables such as ba, ca, da.' },
-  { id: 'bm_kvk', theme: 'red', icon: BookMarked, bm: 'Suku Kata (KVK)', en: 'KVK Syllables',
-    descBm: 'Dengar dan sebut suku kata tertutup seperti kan, man, cat.',
-    descEn: 'Listen and say closed syllables such as kan, man, cat.' },
-  { id: 'en_long_vowels', theme: 'mint', icon: Languages, bm: 'Bunyi Huruf Bahasa Inggeris', en: 'English Phonics',
-    descBm: 'Dengar dan sebut bunyi huruf dengan betul.',
-    descEn: 'Listen and practise English sounds and long vowels.' },
-  { id: 'numbers', theme: 'gold', icon: ListOrdered, bm: 'Nombor 1 – 100', en: 'Numbers 1 – 100',
-    descBm: 'Dengar dan sebut nombor dari 1 hingga 100.',
-    descEn: 'Listen and say numbers from 1 to 100.' },
-  { id: 'common_objects', theme: 'purple', icon: Shapes, bm: 'Objek', en: 'Objects',
-    descBm: 'Dengar dan sebut nama objek seharian dengan jelas.',
-    descEn: 'Listen and clearly say the names of everyday objects.' },
+  { id: 'bm_kv', theme: 'blue', bm: 'Suku Kata (KV)', en: 'KV Syllables',
+    descBm: 'Gabungkan dua huruf bersama!',
+    descEn: 'Blend two letters together!' },
+  { id: 'bm_kvk', theme: 'red', bm: 'Suku Kata (KVK)', en: 'KVK Syllables',
+    descBm: 'Sebut bunyi perkataan tiga huruf!',
+    descEn: 'Sound out three-letter words!' },
+  { id: 'en_long_vowels', theme: 'mint', bm: 'Bunyi Huruf Bahasa Inggeris', en: 'English Phonics',
+    descBm: 'Kenali bunyi huruf dan peraturannya!',
+    descEn: 'Master letter sounds and rules!' },
+  { id: 'numbers', theme: 'gold', bm: 'Nombor 1 - 100', en: 'Numbers 1-100',
+    descBm: 'Berlatih menyebut nombor!',
+    descEn: 'Practice saying your numbers!' },
+  { id: 'common_objects', theme: 'purple', bm: 'Objek', en: 'Objects',
+    descBm: 'Sebut nama objek harian dengan yakin!',
+    descEn: 'Name everyday items with confidence!' },
 ];
 
 export default function BMPage({
@@ -53,26 +54,27 @@ export default function BMPage({
     {...accountProps} language={language} gameState={gameState} onBack={onBack} onHome={onHome || onBack}
     pending={isPending && <LoadingSpinner overlay />}
     title={bm ? 'Sebutan' : 'Speaking'}
-    eyebrow={bm ? 'SEBUTAN' : 'SPEAKING'}
-    heroTitle={bm ? <><span>Jom belajar</span> <span>Sebutan!</span></> : <><span>Let's practise</span> <span>speaking!</span></>}
-    description={bm ? 'Dengar, sebut dan ulang. Latih sebutan dengan jelas dan yakin!' : 'Listen, speak and repeat. Practise speaking clearly and confidently!'}
-    heroBackground="radial-gradient(circle at 104% 94%, #c0e8ff 0 28%, transparent 28.2%), linear-gradient(115deg, #eff9ff, #dbf2ff)"
-    mascot={<BMMenuArtwork topic="robot" />}
+    heroContent={<StandardHeroBanner
+      headingLevel="h2"
+      titlePrefix={bm ? 'Jom berlatih ' : 'Let\'s practise '}
+      titleHighlight={bm ? 'sebutan!' : 'speaking!'}
+      subtitle={bm ? 'Dengar, sebut dan ulang. Latih sebutan dengan jelas dan yakin!' : 'Listen, speak and repeat. Practise speaking clearly and confidently!'}
+      ctaText={bm ? 'Mula Berlatih' : 'Start Practising'}
+      ctaOnClick={() => { if (isSupported) startTransition(() => onSelectCategory?.('bm_kv')); }}
+      ctaDisabled={!isSupported}
+      mascotSrc={SPEAKING_HERO_ART}
+    />}
     sectionTitle={bm ? 'Pilih Kategori' : 'Choose a Category'}
     sectionDescription={bm ? 'Pilih kategori untuk mula belajar.' : 'Pick a category to start learning.'}
     notice={!isSupported ? unsupportedReason : undefined}
+    topicCardVariant="standard"
     topics={CATEGORIES.map(category => ({
-      id: category.id, theme: category.theme,
-      title: category[bm ? 'bm' : 'en'],
+      id: category.id,
       description: category[bm ? 'descBm' : 'descEn'],
-      visual: React.createElement(category.icon || Hash, { size: 23, strokeWidth: 2 }),
-      compactTag: true,
-      showAction: false,
-      disabled: !isSupported,
-      disabledLabel: bm ? 'Tidak disokong' : 'Not supported',
-      disabledReason: unsupportedReason,
+      visual: <BMMenuArtwork topic={category.id} />,
+      title: category[bm ? 'bm' : 'en'],
     }))}
-    onSelect={category => { if (isSupported) startTransition(() => onSelectCategory(category)); }}
+    onSelect={category => startTransition(() => onSelectCategory?.(category))}
     additionalContent={
       <details className="mh-menu-help">
         <summary>{t.howToPlayTitle}</summary>
