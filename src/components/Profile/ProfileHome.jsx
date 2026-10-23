@@ -129,7 +129,9 @@ export default function ProfileHome({ playerName, gameState, language = 'bm', st
       {...accountProps}
       {...{ playerName, gameState, language, streak, onTabChange, onHome }}
       heroContent={<section className="pf-hero" aria-labelledby="pf-title">
-        <div className="pf-avatar-wrap"><div className="pf-avatar"><FadeInImage src={profile.avatar || ROBOT} alt={t('Gambar profil', 'Profile picture')} /></div><button type="button" className="pf-camera" aria-label={t('Tukar gambar profil', 'Change profile photo')} onClick={() => uploadRef.current?.click()}><Camera size={21} /></button><input ref={uploadRef} type="file" accept="image/png,image/jpeg,image/webp" hidden onChange={upload} /></div>
+        <div className="pf-avatar-wrap"><div className="pf-avatar">{profile.avatar
+          ? <img src={profile.avatar} alt={t('Gambar profil', 'Profile picture')} />
+          : <FadeInImage src={ROBOT} alt={t('Gambar profil', 'Profile picture')} />}</div><button type="button" className="pf-camera" aria-label={t('Tukar gambar profil', 'Change profile photo')} onClick={() => uploadRef.current?.click()}><Camera size={21} /></button><input ref={uploadRef} type="file" accept="image/png,image/jpeg,image/webp" hidden onChange={upload} /></div>
         <div className="pf-identity"><h1 id="pf-title">{t('Profil Saya', 'My Profile')}</h1><div className="pf-name"><strong>{name}</strong><button type="button" aria-label={t('Edit profil', 'Edit profile')} onClick={editProfile}><Pencil size={18} /></button></div></div>
         <div className="pf-pills"><span><Star fill="#ffd12f" color="#efa200" size={23} /><span>LEVEL<strong>{gameState?.level || 1}</strong></span></span><span><Flame fill="#ff792d" color="#ef521b" size={24} /><span><strong>{streak}</strong>{t('Hari Streak', 'Day Streak')}</span></span></div>
       </section>}
