@@ -1,8 +1,9 @@
 import React from 'react';
 import useBrowserBack from '../../../hooks/useBrowserBack';
 
-export default function BMHeader({ onBack, language = 'bm', title, sectionLabel, sticky, actions, leading }) {
+export default function BMHeader({ onBack, language = 'bm', title, sectionLabel, sticky, actions, leading, backLabel, backLabelLang, backLabelDir }) {
   const handleBack = useBrowserBack(onBack);
+  const resolvedBackLabel = backLabel ?? (language === 'bm' ? 'Kembali' : 'Back');
 
   return (
     <>
@@ -95,11 +96,11 @@ export default function BMHeader({ onBack, language = 'bm', title, sectionLabel,
 
       <div className={`bm-header${sticky ? ' bm-header--sticky' : ''}`}>
         <div className={`bm-header-row${leading ? ' bm-header-row--leading' : actions ? ' bm-header-row--actions' : ''}`}>
-          {leading ? <div className="bm-header-leading">{leading}</div> : <button type="button" className="bm-header-back" onClick={handleBack} aria-label={language === 'bm' ? 'Kembali' : 'Back'}>
+          {leading ? <div className="bm-header-leading">{leading}</div> : <button type="button" className="bm-header-back" onClick={handleBack} aria-label={resolvedBackLabel} lang={backLabelLang}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
-            <span className="bm-header-back-label">{language === 'bm' ? 'Kembali' : 'Back'}</span>
+            <span className="bm-header-back-label" dir={backLabelDir} lang={backLabelLang}>{resolvedBackLabel}</span>
           </button>}
           <span className="bm-header-title">{title}</span>
           {actions && <div className="bm-header-actions">{actions}</div>}

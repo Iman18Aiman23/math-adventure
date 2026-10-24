@@ -3,6 +3,8 @@ import { ChevronLeft, ChevronRight, Volume2, Settings, Check } from 'lucide-reac
 import { KVK_LETTERS, getKVKSeriesByLetter } from '../../data/curriculum/bm_kvk';
 import SpeechManager from '../../services/SpeechManager';
 import BMHeader from '../../components/BahasaMelayuPage/_shared/BMHeader';
+import SyllableExample from './SyllableExample';
+import { KVK_EXAMPLES, KVK_EXAMPLES_JAWI } from '../../data/curriculum/kvkExampleSentences';
 import './KVLearningPage.css';
 import KVCompletion from './KVCompletion';
 
@@ -28,6 +30,9 @@ export default function KVKLearningPage({ onBack, onComplete = onBack, language,
   const [script, setScript] = useState('RUMI');
   const settingsRef = useRef(null);
   const [seriesComplete, setSeriesComplete] = useState(false);
+  const isRumi = script === 'RUMI';
+  const uiLanguage = isRumi ? 'bm' : language;
+  const headerTitle = isRumi ? 'Suku Kata KVK' : title;
 
   useEffect(() => {
     const dismiss = (event) => {
@@ -121,9 +126,9 @@ export default function KVKLearningPage({ onBack, onComplete = onBack, language,
         `}</style>
         <BMHeader
           onBack={onBack}
-          language={language}
-          title={title}
-          sectionLabel={language === 'bm' ? 'Pilih Huruf untuk Belajar' : 'Select a Letter to Learn'}
+          language={uiLanguage}
+          title={headerTitle}
+          sectionLabel={uiLanguage === 'bm' ? 'Pilih Huruf untuk Belajar' : 'Select a Letter to Learn'}
         />
         <div className="kv-picker-body">
           <div className="kv-grid">
@@ -155,7 +160,7 @@ export default function KVKLearningPage({ onBack, onComplete = onBack, language,
     );
   }
 
-  if (seriesComplete) return <KVCompletion language={language} onReturn={onComplete} />;
+  if (seriesComplete) return <KVCompletion language={uiLanguage} onReturn={onComplete} />;
 
   const isJawi = script === 'JAWI';
   const cap = (value) => value ? value.charAt(0).toUpperCase() + value.slice(1) : '';
@@ -163,18 +168,23 @@ export default function KVKLearningPage({ onBack, onComplete = onBack, language,
   const msWord = cap(currentItem?.ms?.word);
   const enWord = cap(currentItem?.en?.word);
   const jawiWord = currentItem?.jawi?.word ?? '';
+  const jawiSyllable = currentItem?.jawikvk ?? '';
   const mainWord = script === 'ENG' ? enWord : script === 'JAWI' ? jawiWord : msWord;
-  const subWord = script === 'ENG' || script === 'JAWI' ? msWord : enWord;
+  const subWord = script === 'ENG' ? msWord : enWord;
 
   return (
-    <div className="kv-learning">
-      <BMHeader onBack={handleBackToLetters} language={language} title={title} actions={
+    <div className={`kv-learning${isJawi ? ' kv-learning--jawi' : ''}`}>
+      <BMHeader onBack={handleBackToLetters} language={uiLanguage} title={headerTitle}
+        backLabel={isJawi ? 'کمبالي' : undefined}
+        backLabelLang={isJawi ? 'ms-Arab' : undefined}
+        backLabelDir={isJawi ? 'rtl' : undefined}
+        actions={
         <details className="kv-settings" ref={settingsRef}>
-          <summary aria-label={language === 'bm' ? 'Tetapan' : 'Settings'} title={language === 'bm' ? 'Tetapan' : 'Settings'}>
+          <summary aria-label={uiLanguage === 'bm' ? 'Tetapan' : 'Settings'} title={uiLanguage === 'bm' ? 'Tetapan' : 'Settings'}>
             <Settings size={21} aria-hidden="true" />
           </summary>
-          <div className="kv-settings-panel" role="group" aria-label={language === 'bm' ? 'Pilihan bahasa dan tulisan' : 'Language and script'}>
-            <span className="kv-settings-label">{language === 'bm' ? 'Bahasa & tulisan' : 'Language & script'}</span>
+          <div className="kv-settings-panel" role="group" aria-label={uiLanguage === 'bm' ? 'Pilihan bahasa dan tulisan' : 'Language & script'}>
+            <span className="kv-settings-label">{uiLanguage === 'bm' ? 'Bahasa & tulisan' : 'Language & script'}</span>
             {SCRIPTS.map(option => (
               <button type="button" key={option.key} aria-pressed={script === option.key} onClick={() => {
                 setScript(option.key);
@@ -189,25 +199,34 @@ export default function KVKLearningPage({ onBack, onComplete = onBack, language,
       } />
       <main className="kv-learning-body">
         <article className="kv-flashcard" aria-label={mainWord}>
-          <div className="kv-flashcard-letters kv-flashcard-letters--syllable">
-            <span>{capKVK}</span><small>{currentItem?.kvk}</small>
+          <div
+            className={`kv-flashcard-letters kv-flashcard-letters--syllable${isJawi ? ' kv-flashcard-letters--jawi' : ''}`}
+            dir={isJawi ? 'rtl' : 'ltr'}
+            lang={isJawi ? 'ms-Arab' : 'ms'}
+          >
+            <span>{isJawi ? jawiSyllable : capKVK}</span>
           </div>
           <div className="kv-flashcard-picture" aria-hidden="true">{currentItem?.icon}</div>
-          <div className="kv-flashcard-word" dir={isJawi ? 'rtl' : 'ltr'} lang={isJawi ? 'ms-Arab' : script === 'ENG' ? 'en' : 'ms'}>{mainWord}</div>
-          <div className="kv-flashcard-translation" lang={script === 'RUMI' ? 'en' : 'ms'}>{subWord}</div>
+          {script === 'ENG' && <div className="kv-flashcard-word" dir="ltr" lang="en">{mainWord}</div>}
+          {script === 'RUMI' && <SyllableExample text={KVK_EXAMPLES[currentItem?.id] ?? msWord} syllable={currentItem?.kvk} label="Contoh ayat" />}
+          {isJawi && <SyllableExample text={KVK_EXAMPLES_JAWI[currentItem?.id] ?? jawiWord} syllable={currentItem?.jawikvk} label="چونتوه ايات" dir="rtl" lang="ms-Arab" />}
+          {script === 'ENG' && <div className="kv-flashcard-translation" lang="ms">{subWord}</div>}
           <button type="button" className="kv-listen" onClick={() => speak(currentItem)}>
             <Volume2 size={24} aria-hidden="true" />
-            {language === 'bm' ? 'Tekan untuk dengar' : 'Tap to listen'}
+            {isJawi
+              ? <span dir="rtl" lang="ms-Arab">تکن اونتوق دڠر</span>
+              : uiLanguage === 'bm' ? 'Tekan untuk dengar' : 'Tap to listen'}
           </button>
         </article>
       </main>
       <footer className="kv-learning-footer">
         <div className="kv-learning-nav">
           <button type="button" className="kv-previous" onClick={handlePrev} disabled={cardIndex === 0 && currentLetterIdx === 0}>
-            <ChevronLeft size={20} aria-hidden="true" />{language === 'bm' ? 'Sebelumnya' : 'Previous'}
+            <ChevronLeft size={20} aria-hidden="true" />
+            {isJawi ? <span dir="rtl" lang="ms-Arab">سبلوم</span> : uiLanguage === 'bm' ? 'Sebelumnya' : 'Previous'}
           </button>
           <button type="button" className="kv-next" onClick={handleNext}>
-            {language === 'bm' ? 'Seterusnya' : 'Next'}<ChevronRight size={20} aria-hidden="true" />
+            {isJawi ? <span dir="rtl" lang="ms-Arab">ستروسڽ</span> : uiLanguage === 'bm' ? 'Seterusnya' : 'Next'}<ChevronRight size={20} aria-hidden="true" />
           </button>
         </div>
       </footer>
