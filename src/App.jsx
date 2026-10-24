@@ -1055,6 +1055,11 @@ export default function App() {
           if (bmTopic === '1-1-7-suku-kata')
             return <Suspense fallback={<LoadingSpinner />}>
               <SukuKataBM onBack={topicOnBack} language={language}
+                playerName={playerName} gameState={gameState} streak={streak}
+                onTabChange={handleTabChange} onLogout={handleLogout}
+                onToggleLang={handleToggleLang} colorMode={colorMode}
+                onColorModeChange={setColorMode}
+                onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
                 topicComplete={(id) => markTopicCompleted(id)}
                 onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
@@ -1469,7 +1474,11 @@ export default function App() {
           return <AlphabetExpress onBack={() => setCurrentAgeGame(null)} language={language} theme={THEMES[currentTheme]} />;
         }
         if (currentAgeGame === 'alphabet-cards') {
-          return <KVLearningPage46 onBack={() => setCurrentAgeGame(null)} onComplete={() => navigate(() => {
+          return <KVLearningPage46 onBack={() => setCurrentAgeGame(null)} playerName={playerName} gameState={gameState} streak={streak}
+            onTabChange={handleTabChange} onLogout={handleLogout} onToggleLang={handleToggleLang}
+            colorMode={colorMode} onColorModeChange={setColorMode}
+            onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
+            onComplete={() => navigate(() => {
             setCurrentAgeGame(null);
             setCurrentAgeGroup(null);
             setReadingLevel(null);

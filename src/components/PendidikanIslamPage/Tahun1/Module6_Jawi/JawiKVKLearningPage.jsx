@@ -1,22 +1,13 @@
 import React, { useState, useCallback } from 'react';
 import { ArrowLeft, ChevronLeft, ChevronRight, Volume2 } from 'lucide-react';
-import bm_kvk_complete, { KVK_LETTERS, getKVKSeriesByLetter } from '../../../../data/curriculum/bm_kvk';
+import { KVK_LETTERS, getKVKSeriesByLetter } from '../../../../data/curriculum/bm_kvk';
 import SpeechManager from '../../../../services/SpeechManager';
 import BackButton from '../../../BackButton';
+import AZPickerGrid from '../../../ReadingPage/AZPickerGrid';
 
 // ── Vowel row labels (shown under the KVK badge) ─────────────────────────────
 const SLOT_COLORS = ['#FF9600', '#1CB0F6', '#58CC02', '#CE82FF', '#FF4B4B', '#00C2A8'];
 const SLOT_BG     = ['#FFF4E0', '#E0F4FF', '#E6FFD4', '#F3DDFF', '#FFE0E0', '#D4FFF8'];
-
-// ── Tile palette for letter picker (matches JawiAlphabetPage style) ───────────
-const TILE_PALETTE = [
-  { base: '#FF9600', light: '#FFD9A0', deep: '#8F5300' },
-  { base: '#1CB0F6', light: '#A0E4FF', deep: '#0B6EA0' },
-  { base: '#58CC02', light: '#B4F576', deep: '#2E7001' },
-  { base: '#CE82FF', light: '#ECD0FF', deep: '#7A3FA0' },
-  { base: '#FF4B4B', light: '#FFB0B0', deep: '#A01010' },
-  { base: '#00C2A8', light: '#A0F0E8', deep: '#007A6A' },
-];
 
 // ── Jawi alphabet mapping (Rumi to Jawi) ─────────────────────────────────────
 const RUMI_TO_JAWI = {
@@ -32,9 +23,6 @@ const SCRIPTS = [
   { key: 'ENG',  label: 'ENG',  color: '#FF9600', bg: '#FFF0CC' },
   { key: 'JAWI', label: 'JAWI', color: '#CE82FF', bg: '#EDD9FF' },
 ];
-
-// Derive consonant letter from kvk field (e.g. 'ban' → 'B')
-const getLetter = (item) => item.kvk[0].toUpperCase();
 
 export default function JawiKVKLearningPage({ onBack, language }) {
   // ── State ─────────────────────────────────────────────────────────────────
@@ -129,55 +117,6 @@ export default function JawiKVKLearningPage({ onBack, language }) {
         background: 'linear-gradient(180deg, #ECFDF5 0%, #D1FAE5 40%, #F0FDFA 100%)',
       }}>
         <style>{`
-          .jawi-kv-grid {
-            display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 12px;
-        }
-        @media (max-width: 400px) { .jawi-kv-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
-        @media (min-width: 500px) { .jawi-kv-grid { grid-template-columns: repeat(4, 1fr); gap: 14px; } }
-        @media (min-width: 760px) { .jawi-kv-grid { grid-template-columns: repeat(5, 1fr); gap: 16px; } }
-        .jawi-kv-letter-tile {
-          position: relative; border: 0; padding: 0;
-          aspect-ratio: 1 / 1.05; width: 100%;
-          container-type: inline-size;
-          border-radius: 24px; cursor: pointer; font-family: inherit;
-            transition: transform .25s cubic-bezier(.34,1.56,.64,1);
-            -webkit-tap-highlight-color: transparent;
-            animation: jawiKvTileIn .5s cubic-bezier(.34,1.56,.64,1) forwards;
-          }
-          @keyframes jawiKvTileIn {
-            0%   { opacity: 0; transform: translateY(22px) scale(.94); }
-            70%  { opacity: 1; transform: translateY(-4px) scale(1.02); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-          }
-          .jawi-kv-letter-tile:hover  { transform: translateY(-6px) rotate(-1.2deg); }
-          .jawi-kv-letter-tile:active { transform: translateY(5px) rotate(0deg); transition: transform .1s ease; }
-          .jawi-kv-letter-tile::before {
-            content: ""; position: absolute; inset: 0;
-            background-image: radial-gradient(rgba(255,255,255,.18) 1.4px, transparent 1.6px);
-            background-size: 18px 18px; opacity: .65; pointer-events: none; z-index: 1;
-          }
-          .jawi-kv-letter-tile::after {
-            content: ""; position: absolute; top: 6px; left: 10px; right: 10px; height: 38%;
-            border-radius: 20px 20px 0 0;
-            background: linear-gradient(180deg, rgba(255,255,255,.42) 0%, rgba(255,255,255,.06) 75%, transparent 100%);
-            pointer-events: none; z-index: 1;
-          }
-          .jawi-kv-tile-letter {
-            position: absolute; inset: 0; padding-bottom: 28%;
-            display: flex; align-items: center; justify-content: center; z-index: 2;
-            font-family: 'Lateef', 'Noto Naskh Arabic', 'Times New Roman', serif; font-weight: 700;
-            font-size: 60cqi; line-height: 1; color: #fff;
-            text-shadow: 0 2px 0 rgba(0,0,0,.18);
-          }
-          .jawi-kv-tile-cap {
-            position: absolute; bottom: 8px; left: 8px; right: 8px; z-index: 4;
-            background: #fff; border-radius: 14px; padding: 6px 10px;
-            box-shadow: 0 3px 0 rgba(0,0,0,.10);
-            text-align: center; font-family: 'Fredoka', sans-serif; font-weight: 700;
-            font-size: 0.8rem; line-height: 1;
-          }
           .jawi-kv-section-label {
             font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 1.05rem;
             color: #374151; text-align: center; letter-spacing: .04em;
@@ -188,10 +127,6 @@ export default function JawiKVKLearningPage({ onBack, language }) {
             content: ""; height: 3px; flex: 1; max-width: 80px; border-radius: 999px;
             background: linear-gradient(90deg, rgba(206,130,255,.6), rgba(0,194,168,.7), rgba(28,176,246,.7), rgba(88,204,2,.6));
           }
-          @media (max-width: 400px) {
-            .jawi-kv-letter-tile { border-radius: 18px; }
-            .jawi-kv-tile-cap { bottom: 5px; left: 5px; right: 5px; padding: 5px 6px; font-size: 0.68rem; border-radius: 10px; }
-          }
         `}</style>
 
         <BackButton onClick={onBack} />
@@ -200,28 +135,14 @@ export default function JawiKVKLearningPage({ onBack, language }) {
           <div className="jawi-kv-section-label">
             {language === 'bm' ? 'Pilih Huruf untuk Belajar' : 'Select a Letter to Learn'}
           </div>
-          <div className="jawi-kv-grid" style={{ direction: 'rtl' }}>
-            {KVK_LETTERS.map((letter, idx) => {
-              const pal = TILE_PALETTE[idx % TILE_PALETTE.length];
-              return (
-                <button
-                  key={letter}
-                  type="button"
-                  className="jawi-kv-letter-tile"
-                  onClick={() => handleSelectLetter(letter)}
-                  style={{
-                    background: `linear-gradient(165deg, ${pal.light} 0%, ${pal.base} 60%, ${pal.deep} 100%)`,
-                    animationDelay: `${0.04 + idx * 0.025}s`,
-                  }}
-                >
-                  <span className="jawi-kv-tile-letter">{RUMI_TO_JAWI[letter] || letter}</span>
-                  <span className="jawi-kv-tile-cap" style={{ color: pal.deep, direction: 'ltr' }}>
-                    {letter} · {letter.toLowerCase()}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+          <AZPickerGrid
+            letters={KVK_LETTERS}
+            onSelectLetter={handleSelectLetter}
+            variant="jawi"
+            direction="rtl"
+            renderLetter={letter => RUMI_TO_JAWI[letter] || letter}
+            renderCaption={letter => `${letter} · ${letter.toLowerCase()}`}
+          />
         </div>
       </div>
     );

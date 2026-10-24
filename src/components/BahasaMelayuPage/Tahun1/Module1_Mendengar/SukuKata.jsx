@@ -18,7 +18,7 @@ const REVIEW_IDS = [
 // Two-page topic: the full KV flashcard system (shared with the Age 4–6
 // Reading pillar — letter picker, RUMI/ENG/JAWI toggle, tap-to-listen)
 // as the learn page, then the first-syllable segmentation quiz.
-export default function SukuKata({ onBack, language = 'bm', topicComplete, onNextTopic }) {
+export default function SukuKata({ onBack, language = 'bm', topicComplete, onNextTopic, ...accountProps }) {
   const [page, setPage] = useState('learn');
 
   const reviewQs = REVIEW_IDS.flatMap(id => BM_QUESTIONS[id] || []);
@@ -33,6 +33,7 @@ export default function SukuKata({ onBack, language = 'bm', topicComplete, onNex
   if (page === 'learn') {
     return (
       <KVLearningPage
+        {...accountProps}
         onBack={handleBack}
         language={language}
         onStartQuiz={() => setPage('quiz')}

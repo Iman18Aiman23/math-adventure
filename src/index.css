@@ -44,6 +44,13 @@
   --danger-dark:   #DC2626;
   --danger-light:  #FEE2E2;
 
+  /* Shared action and keyboard interaction tokens */
+  --action-primary:       var(--primary-dark);
+  --action-primary-hover: var(--primary);
+  --text-on-action:       #FFFFFF;
+  --focus-ring:            var(--primary-dark);
+  --shadow-pressed:       inset 2px 3px 6px rgba(15, 23, 42, .14), inset -1px -1px 3px rgba(255, 255, 255, .72);
+
   /* Text */
   --text-primary:   #0F172A;
   --text-secondary: #64748B;

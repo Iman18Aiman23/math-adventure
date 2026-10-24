@@ -1,0 +1,152 @@
+.az-picker-grid--master {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.az-picker-tile--master {
+  aspect-ratio: 1 / 1.05;
+  width: 100%;
+  container-type: inline-size;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(2px, 1vh, 8px);
+  padding: clamp(6px, 1.4vh, 14px) 4px;
+  background: linear-gradient(180deg, var(--kt) 0%, #fff 72%);
+  border: 2.5px solid var(--kc-border);
+  border-radius: clamp(14px, 2.6vh, 22px);
+  box-shadow: 0 clamp(3px, .6vh, 5px) 0 var(--kc-under), 0 10px 22px -14px rgba(0, 0, 0, .18);
+  color: var(--kc);
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+  -webkit-tap-highlight-color: transparent;
+  animation: azPickerTileIn .5s cubic-bezier(.34, 1.56, .64, 1) forwards;
+}
+@media (hover: hover) {
+  .az-picker-tile--master:hover { border-color: var(--kc); transform: translateY(-2px); }
+}
+.az-picker-tile--master:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--kc-under), 0 4px 10px -8px rgba(0, 0, 0, .18);
+}
+.az-picker-tile--master:focus-visible,
+.az-picker-tile--jawi:focus-visible { outline: 3px solid #1578C6; outline-offset: 3px; }
+.az-picker-letter--master {
+  display: flex;
+  align-items: baseline;
+  font: 800 48cqi/1 'Baloo 2', sans-serif;
+  color: var(--kc);
+}
+.az-picker-letter--master small { margin-left: 3px; font-size: .58em; font-weight: 800; opacity: .5; }
+.az-picker-caption--master {
+  background: #fff;
+  border-radius: 10cqi;
+  padding: 5cqi 8cqi;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, .08);
+  color: var(--kc);
+  text-align: center;
+  font: 700 18cqi/1 'Fredoka', sans-serif;
+}
+
+.az-picker-grid--jawi {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.az-picker-tile--jawi {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1.05;
+  overflow: hidden;
+  container-type: inline-size;
+  border: 0;
+  border-radius: 24px;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+  background: linear-gradient(165deg, var(--tile-light) 0%, var(--tile-base) 60%, var(--tile-deep) 100%);
+  transition: transform .25s cubic-bezier(.34, 1.56, .64, 1);
+  -webkit-tap-highlight-color: transparent;
+  animation: azPickerTileIn .5s cubic-bezier(.34, 1.56, .64, 1) forwards;
+}
+.az-picker-tile--jawi::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image: radial-gradient(rgba(255, 255, 255, .18) 1.4px, transparent 1.6px);
+  background-size: 18px 18px;
+  opacity: .65;
+  pointer-events: none;
+}
+.az-picker-tile--jawi::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: 6px;
+  left: 10px;
+  right: 10px;
+  height: 38%;
+  border-radius: 20px 20px 0 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .42) 0%, rgba(255, 255, 255, .06) 75%, transparent 100%);
+  pointer-events: none;
+}
+.az-picker-tile--jawi:hover { transform: translateY(-6px) rotate(-1.2deg); }
+.az-picker-tile--jawi:active { transform: translateY(5px); transition: transform .1s ease; }
+.az-picker-letter--jawi {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  padding-bottom: 28%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font: 700 60cqi/1 'Lateef', 'Noto Naskh Arabic', 'Times New Roman', serif;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, .18);
+}
+.az-picker-caption--jawi {
+  position: absolute;
+  z-index: 4;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+  padding: 6px 10px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, .10);
+  color: var(--tile-deep);
+  text-align: center;
+  font: 700 .8rem/1 'Fredoka', sans-serif;
+}
+
+@keyframes azPickerTileIn {
+  0% { opacity: 0; transform: translateY(22px) scale(.94); }
+  70% { opacity: 1; transform: translateY(-4px) scale(1.02); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (min-width: 500px) {
+  .az-picker-grid--master,
+  .az-picker-grid--jawi { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+}
+@media (min-width: 760px) {
+  .az-picker-grid--master,
+  .az-picker-grid--jawi { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
+}
+@media (max-width: 400px) {
+  .az-picker-tile--master { border-radius: 20px; padding: clamp(5px, 1.2vh, 10px) 3px; }
+  .az-picker-letter--master { font-size: 40cqi; }
+  .az-picker-caption--master { border-radius: 8cqi; padding: 4cqi 6cqi; font-size: 16cqi; }
+  .az-picker-grid--jawi { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .az-picker-tile--jawi { border-radius: 18px; }
+  .az-picker-caption--jawi { bottom: 5px; left: 5px; right: 5px; padding: 5px 6px; font-size: .68rem; border-radius: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .az-picker-tile--master,
+  .az-picker-tile--jawi { animation: none; transition: none; }
+}

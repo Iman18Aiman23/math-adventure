@@ -3,7 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { playSound } from '../../utils/soundManager';
 import './KVLearningPage.css';
 
-export default function KVCompletion({ language, onReturn }) {
+export default function KVCompletion({ language, onReturn, className = '' }) {
   const dialogRef = useRef(null);
   const titleId = useId();
   const isMalay = language === 'bm';
@@ -20,7 +20,7 @@ export default function KVCompletion({ language, onReturn }) {
   }, []);
 
   return (
-    <dialog ref={dialogRef} className="kv-completion" aria-labelledby={titleId} onCancel={onReturn}
+    <dialog ref={dialogRef} className={`kv-completion${className ? ` ${className}` : ''}`} aria-labelledby={titleId} onCancel={onReturn}
       onKeyDown={event => {
         if (event.key === 'Tab') {
           event.preventDefault();

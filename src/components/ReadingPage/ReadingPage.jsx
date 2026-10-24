@@ -34,7 +34,7 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
   if (selectedLevel === 1) {
     return (
       <React.Suspense fallback={<LoadingSpinner />}>
-        <KVLearningPage onBack={() => setSelectedLevel(null)} language={language} />
+        <KVLearningPage {...accountProps} onBack={() => setSelectedLevel(null)} language={language} />
       </React.Suspense>
     );
   }
@@ -43,7 +43,7 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
   if (selectedLevel === 2) {
     return (
       <React.Suspense fallback={<LoadingSpinner />}>
-        <KVKLearningPage onBack={() => setSelectedLevel(null)} language={language} />
+        <KVKLearningPage {...accountProps} onBack={() => setSelectedLevel(null)} language={language} />
       </React.Suspense>
     );
   }

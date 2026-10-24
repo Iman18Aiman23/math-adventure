@@ -7,6 +7,7 @@ export default function HomeHeaderActions({
   playerName,
   gameState,
   streak = 0,
+  showProgress = true,
   onTabChange,
   onHome,
   onOpenReports,
@@ -56,7 +57,7 @@ export default function HomeHeaderActions({
 
   return (
     <div className="ih-top-actions-cluster">
-      <button type="button" className="ih-points" aria-label={`${gameState?.totalXP ?? 0} XP - ${bm ? 'Lihat kemajuan' : 'View progress'}`} aria-expanded={panel === 'progress'} aria-controls="ih-progress-panel" onClick={event => togglePanel('progress', event)}><Star aria-hidden="true" /><span>{gameState?.totalXP ?? 0}</span></button>
+      {showProgress && <button type="button" className="ih-points" aria-label={`${gameState?.totalXP ?? 0} XP - ${bm ? 'Lihat kemajuan' : 'View progress'}`} aria-expanded={panel === 'progress'} aria-controls="ih-progress-panel" onClick={event => togglePanel('progress', event)}><Star aria-hidden="true" /><span>{gameState?.totalXP ?? 0}</span></button>}
       <button type="button" className="ih-account" aria-expanded={panel === 'account' || panel === 'settings'} aria-controls="ih-account-panel" onClick={event => togglePanel('account', event)}>
         <span className="ih-avatar"><UserRound aria-hidden="true" /></span>
         <ChevronDown size={19} />

@@ -135,6 +135,26 @@ The app uses ordinary CSS files, global CSS, and inline style objects for dynami
 
 The fonts are linked in `index.html`. The global token defaults are Outfit for headings and Inter for body copy. Baloo 2 and Fredoka are used by playful lesson/game interfaces, while Amiri is used for Arabic/Jawi text. Keep responsive behavior in the relevant component stylesheet or shared layout stylesheet and preserve reduced-motion support where animations are used.
 
+### App color palette
+
+Use this seven-color master palette as the canonical set of app accent colors. Keep the listed hex values consistent across subjects and reusable components, including the A-Z letter picker.
+
+| Master color | Name | Semantic token | Typical use |
+| --- | --- | --- | --- |
+| `#EF4444` | Red | `--danger` | Errors, incorrect answers, and destructive states |
+| `#F59E0B` | Amber | `--warning` | Highlights, rewards, and attention states |
+| `#10B981` | Green | `--success` | Correct answers, completion, and positive feedback |
+| `#3B82F6` | Blue | `--primary` | Primary actions, links, selected states, and focus accents |
+| `#8B5CF6` | Violet | `--accent-violet` | Subject and learning activity accents |
+| `#EC4899` | Pink | `--accent-pink` | Playful and celebratory accents |
+| `#14B8A6` | Teal | `--secondary` | Secondary actions, progress, and supporting emphasis |
+
+Blue (`#3B82F6`) is the primary color; teal (`#14B8A6`) is the secondary color. Green is reserved for success feedback so it remains distinct from the secondary action color. Use the other master colors for their semantic roles above rather than introducing new accent hues.
+
+The master hex values are accent colors, not automatic text/background pairs. Check contrast for each use; use a darker derived shade or a high-contrast foreground for text and filled controls when the master color does not provide enough contrast. Light and dark modes may use different tints and shades, but should retain the same master color identity. Keep component-specific tokens as aliases or tints of this palette instead of creating a parallel palette.
+
+The current `:root` values for `--primary` and `--secondary` in `src/index.css` still use the earlier indigo and orange colors. This section records the requested master palette and semantic mapping; it does not change runtime CSS values.
+
 ## 6. Subject and feature flows
 
 ### Home and account dashboards
