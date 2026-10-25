@@ -15,6 +15,9 @@
   --learning-cta-green: #078653;
   --learning-cta-green-dark: #066a47;
   --learning-cta-green-gradient: linear-gradient(180deg, var(--learning-cta-green), var(--learning-cta-green-dark));
+  --action-blue: #0674D1;
+  --action-blue-hover: #055FAE;
+  --action-blue-gradient: linear-gradient(110deg, #0674D1 0%, #00A3FF 100%);
 
   /* Primary — Indigo (strong, modern) */
   --primary:       #6366F1;

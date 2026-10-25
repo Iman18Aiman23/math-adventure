@@ -63,6 +63,7 @@ export default function BMPage({
       ctaOnClick={() => { if (isSupported) startTransition(() => onSelectCategory?.('bm_kv')); }}
       ctaDisabled={!isSupported}
       mascotSrc={SPEAKING_HERO_ART}
+      className="blue-gradient-hero"
     />}
     sectionTitle={bm ? 'Pilih Kategori' : 'Choose a Category'}
     sectionDescription={bm ? 'Pilih kategori untuk mula belajar.' : 'Pick a category to start learning.'}

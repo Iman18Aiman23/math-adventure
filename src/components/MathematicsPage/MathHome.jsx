@@ -38,6 +38,7 @@ export default function MathHome({ onSelectSubGame, onBack, language = 'bm', ...
       ctaText={bm ? 'Mula Belajar' : 'Start Learning'}
       ctaOnClick={() => onSelectSubGame?.('operations')}
       mascotSrc={MATH_HERO_ART}
+      className="blue-gradient-hero"
     />}
     sectionTitle={bm ? 'Pilih Topik' : 'Choose a topic'}
     sectionDescription={bm ? 'Pilih topik untuk mula belajar.' : 'Pick a topic to start learning.'}

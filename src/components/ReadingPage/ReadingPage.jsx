@@ -97,7 +97,7 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
       ctaText={hasReadingProgress ? (bm ? 'Teruskan Kursus' : 'Continue Course') : (bm ? 'Mula Pelajaran 1' : 'Start Lesson 1')}
       ctaOnClick={handleHeroAction}
       mascotSrc={HERO_ROBOT_ART}
-      className="rp-reading-hero"
+      className="rp-reading-hero blue-gradient-hero"
     />}
     sectionTitle={bm ? 'Pilih Tahap' : 'Choose a Level'}
     sectionDescription={bm ? 'Pilih tahap untuk mula belajar.' : 'Pick a level to start learning.'}

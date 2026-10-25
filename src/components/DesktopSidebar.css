@@ -45,13 +45,13 @@
 .desktop-sidebar .sidebar-continue { width: 100%; min-height: 48px; display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 12px 14px; border: 0; border-radius: 13px; background: var(--learning-cta-green-gradient); color: #fff; font: 800 16px/1.2 'Outfit', sans-serif; font-weight: 800; box-shadow: 0 4px 0 #078c52; }
 .desktop-sidebar .sidebar-continue-arrow { flex-shrink: 0; }
 .desktop-sidebar .sidebar-play-icon, .desktop-sidebar .sidebar-motivation { display: none; }
-.desktop-sidebar .sidebar-menu-panel { display: flex; flex: 1; flex-direction: column; min-height: 0; padding: 0; background: transparent; border: 0; box-shadow: none; }
+.desktop-sidebar .sidebar-menu-panel { display: flex; flex: 1; flex-direction: column; min-height: 0; padding: 10px 8px; background: transparent; border: 0; box-shadow: none; }
 .desktop-sidebar .home-quick-nav { display: grid; gap: 4px; overflow-y: auto; min-height: 0; padding: 3px; scrollbar-width: thin; }
 .desktop-sidebar .sidebar-section-label { padding: 10px 12px 3px; color: #8193a8; font-size: 11px; font-weight: 800; letter-spacing: .09em; }
 .desktop-sidebar .sidebar-section-label-activity { margin-top: 9px; border-top: 1px solid #e7eef5; padding-top: 14px; }
 .desktop-sidebar .home-quick-link { display: flex; align-items: center; gap: 14px; min-height: 40px; width: 100%; padding: 8px 12px; border: 1px solid transparent; border-radius: 12px; background: transparent; color: #5c7393; text-align: left; font-size: 14px; font-weight: 600; box-shadow: none; transition: background 150ms, border-color 150ms; }
 .desktop-sidebar .home-quick-link svg { width: 23px; height: 23px; flex: 0 0 23px; padding: 0; background: transparent; color: #607b9a; }
-.desktop-sidebar .home-quick-link.active { color: #078653; background: #e5f5ef; border-color: transparent; box-shadow: none; }
+.desktop-sidebar .home-quick-link.active { color: var(--action-blue); background: #eaf5ff; border-color: transparent; box-shadow: none; }
 .desktop-sidebar .home-quick-link.active svg { color: #099b60; }
 .desktop-sidebar .home-coach-footer { margin-top: auto; padding-top: 16px; border-top: 1px solid #e4edf4; position: relative; }
 .desktop-sidebar .sidebar-utility-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 8px; }
@@ -68,7 +68,7 @@
 @media (hover: hover) {
   .desktop-sidebar .sidebar-logo:hover { opacity: .82; }
   .desktop-sidebar .home-quick-link:hover { background: #edf6fb; border-color: #bed8ea; }
-  .desktop-sidebar .home-quick-link.active:hover { background: #dff7ec; border-color: #69d5a6; }
+  .desktop-sidebar .home-quick-link.active:hover { background: #dff0ff; border-color: #b8ddf8; }
   .desktop-sidebar .sidebar-continue:hover { background: var(--learning-cta-green-dark); }
   .desktop-sidebar .home-settings-btn:hover { color: #0b9f65; border-color: #79d9b0; }
 }
@@ -172,8 +172,8 @@
     font-weight: 500;
   }
   .desktop-sidebar .home-quick-link.active {
-    color: #009b70;
-    background: #e0f9f0;
+    color: var(--action-blue);
+    background: #eaf5ff;
     font-weight: 700;
   }
   .desktop-sidebar .home-quick-link svg {
@@ -218,6 +218,7 @@
     font-size: clamp(11px, .75vw, 14px);
   }
 }
+
 @media (min-width: 768px) and (max-width: 1279px) {
   .desktop-sidebar.desktop-sidebar { --desktop-sidebar-width: clamp(224px, 24vw, 260px); }
 }
@@ -318,7 +319,7 @@
   .desktop-sidebar .home-quick-link.active.home-quick-achievements svg { color: #e34f83; }
   .desktop-sidebar .home-quick-link.active.home-quick-profile svg { color: #187f68; }
   .desktop-sidebar .home-quick-link.active.home-quick-reports svg { color: #a94b35; }
-  .desktop-sidebar .home-quick-link.active { color: #07865d; background: rgba(218, 248, 236, .9); box-shadow: inset 0 0 0 1px rgba(117, 220, 174, .2); }
+  .desktop-sidebar .home-quick-link.active { color: var(--action-blue); background: rgba(234, 245, 255, .95); box-shadow: inset 0 0 0 1px rgba(6, 116, 209, .14); }
   .desktop-sidebar .sidebar-nav-divider { margin: clamp(7px, 1.2dvh, 13px) 8px; background: #dfedf4; }
   .desktop-sidebar .sidebar-motivation {
     border-color: rgba(255,255,255,.9);
@@ -330,5 +331,27 @@
   @keyframes sidebar-play-glow {
     0%, 100% { filter: drop-shadow(0 0 0 rgba(255,255,255,0)); transform: scale(1); }
     50% { filter: drop-shadow(0 0 5px rgba(255,255,255,.9)); transform: scale(1.08); }
+  }
+}
+
+.desktop-sidebar .sidebar-continue {
+  background: var(--action-blue-gradient);
+  box-shadow: none;
+}
+@media (hover: hover) {
+  .desktop-sidebar .sidebar-continue:hover {
+    background: var(--action-blue-gradient);
+    box-shadow: none;
+  }
+}
+
+@media (min-width: 768px) {
+  #root:has(> .desktop-sidebar):has(.ih-root) { padding: 0; }
+  .desktop-sidebar.desktop-sidebar {
+    margin: 0;
+    border-top: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-radius: 0;
   }
 }

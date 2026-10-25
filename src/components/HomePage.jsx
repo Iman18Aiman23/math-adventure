@@ -205,9 +205,11 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
         headerContent={<PageHeader className="page-container" {...{ language, playerName, gameState, streak, onTabChange, onHome, onOpenReports, onLogout, onToggleLang, colorMode, onColorModeChange }} />}
         heroContent={<StandardHeroBanner
           titlePrefix={bm ? 'Hei, ' : 'Hey, '}
-          titleHighlight={`${name}! 👋`}
+          titleHighlight={`${name}!`}
+          titleTrailing=" 👋"
           subtitle={bm ? 'Teruskan perjalanan belajar anda bersama ImanAI!' : 'Continue your learning adventure with ImanAI!'}
           ctaText={bm ? 'Teroka Subjek' : 'Explore Subjects'}
+          className="blue-gradient-hero"
           ctaOnClick={() => document.getElementById('ih-subjects')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
           mascotSrc={`${import.meta.env.BASE_URL}images/home/Robot%20HomePage.webp`}
         />}

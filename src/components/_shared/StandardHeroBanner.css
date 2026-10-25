@@ -61,6 +61,22 @@
 }
 
 .standard-hero-banner__highlight { color: var(--hero-highlight); }
+.standard-hero-banner__trailing { display: inline; color: var(--hero-ink); }
+
+.standard-hero-banner.blue-gradient-hero .standard-hero-banner__highlight {
+  background: var(--action-blue-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.standard-hero-banner.blue-gradient-hero .standard-hero-banner__cta,
+.standard-hero-banner.blue-gradient-hero .standard-hero-banner__cta:hover,
+.standard-hero-banner.blue-gradient-hero .standard-hero-banner__cta:active {
+  background: var(--action-blue-gradient);
+  box-shadow: none;
+  text-shadow: none;
+}
 
 .standard-hero-banner__subtitle {
   max-width: 42ch;

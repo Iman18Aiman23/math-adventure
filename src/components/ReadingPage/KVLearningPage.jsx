@@ -5,6 +5,7 @@ import SpeechManager from '../../services/SpeechManager';
 import BMHeader from '../../components/BahasaMelayuPage/_shared/BMHeader';
 import AZPickerPage from './AZPickerPage';
 import SyllableExample from './SyllableExample';
+import HomeHeaderActions from '../_shared/HomeHeaderActions';
 import './KVLearningPage.css';
 import KVCompletion from './KVCompletion';
 
@@ -148,27 +149,33 @@ export default function KVLearningPage({ onBack, onComplete = onBack, language, 
 
   return (
     <div className={`kv-learning kv-syllable-learning kv-learning--kv${isJawi ? ' kv-learning--jawi' : ''}`}>
-      <BMHeader onBack={handleBackToLetters} language={uiLanguage} title={headerTitle} actions={
-        <details className="kv-settings" ref={settingsRef}>
-          <summary aria-label={uiLanguage === 'bm' ? 'Tetapan' : 'Settings'} title={uiLanguage === 'bm' ? 'Tetapan' : 'Settings'}>
-            <Settings size={21} aria-hidden="true" />
-          </summary>
-          <div className="kv-settings-panel" role="group" aria-label={uiLanguage === 'bm' ? 'Pilihan bahasa dan tulisan' : 'Language & script'}>
-            <span className="kv-settings-label">{uiLanguage === 'bm' ? 'Bahasa & tulisan' : 'Language & script'}</span>
-            {SCRIPTS.map(s => (
-              <button type="button" key={s.key} aria-pressed={script === s.key} onClick={() => {
-                setScript(s.key);
-                settingsRef.current.open = false;
-                settingsRef.current.querySelector('summary').focus();
-              }}>
-                {s.label}{script === s.key && <Check size={17} aria-hidden="true" />}
-              </button>
-            ))}
-          </div>
-        </details>
-      } />
+      <BMHeader onBack={handleBackToLetters} language={uiLanguage} title=""
+        backLabel={isJawi ? 'کمبالي' : undefined}
+        backLabelLang={isJawi ? 'ms-Arab' : undefined}
+        backLabelDir={isJawi ? 'rtl' : undefined}
+        actions={
+          <HomeHeaderActions {...accountProps} language={uiLanguage} showProgress={false} />
+        }
+      />
       <main className="kv-learning-body">
         <article className="kv-flashcard" aria-label={mainWord}>
+          <details className="kv-settings kv-flashcard-settings" ref={settingsRef}>
+            <summary aria-label={uiLanguage === 'bm' ? 'Tetapan' : 'Settings'} title={uiLanguage === 'bm' ? 'Tetapan' : 'Settings'}>
+              <Settings size={21} aria-hidden="true" />
+            </summary>
+            <div className="kv-settings-panel" role="group" aria-label={uiLanguage === 'bm' ? 'Pilihan bahasa dan tulisan' : 'Language & script'}>
+              <span className="kv-settings-label">{uiLanguage === 'bm' ? 'Bahasa & tulisan' : 'Language & script'}</span>
+              {SCRIPTS.map(s => (
+                <button type="button" key={s.key} aria-pressed={script === s.key} onClick={() => {
+                  setScript(s.key);
+                  settingsRef.current.open = false;
+                  settingsRef.current.querySelector('summary').focus();
+                }}>
+                  {s.label}{script === s.key && <Check size={17} aria-hidden="true" />}
+                </button>
+              ))}
+            </div>
+          </details>
           <div className="kv-flashcard-item kv-flashcard-letters-item">
             <div
               className={`kv-flashcard-letters${displayedLetters.length > 1 ? ' kv-flashcard-letters--syllable' : ''}${isJawi ? ' kv-flashcard-letters--jawi' : ''}`}

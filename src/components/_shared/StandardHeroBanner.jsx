@@ -7,6 +7,7 @@ const HEADING_TAGS = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
 export default function StandardHeroBanner({
   titlePrefix,
   titleHighlight,
+  titleTrailing,
   subtitle,
   ctaText,
   ctaLink,
@@ -25,6 +26,7 @@ export default function StandardHeroBanner({
         <Heading className="standard-hero-banner__title" id={headingId}>
           {titlePrefix && <span className="standard-hero-banner__prefix">{titlePrefix}</span>}
           {titleHighlight && <span className="standard-hero-banner__highlight">{titleHighlight}</span>}
+          {titleTrailing && <span className="standard-hero-banner__trailing">{titleTrailing}</span>}
         </Heading>
         {subtitle && <p className="standard-hero-banner__subtitle">{subtitle}</p>}
         {ctaText && (ctaOnClick || ctaLink) && (

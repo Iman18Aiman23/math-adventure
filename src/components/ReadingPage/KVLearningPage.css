@@ -43,8 +43,8 @@
   --shadow-sm: 0 4px 0 rgba(23, 53, 86, .08), 0 10px 18px rgba(23, 53, 86, .08), inset 1px 1px 2px rgba(255, 255, 255, .9);
   --shadow-md: 0 7px 0 rgba(23, 53, 86, .10), 0 18px 28px rgba(23, 53, 86, .11), inset 2px 2px 4px rgba(255, 255, 255, .94), inset -2px -2px 6px rgba(38, 133, 88, .08);
   --shadow-pressed: inset 3px 4px 8px rgba(23, 53, 86, .14), inset -2px -2px 5px rgba(255, 255, 255, .86);
-  --action-primary: #0674D1;
-  --action-primary-hover: #055FAE;
+  --action-primary: var(--action-blue);
+  --action-primary-hover: var(--action-blue-hover);
   --text-on-action: #FFFFFF;
   --focus-ring: #1578C6;
 
@@ -289,7 +289,7 @@
   margin-top: clamp(4px, .8cqh, 10px); max-width: 100%; min-height: clamp(48px, 6cqh, 60px); padding: clamp(8px, 1.5cqh, 14px) clamp(22px, 3vw, 34px); border: 0; border-radius: 999px;
   background: linear-gradient(180deg, #ff496a, #ff3055); color: #fff;
   font: 800 clamp(18px, 2.2vw, 22px)/1.2 'Baloo 2', sans-serif; cursor: pointer;
-  box-shadow: inset 0 2px 2px #ffffff30;
+  box-shadow: none;
 }
 .kv-learning--jawi .kv-listen,
 .kv-learning--jawi .kv-learning-nav button {
@@ -421,10 +421,14 @@
   font-family: var(--font-body);
 }
 .kv-syllable-learning .bm-header {
+  z-index: 9999;
   background: color-mix(in srgb, var(--bg-white) 92%, transparent);
   border-bottom: 0;
   box-shadow: none;
 }
+.kv-syllable-learning .bm-header-row--actions { grid-template-columns: minmax(0, 1fr) auto; }
+.kv-syllable-learning .bm-header-actions { width: auto; flex: 0 0 auto; margin-left: auto; }
+.kv-syllable-learning .bm-header-title { display: none; }
 .kv-syllable-learning .bm-header-back {
   min-height: 48px;
   border: 2px solid var(--border-color);
@@ -478,13 +482,19 @@
   background: var(--primary-light);
   color: var(--primary-dark);
 }
-.kv-syllable-learning .bm-header-back:hover { background: var(--primary-light); color: var(--primary-dark); }
 .kv-syllable-learning .kv-learning-body { padding-inline: clamp(var(--sp-2), 3vw, var(--sp-4)); }
 .kv-syllable-learning .kv-flashcard {
+  position: relative;
   border: 3px solid color-mix(in srgb, var(--primary) 28%, var(--bg-card));
   border-radius: clamp(var(--border-radius-lg), 3vw, 32px);
   background: transparent;
   box-shadow: var(--shadow-md);
+}
+.kv-syllable-learning .kv-flashcard-settings {
+  position: absolute;
+  top: clamp(10px, 2cqh, 20px);
+  right: clamp(10px, 2cqw, 20px);
+  z-index: 20;
 }
 .kv-syllable-learning .kv-flashcard-letters { color: var(--primary-dark); font-family: var(--font-heading); }
 .kv-learning--kv .kv-flashcard-letters { color: #dc2626; }
@@ -509,17 +519,13 @@
   min-height: 52px;
   border: 3px solid color-mix(in srgb, var(--action-primary) 24%, var(--bg-card));
   background: var(--action-primary);
-  box-shadow: var(--shadow-md);
+  box-shadow: none;
   color: var(--text-on-action);
   font-family: var(--font-heading);
   transition: transform 180ms ease-out, background 180ms ease-out, box-shadow 180ms ease-out;
 }
-@media (hover: hover) {
-  .kv-syllable-learning .kv-listen:hover,
-  .kv-syllable-learning .kv-next:hover { background: var(--action-primary-hover); transform: translateY(-2px); }
-}
 .kv-syllable-learning .kv-listen:active,
-.kv-syllable-learning .kv-next:active { box-shadow: var(--shadow-pressed); transform: translateY(2px); }
+.kv-syllable-learning .kv-next:active { box-shadow: none; transform: translateY(2px); }
 .kv-syllable-learning .kv-learning-footer {
   border-top: 0;
   background: color-mix(in srgb, var(--bg-white) 88%, transparent);
@@ -539,10 +545,9 @@
 .kv-syllable-learning .kv-next {
   border: 3px solid color-mix(in srgb, var(--action-primary) 24%, var(--bg-card));
   background: var(--action-primary);
-  box-shadow: var(--shadow-md);
+  box-shadow: none;
   color: var(--text-on-action);
 }
-.kv-syllable-learning .kv-learning-nav .kv-previous:hover { background: var(--primary-light); color: var(--primary-dark); }
 .kv-syllable-learning button:disabled {
   border-color: var(--border-color-light);
   background: var(--bg-muted);
@@ -562,6 +567,34 @@
 .kv-syllable-learning.kv-learning--jawi .kv-listen,
 .kv-syllable-learning.kv-learning--jawi .kv-learning-nav button {
   font-family: 'Amiri', serif;
+}
+
+/* Match the learning controls to Tap to listen; preserve their individual colors and sizes. */
+.kv-syllable-learning :is(.bm-header-back, .kv-listen, .kv-previous, .kv-next, .kv-settings summary),
+.kv-syllable-learning .bm-header-actions .kv-settings summary {
+  border: 0;
+  border-radius: 999px;
+  box-shadow: none;
+  font-family: 'Baloo 2', sans-serif;
+}
+.kv-syllable-learning :is(button.bm-header-back, button.kv-listen, button.kv-previous, button.kv-next) {
+  border: 1px solid var(--border-color);
+}
+.kv-syllable-learning.kv-learning--jawi .bm-header-back-label {
+  font-family: 'Amiri', serif;
+}
+@media (hover: hover) {
+  .kv-syllable-learning :is(.bm-header-back, .kv-listen, .kv-previous, .kv-next):hover {
+    filter: brightness(.97);
+  }
+  .kv-syllable-learning :is(button.kv-listen, button.kv-previous, button.kv-next):hover {
+    transform: translateY(-2px);
+  }
+  .kv-syllable-learning .bm-header-back:hover { background: var(--bg-card); }
+}
+.kv-syllable-learning :is(button.kv-listen, button.kv-previous, button.kv-next):active {
+  filter: brightness(.9);
+  transform: scale(.97);
 }
 
 html[data-color-mode='dark'] .kv-picker,
@@ -601,8 +634,8 @@ html[data-color-mode='dark'] .kv-syllable-learning {
   --shadow-sm: 0 4px 0 rgba(2, 6, 23, .24), 0 10px 18px rgba(2, 6, 23, .28), inset 1px 1px 2px rgba(255, 255, 255, .06);
   --shadow-md: 0 7px 0 rgba(2, 6, 23, .28), 0 18px 28px rgba(2, 6, 23, .32), inset 2px 2px 4px rgba(255, 255, 255, .07), inset -2px -2px 6px rgba(0, 0, 0, .16);
   --shadow-pressed: inset 3px 4px 8px rgba(2, 6, 23, .36), inset -2px -2px 5px rgba(255, 255, 255, .06);
-  --action-primary: #0674D1;
-  --action-primary-hover: #055FAE;
+  --action-primary: var(--action-blue);
+  --action-primary-hover: var(--action-blue-hover);
   --text-on-action: #FFFFFF;
   --focus-ring: #34D399;
 
@@ -617,7 +650,6 @@ html[data-color-mode='dark'] .kv-syllable-learning .kv-learning-footer {
 html[data-color-mode='dark'] .kv-syllable-learning .kv-flashcard {
   background: transparent;
 }
-html[data-color-mode='dark'] .kv-syllable-learning .kv-previous:hover { background: var(--primary-light); color: var(--primary-dark); }
 html[data-color-mode='dark'] .kv-syllable-learning .kv-syllable-highlight { color: #f87171; }
 html[data-color-mode='dark'] .kv-syllable-learning .kv-completion--clay {
   border-color: var(--border-color);
