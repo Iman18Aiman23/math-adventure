@@ -29,6 +29,7 @@ export default function MathHome({ onSelectSubGame, onBack, language = 'bm', ...
     <SubjectMenuLayout
     sharedPageChrome
     {...accountProps} onBack={onBack} language={language}
+    heroTheme="math-galaxy"
     title={bm ? 'Matematik' : 'Mathematics'}
     heroContent={<StandardHeroBanner
       headingLevel="h2"

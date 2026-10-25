@@ -68,6 +68,7 @@ export default function LeaderboardHome({ language = 'bm', gameState, ...account
       language={language}
       sharedPageChrome
       rootClassName="mh-screen page-layout-root lb-shell"
+      heroTheme="leaderboard-trophy"
       wrapClassName="mh-wrap page-container mh-wrap--custom-content"
       contentClassName="lb-content"
       gameState={gameState}

@@ -695,6 +695,7 @@ export default function AchievementHome({ language = 'bm', gameState, onTakeAsse
       language={language}
       sharedPageChrome
       rootClassName="mh-screen page-layout-root ac-root iman-layout"
+      heroTheme="achievement-celebration"
       wrapClassName="mh-wrap page-container mh-wrap--custom-content"
       contentClassName="ac-content"
       gameState={gameState}

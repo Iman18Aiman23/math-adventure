@@ -124,6 +124,7 @@ export default function Laporan({ playerName, gameState, language = 'bm', streak
       language={language}
       sharedPageChrome
       rootClassName="mh-screen page-layout-root pf-root laporan-root iman-layout"
+      heroTheme="reports-insight"
       wrapClassName="mh-wrap page-container mh-wrap--custom-content"
       contentClassName="pf-content laporan-content"
       gameState={gameState}

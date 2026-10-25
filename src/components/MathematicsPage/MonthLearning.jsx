@@ -90,6 +90,7 @@ export default function MonthLearning({ onBack, onHome, language = 'bm', ...acco
     onBack={onBack}
     onHome={onHome}
     title={bm ? 'Kenali Bulan' : 'Learn the Months'}
+    heroTheme="calendar-seasons"
     language={language}
     rootClassName="mh-screen month-learning-shell"
     wrapClassName="mh-wrap--custom-content ml-wrap"

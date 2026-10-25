@@ -20,6 +20,7 @@ export default function TimeGameMenu({ onStart, onBack, language = 'bm', ...acco
     <SubjectMenuLayout
       sharedPageChrome
       {...accountProps} onBack={onBack} language={language}
+      heroTheme="time-solar"
       rootClassName="mh-screen page-layout-root time-game-menu"
       title={bm ? 'Bulan & Masa' : 'Clock & Time'}
       eyebrow={bm ? 'BULAN & MASA' : 'CLOCK & TIME'}

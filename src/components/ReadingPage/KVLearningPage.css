@@ -239,6 +239,16 @@
   background: radial-gradient(ellipse at 50% 38%, #fff8f9, #ffedf0);
   box-shadow: 0 8px 26px #e84a6810;
 }
+.kv-flashcard--flip-next { animation: kvFlashcardFlipNext 420ms cubic-bezier(.2,.75,.25,1) both; }
+.kv-flashcard--flip-previous { animation: kvFlashcardFlipPrevious 420ms cubic-bezier(.2,.75,.25,1) both; }
+@keyframes kvFlashcardFlipNext {
+  from { opacity: .55; transform: perspective(1100px) rotateY(-78deg) scale(.96); }
+  to { opacity: 1; transform: perspective(1100px) rotateY(0) scale(1); }
+}
+@keyframes kvFlashcardFlipPrevious {
+  from { opacity: .55; transform: perspective(1100px) rotateY(78deg) scale(.96); }
+  to { opacity: 1; transform: perspective(1100px) rotateY(0) scale(1); }
+}
 .kv-flashcard-letters {
   display: flex; align-items: baseline; justify-content: center; gap: 8px;
   font: 800 min(25cqw, 27cqh, 138px)/1 'Baloo 2', sans-serif;
@@ -283,6 +293,13 @@
 .kv-syllable-example-text { color: #17315b; font: 800 clamp(20px, 5cqh, 28px)/1.35 'Baloo 2', sans-serif; text-align: center; overflow-wrap: anywhere; }
 .kv-syllable-example[dir='rtl'] .kv-syllable-example-label { font: 700 14px/1.2 'Amiri', serif; }
 .kv-syllable-example-text[dir='rtl'] { font: 700 clamp(20px, 5cqh, 28px)/1.5 'Amiri', serif; }
+.kv-sentence-example {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  box-sizing: border-box; max-width: 100%; padding: 5px 12px;
+  border-radius: 14px; background: color-mix(in srgb, var(--primary-light) 62%, var(--bg-white));
+}
+.kv-sentence-example-label { color: var(--text-secondary); font: 600 11px/1.1 'Inter', sans-serif; }
+.kv-sentence-example-text { color: var(--text-primary); font: 800 clamp(18px, 4.5cqh, 25px)/1.3 'Baloo 2', sans-serif; text-align: center; overflow-wrap: anywhere; }
 .kv-syllable-highlight { padding: 0; background: transparent; color: #dc2626; }
 .kv-listen {
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
@@ -399,7 +416,8 @@
   .kv-flashcard-picture-item { grid-column: 1; grid-row: 3 / 5; align-self: start; }
   .kv-flashcard-picture { font-size: min(30cqh, 80px); }
   .kv-flashcard-word-item { grid-column: 2; grid-row: 2; }
-  .kv-flashcard-example-item { grid-column: 2; grid-row: 2 / 4; }
+  .kv-flashcard-example-item { grid-column: 2; grid-row: 2; }
+  .kv-flashcard-sentence-item { grid-column: 2; grid-row: 3; }
   .kv-flashcard-example-item .kv-syllable-example { width: 100%; }
   .kv-flashcard-translation-item { grid-column: 2; grid-row: 3; }
   .kv-flashcard-listen-item { grid-column: 2; grid-row: 4; align-self: start; }
@@ -660,9 +678,43 @@ html[data-color-mode='dark'] .kv-syllable-learning .kv-completion--clay h2 { col
 html[data-color-mode='dark'] .kv-syllable-learning .kv-completion--clay p { color: var(--text-secondary); }
 html[data-color-mode='dark'] .kv-syllable-learning .kv-completion--clay h2 span { color: var(--primary-dark); }
 @media (max-width: 480px) {
+  .kv-syllable-learning > .bm-header {
+    padding: 8px 18px 6px;
+  }
+  .kv-syllable-learning > .bm-header .bm-header-row {
+    min-height: 40px;
+  }
+  .kv-learning .bm-header-back {
+    min-width: 90px;
+    height: 40px;
+    min-height: 40px;
+    padding-inline: 12px;
+    font-size: 12px;
+  }
+  .kv-syllable-learning .kv-learning-body {
+    padding-inline: 10px;
+  }
+  .kv-syllable-learning .kv-listen {
+    width: 144px;
+    min-height: 40px;
+    margin-top: 0;
+    padding: 6px 10px;
+    gap: 7px;
+    font-size: 14px;
+  }
+  .kv-syllable-learning .kv-listen svg {
+    width: 18px;
+    height: 18px;
+  }
+  .kv-syllable-learning .kv-learning-footer {
+    padding-top: 4px;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  }
+  .kv-syllable-learning .kv-learning-nav button {
+    min-height: 38px;
+  }
+  .kv-syllable-learning .kv-learning-nav { width: calc(100% - 24px); gap: 10px; }
   .kv-syllable-learning .bm-header-actions .kv-settings summary { width: 44px; height: 44px; }
-  .kv-syllable-learning .kv-flashcard { padding: 12px; border-radius: var(--border-radius-lg); }
-  .kv-syllable-learning .kv-learning-nav button { min-height: 44px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .kv-picker .kv-letter-tile,
@@ -706,6 +758,8 @@ html[data-color-mode='dark'] .kv-syllable-learning .kv-completion--clay h2 span 
   .kv-completion p { font-size: 14px; margin-bottom: 18px; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .kv-flashcard--flip-next,
+  .kv-flashcard--flip-previous { animation: none; }
   .kv-completion, .kv-happy-robot-body { animation: none; }
 }
 .kv-completion--clay {
@@ -734,3 +788,202 @@ html[data-color-mode='dark'] .kv-syllable-learning .kv-completion--clay h2 span 
 }
 .kv-completion--clay .kv-completion-return:active { box-shadow: var(--shadow-pressed); transform: translateY(2px); }
 .kv-completion--clay :is(button, a):focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
+
+/* Use one spacing rhythm for the flashcard stack at every viewport size. */
+.kv-syllable-learning .kv-learning-body {
+  overflow: hidden;
+  justify-content: flex-start;
+  padding-block: 0;
+}
+.kv-syllable-learning .kv-flashcard {
+  --kv-icon-padding: clamp(32px, 10cqh, 58px);
+  --kv-gap-body: clamp(8px, 1.6cqh, 16px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+  width: min(100%, 760px);
+  max-width: 760px;
+  height: 100%;
+  min-height: 0;
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  perspective: 1100px;
+}
+.kv-syllable-learning .kv-flashcard-item { padding-block: 0; }
+.kv-syllable-learning .kv-flashcard-header,
+.kv-syllable-learning .kv-flashcard-body,
+.kv-syllable-learning .kv-flashcard-footer {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 0;
+}
+.kv-syllable-learning .kv-flashcard-header {
+  display: flex;
+  flex: 1.45 1 0;
+  align-items: center;
+  padding-block: clamp(4px, 1cqh, 10px);
+  background: var(--bg-white);
+}
+.kv-syllable-learning .kv-flashcard-body {
+  display: flex;
+  flex: 6.25 1 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kv-gap-body);
+  row-gap: calc(var(--kv-gap-body) + var(--kv-gap-body));
+  padding-block: var(--kv-icon-padding);
+  background: var(--bg-white);
+}
+.kv-syllable-learning .kv-flashcard-footer {
+  display: flex;
+  flex: 2.3 1 0;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(20px, 4cqh, 28px) 0 clamp(8px, 2cqh, 18px);
+  background: var(--bg-white);
+}
+.kv-syllable-learning .kv-flashcard-top-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  height: auto;
+  align-self: flex-start;
+  margin-inline: auto;
+  width: 100%;
+}
+.kv-syllable-learning .kv-flashcard-letters-item {
+  grid-column: 2;
+  justify-self: center;
+  margin: 0;
+}
+.kv-syllable-learning .kv-flashcard-settings {
+  position: relative;
+  top: auto;
+  right: auto;
+  z-index: 20;
+  grid-column: 3;
+  justify-self: end;
+  align-self: center;
+  margin: 0;
+}
+.kv-syllable-learning .kv-flashcard-learning-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--kv-icon-padding);
+  width: 100%;
+}
+.kv-syllable-learning .kv-flashcard-sentence-item { margin-bottom: 0; }
+.kv-syllable-learning .kv-flashcard-letters {
+  justify-content: center;
+  margin-left: 0;
+  font-size: min(clamp(68px, 15vw, 132px), 14cqh);
+}
+.kv-syllable-learning .kv-flashcard-letters--syllable { font-size: min(clamp(40px, 8vw, 78px), 14cqh); }
+.kv-letter-pair { display: inline-flex; align-items: baseline; gap: .08em; }
+.kv-syllable-learning .kv-flashcard-picture { font-size: min(clamp(76px, 14vw, 122px), 16cqh); }
+.kv-syllable-learning .kv-flashcard-example-item .kv-syllable-example {
+  width: min(100%, 360px);
+  padding: 8px 20px;
+}
+.kv-syllable-learning .kv-flashcard-sentence-item .kv-sentence-example {
+  width: min(100%, 740px);
+  padding: 8px 20px;
+}
+.kv-syllable-learning .kv-flashcard-word-item .kv-flashcard-word,
+.kv-syllable-learning .kv-flashcard-translation-item .kv-flashcard-translation {
+  width: min(100%, 740px);
+}
+.kv-syllable-learning .kv-syllable-example {
+  gap: 4px;
+}
+.kv-syllable-learning .kv-syllable-example,
+.kv-syllable-learning .kv-sentence-example {
+  box-sizing: border-box;
+  border: 3px solid color-mix(in srgb, var(--secondary) 58%, var(--bg-white));
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--secondary-light) 60%, var(--bg-white));
+  box-shadow: 0 5px 12px color-mix(in srgb, var(--secondary) 18%, transparent);
+}
+.kv-syllable-learning .kv-syllable-example-label,
+.kv-syllable-learning .kv-sentence-example-label {
+  color: var(--text-primary);
+  font: 800 min(clamp(15px, 2vw, 22px), 3cqh)/1.2 'Inter', sans-serif;
+}
+.kv-syllable-learning .kv-syllable-example-text {
+  color: var(--text-primary);
+  font-size: min(clamp(30px, 6vw, 52px), 8cqh);
+  line-height: 1.2;
+}
+.kv-syllable-learning .kv-syllable-highlight,
+.kv-syllable-learning .kv-sentence-kv {
+  padding: 0;
+  background: transparent;
+  color: #dc2626;
+}
+.kv-syllable-learning .kv-sentence-example {
+  gap: 4px;
+}
+.kv-syllable-learning .kv-sentence-example-text {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: .22em;
+  color: var(--text-primary);
+  font: 800 min(clamp(28px, 6vw, 50px), 6cqh)/1.2 'Baloo 2', sans-serif;
+  text-wrap: balance;
+}
+.kv-syllable-learning .kv-sentence-word { white-space: nowrap; }
+@media (max-width: 480px) {
+  .kv-syllable-learning .kv-flashcard-top-row { width: calc(100% - 48px); }
+  .kv-syllable-learning .kv-flashcard-letters-item { transform: translateY(3px); }
+  .kv-syllable-learning .kv-flashcard-settings { margin-top: -2px; }
+  .kv-syllable-learning .kv-flashcard-letters { font-size: min(clamp(52px, 14vw, 72px), 11cqh); }
+  .kv-syllable-learning .kv-flashcard-letters--syllable { font-size: min(clamp(36px, 9vw, 46px), 14cqh); }
+  .kv-syllable-learning .kv-flashcard-picture { font-size: min(clamp(52px, 14vw, 68px), 12cqh); }
+  .kv-syllable-learning .kv-flashcard-example-item .kv-syllable-example {
+    width: min(100%, 290px);
+    padding: 6px 12px;
+    border-radius: 20px;
+  }
+  .kv-syllable-learning .kv-flashcard-sentence-item .kv-sentence-example {
+    width: min(100%, 360px);
+    padding: 6px 12px;
+    border-radius: 20px;
+  }
+  .kv-syllable-learning .kv-flashcard-example-item { transform: translateY(5px); }
+  .kv-syllable-learning .kv-flashcard-sentence-item { transform: translateY(7px); }
+  .kv-syllable-learning .kv-syllable-example-label,
+  .kv-syllable-learning .kv-sentence-example-label { font-size: min(clamp(12px, 3vw, 16px), 3cqh); }
+  .kv-syllable-learning .kv-syllable-example-text { font-size: min(clamp(22px, 5vw, 36px), 5cqh); }
+  .kv-syllable-learning .kv-sentence-example-text { font-size: min(clamp(24px, 7vw, 34px), 6cqh); }
+  .kv-syllable-learning .kv-learning-nav button { min-height: 38px; }
+}
+@container kv-body (max-height: 560px) {
+  .kv-syllable-learning .kv-flashcard {
+    --kv-icon-padding: clamp(8px, 3cqh, 16px);
+    --kv-gap-body: clamp(4px, 1cqh, 8px);
+  }
+  .kv-syllable-learning .kv-flashcard-letters { font-size: min(clamp(42px, 13vw, 76px), 13cqh); }
+  .kv-syllable-learning .kv-flashcard-letters--syllable { font-size: min(clamp(32px, 8vw, 42px), 12cqh); }
+  .kv-syllable-learning .kv-flashcard-picture { font-size: min(clamp(52px, 12vw, 76px), 16cqh); }
+  .kv-syllable-learning .kv-flashcard-footer { padding-top: 8px; }
+  .kv-syllable-learning .kv-flashcard-example-item .kv-syllable-example,
+  .kv-syllable-learning .kv-flashcard-sentence-item .kv-sentence-example { padding-block: 3px; }
+  .kv-syllable-learning .kv-syllable-example-label,
+  .kv-syllable-learning .kv-sentence-example-label { font-size: min(15px, 3.5cqh); }
+  .kv-syllable-learning .kv-syllable-example-text { font-size: min(clamp(24px, 7vw, 38px), 8cqh); }
+  .kv-syllable-learning .kv-sentence-example-text { font-size: min(clamp(20px, 6vw, 32px), 5cqh); }
+  .kv-syllable-learning .kv-listen { min-height: 40px; margin-top: 0; padding-block: 4px; font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kv-syllable-learning .kv-flashcard--flip-next,
+  .kv-syllable-learning .kv-flashcard--flip-previous { animation: none; }
+}

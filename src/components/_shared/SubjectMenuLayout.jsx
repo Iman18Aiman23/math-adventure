@@ -12,7 +12,7 @@ import './PageContainer.css';
 export default function SubjectMenuLayout({
   title, eyebrow, heroTitle, description, encouragement, mascot,
   sectionTitle, sectionDescription, topics, onSelect, onBack,
-  language = 'bm', pending, notice, additionalContent, heroBackground, sharedPageChrome = false,
+  language = 'bm', pending, notice, additionalContent, heroBackground, heroTheme = 'reading-nature', sharedPageChrome = false,
   topicCardVariant = 'default',
   rootClassName, rootStyle, wrapClassName, headerContent, heroContent, heroAction, heroClassName = '', contentClassName, overlayContent, children, ...accountProps
 }) {
@@ -23,7 +23,7 @@ export default function SubjectMenuLayout({
   const comingSoon = language === 'bm' ? 'Segera Hadir' : 'Coming Soon';
 
   return (
-    <main className={rootClassName || `mh-screen${sharedPageChrome ? ' page-layout-root' : ''}`} style={rootStyle} aria-label={title}>
+    <main className={rootClassName || `mh-screen${sharedPageChrome ? ' page-layout-root' : ''}`} data-hero-theme={heroTheme} style={rootStyle} aria-label={title}>
       {pending}
       {notice && <div className="mh-menu-notice" role="status">{notice}</div>}
       <div className={wrapClassName || 'mh-wrap page-container'}>

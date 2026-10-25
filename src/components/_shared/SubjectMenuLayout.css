@@ -269,6 +269,142 @@
 @container (min-width: 900px) {
   .mh-topic-title { font-size: clamp(16px, 1.8cqw, 23px); }
 }
+
+/* Page-specific hero atmospheres. Keep each palette on the shared page root so
+   standard and custom hero markup can share the same theme tokens. */
+[data-hero-theme="robot-sky"] {
+  --subject-hero-background: radial-gradient(ellipse at 86% 12%, #dff5ff 0, transparent 37%), radial-gradient(ellipse at 94% 100%, #c9f2e3 0, transparent 44%), linear-gradient(112deg, #f4fbff 0%, #e8f7ff 54%, #e7fbf2 100%);
+  --subject-hero-border: #c6e8f5;
+  --subject-hero-ink: #102b62;
+  --subject-hero-copy: #43637d;
+  --subject-hero-accent: #0789df;
+  --subject-hero-tone: #43b9f2;
+}
+[data-hero-theme="reading-nature"] {
+  --subject-hero-background: radial-gradient(ellipse at 82% 14%, #dcf5ff 0, transparent 36%), radial-gradient(ellipse at 12% 100%, #d8f5e7 0, transparent 48%), linear-gradient(112deg, #f8fdff 0%, #effaf6 55%, #e4f7ee 100%);
+  --subject-hero-border: #c9e9de;
+  --subject-hero-ink: #102b62;
+  --subject-hero-copy: #3b6472;
+  --subject-hero-accent: #087fc1;
+  --subject-hero-tone: #32b887;
+}
+[data-hero-theme="math-galaxy"] {
+  --subject-hero-background: radial-gradient(circle at 82% 22%, #ffffff 0 2px, transparent 3px), radial-gradient(circle at 91% 38%, #d8c9ff 0 3px, transparent 4px), radial-gradient(ellipse at 86% 10%, #e7ddff 0, transparent 38%), radial-gradient(ellipse at 8% 100%, #d6eaff 0, transparent 46%), linear-gradient(115deg, #f8f7ff 0%, #f0efff 54%, #e8f6ff 100%);
+  --subject-hero-border: #d9d4f4;
+  --subject-hero-ink: #29245f;
+  --subject-hero-copy: #5b5c83;
+  --subject-hero-accent: #7457d8;
+  --subject-hero-tone: #8c75ed;
+}
+[data-hero-theme="speaking-waves"] {
+  --subject-hero-background: radial-gradient(ellipse at 85% 15%, #ffe4d9 0, transparent 38%), radial-gradient(ellipse at 90% 100%, #d6f5f4 0, transparent 42%), linear-gradient(112deg, #fff8f2 0%, #fff1e9 48%, #e9faff 100%);
+  --subject-hero-border: #f0d9cd;
+  --subject-hero-ink: #63324b;
+  --subject-hero-copy: #765466;
+  --subject-hero-accent: #df6c79;
+  --subject-hero-tone: #ed8290;
+}
+[data-hero-theme="time-solar"] {
+  --subject-hero-background: radial-gradient(circle at 84% 16%, #fff2b9 0, transparent 31%), radial-gradient(ellipse at 12% 100%, #d6f3e8 0, transparent 44%), linear-gradient(112deg, #fffdf1 0%, #fff7d9 51%, #e9f8f1 100%);
+  --subject-hero-border: #efe2aa;
+  --subject-hero-ink: #563d17;
+  --subject-hero-copy: #746348;
+  --subject-hero-accent: #c58a17;
+  --subject-hero-tone: #e9b63e;
+}
+[data-hero-theme="calendar-seasons"] {
+  --subject-hero-background: radial-gradient(ellipse at 86% 15%, #56a77c 0, transparent 35%), radial-gradient(circle at 88% 18%, transparent 0 56px, #ffffff1a 57px 58px, transparent 59px 78px, #ffffff12 79px 80px, transparent 81px), linear-gradient(118deg, #174b3b 0%, #21664b 60%, #347c54 100%);
+  --subject-hero-border: #347c54;
+  --subject-hero-ink: #fffdf4;
+  --subject-hero-copy: #e1f4e8;
+  --subject-hero-accent: #b7e789;
+  --subject-hero-tone: #55ab77;
+}
+[data-hero-theme="achievement-celebration"] {
+  --subject-hero-background: radial-gradient(ellipse at 88% 10%, #fff0bd 0, transparent 36%), radial-gradient(ellipse at 90% 100%, #f3ddff 0, transparent 45%), linear-gradient(112deg, #fffaf0 0%, #f9f1ff 54%, #edf7ff 100%);
+  --subject-hero-border: #e7d9f2;
+  --subject-hero-ink: #49326f;
+  --subject-hero-copy: #655a7d;
+  --subject-hero-accent: #9b66d5;
+  --subject-hero-tone: #b783e6;
+}
+[data-hero-theme="leaderboard-trophy"] {
+  --subject-hero-background: radial-gradient(ellipse at 84% 12%, #fff0b8 0, transparent 34%), radial-gradient(ellipse at 88% 100%, #c9f1dc 0, transparent 44%), linear-gradient(112deg, #fffdf3 0%, #f2f9e9 55%, #e4f8ed 100%);
+  --subject-hero-border: #e6e4bf;
+  --subject-hero-ink: #315a3e;
+  --subject-hero-copy: #5d765f;
+  --subject-hero-accent: #c58d18;
+  --subject-hero-tone: #d7ac44;
+}
+[data-hero-theme="profile-robot"] {
+  --subject-hero-background: radial-gradient(ellipse at 86% 10%, #d9efff 0, transparent 37%), radial-gradient(ellipse at 10% 100%, #d9f7ed 0, transparent 46%), linear-gradient(112deg, #f5f9ff 0%, #edf5ff 52%, #e6f8f3 100%);
+  --subject-hero-border: #cbdff1;
+  --subject-hero-ink: #17375f;
+  --subject-hero-copy: #526b85;
+  --subject-hero-accent: #388bc9;
+  --subject-hero-tone: #5ca8dc;
+}
+[data-hero-theme="reports-insight"] {
+  --subject-hero-background: radial-gradient(ellipse at 86% 10%, #d4f4ed 0, transparent 38%), radial-gradient(ellipse at 12% 100%, #dbeaff 0, transparent 43%), linear-gradient(112deg, #f5fcfb 0%, #eaf8f5 55%, #eaf2ff 100%);
+  --subject-hero-border: #c8e5df;
+  --subject-hero-ink: #17485a;
+  --subject-hero-copy: #4d6e7b;
+  --subject-hero-accent: #168f89;
+  --subject-hero-tone: #39b7a6;
+}
+
+[data-hero-theme] :is(.standard-hero-banner, .mh-hero, .ac-hero, .lb-hero, .pf-hero, .ml-intro) {
+  border-color: var(--subject-hero-border);
+  background: var(--subject-hero-background);
+}
+[data-hero-theme] :is(.standard-hero-banner, .mh-hero) {
+  --hero-ink: var(--subject-hero-ink);
+  --hero-copy: var(--subject-hero-copy);
+  --hero-highlight: var(--subject-hero-accent);
+  --mh-navy: var(--subject-hero-ink);
+  --mh-muted: var(--subject-hero-copy);
+}
+[data-hero-theme] .standard-hero-banner::before {
+  background: radial-gradient(ellipse at 72% 40%, color-mix(in srgb, var(--subject-hero-tone) 20%, transparent), transparent 70%);
+}
+[data-hero-theme] .mh-hero.rp-reading-hero::before,
+[data-hero-theme] .mh-hero.rp-reading-hero::after {
+  background: color-mix(in srgb, var(--subject-hero-tone) 14%, transparent);
+}
+[data-hero-theme] .ac-hero::before,
+[data-hero-theme] .lb-hero::after {
+  background: color-mix(in srgb, var(--subject-hero-tone) 24%, transparent);
+}
+[data-hero-theme] :is(.ac-hero h1, .lb-hero h1, .pf-hero h1, .laporan-hero h1) { color: var(--subject-hero-ink); }
+[data-hero-theme] :is(.ac-hero p:not(.ac-hero-kicker), .lb-hero p:not(.lb-hero-kicker), .pf-hero p, .laporan-hero p) { color: var(--subject-hero-copy); }
+[data-hero-theme] :is(.ac-hero-kicker, .lb-hero-kicker) { color: var(--subject-hero-accent); }
+[data-hero-theme] :is(.ac-hero h1 span:last-child, .lb-hero h1 span:last-child) { color: var(--subject-hero-accent); }
+[data-hero-theme].pf-root .pf-name,
+[data-hero-theme].pf-root .laporan-greeting > span { color: var(--subject-hero-copy); }
+[data-hero-theme].laporan-root .laporan-hero { border-color: var(--subject-hero-border); background: var(--subject-hero-background); }
+[data-hero-theme].laporan-root .laporan-greeting h1 { color: var(--subject-hero-ink); }
+[data-hero-theme="calendar-seasons"] .ml-intro :is(h2, p) { color: var(--subject-hero-ink); }
+[data-hero-theme="calendar-seasons"] .ml-intro p { color: var(--subject-hero-copy); }
+
+html[data-color-mode="dark"] [data-hero-theme] {
+  --subject-hero-background: radial-gradient(ellipse at 88% 8%, color-mix(in srgb, var(--subject-hero-tone) 28%, #172238), transparent 44%), linear-gradient(115deg, #172238 0%, #1c2b43 58%, #1c3442 100%);
+  --subject-hero-border: color-mix(in srgb, var(--subject-hero-tone) 38%, #34445c);
+  --subject-hero-ink: #f4f7ff;
+  --subject-hero-copy: #c3d1e2;
+  --subject-hero-accent: color-mix(in srgb, var(--subject-hero-tone) 58%, white);
+}
+html[data-color-mode="dark"] [data-hero-theme] :is(.standard-hero-banner, .mh-hero, .ac-hero, .lb-hero, .pf-hero, .ml-intro) {
+  box-shadow: 0 12px 30px #050b162e, inset 0 1px 0 #ffffff12;
+}
+html[data-color-mode="dark"] [data-hero-theme] :is(.ac-hero h1, .lb-hero h1, .pf-hero h1, .laporan-hero h1, .standard-hero-banner__title, .mh-hero h2) { color: var(--subject-hero-ink); }
+html[data-color-mode="dark"] [data-hero-theme] :is(.ac-hero p:not(.ac-hero-kicker), .lb-hero p:not(.lb-hero-kicker), .pf-hero p, .laporan-hero p, .standard-hero-banner__subtitle, .mh-hero .mh-description) { color: var(--subject-hero-copy); }
+html[data-color-mode="dark"] [data-hero-theme].pf-root .pf-hero,
+html[data-color-mode="dark"] [data-hero-theme].laporan-root .laporan-hero { border-color: var(--subject-hero-border); background: var(--subject-hero-background); }
+html[data-color-mode="dark"] [data-hero-theme].laporan-root .laporan-greeting h1 { color: var(--subject-hero-ink); }
+html[data-color-mode="dark"] [data-hero-theme].pf-root .pf-name,
+html[data-color-mode="dark"] [data-hero-theme].pf-root .laporan-greeting > span { color: var(--subject-hero-copy); }
+html[data-color-mode="dark"] [data-hero-theme="calendar-seasons"] .ml-intro :is(h2, p) { color: var(--subject-hero-ink); }
+
 @media (max-height: 740px) {
   .mh-wrap { gap: 7px; }
   .mh-hero { padding: 10px 12px; }

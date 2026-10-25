@@ -124,6 +124,7 @@ export default function ProfileHome({ playerName, gameState, language = 'bm', st
       language={language}
       sharedPageChrome
       rootClassName="mh-screen page-layout-root pf-root iman-layout"
+      heroTheme="profile-robot"
       wrapClassName="mh-wrap page-container mh-wrap--custom-content"
       contentClassName="pf-content"
       {...accountProps}

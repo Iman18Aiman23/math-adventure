@@ -199,6 +199,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
       <SubjectMenuLayout
         title={bm ? 'Laman Utama' : 'Home'}
         rootClassName="ih-root iman-layout page-layout-root"
+        heroTheme="robot-sky"
         wrapClassName="ih-home-wrap page-container"
         rootStyle={{ '--ih-art': `url("${import.meta.env.BASE_URL}images/home/robots.webp")` }}
         language={language}

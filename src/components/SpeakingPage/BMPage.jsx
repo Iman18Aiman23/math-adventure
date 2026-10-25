@@ -54,6 +54,7 @@ export default function BMPage({
     {...accountProps} language={language} gameState={gameState} onBack={onBack} onHome={onHome || onBack}
     pending={isPending && <LoadingSpinner overlay />}
     title={bm ? 'Sebutan' : 'Speaking'}
+    heroTheme="speaking-waves"
     heroContent={<StandardHeroBanner
       headingLevel="h2"
       titlePrefix={bm ? 'Jom berlatih ' : 'Let\'s practise '}

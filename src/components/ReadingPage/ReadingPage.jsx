@@ -89,6 +89,7 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
     {...accountProps} language={language} gameState={gameState} onBack={onBack} onHome={onBack}
     pending={isPending && <LoadingSpinner overlay />}
     title={bm ? 'Membaca' : 'Reading'}
+    heroTheme="reading-nature"
     heroContent={<StandardHeroBanner
       headingLevel="h2"
       titlePrefix={bm ? 'Jom Belajar ' : "Let's Learn "}
