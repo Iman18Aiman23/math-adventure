@@ -50,12 +50,12 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
 
   // ── Route Tahap 3 → dedicated Kata page ────────────────────────────────
   if (selectedLevel === 3) {
-    return <LearnWords onBack={() => setSelectedLevel(null)} language={language} />;
+    return <LearnWords {...accountProps} onBack={() => setSelectedLevel(null)} language={language} />;
   }
 
   // ── Route Tahap 4 → dedicated Ayat Panjang page ─────────────────────────
   if (selectedLevel === 4) {
-    return <LongSentences onBack={() => setSelectedLevel(null)} language={language} />;
+    return <LongSentences {...accountProps} onBack={() => setSelectedLevel(null)} language={language} />;
   }
 
   // ── Handler ───────────────────────────────────────────────────────────

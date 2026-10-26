@@ -207,6 +207,154 @@
   position: relative;
   font-family: 'Fredoka', sans-serif;
 }
+.kv-reading-learning { background: #f5f8fa; }
+.kv-reading-learning .kv-learning-body {
+  overflow-y: auto;
+  padding: clamp(16px, 3vh, 28px) clamp(12px, 4vw, 24px);
+}
+.kv-reading-learning .kv-flashcard {
+  position: relative;
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  justify-content: center;
+  width: min(100%, 760px);
+  max-width: 760px;
+  min-height: 0;
+  gap: 0;
+  padding: clamp(24px, 5vh, 48px) clamp(20px, 5vw, 52px);
+  overflow: visible;
+  border: 0;
+  border-radius: 28px;
+  background: #fff;
+  box-shadow: 0 10px 40px rgba(25, 50, 75, .08);
+}
+.kv-reading-learning .kv-flashcard-header,
+.kv-reading-learning .kv-flashcard-body {
+  width: 100%;
+}
+.kv-reading-learning .kv-flashcard-header { padding: 0 0 8px; }
+.kv-reading-learning .kv-flashcard-top-row {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+.kv-reading-learning .kv-flashcard-settings { position: relative; z-index: 5; }
+.kv-reading-learning .kv-flashcard-body {
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  background: transparent;
+}
+.kv-reading-learning .kv-flashcard-learning-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: clamp(14px, 2.4vh, 24px);
+}
+.kv-reading-learning .kv-flashcard-picture-item {
+  display: grid;
+  width: clamp(112px, 18vh, 148px);
+  aspect-ratio: 1;
+  place-items: center;
+  border-radius: 50%;
+  background: #eaf4ff;
+}
+.kv-reading-learning .kv-flashcard-picture {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  font-size: clamp(64px, 10vh, 90px);
+  filter: none;
+}
+.kv-reading-learning .kv-flashcard-text-group {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: min(100%, 680px);
+  gap: 12px;
+}
+.kv-reading-learning .kv-flashcard-item { padding: 0; }
+.kv-reading-learning .kv-inline-audio-card {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 76px;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: #fbfdff;
+  box-shadow: 0 4px 12px rgba(25, 50, 75, .07);
+}
+.kv-reading-learning .kv-flashcard-word {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  font-size: clamp(28px, min(6vh, 6vw), 48px);
+  line-height: 1.2;
+  text-align: center;
+  text-wrap: balance;
+}
+.kv-reading-learning .kv-flashcard-word[dir='rtl'] { font-family: 'Amiri', serif; }
+.kv-reading-learning .kv-flashcard-translation {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  color: #667085;
+  font-size: clamp(20px, min(4vh, 4vw), 30px);
+  text-align: center;
+  text-wrap: balance;
+}
+.kv-reading-learning .kv-inline-audio-button {
+  display: grid;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  min-height: 40px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #f3f4f6;
+  color: #087cdf;
+  cursor: pointer;
+}
+.kv-reading-learning .kv-inline-audio-button:focus-visible {
+  outline: 3px solid #087cdf;
+  outline-offset: 2px;
+}
+.kv-reading-learning .kv-next {
+  border: 1px solid #087cdf;
+  background: #087cdf;
+  color: #fff;
+}
+.kv-reading-learning .kv-previous {
+  border: 1px solid #cfe5fb;
+  background: #edf6ff;
+  color: #42658a;
+}
+.kv-reading-learning .kv-next:enabled:hover { background: #0669ba; }
+.kv-reading-learning .kv-previous:enabled:hover { background: #e0f0ff; }
+.kv-reading-learning .kv-flashcard--flip-next { animation: kvFlashcardFlipNext 360ms cubic-bezier(.2,.75,.25,1) both; }
+.kv-reading-learning .kv-flashcard--flip-previous { animation: kvFlashcardFlipPrevious 360ms cubic-bezier(.2,.75,.25,1) both; }
+@media (max-width: 480px) {
+  .kv-reading-learning .kv-flashcard {
+    width: 100%;
+    padding: 24px 16px;
+    border-radius: 24px;
+  }
+  .kv-reading-learning .kv-flashcard-picture-item { width: clamp(92px, 22vw, 116px); }
+  .kv-reading-learning .kv-flashcard-picture { font-size: clamp(52px, 14vw, 72px); }
+  .kv-reading-learning .kv-inline-audio-card { min-height: 68px; padding: 10px 12px; }
+  .kv-reading-learning .kv-flashcard-word { font-size: clamp(24px, 7vw, 34px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kv-reading-learning .kv-flashcard--flip-next,
+  .kv-reading-learning .kv-flashcard--flip-previous { animation: none; }
+}
 .kv-settings { position: relative; }
 .kv-settings summary {
   display: flex; align-items: center; justify-content: center;

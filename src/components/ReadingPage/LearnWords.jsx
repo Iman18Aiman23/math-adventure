@@ -1,21 +1,17 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Volume2, Settings, Check } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { readingData } from '../../data/curriculum/readingData';
 import SpeechManager from '../../services/SpeechManager';
-import BMHeader from '../BahasaMelayuPage/_shared/BMHeader';
+import ReadingLearningHeader from './ReadingLearningHeader';
+import ReadingLearningCard from './ReadingLearningCard';
 import './KVLearningPage.css';
 import KVCompletion from './KVCompletion';
 
-const SCRIPTS = [
-  { key: 'RUMI', label: 'RUMI', color: '#1CB0F6', bg: '#D0F0FF' },
-  { key: 'ENG', label: 'ENG', color: '#FF9600', bg: '#FFF0CC' },
-  { key: 'JAWI', label: 'JAWI', color: '#CE82FF', bg: '#EDD9FF' },
-];
-
 const LEVEL_DATA = readingData.filter(item => item.level === 3);
 
-export default function LearnWords({ onBack, onComplete = onBack, language, title = language === 'bm' ? 'Perkataan' : 'Words' }) {
+export default function LearnWords({ onBack, onComplete = onBack, language, title = language === 'bm' ? 'Perkataan' : 'Words', ...accountProps }) {
   const [cardIndex, setCardIndex] = useState(0);
+  const [flipDirection, setFlipDirection] = useState(null);
   const [script, setScript] = useState('RUMI');
   const [seriesComplete, setSeriesComplete] = useState(false);
   const settingsRef = useRef(null);
@@ -43,14 +39,13 @@ export default function LearnWords({ onBack, onComplete = onBack, language, titl
   const displayWord = script === 'ENG' ? currentItem?.eng : script === 'JAWI' ? currentItem?.jawi : currentItem?.rumi;
   const translationWord = script === 'ENG' ? currentItem?.rumi : currentItem?.eng;
 
-  const speak = useCallback((item) => {
-    if (!item) return;
-    const text = script === 'ENG' ? item.eng : script === 'JAWI' ? item.rumi : item.rumi?.replace(/-/g, '');
-    SpeechManager.speak(text, script === 'ENG' ? 'en-US' : 'ms-MY');
-  }, [script]);
+  const speakText = useCallback((text, voice) => {
+    if (text) SpeechManager.speak(text, voice);
+  }, []);
 
   const handleNext = () => {
     if (cardIndex < LEVEL_DATA.length - 1) {
+      setFlipDirection('next');
       setCardIndex(index => index + 1);
     } else {
       setSeriesComplete(true);
@@ -58,27 +53,30 @@ export default function LearnWords({ onBack, onComplete = onBack, language, titl
   };
 
   const handlePrev = () => {
-    if (cardIndex > 0) setCardIndex(index => index - 1);
+    if (cardIndex > 0) {
+      setFlipDirection('previous');
+      setCardIndex(index => index - 1);
+    }
   };
 
   if (seriesComplete) return <KVCompletion language={language} onReturn={onComplete} />;
 
   return (
-    <div className="kv-learning">
-      <BMHeader onBack={onBack} language={language} title={title} actions={<details className="kv-settings" ref={settingsRef}>
-        <summary aria-label={language === 'bm' ? 'Tetapan' : 'Settings'} title={language === 'bm' ? 'Tetapan' : 'Settings'}><Settings size={21} aria-hidden="true" /></summary>
-        <div className="kv-settings-panel" role="group" aria-label={language === 'bm' ? 'Pilihan bahasa dan tulisan' : 'Language and script'}>
-          <span className="kv-settings-label">{language === 'bm' ? 'Bahasa & tulisan' : 'Language & script'}</span>
-          {SCRIPTS.map(option => <button type="button" key={option.key} aria-pressed={script === option.key} onClick={() => { setScript(option.key); settingsRef.current.open = false; settingsRef.current.querySelector('summary').focus(); }}>{option.label}{script === option.key && <Check size={17} aria-hidden="true" />}</button>)}
-        </div>
-      </details>} />
+    <div className="kv-learning kv-reading-learning">
+      <ReadingLearningHeader onBack={onBack} language={language} title={title} accountProps={accountProps} />
       <main className="kv-learning-body">
-        <article className="kv-flashcard" aria-label={language === 'bm' ? 'Ilustrasi perkataan' : 'Word illustration'}>
-          <div className="kv-flashcard-picture" aria-hidden="true">{currentItem?.emoji}</div>
-          <div className="kv-flashcard-word" dir={script === 'JAWI' ? 'rtl' : 'ltr'} lang={script === 'ENG' ? 'en' : script === 'JAWI' ? 'ms-Arab' : 'ms'}>{displayWord}</div>
-          <div className="kv-flashcard-translation" lang={script === 'ENG' ? 'ms' : 'en'}>{translationWord}</div>
-          <button type="button" className="kv-listen" onClick={() => speak(currentItem)}><Volume2 size={24} aria-hidden="true" />{language === 'bm' ? 'Tekan untuk dengar' : 'Tap to listen'}</button>
-        </article>
+        <ReadingLearningCard
+          currentItem={currentItem}
+          displayText={displayWord}
+          translationText={translationWord}
+          flipDirection={flipDirection}
+          script={script}
+          language={language}
+          settingsRef={settingsRef}
+          onScriptChange={setScript}
+          onListenMain={() => speakText(script === 'ENG' ? currentItem?.eng : currentItem?.rumi?.replace(/-/g, ''), script === 'ENG' ? 'en-US' : 'ms-MY')}
+          onListenTranslation={() => speakText(script === 'ENG' ? currentItem?.rumi?.replace(/-/g, '') : currentItem?.eng, script === 'ENG' ? 'ms-MY' : 'en-US')}
+        />
       </main>
       <footer className="kv-learning-footer"><div className="kv-learning-nav">
         <button type="button" className="kv-previous" onClick={handlePrev} disabled={cardIndex === 0}><ChevronLeft size={20} aria-hidden="true" />{language === 'bm' ? 'Sebelumnya' : 'Previous'}</button>
