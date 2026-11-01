@@ -12,6 +12,7 @@ import LongSentences from './LongSentences';
 import './ReadingPage.css';
 const KVLearningPage = React.lazy(() => import('./KVLearningPage'));
 const KVKLearningPage = React.lazy(() => import('./KVKLearningPage'));
+const ShortStoryPage = React.lazy(() => import('./ShortStoryPage'));
 const ReadingJourney = React.lazy(() => import('./games/ReadingJourney'));
 
 const HERO_ROBOT_ART = import.meta.env.BASE_URL + 'images/reading/HeroRobotIcon.webp';
@@ -21,6 +22,7 @@ const LEVEL_ART = {
   words: `${import.meta.env.BASE_URL}images/reading/Words.webp`,
   sentences: `${import.meta.env.BASE_URL}images/reading/Simple_Sentences.webp`,
   challenge: `${import.meta.env.BASE_URL}images/reading/Reading_Challenge.webp`,
+  story: `${import.meta.env.BASE_URL}images/reading/short_story.webp`,
 };
 
 export default function ReadingPage({ onBack, language = 'bm', selectedLevel = null, onSelectLevel: setSelectedLevel, ...accountProps }) {
@@ -65,6 +67,12 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
     </React.Suspense>;
   }
 
+  if (selectedLevel === 6) {
+    return <React.Suspense fallback={<LoadingSpinner />}>
+      <ShortStoryPage {...accountProps} onBack={() => setSelectedLevel(null)} language={language} />
+    </React.Suspense>;
+  }
+
   const handleSelectLevel = (level) => {
     playHoverSound();
     startTransition(() => setSelectedLevel(level));
@@ -80,6 +88,7 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
     { id: 2, title: bm ? 'Bina Suku Kata KVK' : 'Build KVK Syllables', subtitle: bm ? 'Bunyikan perkataan tiga huruf!' : 'Sound out three-letter words!', art: 'kvk' },
     { id: 3, title: bm ? 'Baca Perkataan' : 'Read Words', subtitle: bm ? 'Baca perkataan pertama anda!' : 'Read your very first words!', art: 'words' },
     { id: 4, title: bm ? 'Tulis Ayat' : 'Write Sentences', subtitle: bm ? 'Gabungkan perkataan untuk membaca!' : 'Put words together to read!', art: 'sentences' },
+    { id: 6, title: bm ? 'Cerita Pendek' : 'Short Story', subtitle: bm ? 'Membaca dan faham cerita' : 'Read and understand a story', art: 'story' },
     { id: 5, title: bm ? 'Sertai Cabaran Membaca' : 'Take the Challenge', subtitle: bm ? 'Uji kemahiran membaca baharu anda!' : 'Test your new reading skills!', art: 'challenge' },
   ];
   return <div className="rp-layout iman-layout rp-reading-page">
@@ -100,8 +109,7 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
       mascotSrc={HERO_ROBOT_ART}
       className="rp-reading-hero blue-gradient-hero"
     />}
-    sectionTitle={bm ? 'Pilih Tahap' : 'Choose a Level'}
-    sectionDescription={bm ? 'Pilih tahap untuk mula belajar.' : 'Pick a level to start learning.'}
+    sectionTitle={bm ? 'Pilih Topik' : 'Choose a Topic'}
     topicCardVariant="standard"
     topics={levels.map(({ id, title, subtitle, art }) => ({
       id,

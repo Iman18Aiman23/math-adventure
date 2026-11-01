@@ -72,7 +72,10 @@
 }
 .standard-hero-banner.blue-gradient-hero .standard-hero-banner__cta,
 .standard-hero-banner.blue-gradient-hero .standard-hero-banner__cta:hover,
-.standard-hero-banner.blue-gradient-hero .standard-hero-banner__cta:active {
+.standard-hero-banner.blue-gradient-hero .standard-hero-banner__cta:active,
+.standard-hero-banner__cta.blue-gradient-hero,
+.standard-hero-banner__cta.blue-gradient-hero:hover,
+.standard-hero-banner__cta.blue-gradient-hero:active {
   background: var(--action-blue-gradient);
   box-shadow: none;
   text-shadow: none;

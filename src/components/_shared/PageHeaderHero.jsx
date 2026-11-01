@@ -4,21 +4,23 @@ import ImanAILogo from './ImanAILogo';
 import HomeHeaderActions from './HomeHeaderActions';
 import { prioritizeHeroMascot } from './heroImage';
 
-export function PageHeader({ title, onBack, language = 'bm', className = '', ...accountProps }) {
-  return <header className={`ip-header ${title ? 'mh-header' : 'ih-header'} ${className}`.trim()}>
+export function PageHeader({ title, onBack, language = 'bm', className = '', backOnly = false, backLabel, backLabelLang, backLabelDir, ...accountProps }) {
+  const resolvedBackLabel = backLabel ?? (language === 'bm' ? 'Kembali' : 'Back');
+  const hasBack = Boolean(title) || backOnly;
+  return <header className={`ip-header ${hasBack ? 'mh-header' : 'ih-header'} ${className}`.trim()}>
     <style>{`
       .iman-layout .ip-header { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; min-height: 44px; gap: 8px; }
       .iman-layout .ip-header .ih-top-actions-cluster { display: flex; grid-column: 3; justify-self: end; position: relative; gap: 10px; flex-shrink: 0; }
       .iman-layout .ip-header button { font-family: 'Inter', sans-serif; }
       .iman-layout .ip-header .ih-points { display: inline-flex; height: 40px; min-height: 40px; min-width: 76px; max-width: 120px; padding: 7px 14px; gap: 8px; font-size: 19px; background: #edfff3; border: 1px solid white; }
       .iman-layout .ip-header .ih-points svg { width: 24px; height: 24px; }
-      .iman-layout .ip-header .ih-account { display: flex; height: 44px; min-height: 44px; padding: 3px 12px 3px 5px; gap: 8px; }
+      .iman-layout .ip-header .ih-account { display: flex; height: 44px; min-height: 44px; padding: 3px 10px 3px 4px; gap: 6px; }
       .iman-layout .ip-header .ih-account .ih-avatar { width: 34px; height: 34px; border-width: 2px; }
       .iman-layout .ip-header .ih-account .ih-avatar svg { width: 27px; height: 27px; }
       .iman-layout .ip-header .ih-account > svg { width: 19px; height: 19px; }
       .iman-layout .ip-header > h1 { position: static; transform: none; max-width: none; margin: 0; font: 800 clamp(18px, 2vw, 26px)/1.2 'Outfit', sans-serif; text-align: center; }
       .iman-layout .ip-header:has(> .mh-back) > h1 { display: none; }
-      .iman-layout .ip-header .mh-back { justify-self: start; width: max-content; min-width: 112px; height: 44px; padding: 0 14px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; border-radius: 999px; white-space: nowrap; }
+      .iman-layout .ip-header .mh-back { justify-self: start; width: max-content; min-width: 104px; height: 44px; padding: 0 12px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-radius: 999px; white-space: nowrap; }
       .iman-layout .ip-header .ip-back-label { display: inline; font-size: 14px; font-weight: 700; }
       .iman-layout .ip-hero { height: var(--dashboard-hero-height, 260px); min-height: var(--dashboard-hero-height, 260px); flex-shrink: 0; }
       @container iman-page (max-width: 559px) {
@@ -29,7 +31,7 @@ export function PageHeader({ title, onBack, language = 'bm', className = '', ...
         .iman-layout .ip-header:has(> .mh-back) { grid-template-columns: auto minmax(0, 1fr); }
         .iman-layout .ip-header:has(> .mh-back) > h1 { display: none; }
         .iman-layout .ip-header:has(> .mh-back) .ih-top-actions-cluster { grid-column: 2; }
-        .iman-layout .ip-header .mh-back { width: max-content; min-width: 112px; height: 38px; padding: 0 12px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-radius: 999px; white-space: nowrap; }
+        .iman-layout .ip-header .mh-back { width: max-content; min-width: 100px; height: 38px; padding: 0 10px; display: inline-flex; align-items: center; justify-content: center; gap: 5px; border-radius: 999px; white-space: nowrap; }
         .iman-layout .ip-header .ip-back-label { display: inline; font-size: 13px; font-weight: 700; }
         .iman-layout .ip-header.ih-header { grid-template-columns: minmax(0, 1fr) auto; }
         .iman-layout .ip-header > h1 { position: static; left: auto; top: auto; transform: none; min-width: 0; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -43,9 +45,9 @@ export function PageHeader({ title, onBack, language = 'bm', className = '', ...
         .iman-layout .ip-header > h1 { font-size: 14px; }
       }
     `}</style>
-    {title ? <>
-      <button type="button" className="mh-back" onClick={onBack} aria-label={language === 'bm' ? 'Kembali' : 'Back'}><ArrowLeft aria-hidden="true" /><span className="ip-back-label">{language === 'bm' ? 'Kembali' : 'Back'}</span></button>
-      <h1>{title}</h1>
+    {hasBack ? <>
+      <button type="button" className="mh-back" onClick={onBack} aria-label={resolvedBackLabel} lang={backLabelLang}><ArrowLeft aria-hidden="true" /><span className="ip-back-label" dir={backLabelDir} lang={backLabelLang}>{resolvedBackLabel}</span></button>
+      {title && <h1>{title}</h1>}
     </> : <button type="button" className="ih-mobile-logo" onClick={accountProps.onHome} aria-label="ImanAI — Home"><ImanAILogo language={language} /></button>}
     <HomeHeaderActions {...accountProps} language={language} />
   </header>;

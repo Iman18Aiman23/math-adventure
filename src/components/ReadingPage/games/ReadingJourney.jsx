@@ -33,9 +33,9 @@ const DESCRIPTIONS = [
   ['Baca cerita dan fahami maknanya.', 'Read and understand a story.'],
 ];
 
-export default function ReadingJourney({ onBack, language = 'bm' }) {
+export default function ReadingJourney({ onBack, language = 'bm', initialLevel = null }) {
   const { gameState } = useGameState('reading-challenge');
-  const [level, setLevel] = useState(null);
+  const [level, setLevel] = useState(initialLevel);
   const [attempt, setAttempt] = useState(0);
   const [pending, startTransition] = useTransition();
   const heading = useRef(null);

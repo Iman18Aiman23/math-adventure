@@ -14,7 +14,7 @@ const MathOperationsGame = React.lazy(() => import('./components/MathematicsPage
 const ColumnMathGame = React.lazy(() => import('./components/MathematicsPage/ColumnMathGame'));
 const MathJourney = React.lazy(() => import('./components/MathematicsPage/MathJourney'));
 const LevelUpToast = React.lazy(() => import('./components/LevelUpToast'));
-const WelcomeModal = React.lazy(() => import('./components/WelcomeModal'));
+import WelcomeModal from './components/WelcomeModal';
 import DesktopSidebar from './components/DesktopSidebar';
 import CosmicMobileNav from './components/CosmicMobileNav';
 import SubjectMenuFooter from './components/_shared/SubjectMenuFooter';
@@ -461,7 +461,28 @@ const MT_MODULE6_ORDER = ['kenali-ukur-objek', 'ukur-banding-panjang', 'kenali-j
 
 export default function App() {
   const isDesktop = useIsDesktop();
-  const [savedNavigation] = useState(loadNavigationState);
+  const [savedNavigation] = useState(() => {
+    const navigation = loadNavigationState();
+    // A cold start always begins at the welcome screen (new user) or main
+    // homepage (existing session), never at a stale subject/game/tab.
+    return {
+      ...navigation,
+      activeTab: 'learn',
+      currentSubject: null,
+      mathSubGame: null,
+      dateTimeSubGame: null,
+      isPlaying: false,
+      selectedAssessmentId: null,
+      currentAgeGroup: null,
+      currentAgeGame: null,
+      islamModule: null,
+      islamTopic: null,
+      matematikModule: null,
+      matematikTopic: null,
+      bmModule: null,
+      bmTopic: null,
+    };
+  });
   const [playerName,     setPlayerName]     = useState(() => loadPlayerName());
   const [currentSubject, setCurrentSubject] = useState(() =>
     savedNavigation.currentSubject === 'matematik-reports' || canAccessSubject(playerName, savedNavigation.currentSubject)
@@ -1800,7 +1821,7 @@ export default function App() {
             '--theme-planet-ring': THEMES[currentTheme].planetRing,
           }}
         >
-          {!playerName && <Suspense fallback={null}><WelcomeModal onSave={handleSaveName} language={language} onLanguageChange={setLanguage} /></Suspense>}
+          {!playerName && <WelcomeModal onSave={handleSaveName} language={language} onLanguageChange={setLanguage} />}
           <Suspense fallback={null}><LevelUpToast level={levelUpInfo?.newLevel} onDismiss={clearLevelUp} /></Suspense>
           {/* XP reward toast — centered within .app-container (offset from the
               desktop sidebar automatically since this is inside the container). */}

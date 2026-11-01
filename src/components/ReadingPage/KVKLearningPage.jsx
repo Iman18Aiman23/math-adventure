@@ -3,10 +3,11 @@ import { ChevronLeft, ChevronRight, Volume2, Settings, Check } from 'lucide-reac
 import { KVK_LETTERS, getKVKSeriesByLetter } from '../../data/curriculum/bm_kvk';
 import { KVK_EXAMPLES, KVK_EXAMPLES_JAWI } from '../../data/curriculum/kvkExampleSentences';
 import SpeechManager from '../../services/SpeechManager';
-import BMHeader from '../../components/BahasaMelayuPage/_shared/BMHeader';
+import { PageHeader } from '../_shared/PageHeaderHero';
+import { HomePageLayoutStyles } from '../HomePage';
 import AZPickerPage from './AZPickerPage';
 import SyllableExample from './SyllableExample';
-import HomeHeaderActions from '../_shared/HomeHeaderActions';
+import AnnotatedText, { stripHighlightMarkers } from './AnnotatedText';
 import './KVLearningPage.css';
 import KVCompletion from './KVCompletion';
 
@@ -16,17 +17,6 @@ const SCRIPTS = [
   { key: 'ENG',  label: 'ENG' },
   { key: 'JAWI', label: 'JAWI' },
 ];
-
-function getKVSyllableRange(word, syllable) {
-  const letterRun = /[a-z]+/i.exec(word);
-  if (!letterRun) return null;
-
-  const target = syllable?.toLowerCase();
-  const matchAt = target ? letterRun[0].toLowerCase().indexOf(target) : -1;
-  return matchAt < 0
-    ? null
-    : [letterRun.index + matchAt, letterRun.index + matchAt + target.length];
-}
 
 export default function KVKLearningPage({ onBack, onComplete = onBack, language, onStartQuiz, title = language === 'bm' ? 'Suku Kata KVK' : 'KVK Syllables', ...accountProps }) {
   // ── State ─────────────────────────────────────────────────────────────────
@@ -55,7 +45,6 @@ export default function KVKLearningPage({ onBack, onComplete = onBack, language,
   }, []);
   const [seriesComplete, setSeriesComplete] = useState(false);
   const uiLanguage = language === 'bm' ? 'bm' : 'en';
-  const headerTitle = title;
 
   // ── Series data ───────────────────────────────────────────────────────────
   const seriesItems      = selectedLetter ? getKVKSeriesByLetter(selectedLetter) : [];
@@ -120,7 +109,7 @@ export default function KVKLearningPage({ onBack, onComplete = onBack, language,
         onBack={onBack}
         onSelectLetter={handleSelectLetter}
         language={uiLanguage}
-        title={headerTitle}
+        title={title}
         onStartQuiz={onStartQuiz}
       />
     );
@@ -145,7 +134,9 @@ export default function KVKLearningPage({ onBack, onComplete = onBack, language,
   const subWord  = script === 'ENG' ? msWord : '';
 
   return (
-    <div className={`kv-learning kv-syllable-learning kv-learning--kvk kv-learning--unified${isJawi ? ' kv-learning--jawi' : ''}`}>
+    <div className="rp-layout">
+      <HomePageLayoutStyles />
+      <div className={`iman-layout kv-learning kv-syllable-learning kv-learning--kvk kv-learning--unified${isJawi ? ' kv-learning--jawi' : ''}`}>
       <style>{`
         .kv-learning--unified { background: #f5f8fa; }
         .kv-learning--unified .kv-learning-body {
@@ -156,15 +147,15 @@ export default function KVKLearningPage({ onBack, onComplete = onBack, language,
           box-sizing: border-box;
           width: 100%;
           min-height: 0;
-          padding: clamp(10px, 2vh, 20px) clamp(12px, 4vw, 24px);
+          padding: clamp(10px, 2vh, 20px) 0;
         }
         .kv-learning--unified .kv-flashcard {
           display: flex;
           flex: 0 1 auto;
           flex-direction: column;
           align-items: center;
-          width: min(100%, 800px);
-          max-width: 800px;
+          width: min(100%, var(--home-content-max, 1400px));
+          max-width: var(--home-content-max, 1400px);
           height: auto;
           min-height: 0;
           max-height: 100%;
@@ -365,8 +356,8 @@ export default function KVKLearningPage({ onBack, onComplete = onBack, language,
           }
           .kv-learning--unified.kv-syllable-learning .kv-flashcard {
             flex: 0 0 auto !important;
-            width: min(calc(100% - 48px), 850px) !important;
-            max-width: 850px !important;
+            width: min(100%, var(--home-content-max, 1400px)) !important;
+            max-width: var(--home-content-max, 1400px) !important;
             padding: 48px !important;
           }
           .kv-learning--unified.kv-syllable-learning .kv-flashcard-header { padding-bottom: 8px !important; }
@@ -403,8 +394,8 @@ export default function KVKLearningPage({ onBack, onComplete = onBack, language,
           .kv-learning--unified.kv-syllable-learning .kv-sentence-example-text { font-size: 48px !important; }
           .kv-learning--unified.kv-syllable-learning .kv-learning-footer {
             flex: 0 0 auto !important;
-            width: min(calc(100% - 48px), 850px) !important;
-            max-width: 850px !important;
+            width: min(100%, var(--home-content-max, 1400px)) !important;
+            max-width: var(--home-content-max, 1400px) !important;
             margin: 0 !important;
             padding: 0 0 12px !important;
           }
@@ -418,7 +409,7 @@ export default function KVKLearningPage({ onBack, onComplete = onBack, language,
           .kv-learning--unified.kv-syllable-learning .kv-learning-body {
             align-items: flex-start !important;
             justify-content: flex-start !important;
-            padding: clamp(24px, 5vh, 40px) 12px 8px !important;
+            padding: clamp(24px, 5vh, 40px) 0 8px !important;
           }
           .kv-learning--unified.kv-syllable-learning .kv-flashcard {
             flex: 1 1 auto !important;
@@ -528,13 +519,10 @@ export default function KVKLearningPage({ onBack, onComplete = onBack, language,
           }
         }
       `}</style>
-      <BMHeader onBack={handleBackToLetters} language={uiLanguage} title=""
-        backLabel={isJawi ? 'کمبالي' : undefined}
+      <PageHeader {...accountProps} backOnly onBack={handleBackToLetters} language={uiLanguage} showProgress={false}
+        backLabel={isJawi ? '\u06a9\u0645\u0628\u0627\u0644\u064a' : undefined}
         backLabelLang={isJawi ? 'ms-Arab' : undefined}
         backLabelDir={isJawi ? 'rtl' : undefined}
-        actions={
-          <HomeHeaderActions {...accountProps} language={uiLanguage} showProgress={false} />
-        }
       />
       <div className="kv-learning-stage">
       <main className="kv-learning-body">
@@ -603,7 +591,7 @@ export default function KVKLearningPage({ onBack, onComplete = onBack, language,
                   {script === 'RUMI'
                     ? <SyllableExample text={msWord} syllable={currentItem?.kvk} label={uiLanguage === 'bm' ? 'Contoh perkataan' : 'Example word'} />
                     : <SyllableExample text={jawiWord} syllable={jawiSyllable} label="چونتوه ڤرکاتاءن" dir="rtl" lang="ms-Arab" />}
-                  <button type="button" className="kv-inline-audio-button" onClick={() => speakText(currentItem?.ms?.word, 'ms-MY')}
+                  <button type="button" className="kv-inline-audio-button" onClick={() => speakText(stripHighlightMarkers(currentItem?.ms?.word), 'ms-MY')}
                     aria-label={uiLanguage === 'bm' ? `Dengar ${msWord}` : `Listen to ${msWord}`}>
                     <Volume2 size={20} aria-hidden="true" />
                   </button>
@@ -627,22 +615,10 @@ export default function KVKLearningPage({ onBack, onComplete = onBack, language,
                 <span className="kv-sentence-example-label">{uiLanguage === 'bm' ? 'Contoh ayat' : 'Example sentence'}</span>
                 <div className="kv-audio-text-row">
                   <span className="kv-sentence-example-text">
-                    {exampleSentence.split(/\s+/).map((word, index, words) => {
-                      const range = isJawi ? null : getKVSyllableRange(word, currentItem?.kvk);
-                      return (
-                        <React.Fragment key={`${word}-${index}`}>
-                          <span className="kv-sentence-word">
-                            {range
-                              ? <>{word.slice(0, range[0])}<mark className="kv-sentence-kv">{word.slice(range[0], range[1])}</mark>{word.slice(range[1])}</>
-                              : word}
-                          </span>
-                          {index < words.length - 1 ? ' ' : null}
-                        </React.Fragment>
-                      );
-                    })}
+                    <AnnotatedText text={exampleSentence} />
                   </span>
                   <button type="button" className="kv-inline-audio-button"
-                    onClick={() => speakText(exampleSentence, 'ms-MY')}
+                    onClick={() => speakText(stripHighlightMarkers(exampleSentence), 'ms-MY')}
                     aria-label={uiLanguage === 'bm' ? 'Dengar contoh ayat' : 'Listen to example sentence'}>
                     <Volume2 size={20} aria-hidden="true" />
                   </button>
@@ -671,6 +647,7 @@ export default function KVKLearningPage({ onBack, onComplete = onBack, language,
 
       {seriesComplete && <KVCompletion language={uiLanguage} onReturn={onComplete} className="kv-completion--clay" />}
 
+      </div>
     </div>
   );
 }
