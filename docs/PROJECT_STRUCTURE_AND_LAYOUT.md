@@ -118,7 +118,7 @@ Navigation state and a subset of appearance/player state are persisted with `src
 
 The home dashboard and standardized subject menus use `HomePageLayoutStyles` from `HomePage.jsx` plus `_shared/PageContainer.css`. `--home-content-max` is set to `1400px` in `index.css`; `.page-container` centers content within that shared maximum, while `.page-layout-root` provides responsive outer gutters. This is the wide dashboard/content-width standard used by Home and the pages sharing its layout styles.
 
-`index.css` also defines `--content-max` for narrower game/reading content. At desktop widths it changes from `700px` to `800px` at the wide-desktop breakpoint. `.page-shell` uses that narrower reading width. These width systems serve different page types: dashboards use the shared 1400px content wrapper, while focused activities may use the narrower game width.
+`index.css` also defines `--content-max` for narrower centered content. At desktop widths it changes from `700px` to `800px` at the wide-desktop breakpoint. The desktop `.page-shell` rule and focused game content use this narrower width. These width systems serve different page types: dashboards use the shared 1400px content wrapper, while focused activities may use the narrower game width.
 
 When a page root needs to control its own width or scroll behavior, confirm how it sits inside `.view-container`; avoid placing a narrow `max-width` on the page root when the page is expected to use the dashboard width. For full-bleed roots, follow the existing shell/layout conventions in `index.css` and `_shared/PageContainer.css`.
 
@@ -131,39 +131,110 @@ When a page root needs to control its own width or scroll behavior, confirm how 
 
 The app uses ordinary CSS files, global CSS, and inline style objects for dynamic values. Tailwind and CSS-in-JS are not part of the project styling approach. Shared CSS variables live in `src/index.css`; subject-specific styles use prefixes such as `rp-*`, `bm-*`, `mt-*`, `pi-*`, `jw-*`, `ops-*`, and `scl-*`.
 
-### Fonts and responsive styling
+### Typography
 
-The fonts are linked in `index.html`. The global token defaults are Outfit for headings and Inter for body copy. Baloo 2 and Fredoka are used by playful lesson/game interfaces, while Amiri is used for Arabic/Jawi text. Keep responsive behavior in the relevant component stylesheet or shared layout stylesheet and preserve reduced-motion support where animations are used.
+Font files are requested in one Google Fonts stylesheet in [`index.html`](../index.html). The CSS defaults and their common roles are:
 
-### App color palette
+| Font | CSS token / common use | Available weights |
+| --- | --- | --- |
+| Outfit | `--font-heading`; application headings, buttons, labels, and navigation | 400–900 (selected weights loaded) |
+| Inter | `--font-body`; default application body and many dashboard descriptions | 400–800 |
+| Nunito | Welcome screen and shared menu headings/body fallbacks | 400, 600, 700, 800 |
+| Baloo 2 | Playful hero titles, learning/game headings, and score emphasis | 500, 700, 800 |
+| Fredoka | Friendly lesson titles, reading hero, and expressive copy | 500, 600, 700 |
+| Amiri | Arabic and Jawi text | 400, 700 |
 
-Use this seven-color master palette as the canonical set of app accent colors. Keep the listed hex values consistent across subjects and reusable components, including the A-Z letter picker.
+Use the global `--font-heading` and `--font-body` tokens for new general-purpose UI. A feature may opt into a display face (for example, Baloo 2 or Fredoka) when the rest of that feature uses it. Set explicit fallbacks and scope overrides to the feature root; do not change the global body font to restyle one page. Fonts use `display=swap`, so always include a sensible generic fallback.
 
-| Master color | Name | Semantic token | Typical use |
-| --- | --- | --- | --- |
-| `#EF4444` | Red | `--danger` | Errors, incorrect answers, and destructive states |
-| `#F59E0B` | Amber | `--warning` | Highlights, rewards, and attention states |
-| `#10B981` | Green | `--success` | Correct answers, completion, and positive feedback |
-| `#3B82F6` | Blue | `--primary` | Primary actions, links, selected states, and focus accents |
-| `#8B5CF6` | Violet | `--accent-violet` | Subject and learning activity accents |
-| `#EC4899` | Pink | `--accent-pink` | Playful and celebratory accents |
-| `#14B8A6` | Teal | `--secondary` | Secondary actions, progress, and supporting emphasis |
+### Runtime design tokens
 
-Blue (`#3B82F6`) is the primary color; teal (`#14B8A6`) is the secondary color. Green is reserved for success feedback so it remains distinct from the secondary action color. Use the other master colors for their semantic roles above rather than introducing new accent hues.
+The following values are defined in the live `:root` block in [`src/index.css`](../src/index.css). They are the shared base tokens, not a promise that every older feature has already been migrated to use them.
 
-The master hex values are accent colors, not automatic text/background pairs. Check contrast for each use; use a darker derived shade or a high-contrast foreground for text and filled controls when the master color does not provide enough contrast. Light and dark modes may use different tints and shades, but should retain the same master color identity. Keep component-specific tokens as aliases or tints of this palette instead of creating a parallel palette.
+| Token | Current value | Intended role |
+| --- | --- | --- |
+| `--primary` / `--primary-dark` / `--primary-light` | `#6366F1` / `#4F46E5` / `#E0E7FF` | Indigo primary actions and selected states |
+| `--secondary` / `--secondary-dark` / `--secondary-light` | `#F97316` / `#EA580C` / `#FFEDD5` | Orange secondary emphasis |
+| `--teal` / `--teal-dark` / `--teal-light` | `#14B8A6` / `#0D9488` / `#CCFBF1` | Teal accent and positive emphasis |
+| `--gold` / `--gold-dark` / `--gold-light` | `#F59E0B` / `#D97706` / `#FEF3C7` | Highlights and rewards |
+| `--success` / `--success-dark` / `--success-light` | `#10B981` / `#059669` / `#D1FAE5` | Correct answers and completion |
+| `--danger` / `--danger-dark` / `--danger-light` | `#EF4444` / `#DC2626` / `#FEE2E2` | Errors and destructive states |
+| `--action-blue` / `--action-blue-hover` | `#0674D1` / `#055FAE` | Shared dashboard action treatment |
+| `--learning-cta-green` / `--learning-cta-green-dark` | `#078653` / `#066A47` | Learning CTA gradient and hover state |
+| `--text-primary` / `--text-secondary` / `--text-light` | `#0F172A` / `#64748B` / `#94A3B8` | Text hierarchy |
+| `--bg-body` / `--bg-white` / `--bg-card` / `--bg-muted` | `#F2F8F1` / `#FFFFFF` / `#FFFFFF` / `#F1F5F9` | Base surfaces |
+| `--border-color` / `--border-color-light` | `#E2E8F0` / `#F1F5F9` | Standard and subtle borders |
+| `--focus-ring` / `--text-on-action` | `var(--primary-dark)` / `#FFFFFF` | Keyboard focus and action foreground |
 
-The current `:root` values for `--primary` and `--secondary` in `src/index.css` still use the earlier indigo and orange colors. This section records the requested master palette and semantic mapping; it does not change runtime CSS values.
+The actual global primary and secondary colors are indigo and orange. Do not document or assume a different blue/teal pair as the app-wide primary/secondary palette. The app also contains deliberate page-scoped colors and aliases (including legacy `--duo-*` variables); check the owning CSS before changing them.
+
+Some current screen-level treatments illustrate the intended distinction between shared tokens and local design:
+
+| Screen / scope | Current colors | Typography |
+| --- | --- | --- |
+| Home dashboard (`ih-*`) | Navy text (`#081B49`), pale sky/green surfaces, blue hero emphasis, green accents; scoped in `HomePage.css` and `HomePageLayoutStyles` in `HomePage.jsx`. | Inter base; Baloo 2 hero title; Outfit section headings and card titles. |
+| Reading menu (`rp-*`, `mh-*`) | Navy hero text (`#102B62`), blue emphasis (`#0089F9`), muted copy (`#4A5568`), and the shared learning-green CTA; scoped in `ReadingPage.css` and `_shared/SubjectMenuLayout.css`. | Inter menu body; Fredoka hero title and description; Outfit shared section/card headings. |
+| Welcome (`wl-*`) | Navy `--wl-navy` (`#071348`), muted `--wl-muted` (`#7382A7`), blue `--wl-blue` (`#147BFF`), and green guest action; declared in `WelcomeModal.css`. | Nunito screen base; Baloo 2 main headings; Fredoka artwork caption. |
+
+These are real feature skins, not additional global tokens. Keep a new feature’s accent decisions coherent with its subject and semantic state, and avoid changing a working feature’s local palette as a side effect of global token edits.
+
+### Spacing, shape, and shell sizing
+
+| Token family | Current values | Guidance |
+| --- | --- | --- |
+| `--sp-*` | 8, 16, 24, 32, 40, 48, and 64px (`--sp-1` through `--sp-6`, plus `--sp-8`) | Use as the shared spacing scale where the surrounding component uses global tokens. |
+| `--border-radius-*` | 10px / 14px / 20px / 100px (`sm`, `md`, `lg`, `pill`) | Reuse for common controls and surfaces; feature cards may use their established scoped radius. |
+| `--shadow-sm` / `--shadow-md` | `0 1px 3px rgba(15, 23, 42, .08)` / `0 4px 12px rgba(15, 23, 42, .12)` | Shared low- and medium-elevation shadows. |
+| `--home-content-max` | 1400px | Inner width for the wide dashboard and shared subject-menu content. |
+| `--content-max` | 700px; 800px at `min-width: 1100px` | Narrower centered reading/game content. |
+| `--sidebar-w` | 0px by default; 240px at `min-width: 768px` | Desktop navigation width. |
+
+`body` and `#root` fill and lock the viewport. The application shell owns the scrolling model: `.view-container` scrolls page content, while app-level fixed navigation is rendered outside it. Respect `env(safe-area-inset-*)` on mobile and use `dvh`-aware sizing for full-screen views when available. Do not add a second page-level scroll container unless that page explicitly owns its scrolling.
+
+### Responsive layout rules
+
+- The global desktop-shell breakpoint is 768px: the desktop sidebar appears and the app changes to a row layout. The global wide-content breakpoint is 1100px.
+- The root font size is reduced below 400px and enlarged for desktop. Component text should use `rem`, `clamp()`, or its established responsive rules rather than assuming every viewport has the same root size.
+- Component breakpoints are not all identical. Home, shared subject menus, and the welcome screen have additional width-, height-, orientation-, and container-based rules. Read the owning stylesheet before reusing a breakpoint.
+- The Home and Reading menu styles use a container named `iman-page`; card columns respond to the page’s available width, not only the physical viewport.
+- Test short landscape and small-height screens as well as narrow portrait screens. The welcome screen deliberately rearranges content at both width and height breakpoints.
+
+### Theme and dark mode
+
+`App.jsx` owns `colorMode`, applies it to `document.documentElement.dataset.colorMode`, and persists it through the appearance storage helpers. CSS opts into dark appearance with selectors such as `html[data-color-mode='dark']`. Support is implemented by individual page/shared styles; it is not safe to assume every legacy game stylesheet has a complete dark palette. When adding a dark treatment, scope it to the page and verify text, controls, borders, illustrations, and focus rings in both modes.
+
+### CSS ownership and component styling
+
+- Global resets, tokens, shell behavior, and cross-cutting primitives belong in `src/index.css`.
+- Reusable page structure and shared subject-menu behavior belong in `src/components/_shared/`; keep its CSS aligned with its component props.
+- Feature styles belong beside the feature (`HomePage.css`, `ReadingPage.css`, `WelcomeModal.css`, or the relevant subject stylesheet). Follow the existing `ih-*`, `rp-*`, `wl-*`, `mt-*`, `pi-*`, `jw-*`, `ops-*`, and `scl-*` prefixes.
+- Use inline styles only for values that are genuinely dynamic, such as a runtime theme color or asset URL. Avoid accumulating one-off global selectors or duplicating a shared layout rule in each page.
+- `HomePageLayoutStyles` in `HomePage.jsx` injects shared, scoped layout rules used by both Home and Reading. If changing those rules, check both pages and preserve the `iman-layout` scoping so unrelated screens do not inherit them.
+
+### Shared accessibility and interaction baseline
+
+Use semantic headings/sections, real buttons for actions, visible `:focus-visible` states, descriptive accessible names, and meaningful image alternatives (decorative art should have empty alt text or be hidden from assistive technology). Keep interactive targets usable on touch screens, maintain readable contrast in both color modes, and respect `prefers-reduced-motion`. Do not rely on color or hover alone to communicate a state.
 
 ## 6. Subject and feature flows
 
 ### Home and account dashboards
 
-`HomePage.jsx` presents subject and age-group entry points. The shared shell provides its header and banner; clicking a subject calls a callback into `App.jsx`, which changes the selected subject state. Profile, achievement, leaderboard, and report pages receive account and progress values from the app shell.
+[`HomePage.jsx`](../src/components/HomePage.jsx) composes the dashboard from `SubjectMenuLayout`, `PageHeader`, `StandardHeroBanner`, and `StandardCard`. The main sections are the personalized hero, subject cards, and age-group buttons. Subject access is checked through `subjectAccess`; locked cards remain visible, are disabled, and expose a lock label/icon. Clicking an available entry calls a callback into `App.jsx`, which changes the selected subject or age-group state.
+
+The root uses `ih-root iman-layout page-layout-root`; its inner content uses the 1400px `.page-container`. Desktop keeps the four age groups in a row; tablet and mobile styles reduce the columns. The subject grid adapts between one, two, and three columns based on available width. The dashboard owns its scoped navy/sky/green skin rather than inheriting the global palette directly.
 
 ### Reading
 
-`ReadingPage/ReadingPage.jsx` owns the reading menu/level selection. The `games/` subfolder contains focused reading activities such as the reading game. Reading-specific layout and visuals live alongside these pages in `ReadingPage.css` and related files. `App.jsx` coordinates the selected reading level and activity navigation.
+[`ReadingPage.jsx`](../src/components/ReadingPage/ReadingPage.jsx) owns the reading menu and maps the six displayed levels to the reading learning pages and challenge. It reuses `SubjectMenuLayout`, the Home/Reading shared layout styles, and `StandardHeroBanner`; it lazy-loads the larger lesson/challenge screens and wraps those routes in `Suspense` with a loading fallback. `selectedLevel` is coordinated by `App.jsx` and the page returns to the level menu through the provided callback.
+
+Reading-specific appearance lives in [`ReadingPage.css`](../src/components/ReadingPage/ReadingPage.css) and the shared menu stylesheet. The desktop hero places copy and artwork side-by-side; narrow layouts stack/reflow the hero. The topic grid uses three columns on desktop and a smaller responsive layout on mobile. Preserve the `rp-*` prefix and the shared subject-menu chrome when changing this screen.
+
+### Welcome and guest entry
+
+[`WelcomeModal.jsx`](../src/components/WelcomeModal.jsx) is rendered when there is no saved player name. It portals the full-viewport welcome/sign-in experience to `document.body`, so its fixed overlay does not change the app’s scroll layout. Its design and responsive behavior are isolated in [`WelcomeModal.css`](../src/components/WelcomeModal.css) under `.wl-*`.
+
+The screen supports BM/English copy, a responsive hero/artwork and sign-in card, and a native guest-name dialog. The component currently presents email/password, social sign-in, registration, and related sign-in controls as disabled UI; guest entry is the active path and calls `onSave` with a trimmed name. Do not describe the disabled controls as a working authentication integration.
+
+The modal makes the app root inert, moves focus into the modal, traps Tab navigation, restores focus around the guest dialog, and supplies dialog labels. Preserve these behaviors and the `aria-*` relationships. Its stylesheet has width, height, portrait/landscape, safe-area, and reduced-motion rules; do not simplify it to a width-only mobile breakpoint.
 
 ### Speaking and Bahasa Melayu
 
@@ -235,12 +306,27 @@ The package does not define a single `npm test` command. `scripts/` contains foc
 6. Keep curriculum IDs and topic data aligned with the subject reference docs. Coming-soon curriculum items remain visible as disabled entries rather than disappearing.
 7. Use `SpeechManager`, `soundManager`, and gamification hooks/services rather than duplicating browser APIs or local persistence inside a page.
 
-## 11. Related project references
+## 11. Frontend implementation checklist
+
+Use this checklist when adding or restyling a page:
+
+1. **Find the owner**: identify the route/state in `App.jsx`, the page component, shared layout, and stylesheet. Read the neighboring feature reference before changing curriculum/game pages.
+2. **Choose the correct shell**: use the app shell’s `.view-container` and existing page layout (`SubjectMenuLayout`, `PageContainer`, or the feature’s established standalone layout). Do not add React Router or an independent global navigation system.
+3. **Set width at the right level**: full-bleed page roots should stretch; center content in an inner wrapper. Use the existing 1400px dashboard width or 700/800px game width as appropriate. Recheck desktop rules that constrain direct `.view-container` children.
+4. **Reuse tokens and styles**: use global font/color/spacing/radius tokens when they fit. Keep feature-only styles scoped and follow its current font and palette; do not impose a new accent globally.
+5. **Preserve behavior**: keep navigation callback/state patterns, lazy loading, loading fallbacks, and scroll reset behavior consistent. Include new nested navigation state in the scroll-reset effect when required.
+6. **Build responsive and accessible states together**: account for keyboard focus, disabled/locked/loading states, text wrapping, safe areas, dark mode where supported, reduced motion, and short viewports.
+7. **Use project asset conventions**: public assets live under `public/` and are referenced with `import.meta.env.BASE_URL` where needed; imported module assets belong in `src/assets/`.
+8. **Verify the affected page**: use `npm run lint` and `npm run build` for code changes. Existing targeted browser checks include `scripts/test-homepage.mjs`, `scripts/test-welcome.mjs`, and `scripts/test-welcome-responsive.mjs`; inspect their setup before running. Documentation-only edits do not require a build.
+
+## 12. Related project references
 
 - [Math KSSR reference](../src/components/MatematikPage/MATEMATIK.md)
 - [Pendidikan Islam reference](../src/components/PendidikanIslamPage/PENDIDIKAN_ISLAM.md)
 - [Bahasa Melayu reference](../src/components/BahasaMelayuPage/BAHASA_MELAYU.md)
 - [UI/UX documentation](UI_UX_DOCUMENTATION.md)
+- [Reading page layout notes](../src/components/ReadingPage/ReadingPage_UI_UX_LAYOUT.md)
+- [GitHub-to-production publishing workflow](END_TO_END_AI_APPLICATION_PUBLISHING_WORKFLOW.md)
 - [Game development protocol](Game_Development_Protocol.md)
 - [Assessment module guide](ASSESSMENT_MODULE_GUIDE.md)
 - [Assessment troubleshooting](ASSESSMENT_TROUBLESHOOTING.md)

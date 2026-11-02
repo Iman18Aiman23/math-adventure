@@ -1,8 +1,14 @@
+<<<<<<< HEAD
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ArrowRight, BookOpen, Check, ChevronDown, ChevronRight, Eye, LockKeyhole, Mail, Star, Trophy, UserRound, X } from 'lucide-react';
 import ImanAILogo from './_shared/ImanAILogo';
 import './WelcomeModal.css';
+=======
+import React, { useEffect, useRef, useState } from 'react';
+import MascotIcon from './icons/MascotIcon';
+import SocialLogin from './Auth/SocialLogin';
+>>>>>>> 1a72af8354dcda506cb090317d5b6f8cfde4fb9f
 
 function GoogleMark() {
   return <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#4285f4" d="M44 24.5c0-1.5-.1-2.9-.4-4.3H24v8.2h11.2a9.6 9.6 0 0 1-4.2 6.3v5.2h6.8C41.8 36.3 44 30.9 44 24.5Z"/><path fill="#34a853" d="M24 45c5.6 0 10.3-1.9 13.8-5.1L31 34.7c-1.9 1.3-4.3 2-7 2-5.4 0-10-3.7-11.7-8.6h-7v5.4A20.8 20.8 0 0 0 24 45Z"/><path fill="#fbbc05" d="M12.3 28.1a12.5 12.5 0 0 1 0-8.2v-5.4h-7a21 21 0 0 0 0 19l7-5.4Z"/><path fill="#ea4335" d="M24 11.3c3.1 0 5.9 1.1 8.1 3.2l6.1-6.1A20.3 20.3 0 0 0 24 3 20.8 20.8 0 0 0 5.3 14.5l7 5.4c1.7-4.9 6.3-8.6 11.7-8.6Z"/></svg>;
@@ -46,6 +52,7 @@ export default function WelcomeModal({ onSave, language = 'bm' }) {
     if (event.shiftKey && (document.activeElement === first || document.activeElement === scope)) { event.preventDefault(); last?.focus(); }
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
   };
+<<<<<<< HEAD
   const assetBase = import.meta.env.BASE_URL + 'images/welcome/';
   return createPortal(
     <div className="wl-page" role="dialog" aria-modal="true" aria-labelledby="wl-title" ref={rootRef} tabIndex={-1} onKeyDown={trapFocus}>
@@ -90,6 +97,70 @@ export default function WelcomeModal({ onSave, language = 'bm' }) {
             <footer className="wl-legal">{t('Dengan log masuk, anda bersetuju dengan', 'By signing in, you agree to our')}<br/><button type="button" disabled>{t('Terma Perkhidmatan', 'Terms of Service')}</button> {t('dan', 'and')} <button type="button" disabled>{t('Dasar Privasi', 'Privacy Policy')}</button> {t('kami.', '')}</footer>
           </div>
         </main>
+=======
+
+  return (
+    <>
+      <style>{welcomeStyles}</style>
+      <div className="welcome-overlay">
+        {/* Full-screen Duolingo onboarding */}
+        <div className="welcome-emoji">
+          <MascotIcon size={120} />
+        </div>
+
+        {/* Logo Text */}
+        <div style={{ textAlign: 'center', marginTop: 0, marginBottom: '1.5rem' }}>
+          <h1 className="welcome-logo-text">ImanCore</h1>
+          <h2 className="welcome-subtitle-text">Learning Hub</h2>
+        </div>
+
+        <div style={{ textAlign: 'center', maxWidth: '360px', width: '100%' }}>
+          <h1 className="welcome-title">Selamat Datang!</h1>
+          <p className="welcome-subtitle" style={{ marginTop: '0.5rem', marginBottom: '2rem' }}>
+            Masukkan nama anda untuk memulakan pembelajaran! 🚀
+          </p>
+        </div>
+
+        <form
+          onSubmit={handleSubmit}
+          style={{ width: '100%', maxWidth: '360px', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}
+        >
+          <input
+            ref={inputRef}
+            type="text"
+            maxLength={24}
+            value={name}
+            onChange={e => setName(e.target.value)}
+            placeholder="Nama anda..."
+            className="welcome-input"
+            autoComplete="off"
+          />
+          <button
+            type="submit"
+            disabled={!name.trim()}
+            className="btn-primary welcome-btn"
+          >
+            Mula Belajar! ✨
+          </button>
+        </form>
+
+        <div style={{ margin: '1rem 0', width: '100%', maxWidth: '360px', display: 'flex', alignItems: 'center' }}>
+          <div style={{ flex: 1, height: '1px', background: '#E5E5E5' }}></div>
+          <span style={{ padding: '0 10px', color: '#AFAFAF', fontSize: '0.9rem', fontWeight: 'bold' }}>ATAU</span>
+          <div style={{ flex: 1, height: '1px', background: '#E5E5E5' }}></div>
+        </div>
+
+        <div style={{ width: '100%', maxWidth: '360px' }}>
+          <SocialLogin />
+        </div>
+
+        {/* Decorative dots */}
+        <div style={{ display: 'flex', gap: '6px', marginTop: '1rem' }}>
+          {[0, 1, 2].map(i => (
+            <div key={i} style={{ width: 8, height: 8, borderRadius: '50%', background: i === 0 ? '#58CC02' : '#E5E5E5' }} />
+          ))}
+        </div>
+>>>>>>> 1a72af8354dcda506cb090317d5b6f8cfde4fb9f
       </div>
       <dialog id="wl-guest-dialog" className="wl-guest-dialog" ref={guestDialogRef} aria-labelledby="wl-guest-title" aria-describedby="wl-guest-description" onCancel={() => setGuest(false)} onClose={() => setGuest(false)} onClick={event => {
         if (event.target !== event.currentTarget) return;
