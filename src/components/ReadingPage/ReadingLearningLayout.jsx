@@ -20,6 +20,9 @@ export default function ReadingLearningLayout({
   backLabelDir,
   previousLabel,
   nextLabel,
+  footerCenter = null,
+  iconNavigation = false,
+  hideFooter = false,
 }) {
   const isMalay = language === 'bm';
 
@@ -40,18 +43,19 @@ export default function ReadingLearningLayout({
         <div className="kv-learning-stage">
           <main className="kv-learning-body">{children}</main>
         </div>
-        <footer className="kv-learning-footer">
+        {!hideFooter && <footer className="kv-learning-footer">
           <div className="kv-learning-nav">
-            <button type="button" className="kv-previous" onClick={onPrevious} disabled={previousDisabled}>
+            <button type="button" className={`kv-previous${iconNavigation ? ' kv-nav-icon-only' : ''}`} onClick={onPrevious} disabled={previousDisabled} aria-label={isMalay ? 'Sebelumnya' : 'Previous'} title={isMalay ? 'Sebelumnya' : 'Previous'}>
               <ChevronLeft size={20} aria-hidden="true" />
-              {previousLabel ?? (isMalay ? 'Sebelumnya' : 'Previous')}
+              {!iconNavigation && (previousLabel ?? (isMalay ? 'Sebelumnya' : 'Previous'))}
             </button>
-            <button type="button" className="kv-next" onClick={onNext} disabled={nextDisabled}>
-              {nextLabel ?? (isMalay ? 'Seterusnya' : 'Next')}
+            {footerCenter}
+            <button type="button" className={`kv-next${iconNavigation ? ' kv-nav-icon-only' : ''}`} onClick={onNext} disabled={nextDisabled} aria-label={isMalay ? 'Seterusnya' : 'Next'} title={isMalay ? 'Seterusnya' : 'Next'}>
+              {!iconNavigation && (nextLabel ?? (isMalay ? 'Seterusnya' : 'Next'))}
               <ChevronRight size={20} aria-hidden="true" />
             </button>
           </div>
-        </footer>
+        </footer>}
       </div>
     </div>
   );

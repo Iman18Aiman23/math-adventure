@@ -1,15 +1,29 @@
 import React from 'react';
-import ReadingDataLearningPage from './ReadingDataLearningPage';
+import { readingData } from '../../data/curriculum/readingData';
+import KVLearningPage from './KVLearningPage';
 
-export default function LongSentences({ onBack, onComplete, language, title, ...accountProps }) {
+const sentenceItems = readingData
+  .filter(item => item.level === 4)
+  .map(item => ({
+    id: item.id,
+    kv: item.rumi.split(/\s+/)[0] ?? '',
+    jawiSyllable: '',
+    icon: item.emoji,
+    ms: { word: item.rumi.replace(/-/g, '') },
+    en: { word: item.eng },
+    jawi: { word: item.jawi },
+  }));
+
+export default function LongSentences({ onBack, onComplete = onBack, language, title, ...accountProps }) {
   return (
-    <ReadingDataLearningPage
+    <KVLearningPage
+      {...accountProps}
       onBack={onBack}
       onComplete={onComplete}
       language={language}
       title={title ?? (language === 'bm' ? 'Ayat Mudah' : 'Simple Sentences')}
-      level={4}
-      accountProps={accountProps}
+      items={sentenceItems}
+      initialScript="RUMI"
     />
   );
 }

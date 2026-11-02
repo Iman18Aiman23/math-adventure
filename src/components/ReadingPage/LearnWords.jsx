@@ -1,15 +1,29 @@
 import React from 'react';
-import ReadingDataLearningPage from './ReadingDataLearningPage';
+import { readingData } from '../../data/curriculum/readingData';
+import KVLearningPage from './KVLearningPage';
 
-export default function LearnWords({ onBack, onComplete, language, title, ...accountProps }) {
+const wordItems = readingData
+  .filter(item => item.level === 3)
+  .map(item => ({
+    id: item.id,
+    kv: item.syllables?.[0] ?? '',
+    jawiSyllable: item.jawi.split(/\s+/)[0] ?? '',
+    icon: item.emoji,
+    ms: { word: item.rumi.replace(/-/g, '') },
+    en: { word: item.eng },
+    jawi: { word: item.jawi },
+  }));
+
+export default function LearnWords({ onBack, onComplete = onBack, language, title, ...accountProps }) {
   return (
-    <ReadingDataLearningPage
+    <KVLearningPage
+      {...accountProps}
       onBack={onBack}
       onComplete={onComplete}
       language={language}
       title={title ?? (language === 'bm' ? 'Perkataan' : 'Words')}
-      level={3}
-      accountProps={accountProps}
+      items={wordItems}
+      initialScript="RUMI"
     />
   );
 }

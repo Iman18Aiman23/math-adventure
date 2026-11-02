@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap');
+
 .kv-picker,
 .kv-syllable-learning {
   --font-heading: 'Baloo 2', sans-serif;
@@ -1175,4 +1177,1828 @@ html[data-color-mode='dark'] .kv-syllable-learning .kv-completion--clay h2 span 
 @media (prefers-reduced-motion: reduce) {
   .kv-syllable-learning .kv-flashcard--flip-next,
   .kv-syllable-learning .kv-flashcard--flip-previous { animation: none; }
+}
+
+/* Playful flashcard treatment for the KV lesson. */
+.kv-learning--kv .kv-flashcard {
+  position: relative;
+  box-sizing: border-box;
+  width: min(100%, 760px);
+  max-width: 760px;
+  padding: clamp(56px, 8vw, 76px) clamp(18px, 5vw, 48px) clamp(20px, 4vw, 32px);
+  overflow: visible;
+  border: 3px solid #fff3df;
+  border-radius: 30px;
+  background: #fff;
+  box-shadow: 0 8px 0 #f2e5d3, 0 18px 34px rgba(48, 74, 104, .16);
+}
+.kv-learning--kv .kv-flashcard-header {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 3;
+  height: 0;
+  padding: 0;
+}
+.kv-learning--kv .kv-flashcard-badges {
+  position: absolute;
+  inset: -18px 14px auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.kv-learning--kv .kv-flashcard-letter-badge,
+.kv-learning--kv .kv-flashcard-learn-badge {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 42px;
+  padding: 7px 18px;
+  border-radius: 999px;
+  font: 800 clamp(14px, 2.8vw, 20px)/1.05 'Baloo 2', sans-serif;
+  box-shadow: 0 5px 0 rgba(120, 54, 31, .15), 0 8px 15px rgba(49, 69, 92, .14);
+}
+.kv-learning--kv .kv-flashcard-letter-badge {
+  transform: rotate(-5deg);
+  background: #f33f4e;
+  color: #fff;
+}
+.kv-learning--kv .kv-flashcard-learn-badge {
+  min-width: 92px;
+  border-radius: 45% 55% 48% 52% / 55% 46% 54% 45%;
+  background: #ffd84d;
+  color: #29251e;
+  text-align: center;
+}
+.kv-learning--kv .kv-flashcard-learn-badge small { margin-top: 2px; font-size: .64em; }
+.kv-learning--kv .kv-flashcard-top-row { justify-content: flex-end; width: 100%; }
+.kv-learning--kv .kv-flashcard-settings { position: absolute; top: 34px; right: 0; }
+.kv-learning--kv .kv-flashcard-body,
+.kv-learning--kv .kv-flashcard-learning-group { width: 100%; }
+.kv-learning--kv .kv-flashcard-body { padding: 0; }
+.kv-learning--kv .kv-flashcard-learning-group {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(14px, 2vw, 20px);
+}
+.kv-learning--kv .kv-flashcard-hero-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(120px, .82fr);
+  align-items: center;
+  gap: 12px;
+  min-height: 170px;
+}
+.kv-learning--kv .kv-flashcard-letters-item { min-width: 0; }
+.kv-learning--kv .kv-flashcard-letters {
+  justify-content: flex-start;
+  margin: 0;
+  color: #e92932;
+  font: 800 clamp(76px, 15vw, 136px)/.95 'Baloo 2', sans-serif;
+}
+.kv-learning--kv .kv-flashcard-letters--syllable { font-size: clamp(52px, 9vw, 84px); }
+.kv-learning--kv .kv-flashcard-picture-item {
+  display: grid;
+  width: min(100%, 190px);
+  aspect-ratio: 1;
+  place-items: center;
+  justify-self: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 45% 38%, #fff8da, #fff0bd);
+}
+.kv-learning--kv .kv-flashcard-picture {
+  display: grid;
+  width: 100%; height: 100%; place-items: center;
+  font-size: clamp(76px, 13vw, 132px);
+  filter: drop-shadow(0 8px 3px rgba(96, 75, 38, .18));
+}
+.kv-learning--kv .kv-flashcard-text-group { width: 100%; gap: 12px; }
+.kv-learning--kv .kv-syllable-example {
+  box-sizing: border-box;
+  min-height: 82px;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 22px;
+  background: #fff0f2;
+  box-shadow: inset 0 -4px 0 rgba(224, 119, 143, .12);
+}
+.kv-learning--kv .kv-syllable-example-text { font-size: clamp(32px, 6vw, 52px); }
+.kv-learning--kv .kv-sentence-example {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 110px;
+  padding: 16px 18px;
+  border: 0;
+  border-radius: 24px;
+  background: #e5f6ff;
+  box-shadow: inset 0 -4px 0 rgba(67, 160, 205, .12);
+}
+.kv-learning--kv .kv-sentence-example-label,
+.kv-learning--kv .kv-syllable-example-label { display: none; }
+.kv-learning--kv .kv-sentence-example-text { font-size: clamp(24px, 4.8vw, 40px); }
+.kv-learning--kv .kv-inline-audio-button {
+  flex-basis: 52px; width: 52px; height: 52px; min-height: 52px;
+  background: #fff; color: #ed3344;
+  box-shadow: 0 3px 0 #f2d5d8, 0 4px 10px rgba(32, 54, 80, .12);
+}
+.kv-learning--kv .kv-learning-footer { width: min(100%, 760px); }
+.kv-learning--kv .kv-learning-nav { display: grid; grid-template-columns: 56px minmax(0, 1fr) 56px; align-items: center; gap: 12px; }
+.kv-learning--kv .kv-learning-nav .kv-nav-icon-only {
+  width: 56px; min-height: 56px; padding: 0; justify-content: center;
+  border: 0; border-radius: 50%; background: #338be7; color: #fff;
+  box-shadow: 0 5px 0 #1767bd, 0 8px 14px rgba(31, 91, 152, .22);
+}
+.kv-learning--kv .kv-learning-nav .kv-nav-icon-only:disabled { opacity: .45; box-shadow: none; }
+.kv-learning--kv .kv-flashcard-encouragement {
+  justify-self: center; padding: 9px 18px; border-radius: 999px;
+  background: #fff0f2; color: #332a2a; text-align: center;
+  font: 800 clamp(16px, 3vw, 22px)/1.2 'Baloo 2', sans-serif;
+}
+@media (max-width: 480px) {
+  .kv-learning--kv .kv-flashcard { padding: 58px 14px 18px; border-radius: 24px; }
+  .kv-learning--kv .kv-flashcard-badges { inset-inline: 8px; }
+  .kv-learning--kv .kv-flashcard-letter-badge,
+  .kv-learning--kv .kv-flashcard-learn-badge { min-height: 36px; padding: 6px 12px; }
+  .kv-learning--kv .kv-flashcard-hero-row { grid-template-columns: minmax(0, 1fr) minmax(92px, .72fr); min-height: 120px; gap: 4px; }
+  .kv-learning--kv .kv-flashcard-picture-item { width: min(100%, 126px); }
+  .kv-learning--kv .kv-flashcard-picture { font-size: clamp(60px, 18vw, 84px); }
+  .kv-learning--kv .kv-inline-audio-button { flex-basis: 44px; width: 44px; height: 44px; min-height: 44px; }
+  .kv-learning--kv .kv-learning-nav { grid-template-columns: 48px minmax(0, 1fr) 48px; gap: 8px; }
+  .kv-learning--kv .kv-learning-nav .kv-nav-icon-only { width: 48px; min-height: 48px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kv-learning--kv .kv-learning-nav .kv-nav-icon-only { transition: none; }
+}
+
+/* KV reference card: keep every lesson control inside the card surface. */
+.kv-learning--unified.kv-learning--kv .kv-learning-body {
+  overflow: auto;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(34px, 6vh, 64px) clamp(14px, 4vw, 42px) 20px;
+}
+.kv-learning--unified.kv-learning--kv .kv-flashcard {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  width: min(100%, 980px);
+  max-width: 980px;
+  height: auto;
+  max-height: none;
+  min-height: 0;
+  margin: 12px auto 18px;
+  padding: clamp(42px, 6vw, 64px) clamp(18px, 5vw, 48px) clamp(18px, 3vw, 30px);
+  overflow: visible;
+  border: 1px solid #fff1dc;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 6px 0 #f0e5d5, 0 16px 34px rgba(39, 57, 75, .15);
+}
+.kv-learning--unified.kv-learning--kv .kv-flashcard-header {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 5;
+  display: block;
+  width: auto;
+  height: 0;
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+}
+.kv-learning--unified.kv-learning--kv .kv-flashcard-badges {
+  position: absolute;
+  top: -16px;
+  right: 18px;
+  left: 18px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.kv-learning--unified.kv-learning--kv .kv-flashcard-letter-badge {
+  display: block;
+  padding: 10px 22px;
+  border: 2px dashed #fff;
+  border-radius: 999px;
+  background: #f43f4f;
+  color: #fff;
+  box-shadow: 0 5px 0 #c92f3f, 0 9px 16px rgba(44, 50, 70, .2);
+  font: 800 clamp(17px, 2.8vw, 24px)/1.1 'Baloo 2', 'Nunito', sans-serif;
+  transform: rotate(-5deg);
+}
+.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge {
+  display: flex;
+  min-width: 110px;
+  min-height: 58px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 48% 52% 45% 55% / 55% 45% 55% 45%;
+  background: #ffd84d;
+  color: #24211e;
+  box-shadow: 0 5px 0 #edb72f, 0 9px 16px rgba(44, 50, 70, .17);
+  font: 800 clamp(15px, 2.4vw, 20px)/1 'Baloo 2', 'Nunito', sans-serif;
+  text-align: center;
+  transform: rotate(4deg);
+}
+.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge small { margin-top: 3px; font-size: .7em; }
+.kv-learning--unified.kv-learning--kv .kv-flashcard-top-row { width: 100%; height: 0; }
+.kv-learning--unified.kv-learning--kv .kv-flashcard-settings {
+  position: absolute;
+  top: 38px;
+  right: 0;
+  z-index: 6;
+}
+.kv-learning--unified.kv-learning--kv .kv-flashcard-body,
+.kv-learning--unified.kv-learning--kv .kv-flashcard-learning-group,
+.kv-learning--unified.kv-learning--kv .kv-flashcard-content {
+  display: block;
+  width: 100%;
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+}
+.kv-learning--unified.kv-learning--kv .kv-flashcard-learning-group { display: grid; grid-template-columns: minmax(0, 1fr) minmax(150px, 1fr); grid-template-rows: auto auto auto; gap: 12px clamp(12px, 3vw, 30px); }
+.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row { display: contents; }
+.kv-learning--unified.kv-learning--kv .kv-flashcard-letters-item { grid-column: 1; grid-row: 1; align-self: end; }
+.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+.kv-learning--unified.kv-learning--kv .kv-flashcard-text-group { grid-column: 1; grid-row: 2; width: 100%; }
+.kv-learning--unified.kv-learning--kv .kv-flashcard-sentence-item { grid-column: 1 / -1; grid-row: 3; }
+.kv-learning--unified.kv-learning--kv .kv-flashcard-left-column {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+.kv-learning--unified.kv-learning--kv .kv-flashcard-letters {
+  display: block;
+  margin: 0;
+  color: #e92932;
+  font: 800 clamp(76px, 11vw, 132px)/.92 'Baloo 2', 'Nunito', sans-serif;
+  text-shadow: 0 3px 0 #c91e2a, 0 5px 9px rgba(159, 25, 35, .18);
+}
+.kv-learning--unified.kv-learning--kv .kv-flashcard-letters--syllable { font-size: clamp(52px, 8vw, 88px); }
+.kv-learning--unified.kv-learning--kv .kv-letter-pair { display: inline-flex; gap: .08em; }
+.kv-learning--unified.kv-learning--kv .kv-flashcard-example-item,
+.kv-learning--unified.kv-learning--kv .kv-flashcard-word-item { width: min(100%, 420px); }
+.kv-learning--unified.kv-learning--kv .kv-inline-audio-card,
+.kv-learning--unified.kv-learning--kv .kv-word-panel {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 82px;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 20px;
+  background: #fff0f2;
+  box-shadow: 0 4px 0 #f6d9df, 0 8px 16px rgba(86, 49, 59, .09);
+}
+.kv-learning--unified.kv-learning--kv .kv-syllable-example { flex: 1; padding: 4px; background: transparent; box-shadow: none; }
+.kv-learning--unified.kv-learning--kv .kv-word-copy { display: flex; flex: 1; min-width: 0; flex-direction: column; align-items: center; justify-content: center; }
+.kv-learning--unified.kv-learning--kv .kv-syllable-example-label { display: none; }
+.kv-learning--unified.kv-learning--kv .kv-syllable-example-text,
+.kv-learning--unified.kv-learning--kv .kv-word-display {
+  color: #202020;
+  font: 800 clamp(30px, 5vw, 48px)/1.12 'Baloo 2', 'Nunito', sans-serif;
+  text-align: center;
+}
+.kv-learning--unified.kv-learning--kv .kv-syllable-highlight { color: #e92932; }
+.kv-learning--unified.kv-learning--kv .kv-chicken-illustration,
+.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item {
+  display: flex;
+  width: clamp(150px, 22vw, 220px);
+  height: clamp(150px, 22vw, 220px);
+  align-items: center;
+  justify-content: center;
+  justify-self: end;
+  border-radius: 50%;
+  background: #fff5d4;
+  font-size: clamp(96px, 15vw, 150px);
+  line-height: 1;
+}
+.kv-learning--unified.kv-learning--kv .kv-flashcard-picture { font-size: inherit; filter: drop-shadow(0 6px 3px rgba(89, 67, 42, .18)); }
+.kv-learning--unified.kv-learning--kv .kv-sentence-example,
+.kv-learning--unified.kv-learning--kv .kv-sentence-panel {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 112px;
+  gap: 14px;
+  padding: 16px 20px;
+  border: 0;
+  border-radius: 18px;
+  background: #e0f2fe;
+  box-shadow: 0 4px 0 #c7e6f8, 0 8px 15px rgba(41, 103, 137, .1);
+  flex-direction: column;
+}
+.kv-learning--unified.kv-learning--kv .kv-audio-text-row { display: flex; align-items: center; justify-content: center; width: 100%; gap: 10px; }
+.kv-learning--unified.kv-learning--kv .kv-audio-text-row .kv-sentence-example-text { flex: 1; }
+.kv-learning--unified.kv-learning--kv .kv-sentence-example-label { display: none; }
+.kv-learning--unified.kv-learning--kv .kv-audio-text-row,
+.kv-learning--unified.kv-learning--kv .kv-sentence-copy { flex: 1; min-width: 0; text-align: center; }
+.kv-learning--unified.kv-learning--kv .kv-sentence-example-text {
+  display: block;
+  margin: 0;
+  color: #171717;
+  font: 800 clamp(26px, 4.5vw, 44px)/1.12 'Baloo 2', 'Nunito', sans-serif;
+  text-align: center;
+}
+.kv-learning--unified.kv-learning--kv .kv-sentence-kv { padding: 0; background: transparent; color: #ef2637; }
+.kv-learning--unified.kv-learning--kv .kv-sentence-translation {
+  display: block;
+  margin: 3px 0 0;
+  color: #737985;
+  font: 600 clamp(15px, 2.3vw, 21px)/1.2 'Fredoka', 'Nunito', sans-serif;
+  text-align: center;
+}
+.kv-learning--unified.kv-learning--kv .kv-inline-audio-button {
+  display: grid;
+  flex: 0 0 52px;
+  width: 52px;
+  height: 52px;
+  min-height: 52px;
+  place-items: center;
+  border: 2px solid #ffe1e5;
+  border-radius: 50%;
+  background: #fff;
+  color: #ef293b;
+  box-shadow: 0 3px 0 #f4d4d9, 0 5px 9px rgba(34, 53, 71, .13);
+}
+.kv-learning--unified.kv-learning--kv .kv-card-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 20px;
+}
+.kv-learning--unified.kv-learning--kv .kv-card-nav-button {
+  display: grid;
+  flex: 0 0 58px;
+  width: 58px;
+  height: 58px;
+  min-height: 58px;
+  place-items: center;
+  padding: 0;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: #388ee8;
+  color: #fff;
+  box-shadow: 0 4px 0 #1767bd, 0 7px 12px rgba(31, 91, 152, .24);
+  cursor: pointer;
+}
+.kv-learning--unified.kv-learning--kv .kv-card-nav-button svg { width: 32px; height: 32px; stroke-width: 3; }
+.kv-learning--unified.kv-learning--kv .kv-card-nav-button:disabled { opacity: .45; cursor: not-allowed; }
+.kv-learning--unified.kv-learning--kv .kv-flashcard-encouragement {
+  padding: 10px clamp(16px, 4vw, 32px);
+  border-radius: 999px;
+  background: #fff0f2;
+  color: #202020;
+  box-shadow: 0 4px 0 #f6d9df;
+  font: 800 clamp(16px, 2.8vw, 24px)/1.2 'Baloo 2', 'Nunito', sans-serif;
+  text-align: center;
+}
+.kv-learning--unified.kv-learning--kv .kv-word-translation { color: #707782; font: 600 clamp(13px, 2vw, 17px)/1.1 'Fredoka', 'Nunito', sans-serif; text-align: center; }
+.kv-learning--unified.kv-learning--kv .kv-learning-footer { display: none; }
+@media (max-width: 560px) {
+  .kv-learning--unified.kv-learning--kv .kv-learning-body { align-items: flex-start; padding: 34px 12px 20px; }
+  .kv-learning--unified.kv-learning--kv .kv-flashcard { margin: 12px auto; padding: 50px 14px 18px; }
+  .kv-learning--unified.kv-learning--kv .kv-flashcard-learning-group { grid-template-columns: minmax(0, 1fr) minmax(104px, .82fr); gap: 8px 10px; }
+  .kv-learning--unified.kv-learning--kv .kv-flashcard-badges { right: 8px; left: 8px; }
+  .kv-learning--unified.kv-learning--kv .kv-flashcard-letter-badge { padding: 8px 13px; }
+  .kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge { min-width: 84px; min-height: 48px; padding: 5px 10px; }
+  .kv-learning--unified.kv-learning--kv .kv-flashcard-settings { top: 28px; }
+  .kv-learning--unified.kv-learning--kv .kv-flashcard-letters-item { grid-column: 1; grid-row: 1; }
+  .kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item { grid-column: 2; grid-row: 1 / span 2; }
+  .kv-learning--unified.kv-learning--kv .kv-flashcard-text-group { grid-column: 1; grid-row: 2; }
+  .kv-learning--unified.kv-learning--kv .kv-flashcard-sentence-item { grid-column: 1 / -1; grid-row: 3; }
+  .kv-learning--unified.kv-learning--kv .kv-flashcard-left-column { gap: 8px; }
+  .kv-learning--unified.kv-learning--kv .kv-flashcard-letters { font-size: clamp(64px, 16vw, 88px); }
+  .kv-learning--unified.kv-learning--kv .kv-flashcard-letters--syllable { font-size: clamp(42px, 11vw, 60px); }
+  .kv-learning--unified.kv-learning--kv .kv-chicken-illustration,
+  .kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item { width: clamp(108px, 32vw, 150px); height: clamp(108px, 32vw, 150px); font-size: clamp(72px, 22vw, 100px); }
+  .kv-learning--unified.kv-learning--kv .kv-inline-audio-card,
+  .kv-learning--unified.kv-learning--kv .kv-word-panel { min-height: 62px; padding: 7px 9px; gap: 5px; }
+  .kv-learning--unified.kv-learning--kv .kv-syllable-example-text,
+  .kv-learning--unified.kv-learning--kv .kv-word-display { font-size: clamp(24px, 7vw, 34px); }
+  .kv-learning--unified.kv-learning--kv .kv-inline-audio-button { flex-basis: 42px; width: 42px; height: 42px; min-height: 42px; }
+  .kv-learning--unified.kv-learning--kv .kv-sentence-example,
+  .kv-learning--unified.kv-learning--kv .kv-sentence-panel { min-height: 92px; padding: 12px 10px; gap: 7px; }
+  .kv-learning--unified.kv-learning--kv .kv-sentence-example-text { font-size: clamp(22px, 6vw, 30px); }
+  .kv-learning--unified.kv-learning--kv .kv-card-navigation { gap: 8px; margin-top: 16px; }
+  .kv-learning--unified.kv-learning--kv .kv-card-nav-button { flex-basis: 48px; width: 48px; height: 48px; min-height: 48px; }
+  .kv-learning--unified.kv-learning--kv .kv-card-nav-button svg { width: 26px; height: 26px; }
+  .kv-learning--unified.kv-learning--kv .kv-flashcard-encouragement { padding: 9px 12px; font-size: clamp(14px, 4vw, 18px); }
+}
+
+/* Final target-image refinements. Higher specificity keeps shared layout rules from stretching this card. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv {
+  --kv-play-red: #ef2938;
+  --kv-play-red-dark: #b91c1c;
+  --kv-play-pink: #fff0f3;
+  --kv-play-blue: #e0f2fe;
+  --kv-play-blue-dark: #1e3a8a;
+  --kv-play-yellow: #ffdc50;
+  font-family: 'Fredoka', 'Nunito', 'Arial Rounded MT Bold', sans-serif;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard {
+  width: min(100%, 800px);
+  max-width: 800px;
+  margin: 12px auto 18px;
+  overflow: visible;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learning-group {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row {
+  display: flex;
+  width: min(100%, 560px);
+  align-items: center;
+  justify-content: center;
+  gap: clamp(18px, 4vw, 40px);
+  margin: 0 auto;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard {
+  padding: 44px 30px 28px !important;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-left-column {
+  display: flex;
+  min-width: 0;
+  flex: 0 1 250px;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters-item {
+  justify-self: center;
+  text-align: center;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters {
+  color: var(--kv-play-red);
+  font-size: clamp(82px, 11vw, 100px);
+  text-shadow: 4px 4px 0 var(--kv-play-red-dark);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters--syllable { font-size: clamp(56px, 8vw, 78px); }
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-example-item,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-word-item,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-text-group {
+  width: 100%;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card {
+  min-height: 82px;
+  background: var(--kv-play-pink);
+  box-shadow: 0 4px 0 #f7d2da, 0 8px 14px rgba(184, 69, 94, .12);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card .kv-inline-audio-button,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example .kv-inline-audio-button {
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  border: 0;
+  background: transparent;
+  color: var(--kv-play-red);
+  box-shadow: none;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card .kv-inline-audio-button svg,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example .kv-inline-audio-button svg { width: 21px; height: 21px; }
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item {
+  flex: 0 0 160px;
+  align-self: center;
+  width: 160px;
+  height: 160px;
+  min-width: 160px;
+  border-radius: 50%;
+  background: #fff9e6;
+  font-size: 90px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: inherit;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example {
+  background: var(--kv-play-blue);
+  box-shadow: 0 4px 0 #c4e5f7, 0 8px 15px rgba(41, 103, 137, .1);
+  justify-content: center;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letter-badge {
+  position: relative;
+  left: -10px;
+  border: 2px dashed #fff;
+  outline: 4px solid #ef4444;
+  outline-offset: -1px;
+  background: #ef4444;
+  font-family: 'Fredoka', 'Nunito', 'Arial Rounded MT Bold', sans-serif;
+  transform: rotate(-5deg);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge {
+  position: relative;
+  isolation: isolate;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: var(--kv-play-yellow);
+  box-shadow: 0 5px 0 #efba2f, 0 9px 16px rgba(220, 163, 27, .28);
+  font-family: 'Fredoka', 'Nunito', 'Arial Rounded MT Bold', sans-serif;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge::before,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge::after {
+  position: absolute;
+  z-index: -1;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--kv-play-yellow);
+  content: '';
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge::before { top: 1px; left: 8px; }
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge::after { top: 0; right: 8px; }
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-navigation {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) 58px;
+  justify-items: center;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-encouragement { justify-self: center; }
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-nav-button {
+  background: #328be8;
+  box-shadow: 0 5px 0 var(--kv-play-blue-dark), 0 8px 14px rgba(31, 91, 152, .22);
+  transform: translateY(0);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-nav-button:active:not(:disabled) {
+  box-shadow: 0 2px 0 var(--kv-play-blue-dark);
+  transform: translateY(3px);
+}
+@media (hover: hover) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-nav-button:hover:not(:disabled) { transform: translateY(0); }
+}
+@media (max-width: 560px) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard { padding-inline: 14px; }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row { gap: 12px; }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-left-column { flex-basis: min(56%, 250px); }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item {
+    width: clamp(120px, 38vw, 160px);
+    height: clamp(120px, 38vw, 160px);
+    min-width: 0;
+    flex-basis: clamp(120px, 38vw, 160px);
+    font-size: clamp(72px, 22vw, 90px);
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-navigation { grid-template-columns: 48px minmax(0, 1fr) 48px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-nav-button { transition: none; }
+}
+
+/* Explicit KV card overrides: shared lesson styles set a 1400px !important width. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-learning-stage {
+  width: 100%;
+  max-width: 700px;
+  overflow: visible;
+  margin-inline: auto;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-learning-body {
+  width: 100%;
+  overflow: visible;
+  padding: 52px 0 24px !important;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard {
+  width: 100% !important;
+  max-width: 700px !important;
+  margin: 40px auto;
+  position: relative;
+  overflow: visible !important;
+  border-radius: 24px;
+  padding: 52px clamp(18px, 4vw, 36px) 24px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard :where(*) {
+  font-family: 'Fredoka', sans-serif !important;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-header {
+  inset: 0;
+  height: 0;
+  overflow: visible;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-badges {
+  position: static;
+  overflow: visible;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letter-badge {
+  position: absolute;
+  top: -20px;
+  left: -15px;
+  z-index: 10;
+  padding: 10px 24px;
+  border: 3px dashed #fff;
+  border-radius: 50px;
+  outline: 4px solid #ef4444;
+  background: #ef4444;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
+  transform: rotate(-6deg);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge {
+  position: absolute;
+  top: -25px;
+  right: -10px;
+  z-index: 10;
+  isolation: isolate;
+  overflow: visible;
+  padding: 15px 25px;
+  border-radius: 50px;
+  background: #facc15;
+  color: #111;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge::before,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge::after {
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  background: #facc15;
+  content: '';
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge::before {
+  top: -10px;
+  left: 20px;
+  width: 30px;
+  height: 30px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge::after {
+  top: -20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge > span,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge > small {
+  position: relative;
+  z-index: 2;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row {
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 30px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-left-column {
+  flex: 0 1 250px;
+  align-items: center;
+  gap: 8px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters {
+  margin: 0;
+  color: #e11d48;
+  font-size: 120px;
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 3px 3px 0 #9f1239;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-example-item,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-word-item,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-text-group {
+  width: 100%;
+  max-width: 250px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card {
+  width: 100%;
+  min-height: 0;
+  padding: 15px;
+  border-radius: 20px;
+  background: #ffe4e6;
+  text-align: center;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card .kv-inline-audio-button,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example .kv-inline-audio-button {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  min-height: 30px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #ef4444;
+  box-shadow: none;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card .kv-inline-audio-button svg,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example .kv-inline-audio-button svg {
+  width: 20px;
+  height: 20px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item {
+  flex: 0 0 150px;
+  width: 150px;
+  min-width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: #fef3c7;
+  font-size: 80px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: inherit;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-sentence-item,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example {
+  min-height: 112px;
+  padding: 20px;
+  border-radius: 20px;
+  background: #e0f2fe;
+  text-align: center;
+  vertical-align: middle;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-nav-button {
+  background-color: #3b82f6;
+  box-shadow: 0 5px 0 #1d4ed8;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-nav-button:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 #1d4ed8;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-navigation {
+  grid-template-columns: 58px minmax(0, 1fr) 58px;
+  justify-items: stretch;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-encouragement { justify-self: center; }
+@media (max-width: 560px) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-learning-body {
+    overflow-y: auto;
+    padding: 48px 14px 20px !important;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard {
+    width: 100% !important;
+    max-width: 700px !important;
+    margin: 32px auto 20px;
+    padding: 48px 14px 20px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row { gap: 14px; }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-left-column { flex-basis: min(56%, 220px); }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters { font-size: clamp(72px, 20vw, 100px); }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item {
+    flex-basis: 128px;
+    width: 128px;
+    min-width: 128px;
+    height: 128px;
+    font-size: 68px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letter-badge { left: -8px; font-size: 16px; }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge { right: -4px; padding: 12px 18px; }
+}
+
+/* Final sizing pass to match the compact, oversized-letter reference card. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard {
+  width: 100% !important;
+  max-width: 650px !important;
+  margin: 40px auto;
+  padding: 30px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learning-group {
+  gap: 0;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0 0;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-left-column {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters-item {
+  align-self: stretch;
+  text-align: left;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters {
+  justify-content: flex-start;
+  color: #ff0000;
+  font-size: 220px;
+  line-height: .8;
+  text-shadow: 6px 6px 0 #b90000, 0 10px 20px rgba(0, 0, 0, .2);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters--syllable {
+  font-size: clamp(64px, 12vw, 112px);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-text-group {
+  width: min(280px, 100%);
+  max-width: 280px;
+  margin-top: -10px;
+  gap: 0;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-example-item,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-word-item {
+  width: 100%;
+  max-width: 280px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card {
+  width: 100%;
+  min-height: 0;
+  padding: 15px 20px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-syllable-example-text,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-word {
+  font-size: 48px;
+  font-weight: 700;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-translation { font-size: 18px; }
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card .kv-inline-audio-button {
+  flex-basis: 36px;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card .kv-inline-audio-button svg {
+  width: 32px;
+  height: 32px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item {
+  flex: 0 0 150px;
+  width: 150px;
+  min-width: 150px;
+  height: 150px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-sentence-item {
+  margin-top: 10px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row { margin-bottom: 0; }
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example {
+  width: 100%;
+  max-width: 100%;
+  min-height: 0;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example-text { font-size: 42px; }
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-translation { font-size: 18px; }
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example .kv-inline-audio-button {
+  flex-basis: 36px;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example .kv-inline-audio-button svg {
+  width: 32px;
+  height: 32px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-nav-button {
+  flex-basis: 60px;
+  width: 60px;
+  height: 60px;
+  min-height: 60px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-navigation { margin-top: 0; }
+@media (max-width: 560px) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard { padding: 30px 18px 20px; }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row { grid-template-columns: minmax(0, 1fr) minmax(112px, .8fr); }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters { font-size: clamp(88px, 22vw, 140px); }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters--syllable { font-size: clamp(56px, 13vw, 88px); }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-text-group { width: min(100%, 280px); }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-syllable-example-text,
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-word { font-size: clamp(30px, 9vw, 42px); }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example-text { font-size: clamp(26px, 7vw, 36px); }
+}
+
+/* Oversized letter and reference speaker button finish. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row {
+  grid-template-columns: minmax(0, 1fr) 150px;
+  gap: 10px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters-item { margin-bottom: 16px; }
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-text-group { margin-top: 0; }
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters {
+  font-size: 440px;
+  line-height: .8;
+  color: #ff0000;
+  text-shadow: none;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-letter-pair {
+  gap: 0;
+  letter-spacing: -.1em;
+  transform: scaleX(.8);
+  transform-origin: left center;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card .kv-inline-audio-button,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example .kv-inline-audio-button {
+  flex: 0 0 54px;
+  width: 54px;
+  height: 54px;
+  min-height: 54px;
+  border: 2px solid #ffe5e8;
+  border-radius: 50%;
+  background: #fff;
+  color: #ff1f2d;
+  box-shadow: 0 3px 0 #f5d3d8, 0 4px 8px rgba(84, 39, 48, .13);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card .kv-inline-audio-button svg,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example .kv-inline-audio-button svg {
+  width: 32px;
+  height: 32px;
+}
+@media (max-width: 560px) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row { grid-template-columns: minmax(0, 1fr) 128px; }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters { font-size: clamp(220px, 58vw, 280px); }
+}
+
+/* Keep the letter and example word the same width at every viewport size. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-learning-stage {
+  width: 100%;
+  max-width: 650px;
+  min-width: 0;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-learning-body {
+  width: 100%;
+  min-width: 0;
+  overflow: visible;
+  padding-inline: 0 !important;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard {
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: 650px !important;
+  min-width: 0;
+  padding: 44px 30px 28px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learning-group {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 10px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row {
+  display: grid;
+  grid-template-columns: minmax(0, 280px) minmax(120px, 150px);
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 4vw, 40px);
+  width: 100%;
+  min-width: 0;
+  margin: 10px auto 14px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-left-column {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  container-type: inline-size;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters-item {
+  width: 100%;
+  margin: 0 0 12px;
+  padding: 0;
+  text-align: left;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters {
+  display: flex;
+  width: 100%;
+  align-items: baseline;
+  justify-content: flex-start;
+  margin: 0;
+  color: #ff0000;
+  font-size: clamp(80px, 78cqw, 220px);
+  font-weight: 700;
+  line-height: .8;
+  letter-spacing: 0;
+  text-shadow: none;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters--syllable {
+  font-size: clamp(64px, 68cqw, 190px);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-letter-pair {
+  display: flex;
+  width: 100%;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0;
+  letter-spacing: -.04em;
+  transform: none;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-text-group,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-example-item,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-word-item {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card {
+  container-type: inline-size;
+  box-sizing: border-box;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-copy,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-syllable-example {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-syllable-example-text {
+  font-size: clamp(28px, 17cqw, 48px);
+  line-height: 1;
+  white-space: nowrap;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-translation { font-size: clamp(14px, 6cqw, 18px); }
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item {
+  justify-self: center;
+  width: clamp(112px, 100%, 150px);
+  min-width: 0;
+  height: auto;
+  aspect-ratio: 1;
+  flex-basis: auto;
+  font-size: clamp(68px, 55cqw, 90px);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-sentence-item {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example {
+  container-type: inline-size;
+  box-sizing: border-box;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  flex-direction: row;
+  gap: 10px;
+  padding: 16px;
+  margin: 0;
+  background: #e0f2fe;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-audio-text-row {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example-text {
+  min-width: 0;
+  font-size: clamp(24px, 7cqw, 42px) !important;
+  line-height: 1.05;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-translation { font-size: clamp(14px, 3cqw, 18px); }
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card .kv-inline-audio-button,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example .kv-inline-audio-button {
+  flex: 0 0 clamp(44px, 18cqw, 54px);
+  width: clamp(44px, 18cqw, 54px);
+  height: clamp(44px, 18cqw, 54px);
+  min-height: clamp(44px, 18cqw, 54px);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card .kv-inline-audio-button svg,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example .kv-inline-audio-button svg {
+  width: 60%;
+  height: 60%;
+}
+@media (max-width: 560px) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-learning-body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 44px 12px 20px !important;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard {
+    width: 100% !important;
+    max-width: 650px !important;
+    margin: 26px auto 18px;
+    padding: 40px 16px 20px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row {
+    grid-template-columns: minmax(0, 1fr) minmax(100px, 128px);
+    gap: 10px;
+    margin: 10px auto 12px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item { width: 100%; }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-navigation {
+    grid-template-columns: 48px minmax(0, 1fr) 48px;
+    gap: 8px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-nav-button {
+    flex-basis: 48px;
+    width: 48px;
+    height: 48px;
+    min-height: 48px;
+  }
+}
+
+/* Show lesson emojis without the pale yellow disc behind them. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item {
+  background: transparent !important;
+}
+
+/* Keep the glossy glyphs from being clipped by flex-item shrinking. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-left-column,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters-item,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-letter-pair {
+  overflow: visible;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters {
+  font-size: clamp(64px, 70cqw, 220px) !important;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-letter-pair {
+  flex: 0 0 100%;
+  min-width: 0;
+  white-space: nowrap;
+}
+@media (max-width: 560px) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters {
+    font-size: clamp(64px, 70cqw, 160px) !important;
+  }
+}
+
+/* Glossy, molded red finish for the Latin letter pair. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv:not(.kv-learning--jawi) .kv-flashcard-letters .kv-letter-pair {
+  display: block;
+  width: 100%;
+  text-align: left;
+  white-space: nowrap;
+  color: #ed1726;
+  background: linear-gradient(
+    180deg,
+    #ff9a9e 0%,
+    #ff5963 12%,
+    #ff2938 34%,
+    #f10b1c 68%,
+    #d50012 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 3px 0 #b80d1a) drop-shadow(0 5px 3px rgba(115, 0, 10, .2));
+}
+
+/* Responsive flashcard sizing: keep the letter, word panel, and illustration
+   inside the same two-column hero at every screen width. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard {
+  padding: 44px 30px 28px !important;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row {
+  grid-template-columns: minmax(0, 1.1fr) minmax(112px, .9fr);
+  gap: clamp(10px, 3vw, 24px);
+  align-items: center;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-left-column {
+  width: 100%;
+  min-width: 0;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters-item,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-text-group,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-example-item {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters {
+  width: 100%;
+  font-size: clamp(76px, 30vw, 220px) !important;
+  font-size: clamp(76px, 76cqw, 220px) !important;
+  line-height: .82;
+  text-shadow: none;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-letter-pair {
+  width: 100%;
+  justify-content: space-between;
+  gap: .04em;
+  letter-spacing: -.06em;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-letter-pair > span {
+  flex: 0 1 auto;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 12px clamp(10px, 4cqw, 18px);
+  gap: 8px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-copy,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-syllable-example {
+  width: 100%;
+  min-width: 0;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-syllable-example-text {
+  font-size: clamp(25px, 16cqw, 48px) !important;
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item {
+  width: 100%;
+  min-width: 0;
+  max-width: 150px;
+  aspect-ratio: 1;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture {
+  font-size: clamp(58px, 18vw, 90px);
+}
+
+@media (max-width: 560px) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard {
+    padding: 40px 14px 20px !important;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row {
+    grid-template-columns: minmax(0, 1.15fr) minmax(96px, .85fr);
+    gap: 8px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters-item {
+    margin-bottom: 12px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters {
+    font-size: clamp(64px, 32vw, 160px) !important;
+    font-size: clamp(64px, 72cqw, 160px) !important;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters--syllable {
+    font-size: clamp(48px, 52cqw, 120px) !important;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card {
+    padding: 10px 8px;
+    gap: 4px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card .kv-inline-audio-button {
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    min-height: 38px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-syllable-example-text {
+    font-size: clamp(24px, 12cqw, 34px);
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture {
+    font-size: clamp(54px, 17vw, 72px);
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example {
+    padding: 14px 10px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example-text {
+    font-size: clamp(22px, 6cqw, 34px);
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-translation {
+    font-size: clamp(13px, 3.5cqw, 17px);
+  }
+}
+
+/* Final font sizing keeps both glyphs within the shared letter/word column. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters {
+  font-size: clamp(64px, 66cqw, 220px) !important;
+}
+@media (max-width: 560px) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters {
+    font-size: clamp(64px, 66cqw, 160px) !important;
+  }
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv:not(.kv-learning--jawi) .kv-flashcard-letters .kv-letter-pair {
+  flex: 0 0 100%;
+  min-width: 0;
+  overflow: visible;
+  text-align: center;
+  letter-spacing: .035em;
+}
+
+/* Add colorful English and Jawi readings beneath the example word. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-translation,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-jawi {
+  display: block;
+  margin-top: 2px;
+  text-align: center;
+  font-weight: 700;
+  line-height: 1.15;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-translation {
+  color: #2563eb;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-jawi {
+  color: #16a34a;
+  font-family: 'Amiri', serif !important;
+  font-size: clamp(17px, 7cqw, 22px);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card .kv-inline-audio-button svg,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example .kv-inline-audio-button svg {
+  width: 90%;
+  height: 90%;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-copy {
+  gap: 0;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-copy .kv-syllable-example {
+  flex: 0 0 auto;
+  min-height: 0;
+  padding: 0;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-copy .kv-word-translation,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-copy .kv-word-jawi {
+  margin-top: 0;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-translations {
+  display: flex;
+  max-width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 4px;
+  white-space: nowrap;
+}
+
+/* Stack the three sentence readings beside the speaker control. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row {
+  margin-bottom: 22px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-audio-text-row {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-translation,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-jawi {
+  display: block;
+  margin-top: 2px;
+  text-align: center;
+  font-weight: 700;
+  line-height: 1.15;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-translation {
+  color: #2563eb;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-jawi {
+  color: #16a34a;
+  font-family: 'Amiri', serif !important;
+  font-size: clamp(16px, 3cqw, 20px);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-sentence-item {
+  margin-bottom: 14px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-navigation {
+  margin-top: 10px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-rumi,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-rumi {
+  color: #202020;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-rumi .kv-syllable-highlight,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-rumi .kv-sentence-kv {
+  padding: 0;
+  background: transparent;
+  color: #ef2938;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-word--jawi,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example-text--jawi {
+  color: #172554;
+  font-family: 'Amiri', serif !important;
+  line-height: 1.45;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-word--jawi {
+  font-size: clamp(27px, 10cqw, 42px);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example-text--jawi {
+  font-size: clamp(26px, 6cqw, 38px) !important;
+}
+@media (max-width: 560px) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example {
+    gap: 8px;
+    padding: 14px 10px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example .kv-inline-audio-button {
+    flex-basis: 42px;
+    width: 42px;
+    height: 42px;
+    min-height: 42px;
+  }
+}
+
+/* Keep the selected Jawi glyph centered in its own column and clear of clipping. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters--jawi {
+  box-sizing: border-box;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 1.2em;
+  align-items: center;
+  justify-content: center;
+  padding: 0 .14em;
+  overflow: visible;
+  font-family: 'Amiri', serif !important;
+  font-size: clamp(88px, 38cqw, 168px) !important;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters--jawi > span {
+  display: block;
+  width: 100%;
+  overflow: visible;
+  text-align: center;
+}
+
+/* Use a steady vertical rhythm from the example word to sentence and footer. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row {
+  margin-bottom: 14px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-sentence-item {
+  margin-bottom: 0;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-navigation {
+  margin-top: 16px;
+}
+
+/* Phone cards should follow their content height instead of filling a taller viewport. */
+@media (max-width: 767px) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-learning-body {
+    align-items: center !important;
+    justify-content: flex-start !important;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: clamp(28px, 4vh, 42px) 14px !important;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard {
+    flex: 0 0 auto !important;
+    align-self: center;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: auto !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture {
+    font-size: 135px;
+  }
+}
+
+/* Shrink long example words to the available pink-card width instead of wrapping. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word .kv-flashcard-word,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word .kv-syllable-example-text {
+  font-size: clamp(16px, 9.5cqw, 36px) !important;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-copy {
+    gap: 2px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-translations {
+    flex-direction: column;
+    gap: 1px;
+    margin-top: 2px;
+    white-space: normal;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-translations > span {
+    display: block;
+  }
+}
+
+/* Keep long-word readings centered in a compact pink card beside the audio control. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word {
+  position: relative;
+  box-sizing: border-box;
+  justify-content: center;
+  width: min(100%, 280px);
+  max-width: 280px;
+  margin-inline: auto;
+  padding-inline: 44px;
+  text-align: center;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word .kv-word-copy,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word .kv-syllable-example {
+  box-sizing: border-box;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word .kv-syllable-example-text,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word .kv-flashcard-word,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word .kv-word-translations {
+  width: 100%;
+  text-align: center;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word .kv-inline-audio-button {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  transform: translateY(-50%);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word .kv-inline-audio-button svg {
+  width: 25px;
+  height: 25px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row--long-word {
+  margin-bottom: 0;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-sentence-item {
+  margin-top: 0;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learning-group--long-word {
+  gap: 4px;
+}
+
+/* Keep the Row 1 illustration inside a fixed pale-yellow desktop circle. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item {
+  box-sizing: border-box;
+  display: flex;
+  flex: 0 0 180px;
+  width: 180px !important;
+  min-width: 180px !important;
+  max-width: 180px !important;
+  height: 180px !important;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #fff9e6 !important;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture {
+  position: static !important;
+  display: flex;
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  font-size: 90px !important;
+  line-height: 1;
+  transform: none !important;
+}
+
+@media (max-width: 560px) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item {
+    flex-basis: min(180px, 100%);
+    width: min(180px, 100%) !important;
+    min-width: 0 !important;
+    max-width: 180px !important;
+    height: auto !important;
+    aspect-ratio: 1;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture {
+    font-size: clamp(64px, 24cqw, 90px) !important;
+  }
+}
+
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letter-badge[dir='rtl'],
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge[dir='rtl'],
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-encouragement[dir='rtl'] {
+  font-family: 'Amiri', serif;
+}
+
+/* Clamp example words to the available pink-card width so they stay on one line. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card .kv-syllable-example-text,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card .kv-flashcard-word:not(.kv-flashcard-word--jawi) {
+  max-width: 100%;
+  font-size: clamp(16px, 15cqw, 48px) !important;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+
+/* Give long-word lessons a balanced illustration and centered, compact word card. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-left-column--long-word {
+  align-items: center;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word {
+  width: min(100%, 280px);
+  max-width: 280px;
+  margin-inline: auto;
+  text-align: center;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word .kv-word-copy {
+  align-items: center;
+  text-align: center;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word .kv-inline-audio-button {
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  min-height: 42px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item--long-word {
+  width: clamp(136px, 24cqw, 168px);
+  max-width: 168px;
+  background: #fff5cf;
+  border-radius: 50%;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item--long-word .kv-flashcard-picture {
+  width: 100%;
+  height: 100%;
+  font-size: clamp(104px, 18cqw, 132px);
+  line-height: 1;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row--long-word {
+  min-height: 0;
+  margin-bottom: 0;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learning-group--long-word {
+  gap: 8px;
+}
+
+@media (max-width: 560px) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row--long-word {
+    grid-template-columns: minmax(0, 1.15fr) minmax(112px, .85fr);
+    gap: 8px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item--long-word {
+    width: clamp(112px, 32cqw, 136px);
+    max-width: 136px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item--long-word .kv-flashcard-picture {
+    font-size: clamp(88px, 25cqw, 108px);
+  }
+}
+
+@media (min-width: 768px) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row {
+    grid-template-columns: minmax(0, 1fr) 250px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item {
+    box-sizing: border-box;
+    width: 250px !important;
+    min-width: 250px !important;
+    max-width: none !important;
+    height: 250px !important;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture {
+    box-sizing: border-box;
+    width: auto !important;
+    height: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+    font-size: 240px !important;
+    line-height: 1;
+    overflow: visible;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row--long-word {
+    grid-template-columns: minmax(0, 280px) minmax(240px, 250px);
+    gap: clamp(16px, 3vw, 32px);
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item--long-word {
+    width: 250px;
+    max-width: 250px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item--long-word .kv-flashcard-picture {
+    font-size: 240px;
+  }
+}
+
+/* Final long-word card polish: centered copy, compact audio, tighter rows. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word {
+  position: relative;
+  box-sizing: border-box;
+  justify-content: center;
+  width: min(100%, 280px);
+  max-width: 280px;
+  margin-inline: auto;
+  padding-inline: 44px;
+  text-align: center;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word .kv-word-copy,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word .kv-syllable-example {
+  box-sizing: border-box;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word .kv-syllable-example-text,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word .kv-flashcard-word,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word .kv-word-translations {
+  width: 100%;
+  text-align: center;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word .kv-inline-audio-button {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  transform: translateY(-50%);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word .kv-inline-audio-button svg {
+  width: 25px;
+  height: 25px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row--long-word {
+  margin-bottom: 0;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learning-group--long-word .kv-flashcard-sentence-item {
+  margin-top: 0;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learning-group--long-word {
+  gap: 4px;
+}
+
+/* Final illustration override: 180px circle with a plain 90px text emoji. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item {
+  box-sizing: border-box;
+  display: flex;
+  flex: 0 0 180px;
+  width: 180px !important;
+  min-width: 180px !important;
+  max-width: 180px !important;
+  height: 180px !important;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #fff9e6 !important;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture {
+  position: static !important;
+  display: flex;
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  font-size: 90px !important;
+  line-height: 1;
+  transform: none !important;
+}
+@media (max-width: 560px) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item {
+    flex-basis: min(180px, 100%);
+    width: min(180px, 100%) !important;
+    min-width: 0 !important;
+    max-width: 180px !important;
+    height: auto !important;
+    aspect-ratio: 1;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture {
+    font-size: clamp(64px, 24cqw, 90px) !important;
+  }
+}
+
+/* Let the card grow with longer translated sentences so the footer stays inside. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard {
+  flex: 0 0 auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-navigation {
+  flex: 0 0 auto;
+}
+
+/* This must follow the final letter sizing rules to keep KVK labels visible. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters.kv-flashcard-letters--syllable {
+  font-size: clamp(56px, 42cqw, 132px) !important;
+  line-height: 1.12 !important;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-copy .kv-syllable-example-text {
+  display: block;
+  line-height: 1.2 !important;
 }
