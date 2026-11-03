@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState, useEffect, useRef, createContext, useContext, Suspense, useTransition } from 'react';
 import HomePage from './components/HomePage';
 import { canAccessSubject, hasFullSubjectAccess } from './utils/subjectAccess';
@@ -16,6 +15,7 @@ const ColumnMathGame = React.lazy(() => import('./components/MathematicsPage/Col
 const MathJourney = React.lazy(() => import('./components/MathematicsPage/MathJourney'));
 const LevelUpToast = React.lazy(() => import('./components/LevelUpToast'));
 import WelcomeModal from './components/WelcomeModal';
+import UpgradePlanModal from './components/UpgradePlanModal';
 import DesktopSidebar from './components/DesktopSidebar';
 import CosmicMobileNav from './components/CosmicMobileNav';
 import SubjectMenuFooter from './components/_shared/SubjectMenuFooter';
@@ -324,45 +324,12 @@ const AchievementHome  = React.lazy(() => import('./components/Achievement/Achie
 const LeaderboardHome  = React.lazy(() => import('./components/Leaderboard/LeaderboardHome'));
 const AssessmentSelector = React.lazy(() => import('./pages/AssessmentSelector'));
 const AssessmentPage = React.lazy(() => import('./pages/AssessmentPage'));
-=======
-import React, { useState, useEffect, createContext, useContext } from 'react';
-import HomePage from './components/HomePage';
-import BMPage from './components/SpeakingPage/BMPage';
-import JawiPage from './components/JawiScriptPage/JawiPage';
-import MathHome from './components/MathematicsPage/MathHome';
-import GameMenu from './components/MathematicsPage/GameMenu';
-import OpsLandingPage from './components/MathematicsPage/OpsLandingPage';
-import TimeGameMenu from './components/MathematicsPage/TimeGameMenu';
-import MonthsGame from './components/MathematicsPage/MonthsGame';
-import ClockGame from './components/MathematicsPage/ClockGame';
-import MonthLearning from './components/MathematicsPage/MonthLearning';
-import MathOperationsGame from './components/MathematicsPage/MathOperationsGame';
-import ColumnMathGame from './components/MathematicsPage/ColumnMathGame';
-import LevelUpToast from './components/LevelUpToast';
-import WelcomeModal from './components/WelcomeModal';
-import DesktopSidebar from './components/DesktopSidebar';
-import { LearnIcon, LeaderboardIcon, ProfileIcon, AchievementIcon, LanguageIcon } from './components/icons/SidebarIcons';
-import MascotIcon from './components/icons/MascotIcon';
-import ReadingPage from './components/ReadingPage/ReadingPage';
-import AgeGroupPage from './components/AgeGroups/AgeGroupPage';
-import AlphabetSafari from './components/AgeGroup-4-5/AlphabetSafari';
-import LetterTrace from './components/AgeGroup-4-5/LetterTrace';
-import PhoneticsPop from './components/AgeGroup-4-5/PhoneticsPop';
-import SoundMatching from './components/AgeGroup-4-5/SoundMatching';
-import LetterSoundPuzzle from './components/AgeGroup-4-5/LetterSoundPuzzle';
-import PhoneticsSprint from './components/AgeGroup-4-5/PhoneticsSprint';
-import HeartShopModal from './components/HeartShopModal';
-import AchievementPage from './components/AchievementPage';
-import AssessmentSelector from './pages/AssessmentSelector';
-import AssessmentPage from './pages/AssessmentPage';
->>>>>>> 1a72af8354dcda506cb090317d5b6f8cfde4fb9f
 import { getMuted, setMuted, preloadSounds, unlockAudio, playHoverSound } from './utils/soundManager';
 import SpeechManager from './services/SpeechManager';
 import { useGameState } from './hooks/useGameState';
 import { loadPlayerName, savePlayerName, clearPlayerName, loadAppearanceMode, saveAppearanceMode, recordLogin, calcStreak, loadNavigationState, saveNavigationState } from './services/storageService';
 import { getGameData } from './utils/gameStatsManager';
 import { baseAssessments } from './data/curriculum/assessment';
-<<<<<<< HEAD
 import { markTopicCompleted } from './components/BahasaMelayuPage/_shared/useModuleProgress';
 import { getNextTopicId, getNextModuleId } from './components/BahasaMelayuPage/_shared/ModuleData';
 import { GamificationProvider } from './contexts/GamificationContext';
@@ -415,11 +382,6 @@ export const THEMES = {
     planetRing: '#F6E3C6',
   },
 };
-=======
-import api from './services/api';
-import { fetchCurriculumFromAPI } from './data/curriculum/index';
-import SocialLogin from './components/Auth/SocialLogin';
->>>>>>> 1a72af8354dcda506cb090317d5b6f8cfde4fb9f
 
 // ── Context ──────────────────────────────────────────────────────────────────
 export const GameStateContext = createContext(null);
@@ -466,13 +428,6 @@ function findMatchingAssessment(achievement) {
   ) || baseAssessments.find(a => a.topic === achievement.topic);
 }
 
-// Tab definitions (mobile bottom bar)
-const TABS = [
-  { id: 'learn',       icon: LearnIcon, label: { bm: 'Kursus',   eng: 'Course'   } },
-  { id: 'leaderboard', icon: LeaderboardIcon, label: { bm: 'Ranking',  eng: 'Ranking'  } },
-  { id: 'profile',     icon: ProfileIcon, label: { bm: 'Profil',   eng: 'Profile'  } },
-  { id: 'achievement', icon: AchievementIcon, label: { bm: 'Pencapaian', eng: 'Achievement' } },
-];
 
 // ── ProgressWrapper for reused BM games ────────────────────────────────────
 function ProgressWrapper({ topicId, onBack, children }) {
@@ -545,7 +500,7 @@ export default function App() {
   const [activeTab,      setActiveTab]      = useState(savedNavigation.activeTab);
   const [achievementSection, setAchievementSection] = useState('assessments');
   const [streak,         setStreak]         = useState(0);
-<<<<<<< HEAD
+  const [isUpgradeOpen,  setIsUpgradeOpen]  = useState(false);
   const [selectedAssessment, setSelectedAssessment] = useState(() =>
     baseAssessments.find(({ id }) => id === savedNavigation.selectedAssessmentId) || null
   );
@@ -604,13 +559,6 @@ export default function App() {
   // Tab switches load lazy chunks (Profile/Achievement/Leaderboard) — route them
   // through a transition too, so the current page stays visible while loading.
   const handleTabChange = (tab) => navigate(() => setActiveTab(tab));
-=======
-  const [isPlayingJawiGame, setIsPlayingJawiGame] = useState(false);
-  const [selectedAssessment, setSelectedAssessment] = useState(null);
-  const [currentAgeGroup, setCurrentAgeGroup] = useState(null);
-  const [currentAgeGame, setCurrentAgeGame] = useState(null);
-  const [isAppLoading, setIsAppLoading] = useState(true);
->>>>>>> 1a72af8354dcda506cb090317d5b6f8cfde4fb9f
 
   const activeGameId = getActiveGameId(currentSubject, mathSubGame);
   const { gameState, levelUpInfo, clearLevelUp } = useGameState(activeGameId);
@@ -622,47 +570,16 @@ export default function App() {
     // Record today's login and compute streak
     const dates = recordLogin();
     setStreak(calcStreak(dates));
-    
-    // Initialize API data and Guest Login
-    const initApp = async () => {
-      try {
-        // Handle OAuth callback token
-        const urlParams = new URLSearchParams(window.location.search);
-        const urlToken = urlParams.get('token');
-        if (urlToken) {
-          localStorage.setItem('player_token', urlToken);
-          // Clean up the URL
-          window.history.replaceState({}, document.title, window.location.pathname);
-          // Try to decode JWT to get name, basic base64 decode
-          try {
-            const payload = JSON.parse(atob(urlToken.split('.')[1]));
-            if (payload.displayName) {
-              handleSaveName(payload.displayName);
-            }
-          } catch(e) {}
-        }
-
-        // 1. Guest Login if no token exists
-        let token = localStorage.getItem('player_token');
-        if (!token) {
-          const res = await api.post('/auth/guest');
-          token = res.data.access_token;
-          localStorage.setItem('player_token', token);
-        }
-        // 2. Fetch Curriculum
-        await fetchCurriculumFromAPI();
-      } catch (err) {
-        console.error('Failed to initialize app data:', err);
-      } finally {
-        setIsAppLoading(false);
-      }
-    };
-    initApp();
-
     const handleFirstClick = () => { unlockAudio(); document.removeEventListener('click', handleFirstClick); };
     document.addEventListener('click', handleFirstClick);
+    // Preload lazy tab bundles after initial paint so first-click is instant
+    const t = setTimeout(() => {
+      import('./components/Achievement/AchievementHome');
+      import('./components/Leaderboard/LeaderboardHome');
+    }, 2000);
     return () => {
       document.removeEventListener('click', handleFirstClick);
+      clearTimeout(t);
     };
   }, []);
 
@@ -719,7 +636,6 @@ export default function App() {
 
   // ── Content renderer ──────────────────────────────────────────────────────
   const renderContent = () => {
-<<<<<<< HEAD
     if (activeTab === 'leaderboard') return (
       <Suspense fallback={<LoadingSpinner />}>
         <LeaderboardHome language={language} gameState={gameState} playerName={playerName} streak={streak}
@@ -748,16 +664,11 @@ export default function App() {
           navigate(() => { handleBackToHome(); setCurrentSubject(subject === 'jawi' ? 'pendidikan-islam-v1' : subject); if (subject === 'jawi') setIslamModule('jawi'); });
         }} />
     </Suspense>;
-=======
-    if (activeTab === 'leaderboard') return <LeaderboardPlaceholder language={language} />;
-    if (activeTab === 'profile')     return <ProfilePlaceholder playerName={playerName} gameState={gameState} language={language} streak={streak} />;
->>>>>>> 1a72af8354dcda506cb090317d5b6f8cfde4fb9f
     if (activeTab === 'achievement') {
       // If an assessment is selected, show AssessmentPage
       if (selectedAssessment) {
         return <AssessmentPage assessment={selectedAssessment} onBack={() => setSelectedAssessment(null)} language={language} gameState={gameState} />;
       }
-<<<<<<< HEAD
       // Otherwise show achievement home
       return <Suspense fallback={<LoadingSpinner />}>
         <AchievementHome
@@ -772,16 +683,6 @@ export default function App() {
           language={language}
           gameState={gameState}
           onTakeAssessment={(achievement) => {
-=======
-      // Otherwise show AchievementPage with callback to select assessment
-      return <AchievementPage
-        onBack={handleBackToHome}
-        onHome={handleBackToHome}
-        language={language}
-        gameState={gameState}
-        onTakeAssessment={(achievement) => {
-          console.log('Taking assessment:', achievement);
->>>>>>> 1a72af8354dcda506cb090317d5b6f8cfde4fb9f
           // The achievement from baseAssessments can be used directly as an assessment
           // if it has all required properties (totalQuestions, duration, topic, level, questionType)
           if (achievement && achievement.totalQuestions && achievement.duration) {
@@ -796,7 +697,8 @@ export default function App() {
             }
           }
         }}
-      />;
+        />
+      </Suspense>;
     }
 
     switch (currentSubject) {
@@ -1577,21 +1479,20 @@ export default function App() {
       default:
         // Age-group routing takes precedence over the default home screen.
         if (currentAgeGame === 'alphabet-safari') {
-          return <AlphabetSafari onBack={() => setCurrentAgeGame(null)} language={language} />;
+          return <AlphabetSafari onBack={() => setCurrentAgeGame(null)} language={language} theme={THEMES[currentTheme]} />;
         }
         if (currentAgeGame === 'letter-trace') {
-          return <LetterTrace onBack={() => setCurrentAgeGame(null)} language={language} />;
+          return <LetterTrace onBack={() => setCurrentAgeGame(null)} language={language} theme={THEMES[currentTheme]} />;
         }
         if (currentAgeGame === 'phonics-pop') {
-          return <PhoneticsPop onBack={() => setCurrentAgeGame(null)} language={language} />;
+          return <PhoneticsPop onBack={() => setCurrentAgeGame(null)} language={language} theme={THEMES[currentTheme]} />;
         }
         if (currentAgeGame === 'sound-matching') {
-          return <SoundMatching onBack={() => setCurrentAgeGame(null)} language={language} />;
+          return <SoundMatching onBack={() => setCurrentAgeGame(null)} language={language} theme={THEMES[currentTheme]} />;
         }
         if (currentAgeGame === 'letter-sound-puzzle') {
-          return <LetterSoundPuzzle onBack={() => setCurrentAgeGame(null)} language={language} />;
+          return <LetterSoundPuzzle onBack={() => setCurrentAgeGame(null)} language={language} theme={THEMES[currentTheme]} />;
         }
-<<<<<<< HEAD
         if (currentAgeGame === 'alphabet-express') {
           return <AlphabetExpress onBack={() => setCurrentAgeGame(null)} language={language} theme={THEMES[currentTheme]} />;
         }
@@ -1863,22 +1764,6 @@ export default function App() {
           themes={THEMES}
           onThemeChange={setCurrentTheme}
         />;
-=======
-        if (currentAgeGame === 'phonics-sprint') {
-          return <PhoneticsSprint onBack={() => setCurrentAgeGame(null)} language={language} />;
-        }
-        if (currentAgeGroup) {
-          return (
-            <AgeGroupPage
-              ageGroupId={currentAgeGroup}
-              onBack={() => setCurrentAgeGroup(null)}
-              onPlayGame={(gameId) => setCurrentAgeGame(gameId)}
-              language={language}
-            />
-          );
-        }
-        return <HomePage onSelectSubject={setCurrentSubject} onSelectAgeGroup={setCurrentAgeGroup} language={language} playerName={playerName} gameState={gameState} streak={streak} />;
->>>>>>> 1a72af8354dcda506cb090317d5b6f8cfde4fb9f
     }
   };
 
@@ -1895,14 +1780,12 @@ export default function App() {
   };
 
   return (
-<<<<<<< HEAD
     <GamificationProvider>
       <GameStateContext.Provider value={gameState}>
        <MatematikNavContext.Provider value={matematikNav}>
         {/* Desktop Sidebar — rendered outside .app-container, inside #root row */}
         {isDesktop && !shouldHideSidebar && (
           <DesktopSidebar
-            simplified={activeTab === 'learn' && !currentSubject && !currentAgeGroup}
             activeTab={activeTab}
             onTabChange={handleTabChange}
             achievementSection={achievementSection}
@@ -1924,73 +1807,11 @@ export default function App() {
               } else setCurrentSubject(subject);
             })}
             onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
+            onUpgradePlan={() => setIsUpgradeOpen(true)}
             theme={THEMES[currentTheme]}
             colorMode={colorMode}
             onColorModeChange={setColorMode}
           />
-=======
-    <GameStateContext.Provider value={gameState}>
-      {/* Desktop Sidebar — rendered outside .app-container, inside #root row */}
-      {isDesktop && !shouldHideSidebar && (
-        <DesktopSidebar
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          language={language}
-          onToggleLanguage={handleToggleLang}
-          playerName={playerName}
-          gameState={gameState}
-          onHome={handleBackToHome}
-        />
-      )}
-
-      <div className="app-container">
-        {isAppLoading && (
-          <div style={{ position: 'fixed', inset: 0, background: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 9999, color: 'white' }}>
-            <div style={{ fontSize: '4rem', animation: 'bounce 1s infinite' }}>🚀</div>
-            <h2 style={{ marginTop: '20px', fontFamily: 'Inter, sans-serif', fontWeight: 800 }}>Loading Spaceship...</h2>
-          </div>
-        )}
-        {!playerName && <WelcomeModal onSave={handleSaveName} />}
-        <LevelUpToast level={levelUpInfo?.newLevel} onDismiss={clearLevelUp} />
-
-
-        {/* Page Content */}
-        <div className="app-content">
-          <div key={viewKey} className="view-container swipe-enter">
-            {renderContent()}
-          </div>
-        </div>
-
-        {/* Mobile Bottom Tab Bar — hidden on desktop via CSS */}
-        {!inActiveQuiz && !isPlayingJawiGame && !selectedAssessment && !currentAgeGame && (
-          <div className="duo-tab-bar">
-            <div className="duo-tab-container">
-              {TABS.map(tab => (
-                <button
-                  key={tab.id}
-                  className={`duo-tab-item${activeTab === tab.id ? ' active' : ''}`}
-                  onClick={() => {
-                    if (tab.id === 'learn') {
-                      handleBackToHome();
-                    } else {
-                      setActiveTab(tab.id);
-                    }
-                  }}
-                >
-                  <span className="duo-tab-icon">{React.createElement(tab.icon)}</span>
-                  <span className="duo-tab-label">{tab.label[language] || tab.label.bm}</span>
-                </button>
-              ))}
-              <button
-                className="duo-tab-item"
-                onClick={handleToggleLang}
-              >
-                <span className="duo-tab-icon"><LanguageIcon /></span>
-                <span className="duo-tab-label">{language === 'bm' ? 'English' : 'BM'}</span>
-              </button>
-            </div>
-          </div>
->>>>>>> 1a72af8354dcda506cb090317d5b6f8cfde4fb9f
         )}
 
         <div
@@ -2003,6 +1824,7 @@ export default function App() {
           }}
         >
           {!playerName && <WelcomeModal onSave={handleSaveName} language={language} onLanguageChange={setLanguage} />}
+          {isUpgradeOpen && <UpgradePlanModal language={language} onClose={() => setIsUpgradeOpen(false)} />}
           <Suspense fallback={null}><LevelUpToast level={levelUpInfo?.newLevel} onDismiss={clearLevelUp} /></Suspense>
           {/* XP reward toast — centered within .app-container (offset from the
               desktop sidebar automatically since this is inside the container). */}
@@ -2050,99 +1872,5 @@ export default function App() {
        </MatematikNavContext.Provider>
       </GameStateContext.Provider>
     </GamificationProvider>
-  );
-}
-
-// ── Placeholder screens for tabs ─────────────────────────────────────────────
-function LeaderboardPlaceholder({ language }) {
-  return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem', background: '#fff', padding: '2rem' }}>
-      <div style={{ fontSize: '4rem' }}>🏆</div>
-      <h2 style={{ fontWeight: 900, fontSize: '1.4rem', color: '#3C3C3C' }}>{language === 'bm' ? 'Papan Juara' : 'Leaderboard'}</h2>
-      <p style={{ color: '#AFAFAF', fontWeight: 600, textAlign: 'center' }}>{language === 'bm' ? 'Segera hadir!' : 'Coming soon!'}</p>
-    </div>
-  );
-}
-
-function ProfilePlaceholder({ playerName, gameState, language, streak = 0 }) {
-  // Load game data from localStorage
-  const gameData = getGameData();
-  const totalXP = gameData.stars; // Each star = 1 XP
-  const gems = gameData.gems;
-  const hearts = gameData.hearts;
-  const [isHeartShopOpen, setIsHeartShopOpen] = useState(false);
-
-  const openHeartShop = () => setIsHeartShopOpen(true);
-  const closeHeartShop = () => setIsHeartShopOpen(false);
-
-  return (
-    <div style={{ flex: 1, overflowY: 'auto', background: '#f7f7f7' }}>
-      <div style={{ background: '#fff', padding: '2rem 1.5rem', textAlign: 'center', borderBottom: '2px solid #E5E5E5' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.5rem' }}>
-          <div style={{ width: '80px', height: '80px' }}>
-            <MascotIcon size={80} />
-          </div>
-        </div>
-        <h2 style={{ fontWeight: 900, fontSize: '1.4rem', color: '#3C3C3C', marginBottom: '4px' }}>{playerName || 'Player'}</h2>
-        <p style={{ color: '#AFAFAF', fontWeight: 600, fontSize: '0.85rem' }}>Level {gameState?.level ?? 1} Explorer</p>
-        
-        <div style={{ marginTop: '1.5rem', maxWidth: '300px', margin: '1.5rem auto 0 auto' }}>
-          <SocialLogin />
-        </div>
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', padding: '1.25rem 1rem', maxWidth: '700px', margin: '0 auto' }}>
-        {[
-          { label: language === 'bm' ? 'Hari Aktif' : 'Streak', value: streak, color: '#FF9600', emoji: '🔥' },
-          { label: 'Level',   value: gameState?.level ?? 1,   color: '#CE82FF', emoji: '🏆' },
-          { label: language === 'bm' ? 'Nyawa' : 'Hearts', value: hearts, color: '#FF4B4B', emoji: '❤️' },
-          { label: 'Stars', value: totalXP, color: '#FFC800', emoji: '⭐' },
-          { label: language === 'bm' ? 'Permata' : 'Gems', value: gems, color: '#CE82FF', emoji: '💎'},
-        ].map(stat => {
-          const isClickable = stat.emoji === '❤️' || stat.emoji === '⭐' || stat.emoji === '💎';
-          return (
-            <button
-              key={stat.label}
-              className="profile-stat-card"
-              onMouseEnter={playHoverSound}
-              onClick={isClickable ? openHeartShop : undefined}
-              style={{
-                background: '#fff',
-                border: '2px solid #E5E5E5',
-                borderRadius: '16px',
-                padding: '1rem',
-                textAlign: 'center',
-                cursor: isClickable ? 'pointer' : 'default'
-              }}
-            >
-              <div style={{ fontSize: '1.8rem', marginBottom: '4px' }}>{stat.emoji}</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 900, color: stat.color }}>{stat.value}</div>
-              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#AFAFAF', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{stat.label}</div>
-            </button>
-          );
-        })}
-      </div>
-      <style>{`
-        .profile-stat-card {
-          border: none;
-          cursor: pointer;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .profile-stat-card:hover {
-          transform: translateY(-8px) scale(1.05);
-          box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-          border-color: #999 !important;
-        }
-
-        .profile-stat-card:active {
-          transform: translateY(-4px) scale(1.02);
-        }
-      `}</style>
-      <HeartShopModal isOpen={isHeartShopOpen} onClose={closeHeartShop} language={language} />
-    </div>
   );
 }

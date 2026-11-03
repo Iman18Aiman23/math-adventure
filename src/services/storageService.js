@@ -190,6 +190,9 @@ export function recordLogin() {
       dates.push(today);
       all.loginDates = dates;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('daily-streak-sync'));
+      }
     }
     return dates;
   } catch (err) {

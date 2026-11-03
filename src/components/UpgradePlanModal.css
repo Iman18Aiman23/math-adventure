@@ -1,0 +1,257 @@
+.upgrade-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(7, 20, 56, .5);
+  backdrop-filter: blur(5px);
+  animation: upgradeFadeIn .22s ease-out;
+}
+
+.upgrade-dialog {
+  --upgrade-navy: #0d2453;
+  --upgrade-muted: #64769a;
+  --upgrade-purple: #6c3fe0;
+  position: relative;
+  width: min(720px, 100%);
+  max-height: calc(100dvh - 36px);
+  overflow-y: auto;
+  padding: 26px;
+  border-radius: 26px;
+  background: #fff;
+  color: var(--upgrade-navy);
+  box-shadow: 0 28px 80px rgba(9, 23, 60, .28);
+  animation: upgradePop .3s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.upgrade-dialog *,
+.upgrade-dialog *::before,
+.upgrade-dialog *::after { box-sizing: border-box; }
+
+.upgrade-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #eef4fb;
+  color: #5d7395;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, transform .15s ease;
+}
+
+.upgrade-close svg { width: 19px; height: 19px; }
+
+.upgrade-header { padding-right: 34px; text-align: center; }
+
+.upgrade-header-icon {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  margin: 0 auto 10px;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #8b5cf6, #5b34d6);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(91, 52, 214, .28);
+}
+
+.upgrade-header-icon svg { width: 27px; height: 27px; }
+
+.upgrade-header h2 {
+  margin: 0;
+  font: 800 27px/1.15 'Baloo 2', 'Outfit', sans-serif;
+  letter-spacing: -.3px;
+}
+
+.upgrade-header p {
+  max-width: 520px;
+  margin: 7px auto 0;
+  color: var(--upgrade-muted);
+  font: 500 14px/1.45 'Fredoka', 'Inter', sans-serif;
+}
+
+.upgrade-plans {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.upgrade-plan {
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+  border: 1px solid #dfe8f4;
+  border-radius: 19px;
+  background: #f9fbfe;
+}
+
+.upgrade-plan-premium {
+  border-color: #cdbaf9;
+  background: linear-gradient(160deg, #fbf8ff, #f1eaff);
+  box-shadow: 0 10px 26px rgba(108, 63, 224, .1);
+}
+
+.upgrade-plan-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.upgrade-plan-head h3 {
+  margin: 0;
+  font: 800 19px/1.2 'Baloo 2', 'Outfit', sans-serif;
+}
+
+.upgrade-plan-badge {
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: #e6eef8;
+  color: #55708f;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.upgrade-plan-badge-soon {
+  background: #e9ddff;
+  color: #6034cf;
+}
+
+.upgrade-plan-price {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 11px 0 0;
+  color: var(--upgrade-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.upgrade-plan-price svg { width: 16px; height: 16px; color: var(--upgrade-purple); }
+
+.upgrade-benefits {
+  display: grid;
+  gap: 9px;
+  margin: 14px 0 18px;
+  padding: 0;
+  list-style: none;
+}
+
+.upgrade-benefits li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  color: #33496f;
+  font: 500 13px/1.35 'Fredoka', 'Inter', sans-serif;
+}
+
+.upgrade-check {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 50%;
+  background: #dff7eb;
+  color: #059669;
+}
+
+.upgrade-plan-premium .upgrade-check {
+  background: #e3d7ff;
+  color: #6134d8;
+}
+
+.upgrade-check svg { width: 13px; height: 13px; stroke-width: 3; }
+
+.upgrade-secondary-btn,
+.upgrade-primary-btn {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: auto;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font: 800 14px/1.2 'Baloo 2', 'Outfit', sans-serif;
+  cursor: pointer;
+  transition: filter .15s ease, transform .15s ease;
+}
+
+.upgrade-secondary-btn {
+  border: 1px solid #d5e2f0;
+  background: #fff;
+  color: #3a5274;
+}
+
+.upgrade-primary-btn {
+  border: 0;
+  background: linear-gradient(135deg, #7c4dff, #5b34d6);
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(91, 52, 214, .25);
+}
+
+.upgrade-primary-btn:disabled {
+  cursor: not-allowed;
+  opacity: .72;
+}
+
+.upgrade-primary-btn svg { width: 17px; height: 17px; }
+
+.upgrade-note {
+  margin: 16px 0 0;
+  color: #7b8aa5;
+  font-size: 11px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.upgrade-dialog :is(button):focus-visible {
+  outline: 3px solid #4098ff;
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .upgrade-close:hover { background: #e2edf9; color: #2c4a70; transform: rotate(90deg); }
+  .upgrade-secondary-btn:hover { border-color: #bcd2e8; background: #f5faff; }
+  .upgrade-primary-btn:not(:disabled):hover { filter: brightness(1.05); transform: translateY(-1px); }
+}
+
+@media (max-width: 620px) {
+  .upgrade-overlay { padding: 12px; }
+  .upgrade-dialog { padding: 20px 16px; border-radius: 22px; }
+  .upgrade-header h2 { font-size: 23px; }
+  .upgrade-header p { font-size: 13px; }
+  .upgrade-plans { grid-template-columns: 1fr; gap: 12px; margin-top: 18px; }
+  .upgrade-plan { padding: 15px; }
+  .upgrade-benefits { gap: 7px; margin: 11px 0 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .upgrade-overlay,
+  .upgrade-dialog,
+  .upgrade-dialog * { animation: none !important; transition: none !important; }
+}
+
+@keyframes upgradeFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes upgradePop {
+  from { opacity: 0; transform: scale(.94) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}

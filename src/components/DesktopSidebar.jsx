@@ -1,60 +1,26 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Trophy, Medal, Settings, Flag, ChevronRight, BookOpen, Mic, Calculator, Moon, Sun, UserRound, Crown, Swords, House, Play } from 'lucide-react';
-import useGamification from '../hooks/useGamification';
 import StatsBar from './_shared/StatsBar';
 import ImanAILogo from './_shared/ImanAILogo';
+import useGamification from '../hooks/useGamification';
 import './DesktopSidebar.css';
 import { canAccessSubject } from '../utils/subjectAccess';
 
-const MT_MODULE2_DRILL_TYPES = [
-  'kt-gabung', 'kt-garis', 'kt-perkataan', 'kt-ayat',
-  'lt-mudah-m1', 'lt-warnai', 'lt-padankan', 'lt-bond', 'lt-abacus', 'lt-sederhana-s1', 'lt-sukar-k1',
-  'kt-buang', 'kt-garis-sub', 'kt-perkataan-tolak', 'kt-ayat-tolak',
-  'lt-tolak-mudah-m1', 'lt-tolak-warnai', 'lt-tolak-padankan', 'lt-tolak-bond', 'lt-tolak-blok', 'lt-tolak-sederhana-s1', 'lt-tolak-sukar-k1',
-  'ctt-tambah', 'ctt-tolak', 'ctt-operasi', 'ctt-ayat',
-  'tb-add-groups', 'tb-add-line', 'tb-add-complete', 'tb-sub-groups', 'tb-sub-line',
-];
-const MT_T1_TOPICS = [
-  // Modul 1 — Nombor
-  'banding-banyak-sedikit', 'kenali-0-10', 'kenali-11-20', 'tulis-0-20', 'kombinasi-nombor',
-  'kenali-21-100', 'nilai-tempat', 'susunan-nombor', 'pola-nombor', 'anggar-bundar',
-  'selesaikan', 'selesaikan-cerita-m1', 'cabar-minda-m1',
-  // Modul 2 — Tambah & Tolak
-  ...MT_MODULE2_DRILL_TYPES.map((id) => `m2-drill-${id}`),
-  'm2-selesaikan', 'm2-latih-diri', 'm2-cabar-minda',
-  // Modul 3 — Pecahan
-  'kenali-pecahan', 'selesaikan-pecahan', 'latih-diri-pecahan', 'cabar-minda-pecahan',
-  // Modul 4 — Wang
-  'kenali-nilai-wang', 'tukar-wang', 'dapat-catat-wang', 'selesaikan-wang', 'latih-diri-wang', 'cabar-minda-wang',
-  // Modul 5 — Masa & Waktu
-  'mengenali-bulan', 'mengenali-hari', 'mengenali-masa', 'selesaikan-masa',
-  'selesaikan-waktu', 'selesaikan-bulan', 'latih-diri-masa', 'cabar-minda-masa',
-  // Modul 6 — Ukuran
-  'kenali-ukur-objek', 'ukur-banding-panjang', 'kenali-jisim', 'kenali-isi-padu',
-  'selesaikan-ukuran', 'latih-diri-ukuran', 'cabar-minda-ukuran',
-  // Legacy standalone games
-  'nombor-100', 'tambah-tolak', 'tambah-cerita', 'wang-t1', 'masa-t1', 'pecahan-asas',
-  'kenali-tambah', 'latihan-tambah', 'kenali-tolak', 'latihan-tolak',
-  'cerita-tambah-tolak', 'tambah-berulang', 'latih-diri', 'cabar-minda',
-];
+function countCompletedTopics(topics = {}) {
+  return Object.values(topics).filter((topic) => (topic?.crownLevel || 0) >= 1).length;
+}
 
 export default function DesktopSidebar({
   activeTab, onTabChange, language, onToggleLanguage,
   onHome, onOpenReports,
   colorMode = 'light', onColorModeChange,
   onContinueLearning, currentSubject, onSelectSubject, isJawi = false,
-  onSelectAchievementSection, achievementSection = 'assessments', simplified = false, playerName,
+  onSelectAchievementSection, achievementSection = 'assessments', playerName,
+  onUpgradePlan,
 }) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const settingsRef = useRef(null);
   const showExtendedNav = false;
-
-  const { completedTopics } = useGamification('mt');
-  const completedCount = Object.values(completedTopics || {})
-    .filter((t) => (t?.crownLevel || 0) >= 1).length;
-  const moduleProgress = MT_T1_TOPICS.length
-    ? Math.min(100, Math.round((completedCount / MT_T1_TOPICS.length) * 100))
-    : 0;
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -78,26 +44,35 @@ export default function DesktopSidebar({
   }, [isSettingsOpen]);
 
   const hasSettings = onToggleLanguage || onColorModeChange;
+  const { completedTopics: bmTopics } = useGamification('bm');
+  const { completedTopics: mathTopics } = useGamification('mt');
+  const { completedTopics: piTopics } = useGamification('pi');
+  const subjectProgress = {
+    bm: countCompletedTopics(bmTopics),
+    math: countCompletedTopics(mathTopics),
+    jawi: countCompletedTopics(piTopics),
+  };
+  const subjects = [
+    { id: 'reading', label: language === 'bm' ? 'Membaca' : 'Reading', icon: BookOpen },
+    { id: 'bm', label: language === 'bm' ? 'Sebutan' : 'Speaking', icon: Mic, progressKey: 'bm' },
+    { id: 'math', label: language === 'bm' ? 'Matematik' : 'Mathematics', icon: Calculator, progressKey: 'math' },
+    { id: 'jawi', label: 'Jawi', icon: Moon, progressKey: 'jawi' },
+  ];
+  const progressLabel = language === 'bm' ? 'topik selesai' : 'topics completed';
+  const homeIsActive = activeTab === 'learn' && !currentSubject;
+  const challengesAreActive = activeTab === 'achievement' && achievementSection === 'assessments';
+  const leaderboardIsActive = activeTab === 'leaderboard';
+  const achievementsAreActive = activeTab === 'achievement' && achievementSection === 'achievements';
 
   return (
     <>
 
 
       <aside className="desktop-sidebar">
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <button className="sidebar-logo" type="button" onClick={onHome} aria-label={language === 'bm' ? 'ImanAI — Halaman utama' : 'ImanAI — Home'}>
+        <div className="sidebar-logo-wrap">
+          <button className="sidebar-logo" type="button" onClick={onHome} aria-label={language === 'bm' ? 'ImanAI �?" Halaman utama' : 'ImanAI �?" Home'}>
             <ImanAILogo language={language} />
           </button>
-        </div>
-
-        <div className="home-coach-progress" data-progress={`${moduleProgress}%`} style={{ '--progress': `${moduleProgress}%` }}>
-          <div className="home-progress-label">
-            <span>{language === 'bm' ? 'Kemajuan' : 'Progress'}</span>
-            <strong>{moduleProgress}%</strong>
-          </div>
-          <div className="home-progress-track">
-            <span style={{ width: `${moduleProgress}%` }}></span>
-          </div>
         </div>
 
         <button type="button" className="sidebar-continue" onClick={onContinueLearning || onHome}>
@@ -108,20 +83,31 @@ export default function DesktopSidebar({
 
         <div className="sidebar-menu-panel">
           <nav className="home-quick-nav" aria-label={language === 'bm' ? 'Menu utama' : 'Main menu'}>
-            <button type="button" className={`home-quick-link home-quick-home ${activeTab === 'learn' && !currentSubject ? 'active' : ''}`} onClick={() => onHome?.()}><House /><span>{language === 'bm' ? 'Laman Utama' : 'Home'}</span></button>
-            <div className="sidebar-nav-divider" />
-            {[
-              { id: 'reading', label: language === 'bm' ? 'Membaca' : 'Reading', icon: BookOpen },
-              { id: 'bm', label: language === 'bm' ? 'Sebutan' : 'Speaking', icon: Mic },
-              { id: 'math', label: language === 'bm' ? 'Matematik' : 'Mathematics', icon: Calculator },
-              { id: 'jawi', label: 'Jawi', icon: Moon },
-            ].map(({ id, label, icon: Icon }) => (
-              <button key={id} type="button" disabled={!canAccessSubject(playerName, id)} className={`home-quick-link home-quick-${id} ${activeTab === 'learn' && (id === 'jawi' ? isJawi : currentSubject === id) ? 'active' : ''}`} onClick={() => onSelectSubject?.(id)}>{React.createElement(Icon)}<span>{label}</span></button>
-            ))}
-            <div className="sidebar-nav-divider" />
-            <button type="button" className={`home-quick-link home-quick-challenges ${activeTab === 'achievement' && achievementSection === 'assessments' ? 'active' : ''}`} onClick={() => onSelectAchievementSection?.('assessments')}><Swords /><span>{language === 'bm' ? 'Cabaran' : 'Challenges'}</span></button>
-            <button type="button" className={`home-quick-link home-quick-leaderboard ${activeTab === 'leaderboard' ? 'active' : ''}`} onClick={() => onTabChange?.('leaderboard')}><Trophy size={22} /><span>{language === 'bm' ? 'Papan Juara' : 'Leaderboard'}</span></button>
-            <button type="button" className={`home-quick-link home-quick-achievements ${activeTab === 'achievement' && achievementSection === 'achievements' ? 'active' : ''}`} onClick={() => onSelectAchievementSection?.('achievements')}><Medal size={22} /><span>{language === 'bm' ? 'Pencapaian Saya' : 'My Achievements'}</span></button>
+            <button type="button" aria-current={homeIsActive ? 'page' : undefined} className={`home-quick-link home-quick-home ${homeIsActive ? 'active' : ''}`} onClick={() => onHome?.()}><House size={22} aria-hidden="true" /><span>{language === 'bm' ? 'Laman Utama' : 'Home'}</span></button>
+            <div className="sidebar-section-label" aria-hidden="true">{language === 'bm' ? 'SUBJEK' : 'SUBJECTS'}</div>
+            {subjects.map(({ id, label, icon: Icon, progressKey }) => {
+              const count = progressKey ? subjectProgress[progressKey] : 0;
+              const isActive = activeTab === 'learn' && (id === 'jawi' ? isJawi : currentSubject === id);
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  disabled={!canAccessSubject(playerName, id)}
+                  aria-current={isActive ? 'page' : undefined}
+                  className={`home-quick-link home-quick-${id} ${isActive ? 'active' : ''}`}
+                  onClick={() => onSelectSubject?.(id)}
+                  aria-label={count > 0 ? `${label}, ${count} ${progressLabel}` : label}
+                >
+                  {React.createElement(Icon, { size: 22, 'aria-hidden': true })}
+                  <span>{label}</span>
+                  {count > 0 && <span className="sidebar-progress-badge" aria-hidden="true">{count}</span>}
+                </button>
+              );
+            })}
+            <div className="sidebar-section-label sidebar-section-label-activity">{language === 'bm' ? 'GANJARAN' : 'REWARDS'}</div>
+            <button type="button" aria-current={challengesAreActive ? 'page' : undefined} className={`home-quick-link home-quick-challenges ${challengesAreActive ? 'active' : ''}`} onClick={() => onSelectAchievementSection?.('assessments')}><Swords size={22} aria-hidden="true" /><span>{language === 'bm' ? 'Cabaran' : 'Challenges'}</span></button>
+            <button type="button" aria-current={leaderboardIsActive ? 'page' : undefined} className={`home-quick-link home-quick-leaderboard ${leaderboardIsActive ? 'active' : ''}`} onClick={() => onTabChange?.('leaderboard')}><Trophy size={22} aria-hidden="true" /><span>{language === 'bm' ? 'Papan Juara' : 'Leaderboard'}</span></button>
+            <button type="button" aria-current={achievementsAreActive ? 'page' : undefined} className={`home-quick-link home-quick-achievements ${achievementsAreActive ? 'active' : ''}`} onClick={() => onSelectAchievementSection?.('achievements')}><Medal size={22} aria-hidden="true" /><span>{language === 'bm' ? 'Pencapaian Saya' : 'My Achievements'}</span></button>
             {showExtendedNav && <><div className="sidebar-nav-divider" />
             <button type="button" className={`home-quick-link home-quick-profile ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => onTabChange?.('profile')}><UserRound /><span>{language === 'bm' ? 'Profil' : 'Profile'}</span></button>
             <button type="button" className={`home-quick-link home-quick-reports ${currentSubject === 'matematik-reports' ? 'active' : ''}`} onClick={() => onOpenReports?.()}>
@@ -190,11 +176,23 @@ export default function DesktopSidebar({
           </div>
           }
         </div>
-        <button type="button" className="sidebar-motivation" onClick={onContinueLearning || onHome}>
-          <Crown size={28} aria-hidden="true" />
-          <span>{language === 'bm' ? 'Terus belajar' : 'Keep learning'}<small>{language === 'bm' ? 'Capai impian!' : 'Follow your dreams!'}</small></span>
-          <ChevronRight size={17} aria-hidden="true" />
-        </button>
+        <section className="sidebar-subscription" aria-labelledby="sidebar-subscription-label">
+          <h2 id="sidebar-subscription-label" className="sidebar-section-label sidebar-section-label-subscription">
+            {language === 'bm' ? 'LANGGANAN' : 'SUBSCRIPTION'}
+          </h2>
+          <div className="sidebar-subscription-card">
+            <Crown className="sidebar-subscription-watermark" size={52} aria-hidden="true" />
+            <div className="sidebar-subscription-head">
+              <span className="sidebar-subscription-icon" aria-hidden="true"><Crown size={18} /></span>
+              <span>{language === 'bm' ? 'Pelan Percuma' : 'Free Plan'}</span>
+            </div>
+            <p>{language === 'bm' ? 'Buka akses semua subjek dan ganjaran premium.' : 'Unlock every subject and premium rewards.'}</p>
+            <button type="button" className="sidebar-upgrade-btn" onClick={() => onUpgradePlan?.()}>
+              <span>{language === 'bm' ? 'Naik Taraf Pelan' : 'Upgrade Plan'}</span>
+              <ChevronRight size={15} aria-hidden="true" />
+            </button>
+          </div>
+        </section>
       </aside>
     </>
   );

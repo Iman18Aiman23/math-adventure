@@ -1,21 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { ArrowLeft, ChevronLeft, ChevronRight, Volume2 } from 'lucide-react';
-<<<<<<< HEAD:src/components/PendidikanIslamPage/Tahun1/Module6_Jawi/JawiKVKLearningPage.jsx
 import { KVK_LETTERS, getKVKSeriesByLetter } from '../../../../data/curriculum/bm_kvk';
 import SpeechManager from '../../../../services/SpeechManager';
 import BackButton from '../../../BackButton';
 import AZPickerGrid from '../../../ReadingPage/AZPickerGrid';
-=======
-import { CURRICULUM } from '../../data/curriculum/index';
-import SpeechManager from '../../services/SpeechManager';
->>>>>>> 1a72af8354dcda506cb090317d5b6f8cfde4fb9f:src/components/JawiScriptPage/JawiKVKLearningPage.jsx
-
-// Dynamic Helpers
-const getKVKData = () => CURRICULUM['bm_kvk'] || [];
-const KVK_LETTERS = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z'];
-const getKVKSeriesByLetter = (letter) => {
-  return getKVKData().filter(item => item.kvk && item.kvk.toLowerCase().startsWith(letter.toLowerCase()));
-};
 
 // ── Vowel row labels (shown under the KVK badge) ─────────────────────────────
 const SLOT_COLORS = ['#FF9600', '#1CB0F6', '#58CC02', '#CE82FF', '#FF4B4B', '#00C2A8'];

@@ -7,6 +7,8 @@ import { PageHeader } from './_shared/PageHeaderHero';
 import SubjectMenuLayout from './_shared/SubjectMenuLayout';
 import StandardCard from './_shared/StandardCard';
 import StandardHeroBanner from './_shared/StandardHeroBanner';
+import DailyStreak from './_shared/DailyStreak';
+import useDailyStreak from '../hooks/useDailyStreak';
 import './_shared/PageContainer.css';
 import './_shared/SubjectMenuLayout.css';
 import './HomePage.css';
@@ -178,8 +180,9 @@ function AgeBadge({ index }) {
     </svg>
   );
 }
-export default function HomePage({ onSelectSubject, onSelectAgeGroup, language = 'bm', playerName, gameState, streak = 0, onTabChange, onHome, onOpenReports, onLogout, onToggleLang, colorMode, onColorModeChange }) {
+export default function HomePage({ onSelectSubject, onSelectAgeGroup, language = 'bm', playerName, gameState, onTabChange, onHome, onOpenReports, onLogout, onToggleLang, colorMode, onColorModeChange }) {
   const [showRobotInterface, setShowRobotInterface] = useState(false);
+  const dailyStreak = useDailyStreak();
   const bm = language === 'bm';
   const langIndex = bm ? 0 : 1;
   const name = playerName || 'Iman';
@@ -188,7 +191,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
     return <div className="ih-robot-interface">
       <button type="button" className="ih-return" onClick={() => setShowRobotInterface(false)}><ArrowLeft size={18} />{bm ? 'Kembali ke Home' : 'Back to Home'}</button>
       <Suspense fallback={<p role="status">{bm ? 'Memuatkan…' : 'Loading…'}</p>}>
-        <HomePagePrototype onSelectSubject={onSelectSubject} onSelectAgeGroup={onSelectAgeGroup} language={language} playerName={playerName} gameState={gameState} streak={streak} />
+        <HomePagePrototype onSelectSubject={onSelectSubject} onSelectAgeGroup={onSelectAgeGroup} language={language} playerName={playerName} gameState={gameState} streak={dailyStreak.streak} />
       </Suspense>
     </div>;
   }
@@ -203,12 +206,13 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
         wrapClassName="ih-home-wrap page-container"
         rootStyle={{ '--ih-art': `url("${import.meta.env.BASE_URL}images/home/robots.webp")` }}
         language={language}
-        headerContent={<PageHeader className="page-container" {...{ language, playerName, gameState, streak, onTabChange, onHome, onOpenReports, onLogout, onToggleLang, colorMode, onColorModeChange }} />}
+        headerContent={<PageHeader className="page-container" {...{ language, playerName, gameState, streak: dailyStreak.streak, onTabChange, onHome, onOpenReports, onLogout, onToggleLang, colorMode, onColorModeChange }} />}
         heroContent={<StandardHeroBanner
           titlePrefix={bm ? 'Hei, ' : 'Hey, '}
           titleHighlight={`${name}!`}
           titleTrailing=" 👋"
           subtitle={bm ? 'Teruskan perjalanan belajar anda bersama ImanAI!' : 'Continue your learning adventure with ImanAI!'}
+          meta={<DailyStreak {...dailyStreak} language={language} />}
           ctaText={bm ? 'Teroka Subjek' : 'Explore Subjects'}
           className="blue-gradient-hero"
           ctaOnClick={() => document.getElementById('ih-subjects')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}

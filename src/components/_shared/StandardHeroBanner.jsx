@@ -9,6 +9,7 @@ export default function StandardHeroBanner({
   titleHighlight,
   titleTrailing,
   subtitle,
+  meta,
   ctaText,
   ctaLink,
   ctaOnClick,
@@ -29,6 +30,7 @@ export default function StandardHeroBanner({
           {titleTrailing && <span className="standard-hero-banner__trailing">{titleTrailing}</span>}
         </Heading>
         {subtitle && <p className="standard-hero-banner__subtitle">{subtitle}</p>}
+        {meta && <div className="standard-hero-banner__meta">{meta}</div>}
         {ctaText && (ctaOnClick || ctaLink) && (
           <div className="standard-hero-banner__action">
             {ctaOnClick || ctaDisabled ? (

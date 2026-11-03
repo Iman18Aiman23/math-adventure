@@ -1,20 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import { ArrowLeft, ChevronLeft, ChevronRight, Volume2 } from 'lucide-react';
-<<<<<<< HEAD:src/components/PendidikanIslamPage/Tahun1/Module6_Jawi/JawiKVLearningPage.jsx
 import bm_kv_complete, { KV_LETTERS, getKVSeriesByLetter } from '../../../../data/curriculum/bm_kv';
 import SpeechManager from '../../../../services/SpeechManager';
 import BackButton from '../../../BackButton';
-=======
-import { CURRICULUM } from '../../data/curriculum/index';
-import SpeechManager from '../../services/SpeechManager';
->>>>>>> 1a72af8354dcda506cb090317d5b6f8cfde4fb9f:src/components/JawiScriptPage/JawiKVLearningPage.jsx
-
-// Dynamic Helpers
-const getKVData = () => CURRICULUM['bm_kv'] || [];
-const KV_LETTERS = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z'];
-const getKVSeriesByLetter = (letter) => {
-  return getKVData().filter(item => item.kv && item.kv.toLowerCase().startsWith(letter.toLowerCase()));
-};
 
 // ── Vowel row labels (shown under the KV badge) ──────────────────────────────
 const VOWEL_LABELS = ['ا', 'اي', 'او', 'اي (taling)', 'او', 'ا (pepet)'];

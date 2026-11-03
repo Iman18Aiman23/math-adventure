@@ -89,6 +89,11 @@
   text-wrap: pretty;
 }
 
+.standard-hero-banner__meta {
+  width: 100%;
+  margin-top: clamp(.7rem, 1.4dvh, .95rem);
+}
+
 .standard-hero-banner__action {
   display: flex;
   width: fit-content;
