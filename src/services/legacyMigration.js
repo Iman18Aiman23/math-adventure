@@ -13,6 +13,7 @@ import { LocalGamificationRepo } from './LocalGamificationRepo';
 import { getUserId, setUserId } from './UserId';
 
 const OLD_KEY_SYSTEM_A = 'mathAdventureData';
+const SYSTEM_A_MIGRATION_KEY = 'mathAdventureDataMigrated:v1';
 const OLD_KEY_SYSTEM_B = 'gameData';
 const OLD_KEY_BM_PROGRESS = 'bm-progress';
 
@@ -39,7 +40,7 @@ export async function migrateLegacyData() {
   try {
     const oldA = localStorage.getItem(OLD_KEY_SYSTEM_A);
 
-    if (oldA) {
+    if (oldA && localStorage.getItem(SYSTEM_A_MIGRATION_KEY) !== 'true') {
       systemAData = JSON.parse(oldA);
       const games = systemAData.games || {};
 
@@ -75,8 +76,8 @@ export async function migrateLegacyData() {
         timestamp: new Date().toISOString(),
       });
 
-      // Remove old key
-      localStorage.removeItem(OLD_KEY_SYSTEM_A);
+      // storageService still uses this key for game state and login dates.
+      localStorage.setItem(SYSTEM_A_MIGRATION_KEY, 'true');
       migrated = true;
     }
   } catch (e) {

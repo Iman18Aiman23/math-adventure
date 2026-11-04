@@ -1,7 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Trophy, Medal, Settings, Flag, ChevronRight, BookOpen, Mic, Calculator, Moon, Sun, UserRound, Crown, Swords, House, Play } from 'lucide-react';
-import StatsBar from './_shared/StatsBar';
-import ImanAILogo from './_shared/ImanAILogo';
+import React, { useState } from 'react';
+import {
+  BookOpen,
+  Calculator,
+  ChevronDown,
+  ChevronRight,
+  Crown,
+  Feather,
+  Flag,
+  House,
+  Medal,
+  Menu,
+  Mic,
+  Play,
+  Sparkles,
+  Trophy,
+  WandSparkles,
+} from 'lucide-react';
 import useGamification from '../hooks/useGamification';
 import './DesktopSidebar.css';
 import { canAccessSubject } from '../utils/subjectAccess';
@@ -11,189 +25,270 @@ function countCompletedTopics(topics = {}) {
 }
 
 export default function DesktopSidebar({
-  activeTab, onTabChange, language, onToggleLanguage,
-  onHome, onOpenReports,
-  colorMode = 'light', onColorModeChange,
-  onContinueLearning, currentSubject, onSelectSubject, isJawi = false,
-  onSelectAchievementSection, achievementSection = 'assessments', playerName,
+  activeTab,
+  onTabChange,
+  language,
+  onHome,
+  onContinueLearning,
+  currentSubject,
+  onSelectSubject,
+  isJawi = false,
+  onSelectAchievementSection,
+  achievementSection = 'assessments',
+  playerName,
   onUpgradePlan,
 }) {
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const settingsRef = useRef(null);
-  const showExtendedNav = false;
+  const bm = language === 'bm';
+  const [openSection, setOpenSection] = useState('subjects');
+  const [collapsed, setCollapsed] = useState(false);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (settingsRef.current && !settingsRef.current.contains(event.target)) {
-        setIsSettingsOpen(false);
-      }
-    };
-    const handleKeyDown = (event) => {
-      if (event.key === 'Escape') {
-        setIsSettingsOpen(false);
-      }
-    };
-    if (isSettingsOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('keydown', handleKeyDown);
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-        document.removeEventListener('keydown', handleKeyDown);
-      };
-    }
-  }, [isSettingsOpen]);
-
-  const hasSettings = onToggleLanguage || onColorModeChange;
+  const { completedTopics: readingTopics } = useGamification('reading');
   const { completedTopics: bmTopics } = useGamification('bm');
   const { completedTopics: mathTopics } = useGamification('mt');
   const { completedTopics: piTopics } = useGamification('pi');
+
   const subjectProgress = {
+    reading: countCompletedTopics(readingTopics),
     bm: countCompletedTopics(bmTopics),
     math: countCompletedTopics(mathTopics),
     jawi: countCompletedTopics(piTopics),
   };
+
   const subjects = [
-    { id: 'reading', label: language === 'bm' ? 'Membaca' : 'Reading', icon: BookOpen },
-    { id: 'bm', label: language === 'bm' ? 'Sebutan' : 'Speaking', icon: Mic, progressKey: 'bm' },
-    { id: 'math', label: language === 'bm' ? 'Matematik' : 'Mathematics', icon: Calculator, progressKey: 'math' },
-    { id: 'jawi', label: 'Jawi', icon: Moon, progressKey: 'jawi' },
+    { id: 'reading', label: bm ? 'Membaca' : 'Reading', icon: BookOpen, tone: 'reading', badge: subjectProgress.reading || null },
+    { id: 'bm', label: bm ? 'Sebutan' : 'Speaking', icon: Mic, tone: 'speaking', badge: 'New' },
+    { id: 'math', label: bm ? 'Matematik' : 'Mathematics', icon: Calculator, tone: 'math', badge: subjectProgress.math || null },
+    { id: 'jawi', label: 'Jawi', icon: Feather, tone: 'jawi', badge: 'Pop' },
   ];
-  const progressLabel = language === 'bm' ? 'topik selesai' : 'topics completed';
+
+  const rewards = [
+    {
+      id: 'challenges',
+      label: bm ? 'Cabaran' : 'Challenges',
+      icon: Flag,
+      tone: 'challenges',
+      active: activeTab === 'achievement' && achievementSection === 'assessments',
+      onClick: () => onSelectAchievementSection?.('assessments'),
+      dot: true,
+    },
+    {
+      id: 'leaderboard',
+      label: bm ? 'Papan Juara' : 'Leaderboard',
+      icon: Trophy,
+      tone: 'leaderboard',
+      active: activeTab === 'leaderboard',
+      onClick: () => onTabChange?.('leaderboard'),
+    },
+    {
+      id: 'achievements',
+      label: bm ? 'Pencapaian Saya' : 'My Achievements',
+      icon: Medal,
+      tone: 'achievements',
+      active: activeTab === 'achievement' && achievementSection === 'achievements',
+      onClick: () => onSelectAchievementSection?.('achievements'),
+    },
+  ];
+
   const homeIsActive = activeTab === 'learn' && !currentSubject;
-  const challengesAreActive = activeTab === 'achievement' && achievementSection === 'assessments';
-  const leaderboardIsActive = activeTab === 'leaderboard';
-  const achievementsAreActive = activeTab === 'achievement' && achievementSection === 'achievements';
+
+  const toggleSection = (section) => {
+    setOpenSection((current) => (current === section ? null : section));
+  };
+
+  const handleContinue = onContinueLearning || onHome;
 
   return (
-    <>
+    <aside
+      className={`desktop-sidebar${collapsed ? ' is-collapsed' : ''}`}
+      aria-label={bm ? 'Navigasi utama' : 'Main navigation'}
+    >
+      <div className="ds-brand-row">
+        <button
+          type="button"
+          className="ds-brand"
+          onClick={() => onHome?.()}
+          title={bm ? 'ImanAI — Halaman utama' : 'ImanAI — Home'}
+          aria-label={bm ? 'ImanAI — Halaman utama' : 'ImanAI — Home'}
+        >
+          <span className="ds-brand-mark" aria-hidden="true">
+            <img
+              src={`${import.meta.env.BASE_URL}brand/imanai-horizontal-removebg-preview.webp`}
+              alt=""
+              width="40"
+              height="40"
+              decoding="async"
+            />
+          </span>
+          <span className="ds-brand-copy">
+            <span className="ds-brand-name">ImanAI</span>
+            <span className="ds-brand-tag">Kids Academy</span>
+          </span>
+        </button>
+        <button
+          type="button"
+          className="ds-collapse-toggle"
+          onClick={() => setCollapsed((current) => !current)}
+          aria-label={collapsed
+            ? (bm ? 'Kembangkan menu' : 'Expand sidebar')
+            : (bm ? 'Runtuhkan menu' : 'Collapse sidebar')}
+          aria-expanded={!collapsed}
+          title={collapsed
+            ? (bm ? 'Kembangkan menu' : 'Expand sidebar')
+            : (bm ? 'Runtuhkan menu' : 'Collapse sidebar')}
+        >
+          <Menu size={21} strokeWidth={2} aria-hidden="true" />
+        </button>
+      </div>
 
-
-      <aside className="desktop-sidebar">
-        <div className="sidebar-logo-wrap">
-          <button className="sidebar-logo" type="button" onClick={onHome} aria-label={language === 'bm' ? 'ImanAI �?" Halaman utama' : 'ImanAI �?" Home'}>
-            <ImanAILogo language={language} />
-          </button>
-        </div>
-
-        <button type="button" className="sidebar-continue" onClick={onContinueLearning || onHome}>
-          <Play className="sidebar-play-icon" size={19} aria-hidden="true" />
-          <span>{language === 'bm' ? 'Teruskan belajar' : 'Continue learning'}</span>
-          <ChevronRight className="sidebar-continue-arrow" size={19} aria-hidden="true" />
+      <div className="ds-scroll">
+        <button
+          type="button"
+          className="ds-continue"
+          onClick={handleContinue}
+          aria-label={bm ? 'Teruskan Belajar' : 'Continue Learning'}
+          title={bm ? 'Teruskan Belajar' : 'Continue Learning'}
+        >
+          <span className="ds-continue-play" aria-hidden="true">
+            <Play size={14} fill="currentColor" strokeWidth={0} />
+          </span>
+          <span className="ds-continue-copy">
+            <span className="ds-continue-title">{bm ? 'Teruskan Belajar' : 'Continue Learning'}</span>
+          </span>
+          <ChevronRight className="ds-continue-arrow" size={12} aria-hidden="true" />
         </button>
 
-        <div className="sidebar-menu-panel">
-          <nav className="home-quick-nav" aria-label={language === 'bm' ? 'Menu utama' : 'Main menu'}>
-            <button type="button" aria-current={homeIsActive ? 'page' : undefined} className={`home-quick-link home-quick-home ${homeIsActive ? 'active' : ''}`} onClick={() => onHome?.()}><House size={22} aria-hidden="true" /><span>{language === 'bm' ? 'Laman Utama' : 'Home'}</span></button>
-            <div className="sidebar-section-label" aria-hidden="true">{language === 'bm' ? 'SUBJEK' : 'SUBJECTS'}</div>
-            {subjects.map(({ id, label, icon: Icon, progressKey }) => {
-              const count = progressKey ? subjectProgress[progressKey] : 0;
+        <nav className="ds-nav" aria-label={bm ? 'Menu utama' : 'Main menu'}>
+          <button
+            type="button"
+            className={`ds-link${homeIsActive ? ' is-active' : ''}`}
+            aria-current={homeIsActive ? 'page' : undefined}
+            aria-label={bm ? 'Laman Utama' : 'Home'}
+            title={bm ? 'Laman Utama' : 'Home'}
+            onClick={() => onHome?.()}
+          >
+            <span className="ds-link-icon" aria-hidden="true">
+              <House size={19} strokeWidth={2.2} />
+            </span>
+            <span>{bm ? 'Laman Utama' : 'Home'}</span>
+          </button>
+        </nav>
+
+        <section className="ds-section">
+          <button
+            type="button"
+            className="ds-section-toggle"
+            onClick={() => toggleSection('subjects')}
+            aria-expanded={collapsed || openSection === 'subjects'}
+            aria-controls="ds-subjects"
+          >
+            <span>{bm ? 'SUBJEK' : 'SUBJECTS'}</span>
+            <ChevronDown
+              className={`ds-section-arrow${openSection === 'subjects' ? ' open' : ''}`}
+              size={10}
+              aria-hidden="true"
+            />
+          </button>
+
+          <div id="ds-subjects" className={`ds-dropdown${openSection === 'subjects' ? ' open' : ''}`}>
+            {subjects.map(({ id, label, icon: Icon, tone, badge }) => {
               const isActive = activeTab === 'learn' && (id === 'jawi' ? isJawi : currentSubject === id);
               return (
                 <button
                   key={id}
                   type="button"
                   disabled={!canAccessSubject(playerName, id)}
+                  aria-label={label}
+                  title={label}
                   aria-current={isActive ? 'page' : undefined}
-                  className={`home-quick-link home-quick-${id} ${isActive ? 'active' : ''}`}
+                  className={`ds-item ds-item--${tone}${isActive ? ' is-active' : ''}`}
                   onClick={() => onSelectSubject?.(id)}
-                  aria-label={count > 0 ? `${label}, ${count} ${progressLabel}` : label}
                 >
-                  {React.createElement(Icon, { size: 22, 'aria-hidden': true })}
-                  <span>{label}</span>
-                  {count > 0 && <span className="sidebar-progress-badge" aria-hidden="true">{count}</span>}
+                  <span className="ds-item-main">
+                    <span className="ds-item-icon" aria-hidden="true">
+                      {React.createElement(Icon, { size: 18, strokeWidth: 2.2 })}
+                    </span>
+                    <span className="ds-item-label">{label}</span>
+                  </span>
+                  {badge ? <span className="ds-item-badge">{badge}</span> : null}
                 </button>
               );
             })}
-            <div className="sidebar-section-label sidebar-section-label-activity">{language === 'bm' ? 'GANJARAN' : 'REWARDS'}</div>
-            <button type="button" aria-current={challengesAreActive ? 'page' : undefined} className={`home-quick-link home-quick-challenges ${challengesAreActive ? 'active' : ''}`} onClick={() => onSelectAchievementSection?.('assessments')}><Swords size={22} aria-hidden="true" /><span>{language === 'bm' ? 'Cabaran' : 'Challenges'}</span></button>
-            <button type="button" aria-current={leaderboardIsActive ? 'page' : undefined} className={`home-quick-link home-quick-leaderboard ${leaderboardIsActive ? 'active' : ''}`} onClick={() => onTabChange?.('leaderboard')}><Trophy size={22} aria-hidden="true" /><span>{language === 'bm' ? 'Papan Juara' : 'Leaderboard'}</span></button>
-            <button type="button" aria-current={achievementsAreActive ? 'page' : undefined} className={`home-quick-link home-quick-achievements ${achievementsAreActive ? 'active' : ''}`} onClick={() => onSelectAchievementSection?.('achievements')}><Medal size={22} aria-hidden="true" /><span>{language === 'bm' ? 'Pencapaian Saya' : 'My Achievements'}</span></button>
-            {showExtendedNav && <><div className="sidebar-nav-divider" />
-            <button type="button" className={`home-quick-link home-quick-profile ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => onTabChange?.('profile')}><UserRound /><span>{language === 'bm' ? 'Profil' : 'Profile'}</span></button>
-            <button type="button" className={`home-quick-link home-quick-reports ${currentSubject === 'matematik-reports' ? 'active' : ''}`} onClick={() => onOpenReports?.()}>
-              <Flag size={22} />
-              <span>{language === 'bm' ? 'Laporan' : 'Reports'}</span>
-            </button>
-            </>}
-          </nav>
-
-          {showExtendedNav && <div className="home-coach-footer">
-            <div className="sidebar-utility-row">
-              <div className="home-top-actions">
-                <StatsBar forceBundled={true} variant="mb" />
-              </div>
-
-              {hasSettings && (
-                <div className="home-settings-wrap" ref={settingsRef}>
-                  <button
-                    type="button"
-                    className="home-settings-btn"
-                    onClick={() => setIsSettingsOpen(p => !p)}
-                    aria-label={language === 'bm' ? 'Buka tetapan' : 'Open settings'}
-                    aria-expanded={isSettingsOpen}
-                    aria-haspopup="dialog"
-                  >
-                    <Settings size={21} strokeWidth={2.4} />
-                    <span>{language === 'bm' ? 'Tetapan' : 'Settings'}</span>
-                  </button>
-                {isSettingsOpen && (
-                  <div className="home-settings-popover" role="dialog" aria-label={language === 'bm' ? 'Tetapan' : 'Settings'}>
-                  <div className="mt-settings-heading">
-                    {language === 'bm' ? 'Pilih Bahasa' : 'Language'}
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '16px' }}>
-                    <button
-                      className={`mt-lang-btn ${language === 'bm' ? 'active' : ''}`}
-                      onClick={() => { if (language !== 'bm') onToggleLanguage?.(); setIsSettingsOpen(false); }}
-                    >
-                      <span className="mt-lang-flag">🇲🇾</span>
-                      <span>Bahasa</span>
-                    </button>
-                    <button
-                      className={`mt-lang-btn ${language === 'en' ? 'active' : ''}`}
-                      onClick={() => { if (language !== 'en') onToggleLanguage?.(); setIsSettingsOpen(false); }}
-                    >
-                      <span className="mt-lang-flag">🇬🇧</span>
-                      <span>English</span>
-                    </button>
-                  </div>
-                  {onColorModeChange && (
-                    <>
-                      <div className="mt-settings-heading" style={{ marginTop: '4px' }}>
-                        {language === 'bm' ? 'Paparan' : 'Appearance'}
-                      </div>
-                      <div className="mt-theme-list">
-                        <button className={`mt-theme-btn ${colorMode === 'light' ? 'active' : ''}`} onClick={() => { onColorModeChange('light'); setIsSettingsOpen(false); }}><Sun size={16} /><span>{language === 'bm' ? 'Cerah' : 'Light'}</span></button>
-                        <button className={`mt-theme-btn ${colorMode === 'dark' ? 'active' : ''}`} onClick={() => { onColorModeChange('dark'); setIsSettingsOpen(false); }}><Moon size={16} /><span>{language === 'bm' ? 'Gelap' : 'Dark'}</span></button>
-                      </div>
-                    </>
-                  )}
-                  </div>
-                )}
-              </div>
-            )}
-            </div>
-          </div>
-          }
-        </div>
-        <section className="sidebar-subscription" aria-labelledby="sidebar-subscription-label">
-          <h2 id="sidebar-subscription-label" className="sidebar-section-label sidebar-section-label-subscription">
-            {language === 'bm' ? 'LANGGANAN' : 'SUBSCRIPTION'}
-          </h2>
-          <div className="sidebar-subscription-card">
-            <Crown className="sidebar-subscription-watermark" size={52} aria-hidden="true" />
-            <div className="sidebar-subscription-head">
-              <span className="sidebar-subscription-icon" aria-hidden="true"><Crown size={18} /></span>
-              <span>{language === 'bm' ? 'Pelan Percuma' : 'Free Plan'}</span>
-            </div>
-            <p>{language === 'bm' ? 'Buka akses semua subjek dan ganjaran premium.' : 'Unlock every subject and premium rewards.'}</p>
-            <button type="button" className="sidebar-upgrade-btn" onClick={() => onUpgradePlan?.()}>
-              <span>{language === 'bm' ? 'Naik Taraf Pelan' : 'Upgrade Plan'}</span>
-              <ChevronRight size={15} aria-hidden="true" />
-            </button>
           </div>
         </section>
-      </aside>
-    </>
+
+        <section className="ds-section">
+          <button
+            type="button"
+            className="ds-section-toggle"
+            onClick={() => toggleSection('rewards')}
+            aria-expanded={collapsed || openSection === 'rewards'}
+            aria-controls="ds-rewards"
+          >
+            <span>{bm ? 'GANJARAN' : 'REWARDS'}</span>
+            <ChevronDown
+              className={`ds-section-arrow${openSection === 'rewards' ? ' open' : ''}`}
+              size={10}
+              aria-hidden="true"
+            />
+          </button>
+
+          <div id="ds-rewards" className={`ds-dropdown${openSection === 'rewards' ? ' open' : ''}`}>
+            {rewards.map(({ id, label, icon: Icon, tone, active, onClick, dot }) => (
+              <button
+                key={id}
+                type="button"
+                aria-current={active ? 'page' : undefined}
+                aria-label={label}
+                title={label}
+                className={`ds-item ds-item--${tone}${active ? ' is-active' : ''}`}
+                onClick={onClick}
+              >
+                <span className="ds-item-main">
+                  <span className="ds-item-icon" aria-hidden="true">
+                    {React.createElement(Icon, { size: 18, strokeWidth: 2.2 })}
+                  </span>
+                  <span className="ds-item-label">{label}</span>
+                </span>
+                {dot ? <span className="ds-item-dot" aria-hidden="true" /> : null}
+              </button>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      <footer className="ds-footer">
+        <span className="ds-footer-label">{bm ? 'LANGGANAN' : 'SUBSCRIPTION'}</span>
+        <div className="ds-plan">
+          <div className="ds-plan-head">
+            <span className="ds-plan-pill">
+              <Crown size={12} aria-hidden="true" />
+              PRO PLAN
+            </span>
+            <span className="ds-plan-spark" aria-hidden="true">
+              <Sparkles size={14} />
+            </span>
+          </div>
+          <div className="ds-plan-body">
+            <h4>{bm ? 'Buka Semua Dunia Seronok!' : 'Unlock All Fun Worlds!'}</h4>
+            <p>
+              {bm
+                ? 'Akses tanpa had kepada 500+ pelajaran interaktif.'
+                : 'Unlimited access to 500+ interactive lessons.'}
+            </p>
+          </div>
+          <button
+            type="button"
+            className="ds-upgrade"
+            onClick={() => onUpgradePlan?.()}
+            aria-label={bm ? 'Naik Taraf Sekarang' : 'Upgrade Now'}
+            title={bm ? 'Naik Taraf Sekarang' : 'Upgrade Now'}
+          >
+            <WandSparkles size={13} aria-hidden="true" />
+            <span>{bm ? 'Naik Taraf Sekarang' : 'Upgrade Now'}</span>
+            <span className="ds-upgrade-short" aria-hidden="true">Pro</span>
+          </button>
+        </div>
+      </footer>
+    </aside>
   );
 }

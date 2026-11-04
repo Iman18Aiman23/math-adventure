@@ -119,9 +119,6 @@ export function HomePageLayoutStyles() {
       .rp-layout .mh-header .ih-top-actions-cluster { grid-column: 3; }
       .iman-layout .ih-age-grid { grid-template-columns: minmax(0, 1fr); }
     }
-    @media (min-width: 768px) {
-      #root:has(.iman-layout) .desktop-sidebar { position: sticky; top: 0; height: 100vh; height: 100dvh; flex-shrink: 0; }
-    }
     @media (max-width: 767px) {
       .ih-root.iman-layout .ih-subject-grid { gap: 10px; }
     }
