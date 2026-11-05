@@ -1747,6 +1747,7 @@ export default function App() {
         }
         return <HomePage
           onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
+          onUpgradePlan={() => setIsUpgradeOpen(true)}
           onSelectSubject={(s) => { if (canAccessSubject(playerName, s)) navigate(() => setCurrentSubject(s)); }}
           onSelectAgeGroup={(g) => { if (hasFullSubjectAccess(playerName)) navigate(() => setCurrentAgeGroup(g)); }}
           language={language}

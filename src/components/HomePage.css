@@ -232,7 +232,11 @@
 .ih-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; min-height: 24px; }
 .ih-section-heading h2 { display: flex; align-items: center; gap: 10px; font: 750 18px/1.2 'Outfit', sans-serif; white-space: nowrap; letter-spacing: .1px; }
 .ih-section-heading h2::before { content: ''; display: block; width: 6px; height: 20px; flex-shrink: 0; border-radius: 2px; background: linear-gradient(#12e6a2, #00b780); }
-.ih-section-heading p { color: #5576a0; font-size: 11px; text-align: right; }
+.ih-section-guidance { display: grid; justify-items: end; gap: 3px; max-width: 48%; }
+.ih-section-guidance p { margin: 0; color: #47658e; font-size: clamp(12px, .85vw, 14px); line-height: 1.35; text-align: right; text-wrap: pretty; }
+.ih-access-link { min-height: 30px; padding: 2px 4px; border: 0; background: transparent; color: #075a9c; font: 700 12px/1.3 'Outfit', sans-serif; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.ih-access-link:focus-visible { outline: 3px solid #1578c6; outline-offset: 2px; border-radius: 4px; }
+.ih-popover .ih-empty-cta { width: 100%; min-height: 44px; margin-top: 4px; border-color: #075a9c; background: #075a9c; color: #fff; font-weight: 700; }
 .ih-age-grid { display: grid; grid-template-columns: 1.2fr repeat(3, minmax(0, 1fr)); gap: 10px; }
 .ih-age { --age-color: #ff5687; --age-soft: #ffe3ee; display: flex; align-items: center; gap: 10px; min-width: 0; min-height: 78px; padding: 12px; border: 1px solid #e0edf9; border-radius: 16px; background: #ffffffc9; text-align: left; color: var(--ih-ink); transition: transform 160ms ease, border-color 160ms ease; }
 .ih-age--1 { --age-color: #f5ad00; --age-soft: #fff4d8; }
@@ -297,6 +301,15 @@
   .ih-hero-art { right: 0; }
   .ih-hero-note { top: 7%; right: 4%; font-size: 13px; }
 }
+@media (min-width: 768px) and (max-width: 1023px) {
+  .ih-root.iman-layout .ih-section-guidance { max-width: 58%; }
+}
+@container iman-page (max-width: 760px) {
+  .ih-root.iman-layout.page-layout-root .ih-subject-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container iman-page (max-width: 500px) {
+  .ih-root.iman-layout.page-layout-root .ih-subject-grid { grid-template-columns: minmax(0, 1fr); }
+}
 @media (min-width: 768px) and (max-height: 700px) {
   .ih-root { height: auto; min-height: 100%; grid-template-rows: 36px minmax(160px, 1fr) auto auto; }
   #root:has(.ih-root) .desktop-sidebar { overflow-y: auto; }
@@ -306,7 +319,21 @@
 }
 /* Short laptops reserve room for all three subject rows and age navigation. */
 @media (min-width: 1280px) and (min-height: 701px) and (max-height: 780px) {
+  #root .ih-root.iman-layout { --page-gap: 10px; }
   .ih-root { grid-template-rows: 36px clamp(154px, 22dvh, 174px) auto auto; }
+  .ih-root.iman-layout .standard-hero-banner { min-height: 0; padding: 10px 18px; }
+  .ih-root.iman-layout .standard-hero-banner__title { margin-bottom: 8px; font-size: 36px; }
+  .ih-root.iman-layout .standard-hero-banner__meta { margin-top: 6px; }
+  .ih-root.iman-layout .standard-hero-banner__action { margin-top: 8px; }
+  .ih-root.iman-layout .standard-hero-banner__mascot img { max-height: 17dvh; }
+  .ih-root.iman-layout .ih-subject-grid .standard-card {
+    --standard-card-height: clamp(72px, 9.4dvh, 74px);
+    --standard-card-icon-width: 68px;
+    --standard-card-padding: 6px 8px;
+    --standard-card-title-size: 16px;
+    --standard-card-subtitle-size: 12px;
+  }
+  .ih-root.iman-layout .ih-subject-grid { row-gap: 8px; }
   .ih-hero-copy { padding-block: 8px; }
   .ih-hero h1 { font-size: 36px; }
   .ih-hero-lead { font-size: 14px; line-height: 1.3; }
@@ -356,7 +383,8 @@
   .ih-section-heading { min-height: 23px; gap: 8px; }
   .ih-section-heading h2 { font-size: 16px; gap: 8px; }
   .ih-section-heading h2::before { width: 5px; height: 18px; }
-  .ih-section-heading p { font-size: 10px; max-width: 165px; line-height: 1.3; }
+  .ih-root.iman-layout .ih-section-guidance { max-width: 62%; }
+  .ih-section-guidance p { font-size: 12px; line-height: 1.3; }
   .ih-age-grid { grid-template-columns: 1fr; gap: 6px; }
   .ih-age { min-height: 70px; padding: 10px; gap: 13px; border-radius: 13px; }
   .ih-age-badge { flex-basis: 42px; height: 40px; border-radius: 9px; }
@@ -369,7 +397,8 @@
 
 @media (max-width: 359px) {
   .ih-section-heading h2 { font-size: 14px; }
-  .ih-section-heading p { font-size: 9px; max-width: 135px; }
+  .ih-root.iman-layout .ih-section-guidance { max-width: 64%; }
+  .ih-section-guidance p { font-size: 12px; }
   .ih-mobile-logo { width: 134px; }
   .ih-hero-note { font-size: 10px; }
 }
@@ -377,7 +406,7 @@
 /* Homepage hero copy follows the Math Journey's bold, playful robot style. */
 .ih-hero-copy .ih-eyebrow {
   margin-bottom: 2px;
-  color: #148354;
+  color: #087640;
   font: 800 clamp(10px, 1.3vw, 14px)/1.2 'Baloo 2', sans-serif;
   letter-spacing: .1em;
 }

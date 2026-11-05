@@ -3,13 +3,14 @@ import './StandardCard.css';
 
 export function StandardCard({
   title, subtitle, iconSrc, onClick, isLocked = false, onMouseEnter,
-  className = '', ariaLabel, badge, badgeClassName = '', trailing,
+  className = '', ariaLabel, ariaDescribedBy, badge, badgeClassName = '', trailing,
 }) {
   return (
     <button
       type="button"
       className={['standard-card', className].filter(Boolean).join(' ')}
       aria-label={ariaLabel}
+      aria-describedby={ariaDescribedBy}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       disabled={isLocked}

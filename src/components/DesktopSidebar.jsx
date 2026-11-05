@@ -11,8 +11,6 @@ import {
   Medal,
   Menu,
   Mic,
-  Play,
-  Sparkles,
   Trophy,
   WandSparkles,
 } from 'lucide-react';
@@ -148,13 +146,12 @@ export default function DesktopSidebar({
           aria-label={bm ? 'Teruskan Belajar' : 'Continue Learning'}
           title={bm ? 'Teruskan Belajar' : 'Continue Learning'}
         >
-          <span className="ds-continue-play" aria-hidden="true">
-            <Play size={14} fill="currentColor" strokeWidth={0} />
-          </span>
           <span className="ds-continue-copy">
             <span className="ds-continue-title">{bm ? 'Teruskan Belajar' : 'Continue Learning'}</span>
           </span>
-          <ChevronRight className="ds-continue-arrow" size={12} aria-hidden="true" />
+          <span className="ds-continue-arrow" aria-hidden="true">
+            <ChevronRight size={12} />
+          </span>
         </button>
 
         <nav className="ds-nav" aria-label={bm ? 'Menu utama' : 'Main menu'}>
@@ -171,120 +168,120 @@ export default function DesktopSidebar({
             </span>
             <span>{bm ? 'Laman Utama' : 'Home'}</span>
           </button>
-        </nav>
 
-        <section className="ds-section">
-          <button
+          <section className="ds-section">
+            <button
             type="button"
             className="ds-section-toggle"
             onClick={() => toggleSection('subjects')}
             aria-expanded={collapsed || openSection === 'subjects'}
             aria-controls="ds-subjects"
-          >
-            <span>{bm ? 'SUBJEK' : 'SUBJECTS'}</span>
+            >
+            <span>{bm ? 'Subjek' : 'Subjects'}</span>
             <ChevronDown
               className={`ds-section-arrow${openSection === 'subjects' ? ' open' : ''}`}
               size={10}
               aria-hidden="true"
             />
-          </button>
+            </button>
 
-          <div id="ds-subjects" className={`ds-dropdown${openSection === 'subjects' ? ' open' : ''}`}>
-            {subjects.map(({ id, label, icon: Icon, tone, badge }) => {
-              const isActive = activeTab === 'learn' && (id === 'jawi' ? isJawi : currentSubject === id);
-              return (
-                <button
-                  key={id}
-                  type="button"
-                  disabled={!canAccessSubject(playerName, id)}
-                  aria-label={label}
-                  title={label}
-                  aria-current={isActive ? 'page' : undefined}
-                  className={`ds-item ds-item--${tone}${isActive ? ' is-active' : ''}`}
-                  onClick={() => onSelectSubject?.(id)}
-                >
-                  <span className="ds-item-main">
-                    <span className="ds-item-icon" aria-hidden="true">
-                      {React.createElement(Icon, { size: 18, strokeWidth: 2.2 })}
-                    </span>
-                    <span className="ds-item-label">{label}</span>
-                  </span>
-                  {badge ? <span className="ds-item-badge">{badge}</span> : null}
-                </button>
-              );
-            })}
-          </div>
-        </section>
+            <div id="ds-subjects" className={`ds-dropdown${openSection === 'subjects' ? ' open' : ''}`}>
+              <div className="ds-dropdown-inner">
+                {subjects.map(({ id, label, icon: Icon, tone, badge }) => {
+                  const isActive = activeTab === 'learn' && (id === 'jawi' ? isJawi : currentSubject === id);
+                  return (
+                    <button
+                      key={id}
+                      type="button"
+                      disabled={!canAccessSubject(playerName, id)}
+                      aria-label={label}
+                      title={label}
+                      aria-current={isActive ? 'page' : undefined}
+                      className={`ds-item ds-item--${tone}${isActive ? ' is-active' : ''}`}
+                      onClick={() => onSelectSubject?.(id)}
+                    >
+                      <span className="ds-item-main">
+                        <span className="ds-item-icon" aria-hidden="true">
+                          {React.createElement(Icon, { size: 18, strokeWidth: 2.2 })}
+                        </span>
+                        <span className="ds-item-label">{label}</span>
+                      </span>
+                      {badge ? <span className="ds-item-badge">{badge}</span> : null}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
 
-        <section className="ds-section">
-          <button
+          <section className="ds-section">
+            <button
             type="button"
             className="ds-section-toggle"
             onClick={() => toggleSection('rewards')}
             aria-expanded={collapsed || openSection === 'rewards'}
             aria-controls="ds-rewards"
-          >
-            <span>{bm ? 'GANJARAN' : 'REWARDS'}</span>
+            >
+            <span>{bm ? 'Ganjaran' : 'Rewards'}</span>
             <ChevronDown
               className={`ds-section-arrow${openSection === 'rewards' ? ' open' : ''}`}
               size={10}
               aria-hidden="true"
             />
-          </button>
+            </button>
 
-          <div id="ds-rewards" className={`ds-dropdown${openSection === 'rewards' ? ' open' : ''}`}>
-            {rewards.map(({ id, label, icon: Icon, tone, active, onClick, dot }) => (
-              <button
-                key={id}
-                type="button"
-                aria-current={active ? 'page' : undefined}
-                aria-label={label}
-                title={label}
-                className={`ds-item ds-item--${tone}${active ? ' is-active' : ''}`}
-                onClick={onClick}
-              >
-                <span className="ds-item-main">
-                  <span className="ds-item-icon" aria-hidden="true">
-                    {React.createElement(Icon, { size: 18, strokeWidth: 2.2 })}
-                  </span>
-                  <span className="ds-item-label">{label}</span>
-                </span>
-                {dot ? <span className="ds-item-dot" aria-hidden="true" /> : null}
-              </button>
-            ))}
-          </div>
-        </section>
+            <div id="ds-rewards" className={`ds-dropdown${openSection === 'rewards' ? ' open' : ''}`}>
+              <div className="ds-dropdown-inner">
+                {rewards.map(({ id, label, icon: Icon, tone, active, onClick, dot }) => (
+                  <button
+                    key={id}
+                    type="button"
+                    aria-current={active ? 'page' : undefined}
+                    aria-label={label}
+                    title={label}
+                    className={`ds-item ds-item--${tone}${active ? ' is-active' : ''}`}
+                    onClick={onClick}
+                  >
+                    <span className="ds-item-main">
+                      <span className="ds-item-icon" aria-hidden="true">
+                        {React.createElement(Icon, { size: 18, strokeWidth: 2.2 })}
+                      </span>
+                      <span className="ds-item-label">{label}</span>
+                    </span>
+                    {dot ? <span className="ds-item-dot" aria-hidden="true" /> : null}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+        </nav>
       </div>
 
       <footer className="ds-footer">
-        <span className="ds-footer-label">{bm ? 'LANGGANAN' : 'SUBSCRIPTION'}</span>
         <div className="ds-plan">
           <div className="ds-plan-head">
-            <span className="ds-plan-pill">
-              <Crown size={12} aria-hidden="true" />
-              PRO PLAN
-            </span>
-            <span className="ds-plan-spark" aria-hidden="true">
-              <Sparkles size={14} />
+            <span
+              className="ds-plan-pill"
+              role="img"
+              aria-label={bm ? 'Premium akan datang' : 'Premium coming soon'}
+              title={bm ? 'Premium akan datang' : 'Premium coming soon'}
+            >
+              <Crown size={15} aria-hidden="true" />
             </span>
           </div>
           <div className="ds-plan-body">
-            <h4>{bm ? 'Buka Semua Dunia Seronok!' : 'Unlock All Fun Worlds!'}</h4>
-            <p>
-              {bm
-                ? 'Akses tanpa had kepada 500+ pelajaran interaktif.'
-                : 'Unlimited access to 500+ interactive lessons.'}
-            </p>
+            <h4>{bm ? 'Naik Premium' : 'Go Premium'}</h4>
+            <p>{bm ? 'Buka semua subjek.' : 'Unlock every subject.'}</p>
           </div>
           <button
             type="button"
             className="ds-upgrade"
             onClick={() => onUpgradePlan?.()}
-            aria-label={bm ? 'Naik Taraf Sekarang' : 'Upgrade Now'}
-            title={bm ? 'Naik Taraf Sekarang' : 'Upgrade Now'}
+            aria-label={bm ? 'Lihat pilihan pelan' : 'View plan options'}
+            title={bm ? 'Lihat pilihan pelan' : 'View plan options'}
           >
             <WandSparkles size={13} aria-hidden="true" />
-            <span>{bm ? 'Naik Taraf Sekarang' : 'Upgrade Now'}</span>
+            <span>{bm ? 'Lihat pelan' : 'View plans'}</span>
             <span className="ds-upgrade-short" aria-hidden="true">Pro</span>
           </button>
         </div>

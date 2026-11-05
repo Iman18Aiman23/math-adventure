@@ -9,7 +9,7 @@ export default function HomeHeaderActions({
   streak = 0,
   showProgress = true,
   onTabChange,
-  onHome,
+  onExploreSubjects,
   onOpenReports,
   onLogout,
   onToggleLang,
@@ -58,7 +58,7 @@ export default function HomeHeaderActions({
   return (
     <div className="ih-top-actions-cluster">
       {showProgress && <button type="button" className="ih-points" aria-label={`${gameState?.totalXP ?? 0} XP - ${bm ? 'Lihat kemajuan' : 'View progress'}`} aria-expanded={panel === 'progress'} aria-controls="ih-progress-panel" onClick={event => togglePanel('progress', event)}><Star aria-hidden="true" /><span>{gameState?.totalXP ?? 0}</span></button>}
-      <button type="button" className="ih-account" aria-expanded={panel === 'account' || panel === 'settings'} aria-controls="ih-account-panel" onClick={event => togglePanel('account', event)}>
+      <button type="button" className="ih-account" aria-label={bm ? 'Akaun dan tetapan' : 'Account and settings'} aria-expanded={panel === 'account' || panel === 'settings'} aria-controls="ih-account-panel" onClick={event => togglePanel('account', event)}>
         <span className="ih-avatar"><UserRound aria-hidden="true" /></span>
         <ChevronDown size={19} />
       </button>
@@ -71,7 +71,9 @@ export default function HomeHeaderActions({
           <div className="ih-week" aria-hidden="true">{Array.from({ length: 7 }, (_, i) => <span key={i} className={i < Math.min(streak, 7) ? 'is-done' : ''} />)}</div>
           <p>{streak} {bm ? 'hari berturut-turut' : 'day streak'}</p>
           <h2>{bm ? 'Tahap semasa' : 'Current level'}</h2><p>Level {currentLevel}</p>
-          <h2>{bm ? 'Aktiviti terkini' : 'Recent activity'}</h2><p>{bm ? 'Belum ada aktiviti' : 'No recent activity'}</p>
+          <h2>{bm ? 'Aktiviti terkini' : 'Recent activity'}</h2>
+          <p>{bm ? 'Belum ada aktiviti. Pilih subjek untuk bermula.' : 'No recent activity. Choose a subject to get started.'}</p>
+          {onExploreSubjects && <button type="button" className="ih-empty-cta" onClick={() => selectAccountAction(onExploreSubjects)}>{bm ? 'Pilih subjek' : 'Choose a subject'}</button>}
           <StatsBar forceBundled={true} variant="mb" />
         </> : panel === 'account' ? <>
           <div className="ih-account-greeting">
@@ -80,7 +82,7 @@ export default function HomeHeaderActions({
           </div>
           <nav aria-label={bm ? 'Menu akaun' : 'Account menu'}>
             <button type="button" onClick={() => selectAccountAction(() => onTabChange?.('profile'))}><UserRound />{bm ? 'Profil Saya' : 'My Profile'}</button>
-            <button type="button" onClick={() => selectAccountAction(() => onTabChange?.('laporan'))}><Flag />{bm ? 'Laporan' : 'Reports'}</button>
+            <button type="button" onClick={() => selectAccountAction(onOpenReports || (() => onTabChange?.('laporan')))}><Flag />{bm ? 'Laporan' : 'Reports'}</button>
             <hr />
             <button type="button" onClick={() => setPanel('settings')}><Settings />{bm ? 'Tetapan' : 'Settings'}</button>
             <button type="button" className="ih-logout" onClick={() => selectAccountAction(onLogout)}><LogOut />{bm ? 'Log Keluar' : 'Log Out'}</button>

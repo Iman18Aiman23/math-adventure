@@ -1,9 +1,9 @@
 // The current app stores the user's name as playerName.
-export function hasFullSubjectAccess(username) {
-  return username === 'Iman18Aiman23';
+// All visitors (including guests) have full access to every subject and age group.
+export function hasFullSubjectAccess() {
+  return true;
 }
 
-export function canAccessSubject(username, subject) {
-  return hasFullSubjectAccess(username)
-    || ['reading', 'bm', 'math', 'jawi', 'pendidikan-islam-v1'].includes(subject);
+export function canAccessSubject() {
+  return true;
 }

@@ -70,6 +70,9 @@ export function HomePageLayoutStyles() {
     .iman-layout :is(.ih-section-heading, .mh-section-heading) { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 28px; }
     .iman-layout :is(.ih-section-heading, .mh-section-heading) h2 { margin: 0; font: 800 clamp(17px, 1.5vw, 22px)/1.25 'Outfit', sans-serif; }
     .iman-layout :is(.ih-section-heading, .mh-section-heading) p { display: block; margin: 0; max-width: 48%; font-size: clamp(11px, 1vw, 14px); line-height: 1.4; text-align: right; }
+    .iman-layout .ih-section-guidance { display: grid; justify-items: end; gap: 3px; max-width: 48%; }
+    .iman-layout .ih-section-guidance p { max-width: none; font-size: clamp(12px, .85vw, 14px); line-height: 1.35; }
+    .iman-layout .ih-access-link { min-height: 30px; padding: 2px 4px; border: 0; background: transparent; color: #075a9c; font: 700 12px/1.3 'Outfit', sans-serif; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
     .iman-layout .ih-ages { padding: 0; border: 0; background: none; box-shadow: none; }
     .iman-layout .mh-topic-grid { display: grid; grid-template-columns: minmax(0, 1fr); grid-auto-rows: 1fr; gap: var(--page-gap); padding: 0; }
     .iman-layout .mh-topic-card {
@@ -159,6 +162,27 @@ const SUBJECTS = [
   { id: 'bm-kssr', tone: 'malay', title: ['B. MELAYU KSSR', 'MALAY KSSR'], subtitle: ['Belajar Bahasa Melayu!', 'Learn Bahasa Melayu!'], icon: 'icon-malay-kssr.webp' },
   { id: 'robot', tone: 'robot', title: ['ROBOT & KOD', 'ROBOT & CODE'], subtitle: ['Bina dan program robot!', 'Build and program robots!'], icon: 'Robot___Code.webp' },
 ];
+function formatSubjectTitle(label) {
+  return label.toLocaleLowerCase().replace(/(^|\s)[\p{L}]/gu, letter => letter.toLocaleUpperCase()).replace(/\bkssr\b/giu, 'KSSR');
+}
+
+class RobotInterfaceErrorBoundary extends React.Component {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error) {
+    console.error('Failed to load the Robot & Code interface.', error);
+  }
+
+  render() {
+    if (this.state.hasError) return this.props.fallback;
+    return this.props.children;
+  }
+}
+
 function AgeBadge({ index }) {
   return (
     <svg viewBox="0 0 60 60" aria-hidden="true" focusable="false">
@@ -177,19 +201,27 @@ function AgeBadge({ index }) {
     </svg>
   );
 }
-export default function HomePage({ onSelectSubject, onSelectAgeGroup, language = 'bm', playerName, gameState, onTabChange, onHome, onOpenReports, onLogout, onToggleLang, colorMode, onColorModeChange }) {
+export default function HomePage({ onSelectSubject, onSelectAgeGroup, language = 'bm', playerName, gameState, onTabChange, onHome, onOpenReports, onUpgradePlan, onLogout, onToggleLang, colorMode, onColorModeChange }) {
   const [showRobotInterface, setShowRobotInterface] = useState(false);
   const dailyStreak = useDailyStreak();
   const bm = language === 'bm';
   const langIndex = bm ? 0 : 1;
   const name = playerName || 'Iman';
+  const hasFullAccess = hasFullSubjectAccess(playerName);
+  const hasLockedSubjects = SUBJECTS.some(subject => !canAccessSubject(playerName, subject.id));
 
-  if (showRobotInterface && hasFullSubjectAccess(playerName)) {
+  if (showRobotInterface && hasFullAccess) {
     return <div className="ih-robot-interface">
       <button type="button" className="ih-return" onClick={() => setShowRobotInterface(false)}><ArrowLeft size={18} />{bm ? 'Kembali ke Home' : 'Back to Home'}</button>
-      <Suspense fallback={<p role="status">{bm ? 'Memuatkan…' : 'Loading…'}</p>}>
-        <HomePagePrototype onSelectSubject={onSelectSubject} onSelectAgeGroup={onSelectAgeGroup} language={language} playerName={playerName} gameState={gameState} streak={dailyStreak.streak} />
-      </Suspense>
+      <RobotInterfaceErrorBoundary fallback={<div className="ih-feature-error" role="alert">
+        <p>{bm ? 'Kandungan Robot & Kod tidak dapat dimuatkan.' : 'Robot & Code could not be loaded.'}</p>
+        <button type="button" onClick={() => window.location.reload()}>{bm ? 'Muat semula dan cuba lagi' : 'Reload and try again'}</button>
+        <button type="button" onClick={() => setShowRobotInterface(false)}>{bm ? 'Kembali ke laman utama' : 'Back to home'}</button>
+      </div>}>
+        <Suspense fallback={<p role="status">{bm ? 'Memuatkan…' : 'Loading…'}</p>}>
+          <HomePagePrototype onSelectSubject={onSelectSubject} onSelectAgeGroup={onSelectAgeGroup} language={language} playerName={playerName} gameState={gameState} streak={dailyStreak.streak} />
+        </Suspense>
+      </RobotInterfaceErrorBoundary>
     </div>;
   }
 
@@ -203,34 +235,44 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
         wrapClassName="ih-home-wrap page-container"
         rootStyle={{ '--ih-art': `url("${import.meta.env.BASE_URL}images/home/robots.webp")` }}
         language={language}
-        headerContent={<PageHeader className="page-container" {...{ language, playerName, gameState, streak: dailyStreak.streak, onTabChange, onHome, onOpenReports, onLogout, onToggleLang, colorMode, onColorModeChange }} />}
+        headerContent={<PageHeader className="page-container" {...{ language, playerName, gameState, streak: dailyStreak.streak, onTabChange, onHome, onOpenReports, onLogout, onToggleLang, colorMode, onColorModeChange }} onExploreSubjects={() => document.getElementById('ih-subjects')?.scrollIntoView({ behavior: 'smooth', block: 'start' })} />}
         heroContent={<StandardHeroBanner
           titlePrefix={bm ? 'Hei, ' : 'Hey, '}
           titleHighlight={`${name}!`}
           titleTrailing=" 👋"
           subtitle={bm ? 'Teruskan perjalanan belajar anda bersama ImanAI!' : 'Continue your learning adventure with ImanAI!'}
           meta={<DailyStreak {...dailyStreak} language={language} />}
-          ctaText={bm ? 'Teroka Subjek' : 'Explore Subjects'}
+          ctaText={bm ? 'Pilih subjek' : 'Choose a subject'}
           className="blue-gradient-hero"
           ctaOnClick={() => document.getElementById('ih-subjects')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
           mascotSrc={`${import.meta.env.BASE_URL}images/home/Robot%20HomePage.webp`}
         />}
       >
       <section id="ih-subjects" className="ih-subjects page-container" aria-labelledby="ih-subject-heading">
-        <div className="ih-section-heading"><h2 id="ih-subject-heading">{bm ? 'SUBJEK' : 'SUBJECTS'}</h2><p>{bm ? 'Pilih subjek kegemaran anda.' : 'Choose your favourite subject.'}</p></div>
+        <div className="ih-section-heading">
+          <h2 id="ih-subject-heading">{bm ? 'Subjek' : 'Subjects'}</h2>
+          <div className="ih-section-guidance">
+            <p id="ih-subject-access-note">{hasLockedSubjects
+              ? (bm ? 'Empat subjek teras kekal percuma; subjek lain memerlukan Premium.' : 'Four core subjects stay free; other subjects require Premium.')
+              : (bm ? 'Pilih subjek kegemaran anda.' : 'Choose your favourite subject.')}</p>
+            {hasLockedSubjects && <button type="button" className="ih-access-link" onClick={onUpgradePlan}>{bm ? 'Lihat pilihan akses' : 'View access options'}</button>}
+          </div>
+        </div>
         <div className="ih-subject-grid mh-topic-grid">
           {SUBJECTS.map(subject => {
             const canOpen = canAccessSubject(playerName, subject.id);
             const subjectLabel = subject.title[langIndex];
+            const subjectTitle = formatSubjectTitle(subjectLabel);
             const openSubject = () => subject.id === 'robot' ? setShowRobotInterface(true) : onSelectSubject(subject.id);
             return <StandardCard
               key={subject.id}
               className={`ih-subject-card ih-subject--${subject.tone}${canOpen ? '' : ' is-locked'}`}
-              ariaLabel={`${subjectLabel}${canOpen ? '' : bm ? ' (terkunci)' : ' (locked)'}`}
-              title={subjectLabel.toLocaleLowerCase().replace(/(^|\s)[\p{L}]/gu, letter => letter.toLocaleUpperCase())}
+              ariaLabel={`${subjectTitle}${canOpen ? '' : bm ? ' (terkunci)' : ' (locked)'}`}
+              ariaDescribedBy={!canOpen ? 'ih-subject-access-note' : undefined}
+              title={subjectTitle}
               subtitle={subject.subtitle[langIndex]}
               iconSrc={`${import.meta.env.BASE_URL}images/home/${subject.icon}`}
-              badge={!canOpen ? 'LOCKED' : null}
+              badge={!canOpen ? (bm ? 'TERKUNCI' : 'LOCKED') : null}
               trailing={!canOpen && <LockKeyhole size={20} strokeWidth={2.4} />}
               isLocked={!canOpen}
               onClick={openSubject}
@@ -241,9 +283,17 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
       </section>
 
       <section className="ih-ages page-container" aria-labelledby="ih-age-heading">
-        <div className="ih-section-heading"><h2 id="ih-age-heading">{bm ? 'KUMPULAN UMUR' : 'AGE GROUPS'}</h2><p>{bm ? 'Pilih kumpulan umur yang sesuai.' : 'Choose the right age group.'}</p></div>
+        <div className="ih-section-heading">
+          <h2 id="ih-age-heading">{bm ? 'Kumpulan umur' : 'Age groups'}</h2>
+          <div className="ih-section-guidance">
+            <p id="ih-age-access-note">{hasFullAccess
+              ? (bm ? 'Pilih kumpulan umur yang sesuai.' : 'Choose the right age group.')
+              : (bm ? 'Laluan kumpulan umur memerlukan akses Premium.' : 'Age-group learning paths require Premium access.')}</p>
+            {!hasFullAccess && <button type="button" className="ih-access-link" onClick={onUpgradePlan}>{bm ? 'Lihat pilihan akses' : 'View access options'}</button>}
+          </div>
+        </div>
         <div className="ih-age-grid">
-          {AGE_GROUPS.map((group, index) => <button type="button" key={group.id} className={`ih-age ih-age--${index}`} disabled={!hasFullSubjectAccess(playerName)} onClick={() => onSelectAgeGroup?.(group.id)} onMouseEnter={hasFullSubjectAccess(playerName) ? playHoverSound : undefined}>
+          {AGE_GROUPS.map((group, index) => <button type="button" key={group.id} className={`ih-age ih-age--${index}`} disabled={!hasFullAccess} aria-describedby={!hasFullAccess ? 'ih-age-access-note' : undefined} onClick={() => onSelectAgeGroup?.(group.id)} onMouseEnter={hasFullAccess ? playHoverSound : undefined}>
             <span className="ih-age-badge"><AgeBadge index={index} /></span>
             <span className="ih-age-copy"><strong>{group.title[bm ? 'bm' : 'eng']}</strong><span>{group.subtitle[bm ? 'bm' : 'eng']}</span></span>
             <ChevronRight className="ih-age-arrow" size={19} aria-hidden="true" />
