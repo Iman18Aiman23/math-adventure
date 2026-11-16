@@ -75,12 +75,17 @@
 
 .daily-streak__dot {
   display: grid;
-  width: 22px;
-  height: 22px;
+  width: clamp(17px, 5.2vw, 22px);
+  height: clamp(17px, 5.2vw, 22px);
   place-items: center;
   border-radius: 50%;
   background: #e8f1ee;
   color: #fff;
+}
+
+.daily-streak__dot svg {
+  width: 56%;
+  height: 56%;
 }
 
 .daily-streak__day.is-active .daily-streak__dot {
@@ -116,6 +121,12 @@
     padding: 9px 11px;
   }
 
+  /* Small devices show the week track only; the count chip and badge drop away. */
+  .daily-streak__badge,
+  .daily-streak__count {
+    display: none;
+  }
+
   .daily-streak__copy {
     flex: 1 1 auto;
   }
@@ -133,11 +144,6 @@
 
   .daily-streak__day {
     flex: 1;
-  }
-
-  .daily-streak__dot {
-    width: 20px;
-    height: 20px;
   }
 }
 

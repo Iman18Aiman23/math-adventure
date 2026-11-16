@@ -119,13 +119,13 @@ export default function JawiKVKLearningPage({ onBack, language }) {
         <style>{`
           .jawi-kv-section-label {
             font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 1.05rem;
-            color: #374151; text-align: center; letter-spacing: .04em;
+            color: #1E293B; text-align: center; letter-spacing: .04em;
             margin: 12px 0 16px;
             display: flex; align-items: center; gap: 14px; justify-content: center;
           }
           .jawi-kv-section-label::before, .jawi-kv-section-label::after {
             content: ""; height: 3px; flex: 1; max-width: 80px; border-radius: 999px;
-            background: linear-gradient(90deg, rgba(206,130,255,.6), rgba(0,194,168,.7), rgba(28,176,246,.7), rgba(88,204,2,.6));
+            background: linear-gradient(90deg, rgba(255,107,107,.6), rgba(20,184,166,.7), rgba(245,158,11,.65), rgba(250,204,21,.55));
           }
         `}</style>
 

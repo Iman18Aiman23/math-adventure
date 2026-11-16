@@ -346,64 +346,64 @@
             padding: 0;
             container-type: normal;
           }
-          .kv-learning--unified.kv-syllable-learning .kv-flashcard {
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-flashcard {
             flex: 0 0 auto !important;
             width: min(100%, var(--home-content-max, 1400px)) !important;
             max-width: var(--home-content-max, 1400px) !important;
             padding: 48px !important;
           }
-          .kv-learning--unified.kv-syllable-learning .kv-flashcard-header { padding-bottom: 8px !important; }
-          .kv-learning--unified.kv-syllable-learning .kv-flashcard-letters { font-size: 80px !important; }
-          .kv-learning--unified.kv-syllable-learning .kv-flashcard-letters--syllable { font-size: 80px !important; }
-          .kv-learning--unified.kv-syllable-learning .kv-flashcard-body { gap: 0 !important; }
-          .kv-learning--unified.kv-syllable-learning .kv-flashcard-learning-group {
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-flashcard-header { padding-bottom: 8px !important; }
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-flashcard-letters { font-size: 80px !important; }
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-flashcard-letters--syllable { font-size: 80px !important; }
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-flashcard-body { gap: 0 !important; }
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-flashcard-learning-group {
             gap: 12px !important;
           }
-          .kv-learning--unified.kv-syllable-learning .kv-flashcard-text-group {
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-flashcard-text-group {
             width: min(100%, 560px) !important;
             gap: 12px !important;
           }
-          .kv-learning--unified.kv-syllable-learning .kv-flashcard-picture-item {
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-flashcard-picture-item {
             width: 140px !important;
             min-width: 140px !important;
           }
-          .kv-learning--unified.kv-syllable-learning .kv-flashcard-picture { font-size: 84px !important; }
-          .kv-learning--unified.kv-syllable-learning .kv-flashcard-example-item,
-          .kv-learning--unified.kv-syllable-learning .kv-flashcard-sentence-item,
-          .kv-learning--unified.kv-syllable-learning .kv-flashcard-word-item,
-          .kv-learning--unified.kv-syllable-learning .kv-flashcard-translation-item {
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-flashcard-picture { font-size: 84px !important; }
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-flashcard-example-item,
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-flashcard-sentence-item,
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-flashcard-word-item,
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-flashcard-translation-item {
             width: 100% !important;
             max-width: none !important;
           }
-          .kv-learning--unified.kv-syllable-learning .kv-inline-audio-card,
-          .kv-learning--unified.kv-syllable-learning .kv-sentence-example {
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-inline-audio-card,
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-sentence-example {
             min-height: 76px !important;
             padding: 10px 16px !important;
           }
-          .kv-learning--unified.kv-syllable-learning .kv-syllable-example-text,
-          .kv-learning--unified.kv-syllable-learning .kv-flashcard-word,
-          .kv-learning--unified.kv-syllable-learning .kv-flashcard-translation { font-size: 52px !important; }
-          .kv-learning--unified.kv-syllable-learning .kv-sentence-example-text { font-size: 48px !important; }
-          .kv-learning--unified.kv-syllable-learning .kv-learning-footer {
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-syllable-example-text,
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-flashcard-word,
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-flashcard-translation { font-size: 52px !important; }
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-sentence-example-text { font-size: 48px !important; }
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-learning-footer {
             flex: 0 0 auto !important;
             width: min(100%, var(--home-content-max, 1400px)) !important;
             max-width: var(--home-content-max, 1400px) !important;
             margin: 0 !important;
             padding: 0 0 12px !important;
           }
-          .kv-learning--unified.kv-syllable-learning .kv-learning-nav {
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-learning-nav {
             width: 100% !important;
             max-width: none !important;
             margin-inline: auto !important;
           }
         }
         @media (max-width: 480px) {
-          .kv-learning--unified.kv-syllable-learning .kv-learning-body {
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-learning-body {
             align-items: flex-start !important;
             justify-content: flex-start !important;
             padding: clamp(24px, 5vh, 40px) 0 8px !important;
           }
-          .kv-learning--unified.kv-syllable-learning .kv-flashcard {
+          .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-flashcard {
             flex: 1 1 auto !important;
             align-self: stretch;
             padding: 20px 12px 24px;
@@ -513,7 +513,7 @@
 
 
 @media (min-width: 768px) and (min-height: 560px) {
-  .kv-learning--unified.kv-syllable-learning .kv-flashcard {
+  .kv-learning--unified.kv-syllable-learning:not(.kv-learning--kv) .kv-flashcard {
     box-sizing: border-box;
     height: clamp(340px, calc(100vh - 160px), 600px);
   }

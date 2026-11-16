@@ -242,9 +242,7 @@ export default function HomePage({ onSelectSubject, onSelectAgeGroup, language =
           titleTrailing=" 👋"
           subtitle={bm ? 'Teruskan perjalanan belajar anda bersama ImanAI!' : 'Continue your learning adventure with ImanAI!'}
           meta={<DailyStreak {...dailyStreak} language={language} />}
-          ctaText={bm ? 'Pilih subjek' : 'Choose a subject'}
           className="blue-gradient-hero"
-          ctaOnClick={() => document.getElementById('ih-subjects')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
           mascotSrc={`${import.meta.env.BASE_URL}images/home/Robot%20HomePage.webp`}
         />}
       >

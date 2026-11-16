@@ -1,54 +1,51 @@
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap');
 
 .kv-picker,
-.kv-syllable-learning {
+.kv-learning,
+.kv-syllable-learning,
+.kv-modal-overlay,
+.kv-completion--clay {
   --font-heading: 'Baloo 2', sans-serif;
   --font-body: 'Fredoka', sans-serif;
-
-  /* Match HomePage's sky, mint, navy, and subject accent palette. */
-  --primary: #30AA9D;
-  --primary-dark: #0B756C;
-  --primary-light: #D5F2E7;
-  --secondary: #2F80ED;
-  --secondary-dark: #1D5FAE;
-  --secondary-light: #DCEBFF;
-  --teal: #0EA5E9;
-  --teal-dark: #086A98;
-  --teal-light: #E0F2FE;
-  --gold: #F6AC05;
-  --gold-dark: #795500;
-  --gold-light: #FFF4D8;
-  --success: #18A97B;
-  --success-dark: #0A7453;
-  --success-light: #D5F2E7;
-  --danger: #C5447E;
-  --danger-dark: #8A2D58;
-  --danger-light: #FCE0EE;
-  --accent-violet: #7950CE;
-  --accent-violet-dark: #5732A4;
-  --accent-violet-light: #E9DFFF;
-
-  --text-primary: #081B49;
-  --text-secondary: #47658E;
-  --text-light: #526B8F;
-  --bg-body: #F4FAFF;
-  --bg-glow: #DCF2FF;
+  --primary: #0066FF;
+  --primary-dark: #0052CC;
+  --primary-light: #EFF6FF;
+  --secondary: #10B981;
+  --secondary-dark: #087F5B;
+  --secondary-light: #E8FDF5;
+  --teal: var(--primary);
+  --teal-dark: var(--primary-dark);
+  --teal-light: var(--primary-light);
+  --gold: #D97706;
+  --gold-dark: #A65300;
+  --gold-light: #FFFBEB;
+  --success: #10B981;
+  --success-dark: #087F5B;
+  --success-light: #E8FDF5;
+  --danger: #EC4899;
+  --danger-dark: #B4236B;
+  --danger-light: #FDF2F8;
+  --text-primary: #1E293B;
+  --text-secondary: #475569;
+  --text-light: #64748B;
+  --bg-body: #F8FAFC;
+  --bg-glow: #EFF6FF;
   --bg-white: #FFFFFF;
-  --bg-card: #F8FCFF;
+  --bg-card: #FFFFFF;
   --picker-tile-surface: #FFFFFF;
-  --bg-muted: #EFF7FC;
-  --border-color: #DCEBFA;
-  --border-color-light: #E4ECF4;
+  --bg-muted: #F1F5F9;
+  --border-color: #DCE6F1;
+  --border-color-light: #E8EEF5;
   --border-radius-sm: 12px;
   --border-radius-md: 18px;
   --border-radius-lg: 24px;
-  --shadow-sm: 0 4px 0 rgba(23, 53, 86, .08), 0 10px 18px rgba(23, 53, 86, .08), inset 1px 1px 2px rgba(255, 255, 255, .9);
-  --shadow-md: 0 7px 0 rgba(23, 53, 86, .10), 0 18px 28px rgba(23, 53, 86, .11), inset 2px 2px 4px rgba(255, 255, 255, .94), inset -2px -2px 6px rgba(38, 133, 88, .08);
-  --shadow-pressed: inset 3px 4px 8px rgba(23, 53, 86, .14), inset -2px -2px 5px rgba(255, 255, 255, .86);
-  --action-primary: var(--action-blue);
-  --action-primary-hover: var(--action-blue-hover);
+  --shadow-sm: 0 4px 0 rgba(30, 41, 59, .06), 0 10px 18px rgba(30, 41, 59, .08), inset 1px 1px 2px rgba(255, 255, 255, .9);
+  --shadow-md: 0 7px 0 rgba(30, 41, 59, .08), 0 18px 28px rgba(30, 41, 59, .1), inset 2px 2px 4px rgba(255, 255, 255, .94);
+  --shadow-pressed: inset 3px 4px 8px rgba(30, 41, 59, .12), inset -2px -2px 5px rgba(255, 255, 255, .86);
+  --action-primary: var(--primary);
+  --action-primary-hover: var(--primary-dark);
   --text-on-action: #FFFFFF;
-  --focus-ring: #1578C6;
+  --focus-ring: var(--primary);
 
   color: var(--text-primary);
   color-scheme: light;
@@ -58,12 +55,6 @@
   display: flex; flex-direction: column; flex: 1 1 auto; width: 100%; height: 100%; min-height: 0; overflow: hidden;
   container-name: kv-picker iman-page;
   container-type: size;
-  background:
-    radial-gradient(ellipse at 20% 0%, color-mix(in srgb, var(--bg-glow) 78%, transparent), transparent 60%),
-    radial-gradient(ellipse at 96% 100%, color-mix(in srgb, var(--primary-light) 62%, transparent), transparent 44%),
-    var(--bg-body);
-}
-.kv-picker.kv-picker--master {
   background: transparent;
 }
 .kv-picker-wrap {
@@ -72,6 +63,7 @@
   flex-direction: column;
   min-height: 0;
   gap: clamp(8px, 1.8dvh, 22px);
+  background: transparent;
 }
 .kv-picker-wrap > .ip-header {
   position: relative;
@@ -80,7 +72,7 @@
   flex: 0 0 auto;
   min-height: 44px;
   padding: 0;
-  background: var(--bg-white);
+  background: transparent;
 }
 .kv-learning .bm-header-back {
   width: max-content;
@@ -122,25 +114,110 @@
   background: #dcebff;
   color: #80a9da;
 }
+.kv-picker-intro {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 2px;
+}
+.kv-picker-intro h1 {
+  margin: 0;
+  color: var(--text-primary);
+  font: 600 clamp(20px, 2.2cqw, 26px)/1.25 'Fredoka', 'Nunito', sans-serif;
+  letter-spacing: 0;
+}
+.kv-picker-eyebrow {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--primary);
+  font: 700 11px/1.2 'Plus Jakarta Sans', 'Nunito', sans-serif;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.kv-picker-intro p {
+  margin: 2px 0 0;
+  color: var(--text-secondary);
+  font: 500 clamp(13px, 1.3cqw, 15px)/1.45 'Plus Jakarta Sans', 'Nunito', sans-serif;
+}
+.kv-picker-count {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 6px 12px;
+  border: 2px solid var(--border-color);
+  border-radius: 999px;
+  background: #FFFFFF;
+  box-shadow: 0 3px 0 var(--primary-light);
+  color: var(--text-primary);
+  font: 700 13px/1 'Plus Jakarta Sans', 'Nunito', sans-serif;
+  letter-spacing: .01em;
+  white-space: nowrap;
+}
+.kv-picker-count::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--secondary);
+  flex: none;
+}
+@container kv-picker (max-height: 600px) {
+  .kv-picker-intro p { display: none; }
+}
+@container kv-picker (max-height: 470px) {
+  .kv-picker-intro { display: none; }
+}
+@container kv-picker (max-width: 430px) {
+  .kv-picker-intro p { display: none; }
+  .kv-picker-count { min-height: 30px; padding: 5px 9px; font-size: 12px; }
+}
 .kv-picker-body {
-  display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; overflow: hidden; overscroll-behavior: contain;
+  display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain;
   width: 100%; box-sizing: border-box; padding: 0;
   background: transparent;
 }
 .kv-picker .az-picker-grid--master {
   flex: 1 1 0;
   min-height: 0;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  grid-auto-rows: minmax(0, 1fr);
-  gap: clamp(4px, 1cqh, 10px);
+  height: auto;
+  margin-block: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: minmax(56px, 1fr);
+  align-content: stretch;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+@container kv-picker (min-width: 420px) {
+  .kv-picker .az-picker-grid--master { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+}
+@container kv-picker (min-width: 640px) {
+  .kv-picker .az-picker-grid--master { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; padding: 12px 0; }
+}
+@container kv-picker (min-width: 900px) {
+  .kv-picker .az-picker-grid--master { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; padding: 18px 0; }
+}
+@container kv-picker (min-width: 1160px) {
+  .kv-picker .az-picker-grid--master { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 20px; padding: 20px 0; }
 }
 .kv-picker .az-picker-tile--master {
   aspect-ratio: auto;
   min-height: 0;
-  gap: clamp(1px, .35cqh, 4px);
-  padding: 2px;
-  border-width: 2px;
-  border-radius: clamp(8px, 1.8cqh, 18px);
+  flex-direction: column;
+  gap: clamp(4px, .8cqh, 12px);
+  padding: clamp(6px, 1.1cqh, 16px) clamp(6px, 1.4cqi, 16px);
+  border-radius: clamp(12px, 2cqh, 22px);
+}
+.kv-picker .az-picker-caption--master {
+  margin-top: 0;
 }
 .kv-picker .az-picker-letter--master {
   font-size: min(44cqi, 55cqh, 72px);
@@ -200,17 +277,70 @@
   .kv-picker .kv-tile-letter { font-size: min(40cqi, 42cqh, 72px); }
   .kv-picker .kv-tile-cap { padding: 4cqi 6cqi; font-size: 16cqi; }
 }
-.kv-picker-quiz-action { margin: var(--sp-2) auto 4px; }
+.kv-picker-quiz-action { margin: clamp(8px, 1.4cqh, 14px) auto 2px; }
+.kv-picker .kv-picker-quiz-action .standard-hero-banner__cta,
+.kv-picker .kv-picker-quiz-action .standard-hero-banner__cta.blue-gradient-hero {
+  min-height: 48px;
+  padding: 13px 26px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--primary);
+  background-image: none;
+  color: #FFFFFF;
+  font: 700 16px/1 'Plus Jakarta Sans', 'Nunito', sans-serif;
+  letter-spacing: .02em;
+  text-shadow: none;
+  box-shadow: 0 4px 0 var(--primary-dark);
+  transition: transform .12s ease-out, box-shadow .12s ease-out, background .12s ease-out;
+}
+@media (hover: hover) {
+  .kv-picker .kv-picker-quiz-action .standard-hero-banner__cta:hover,
+  .kv-picker .kv-picker-quiz-action .standard-hero-banner__cta.blue-gradient-hero:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 0 var(--primary-dark);
+  }
+}
+.kv-picker .kv-picker-quiz-action .standard-hero-banner__cta:active,
+.kv-picker .kv-picker-quiz-action .standard-hero-banner__cta.blue-gradient-hero:active {
+  background: var(--primary);
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--primary-dark);
+}
+.kv-picker .kv-picker-quiz-action .standard-hero-banner__cta:focus-visible {
+  outline: 3px solid var(--secondary);
+  outline-offset: 3px;
+}
 @container kv-picker (min-width: 840px) {
   .kv-picker .kv-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: repeat(4, minmax(0, 1fr)); }
-  .kv-picker .az-picker-grid--master { grid-template-columns: repeat(6, minmax(0, 1fr)); }
 }
-@container kv-picker (min-width: 540px) and (max-width: 839px) {
-  .kv-picker .az-picker-grid--master { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+@container kv-picker (max-width: 700px) {
+  .kv-picker-body {
+    overflow-y: auto;
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+    overscroll-behavior-y: contain;
+    scroll-padding-block: 0 calc(88px + env(safe-area-inset-bottom, 0px));
+    scroll-snap-type: y mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .kv-picker .az-picker-grid--master {
+    grid-auto-rows: minmax(96px, auto);
+    flex: 0 0 auto;
+    min-height: auto;
+    overflow: visible;
+    align-content: start;
+  }
+  .kv-picker .az-picker-tile--master { scroll-snap-align: start; scroll-snap-stop: always; }
+}
+@container kv-picker (max-width: 430px) {
+  .kv-picker .az-picker-grid--master {
+    grid-auto-rows: minmax(76px, auto);
+    gap: 10px;
+    padding: 10px 0;
+  }
 }
 @container kv-picker (max-height: 450px) and (min-width: 500px) {
   .kv-picker .kv-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, 1fr)); }
-  .kv-picker .az-picker-grid--master { grid-template-columns: repeat(8, minmax(0, 1fr)); }
 }
 @media (prefers-reduced-motion: reduce) {
   .kv-picker .kv-letter-tile { animation: none; transition: none; }
@@ -224,11 +354,11 @@
   width: 100%;
   container-name: kv-page iman-page;
   container-type: size;
-  background: #fffdfd;
+  background: transparent;
   position: relative;
   font-family: 'Fredoka', sans-serif;
 }
-.rp-data-learning-content { background: #f5f8fa; }
+.rp-data-learning-content { background: transparent; }
 .rp-data-learning-content .kv-learning-body {
   overflow-y: auto;
   padding: clamp(16px, 3vh, 28px) clamp(12px, 4vw, 24px);
@@ -349,7 +479,7 @@
 }
 .rp-data-learning-content .kv-next {
   border: 1px solid #087cdf;
-  background: #087cdf;
+  background: var(--primary);
   color: #fff;
 }
 .rp-data-learning-content .kv-previous {
@@ -357,8 +487,8 @@
   background: #edf6ff;
   color: #42658a;
 }
-.rp-data-learning-content .kv-next:enabled:hover { background: #0669ba; }
-.rp-data-learning-content .kv-previous:enabled:hover { background: #e0f0ff; }
+.rp-data-learning-content .kv-next:enabled:hover { background: var(--primary-dark); }
+.rp-data-learning-content .kv-previous:enabled:hover { background: var(--secondary-light); }
 .rp-data-learning-content .kv-flashcard--flip-next { animation: kvFlashcardFlipNext 360ms cubic-bezier(.2,.75,.25,1) both; }
 .rp-data-learning-content .kv-flashcard--flip-previous { animation: kvFlashcardFlipPrevious 360ms cubic-bezier(.2,.75,.25,1) both; }
 @media (max-width: 480px) {
@@ -812,49 +942,10 @@
 
 html[data-color-mode='dark'] .kv-picker,
 html[data-color-mode='dark'] .kv-syllable-learning {
-  --primary: #34D3C3;
-  --primary-dark: #5AE0D1;
-  --primary-light: #164E3D;
-  --secondary: #60A5FA;
-  --secondary-dark: #79B7FF;
-  --secondary-light: #1D3D64;
-  --teal: #38BDF8;
-  --teal-dark: #70D4FB;
-  --teal-light: #17394F;
-  --gold: #FFCF5A;
-  --gold-dark: #FFE08A;
-  --gold-light: #4C401B;
-  --success: #34D399;
-  --success-dark: #6CE8B7;
-  --success-light: #164E3D;
-  --danger: #F472B6;
-  --danger-dark: #FF9BCB;
-  --danger-light: #4C263B;
-  --accent-violet: #A78BFA;
-  --accent-violet-dark: #C4B5FD;
-  --accent-violet-light: #31264F;
-  --text-primary: #F4F7FB;
-  --text-secondary: #B7C4D8;
-  --text-light: #9BA9BC;
-  --bg-body: #0F172A;
-  --bg-glow: #203E63;
-  --bg-white: #17243B;
-  --bg-card: #17243B;
-  --picker-tile-surface: #FFFFFF;
-  --bg-muted: #111B2D;
-  --border-color: #33445F;
-  --border-color-light: #29364B;
-  --shadow-sm: 0 4px 0 rgba(2, 6, 23, .24), 0 10px 18px rgba(2, 6, 23, .28), inset 1px 1px 2px rgba(255, 255, 255, .06);
-  --shadow-md: 0 7px 0 rgba(2, 6, 23, .28), 0 18px 28px rgba(2, 6, 23, .32), inset 2px 2px 4px rgba(255, 255, 255, .07), inset -2px -2px 6px rgba(0, 0, 0, .16);
-  --shadow-pressed: inset 3px 4px 8px rgba(2, 6, 23, .36), inset -2px -2px 5px rgba(255, 255, 255, .06);
-  --action-primary: var(--action-blue);
-  --action-primary-hover: var(--action-blue-hover);
-  --text-on-action: #FFFFFF;
-  --focus-ring: #34D399;
-
-  background: transparent;
-  color-scheme: dark;
+  color-scheme: light;
 }
+html[data-color-mode='dark'] .kv-picker { background: transparent; }
+html[data-color-mode='dark'] .kv-syllable-learning { background: transparent; }
 html[data-color-mode='dark'] .kv-picker .bm-header,
 html[data-color-mode='dark'] .kv-syllable-learning .bm-header,
 html[data-color-mode='dark'] .kv-syllable-learning .kv-learning-footer {
@@ -863,7 +954,7 @@ html[data-color-mode='dark'] .kv-syllable-learning .kv-learning-footer {
 html[data-color-mode='dark'] .kv-syllable-learning .kv-flashcard {
   background: transparent;
 }
-html[data-color-mode='dark'] .kv-syllable-learning .kv-syllable-highlight { color: #f87171; }
+html[data-color-mode='dark'] .kv-syllable-learning .kv-syllable-highlight { color: var(--danger); }
 html[data-color-mode='dark'] .kv-syllable-learning .kv-completion--clay {
   border-color: var(--border-color);
   background: var(--bg-card);
@@ -2516,7 +2607,8 @@ html[data-color-mode='dark'] .kv-syllable-learning .kv-completion--clay h2 span 
   gap: 0;
 }
 .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-copy .kv-syllable-example {
-  flex: 0 0 auto;
+  flex: 1 1 auto;
+  min-width: 0;
   min-height: 0;
   padding: 0;
 }
@@ -3001,4 +3093,901 @@ html[data-color-mode='dark'] .kv-syllable-learning .kv-completion--clay h2 span 
 .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-copy .kv-syllable-example-text {
   display: block;
   line-height: 1.2 !important;
+}
+
+/* Letter picker + flashcard modal */
+.kv-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: clamp(10px, 3vw, 32px);
+  background: color-mix(in srgb, var(--primary) 18%, transparent);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  overscroll-behavior: contain;
+  animation: kvModalFadeIn 180ms ease-out both;
+}
+.kv-modal-content {
+  position: relative;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: min(100%, 700px);
+  height: min(94dvh, 860px);
+  max-height: 94dvh;
+  overflow: hidden;
+  border-radius: 28px;
+  background: #f5f8fa;
+  box-shadow: 0 24px 70px rgba(8, 27, 73, .38);
+  animation: kvModalPopIn 260ms cubic-bezier(.34, 1.56, .64, 1) both;
+}
+.kv-modal-content > .kv-learning {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+}
+.kv-modal-bar {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 12px 14px 0;
+}
+.kv-modal-close {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid #e3e9f0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .96);
+  color: #526b8f;
+  box-shadow: 0 3px 10px rgba(23, 53, 86, .16);
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease, color 160ms ease;
+}
+@media (hover: hover) {
+  .kv-modal-close:hover {
+    background: #fff0f3;
+    color: #ef293b;
+    transform: translateY(-1px);
+  }
+}
+.kv-modal-close:active { transform: translateY(1px); }
+.kv-modal-close:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
+.kv-modal-content .kv-learning-stage {
+  display: flex;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+.kv-modal-content .kv-learning-body {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+}
+.kv-modal-content .kv-flashcard { margin-block: auto; }
+@keyframes kvModalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes kvModalPopIn {
+  from { opacity: 0; transform: translateY(14px) scale(.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@media (max-width: 560px) {
+  .kv-modal-overlay { padding: 8px; }
+  .kv-modal-content {
+    width: 100%;
+    height: min(96dvh, 860px);
+    max-height: 96dvh;
+    border-radius: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kv-modal-overlay,
+  .kv-modal-content { animation: none; }
+}
+
+/* Keep KV letter colors keyed to the letter rather than its grid position. */
+.kv-picker .bm-header-back,
+.kv-syllable-learning .bm-header-back {
+  border-color: var(--primary-light);
+  background: #FFFFFF;
+  color: var(--primary);
+}
+.kv-picker.iman-layout .ip-header .ih-account {
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+.kv-picker.iman-layout .ip-header .ih-avatar {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+.kv-learning,
+.rp-data-learning-content,
+.kv-learning-body {
+  background: transparent !important;
+}
+.kv-modal-content {
+  background: var(--bg-body);
+  box-shadow: 0 24px 70px rgba(30, 41, 59, .18);
+}
+.kv-modal-close {
+  border-color: var(--border-color);
+  color: var(--text-secondary);
+}
+.kv-modal-close:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard {
+  border-color: var(--primary-light);
+  background: #FFFFFF;
+  box-shadow: 0 6px 0 var(--primary-light), 0 16px 34px color-mix(in srgb, var(--primary) 14%, transparent);
+}
+.kv-learning.kv-learning--kv .kv-flashcard,
+.rp-data-learning-content .kv-flashcard {
+  border-color: var(--primary-light);
+  background: #FFFFFF;
+  box-shadow: 0 6px 0 var(--primary-light), 0 16px 34px color-mix(in srgb, var(--primary) 14%, transparent);
+}
+.kv-learning.kv-learning--kv .kv-flashcard-letters,
+.rp-data-learning-content .kv-flashcard-letters,
+.kv-learning.kv-learning--kv .kv-flashcard-letters .kv-letter-pair,
+.rp-data-learning-content .kv-flashcard-letters .kv-letter-pair {
+  color: var(--primary);
+  background: none;
+  filter: none;
+  text-shadow: none;
+  -webkit-text-fill-color: currentColor;
+}
+.kv-learning.kv-learning--kv .kv-flashcard-letter-badge,
+.rp-data-learning-content .kv-flashcard-letter-badge {
+  outline-color: var(--primary);
+  background: var(--primary);
+}
+.kv-learning.kv-learning--kv .kv-flashcard-learn-badge,
+.rp-data-learning-content .kv-flashcard-learn-badge {
+  background: var(--secondary);
+  color: var(--text-primary);
+}
+.kv-learning.kv-learning--kv .kv-inline-audio-card,
+.rp-data-learning-content .kv-inline-audio-card {
+  background: var(--primary-light);
+}
+.kv-learning.kv-learning--kv .kv-sentence-example,
+.rp-data-learning-content .kv-sentence-example {
+  background: var(--secondary-light);
+}
+.kv-learning.kv-learning--kv .kv-flashcard-picture-item,
+.rp-data-learning-content .kv-flashcard-picture-item {
+  background: var(--gold-light) !important;
+}
+.rp-data-learning-content .kv-inline-audio-button {
+  border-color: var(--primary-light);
+  background: var(--primary-light);
+  color: var(--primary);
+}
+.rp-data-learning-content .kv-next {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #FFFFFF;
+}
+.rp-data-learning-content .kv-previous {
+  border-color: var(--secondary-light);
+  background: var(--secondary-light);
+  color: var(--text-primary);
+}
+.rp-data-learning-content .kv-next:enabled:hover { background: var(--primary-dark); }
+.rp-data-learning-content .kv-previous:enabled:hover { background: var(--secondary-light); }
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letter-badge {
+  outline-color: var(--primary);
+  background: var(--primary);
+  box-shadow: 0 4px 8px color-mix(in srgb, var(--primary) 18%, transparent);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge {
+  background: var(--secondary);
+  color: var(--text-primary);
+  box-shadow: 0 5px 0 var(--secondary-dark), 0 9px 16px color-mix(in srgb, var(--secondary) 16%, transparent);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters .kv-letter-pair {
+  color: var(--primary);
+  background: none;
+  filter: none;
+  text-shadow: none;
+  -webkit-text-fill-color: currentColor;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-panel {
+  background: var(--primary-light);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--primary) 14%, transparent);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-panel {
+  background: var(--secondary-light);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--secondary) 18%, transparent);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item {
+  background: var(--gold-light) !important;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-button,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-nav-button {
+  border-color: var(--primary-light);
+  background: var(--primary);
+  color: #FFFFFF;
+  box-shadow: 0 4px 0 var(--primary-dark);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-encouragement {
+  background: var(--danger-light);
+  color: var(--text-primary);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--danger) 18%, transparent);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-syllable-highlight,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-kv {
+  color: var(--secondary-dark);
+}
+.kv-completion--clay {
+  color: var(--text-primary);
+}
+.kv-completion--clay h2 { color: var(--text-primary); }
+.kv-completion--clay h2 span { color: var(--primary); }
+.kv-completion--clay p { color: var(--text-secondary); }
+.kv-completion--clay .kv-completion-return {
+  border-color: var(--primary);
+  background: var(--primary);
+  box-shadow: 0 4px 0 var(--primary-dark), 0 0 0 9px var(--primary-light);
+}
+
+/* Give the picker dialog a calm, layered frame around the colorful learning card. */
+.kv-modal-overlay {
+  padding: clamp(14px, 3vw, 36px);
+  background:
+    radial-gradient(ellipse at 50% 8%, color-mix(in srgb, var(--gold-light) 54%, transparent), transparent 48%),
+    color-mix(in srgb, var(--primary) 24%, rgba(30, 41, 59, .48));
+  -webkit-backdrop-filter: blur(9px) saturate(1.08);
+  backdrop-filter: blur(9px) saturate(1.08);
+}
+.kv-modal-content {
+  width: min(100%, 820px);
+  height: min(90dvh, 800px);
+  max-height: min(92dvh, 860px);
+  border: 1px solid color-mix(in srgb, var(--primary) 16%, #FFFFFF);
+  border-radius: 30px;
+  background:
+    radial-gradient(ellipse at 5% 0%, color-mix(in srgb, var(--primary-light) 82%, transparent), transparent 42%),
+    radial-gradient(ellipse at 100% 100%, color-mix(in srgb, var(--gold-light) 82%, transparent), transparent 36%),
+    var(--bg-body);
+  box-shadow:
+    0 32px 88px rgba(30, 41, 59, .28),
+    0 8px 24px color-mix(in srgb, var(--primary) 12%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, .96);
+  isolation: isolate;
+}
+.kv-modal-bar {
+  position: relative;
+  z-index: 2;
+  gap: 10px;
+  padding: 16px 18px 0;
+}
+.kv-modal-close {
+  width: 44px;
+  height: 44px;
+  border-color: color-mix(in srgb, var(--primary) 18%, #FFFFFF);
+  background: #FFFFFF;
+  color: var(--primary-dark);
+  box-shadow:
+    0 4px 0 var(--primary-light),
+    0 8px 16px color-mix(in srgb, var(--primary) 12%, transparent),
+    inset 0 1px 0 #FFFFFF;
+}
+.kv-modal-close:hover {
+  border-color: var(--primary-light);
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  transform: translateY(-2px);
+}
+.kv-modal-close:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 var(--primary-light);
+}
+@media (max-width: 560px) {
+  .kv-modal-overlay { padding: 8px; }
+  .kv-modal-content {
+    height: min(96dvh, 640px);
+    max-height: 96dvh;
+    border-radius: 22px;
+  }
+  .kv-modal-bar { padding: 12px 12px 0; }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-learning-body {
+    justify-content: flex-start;
+    padding: 14px 14px 18px !important;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard {
+    margin: 12px auto 16px !important;
+  }
+}
+
+.kv-modal-content {
+  border-color: #e2e8f3;
+  background:
+    radial-gradient(ellipse at 3% 3%, #e8f1ff 0%, transparent 46%),
+    radial-gradient(ellipse at 100% 98%, #fff0f5 0%, transparent 42%),
+    #fbfcff;
+}
+.kv-modal-overlay {
+  background:
+    linear-gradient(135deg, rgba(122, 153, 255, .34), rgba(255, 143, 190, .30)),
+    rgba(31, 47, 76, .40);
+}
+.kv-modal-content .kv-modal-bar {
+  justify-content: flex-end;
+  gap: 9px;
+}
+.kv-modal-content .kv-modal-close,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-settings summary {
+  width: 42px;
+  height: 42px;
+  border: 1px solid #e3eaf0;
+  border-radius: 14px;
+  background: #FFFFFF;
+  color: var(--kv-modal-muted);
+  box-shadow: 0 3px 9px rgba(40, 63, 83, .07);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-settings {
+  position: relative;
+  inset: auto;
+  z-index: 3;
+  margin: 0;
+  width: 42px;
+  height: 42px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-settings summary {
+  display: grid;
+  place-items: center;
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+}
+.kv-modal-content .kv-modal-close:hover {
+  border-color: #dce7ee;
+  background: #f1f6f9;
+  color: var(--kv-modal-muted);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-settings summary:hover,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-settings[open] summary {
+  border-color: #dce7ee;
+  background: #f1f6f9;
+  color: var(--kv-modal-ink);
+}
+.kv-modal-content .kv-modal-close:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--primary) 36%, transparent);
+  outline-offset: 3px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-settings summary:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--primary) 36%, transparent);
+  outline-offset: 3px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-settings .kv-settings-panel {
+  top: calc(100% + 8px);
+  right: 0;
+  border-color: #e2eaf0;
+  box-shadow: 0 14px 32px rgba(40, 63, 83, .14);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard {
+  border: 1px solid #e8edf1;
+  border-radius: 26px;
+  background: #FFFFFF;
+  box-shadow: 0 12px 30px rgba(48, 69, 89, .08);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letter-badge,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge {
+  top: 12px;
+  min-height: 34px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 13px;
+  border: 1px solid #e5ecf1;
+  border-radius: 999px;
+  background: #399fe9;
+  color: #FFFFFF;
+  font: 600 13px/1.2 'Fredoka', sans-serif;
+  text-align: center;
+  box-shadow: none;
+  transform: none;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letter-badge {
+  left: 18px;
+  outline: 0;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge {
+  right: 18px;
+  flex-direction: column;
+  gap: 1px;
+  background: #22b978;
+  border-color: #22b978;
+  color: #FFFFFF;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge::before,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge::after {
+  display: none;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge small {
+  margin: 0;
+  color: rgba(255, 255, 255, .9);
+  font-size: 10px;
+  font-weight: 500;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv:not(.kv-learning--jawi) .kv-flashcard-letters .kv-letter-pair {
+  color: var(--kv-modal-coral);
+  background: none;
+  filter: none;
+  text-shadow: none;
+  -webkit-text-fill-color: currentColor;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-word,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-syllable-example-text {
+  color: var(--kv-modal-ink);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-syllable-example-label {
+  display: none;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-syllable-example-text {
+  font-size: clamp(34px, 16cqw, 48px) !important;
+  font-weight: 700;
+  line-height: 1.08;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-syllable-highlight,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-kv {
+  color: var(--kv-modal-coral);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-translations {
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+  white-space: normal;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-translation,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-jawi {
+  color: var(--kv-modal-muted);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-jawi {
+  color: var(--kv-modal-teal);
+  font-size: 20px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card {
+  min-height: 0;
+  padding: 10px 0;
+  gap: 10px;
+  background: transparent;
+  box-shadow: none;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card .kv-inline-audio-button,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example .kv-inline-audio-button {
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  min-height: 42px;
+  border: 1px solid #399fe9;
+  border-radius: 50%;
+  background: #399fe9;
+  color: #FFFFFF;
+  box-shadow: 0 3px 0 #257fc8, 0 7px 14px rgba(57, 159, 233, .26);
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-button:hover {
+  background: #278fdd;
+  color: #FFFFFF;
+  transform: translateY(-1px);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-button:focus-visible,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-nav-button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--primary) 38%, transparent);
+  outline-offset: 3px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example {
+  min-height: 0;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: #e2f3ff;
+  box-shadow: 0 3px 0 #c9e8fc;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example-text {
+  color: var(--kv-modal-ink);
+  font-size: clamp(24px, 6cqw, 34px) !important;
+  line-height: 1.2;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-translation,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-jawi {
+  color: var(--kv-modal-muted);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-nav-button {
+  border: 0;
+  border-radius: 16px;
+  background: var(--kv-modal-blue);
+  box-shadow: 0 3px 0 var(--kv-modal-blue-dark);
+  transition: background 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-nav-button:hover:not(:disabled) {
+  background: #6d8eb7;
+  transform: translateY(-1px);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-nav-button:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--kv-modal-blue-dark);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-nav-button:disabled {
+  background: #d9e3ef;
+  box-shadow: 0 2px 0 #c6d3e2;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-navigation {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item {
+  background: #ffec9c !important;
+  box-shadow: 0 0 0 10px #eaf6bb;
+}
+@media (max-width: 560px) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letter-badge {
+    left: 12px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge {
+    right: 12px;
+  }
+}
+
+/* ── Premium flashcard polish (shared: modal picker + full-page items mode) ── */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv {
+  --kv-modal-coral: #f2545b;
+  --kv-modal-ink: #22334a;
+  --kv-modal-muted: #5c7089;
+  --kv-modal-blue: #2f80ed;
+  --kv-modal-blue-dark: #1e63c4;
+  --kv-modal-teal: #0e9f6e;
+}
+.kv-modal-content {
+  --kv-modal-coral: #f2545b;
+  --kv-modal-ink: #22334a;
+  --kv-modal-muted: #5c7089;
+  --kv-modal-blue: #2f80ed;
+  --kv-modal-blue-dark: #1e63c4;
+  --kv-modal-teal: #0e9f6e;
+  border-color: #e4ebf3;
+  background:
+    radial-gradient(ellipse at 2% 2%, #eaf2fd 0%, transparent 44%),
+    radial-gradient(ellipse at 100% 100%, #fff3ee 0%, transparent 40%),
+    #fbfcfe;
+}
+.kv-modal-overlay {
+  background:
+    linear-gradient(135deg, rgba(87, 138, 235, .38), rgba(242, 129, 129, .32)),
+    rgba(28, 42, 66, .44);
+}
+.kv-modal-content .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-learning-body {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard {
+  border: 1px solid #e6edf5;
+  border-radius: 26px;
+  background: linear-gradient(180deg, #ffffff 0%, #fdfeff 100%);
+  box-shadow:
+    0 1px 2px rgba(34, 51, 74, .05),
+    0 18px 40px -22px rgba(34, 51, 74, .22);
+}
+
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letter-badge {
+  top: 14px;
+  border: 0;
+  background: linear-gradient(180deg, #3f8ef2, #2563eb);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3), 0 3px 8px rgba(37, 99, 235, .28);
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge {
+  top: 14px;
+  border: 0;
+  background: linear-gradient(180deg, #2fbe8b, #0e9f6e);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3), 0 3px 8px rgba(14, 159, 110, .28);
+}
+
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv:not(.kv-learning--jawi) .kv-flashcard-letters .kv-letter-pair {
+  color: var(--kv-modal-coral);
+  background: linear-gradient(180deg, #ff9398 0%, #f2545b 52%, #d43a47 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 0 rgba(170, 32, 44, .22));
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv.kv-learning--jawi .kv-flashcard-letters--jawi > span {
+  color: var(--kv-modal-coral);
+  background: linear-gradient(180deg, #ff9398 0%, #f2545b 52%, #d43a47 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 0 rgba(170, 32, 44, .22));
+}
+
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card {
+  box-sizing: border-box;
+  padding: 12px 16px;
+  gap: 12px;
+  border: 1px solid #edf2f8;
+  border-radius: 16px;
+  background: #f8fafd;
+  box-shadow: none;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example {
+  border: 1px solid #d9eafb;
+  border-radius: 16px;
+  background: #eef6ff;
+  box-shadow: 0 3px 0 #d3e6f9, 0 10px 22px -14px rgba(47, 128, 237, .35);
+}
+
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item {
+  background: linear-gradient(180deg, #fffdf5 0%, #fcefc9 100%) !important;
+  box-shadow:
+    0 0 0 8px rgba(250, 224, 145, .3),
+    inset 0 0 0 2px rgba(240, 200, 105, .35);
+}
+
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card .kv-inline-audio-button,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example .kv-inline-audio-button {
+  border: 0;
+  background: linear-gradient(180deg, #4793f0, #2f80ed);
+  box-shadow: 0 3px 0 #1e63c4, 0 8px 14px rgba(47, 128, 237, .24);
+  transition: background 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+@media (hover: hover) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-button:hover {
+    background: linear-gradient(180deg, #2f80ed, #1e63c4);
+    transform: translateY(-1px);
+  }
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 #1e63c4;
+}
+
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-nav-button {
+  border: 0;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #4793f0, #2f80ed);
+  box-shadow: 0 4px 0 #1e63c4, 0 10px 18px rgba(47, 128, 237, .22);
+}
+@media (hover: hover) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-nav-button:hover:not(:disabled) {
+    background: linear-gradient(180deg, #2f80ed, #1e63c4);
+    transform: translateY(-1px);
+  }
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-nav-button:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #1e63c4;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-nav-button:disabled {
+  background: #dbe4ef;
+  box-shadow: 0 2px 0 #c8d4e3;
+}
+
+/* Compact pass — landscape phones and short laptop windows */
+@media (max-height: 620px) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard {
+    padding: 40px 24px 18px !important;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row {
+    margin-bottom: 10px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters {
+    font-size: clamp(48px, 34cqw, 120px) !important;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters.kv-flashcard-letters--syllable {
+    font-size: clamp(40px, 28cqw, 96px) !important;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item {
+    width: 120px !important;
+    min-width: 120px !important;
+    max-width: 120px !important;
+    height: 120px !important;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture {
+    font-size: 60px !important;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-syllable-example-text {
+    font-size: clamp(20px, 12cqw, 30px) !important;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example-text {
+    font-size: clamp(18px, 5cqw, 24px) !important;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-translation,
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-translation {
+    font-size: 14px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-jawi,
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-jawi {
+    font-size: 15px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example {
+    padding: 12px 14px;
+  }
+}
+
+/* Compact pass — narrow phones */
+@media (max-width: 380px) {
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard {
+    padding: 36px 12px 16px !important;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row {
+    grid-template-columns: minmax(0, 1fr) minmax(84px, 104px);
+    gap: 8px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item {
+    width: 104px !important;
+    min-width: 104px !important;
+    max-width: 104px !important;
+    height: 104px !important;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture {
+    font-size: 52px !important;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letter-badge {
+    left: 10px;
+    font-size: 12px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-learn-badge {
+    right: 10px;
+    font-size: 11px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-card-nav-button {
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+  }
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card .kv-inline-audio-button,
+  .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-sentence-example .kv-inline-audio-button {
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    min-height: 38px;
+  }
+}
+
+/* ── Responsive overlap fixes ────────────────────────────────────────────── */
+/* Items mode (full-page): the settings chip floats above the card, above the green badge. */
+.rp-layout .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-settings {
+  position: absolute;
+  inset: auto;
+  top: -52px;
+  right: 18px;
+  z-index: 6;
+}
+@media (max-width: 560px) {
+  .rp-layout .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-settings {
+    top: -50px;
+    right: 12px;
+  }
+}
+@media (max-width: 380px) {
+  .rp-layout .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-settings {
+    right: 10px;
+  }
+}
+
+/* Word card: copy may shrink and wrap instead of colliding with the speaker button. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-copy .kv-syllable-example-text,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-copy .kv-flashcard-word {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-word-translations {
+  flex-wrap: wrap;
+  white-space: normal;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-audio-text-row .kv-sentence-example-text {
+  overflow-wrap: anywhere;
+}
+
+/* Long-word cards: container-sized text plus reserved space for the floating speaker. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word .kv-word-copy .kv-syllable-example-text,
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word .kv-word-copy .kv-flashcard-word {
+  font-size: clamp(15px, 8.5cqw, 26px) !important;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word {
+  padding-inline: 52px;
+}
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word .kv-inline-audio-button {
+  right: 8px;
+}
+
+/* ── Unified flashcard size: identical in modal picker + full-page items mode ──
+   Single source of truth — no layout wrapper may resize the KV card. */
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard {
+  box-sizing: border-box;
+  flex: 0 0 auto !important;
+  align-self: auto !important;
+  width: min(100%, 700px) !important;
+  max-width: 700px !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+}
+
+/* ── Items-mode flashcard structure (LearnWords / LongSentences) ───────────
+   Line 1: big letters + icon side by side (centred). Line 2: word box below,
+   full width. Scoped to .rp-layout so the modal picker keeps its hero. */
+.rp-layout .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14px 18px;
+  margin-bottom: 14px;
+}
+.rp-layout .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-left-column {
+  display: contents;
+}
+.rp-layout .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters-item {
+  order: 0;
+  flex: 0 1 auto;
+  margin: 0;
+}
+.rp-layout .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item {
+  order: 1;
+  flex: 0 0 auto;
+  margin: 0;
+}
+.rp-layout .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-text-group {
+  order: 2;
+  flex: 0 0 100%;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+.rp-layout .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-inline-audio-card--long-word {
+  width: 100% !important;
+  max-width: none !important;
+  margin-inline: 0 !important;
+}
+@media (max-width: 560px) {
+  .rp-layout .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-hero-row {
+    gap: 10px 12px;
+    margin-bottom: 10px;
+  }
+  .rp-layout .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters,
+  .rp-layout .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters.kv-flashcard-letters--syllable {
+    font-size: clamp(40px, 22cqw, 84px) !important;
+  }
+  .rp-layout .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item,
+  .rp-layout .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item--long-word {
+    width: min(120px, 30vw) !important;
+    min-width: min(120px, 30vw) !important;
+    max-width: min(120px, 30vw) !important;
+    height: min(120px, 30vw) !important;
+  }
+  .rp-layout .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-picture-item .kv-flashcard-picture {
+    font-size: clamp(40px, 12vw, 60px) !important;
+  }
 }

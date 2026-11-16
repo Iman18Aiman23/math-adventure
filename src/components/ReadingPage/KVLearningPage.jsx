@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { Settings, Check, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Settings, Check, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { KV_LETTERS, getKVSeriesByLetter } from '../../data/curriculum/bm_kv';
 import SpeechManager from '../../services/SpeechManager';
 import AZPickerPage from './AZPickerPage';
@@ -128,24 +128,30 @@ export default function KVLearningPage({ onBack, onComplete = onBack, language, 
     setSeriesComplete(false);
   };
 
+  // Close the flashcard modal on Escape and lock page scroll while it is open.
+  useEffect(() => {
+    if (items || !selectedLetter) return undefined;
+    const handleKeyDown = (event) => {
+      if (event.key !== 'Escape' || settingsRef.current?.open) return;
+      setSelectedLetter(null);
+      setCardIndex(0);
+      setSeriesComplete(false);
+    };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [items, selectedLetter]);
+
 
   // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // â”€â”€ VIEW 1: Letter Picker â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  if (!items && !selectedLetter) {
-    return (
-      <AZPickerPage
-        {...accountProps}
-        letters={letters}
-        getCardCount={letter => getSeriesByLetter(letter).length}
-        onBack={onBack}
-        onSelectLetter={handleSelectLetter}
-        language={uiLanguage}
-        title={title}
-        onStartQuiz={onStartQuiz}
-      />
-    );
-  }
+  // NOTE: The letter picker is now always rendered for picker mode; selecting a
+  // letter opens the flashcard in a modal overlay instead of navigating away.
 
   // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // â”€â”€ VIEW 2 / 3: Flashcard (+ completion popup overlay) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -169,7 +175,6 @@ export default function KVLearningPage({ onBack, onComplete = onBack, language, 
       ? 'ماري بلاجر!'
       : 'Mari Belajar!';
   const learnBadgeSubTitle = script === 'RUMI' ? 'Let’s Learn!' : 'Mari Belajar';
-  const encouragementText = script === 'ENG' ? 'Great job!' : script === 'JAWI' ? 'شيابس!' : 'Syabas!';
   // Selected script drives the emphasised (main) word; the other line is the translation.
   const mainWord = script === 'ENG' ? enWord : script === 'JAWI' ? jawiWord : msWord;
   const isLongMainWord = Math.max(
@@ -218,27 +223,32 @@ export default function KVLearningPage({ onBack, onComplete = onBack, language, 
           { text: sentenceJawiForScript, className: 'kv-sentence-jawi', lang: 'ms-Arab', dir: 'rtl' },
         ]).filter(reading => reading.text && stripHighlightMarkers(reading.text) !== stripHighlightMarkers(mainSentence));
 
-  return (
-    <>
+  const settingsControl = (
+    <details className="kv-settings kv-flashcard-settings" ref={settingsRef}>
+      <summary aria-label={uiLanguage === 'bm' ? 'Tetapan' : 'Settings'} title={uiLanguage === 'bm' ? 'Tetapan' : 'Settings'}>
+        <Settings size={21} aria-hidden="true" />
+      </summary>
+      <div className="kv-settings-panel" role="group" aria-label={uiLanguage === 'bm' ? 'Pilihan bahasa dan tulisan' : 'Language & script'}>
+        <span className="kv-settings-label">{uiLanguage === 'bm' ? 'Bahasa & tulisan' : 'Language & script'}</span>
+        {SCRIPTS.map(s => (
+          <button type="button" key={s.key} aria-pressed={script === s.key} onClick={() => {
+            setScript(s.key);
+            settingsRef.current.open = false;
+            settingsRef.current.querySelector('summary').focus();
+          }}>
+            {s.label}{script === s.key && <Check size={17} aria-hidden="true" />}
+          </button>
+        ))}
+      </div>
+    </details>
+  );
 
-      <ReadingLearningLayout
-        pageClassName={`kv-learning--kv${isJawi ? ' kv-learning--jawi' : ''}`}
-        onBack={handleBackToLetters}
-        onPrevious={handlePrev}
-        onNext={handleNext}
-        previousDisabled={cardIndex === 0 && currentLetterIdx === 0}
-        language={uiLanguage}
-        accountProps={accountProps}
-        backLabel={isJawi ? '\u06a9\u0645\u0628\u0627\u0644\u064a' : undefined}
-        backLabelLang={isJawi ? 'ms-Arab' : undefined}
-        backLabelDir={isJawi ? 'rtl' : undefined}
-        hideFooter
-      >
-        <article
-          key={currentItem?.id}
-          className={`kv-flashcard${flipDirection ? ` kv-flashcard--flip-${flipDirection}` : ''}`}
-          aria-label={mainWord}
-        >
+  const flashcard = (
+    <article
+      key={currentItem?.id}
+      className={`kv-flashcard${flipDirection ? ` kv-flashcard--flip-${flipDirection}` : ''}`}
+      aria-label={mainWord}
+    >
           <div className="kv-flashcard-header">
             <div className="kv-flashcard-badges" aria-hidden="true">
               <span className="kv-flashcard-letter-badge" lang={script === 'JAWI' ? 'ms-Arab' : script === 'ENG' ? 'en' : 'ms'} dir={script === 'JAWI' ? 'rtl' : 'ltr'}>{letterBadgeLabel}</span>
@@ -247,23 +257,7 @@ export default function KVLearningPage({ onBack, onComplete = onBack, language, 
               </span>
             </div>
             <div className="kv-flashcard-top-row">
-              <details className="kv-settings kv-flashcard-settings" ref={settingsRef}>
-                <summary aria-label={uiLanguage === 'bm' ? 'Tetapan' : 'Settings'} title={uiLanguage === 'bm' ? 'Tetapan' : 'Settings'}>
-                  <Settings size={21} aria-hidden="true" />
-                </summary>
-                <div className="kv-settings-panel" role="group" aria-label={uiLanguage === 'bm' ? 'Pilihan bahasa dan tulisan' : 'Language & script'}>
-                  <span className="kv-settings-label">{uiLanguage === 'bm' ? 'Bahasa & tulisan' : 'Language & script'}</span>
-                  {SCRIPTS.map(s => (
-                    <button type="button" key={s.key} aria-pressed={script === s.key} onClick={() => {
-                      setScript(s.key);
-                      settingsRef.current.open = false;
-                      settingsRef.current.querySelector('summary').focus();
-                    }}>
-                      {s.label}{script === s.key && <Check size={17} aria-hidden="true" />}
-                    </button>
-                  ))}
-                </div>
-              </details>
+              {items && settingsControl}
             </div>
           </div>
           <div className="kv-flashcard-body">
@@ -358,12 +352,79 @@ export default function KVLearningPage({ onBack, onComplete = onBack, language, 
             <button type="button" className="kv-card-nav-button" onClick={handlePrev}
               disabled={cardIndex === 0 && currentLetterIdx === 0}
               aria-label={uiLanguage === 'bm' ? 'Sebelumnya' : 'Previous'}><ChevronLeft aria-hidden="true" /></button>
-            <span className="kv-flashcard-encouragement" lang={script === 'JAWI' ? 'ms-Arab' : script === 'ENG' ? 'en' : 'ms'} dir={script === 'JAWI' ? 'rtl' : 'ltr'}>⭐ {encouragementText} ⭐</span>
             <button type="button" className="kv-card-nav-button" onClick={handleNext}
               aria-label={uiLanguage === 'bm' ? 'Seterusnya' : 'Next'}><ChevronRight aria-hidden="true" /></button>
           </nav>
-        </article>
-      </ReadingLearningLayout>
+    </article>
+  );
+
+  // Reading-data mode keeps the original full-page flashcard experience.
+  if (items) {
+    return (
+      <>
+        <ReadingLearningLayout
+          pageClassName={`kv-learning--kv${isJawi ? ' kv-learning--jawi' : ''}`}
+          onBack={handleBackToLetters}
+          onPrevious={handlePrev}
+          onNext={handleNext}
+          previousDisabled={cardIndex === 0 && currentLetterIdx === 0}
+          language={uiLanguage}
+          accountProps={accountProps}
+          backLabel={isJawi ? '\u06a9\u0645\u0628\u0627\u0644\u064a' : undefined}
+          backLabelLang={isJawi ? 'ms-Arab' : undefined}
+          backLabelDir={isJawi ? 'rtl' : undefined}
+          hideFooter
+        >
+          {flashcard}
+        </ReadingLearningLayout>
+
+        {seriesComplete && <KVCompletion language={uiLanguage} onReturn={onComplete} className="kv-completion--clay" />}
+      </>
+    );
+  }
+
+  // Picker mode: the letter grid stays on screen and the flashcard opens as a modal.
+  return (
+    <>
+      <AZPickerPage
+        {...accountProps}
+        letters={letters}
+        getCardCount={letter => getSeriesByLetter(letter).length}
+        onBack={onBack}
+        onSelectLetter={handleSelectLetter}
+        language={uiLanguage}
+        title={title}
+        onStartQuiz={onStartQuiz}
+      />
+
+      {selectedLetter && (
+        <div
+          className="kv-modal-overlay"
+          role="presentation"
+          onClick={event => {
+            if (event.target === event.currentTarget) handleBackToLetters();
+          }}
+        >
+          <div className="kv-modal-content" role="dialog" aria-modal="true" aria-label={mainWord || title}>
+            <div className={`kv-learning kv-syllable-learning kv-learning--unified kv-learning--kv${isJawi ? ' kv-learning--jawi' : ''}`}>
+              <div className="kv-modal-bar">
+              {!items && settingsControl}
+              <button
+                  type="button"
+                  className="kv-modal-close"
+                  onClick={handleBackToLetters}
+                  aria-label={uiLanguage === 'bm' ? 'Tutup' : 'Close'}
+                >
+                  <X size={22} aria-hidden="true" />
+                </button>
+              </div>
+              <div className="kv-learning-stage">
+                <main className="kv-learning-body">{flashcard}</main>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {seriesComplete && <KVCompletion language={uiLanguage} onReturn={onComplete} className="kv-completion--clay" />}
     </>

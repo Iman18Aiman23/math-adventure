@@ -27,6 +27,16 @@ export default function AZPickerPage({
           showProgress={false}
         />
         <div className="kv-picker-body">
+          <div className="kv-picker-intro">
+            <div>
+              <span className="kv-picker-eyebrow">{title || (isMalay ? 'Membaca' : 'Reading')}</span>
+              <h1>{isMalay ? 'Pilih huruf' : 'Choose a letter'}</h1>
+              <p>{isMalay ? 'Ketik huruf untuk buka kad flash.' : 'Tap a letter to open its flashcards.'}</p>
+            </div>
+            <span className="kv-picker-count">
+              {letters.length} {isMalay ? 'huruf' : 'letters'}
+            </span>
+          </div>
           <AZPickerGrid
             letters={letters}
             getCardCount={getCardCount}

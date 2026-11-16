@@ -1985,7 +1985,7 @@ button {
     max-width: 100%;
     flex-direction: row;
     box-shadow: none;
-    background: #F2F8F1;
+    background: #FFFFFF;
   }
 
   /* ── Desktop Sidebar ── (styles managed by DesktopSidebar.jsx inline <style>) */
