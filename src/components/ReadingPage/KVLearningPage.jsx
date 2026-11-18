@@ -46,7 +46,7 @@ function SpeakerIcon() {
   );
 }
 
-export default function KVLearningPage({ onBack, onComplete = onBack, language, onStartQuiz, title = language === 'bm' ? 'Suku Kata' : 'Syllables', letters = KV_LETTERS, getSeriesByLetter = getKVSeriesByLetter, items, initialScript = 'RUMI', ...accountProps }) {
+export default function KVLearningPage({ onBack, onComplete = onBack, language, onStartQuiz, title = language === 'bm' ? 'Suku Kata' : 'Syllables', letters = KV_LETTERS, getSeriesByLetter = getKVSeriesByLetter, letterCardSuffix = '', items, initialScript = 'RUMI', ...accountProps }) {
   // â”€â”€ State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const [selectedLetter, setSelectedLetter] = useState(items ? '__all__' : null);
   const [cardIndex,      setCardIndex]      = useState(0);
@@ -246,7 +246,7 @@ export default function KVLearningPage({ onBack, onComplete = onBack, language, 
   const flashcard = (
     <article
       key={currentItem?.id}
-      className={`kv-flashcard${flipDirection ? ` kv-flashcard--flip-${flipDirection}` : ''}`}
+      className={`kv-flashcard kv-flashcard--az-letter-style${flipDirection ? ` kv-flashcard--flip-${flipDirection}` : ''}`}
       aria-label={mainWord}
     >
           <div className="kv-flashcard-header">
@@ -395,6 +395,8 @@ export default function KVLearningPage({ onBack, onComplete = onBack, language, 
         language={uiLanguage}
         title={title}
         onStartQuiz={onStartQuiz}
+        letterCardSuffix={letterCardSuffix}
+        mirrorAZStyle
       />
 
       {selectedLetter && (

@@ -10,6 +10,7 @@ import { useBrowserBackHandler } from '../../hooks/useBrowserBack';
 import LearnWords from './LearnWords';
 import LongSentences from './LongSentences';
 import './ReadingPage.css';
+const AZLearningPage = React.lazy(() => import('./AZLearningPage'));
 const KVLearningPage = React.lazy(() => import('./KVLearningPage'));
 const KVKLearningPage = React.lazy(() => import('./KVKLearningPage'));
 const ShortStoryPage = React.lazy(() => import('./ShortStoryPage'));
@@ -25,6 +26,9 @@ const LEVEL_ART = {
   story: `${import.meta.env.BASE_URL}images/reading/short_story.webp`,
 };
 
+const ALPHABET_ICON_SVG = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="6" fill="#F59E0B"/><path d="M7 9l2.4 4.6 3.2-2.6 2.2 4.2" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity=".92"/><circle cx="11" cy="10.6" r="1.4" fill="#FFFFFF" opacity=".9"/><circle cx="15" cy="12.4" r="1.4" fill="#FFFFFF" opacity=".9"/></svg>`;
+const ALPHABET_ICON = `data:image/svg+xml;utf8,${encodeURIComponent(ALPHABET_ICON_SVG)}`;
+
 export default function ReadingPage({ onBack, language = 'bm', selectedLevel = null, onSelectLevel: setSelectedLevel, ...accountProps }) {
   useBrowserBackHandler(selectedLevel ? () => setSelectedLevel(null) : onBack);
   const [isPending, startTransition] = useTransition();
@@ -32,6 +36,15 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
   const readingChallengeState = useGameState('reading-challenge').gameState;
   const bm = language === 'bm';
   const hasReadingProgress = readingChallengeState.unlockedItems.some(item => item.startsWith('reading-complete-'));
+
+  // ── Route Tahap 0 → Abjad A–Z ───────────────────────────────────────────
+  if (selectedLevel === 0) {
+    return (
+      <React.Suspense fallback={<LoadingSpinner />}>
+        <AZLearningPage {...accountProps} onBack={() => setSelectedLevel(null)} language={language} />
+      </React.Suspense>
+    );
+  }
 
   if (selectedLevel === 1) {
     return (
@@ -84,12 +97,13 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
   };
 
   const levels = [
-    { id: 1, title: bm ? 'Belajar Suku Kata KV' : 'Learn KV Syllables', subtitle: bm ? 'Gabungkan dua huruf bersama-sama!' : 'Blend two letters together!', art: 'kv' },
-    { id: 2, title: bm ? 'Bina Suku Kata KVK' : 'Build KVK Syllables', subtitle: bm ? 'Bunyikan perkataan tiga huruf!' : 'Sound out three-letter words!', art: 'kvk' },
-    { id: 3, title: bm ? 'Baca Perkataan' : 'Read Words', subtitle: bm ? 'Baca perkataan pertama anda!' : 'Read your very first words!', art: 'words' },
-    { id: 4, title: bm ? 'Tulis Ayat' : 'Write Sentences', subtitle: bm ? 'Gabungkan perkataan untuk membaca!' : 'Put words together to read!', art: 'sentences' },
-    { id: 6, title: bm ? 'Cerita Pendek' : 'Short Story', subtitle: bm ? 'Membaca dan faham cerita' : 'Read and understand a story', art: 'story' },
-    { id: 5, title: bm ? 'Sertai Cabaran Membaca' : 'Take the Challenge', subtitle: bm ? 'Uji kemahiran membaca baharu anda!' : 'Test your new reading skills!', art: 'challenge' },
+    { id: 0, title: bm ? 'Huruf Abjad A–Z' : 'Alphabet A–Z', subtitle: bm ? 'Kenali bunyi dan perkataan setiap huruf.' : 'Learn the sound and words for every letter.', iconSrc: ALPHABET_ICON },
+    { id: 1, title: bm ? 'Belajar Suku Kata KV' : 'Learn KV Syllables', subtitle: bm ? 'Gabungkan dua huruf bersama-sama!' : 'Blend two letters together!', iconSrc: LEVEL_ART.kv },
+    { id: 2, title: bm ? 'Bina Suku Kata KVK' : 'Build KVK Syllables', subtitle: bm ? 'Bunyikan perkataan tiga huruf!' : 'Sound out three-letter words!', iconSrc: LEVEL_ART.kvk },
+    { id: 3, title: bm ? 'Baca Perkataan' : 'Read Words', subtitle: bm ? 'Baca perkataan pertama anda!' : 'Read your very first words!', iconSrc: LEVEL_ART.words },
+    { id: 4, title: bm ? 'Tulis Ayat' : 'Write Sentences', subtitle: bm ? 'Gabungkan perkataan untuk membaca!' : 'Put words together to read!', iconSrc: LEVEL_ART.sentences },
+    { id: 6, title: bm ? 'Cerita Pendek' : 'Short Story', subtitle: bm ? 'Membaca dan faham cerita' : 'Read and understand a story', iconSrc: LEVEL_ART.story },
+    { id: 5, title: bm ? 'Sertai Cabaran Membaca' : 'Take the Challenge', subtitle: bm ? 'Uji kemahiran membaca baharu anda!' : 'Test your new reading skills!', iconSrc: LEVEL_ART.challenge },
   ];
   return <div className="rp-layout iman-layout rp-reading-page">
     <HomePageLayoutStyles />
@@ -111,11 +125,11 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
     />}
     sectionTitle={bm ? 'Pilih Topik' : 'Choose a Topic'}
     topicCardVariant="standard"
-    topics={levels.map(({ id, title, subtitle, art }) => ({
+    topics={levels.map(({ id, title, subtitle, iconSrc }) => ({
       id,
       title,
       subtitle,
-      iconSrc: LEVEL_ART[art],
+      iconSrc,
       badge: id === 5 ? (bm ? 'TAHAP BONUS' : 'BOSS LEVEL') : null,
       badgeClassName: id === 5 ? 'rp-level-ribbon' : '',
       onMouseEnter: playHoverSound,

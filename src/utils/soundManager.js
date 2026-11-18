@@ -13,6 +13,17 @@ const SOUND_FILES = {
     streak: `${BASE_URL}sounds/streak.mp3`
 };
 
+let _audioCtx = null;
+
+const getAudioContext = () => {
+    const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextConstructor) return null;
+    if (!_audioCtx || _audioCtx.state === 'closed') {
+        _audioCtx = new AudioContextConstructor();
+    }
+    return _audioCtx;
+};
+
 // Preload all sounds
 export const preloadSounds = () => {
     Object.entries(SOUND_FILES).forEach(([type, path]) => {
@@ -28,14 +39,19 @@ export const preloadSounds = () => {
 // Uses a silent 1-frame buffer — never plays audible audio.
 export const unlockAudio = () => {
     try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        if (ctx.state === 'suspended') {
+            ctx.resume().catch(error => console.warn('Could not unlock audio', error));
+        }
         const buf = ctx.createBuffer(1, 1, 22050);
         const src = ctx.createBufferSource();
         src.buffer = buf;
         src.connect(ctx.destination);
         src.start(0);
-        src.onended = () => ctx.close();
-    } catch (_) {}
+    } catch (error) {
+        console.warn('Could not unlock audio', error);
+    }
 };
 
 // Get mute state
@@ -74,30 +90,39 @@ export const playSound = (type) => {
     });
 };
 
+const playHoverTone = (ctx) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1200, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.04);
+    gain.gain.setValueAtTime(0.03, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.06);
+};
+
 /**
- * Play a subtle hover click sound on desktop.
+ * Play a subtle hover click sound.
  * Uses Web Audio API oscillator — no external file needed.
- * Call this on mouseenter of buttons/cards.
  */
-let _audioCtx = null;
 export const playHoverSound = () => {
     if (isMuted) return;
-    // Only on desktop (no hover on touch)
-    if ('ontouchstart' in window) return;
 
     try {
-        if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = _audioCtx.createOscillator();
-        const gain = _audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(1200, _audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(800, _audioCtx.currentTime + 0.04);
-        gain.gain.setValueAtTime(0.03, _audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, _audioCtx.currentTime + 0.06);
-        osc.connect(gain);
-        gain.connect(_audioCtx.destination);
-        osc.start(_audioCtx.currentTime);
-        osc.stop(_audioCtx.currentTime + 0.06);
-    } catch (_) { /* silent fail */ }
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        if (ctx.state === 'suspended') {
+            ctx.resume()
+                .then(() => playHoverTone(ctx))
+                .catch(error => console.warn('Could not play hover sound', error));
+            return;
+        }
+        playHoverTone(ctx);
+    } catch (error) {
+        console.warn('Could not play hover sound', error);
+    }
 };
 

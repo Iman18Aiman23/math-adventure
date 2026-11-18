@@ -28,6 +28,7 @@ export default function KVKLearningPage({
       title={title}
       letters={KVK_LETTERS}
       getSeriesByLetter={getSeries}
+      letterCardSuffix="n"
     />
   );
 }

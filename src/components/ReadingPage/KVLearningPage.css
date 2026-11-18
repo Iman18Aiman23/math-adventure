@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Baloo+2:wght@700;800&display=swap');
 
 .kv-picker,
 .kv-learning,
@@ -252,6 +252,65 @@
   color: var(--ktxt); font: 800 min(46cqw, 55cqh, 96px)/1 var(--font-heading);
 }
 .kv-picker .kv-tile-letter small { margin-left: 3px; font-size: .58em; font-weight: 800; opacity: 1; }
+.kv-picker--az-mirror .az-letter-tile--kv-mirror {
+  aspect-ratio: auto;
+  min-height: 0;
+  min-width: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  align-items: center;
+  justify-items: center;
+  gap: clamp(4px, 1cqh, 8px);
+  padding: clamp(6px, 1.4cqh, 12px) 8px;
+  border: 3px solid var(--tile-border, #cbd5e1);
+  border-radius: var(--border-radius-lg);
+  background: var(--tile-surface, #ffffff);
+  box-shadow: var(--shadow-sm);
+  color: var(--tile-ink, var(--text-primary));
+  font-family: inherit;
+  animation: azTileIn 420ms cubic-bezier(.34,1.56,.64,1) backwards;
+  animation-delay: var(--az-delay, 0s);
+}
+.kv-picker--az-mirror .az-tile-letter {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  color: var(--tile-ink, var(--text-primary));
+  font: 800 min(40svw, 46svh, 70px)/1 var(--font-heading);
+  letter-spacing: -2px;
+  margin-bottom: 0;
+}
+.kv-picker--az-mirror .az-picker-letter-slot--kv-mirror {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+}
+.kv-picker--az-mirror .az-tile-letter small {
+  font-size: .55em;
+  font-weight: 800;
+  opacity: .85;
+  margin-left: 0;
+  color: inherit;
+  font-family: var(--font-heading);
+}
+@media (hover: hover) {
+  .kv-picker--az-mirror .az-letter-tile--kv-mirror:hover {
+    border-color: var(--tile-border-hover, var(--primary));
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+}
+.kv-picker--az-mirror .az-letter-tile--kv-mirror:active {
+  box-shadow: var(--shadow-pressed);
+  transform: translateY(2px);
+}
+@media (max-width: 400px) {
+  .kv-picker--az-mirror .az-letter-tile--kv-mirror { border-radius: var(--border-radius-md); padding-inline: 4px; }
+  .kv-picker--az-mirror .az-tile-letter { font-size: min(36svw, 40svh, 56px); }
+}
 .kv-picker .kv-tile-cap {
   font-size: clamp(10px, min(18cqw, 18cqh), 24px);
   padding: min(3cqh, 6px) min(6cqw, 14px); border-radius: var(--border-radius-sm);
@@ -552,6 +611,15 @@
   display: flex; align-items: baseline; justify-content: center; gap: 8px;
   font: 800 min(25cqw, 27cqh, 138px)/1 'Baloo 2', sans-serif;
   letter-spacing: -4px; color: #ff2042;
+}
+.kv-flashcard--az-letter-style .kv-flashcard-letters:not(.kv-flashcard-letters--jawi) {
+  font: 800 min(25cqw, 27cqh, 138px)/1 var(--font-heading);
+  letter-spacing: -4px;
+}
+.kv-flashcard--az-letter-style .kv-flashcard-letters:not(.kv-flashcard-letters--jawi) .kv-letter-pair,
+.kv-flashcard--az-letter-style .kv-flashcard-letters:not(.kv-flashcard-letters--jawi) small {
+  font-family: var(--font-heading);
+  font-weight: 800;
 }
 .kv-flashcard-item {
   box-sizing: border-box;
@@ -1869,10 +1937,6 @@ html[data-color-mode='dark'] .kv-syllable-learning .kv-completion--clay h2 span 
   overflow: visible !important;
   border-radius: 24px;
   padding: 52px clamp(18px, 4vw, 36px) 24px;
-}
-.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard,
-.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard :where(*) {
-  font-family: 'Fredoka', sans-serif !important;
 }
 .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-header {
   inset: 0;
@@ -3537,9 +3601,9 @@ html[data-color-mode='dark'] .kv-syllable-learning .kv-completion--clay h2 span 
   text-shadow: none;
   -webkit-text-fill-color: currentColor;
 }
-.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters {
-  font-family: 'Fredoka', sans-serif;
-  font-weight: 600;
+.kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-letters:not(.kv-flashcard-letters--jawi) {
+  font-family: var(--font-heading) !important;
+  font-weight: 800;
 }
 .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-flashcard-word,
 .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .kv-syllable-example-text {

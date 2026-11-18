@@ -12,12 +12,14 @@ export default function AZPickerPage({
   language = 'en',
   title,
   onStartQuiz,
+  letterCardSuffix = '',
+  mirrorAZStyle = false,
   ...accountProps
 }) {
   const isMalay = language === 'bm';
 
   return (
-    <main className="mh-screen page-layout-root kv-picker kv-picker--master iman-layout" aria-label={title}>
+    <main className={`mh-screen page-layout-root kv-picker kv-picker--master iman-layout${mirrorAZStyle ? ' kv-picker--az-mirror' : ''}`} aria-label={title}>
       <div className="mh-wrap page-container kv-picker-wrap">
         <PageHeader
           {...accountProps}
@@ -43,6 +45,8 @@ export default function AZPickerPage({
             onSelectLetter={onSelectLetter}
             language={isMalay ? 'bm' : 'en'}
             variant="master"
+            mirrorLetterStyle={mirrorAZStyle}
+            letterCardSuffix={letterCardSuffix}
           />
           {onStartQuiz && (
             <div className="standard-hero-banner__action kv-picker-quiz-action">

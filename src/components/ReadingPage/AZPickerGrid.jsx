@@ -1,4 +1,5 @@
 import React from 'react';
+import { playHoverSound } from '../../utils/soundManager';
 import './AZPickerGrid.css';
 
 const PREMIUM_HUES = [
@@ -22,6 +23,8 @@ export default function AZPickerGrid({
   direction = 'ltr',
   renderLetter,
   renderCaption,
+  mirrorLetterStyle = false,
+  letterCardSuffix = '',
 }) {
   const isJawi = variant === 'jawi';
   const isMalay = language === 'bm';
@@ -30,6 +33,10 @@ export default function AZPickerGrid({
     <div className={`az-picker-grid az-picker-grid--${variant}`} dir={direction}>
       {letters.map((letter, index) => {
         const letterPalette = LETTER_PALETTES[letter.toUpperCase()];
+        const displayedLetter = letter.toUpperCase();
+        const displayedCompanion = 'AEIOU'.includes(displayedLetter)
+          ? displayedLetter.toLowerCase()
+          : 'a';
         const colors = !isJawi && letterPalette
           ? letterPalette
           : PREMIUM_HUES[index % PREMIUM_HUES.length];
@@ -41,6 +48,10 @@ export default function AZPickerGrid({
           '--kt': colors.tint,
           '--kc-border': colors.color,
           '--kc-under': colors.deep,
+          '--tile-border': colors.color,
+          '--tile-border-hover': colors.color,
+          '--tile-ink': colors.ink,
+          '--az-delay': `${0.04 + index * 0.02}s`,
           animationDelay: `${0.04 + index * 0.025}s`,
         };
 
@@ -48,7 +59,8 @@ export default function AZPickerGrid({
           <button
             key={letter}
             type="button"
-            className={`az-picker-tile az-picker-tile--${variant}`}
+            className={`az-picker-tile az-picker-tile--${variant}${mirrorLetterStyle ? ' az-letter-tile az-letter-tile--kv-mirror' : ''}`}
+            onMouseEnter={mirrorLetterStyle ? playHoverSound : undefined}
             onClick={() => onSelectLetter(letter)}
             style={style}
           >
@@ -62,14 +74,22 @@ export default function AZPickerGrid({
                 </span>
               </>
             ) : (
-              <>
-                <span className="az-picker-letter az-picker-letter--master">
-                  {letter}<small>{letter.toLowerCase()}</small>
-                </span>
-                <span className="az-picker-caption az-picker-caption--master">
-                  {cardCount} {isMalay ? 'kad' : cardCount === 1 ? 'card' : 'cards'}
-                </span>
-              </>
+              mirrorLetterStyle ? (
+                <div className="az-picker-letter-slot--kv-mirror">
+                  <span className="az-tile-letter">
+                    {displayedLetter}<small>{displayedCompanion}{letterCardSuffix}</small>
+                  </span>
+                </div>
+              ) : (
+                <>
+                  <span className="az-picker-letter az-picker-letter--master">
+                    {letter}<small>{letter.toLowerCase()}</small>
+                  </span>
+                  <span className="az-picker-caption az-picker-caption--master">
+                    {cardCount} {isMalay ? 'kad' : cardCount === 1 ? 'card' : 'cards'}
+                  </span>
+                </>
+              )
             )}
           </button>
         );
