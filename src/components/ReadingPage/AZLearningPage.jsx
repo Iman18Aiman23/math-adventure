@@ -171,7 +171,7 @@ export default function AZLearningPage({ onBack, language = 'bm' }) {
 
   return (
     <main className="mh-screen page-layout-root az-learning az-picker iman-layout" aria-label={bm ? 'Belajar Huruf' : 'Learn Alphabet'}>
-      <div className="az-picker-wrap">
+      <div className="mh-wrap page-container az-picker-wrap">
         {!selectedLetter && (
           <PageHeader
             onBack={onBack}
@@ -180,15 +180,15 @@ export default function AZLearningPage({ onBack, language = 'bm' }) {
             showProgress={false}
           />
         )}
-        <div className="az-picker-intro">
-          <div>
-            <span className="az-picker-eyebrow">{bm ? 'Huruf Abjad' : 'Alphabet A–Z'}</span>
-            <h1>{bm ? 'Pilih Huruf' : 'Choose a Letter'}</h1>
-            <p>{bm ? 'Ketik huruf untuk belajar bunyi dan perkataan.' : 'Tap a letter to learn its sound and words.'}</p>
-          </div>
-          <span className="az-picker-count">{ALPHABET.length} {bm ? 'huruf' : 'letters'}</span>
-        </div>
         <div className="az-picker-body">
+          <div className="az-picker-intro">
+            <div>
+              <span className="az-picker-eyebrow">{bm ? 'Huruf Abjad' : 'Alphabet A–Z'}</span>
+              <h1>{bm ? 'Pilih Huruf' : 'Choose a Letter'}</h1>
+              <p>{bm ? 'Ketik huruf untuk belajar bunyi dan perkataan.' : 'Tap a letter to learn its sound and words.'}</p>
+            </div>
+            <span className="az-picker-count">{ALPHABET.length} {bm ? 'huruf' : 'letters'}</span>
+          </div>
           <div className="az-picker-grid">
             {ALPHABET.map((letter, index) => {
               const p = PALETTE[letter];

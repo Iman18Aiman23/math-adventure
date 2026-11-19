@@ -7,11 +7,9 @@ const sentenceItems = readingData
   .map(item => ({
     id: item.id,
     kv: item.rumi.split(/\s+/)[0] ?? '',
-    jawiSyllable: '',
     icon: item.emoji,
     ms: { word: item.rumi.replace(/-/g, '') },
     en: { word: item.eng },
-    jawi: { word: item.jawi },
   }));
 
 export default function LongSentences({ onBack, onComplete = onBack, language, title, ...accountProps }) {
@@ -23,7 +21,6 @@ export default function LongSentences({ onBack, onComplete = onBack, language, t
       language={language}
       title={title ?? (language === 'bm' ? 'Ayat Mudah' : 'Simple Sentences')}
       items={sentenceItems}
-      initialScript="RUMI"
     />
   );
 }
