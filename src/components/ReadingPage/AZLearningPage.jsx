@@ -66,7 +66,7 @@ function SpeakerIcon() {
   );
 }
 
-export default function AZLearningPage({ onBack, language = 'bm' }) {
+export default function AZLearningPage({ onBack, language = 'bm', ...accountProps }) {
   const bm = language === 'bm';
   const uiLang = bm ? 'ms-MY' : 'en-US';
   const [selectedLetter, setSelectedLetter] = useState(null);
@@ -174,6 +174,7 @@ export default function AZLearningPage({ onBack, language = 'bm' }) {
       <div className="mh-wrap page-container az-picker-wrap">
         {!selectedLetter && (
           <PageHeader
+            {...accountProps}
             onBack={onBack}
             language={bm ? 'bm' : 'en'}
             backOnly

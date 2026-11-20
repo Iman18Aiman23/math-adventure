@@ -32,6 +32,9 @@
   --action-primary-hover: var(--primary-dark);
   --text-on-action: #FFFFFF;
   --focus-ring: var(--primary);
+  --az-flashcard-max: 640px;
+  --az-flashcard-height: 540px;
+  --az-modal-max: 720px;
 
   color: var(--text-primary);
   color-scheme: light;
@@ -222,8 +225,13 @@
 .az-flashcard {
   position: relative;
   box-sizing: border-box;
+  flex: 0 0 auto;
   width: 100%;
-  padding: clamp(28px, 5vh, 72px) clamp(16px, 4vw, 32px) clamp(20px, 4vh, 36px);
+  max-width: var(--az-flashcard-max, 640px);
+  height: var(--az-flashcard-height, 540px);
+  max-height: calc(100dvh - 155px);
+  margin-inline: auto;
+  padding: clamp(14px, 3.2vh, 56px) clamp(14px, 4vw, 32px) clamp(12px, 2.8vh, 32px);
   overflow: visible;
   border: 3px solid #fff3df;
   border-radius: 30px;
@@ -233,24 +241,37 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(10px, 1.6vh, 16px);
+  gap: clamp(6px, 1.2vh, 16px);
+  container-type: size;
 }
 .az-flashcard-body {
+  flex: 1 1 auto;
   width: 100%;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(10px, 2vw, 16px);
-  padding-top: 10px;
+  justify-content: center;
+  gap: clamp(4px, 1.4cqh, 14px);
+  padding-top: clamp(0px, 1cqh, 10px);
+  overflow: hidden;
+}
+.az-learning-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 .az-letter-card-icon {
-  margin-bottom: 10px;
+  margin-bottom: clamp(2px, 1cqh, 10px);
   display: grid;
   place-items: center;
   filter: drop-shadow(0 6px 14px rgba(0, 0, 0, .08));
 }
 .az-card-emoji {
-  font-size: clamp(52px, min(12vw, 16vh), 110px);
+  font-size: min(clamp(34px, 15cqh, 110px), 30cqw);
   display: inline-block;
   line-height: 1;
 }
@@ -258,8 +279,8 @@
   display: flex;
   align-items: baseline;
   justify-content: center;
-  gap: 8px;
-  font: 800 clamp(52px, min(14vw, 20vh), 128px)/.95 var(--font-heading);
+  gap: clamp(4px, 1cqh, 8px);
+  font: 800 min(clamp(34px, 17cqh, 128px), 38cqw)/.95 var(--font-heading);
   letter-spacing: -4px;
   color: #e92932;
 }
@@ -272,9 +293,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  min-height: 72px;
-  padding: 12px 18px;
+  gap: clamp(6px, 1.4cqh, 12px);
+  min-height: clamp(40px, 9cqh, 72px);
+  padding: clamp(6px, 1.4cqh, 12px) clamp(10px, 3cqw, 18px);
   border-radius: 18px;
   background: #fbfdff;
   box-shadow: 0 4px 12px rgba(25, 50, 75, .07);
@@ -282,23 +303,48 @@
   max-width: 560px;
 }
 .az-word-main {
-  font: 800 clamp(22px, min(6vw, 8vh), 44px)/1.12 var(--font-heading);
+  font: 800 clamp(18px, 5cqh, 44px)/1.12 var(--font-heading);
   color: #10234b;
   text-align: center;
   overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
 }
 .az-word-translation {
   color: #6c7e9a;
-  font: 600 clamp(13px, min(3.5vw, 5vh), 20px)/1.25 var(--font-body);
+  font: 600 clamp(10px, 2.4cqh, 20px)/1.25 var(--font-body);
   text-align: center;
+}
+/* KV word panel sits inside the same card; scale it with the card height. */
+.az-flashcard .az-word-card .kv-syllable-example {
+  min-height: 0;
+  gap: 0;
+  padding: clamp(2px, .6cqh, 6px) clamp(4px, 1.5cqw, 12px);
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  box-shadow: none;
+}
+.az-flashcard .az-word-card .kv-syllable-example-label {
+  font-size: clamp(8px, 1.6cqh, 11px);
+  line-height: 1.1;
+}
+.az-flashcard .az-word-card .kv-syllable-example-text {
+  font-size: clamp(14px, 3.6cqh, 28px);
+  line-height: 1.1;
 }
 .az-sentence-example {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: clamp(2px, .7cqh, 4px);
+  box-sizing: border-box;
+  width: 100%;
   max-width: 100%;
-  padding: 8px 16px;
+  padding: clamp(4px, 1.2cqh, 8px) clamp(8px, 3cqw, 16px);
   border: 3px solid color-mix(in srgb, var(--secondary) 58%, var(--bg-white));
   border-radius: 24px;
   background: color-mix(in srgb, var(--secondary-light) 60%, var(--bg-white));
@@ -306,20 +352,27 @@
 }
 .az-sentence-label {
   color: var(--text-primary);
-  font: 800 13px/1.2 'Inter', sans-serif;
+  font: 800 clamp(10px, 2cqh, 13px)/1.2 'Inter', sans-serif;
 }
 .az-sentence-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  overflow-wrap: anywhere;
   color: var(--text-primary);
-  font: 800 min(clamp(26px, 6vw, 44px), 8cqh)/1.2 var(--font-heading);
+  font: 800 min(clamp(16px, 4.4cqh, 40px), 10cqw)/1.2 var(--font-heading);
   text-align: center;
-  text-wrap: balance;
 }
 .az-audio-button {
   display: grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
-  min-height: 44px;
+  width: clamp(30px, 5.5cqh, 44px);
+  height: clamp(30px, 5.5cqh, 44px);
+  min-height: clamp(30px, 5.5cqh, 44px);
   border: 0;
   border-radius: 50%;
   background: #f3f4f6;
@@ -333,23 +386,24 @@
 .az-audio-button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
 
 .az-nav {
+  flex: 0 0 auto;
   display: flex;
   width: min(100%, 560px);
-  gap: 12px;
-  margin: clamp(10px, 2vh, 16px) auto 0;
+  gap: clamp(8px, 1.5cqw, 12px);
+  margin: clamp(6px, 1.4cqh, 16px) auto 0;
 }
 .az-nav button {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: clamp(4px, 1cqh, 6px);
   box-sizing: border-box;
   width: 100%;
   flex: 1 1 0;
   min-width: 0;
-  min-height: clamp(40px, 8vh, 48px);
-  border-radius: 16px;
-  font: 800 clamp(13px, min(3.5vw, 5vh), 16px) var(--font-heading);
+  min-height: clamp(32px, 6cqh, 48px);
+  border-radius: clamp(10px, 2cqh, 16px);
+  font: 800 clamp(11px, 2.4cqh, 16px) var(--font-heading);
   cursor: pointer;
   transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
   border: 0;
@@ -378,6 +432,11 @@
 }
 .az-nav svg { flex-shrink: 0; }
 
+/* Full-page lesson frame: leave room for the page header and footer. */
+.rp-layout .az-flashcard {
+  max-height: calc(100dvh - 160px);
+}
+
 /* ── Modal overlay ── */
 .az-modal-overlay {
   position: fixed;
@@ -385,14 +444,18 @@
   z-index: 60;
   display: grid;
   place-items: center;
+  box-sizing: border-box;
+  padding: clamp(8px, 2vw, 24px);
   background: rgba(15, 23, 42, .45);
   backdrop-filter: blur(6px);
   animation: azFadeIn 300ms cubic-bezier(.34,1.56,.64,1);
 }
 .az-modal-content {
   position: relative;
-  width: min(92vw, 720px);
-  max-height: 94dvh;
+  width: 100%;
+  max-width: var(--az-modal-max, 720px);
+  max-height: calc(100vh - clamp(24px, 6vw, 80px));
+  max-height: calc(100dvh - clamp(24px, 6vw, 80px));
   display: flex;
   flex-direction: column;
   background: transparent;
@@ -402,14 +465,14 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 16px 20px;
+  padding: 6px 16px;
   background: transparent;
 }
 .az-modal-close {
   display: grid;
   place-items: center;
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border: 3px solid var(--border-color);
   border-radius: var(--border-radius-md);
   background: var(--bg-card);
@@ -437,10 +500,12 @@
   flex-direction: column;
   align-items: center;
   gap: clamp(8px, 1.6vh, 14px);
-  padding: clamp(14px, 3vw, 20px) clamp(16px, 4vw, 20px);
+  padding: clamp(10px, 2vw, 16px) clamp(16px, 4vw, 20px);
   width: 100%;
   box-sizing: border-box;
   min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 @keyframes azFadeIn {
   from { opacity: 0; }
@@ -451,9 +516,31 @@
   to { opacity: 1; transform: none; }
 }
 @media (max-width: 480px) {
-  .az-flashcard { padding: 24px 16px 28px; border-radius: 24px; }
-  .az-letters-display { font-size: clamp(48px, 16vw, 84px); }
-  .az-modal-content { width: min(94vw, 560px); }
+  .az-flashcard {
+    padding: clamp(12px, 2.8vh, 24px) 14px clamp(10px, 2.4vh, 20px);
+    border-radius: 24px;
+  }
+}
+
+/* ── Responsive flashcard scale ────────────────────────────────────────────
+   The card is fluid (width: 100%) and capped per device class. Parents keep
+   their own padding so the card never touches the container edge. */
+@media (min-width: 576px) {
+  .az-learning, .az-picker { --az-flashcard-max: 540px; --az-flashcard-height: 540px; --az-modal-max: 600px; }
+}
+@media (min-width: 768px) {
+  .az-learning, .az-picker { --az-flashcard-max: 620px; --az-flashcard-height: 620px; --az-modal-max: 680px; }
+  .az-flashcard { max-height: calc(100dvh - 175px); }
+}
+@media (min-width: 1024px) {
+  .az-learning, .az-picker { --az-flashcard-max: 700px; --az-flashcard-height: 700px; --az-modal-max: 760px; }
+}
+@media (min-width: 1200px) {
+  .az-learning, .az-picker { --az-flashcard-max: 780px; --az-flashcard-height: 780px; --az-modal-max: 840px; }
+  .az-flashcard { max-height: calc(100dvh - 205px); }
+}
+@media (min-width: 1536px) {
+  .az-learning, .az-picker { --az-flashcard-max: 860px; --az-flashcard-height: 860px; --az-modal-max: 920px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .az-letter-tile, .az-flashcard, .az-modal-overlay, .az-modal-content { animation: none !important; transition: none !important; }

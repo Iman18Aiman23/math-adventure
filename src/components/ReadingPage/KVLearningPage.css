@@ -3757,7 +3757,9 @@ html[data-color-mode='dark'] .kv-syllable-learning .kv-completion--clay h2 span 
 }
 
 .kv-learning--kv.az-learning .az-flashcard {
-  min-width: 450px;
+  width: 100%;
+  max-width: var(--az-flashcard-max, 640px);
+  min-width: 0;
 }
 .kv-learning--kv.az-learning .az-sentence-text .kv-sentence-kv,
 .kv-learning.kv-syllable-learning.kv-learning--unified.kv-learning--kv .az-sentence-text .kv-sentence-kv {
