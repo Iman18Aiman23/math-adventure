@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  ArrowRight,
   BookOpen,
   Calculator,
   ChevronDown,
@@ -12,7 +13,6 @@ import {
   Menu,
   Mic,
   Trophy,
-  WandSparkles,
 } from 'lucide-react';
 import useGamification from '../hooks/useGamification';
 import './DesktopSidebar.css';
@@ -258,33 +258,36 @@ export default function DesktopSidebar({
       </div>
 
       <footer className="ds-footer">
-        <div className="ds-plan">
-          <div className="ds-plan-head">
-            <span
-              className="ds-plan-pill"
-              role="img"
-              aria-label={bm ? 'Premium akan datang' : 'Premium coming soon'}
-              title={bm ? 'Premium akan datang' : 'Premium coming soon'}
-            >
-              <Crown size={15} aria-hidden="true" />
-            </span>
-          </div>
-          <div className="ds-plan-body">
-            <h4>{bm ? 'Naik Premium' : 'Go Premium'}</h4>
-            <p>{bm ? 'Buka semua subjek.' : 'Unlock every subject.'}</p>
-          </div>
+        {collapsed ? (
           <button
             type="button"
-            className="ds-upgrade"
+            className="iman-pro-crown"
             onClick={() => onUpgradePlan?.()}
-            aria-label={bm ? 'Lihat pilihan pelan' : 'View plan options'}
-            title={bm ? 'Lihat pilihan pelan' : 'View plan options'}
+            aria-label={bm ? 'ImanAI Pro — Naik taraf' : 'ImanAI Pro — Upgrade'}
+            title={bm ? 'ImanAI Pro — Naik taraf' : 'ImanAI Pro — Upgrade'}
           >
-            <WandSparkles size={13} aria-hidden="true" />
-            <span>{bm ? 'Lihat pelan' : 'View plans'}</span>
-            <span className="ds-upgrade-short" aria-hidden="true">Pro</span>
+            <Crown size={20} aria-hidden="true" />
           </button>
-        </div>
+        ) : (
+          <div className="iman-pro-card">
+            <div className="iman-pro-header">
+              <h4 className="iman-pro-title">ImanAI Pro</h4>
+              <span className="iman-pro-badge">PRO</span>
+            </div>
+            <p className="iman-pro-subtitle">
+              {bm ? 'Buka semua subjek & pelajaran' : 'Unlock all subjects & lessons'}
+            </p>
+            <button
+              type="button"
+              className="iman-pro-btn"
+              onClick={() => onUpgradePlan?.()}
+              aria-label={bm ? 'Naik taraf pelan' : 'Upgrade plan'}
+            >
+              <span>{bm ? 'Naik Taraf' : 'Upgrade Plan'}</span>
+              <ArrowRight size={16} strokeWidth={2.5} aria-hidden="true" />
+            </button>
+          </div>
+        )}
       </footer>
     </aside>
   );

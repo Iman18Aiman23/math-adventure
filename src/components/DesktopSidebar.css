@@ -612,129 +612,112 @@
   background: linear-gradient(180deg, rgba(0, 102, 255, 0) 0%, rgba(0, 102, 255, 0.04) 100%);
 }
 
-.ds-plan {
-  position: relative;
-  padding: 18px 16px 16px;
-  overflow: hidden;
+/* Expanded plan card */
+.iman-pro-card {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 18px;
   color: #ffffff;
-  text-align: center;
-  background: linear-gradient(145deg, #1470FF 0%, #0052CC 58%, #084BB1 100%);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: var(--ds-radius-lg);
-  box-shadow: 0 14px 30px rgba(0, 82, 204, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  background: linear-gradient(135deg, #1470FF 0%, #0052CC 100%);
+  border-radius: 18px;
+  box-shadow: 0 14px 30px rgba(11, 87, 208, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  font-family: var(--ds-sidebar-font);
 }
 
-.ds-plan::before {
-  content: "";
-  position: absolute;
-  top: -52px;
-  right: -40px;
-  width: 130px;
-  height: 130px;
-  pointer-events: none;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 9999px;
-}
-
-.ds-plan::after {
-  content: "";
-  position: absolute;
-  bottom: -60px;
-  left: -46px;
-  width: 120px;
-  height: 120px;
-  pointer-events: none;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 9999px;
-  filter: blur(6px);
-}
-
-.ds-plan-head {
-  position: relative;
-  z-index: 1;
+.iman-pro-header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
 }
 
-.ds-plan-pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  flex-shrink: 0;
-  padding: 0;
-  color: var(--ds-gold);
-  background: #ffffff;
-  border: 0;
-  border-radius: 9999px;
-  box-shadow: 0 4px 10px rgba(4, 32, 90, 0.28);
-}
-
-.ds-plan-pill svg {
-  display: block;
-  color: var(--ds-gold);
-}
-
-.ds-plan-body {
-  position: relative;
-  z-index: 1;
-  margin-bottom: 14px;
-  text-align: center;
-}
-
-.ds-plan-body h4 {
-  margin: 0 0 4px;
+.iman-pro-title {
+  margin: 0;
   color: #ffffff;
   font-family: 'Baloo 2', var(--ds-sidebar-font);
   font-size: 16px;
   font-weight: 700;
-  letter-spacing: -0.2px;
-  line-height: 1.3;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 
-.ds-plan-body p {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.78);
+.iman-pro-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 3px 9px;
+  color: #1e293b;
+  background-color: #ffb703;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.iman-pro-subtitle {
+  margin: 0 0 16px 0;
+  color: rgba(255, 255, 255, 0.9);
   font-family: var(--ds-sidebar-font);
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 500;
   line-height: 1.4;
 }
 
-.ds-upgrade {
-  position: relative;
-  z-index: 1;
-  display: flex;
+.iman-pro-btn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   width: 100%;
-  padding: 11px 12px;
-  color: var(--ds-primary-dark);
-  background: #ffffff;
-  border-radius: var(--ds-radius-sm);
-  box-shadow: 0 6px 14px rgba(4, 32, 90, 0.22);
-  font-family: 'Baloo 2', var(--ds-sidebar-font);
-  font-size: 14px;
+  height: 40px;
+  padding: 0 14px;
+  color: #0b57d0;
+  background-color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-family: var(--ds-sidebar-font);
+  font-size: 13.5px;
   font-weight: 700;
-  transition: background 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.ds-upgrade:hover {
-  background: #F8FBFF;
-  box-shadow: 0 8px 18px rgba(4, 32, 90, 0.28);
+.iman-pro-btn:hover {
+  background-color: #f1f5f9;
   transform: translateY(-1px);
 }
 
-.ds-upgrade:active {
+.iman-pro-btn:active {
   transform: translateY(0);
 }
 
-.ds-upgrade-short {
-  display: none;
+/* Collapsed rail — crown badge only */
+.iman-pro-crown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 52px;
+  padding: 0;
+  color: #ffb703;
+  background: linear-gradient(135deg, #1470FF 0%, #0052CC 100%);
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 12px 24px rgba(11, 87, 208, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.iman-pro-crown:hover {
+  background: linear-gradient(135deg, #2B80FF 0%, #0A58D6 100%);
+  transform: translateY(-1px);
+}
+
+.iman-pro-crown:active {
+  transform: translateY(0);
 }
 
 @media (min-width: 768px) and (max-width: 1279px) {
@@ -819,12 +802,8 @@
     padding-bottom: 16px;
   }
 
-  .ds-plan {
+  .iman-pro-card {
     padding: 14px;
-  }
-
-  .ds-plan-body {
-    margin-bottom: 12px;
   }
 }
 
@@ -858,9 +837,7 @@
 .desktop-sidebar.is-collapsed .ds-section-toggle,
 .desktop-sidebar.is-collapsed .ds-item-label,
 .desktop-sidebar.is-collapsed .ds-item-badge,
-.desktop-sidebar.is-collapsed .ds-item-dot,
-.desktop-sidebar.is-collapsed .ds-plan-body,
-.desktop-sidebar.is-collapsed .ds-upgrade span {
+.desktop-sidebar.is-collapsed .ds-item-dot {
   display: none;
 }
 
@@ -910,50 +887,6 @@
 
 .desktop-sidebar.is-collapsed .ds-footer {
   padding: 10px 8px 16px;
-}
-
-.desktop-sidebar.is-collapsed .ds-plan {
-  padding: 8px;
-  border-radius: var(--ds-radius-md);
-}
-
-.desktop-sidebar.is-collapsed .ds-plan-head {
-  justify-content: center;
-  margin: 0;
-}
-
-.desktop-sidebar.is-collapsed .ds-plan-pill {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  gap: 0;
-  border-radius: 9999px;
-}
-
-.desktop-sidebar.is-collapsed .ds-plan-pill svg {
-  display: block;
-  width: 18px;
-  height: 18px;
-}
-
-.desktop-sidebar.is-collapsed .ds-upgrade {
-  width: 40px;
-  height: 40px;
-  margin: 8px auto 0;
-  padding: 0;
-}
-
-.desktop-sidebar.is-collapsed .ds-upgrade .ds-upgrade-short {
-  display: block;
-  font-size: 12px;
-  line-height: 1;
-  text-transform: none;
-}
-
-.desktop-sidebar.is-collapsed .ds-upgrade svg {
-  display: none;
 }
 
 @media (max-width: 767px) {
