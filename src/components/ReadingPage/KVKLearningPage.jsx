@@ -1,12 +1,13 @@
 import React from 'react';
 import { KVK_LETTERS, getKVKSeriesByLetter } from '../../data/curriculum/bm_kvk';
-import { KVK_EXAMPLES, KVK_EXAMPLES_JAWI } from '../../data/curriculum/kvkExampleSentences';
+import { KVK_EXAMPLES, KVK_EXAMPLES_EN, KVK_EXAMPLES_JAWI } from '../../data/curriculum/kvkExampleSentences';
 import KVLearningPage from './KVLearningPage';
 
 const getSeries = letter => getKVKSeriesByLetter(letter).map(item => ({
   ...item,
   kv: item.kvk,
   ms: { ...item.ms, sentence: KVK_EXAMPLES[item.id] ?? item.ms?.sentence },
+  en: { ...item.en, sentence: KVK_EXAMPLES_EN[item.id] ?? item.en?.sentence },
   jawi: { ...item.jawi, sentence: KVK_EXAMPLES_JAWI[item.id] },
 }));
 

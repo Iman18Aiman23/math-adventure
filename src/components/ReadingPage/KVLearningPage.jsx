@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { KV_LETTERS, getKVSeriesByLetter } from '../../data/curriculum/bm_kv';
 import SpeechManager from '../../services/SpeechManager';
@@ -113,20 +113,33 @@ export default function KVLearningPage({
   const msWord = cap(currentItem?.ms?.word);
   const enWord = cap(currentItem?.en?.word);
   const mainWord = isMalay ? msWord : enWord;
+  const plainMainWord = stripHighlightMarkers(mainWord);
   const translationWord = isMalay ? enWord : msWord;
-  const mainSentence = isMalay
-    ? currentItem?.ms?.sentence ?? ''
-    : currentItem?.en?.sentence ?? '';
+  const msSentence = currentItem?.ms?.sentence ?? '';
+  const enSentence = currentItem?.en?.sentence ?? '';
+  const exampleLines = useMemo(() => currentItem?.examples ?? [], [currentItem]);
+  const hasExamples = exampleLines.length > 0;
+  const hasSentence = !hasExamples && Boolean(msSentence || enSentence);
+
+  const speakSentence = useCallback(() => {
+    const text = stripHighlightMarkers(msSentence || enSentence);
+    if (text) SpeechManager.speak(text, msSentence ? 'ms-MY' : 'en-US');
+  }, [msSentence, enSentence]);
+
+  const speakExamples = useCallback(() => {
+    const text = exampleLines.map(line => stripHighlightMarkers(line.ms)).join(' ');
+    if (text) SpeechManager.speak(text, 'ms-MY');
+  }, [exampleLines]);
 
   const flashcard = (
     <article
       key={currentItem?.id}
-      className={`az-flashcard${flipDirection ? ` az-flashcard--flip-${flipDirection}` : ''}`}
-      aria-label={mainWord}
+      className={`az-flashcard${hasExamples ? ' az-flashcard--examples' : ''}${flipDirection ? ` az-flashcard--flip-${flipDirection}` : ''}`}
+      aria-label={plainMainWord}
     >
       <div className="az-flashcard-body">
         <div className="az-letter-card-icon">
-          <span className="az-card-emoji" role="img" aria-label={`${msWord || mainWord} illustration`}>
+          <span className="az-card-emoji" role="img" aria-label={`${plainMainWord} illustration`}>
             {currentItem?.icon}
           </span>
         </div>
@@ -152,28 +165,69 @@ export default function KVLearningPage({
             type="button"
             className="az-audio-button"
             onClick={() => speakText(stripHighlightMarkers(mainWord))}
-            aria-label={isMalay ? `Dengar ${mainWord}` : `Listen to ${mainWord}`}
+            aria-label={isMalay ? `Dengar ${plainMainWord}` : `Listen to ${plainMainWord}`}
           >
             <SpeakerIcon />
           </button>
         </div>
-        {mainSentence && (
-          <div className="az-sentence-example">
-            <span className="az-sentence-label">{isMalay ? 'Contoh ayat' : 'Example sentence'}</span>
-            <span className="az-sentence-text">
-              {isMalay
-                ? <AnnotatedText text={mainSentence} markClass="kv-sentence-kv" />
-                : mainSentence}
-            </span>
-            <button
-              type="button"
-              className="az-audio-button"
-              onClick={() => speakText(stripHighlightMarkers(mainSentence))}
-              aria-label={isMalay ? 'Dengar contoh ayat' : 'Listen to example sentence'}
-            >
-              <SpeakerIcon />
-            </button>
+        {hasExamples && (
+          <div className="az-example-box">
+            <div className="az-example-box-head">
+              <span className="az-sentence-label">{isMalay ? 'Contoh ayat' : 'Example sentences'}</span>
+              <button
+                type="button"
+                className="az-example-speak"
+                onClick={speakExamples}
+                aria-label={isMalay ? 'Dengar semua contoh ayat' : 'Listen to all example sentences'}
+              >
+                <SpeakerIcon />
+              </button>
+            </div>
+            <ul className="az-example-lines">
+              {exampleLines.map((line, index) => (
+                <li key={`${currentItem?.id}-example-${index}`}>
+                  <button
+                    type="button"
+                    className="az-example-line"
+                    onClick={() => speakText(stripHighlightMarkers(line.ms))}
+                    aria-label={isMalay ? `Dengar ${stripHighlightMarkers(line.ms)}` : `Listen to ${stripHighlightMarkers(line.ms)}`}
+                  >
+                    <span className="az-example-line-copy">
+                      <span className="az-example-ms">
+                        <AnnotatedText text={line.ms} markClass="kv-sentence-kv" />
+                      </span>
+                      {line.en && <span className="az-example-en">{line.en}</span>}
+                    </span>
+                    <span className="az-example-line-icon" aria-hidden="true">
+                      <SpeakerIcon />
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
+        )}
+        {hasSentence && (
+          <button
+            type="button"
+            className="az-sentence-example"
+            onClick={speakSentence}
+            aria-label={isMalay ? 'Dengar contoh ayat' : 'Listen to the Malay example sentence'}
+          >
+            <span className="az-sentence-label">{isMalay ? 'Contoh ayat' : 'Example sentence'}</span>
+            {msSentence && (
+              <span className="az-sentence-line">
+                <span className="az-sentence-text az-sentence-text--bm">
+                  <AnnotatedText text={msSentence} markClass="kv-sentence-kv" />
+                </span>
+              </span>
+            )}
+            {enSentence && (
+              <span className="az-sentence-line">
+                <span className="az-sentence-text az-sentence-text--en">{enSentence}</span>
+              </span>
+            )}
+          </button>
         )}
       </div>
       <nav className="az-nav" aria-label={isMalay ? 'Navigasi kad' : 'Card navigation'}>

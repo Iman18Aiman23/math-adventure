@@ -349,6 +349,25 @@
   border-radius: 24px;
   background: color-mix(in srgb, var(--secondary-light) 60%, var(--bg-white));
   box-shadow: 0 5px 12px color-mix(in srgb, var(--secondary) 18%, transparent);
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+.az-sentence-example:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 16px color-mix(in srgb, var(--secondary) 24%, transparent);
+}
+.az-sentence-example:active {
+  transform: translateY(1px);
+  box-shadow: 0 3px 8px color-mix(in srgb, var(--secondary) 18%, transparent);
+}
+.az-sentence-example:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
 }
 .az-sentence-label {
   color: var(--text-primary);
@@ -366,6 +385,174 @@
   color: var(--text-primary);
   font: 800 min(clamp(16px, 4.4cqh, 40px), 10cqw)/1.2 var(--font-heading);
   text-align: center;
+}
+.az-sentence-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(4px, 1.2cqw, 8px);
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+.az-sentence-line .az-sentence-text {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+}
+.az-sentence-text--bm {
+  font: 800 min(clamp(16px, 4.2cqh, 38px), 10cqw)/1.2 var(--font-heading);
+}
+.az-sentence-text--en {
+  font: 600 min(clamp(12px, 3cqh, 24px), 8cqw)/1.25 var(--font-body);
+  color: #6c7e9a;
+}
+
+/* ── Multi-line example box (LearnWords) ── */
+.az-example-box {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 1cqh, 8px);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 560px;
+  padding: clamp(8px, 1.8cqh, 14px) clamp(8px, 2.5cqw, 14px);
+  border: 3px solid color-mix(in srgb, var(--secondary) 58%, var(--bg-white));
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--secondary-light) 60%, var(--bg-white));
+  box-shadow: 0 5px 12px color-mix(in srgb, var(--secondary) 18%, transparent);
+  text-align: left;
+}
+.az-example-box-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-inline: 2px;
+}
+.az-example-speak {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: clamp(24px, 4.5cqh, 34px);
+  height: clamp(24px, 4.5cqh, 34px);
+  min-height: clamp(24px, 4.5cqh, 34px);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--primary-dark);
+  cursor: pointer;
+  box-shadow: 0 2px 0 rgba(30, 41, 59, .08);
+}
+.az-example-speak svg { width: 55%; height: 55%; }
+.az-example-lines {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3px, .8cqh, 6px);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.az-example-line {
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 1.6cqw, 10px);
+  width: 100%;
+  padding: clamp(4px, .9cqh, 8px) clamp(6px, 1.8cqw, 10px);
+  border: 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .72);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 140ms ease, transform 140ms ease;
+}
+.az-example-line:hover { background: #fff; transform: translateX(1px); }
+.az-example-line:active { transform: translateY(1px); }
+.az-example-line:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 1px; }
+.az-example-line-copy {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.az-example-ms {
+  color: var(--text-primary);
+  font: 800 min(clamp(13px, 2.9cqh, 22px), 7.4cqw)/1.18 var(--font-heading);
+  overflow-wrap: anywhere;
+}
+.az-example-ms .kv-sentence-kv {
+  padding: 0;
+  background: transparent;
+  color: #ef2938;
+}
+.az-example-en {
+  color: #6c7e9a;
+  font: 600 min(clamp(10px, 2.1cqh, 15px), 5.6cqw)/1.2 var(--font-body);
+  overflow-wrap: anywhere;
+}
+.az-example-line-icon {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: clamp(18px, 3.4cqh, 26px);
+  height: clamp(18px, 3.4cqh, 26px);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--primary) 12%, #fff);
+  color: var(--primary-dark);
+}
+.az-example-line-icon svg { width: 60%; height: 60%; }
+
+/* Compact card treatment when the multi-line example box is present. */
+.az-flashcard--examples {
+  container-type: inline-size;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+}
+.az-flashcard--examples .az-flashcard-body {
+  justify-content: flex-start;
+  gap: clamp(3px, .8cqh, 8px);
+  overflow: visible;
+}
+.az-flashcard--examples .az-letter-card-icon { margin-bottom: 0; }
+.az-flashcard--examples .az-card-emoji {
+  font-size: min(clamp(26px, 8cqh, 56px), 18cqw);
+}
+.az-flashcard--examples .az-letters-display {
+  font-size: min(clamp(28px, 9cqh, 64px), 24cqw);
+  letter-spacing: -2px;
+}
+.az-flashcard--examples .az-word-card {
+  min-height: clamp(32px, 5.5cqh, 48px);
+  padding: clamp(3px, .8cqh, 7px) clamp(8px, 2.5cqw, 14px);
+}
+.az-flashcard--examples .az-word-card .kv-syllable-example-text,
+.az-flashcard--examples .az-word-main {
+  font-size: clamp(15px, 3.2cqh, 24px);
+}
+.az-flashcard--examples .az-word-translation {
+  font-size: clamp(10px, 2.2cqh, 16px);
+}
+.az-flashcard--examples .az-audio-button {
+  width: clamp(26px, 4.5cqh, 36px);
+  height: clamp(26px, 4.5cqh, 36px);
+  min-height: clamp(26px, 4.5cqh, 36px);
+}
+@media (max-width: 560px) {
+  .az-flashcard--examples {
+    min-height: 0;
+    padding: 14px 12px 12px;
+  }
+  .az-example-line { padding: 4px 6px; }
+  .az-example-ms { font-size: clamp(12px, 3.6vw, 16px); }
+  .az-example-en { font-size: clamp(9px, 2.8vw, 12px); }
 }
 .az-audio-button {
   display: grid;
