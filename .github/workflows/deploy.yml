@@ -44,6 +44,12 @@ jobs:
         with:
           path: dist
 
+      # The Pages artifact can take a moment to become visible to deploy-pages.
+      # Without this buffer, the deploy step may race the artifact service and
+      # fail with: No artifacts named "github-pages" were found.
+      - name: Wait for Pages artifact
+        run: sleep 10
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
