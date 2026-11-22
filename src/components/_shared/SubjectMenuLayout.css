@@ -52,6 +52,35 @@
 .mh-header { position: relative; z-index: 2; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(6px, 1cqw, 14px); }
 .mh-header h1 { font: 800 clamp(18px, 3cqw, 30px)/1.2 'Nunito', 'Outfit', sans-serif; margin: 0; color: var(--mh-navy); text-align: center; overflow-wrap: anywhere; }
 .mh-back { width: 44px; height: 44px; padding: 10px; display: grid; place-items: center; border: 1px solid #e3e9f0; border-radius: 50%; background: white; color: #61738e; box-shadow: 0 2px 5px #102a5608; }
+.rp-layout.iman-layout .mh-header .mh-back,
+.rp-layout .iman-layout .mh-header .mh-back {
+  box-sizing: border-box;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 148px;
+  min-width: 148px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0 16px;
+  gap: 8px;
+  border: 1px solid #dce6f1;
+  border-radius: 16px;
+  background: #fff;
+  color: #475569;
+  font-family: 'Inter', sans-serif;
+  font-size: .84rem;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: none;
+  transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
+}
+.rp-layout.iman-layout .mh-header .mh-back,
+.rp-layout .iman-layout .mh-header .mh-back svg { width: 20px; height: 20px; flex: 0 0 20px; }
+.rp-layout.iman-layout .mh-header .mh-back,
+.rp-layout .iman-layout .mh-header .mh-back:hover { border-color: #2f80ed; background: #eff6ff; color: #1d4ed8; }
 .mh-header .ih-top-actions-cluster { justify-self: end; }
 .mh-header .ih-popover { z-index: 30; }
 .mh-score { justify-self: end; display: flex; align-items: center; gap: 7px; border-radius: 999px; background: #eaf8f1; padding: 7px 12px; font-size: clamp(17px, 2vw, 23px); font-weight: 600; font-variant-numeric: tabular-nums; color: #536680; }

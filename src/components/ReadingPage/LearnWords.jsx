@@ -7,7 +7,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Pause,
-  Play,
   RotateCcw,
   Sparkles,
   Volume2,
@@ -16,6 +15,20 @@ import { playSound } from '../../utils/soundManager';
 import SpeechManager from '../../services/SpeechManager';
 import AnnotatedText, { stripHighlightMarkers } from './AnnotatedText';
 import ReadingLearningLayout from './ReadingLearningLayout';
+import letterBImage from '../../data/Reading/Letter_B.webp';
+import letterCImage from '../../data/Reading/Letter_C.webp';
+import letterDImage from '../../data/Reading/Letter_D.webp';
+import letterFImage from '../../data/Reading/Letter_F.webp';
+import letterGImage from '../../data/Reading/Letter_G.webp';
+import letterHImage from '../../data/Reading/Letter_H.webp';
+import letterJImage from '../../data/Reading/Letter_J.webp';
+import letterKImage from '../../data/Reading/Letter_K.webp';
+import letterLImage from '../../data/Reading/Letter_L.webp';
+import letterMImage from '../../data/Reading/Letter_M.webp';
+import letterNImage from '../../data/Reading/Letter_N.webp';
+import letterPImage from '../../data/Reading/Letter_P.webp';
+import letterQImage from '../../data/Reading/Letter_Q.webp';
+import letterRImage from '../../data/Reading/Letter_R.webp';
 import './LearnWords.css';
 
 const AZ_LETTER_HUES = [
@@ -35,137 +48,148 @@ const WORD_EXAMPLE_CARDS = [
   {
     id: 'kv_b',
     kv: 'ba',
-    icon: '👕',
+    imageIcon: true,
+    icon: <img className="learn-words-icon-image" src={letterBImage} alt="" />,
     ms: { word: '"Ba"ju' },
     en: { word: 'Shirt' },
     examples: [
       { ms: '"I"ni "ba"ju.', en: 'This is a shirt.' },
       { ms: '"I"ni "ba"ju "ba"ru.', en: 'This is a new shirt.' },
       { ms: '"Ba"pa "be"li "ba"ju "ba"ru.', en: 'Father buys a new shirt.' },
-      { ms: '"Ba"ju "ba"ru "itu" cantik.', en: 'The new shirt is blue.' },
+      { ms: '"Ba"ju "ba"ru "i"tu "can"tik.', en: 'The new shirt is blue.' },
     ],
   },
   {
     id: 'kv_c',
     kv: 'ca',
-    icon: '☕',
+    imageIcon: true,
+    icon: <img className="learn-words-icon-image" src={letterCImage} alt="" />,
     ms: { word: '"Ca"wan' },
     en: { word: 'Cup' },
     examples: [
       { ms: '"I"ni "ca"wan.', en: 'This is a cup.' },
       { ms: '"I"ni "ca"wan "ba"ru.', en: 'This is a new cup.' },
-      { ms: '"Ca"wan "ba"ru "itu" cantik.', en: 'The new cup is pretty.' },
-      { ms: '"Ca"wan "itu" di atas meja.', en: 'The cup is on the table.' },
+      { ms: '"Ca"wan "ba"ru "i"tu "can"tik.', en: 'The new cup is pretty.' },
+      { ms: '"Ca"wan "i"tu di "a"tas "me"ja.', en: 'The cup is on the table.' },
     ],
   },
   {
     id: 'kv_d',
     kv: 'da',
-    icon: '🎲',
-    ms: { word: '"Da"du' },
-    en: { word: 'Dice' },
+    imageIcon: true,
+    icon: <img className="learn-words-icon-image" src={letterDImage} alt="" />,
+    ms: { word: '"Do"di' },
+    en: { word: 'Dodi' },
     examples: [
-      { ms: '"I"ni "da"du.', en: 'This is a dice.' },
-      { ms: '"Da"du "itu" kecil.', en: 'The dice is small.' },
-      { ms: 'Adik main "da"du.', en: 'Younger sibling plays dice.' },
-      { ms: '"Da"du "itu" di atas meja.', en: 'The dice is on the table.' },
+      { ms: '"I"ni "Do"di.', en: 'This is Dodi.' },
+      { ms: '"Do"di "a"da "da"du.', en: 'Dodi has dice.' },
+      { ms: '"Do"di "a"da "ba"nyak "da"du.', en: 'Dodi has a lot of dice..' },
+      { ms: '"Do"di ting"gal" di "de"sa.', en: 'Dodi lives in the village.' },
     ],
   },
   {
     id: 'kv_f',
     kv: 'fo',
-    icon: '📷',
+    imageIcon: true,
+    icon: <img className="learn-words-icon-image" src={letterFImage} alt="" />,
     ms: { word: '"Fo"to' },
     en: { word: 'Photo' },
     examples: [
       { ms: '"I"ni "fo"to.', en: 'This is a photo.' },
-      { ms: '"I"ni "fo"to keluarga.', en: 'This is a family photo.' },
-      { ms: 'Ibu ambil "fo"to kami.', en: 'Mother takes our photo.' },
-      { ms: '"Fo"to ini sangat cantik.', en: 'This photo is very pretty.' },
+      { ms: '"I"ni "fo"to "ke"luar"ga".', en: 'This is a family photo.' },
+      { ms: '"I"bu "am"bil "fo"to kami.', en: 'Mother takes our photo.' },
+      { ms: '"Fo"to "i"ni "sa"ngat "can"tik.', en: 'This photo is very pretty.' },
     ],
   },
   {
     id: 'kv_g',
     kv: 'gi',
-    icon: '🦷',
+    imageIcon: true,
+    icon: <img className="learn-words-icon-image" src={letterGImage} alt="" />,
     ms: { word: '"Gi"gi' },
     en: { word: 'Tooth' },
     examples: [
       { ms: '"I"ni "gi"gi.', en: 'This is a tooth.' },
-      { ms: '"Gi"gi saya putih.', en: 'My teeth are white.' },
-      { ms: 'Saya gosok "gi"gi.', en: 'I brush my teeth.' },
-      { ms: '"Gi"gi yang sihat kuat.', en: 'Healthy teeth are strong.' },
+      { ms: '"Gi"gi "sa"ya "pu"tih.', en: 'My teeth are white.' },
+      { ms: '"Sa"ya "go"sok "gi"gi.', en: 'I brush my teeth.' },
+      { ms: '"Gi"gi "ku"at "gi"gi "si"hat.', en: 'Healthy teeth are strong.' },
     ],
   },
   {
     id: 'kv_h',
     kv: 'hi',
-    icon: '👃',
+    imageIcon: true,
+    icon: <img className="learn-words-icon-image" src={letterHImage} alt="" />,
     ms: { word: '"Hi"dung' },
     en: { word: 'Nose' },
     examples: [
       { ms: '"I"ni "hi"dung.', en: 'This is a nose.' },
-      { ms: '"Hi"dung saya mancung.', en: 'My nose is pointed.' },
-      { ms: 'Saya hidu "ba"u dengan "hi"dung.', en: 'I smell scents with my nose.' },
-      { ms: '"Hi"dung kucing "itu" kecil.', en: 'The cat’s nose is small.' },
+      { ms: '"Hi"dung "sa"ya "man"cung.', en: 'My nose is pointed.' },
+      { ms: '"Sa"ya "hi"du "ba"u "de"ngan "hi"dung.', en: 'I smell scents with my nose.' },
+      { ms: '"Hi"dung "ku"cing "i"tu "ke"cil.', en: 'The cat’s nose is small.' },
     ],
   },
   {
     id: 'kv_j',
     kv: 'ja',
-    icon: '✋',
+    imageIcon: true,
+    icon: <img className="learn-words-icon-image" src={letterJImage} alt="" />,
     ms: { word: '"Ja"ri' },
     en: { word: 'Finger' },
     examples: [
       { ms: '"I"ni "ja"ri.', en: 'This is a finger.' },
-      { ms: '"Ja"ri saya lima.', en: 'I have five fingers.' },
-      { ms: '"Ja"ri "itu" kecil.', en: 'The finger is small.' },
-      { ms: 'Saya tunjuk dengan "ja"ri.', en: 'I point with my finger.' },
+      { ms: '"Ja"ri "sa"ya "a"da "li"ma.', en: 'I have five fingers.' },
+      { ms: '"Ja"ri "i"tu "ke"cil.', en: 'The finger is small.' },
+      { ms: '"Sa"ya "tun"juk "de"ngan "ja"ri.', en: 'I point with my finger.' },
     ],
   },
   {
     id: 'kv_k',
     kv: 'ka',
-    icon: '🦶',
+    imageIcon: true,
+    icon: <img className="learn-words-icon-image" src={letterKImage} alt="" />,
     ms: { word: '"Ka"ki' },
     en: { word: 'Leg' },
     examples: [
       { ms: '"I"ni "ka"ki.', en: 'This is a leg.' },
-      { ms: '"Ka"ki saya panjang.', en: 'My legs are long.' },
-      { ms: 'Saya berjalan dengan "ka"ki.', en: 'I walk with my legs.' },
-      { ms: '"Ka"ki perlu dijaga.', en: 'Legs need to be cared for.' },
+      { ms: '"Ka"ki "sa"ya "pan"jang.', en: 'My legs are long.' },
+      { ms: '"Sa"ya ber"ja"lan "de"ngan "ka"ki.', en: 'I walk with my legs.' },
+      { ms: '"Ka"ki per"lu" di"ja"ga.', en: 'Legs need to be cared for.' },
     ],
   },
   {
     id: 'kv_l',
     kv: 'la',
-    icon: '🌶️',
+    imageIcon: true,
+    icon: <img className="learn-words-icon-image" src={letterLImage} alt="" />,
     ms: { word: '"La"da' },
     en: { word: 'Pepper / Chili' },
     examples: [
       { ms: '"I"ni "la"da.', en: 'This is a chili.' },
-      { ms: '"La"da ini merah.', en: 'This chili is red.' },
-      { ms: 'Rasa "la"da sangat pedas.', en: 'The chili tastes very spicy.' },
-      { ms: 'Ibu tanam pokok "la"da.', en: 'Mother plants a chili tree.' },
+      { ms: '"La"da "i"ni "me"rah.', en: 'This chili is red.' },
+      { ms: '"La"da "sa"ngat "pe"das.', en: 'The chili tastes very spicy.' },
+      { ms: '"I"bu "ta"nam "po"kok "la"da.', en: 'Mother plants a chili tree.' },
     ],
   },
   {
     id: 'kv_m',
     kv: 'ma',
-    icon: '👁️',
+    imageIcon: true,
+    icon: <img className="learn-words-icon-image" src={letterMImage} alt="" />,
     ms: { word: '"Ma"ta' },
     en: { word: 'Eye' },
     examples: [
       { ms: '"I"ni "ma"ta.', en: 'This is an eye.' },
-      { ms: '"Ma"ta saya dua.', en: 'I have two eyes.' },
-      { ms: 'Saya melihat dengan "ma"ta.', en: 'I see with my eyes.' },
-      { ms: '"Ma"ta perlu dijaga.', en: 'Eyes need to be cared for.' },
+      { ms: '"Sa"ya "a"da "du"a "ma"ta', en: 'I have two eyes.' },
+      { ms: '"Sa"ya me"li"hat "de"ngan "ma"ta.', en: 'I see with my eyes.' },
+      { ms: '"Ma"ta per"lu" di"ja"ga.', en: 'Eyes need to be cared for.' },
     ],
   },
   {
     id: 'kv_n',
     kv: 'na',
-    icon: '🍚',
+    imageIcon: true,
+    icon: <img className="learn-words-icon-image" src={letterNImage} alt="" />,
     ms: { word: '"Na"si' },
     en: { word: 'Rice' },
     examples: [
@@ -178,7 +202,8 @@ const WORD_EXAMPLE_CARDS = [
   {
     id: 'kv_p',
     kv: 'pa',
-    icon: '🔨',
+    imageIcon: true,
+    icon: <img className="learn-words-icon-image" src={letterPImage} alt="" />,
     ms: { word: '"Pa"ku' },
     en: { word: 'Nail' },
     examples: [
@@ -191,7 +216,8 @@ const WORD_EXAMPLE_CARDS = [
   {
     id: 'kv_q',
     kv: 'qa',
-    icon: '📖',
+    imageIcon: true,
+    icon: <img className="learn-words-icon-image" src={letterQImage} alt="" />,
     ms: { word: '"Qa"ri' },
     en: { word: 'Quran Reciter' },
     examples: [
@@ -204,7 +230,8 @@ const WORD_EXAMPLE_CARDS = [
   {
     id: 'kv_r',
     kv: 'ro',
-    icon: '🍞',
+    imageIcon: true,
+    icon: <img className="learn-words-icon-image" src={letterRImage} alt="" />,
     ms: { word: '"Ro"ti' },
     en: { word: 'Bread' },
     examples: [
@@ -338,6 +365,8 @@ export default function LearnWords({ onBack, onComplete = onBack, language, ...a
   const [isFinished, setIsFinished] = useState(false);
   const readAllToken = useRef(0);
   const pickerRef = useRef(null);
+  const revealRef = useRef(null);
+  const nextButtonRef = useRef(null);
   const completionRef = useRef(null);
   const completionTitleId = useId();
 
@@ -390,6 +419,25 @@ export default function LearnWords({ onBack, onComplete = onBack, language, ...a
     readAllToken.current += 1;
     SpeechManager.stopSpeaking();
   }, []);
+
+  useEffect(() => {
+    if (stepMode && revealRef.current) {
+      revealRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }, [stepMode, revealedLines, currentIndex]);
+
+  useEffect(() => {
+    if (stepMode && revealedLines >= card.examples.length && nextButtonRef.current) {
+      nextButtonRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      nextButtonRef.current.focus({ preventScroll: true });
+    }
+  }, [stepMode, revealedLines, card.examples.length]);
+
+  useEffect(() => {
+    const container = document.querySelector('.view-container');
+    if (container) container.scrollTop = 0;
+    window.scrollTo?.(0, 0);
+  }, [currentIndex]);
 
   useEffect(() => {
     if (!isPickerOpen) return undefined;
@@ -487,6 +535,16 @@ export default function LearnWords({ onBack, onComplete = onBack, language, ...a
     setRevealedLines(1);
   };
 
+  const revealControl = (
+    <div className="learn-words-reveal" ref={revealRef}>
+      <span>{isMalay ? `Baris ${Math.min(revealedLines, card.examples.length)} daripada ${card.examples.length}` : `Line ${Math.min(revealedLines, card.examples.length)} of ${card.examples.length}`}</span>
+      <button type="button" tabIndex={stepMode ? undefined : -1} onClick={() => { if (revealedLines < card.examples.length) { setRevealedLines(value => value + 1); } }} disabled={revealedLines >= card.examples.length}>
+        {revealedLines >= card.examples.length ? (isMalay ? 'Semua dibuka' : 'All revealed') : (isMalay ? 'Buka baris seterusnya' : 'Show next line')}
+        {revealedLines < card.examples.length && <ChevronRight size={16} />}
+      </button>
+    </div>
+  );
+
   return (
     <ReadingLearningLayout
       pageClassName="learn-words-page"
@@ -505,7 +563,7 @@ export default function LearnWords({ onBack, onComplete = onBack, language, ...a
                 </div>
                 <button
                   type="button"
-                  className="learn-words-illustration"
+                  className={`learn-words-illustration ${card.imageIcon ? 'has-image' : ''}`}
                   onClick={() => speak(mainWord, 'word', mainLanguage)}
                   aria-label={isMalay ? `Dengar ${stripHighlightMarkers(mainWord)}` : `Listen to ${stripHighlightMarkers(mainWord)}`}
                 >
@@ -532,7 +590,10 @@ export default function LearnWords({ onBack, onComplete = onBack, language, ...a
               <section className="learn-words-practice">
                 <div className="learn-words-practice-head">
                   <div>
-                    <span className="learn-words-section-eyebrow">{isMalay ? 'Latihan' : 'Practice'}</span>
+                    <div className="learn-words-practice-title">
+                      <span className="learn-words-section-eyebrow">{isMalay ? 'Latihan' : 'Practice'}</span>
+                      <span className="learn-words-level-badge">{isMalay ? `Tahap ${currentLetter}` : `Level ${currentLetter}`}</span>
+                    </div>
                     <p>{isMalay ? 'Baca baris demi baris, kemudian cuba baca semuanya.' : 'Read line by line, then try the whole set.'}</p>
                   </div>
                 </div>
@@ -591,45 +652,41 @@ export default function LearnWords({ onBack, onComplete = onBack, language, ...a
                   </div>
                   <div className="learn-words-practice-actions">
                     <button type="button" className={`learn-words-mode ${stepMode ? 'is-active' : ''}`} onClick={() => { stopSpeech(); setStepMode(value => !value); setRevealedLines(1); }} aria-pressed={stepMode}>
-                      <span>{stepMode ? '1 → 4' : '4 baris'}</span>
-                      <span>{isMalay ? 'Baca satu-satu' : 'Step mode'}</span>
+                      <span>{isMalay ? 'Baca ikut baris' : 'Read by line'}</span>
                     </button>
                     <button type="button" className={`learn-words-read-all ${isReadingAll ? 'is-reading' : ''}`} onClick={readAll}>
-                      {isReadingAll ? <Pause size={16} /> : <Play size={16} />}
+                      {isReadingAll ? <Pause size={16} /> : <SpeakerIcon size={16} />}
                       <span>{isReadingAll ? (isMalay ? 'Berhenti' : 'Stop') : (isMalay ? 'Dengar semua' : 'Read all')}</span>
                     </button>
                   </div>
                 </div>
 
                 <div className="learn-words-examples">
-                  {visibleExamples.map((example, index) => (
-                    <button
-                      type="button"
-                      key={`${card.id}-${index}`}
-                      className={`learn-words-example ${activeSpeech === `line-${index}` ? 'is-speaking' : ''}`}
-                      onClick={() => activeSpeech === `line-${index}` ? stopSpeech() : speak(example.ms, `line-${index}`, 'ms-MY')}
-                    >
-                      <span className={`learn-words-step learn-words-step-${index + 1}`}>{index + 1}</span>
-                      <span className="learn-words-example-copy">
-                        <span className="learn-words-example-ms"><AnnotatedText text={example.ms} markClass="learn-words-kv-highlight" /></span>
-                        {example.en && <span className="learn-words-example-en">{example.en}</span>}
-                      </span>
-                      <span className="learn-words-example-audio">
-                        {activeSpeech === `line-${index}` ? <Waveform /> : <SpeakerIcon size={18} />}
-                      </span>
-                    </button>
-                  ))}
+                  {card.examples.map((example, index) => {
+                    const isPending = stepMode && index >= revealedLines;
+                    return (
+                      <div className="learn-words-example-slot" key={`${card.id}-${index}`}>
+                        <button
+                          type="button"
+                          className={`learn-words-example ${isPending ? 'is-pending' : ''} ${activeSpeech === `line-${index}` ? 'is-speaking' : ''}`}
+                          aria-hidden={isPending || undefined}
+                          tabIndex={isPending ? -1 : undefined}
+                          onClick={() => { if (isPending) return; activeSpeech === `line-${index}` ? stopSpeech() : speak(example.ms, `line-${index}`, 'ms-MY'); }}
+                        >
+                          <span className={`learn-words-step learn-words-step-${index + 1}`}>{index + 1}</span>
+                          <span className="learn-words-example-copy">
+                            <span className="learn-words-example-ms"><AnnotatedText text={example.ms} markClass="learn-words-kv-highlight" /></span>
+                            {example.en && <span className={`learn-words-example-en learn-words-example-en-${index + 1}`}>{example.en}</span>}
+                          </span>
+                          <span className="learn-words-example-audio">
+                            {activeSpeech === `line-${index}` ? <Waveform /> : <SpeakerIcon size={18} />}
+                          </span>
+                        </button>
+                        {stepMode && index === revealedLines && revealedLines < card.examples.length && revealControl}
+                      </div>
+                    );
+                  })}
                 </div>
-
-                {stepMode && (
-                  <div className="learn-words-reveal">
-                    <span>{isMalay ? `Baris ${Math.min(revealedLines, card.examples.length)} daripada ${card.examples.length}` : `Line ${Math.min(revealedLines, card.examples.length)} of ${card.examples.length}`}</span>
-                    <button type="button" onClick={() => { if (revealedLines < card.examples.length) { setRevealedLines(value => value + 1); } }} disabled={revealedLines >= card.examples.length}>
-                      {revealedLines >= card.examples.length ? (isMalay ? 'Semua dibuka' : 'All revealed') : (isMalay ? 'Buka baris seterusnya' : 'Show next line')}
-                      {revealedLines < card.examples.length && <ChevronRight size={16} />}
-                    </button>
-                  </div>
-                )}
               </section>
             </div>
 
@@ -637,13 +694,13 @@ export default function LearnWords({ onBack, onComplete = onBack, language, ...a
               <button type="button" className="learn-words-nav-button is-secondary" onClick={previousCard} disabled={currentIndex === 0}>
                 <ChevronLeft size={20} /> <span>{isMalay ? 'Sebelum' : 'Previous'}</span>
               </button>
-              <button type="button" className="learn-words-nav-button is-primary" onClick={nextCard}>
+              <button type="button" ref={nextButtonRef} className="learn-words-nav-button is-primary" onClick={nextCard}>
                 <span>{currentIndex === total - 1 ? (isMalay ? 'Selesai' : 'Finish') : (isMalay ? 'Seterusnya' : 'Next')}</span>
                 <ChevronRight size={20} />
               </button>
             </footer>
             <div className="learn-words-keyboard-tip">
-              <RotateCcw size={13} aria-hidden="true" /> {isMalay ? 'Tip: guna ← → untuk tukar kad dan Space untuk dengar.' : 'Tip: use ← → to change cards and Space to listen.'}
+              <RotateCcw size={13} aria-hidden="true" /> {isMalay ? <>Tip: guna <kbd>←</kbd> <kbd>→</kbd> untuk tukar kad dan <kbd>Space</kbd> untuk dengar.</> : <>Tip: use <kbd>←</kbd> <kbd>→</kbd> to change cards and <kbd>Space</kbd> to listen.</>}
               <button type="button" onClick={resetReadingMode}>{isMalay ? 'Tetapkan semula mod' : 'Reset reading mode'}</button>
             </div>
 
