@@ -151,10 +151,10 @@ const WORD_EXAMPLE_CARDS = [
     ms: { word: '"Ka"ki' },
     en: { word: 'Leg' },
     examples: [
-      { ms: '"I"ni "ka"ki.', en: 'This is a leg.' },
-      { ms: '"Ka"ki "sa"ya "pan"jang.', en: 'My legs are long.' },
-      { ms: '"Sa"ya ber"ja"lan "de"ngan "ka"ki.', en: 'I walk with my legs.' },
-      { ms: '"Ka"ki per"lu" di"ja"ga.', en: 'Legs need to be cared for.' },
+      { ms: '"I"ni "ke"ra.', en: 'This is a monkey.' },
+      { ms: '"Na"ma "ke"ra "i"ni "Ki"ki..', en: 'This monkey name is Kiki.' },
+      { ms: '"Ki"ki "su"ka "ma"kan "pi"sing.', en: 'Kiki likes to eat bananas.' },
+      { ms: '"Ki"ki "ting"gal di "hu"tan.', en: 'Kiki lives in the forest.' },
     ],
   },
   {

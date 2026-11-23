@@ -169,7 +169,7 @@ export default function DesktopSidebar({
             <span>{bm ? 'Laman Utama' : 'Home'}</span>
           </button>
 
-          <section className="ds-section">
+          <section className="ds-section ds-section--subjects">
             <button
             type="button"
             className="ds-section-toggle"
@@ -214,7 +214,7 @@ export default function DesktopSidebar({
             </div>
           </section>
 
-          <section className="ds-section">
+          <section className="ds-section ds-section--rewards">
             <button
             type="button"
             className="ds-section-toggle"

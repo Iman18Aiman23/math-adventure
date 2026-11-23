@@ -1,14 +1,36 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import confetti from 'canvas-confetti';
 import SpeechManager from '../../../services/SpeechManager';
 import BMHeader from './BMHeader';
+import { PageHeader } from '../../_shared/PageHeaderHero';
+import useBrowserBack from '../../../hooks/useBrowserBack';
 
 import StatsBar from '../../_shared/StatsBar';
+import HomeHeaderActions from '../../_shared/HomeHeaderActions';
 import useGamification from '../../../hooks/useGamification';
 
 // Mastery gate: minimum % required to pass a topic quiz. Below this the
 // child is asked to "Cuba Lagi" and the topic is NOT marked completed.
 export const PASS_PCT = 70;
+
+function QuizSpeakerIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M4 9v6h4l5 4V5L8 9H4Z" fill="currentColor" />
+      <path
+        d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.4"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function MatchLearnShell({ children }) {
+  return <div className="bm-match-wrap mh-wrap page-container">{children}</div>;
+}
 
 export default function BMLessonQuizLayout({
   onBack,
@@ -22,6 +44,7 @@ export default function BMLessonQuizLayout({
   onNextTopic,
   passPct = PASS_PCT,
   subtitle,
+  footerText,
   resultExtra,
   // When true, `audioText` is shown as on-screen INSTRUCTION text (no speaker
   // icon, no auto-TTS, no "Dengar Semula" replay) — for read-the-instruction
@@ -33,12 +56,15 @@ export default function BMLessonQuizLayout({
   // When true, a feedback dialog with `penerangan` text appears after each
   // answer (correct or wrong) so the child reads why the action matters.
   showFeedback = false,
+  matchLearn = false,
+  ...accountProps
 }) {
   const quizRef = useRef(null);
   const [peneranganDismissed, setPeneranganDismissed] = useState(false);
   // Destructure only the stable callbacks — the hook's return object gets a new
   // identity on every render, so depending on it in effects causes infinite loops.
   const { awardXP, completeTopicAttempt, loseHeart, hearts, gems } = useGamification('bm');
+  const headerBack = useBrowserBack(onBack);
   const streakRef = useRef(0);
   const awardedIdxRef = useRef(-1);
   const completionHandledRef = useRef(false);
@@ -50,6 +76,7 @@ export default function BMLessonQuizLayout({
   } = quiz;
 
   const pct = totalRounds > 0 ? Math.round((score / totalRounds) * 100) : 0;
+  const hasLongOptions = !!currentQ?.options?.some((option) => option.length > 20);
   const stars = pct >= 80 ? 3 : pct >= 50 ? 2 : 1;
   const passed = pct >= passPct;
 
@@ -68,11 +95,6 @@ export default function BMLessonQuizLayout({
       streakRef.current = 0;
     }
   }, [finished]);
-
-  // Reset penerangan dismissal when advancing to a new question
-  useEffect(() => {
-    if (!answered) setPeneranganDismissed(false);
-  }, [answered]);
 
   // Completion is only persisted when the mastery gate is met.
   useEffect(() => {
@@ -132,11 +154,24 @@ export default function BMLessonQuizLayout({
     }
   }, [answered, selected, correctIdx, idx, awardXP, topicId, loseHeart]);
 
+  const replayLabel = language === 'bm' ? 'Dengar semula' : 'Replay audio';
+  const LessonShell = matchLearn ? MatchLearnShell : React.Fragment;
+
   const handleReplay = () => {
     if (currentQ?.audioText) {
       SpeechManager.stopSpeaking();
       SpeechManager.speak(currentQ.audioText, 'ms-MY', { rate: 0.7, pitch: 1.2 });
     }
+  };
+
+  const handleNextQuestion = () => {
+    setPeneranganDismissed(false);
+    handleNext();
+  };
+
+  const handleRestartQuiz = () => {
+    setPeneranganDismissed(false);
+    handleRestart();
   };
 
   return (
@@ -576,6 +611,272 @@ export default function BMLessonQuizLayout({
           font-weight: 500; color: #94A3B8;
         }
 
+        .bm-lesson-root--match {
+          min-height: 100dvh; height: auto;
+          overflow-x: clip; overflow-y: visible;
+          background: #F8FAFC;
+        }
+        .bm-match-wrap {
+          display: flex; flex: 1 1 auto; flex-direction: column;
+          min-height: 0; gap: 0;
+        }
+        .bm-match-wrap > .ip-header { flex-shrink: 0; }
+        .bm-lesson-root--match .bm-header {
+          background: transparent; border-bottom: 0; backdrop-filter: none;
+          padding: clamp(10px, 1.6vh, 18px) clamp(12px, 1.6vw, 24px) 4px;
+        }
+        .bm-lesson-root--match .bm-header-row { min-height: 44px; justify-content: space-between; }
+        .bm-lesson-root--match .bm-header-row--actions::after { display: none; }
+        .bm-lesson-root--match .bm-header-title { display: none; }
+        .bm-lesson-root--match .bm-header-actions { flex: 0 0 auto; }
+        .bm-lesson-root--match .bm-header-back {
+          height: 44px; padding-inline: 14px; border-radius: 999px;
+          color: #1E293B; border: 1.5px solid rgba(255,255,255,.9);
+          background: rgba(255,255,255,.92);
+          box-shadow: 0 4px 12px -6px rgba(100,116,139,.45);
+        }
+        .bm-lesson-root--match .bm-header .ih-points,
+        .bm-lesson-root--match .bm-header .ih-account {
+          background: rgba(255,255,255,.92) !important;
+          border: 1.5px solid rgba(255,255,255,.9);
+          border-radius: 999px;
+          box-shadow: 0 4px 12px -6px rgba(100,116,139,.45);
+        }
+        .bm-lesson-root--match .bm-lesson-body {
+          max-width: none;
+          justify-content: center;
+          justify-content: safe center;
+          align-items: center;
+          align-items: safe center;
+          overflow-x: clip;
+          overflow-y: visible;
+          padding: clamp(10px, 2vh, 20px) 0 var(--sp-2);
+        }
+        .bm-lesson-root--match .bm-quiz-stage { width: 100%; max-width: none; margin: 0; }
+        .bm-lesson-root--match .bm-quiz-stats {
+          width: 100%; max-width: none; margin: 0 auto 7px;
+        }
+        .bm-lesson-root--match .bm-pill.prog {
+          color: #1D4ED8; background: #EFF6FF;
+          border-color: #3B82F6;
+          box-shadow: 0 2px 6px -3px rgba(59,130,246,.5);
+        }
+        .bm-lesson-root--match .bm-pill-group { display: none; }
+        .bm-lesson-root--match .bm-quiz-bar-wrap {
+          width: 100%; max-width: none; height: 18px;
+          margin: 0 auto clamp(12px, 2vh, 18px); padding: 3px;
+          background: #EFF6FF; border: 1.5px solid #DBEAFE;
+          box-shadow: inset 0 2px 3px rgba(59,130,246,.16);
+        }
+        .bm-lesson-root--match .bm-quiz-bar-fill {
+          background: linear-gradient(90deg, #93C5FD, #60A5FA 55%, #3B82F6);
+          border-radius: 999px;
+          box-shadow: 0 2px 5px -2px rgba(59,130,246,.55);
+        }
+        .bm-lesson-root--match .bm-quiz-card,
+        .bm-lesson-root--match .bm-quiz-start-card,
+        .bm-lesson-root--match .bm-quiz-result-card {
+          background: linear-gradient(160deg, #FFFFFF 0%, #F8FAFC 58%, #F1F5F9 100%);
+          border: 1.5px solid #E2E8F0;
+          border-radius: clamp(24px, 3.6vh, 34px);
+          box-shadow: 0 2px 0 #E2E8F0, 0 18px 40px -22px rgba(71,85,105,.55);
+        }
+        .bm-lesson-root--match .bm-quiz-card {
+          width: 100%; max-width: none; margin-inline: auto;
+          justify-content: center; gap: clamp(3px, .6vh, 7px);
+          padding: clamp(16px, 2.8vh, 28px) clamp(18px, 3vw, 30px) clamp(14px, 2.4vh, 24px);
+        }
+        .bm-lesson-root--match .bm-quiz-media {
+          position: relative;
+          width: clamp(78px, 10.8vh, 104px); height: clamp(78px, 10.8vh, 104px);
+          margin: 0 auto; padding: 0; appearance: none;
+          border-radius: 50%;
+          background: linear-gradient(145deg, #DBEAFE 0%, #EFF6FF 100%);
+          border: 2px solid #BFDBFE;
+          box-shadow: 0 6px 14px -8px rgba(59,130,246,.75), inset 0 2px 0 rgba(255,255,255,.8);
+          display: flex; align-items: center; justify-content: center;
+        }
+        .bm-lesson-root--match .bm-quiz-media--audio {
+          cursor: pointer;
+          transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+        }
+        @media (hover: hover) {
+          .bm-lesson-root--match .bm-quiz-media--audio:hover {
+            transform: translateY(-2px); border-color: #60A5FA;
+            box-shadow: 0 9px 18px -9px rgba(59,130,246,.85), inset 0 2px 0 rgba(255,255,255,.85);
+          }
+        }
+        .bm-lesson-root--match .bm-quiz-media--audio:active {
+          transform: translateY(1px);
+          box-shadow: 0 4px 10px -8px rgba(59,130,246,.8), inset 0 2px 0 rgba(255,255,255,.7);
+        }
+        .bm-lesson-root--match .bm-quiz-media-audio-badge {
+          position: absolute; right: -5px; bottom: -5px;
+          width: 34px; height: 34px; border-radius: 50%;
+          background: #FFFFFF; border: 2px solid #CBD5E1; color: #1D4ED8;
+          display: grid; place-items: center;
+          box-shadow: 0 3px 8px -3px rgba(15,23,42,.35), inset 0 1px 0 rgba(255,255,255,.9);
+        }
+        .bm-lesson-root--match .bm-quiz-media-audio-badge svg {
+          width: 18px; height: 18px;
+        }
+        .bm-lesson-root--match .bm-quiz-emoji { font-size: clamp(40px, 6.4vh, 56px); }
+        .bm-lesson-root--match .bm-quiz-question-row {
+          display: flex; justify-content: center; width: 100%;
+        }
+        .bm-lesson-root--match .bm-quiz-question { margin: 0; font-weight: 800; }
+        .bm-lesson-root--match .bm-quiz-replay-btn { display: none; }
+        .bm-lesson-root--match .bm-quiz-grid {
+          width: 100%; max-width: 320px; margin: clamp(4px, .8vh, 8px) auto 0;
+        }
+        .bm-lesson-root--match .bm-quiz-grid.long { max-width: 380px; }
+        .bm-lesson-root--match .bm-quiz-opt {
+          position: relative;
+          background: #F1F5F9; border: 2px solid #CBD5E1; border-radius: 18px;
+          color: #1E293B;
+          font-size: clamp(20px, 3.2vh, 26px); font-weight: 800;
+          box-shadow: 0 4px 0 #94A3B8, 0 10px 18px -12px rgba(71,85,105,.7);
+        }
+        .bm-lesson-root--match .bm-quiz-opt.word-opt {
+          font-size: clamp(15px, 2.7vh, 20px); font-weight: 800;
+        }
+        .bm-lesson-root--match .bm-quiz-opt.selected {
+          border-color: #3B82F6; background: #EFF6FF; color: #1D4ED8;
+          box-shadow: 0 4px 0 #93C5FD, 0 10px 18px -12px rgba(59,130,246,.65);
+          transform: scale(.98);
+        }
+        .bm-lesson-root--match .bm-quiz-opt:not(:disabled):active {
+          transform: translateY(2px);
+          box-shadow: 0 2px 0 #94A3B8, 0 6px 12px -10px rgba(71,85,105,.65);
+        }
+        @media (hover: hover) {
+          .bm-lesson-root--match .bm-quiz-opt:not(:disabled):hover {
+            transform: translateY(-2px); border-color: #94A3B8; background: #E2E8F0;
+            box-shadow: 0 6px 0 #94A3B8, 0 14px 20px -12px rgba(71,85,105,.75);
+          }
+        }
+        .bm-lesson-root--match .bm-quiz-opt.correct {
+          border-color: #15803D; background: #F0FDF4; color: #15803D;
+          box-shadow: 0 5px 0 #15803D, 0 12px 20px -12px rgba(22,163,74,.55);
+          animation: bm-match-correct-in .28s cubic-bezier(.34,1.56,.64,1) both;
+        }
+        .bm-lesson-root--match .bm-quiz-opt.correct .bm-opt-letter-display {
+          color: #15803D;
+        }
+        .bm-lesson-root--match .bm-quiz-opt.wrong {
+          border-color: #B91C1C; background: #FEF2F2; color: #B91C1C;
+          box-shadow: 0 5px 0 #B91C1C, 0 12px 20px -12px rgba(220,38,38,.5);
+          animation: bm-match-wrong-in .34s ease-in-out both;
+        }
+        .bm-lesson-root--match .bm-quiz-opt.wrong .bm-opt-letter-display {
+          color: #B91C1C;
+        }
+        @keyframes bm-match-correct-in {
+          0% { opacity: .35; transform: translateY(-8px) scale(.98); background: #F1F5F9; border-color: #CBD5E1; color: #1E293B; box-shadow: 0 4px 0 #94A3B8, 0 10px 18px -12px rgba(71,85,105,.7); }
+          70% { opacity: 1; transform: translateY(2px) scale(1.015); }
+          100% { opacity: 1; transform: translateY(0) scale(1); background: #F0FDF4; border-color: #15803D; color: #15803D; box-shadow: 0 5px 0 #15803D, 0 12px 20px -12px rgba(22,163,74,.55); }
+        }
+        @keyframes bm-match-wrong-in {
+          0%, 20%, 40%, 60%, 76% { background: #F1F5F9; border-color: #CBD5E1; color: #1E293B; box-shadow: 0 4px 0 #94A3B8, 0 10px 18px -12px rgba(71,85,105,.7); }
+          0%, 100% { transform: translateX(0); }
+          20% { transform: translateX(-6px); }
+          40% { transform: translateX(6px); }
+          60% { transform: translateX(-5px); }
+          76% { transform: translateX(4px); }
+          88%, 100% { background: #FEF2F2; border-color: #B91C1C; color: #B91C1C; box-shadow: 0 5px 0 #B91C1C, 0 12px 20px -12px rgba(220,38,38,.5); }
+        }
+        .bm-lesson-root--match .bm-quiz-opt.correct::after,
+        .bm-lesson-root--match .bm-quiz-opt.wrong::after {
+          position: absolute; top: -8px; right: -8px;
+          width: 24px; height: 24px; border-radius: 50%;
+          color: #fff; font-size: 14px; line-height: 1;
+          display: grid; place-items: center;
+          box-shadow: 0 2px 6px -2px rgba(15,23,42,.4);
+        }
+        .bm-lesson-root--match .bm-quiz-opt.correct::after { content: '✓'; background: #15803D; animation: bm-match-badge-in .2s ease-out .16s both; }
+        .bm-lesson-root--match .bm-quiz-opt.wrong::after { content: '✕'; background: #B91C1C; animation: bm-match-badge-in .2s ease-out .3s both; }
+        @keyframes bm-match-badge-in {
+          from { opacity: 0; transform: scale(.5); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        .bm-lesson-root--match .bm-quiz-media--audio:focus-visible,
+        .bm-lesson-root--match .bm-quiz-opt:focus-visible {
+          outline: 3px solid #3B82F6; outline-offset: 3px;
+        }
+        .bm-lesson-root--match .bm-quiz-feedback-zone {
+          min-height: clamp(22px, 3.6vh, 30px); margin-top: 4px;
+        }
+        .bm-lesson-root--match .bm-quiz-feedback.wrong {
+          color: #7F1D1D; background: #FFF1F2; border-color: #FDA4AF;
+          font-weight: 800;
+          animation: bm-match-feedback-in .24s ease-out .12s both;
+        }
+        @keyframes bm-match-feedback-in {
+          from { opacity: 0; transform: translateY(-8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .bm-lesson-root--match .bm-quiz-next-wrap {
+          width: 100%; max-width: 320px; margin: clamp(2px, .5vh, 5px) auto 0;
+          transition: margin-top .15s ease;
+        }
+        .bm-lesson-root--match .bm-quiz-next-wrap.after-wrong {
+          margin-top: clamp(10px, 1.8vh, 16px);
+        }
+        .bm-lesson-root--match .bm-quiz-next-wrap.long { max-width: 380px; }
+        .bm-lesson-root--match .bm-quiz-next-btn {
+          width: 100%; padding-inline: 12px;
+          background: linear-gradient(180deg, #60A5FA, #2563EB);
+          box-shadow: 0 4px 0 #1D4ED8, 0 8px 16px -10px rgba(37,99,235,.75);
+          transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+        }
+        @media (hover: hover) {
+          .bm-lesson-root--match .bm-quiz-next-btn:hover {
+            transform: translateY(-1px);
+            background: linear-gradient(180deg, #3B82F6, #1D4ED8);
+            box-shadow: 0 5px 0 #1E40AF, 0 12px 20px -10px rgba(37,99,235,.8);
+          }
+        }
+        .bm-lesson-root--match .bm-quiz-next-btn:active {
+          transform: translateY(2px) scale(.98);
+          background: linear-gradient(180deg, #2563EB, #1E40AF);
+          box-shadow: 0 2px 0 #1E3A8A, 0 5px 10px -8px rgba(37,99,235,.75);
+        }
+        .bm-lesson-root--match .bm-quiz-next-btn.hidden-state { display: none; }
+        .bm-lesson-root--match .bm-lesson-footer { color: #64748B; }
+        @media (prefers-reduced-motion: reduce) {
+          .bm-lesson-root--match .bm-quiz-opt.correct,
+          .bm-lesson-root--match .bm-quiz-opt.wrong,
+          .bm-lesson-root--match .bm-quiz-opt.correct::after,
+          .bm-lesson-root--match .bm-quiz-opt.wrong::after,
+          .bm-lesson-root--match .bm-quiz-feedback.wrong { animation: none; }
+        }
+        @media (max-width: 560px) {
+          .bm-lesson-root--match .bm-quiz-card { padding: 12px 10px 10px; border-radius: 22px; }
+          .bm-lesson-root--match .bm-quiz-media { width: 74px; height: 74px; }
+          .bm-lesson-root--match .bm-quiz-emoji { font-size: 38px; }
+          .bm-lesson-root--match .bm-quiz-question { font-size: 20px; }
+          .bm-lesson-root--match .bm-quiz-grid,
+          .bm-lesson-root--match .bm-quiz-grid.long {
+            grid-template-columns: 1fr 1fr;
+            max-width: min(100%, 340px);
+            gap: 7px;
+          }
+          .bm-lesson-root--match .bm-quiz-opt {
+            min-height: 52px; padding: 8px 6px; border-radius: 14px;
+            font-size: clamp(17px, 5vw, 22px);
+          }
+          .bm-lesson-root--match .bm-quiz-opt.word-opt {
+            font-size: clamp(12px, 3.4vw, 15px);
+            line-height: 1.2;
+          }
+          .bm-lesson-root--match .bm-quiz-opt .bm-opt-letter-display {
+            overflow-wrap: anywhere; hyphens: auto;
+          }
+          .bm-lesson-root--match .bm-quiz-feedback.wrong { font-size: 12px; padding: 5px 8px; }
+          .bm-lesson-root--match .bm-quiz-next-wrap,
+          .bm-lesson-root--match .bm-quiz-next-wrap.long { max-width: min(100%, 340px); }
+          .bm-lesson-root--match .bm-quiz-next-btn { font-size: 16px; padding-block: 10px; }
+        }
         /* ── Desktop / laptop scale-up (height-aware so it always fits) ── */
         @media (min-width: 900px) {
           .bm-lesson-body { max-width: 820px; }
@@ -596,6 +897,7 @@ export default function BMLessonQuizLayout({
           .bm-quiz-feedback.wrong { font-size: min(14px, 2.2vh); }
           .bm-quiz-next-wrap { margin-top: min(8px, 1vh); }
           .bm-quiz-next-btn { font-size: min(18px, 2.6vh); padding: min(13px, 1.8vh) 48px; }
+          .bm-lesson-root--match .bm-quiz-next-btn { padding: min(13px, 1.8vh) 12px; }
           .bm-quiz-start-card, .bm-quiz-result-card { padding: min(40px, 4.4vh) 48px; border-radius: 32px; }
           .bm-quiz-start-icon { width: min(104px, 13vh); height: min(104px, 13vh); font-size: min(56px, 7vh); border-radius: 32px; }
           .bm-quiz-start-title { font-size: min(30px, 4.2vh); }
@@ -607,15 +909,112 @@ export default function BMLessonQuizLayout({
           .bm-result-extra-label, .bm-result-extra-item { font-size: min(14px, 2.2vh); }
           .bm-lesson-footer { font-size: min(12px, 2vh); }
         }
+        /* ── Large desktop: fill the area beside the sidebar ── */
+        @media (min-width: 1024px) {
+          .bm-lesson-root--match .bm-lesson-body {
+            max-width: none;
+            padding: 8px 0 12px;
+          }
+          .bm-lesson-root--match .bm-header { padding-top: clamp(6px, 1vh, 12px); }
+          .bm-lesson-root--match .bm-quiz-stage { width: 100%; max-width: none; margin-inline: auto; }
+          .bm-lesson-root--match .bm-quiz-stats {
+            width: 100%; max-width: none;
+            margin: 0 auto 8px;
+            justify-content: center;
+          }
+          .bm-lesson-root--match .bm-pill { font-size: 16px; padding: 6px 20px; }
+          .bm-lesson-root--match .bm-quiz-bar-wrap {
+            max-width: none; height: 24px; padding: 3px;
+            margin: 0 auto clamp(14px, 2vh, 22px);
+          }
+          .bm-lesson-root--match .bm-quiz-card {
+            max-width: none;
+            padding: clamp(20px, 2.8vh, 34px) clamp(28px, 4vw, 56px) clamp(4px, 0.8vh, 10px);
+            gap: clamp(8px, 1.4vh, 16px);
+            border-radius: 36px;
+          }
+          .bm-lesson-root--match .bm-quiz-media {
+            width: clamp(110px, 14vh, 148px); height: clamp(110px, 14vh, 148px);
+          }
+          .bm-lesson-root--match .bm-quiz-media-audio-badge { width: 44px; height: 44px; }
+          .bm-lesson-root--match .bm-quiz-media-audio-badge svg { width: 24px; height: 24px; }
+          .bm-lesson-root--match .bm-quiz-emoji { font-size: clamp(64px, 9vh, 92px); }
+          .bm-lesson-root--match .bm-quiz-question {
+            font-size: clamp(28px, 4.2vh, 40px); line-height: 1.2;
+          }
+          .bm-lesson-root--match .bm-quiz-grid,
+          .bm-lesson-root--match .bm-quiz-grid.long {
+            max-width: min(100%, 820px);
+            gap: clamp(14px, 2vh, 22px);
+            margin-top: clamp(12px, 2vh, 22px);
+          }
+          .bm-lesson-root--match .bm-quiz-opt {
+            min-height: clamp(88px, 12vh, 120px);
+            font-size: clamp(30px, 4.8vh, 46px);
+            border-radius: 24px;
+            box-shadow: 0 6px 0 #94A3B8, 0 18px 26px -16px rgba(71,85,105,.7);
+          }
+          .bm-lesson-root--match .bm-quiz-opt.word-opt {
+            font-size: clamp(21px, 3.2vh, 30px); line-height: 1.25;
+          }
+          .bm-lesson-root--match .bm-quiz-feedback-zone { min-height: 34px; margin-top: 8px; }
+          .bm-lesson-root--match .bm-quiz-feedback.wrong { font-size: 17px; }
+          .bm-lesson-root--match .bm-quiz-next-wrap,
+          .bm-lesson-root--match .bm-quiz-next-wrap.long {
+            max-width: min(100%, 420px); margin-top: 4px;
+          }
+          .bm-lesson-root--match .bm-quiz-next-btn { font-size: 22px; padding-block: 16px; }
+          .bm-lesson-root--match .bm-lesson-footer { padding-bottom: 12px; }
+        }
+        @media (max-width: 767px) {
+          .bm-lesson-root--match.mh-screen.page-layout-root {
+            padding-top: calc(6px + env(safe-area-inset-top, 0px));
+          }
+          .bm-lesson-root--match .bm-header,
+          .bm-match-wrap > .ip-header {
+            align-items: center;
+          }
+          .bm-lesson-root--match .bm-lesson-body {
+            justify-content: center;
+            justify-content: safe center;
+            align-items: stretch;
+            padding-top: 8px;
+            padding-bottom: 40px;
+          }
+          .bm-lesson-root--match .bm-quiz-stage {
+            width: 100%;
+            max-width: none;
+            margin: 0;
+          }
+          .bm-lesson-root--match .bm-quiz-stats {
+            justify-content: center;
+          }
+          .bm-lesson-root--match .bm-quiz-bar-wrap {
+            margin-bottom: 10px;
+          }
+          .bm-lesson-root--match .bm-lesson-footer {
+            padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+          }
+        }
       `}</style>
 
-      <div className="bm-lesson-root">
-        <BMHeader onBack={onBack} language={language} title={topicTitle} sticky />
+      <div className={`bm-lesson-root${matchLearn ? ' bm-lesson-root--match mh-screen page-layout-root iman-layout' : ''}`}>
+        <LessonShell>
+        {matchLearn ? (
+          <PageHeader {...accountProps} onBack={headerBack} language={language} backOnly />
+        ) : (
+          <BMHeader
+            onBack={onBack}
+            language={language}
+            title={topicTitle}
+            sticky
+          />
+        )}
 
         <div className="bm-lesson-body">
           {finished ? (
             <div className="bm-quiz-stage">
-              <StatsBar subject="bm" />
+              {!matchLearn && <StatsBar subject="bm" />}
               <div className="bm-quiz-result-card">
                 <div className="bm-result-stars-row">
                   <div className="bm-result-stars">{'⭐'.repeat(stars)}{'☆'.repeat(3 - stars)}</div>
@@ -652,13 +1051,13 @@ export default function BMLessonQuizLayout({
                           {language === 'bm' ? '← Kembali ke Trail' : '← Back to Trail'}
                         </button>
                       )}
-                      <button className="bm-btn secondary" onClick={handleRestart}>
+                      <button className="bm-btn secondary" onClick={handleRestartQuiz}>
                         🔄 {language === 'bm' ? 'Cuba Lagi' : 'Try Again'}
                       </button>
                     </>
                   ) : (
                     <>
-                      <button className="bm-btn primary" onClick={handleRestart}>
+                      <button className="bm-btn primary" onClick={handleRestartQuiz}>
                         🔄 {language === 'bm' ? 'Cuba Lagi' : 'Try Again'}
                       </button>
                       <button className="bm-btn secondary" onClick={onBack}>
@@ -714,7 +1113,22 @@ export default function BMLessonQuizLayout({
                   currentQ.audioText && (
                     <div className="bm-quiz-instruction">{currentQ.audioText}</div>
                   )
-                ) : hideEmoji ? null : (
+                ) : hideEmoji ? null : matchLearn && currentQ.audioText && !instructionMode ? (
+                  <button
+                    type="button"
+                    className="bm-quiz-media bm-quiz-media--audio"
+                    onClick={handleReplay}
+                    aria-label={replayLabel}
+                    title={replayLabel}
+                  >
+                    {currentQ.emoji ? (
+                      <span className="bm-quiz-emoji">{currentQ.emoji}</span>
+                    ) : (
+                      <span className="bm-quiz-speaker-icon">🔊</span>
+                    )}
+                    <span className="bm-quiz-media-audio-badge" aria-hidden="true"><QuizSpeakerIcon /></span>
+                  </button>
+                ) : (
                   <div className="bm-quiz-media">
                     {currentQ.emoji ? (
                       <span className="bm-quiz-emoji">{currentQ.emoji}</span>
@@ -736,17 +1150,19 @@ export default function BMLessonQuizLayout({
                     );
                   })()
                 ) : (
-                  <p className="bm-quiz-question">
-                    {currentQ.question || (language === 'bm' ? 'Apakah bunyi ini?' : 'What sound is this?')}
-                  </p>
+                  <div className="bm-quiz-question-row">
+                    <p className="bm-quiz-question">
+                      {currentQ.question || (language === 'bm' ? 'Apakah bunyi ini?' : 'What sound is this?')}
+                    </p>
+                  </div>
                 )}
-                {!instructionMode && currentQ.audioText && (
+                {!instructionMode && currentQ.audioText && !matchLearn && (
                   <button className="bm-quiz-replay-btn" onClick={handleReplay}>
                     🔊 {language === 'bm' ? 'Dengar Semula' : 'Replay'}
                   </button>
                 )}
 
-                <div className={'bm-quiz-grid' + (currentQ.options.some(o => o.length > 20) ? ' long' : '')}>
+                <div className={'bm-quiz-grid' + (hasLongOptions ? ' long' : '')}>
                   {currentQ.options.map((opt, i) => {
                     const isSelected = selected === i;
                     const isCorrectChoice = answered && i === correctIdx;
@@ -771,7 +1187,7 @@ export default function BMLessonQuizLayout({
                 <div className="bm-quiz-feedback-zone">
                   {answered && selected !== correctIdx && (
                     <div className="bm-quiz-feedback wrong">
-                      ❌ {language === 'bm' ? 'Jawapan' : 'Answer'}: {(currentQ.emoji || correctAnswer.length > 3) ? correctAnswer : correctAnswer.toUpperCase()}
+                      {matchLearn ? '💡' : '❌'} {language === 'bm' ? 'Jawapan' : 'Answer'}: {(currentQ.emoji || correctAnswer.length > 3) ? correctAnswer : correctAnswer.toUpperCase()}
                     </div>
                   )}
                 </div>
@@ -788,9 +1204,9 @@ export default function BMLessonQuizLayout({
                   </div>
                 )}
 
-                <div className="bm-quiz-next-wrap">
+                <div className={'bm-quiz-next-wrap' + (hasLongOptions ? ' long' : '') + (answered && selected !== correctIdx ? ' after-wrong' : '')}>
                   {showFeedback && answered && currentQ?.penerangan && !peneranganDismissed ? null : (
-                    <button className={'bm-quiz-next-btn' + (answered ? '' : ' hidden-state')} onClick={handleNext}>
+                    <button className={'bm-quiz-next-btn' + (answered ? '' : ' hidden-state')} onClick={handleNextQuestion}>
                       {idx + 1 >= totalRounds
                         ? (language === 'bm' ? 'Lihat Keputusan →' : 'See Results →')
                         : (language === 'bm' ? 'Seterusnya →' : 'Next →')}
@@ -804,9 +1220,10 @@ export default function BMLessonQuizLayout({
 
         {!finished && (
           <p className="bm-lesson-footer">
-            Bahasa Melayu KSSR · {topicTitle}
+            {footerText || `Bahasa Melayu KSSR · ${topicTitle}`}
           </p>
         )}
+        </LessonShell>
       </div>
     </>
   );

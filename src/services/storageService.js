@@ -46,6 +46,7 @@ const DEFAULT_NAVIGATION_STATE = {
   matematikYear: 1,
   bmModule: null,
   bmTopic: null,
+  bmTopicOrigin: 'bm-kssr',
   bmYear: 1,
 };
 
@@ -79,6 +80,7 @@ function cleanNavigationState(saved = {}) {
     matematikYear: year('matematikYear'),
     bmModule: text('bmModule'),
     bmTopic: text('bmTopic'),
+    bmTopicOrigin: saved.bmTopicOrigin === 'az' ? 'az' : 'bm-kssr',
     bmYear: year('bmYear'),
   };
 }

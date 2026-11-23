@@ -29,7 +29,7 @@ const LEVEL_ART = {
 const ALPHABET_ICON_SVG = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="6" fill="#F59E0B"/><path d="M7 9l2.4 4.6 3.2-2.6 2.2 4.2" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity=".92"/><circle cx="11" cy="10.6" r="1.4" fill="#FFFFFF" opacity=".9"/><circle cx="15" cy="12.4" r="1.4" fill="#FFFFFF" opacity=".9"/></svg>`;
 const ALPHABET_ICON = `data:image/svg+xml;utf8,${encodeURIComponent(ALPHABET_ICON_SVG)}`;
 
-export default function ReadingPage({ onBack, language = 'bm', selectedLevel = null, onSelectLevel: setSelectedLevel, ...accountProps }) {
+export default function ReadingPage({ onBack, language = 'bm', selectedLevel = null, onSelectLevel: setSelectedLevel, onSelectTopic, ...accountProps }) {
   useBrowserBackHandler(selectedLevel ? () => setSelectedLevel(null) : onBack);
   const [isPending, startTransition] = useTransition();
   const gameState = useGameStateContext();
@@ -41,7 +41,7 @@ export default function ReadingPage({ onBack, language = 'bm', selectedLevel = n
   if (selectedLevel === 0) {
     return (
       <React.Suspense fallback={<LoadingSpinner />}>
-        <AZLearningPage {...accountProps} onBack={() => setSelectedLevel(null)} language={language} />
+        <AZLearningPage {...accountProps} onBack={() => setSelectedLevel(null)} language={language} onSelectTopic={onSelectTopic} />
       </React.Suspense>
     );
   }

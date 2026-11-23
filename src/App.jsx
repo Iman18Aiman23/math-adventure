@@ -517,6 +517,7 @@ export default function App() {
   const [bmModule, setBmModule] = useState(savedNavigation.bmModule);
   const [bmTopic,  setBmTopic]  = useState(savedNavigation.bmTopic);
   const [bmYear,   setBmYear]   = useState(savedNavigation.bmYear);
+  const [bmTopicOrigin, setBmTopicOrigin] = useState(savedNavigation.bmTopicOrigin);
 
   useEffect(() => {
     document.documentElement.dataset.colorMode = colorMode;
@@ -530,11 +531,11 @@ export default function App() {
       currentAgeGroup, currentAgeGame,
       islamModule, islamTopic, islamYear,
       matematikModule, matematikTopic, matematikYear,
-      bmModule, bmTopic, bmYear,
+      bmModule, bmTopic, bmTopicOrigin, bmYear,
     });
   }, [activeTab, currentSubject, mathSubGame, dateTimeSubGame, isPlaying, gameConfig,
       selectedAssessment, currentAgeGroup, currentAgeGame, islamModule, islamTopic, islamYear,
-      matematikModule, matematikTopic, matematikYear, bmModule, bmTopic, bmYear]);
+      matematikModule, matematikTopic, matematikYear, bmModule, bmTopic, bmTopicOrigin, bmYear]);
 
   const viewContainerRef = useRef(null);
   useEffect(() => {
@@ -559,6 +560,18 @@ export default function App() {
   // Tab switches load lazy chunks (Profile/Achievement/Leaderboard) — route them
   // through a transition too, so the current page stays visible while loading.
   const handleTabChange = (tab) => navigate(() => setActiveTab(tab));
+
+  const handleBackFromBmTopic = () => {
+    if (bmTopicOrigin === 'az') {
+      setBmTopic(null);
+      setBmModule(null);
+      setBmTopicOrigin('bm-kssr');
+      setCurrentSubject('reading');
+      setReadingLevel(0);
+      return;
+    }
+    setBmTopic(null);
+  };
 
   const activeGameId = getActiveGameId(currentSubject, mathSubGame);
   const { gameState, levelUpInfo, clearLevelUp } = useGameState(activeGameId);
@@ -597,7 +610,7 @@ export default function App() {
 
   const handleBackToMenu   = () => setIsPlaying(false);
   const handleStartTimeGame= (gameId) => { setDateTimeSubGame(gameId); setIsPlaying(true); };
-  const handleBackToHome   = () => { setReadingLevel(null); setSpeakingCategory(null); setIsPlaying(false); setMathSubGame(null); setDateTimeSubGame(null); setCurrentSubject(null); setCurrentAgeGroup(null); setCurrentAgeGame(null); setIslamModule(null); setIslamTopic(null); setMatematikModule(null); setMatematikTopic(null); setMatematikYear(1); setBmModule(null); setBmTopic(null); setBmYear(1); setActiveTab('learn'); };
+  const handleBackToHome   = () => { setReadingLevel(null); setSpeakingCategory(null); setIsPlaying(false); setMathSubGame(null); setDateTimeSubGame(null); setCurrentSubject(null); setCurrentAgeGroup(null); setCurrentAgeGame(null); setIslamModule(null); setIslamTopic(null); setMatematikModule(null); setMatematikTopic(null); setMatematikYear(1); setBmModule(null); setBmTopic(null); setBmTopicOrigin('bm-kssr'); setBmYear(1); setActiveTab('learn'); };
   const handleLogout       = () => { SpeechManager.stopSpeaking(); clearPlayerName(); handleBackToHome(); setSelectedAssessment(null); setPlayerName(null); };
   const handleToggleMute   = () => { const m = !isMuted; setIsMuted(m); setMuted(m); };
   const handleToggleLang   = () => setLanguage(l => l === 'bm' ? 'eng' : 'bm');
@@ -616,7 +629,7 @@ export default function App() {
     if (currentSubject === 'matematik-reports') { setCurrentSubject('matematik-kssr'); return; }
     if (currentSubject === 'pendidikan-islam-v1' && islamTopic) { setIslamTopic(null); return; }
     if (currentSubject === 'pendidikan-islam-v1' && islamModule) { setIslamModule(null); return; }
-    if (currentSubject === 'bm-kssr' && bmTopic) { setBmTopic(null); return; }
+    if (currentSubject === 'bm-kssr' && bmTopic) { handleBackFromBmTopic(); return; }
     if (currentSubject === 'bm-kssr' && bmModule) { setBmModule(null); return; }
     if (currentSubject) handleBackToHome();
   }, Boolean(canBrowserBack));
@@ -1039,7 +1052,7 @@ export default function App() {
       case 'bm-kssr':
         // ── Topic page (bmTopic set) ──
         if (bmTopic) {
-          const topicOnBack = () => setBmTopic(null);
+          const topicOnBack = handleBackFromBmTopic;
           // Post-quiz "Topik Seterusnya" — next node in the same module trail
           // (undefined on the last topic, the layout then offers the trail).
           const bmNextId = getNextTopicId(bmTopic);
@@ -1454,9 +1467,9 @@ export default function App() {
               <BahasaMelayuModulePage year={bmYear} activeModule={bmModule} language={language}
                 onBack={hubOnBack}
                 onModuleChange={(id) => navigate(() => { setBmModule(id); setBmTopic(null); })}
-                onSelectTopic={(id) => navigate(() => setBmTopic(id))}>
+                onSelectTopic={(id) => navigate(() => { setBmTopicOrigin('bm-kssr'); setBmTopic(id); })}>
                 <BMModuleHubLayout year={bmYear} activeModule={bmModule} language={language}
-                  onSelectTopic={(id) => navigate(() => setBmTopic(id))} />
+                  onSelectTopic={(id) => navigate(() => { setBmTopicOrigin('bm-kssr'); setBmTopic(id); })} />
               </BahasaMelayuModulePage>
             </Suspense>
           );
@@ -1475,6 +1488,13 @@ export default function App() {
           onLogout={handleLogout}
           colorMode={colorMode} onColorModeChange={setColorMode}
           onOpenReports={() => navigate(() => { setActiveTab('learn'); setCurrentSubject('matematik-reports'); })}
+          onSelectTopic={(topicId) => navigate(() => {
+            setCurrentSubject('bm-kssr');
+            setBmYear(1);
+            setBmModule('mendengar');
+            setBmTopicOrigin('az');
+            setBmTopic(topicId);
+          })}
           theme={THEMES[currentTheme]} themes={THEMES} onThemeChange={setCurrentTheme} />;
       default:
         // Age-group routing takes precedence over the default home screen.
