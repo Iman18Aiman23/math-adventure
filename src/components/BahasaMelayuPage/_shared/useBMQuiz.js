@@ -9,7 +9,18 @@ function preparePool(allQuestions, totalRounds) {
     const opts = shuffle(q.options);
     const uid = q.question + '|' + (q.audioText || q.emoji || q.question);
     answers[uid] = { answer: q.answer, correctIndex: opts.indexOf(q.answer) };
-    return { _uid: uid, question: q.question, options: opts, audioText: q.audioText || '', emoji: q.emoji || '', penerangan: q.penerangan || '' };
+    return {
+      _uid: uid,
+      question: q.question,
+      options: opts,
+      audioText: q.audioText || '',
+      emoji: q.emoji || '',
+      penerangan: q.penerangan || '',
+      // Optional visual-prompt fields used by the compact KV completion quiz.
+      word: q.word || '',
+      rest: q.rest || '',
+      jawi: q.jawi || '',
+    };
   });
   return { pool, answers };
 }

@@ -1,19 +1,31 @@
 import React, { useCallback, useMemo } from 'react';
 import BMModuleHubLayout from '../BahasaMelayuPage/_shared/BMModuleHubLayout';
 import { getModuleByNum } from '../BahasaMelayuPage/_shared/ModuleData';
+import { M1SukuKata } from '../BahasaMelayuPage/_shared/BMJourneySvgs';
 import { PageHeader } from '../_shared/PageHeaderHero';
 import { playHoverSound } from '../../utils/soundManager';
 
 const TOPIC_NUMS = ['1.1', '1.2', '1.3', '1.4'];
+const KV_BG_TOPIC = {
+  id: '1-1-10-kv-b-g',
+  num: '1.10',
+  label: 'Huruf KV B-G',
+  icon: M1SukuKata,
+  disabled: false,
+  afterGoal: true,
+};
 
 export default function AZLearningPage({ onBack, language = 'bm', onSelectTopic, ...accountProps }) {
   const bm = language === 'bm';
 
   const topics = useMemo(() => {
     const module = getModuleByNum(1, 1);
-    return TOPIC_NUMS
-      .map(num => module?.topics.find(topic => topic.num === num))
-      .filter(Boolean);
+    return [
+      ...TOPIC_NUMS
+        .map(num => module?.topics.find(topic => topic.num === num))
+        .filter(Boolean),
+      KV_BG_TOPIC,
+    ];
   }, []);
 
   const handleSelectTopic = useCallback((topicId) => {

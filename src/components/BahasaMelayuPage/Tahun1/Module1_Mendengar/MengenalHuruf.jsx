@@ -5,6 +5,9 @@ import BMLessonQuizLayout from '../../_shared/BMLessonQuizLayout';
 import { BM_QUESTIONS } from '../../_shared/ModuleData';
 import SpeechManager from '../../../../services/SpeechManager';
 import useBrowserBack from '../../../../hooks/useBrowserBack';
+import { shuffle } from '../../../PendidikanIslamPage/_shared/utils';
+import { getKVSeriesByLetter } from '../../../../data/curriculum/bm_kv';
+import { stripHighlightMarkers } from '../../../ReadingPage/AnnotatedText';
 
 const ACCENT = '#E8821A';
 
@@ -40,6 +43,22 @@ function SpeakerIcon() {
         strokeWidth="2.4"
         strokeLinecap="round"
       />
+    </svg>
+  );
+}
+
+function ChevronLeftIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" aria-hidden="true" focusable="false">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+    </svg>
+  );
+}
+
+function ChevronRightIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" aria-hidden="true" focusable="false">
+      <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
     </svg>
   );
 }
@@ -209,17 +228,65 @@ const GROUPS = {
   },
 };
 
+const cardKey = (v) => v.id || v.letter;
+
+const KV_BG_CONSONANTS = ['B', 'C', 'D', 'F', 'G'];
+const KV_BG_CARDS = withColors(
+  KV_BG_CONSONANTS.flatMap((letter) => getKVSeriesByLetter(letter)).map((item) => {
+    const word = stripHighlightMarkers(item.ms.word).toLowerCase();
+    return {
+      id: item.id,
+      letter: item.kv[0].toUpperCase(),
+      kv: item.kv,
+      word,
+      emoji: item.icon,
+      en: item.en.word,
+      jawi: item.jawi.word,
+      sentence: stripHighlightMarkers(item.ms.sentence),
+      enSentence: item.en.sentence,
+    };
+  }),
+);
+
+const KV_BG_PILLS = KV_BG_CONSONANTS.map((letter) => ({
+  id: letter,
+  label: letter,
+  index: KV_BG_CARDS.findIndex((v) => v.letter === letter),
+  ids: KV_BG_CARDS.filter((v) => v.letter === letter).map(cardKey),
+}));
+
+GROUPS['kv-bg'] = {
+  topicId: '1-1-10-kv-b-g',
+  title: { bm: 'Huruf KV B-G', en: 'KV Letters B-G' },
+  heading: { bm: 'Mari Belajar Huruf KV B-G', en: "Let's Learn KV Letters B-G" },
+  letters: KV_BG_CARDS,
+  pills: KV_BG_PILLS,
+};
+
+const KV_SYLLABLES = [...new Set(KV_BG_CARDS.map((v) => v.kv))];
+const KV_BG_QUIZ_QUESTIONS = KV_BG_CARDS.map((v) => ({
+  question: 'Lengkapkan suku kata KV!',
+  audioText: v.word,
+  answer: v.kv,
+  options: shuffle([v.kv, ...shuffle(KV_SYLLABLES.filter((kv) => kv !== v.kv)).slice(0, 3)]),
+  emoji: v.emoji,
+  word: v.word,
+  rest: v.word.slice(v.kv.length),
+  jawi: v.jawi,
+}));
+
 const QUIZ_FOOTER = {
   vokal: { bm: 'Kuiz Kosa Kata Vokal', en: 'Vocabulary Quiz' },
   'konsonan-bj': { bm: 'Kuiz Konsonan B–J', en: 'Consonants Quiz' },
   'konsonan-kr': { bm: 'Kuiz Konsonan K–R', en: 'Consonants Quiz' },
   'konsonan-sz': { bm: 'Kuiz Konsonan S–Z', en: 'Consonants Quiz' },
+  'kv-bg': { bm: 'Kuiz Huruf KV B-G', en: 'KV Letters Quiz' },
 };
 
 const LETTER_PROGRESS_KEY = 'bm-letter-learn-progress';
 
 function loadHeardLetters(topicId, letters) {
-  const validLetters = new Set(letters.map(({ letter }) => letter));
+  const validLetters = new Set(letters.map(cardKey));
   try {
     const parsed = JSON.parse(localStorage.getItem(LETTER_PROGRESS_KEY) || '{}');
     const saved = parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
@@ -301,6 +368,24 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
     };
   }, [n]);
 
+  const handleListen = (v) => {
+    const key = cardKey(v);
+    const label = v.kv ? v.kv.toUpperCase() : `${v.letter}${v.lower || ''}`;
+    SpeechManager.stopSpeaking();
+    if (playRafRef.current) cancelAnimationFrame(playRafRef.current);
+    clearTimeout(playTimer.current);
+    setHeardLetters((prev) => (prev.has(key) ? prev : new Set(prev).add(key)));
+    setPlaying(null);
+    playRafRef.current = requestAnimationFrame(() => {
+      setPlaying(key);
+      playTimer.current = setTimeout(() => setPlaying(null), 1600);
+    });
+    setToast({ icon: '🔊', text: `${label} — ${v.word} (${v.en})` });
+    clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 1900);
+    SpeechManager.speak(`${v.kv || v.letter}... ${v.speak || v.word}`, 'ms-MY', { rate: 0.7, pitch: 1.2 });
+  };
+
   // Wait for the first card's layout to be measured before playing it on entry.
   useEffect(() => {
     if (!slideMetrics.cardWidth || autoPlayedRef.current || !cfg.letters[0]) return undefined;
@@ -311,22 +396,24 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
     return () => {
       if (autoPlayFrameRef.current) cancelAnimationFrame(autoPlayFrameRef.current);
     };
-  }, [slideMetrics.cardWidth]);
+  }, [slideMetrics.cardWidth, cfg.letters]);
 
-  const handleListen = (v) => {
+  const handleBlendListen = (v) => {
+    const key = cardKey(v);
+    const blend = v.kv || v.letter;
     SpeechManager.stopSpeaking();
     if (playRafRef.current) cancelAnimationFrame(playRafRef.current);
     clearTimeout(playTimer.current);
-    setHeardLetters((prev) => (prev.has(v.letter) ? prev : new Set(prev).add(v.letter)));
+    setHeardLetters((prev) => (prev.has(key) ? prev : new Set(prev).add(key)));
     setPlaying(null);
     playRafRef.current = requestAnimationFrame(() => {
-      setPlaying(v.letter);
-      playTimer.current = setTimeout(() => setPlaying(null), 1600);
+      setPlaying(key);
+      playTimer.current = setTimeout(() => setPlaying(null), 1000);
     });
-    setToast({ icon: '🔊', text: `${v.letter}${v.lower || ''} — ${v.word} (${v.en})` });
+    setToast({ icon: '🔊', text: blend.toUpperCase() });
     clearTimeout(toastTimer.current);
-    toastTimer.current = setTimeout(() => setToast(null), 1900);
-    SpeechManager.speak(`${v.letter}... ${v.speak || v.word}`, 'ms-MY', { rate: 0.7, pitch: 1.2 });
+    toastTimer.current = setTimeout(() => setToast(null), 1200);
+    SpeechManager.speak(blend, 'ms-MY', { rate: 0.58, pitch: 1.2 });
   };
 
   const goTo = (index, speak = false) => {
@@ -407,10 +494,21 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
 
   const heroSm = 'clamp(52px, 11vh, 86px)';
   const heroLg = 'clamp(60px, 13vh, 100px)';
+  const useFeatureCard = true;
+  const isVowelLesson = cfg.topicId === '1-1-1-mendengar-menyebut';
+  const showKvFormula = cfg.topicId === '1-1-10-kv-b-g';
+  const pills = cfg.pills
+    || cfg.letters.map((v, index) => ({ id: cardKey(v), label: v.letter, index, ids: [cardKey(v)] }));
+  const activePillId = cfg.pills
+    ? cfg.letters[activeIndex]?.letter
+    : cardKey(cfg.letters[activeIndex]);
 
   return (
     <>
       <style>{`
+        .view-container:has(> .mh-learn-root) {
+          overscroll-behavior-y: none;
+        }
         .mh-learn-root {
           --sp-1: clamp(4px, 0.8vh, 8px);
           --sp-2: clamp(8px, 1.6vh, 14px);
@@ -420,16 +518,26 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
           --az-text-primary: #1E293B;
           --az-text-secondary: #334155;
           --az-text-light: #475569;
-          min-height: 100dvh; overflow-x: hidden;
+          min-height: 100dvh; overflow-x: hidden; overscroll-behavior-y: none;
           background: transparent;
           font-family: 'Fredoka', system-ui, sans-serif;
           display: flex; flex-direction: column;
           position: relative;
           container-name: iman-page;
         }
+        /* The shared ReadingPage shell sets .mh-screen to overflow: visible.
+           Keep the carousel previews inside this page's padded container. */
+        .mh-screen.mh-learn-root {
+          overflow-x: hidden;
+          overflow-x: clip;
+        }
         .mh-learn-wrap {
           display: flex; flex-direction: column;
           flex: 1 1 auto; min-height: 0; gap: 0;
+          /* The centered .mh-wrap is the lesson's main content box. Keep
+             the feature-card previews inside its left/right gutters. */
+          overflow-x: hidden;
+          overflow-x: clip;
         }
         .mh-learn-wrap > .ip-header { flex-shrink: 0; }
         .mh-toast {
@@ -668,6 +776,111 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
           font-weight: 700; line-height: 1; color: var(--az-text-secondary);
           direction: rtl; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
         }
+        .mh-card--kv { justify-content: space-between; gap: 0; padding: clamp(16px, 2.4vh, 26px) clamp(14px, 2.2vw, 22px) clamp(12px, 1.8vh, 20px); }
+        .mh-kv-edge {
+          position: absolute; top: 50%; z-index: 30;
+          width: 42px; height: 42px; border-radius: 9999px;
+          background: #fff; border: 1px solid #F1F5F9; color: #334155;
+          display: grid; place-items: center; cursor: pointer;
+          box-shadow: 0 4px 14px rgba(15, 23, 42, .10), 0 1px 3px rgba(15, 23, 42, .06);
+          transform: translateY(-50%); pointer-events: auto;
+          transition: transform 180ms cubic-bezier(.34,1.56,.64,1), box-shadow 180ms ease;
+        }
+        .mh-kv-edge.is-prev { left: -21px; }
+        .mh-kv-edge.is-next { right: -21px; }
+        .mh-kv-edge svg { width: 16px; height: 16px; }
+        @media (hover: hover) {
+          .mh-kv-edge:hover:not(:disabled) { transform: translateY(-50%) scale(1.08); box-shadow: 0 6px 18px rgba(15, 23, 42, .14); }
+        }
+        .mh-kv-edge:active:not(:disabled) { transform: translateY(-50%) scale(.94); }
+        .mh-kv-edge:disabled { opacity: .35; cursor: default; box-shadow: none; }
+        .mh-kv-top {
+          width: 100%; display: flex; align-items: flex-start; justify-content: space-between;
+          flex-shrink: 0; z-index: 2;
+        }
+        .mh-kv-check {
+          width: 28px; height: 28px; border-radius: 50%;
+          background: #fff; border: 1px solid #E2E8F0; color: #CBD5E1;
+          display: grid; place-items: center; cursor: pointer;
+          font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 14px; line-height: 1;
+          transition: background 200ms ease, color 200ms ease, border-color 200ms ease, transform 200ms ease, opacity 200ms ease;
+        }
+        .mh-kv-check.is-heard { background: var(--tile-border); border-color: var(--tile-border); color: #fff; opacity: .72; transform: scale(.94); }
+        .mh-kv-speaker {
+          width: 48px; height: 48px; border-radius: 9999px;
+          background: #fff; color: var(--tile-ink);
+          display: grid; place-items: center; cursor: pointer;
+          box-shadow: 0 6px 16px rgba(15, 23, 42, .09), 0 2px 4px rgba(15, 23, 42, .04);
+          transition: transform 200ms cubic-bezier(.34,1.56,.64,1), box-shadow 200ms ease;
+        }
+        .mh-kv-speaker svg { width: 24px; height: 24px; }
+        .mh-kv-speaker.is-speaking {
+          box-shadow: 0 0 0 5px var(--tile-glow), 0 6px 16px rgba(15, 23, 42, .09);
+          animation: mh-badge-pop 420ms cubic-bezier(.34,1.56,.64,1) both;
+        }
+        .mh-kv-body {
+          flex: 1; min-height: 0; width: 100%;
+          display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+          animation: mh-kv-pop-in 240ms cubic-bezier(.22,1,.36,1) both;
+        }
+        @keyframes mh-kv-pop-in {
+          from { opacity: .4; transform: scale(.96); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        .mh-kv-formula {
+          display: inline-flex; align-items: center; gap: 6px;
+          padding: 5px 18px; border-radius: 9999px; background: #fff;
+          box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
+          font-family: inherit; font-size: 15px; font-weight: 700; letter-spacing: -.02em;
+        }
+        .mh-kv-formula .is-consonant, .mh-kv-formula .is-result { color: var(--tile-ink); }
+        .mh-kv-formula .is-vowel { color: #F59E0B; }
+        .mh-kv-formula .is-op { color: #64748B; }
+        .mh-kv-hero {
+          display: flex; align-items: baseline; cursor: pointer;
+          font-family: 'Baloo 2', sans-serif; font-weight: 800;
+          font-size: clamp(48px, 9vh, 76px); line-height: 1; letter-spacing: -2px;
+          border-radius: 12px;
+        }
+        .mh-kv-hero:focus-visible { outline: 3px solid var(--tile-border); outline-offset: 4px; }
+        .mh-kv-hero .is-consonant { color: var(--tile-ink); }
+        .mh-kv-hero .is-vowel { color: #F59E0B; }
+        .mh-kv-illustration {
+          display: grid; place-items: center; width: 100%;
+          min-height: clamp(54px, 8.5vh, 82px);
+          margin: clamp(-6px, -1vh, -2px) 0;
+        }
+        .mh-kv-illustration .mh-card-emoji {
+          font-size: clamp(42px, 7.5vh, 68px);
+          filter: drop-shadow(0 6px 5px rgba(30, 41, 59, .2));
+        }
+        .mh-kv-illustration .mh-card-art {
+          width: clamp(80px, 13vh, 124px);
+          filter: drop-shadow(0 6px 5px rgba(30, 41, 59, .2));
+        }
+        .mh-kv-word-stack {
+          display: flex; flex-direction: column; align-items: center; text-align: center;
+          gap: 5px; line-height: 1.05; flex-shrink: 0;
+          margin-top: clamp(-6px, -1vh, -2px);
+        }
+        .mh-kv-word {
+          font-family: 'Baloo 2', sans-serif; font-weight: 800;
+          font-size: clamp(22px, 3.6vh, 30px); line-height: 1;
+        }
+        .mh-kv-word .is-prefix { color: var(--tile-ink); }
+        .mh-kv-en {
+          width: min(86%, 180px); padding-top: 6px;
+          border-top: 1px solid rgba(148, 163, 184, .28);
+          font-size: clamp(13px, 2.2vh, 16px);
+          font-weight: 600; color: var(--az-text-light);
+          letter-spacing: .01em;
+        }
+        .mh-kv-jawi {
+          font-family: 'Amiri','Scheherazade New','Noto Naskh Arabic','Traditional Arabic',serif;
+          font-size: clamp(31px, 5.4vh, 46px); font-weight: 700; line-height: 1.15;
+          color: var(--az-text-secondary); direction: rtl;
+        }
+        .mh-kv-slideshow .mh-slide-viewport { overflow: visible; }
         /* ── Tablet: one generous slide ── */
         @media (min-width: 640px) {
           .mh-carousel-stage, .mh-slide-viewport { max-width: 720px; }
@@ -678,6 +891,7 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
             padding: clamp(24px, 3.2vh, 34px) 14px clamp(14px, 2vh, 22px);
             gap: clamp(4px, .8vh, 9px);
           }
+          .mh-card--kv { padding: clamp(22px, 3vh, 30px) 20px clamp(16px, 2vh, 22px); }
           .mh-card-hero { font-size: clamp(64px, 10vh, 96px); }
           .mh-card-word { font-size: clamp(20px, 3vh, 28px); }
           .mh-card-en { font-size: clamp(15px, 2.4vh, 20px); }
@@ -715,12 +929,17 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
           .mh-slide-viewport { padding: 6px 0 4px; }
           .mh-slide { flex-basis: 80%; }
           .mh-card { width: min(100%, 250px); min-height: clamp(300px, 44vh, 350px); padding: 20px 10px 14px; }
+          .mh-card--kv { padding: 18px 14px 14px; }
           .mh-card-hero { font-size: clamp(56px, 16vw, 76px); }
           .mh-card-emoji { font-size: clamp(40px, 12vw, 56px); }
           .mh-card-art { width: clamp(66px, 18vw, 88px); }
           .mh-card-word { font-size: clamp(18px, 5vw, 22px); }
           .mh-card-en { font-size: clamp(13px, 3.6vw, 16px); }
           .mh-card-jawi { font-size: clamp(28px, 7vw, 36px); }
+          .mh-kv-hero { font-size: clamp(46px, 14vw, 64px); }
+          .mh-kv-formula { font-size: 13px; padding: 4px 14px; }
+          .mh-kv-word { font-size: clamp(20px, 5.5vw, 26px); }
+          .mh-kv-jawi { font-size: clamp(28px, 7.5vw, 40px); }
           .mh-audio-badge { width: 32px; height: 32px; top: 10px; right: 10px; }
           .mh-card-check { width: 24px; height: 24px; top: 10px; left: 10px; }
           .mh-learn-bottom { gap: 6px; margin-top: auto; margin-bottom: auto; }
@@ -729,6 +948,7 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
           .mh-slide-arrow.is-prev { left: -18px; }
           .mh-slide-arrow.is-next { right: -18px; }
           .mh-slide-pill { width: 32px; min-width: 32px; height: 32px; font-size: 14px; }
+          .mh-learn-cta-hint { display: none; }
           .mh-learn-progress { margin-top: 6px; }
         }
         @media (max-width: 480px) and (max-height: 700px) {
@@ -737,6 +957,9 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
           .mh-slideshow { gap: 12px; }
           .mh-slide-viewport { padding: 4px 0 4px; }
           .mh-card { aspect-ratio: auto; min-height: clamp(250px, 42vh, 300px); padding: 16px 10px 10px; }
+          .mh-card--kv { padding: 14px 14px 10px; }
+          .mh-kv-hero { font-size: clamp(42px, 13vw, 58px); }
+          .mh-kv-illustration { min-height: 54px; }
           .mh-card-hero { font-size: clamp(48px, 14vw, 64px); }
           .mh-card-art { width: clamp(58px, 15vw, 74px); }
           .mh-card-emoji { font-size: clamp(36px, 10vw, 48px); }
@@ -866,8 +1089,9 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
           transition: width 420ms cubic-bezier(.34,1.56,.64,1);
         }
         .mh-learn-footer {
-          flex-shrink: 0; text-align: center; position: relative; z-index: 1;
-          padding: clamp(8px, 1.4vh, 14px) 16px clamp(6px, 1.2vh, 12px);
+          flex-shrink: 0; width: 100%; text-align: center; position: relative; z-index: 1;
+          margin-top: clamp(2px, .5vh, 6px);
+          padding: clamp(8px, 1.4vh, 14px) 16px calc(clamp(6px, 1.2vh, 12px) + env(safe-area-inset-bottom, 0px));
           font-size: 11px; font-weight: 600; color: var(--az-text-secondary);
         }
         @media (max-height: 520px) {
@@ -875,8 +1099,8 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
           .mh-step-chip { margin-bottom: 4px; }
         }
         @media (prefers-reduced-motion: reduce) {
-          .mh-card, .mh-audio-badge, .mh-slide, .mh-slide-track, .mh-slide-arrow, .mh-slide-pill, .mh-toast, .mh-learn-cta-btn, .mh-cta-arrow, .mh-learn-progress-fill { transition: none; }
-          .mh-slide.is-center .mh-card.playing, .mh-audio-bars i, .mh-card.playing .mh-audio-badge, .mh-card.playing .mh-audio-badge::after, .mh-card-check, .mh-pill-icon, .mh-toast { animation: none; }
+          .mh-card, .mh-audio-badge, .mh-slide, .mh-slide-track, .mh-slide-arrow, .mh-slide-pill, .mh-toast, .mh-learn-cta-btn, .mh-cta-arrow, .mh-learn-progress-fill, .mh-kv-edge, .mh-kv-check, .mh-kv-speaker { transition: none; }
+          .mh-slide.is-center .mh-card.playing, .mh-audio-bars i, .mh-card.playing .mh-audio-badge, .mh-card.playing .mh-audio-badge::after, .mh-card-check, .mh-pill-icon, .mh-toast, .mh-kv-body, .mh-kv-speaker.is-speaking { animation: none; }
         }
       `}</style>
 
@@ -905,7 +1129,7 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
             </div>
 
             <div
-              className="mh-slideshow"
+              className={`mh-slideshow${useFeatureCard ? ' mh-kv-slideshow' : ''}`}
               role="region"
               aria-roledescription="carousel"
               aria-label={language === 'bm' ? 'Slideshow huruf' : 'Letter slideshow'}
@@ -926,16 +1150,24 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
                   {cfg.letters.map((v, index) => {
                     const distance = Math.abs(index - activeIndex);
                     const slideClass = distance === 0 ? ' is-center' : distance === 1 ? ' is-side' : ' is-far';
-                    const Art = VOWEL_ART[v.letter];
-                    return (
+                      const Art = VOWEL_ART[v.letter];
+                      const kvWord = (v.word || '').toLowerCase();
+                      const kvLetter = (v.letter || '').toLowerCase();
+                      const kvVowelCandidate = kvWord.charAt(1);
+                      const hasKvBlend = !isVowelLesson && /^[aeiou]$/.test(kvVowelCandidate);
+                      const useLetterPair = isVowelLesson || !hasKvBlend;
+                      const kvVowel = v.kv ? v.kv.slice(1) : (useLetterPair ? (v.lower || kvLetter) : kvVowelCandidate);
+                      const kvSyllable = v.kv || (hasKvBlend ? `${kvLetter}${kvVowel}` : kvLetter);
+                      const kvSuffix = kvWord.slice(kvSyllable.length);
+                      return (
                     <div
                       className={`mh-slide${slideClass}`}
-                      key={v.letter}
+                      key={cardKey(v)}
                       ref={(el) => { slideRefs.current[index] = el; }}
                       aria-hidden={index !== activeIndex}
                     >
                       <div
-                        className={`mh-card${playing === v.letter ? ' playing' : ''}${heardLetters.has(v.letter) ? ' heard' : ''}`}
+                        className={`mh-card${useFeatureCard ? ' mh-card--kv' : ''}${playing === cardKey(v) ? ' playing' : ''}${heardLetters.has(cardKey(v)) ? ' heard' : ''}`}
                         style={{
                           '--tile-surface': v.tint,
                           '--tile-border': v.color,
@@ -948,29 +1180,107 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
                         tabIndex={index === activeIndex ? 0 : -1}
                         onClick={() => handleCardClick(v, index)}
                         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCardClick(v, index); } }}
-                        aria-label={`${language === 'bm' ? 'Dengar bunyi' : 'Hear the sound'} ${v.letter}${heardLetters.has(v.letter) ? `, ${language === 'bm' ? 'telah didengar' : 'heard'}` : ''}`}
+                        aria-label={`${language === 'bm' ? 'Dengar bunyi' : 'Hear the sound'} ${v.kv ? v.kv.toUpperCase() : v.letter}${heardLetters.has(cardKey(v)) ? `, ${language === 'bm' ? 'telah didengar' : 'heard'}` : ''}`}
                       >
-                        <span
-                          className={`mh-card-check${heardLetters.has(v.letter) ? ' is-heard' : ''}`}
-                          aria-hidden="true"
-                        >✓</span>
-                        <span className="mh-audio-badge" aria-hidden="true">
-                          <SpeakerIcon />
-                          <span className="mh-audio-bars"><i /><i /><i /></span>
-                        </span>
-                        <span className="mh-card-hero">
-                          {v.letter}{v.lower && <small>{v.lower}</small>}
-                        </span>
-                        <span className="mh-card-detail">
-                          {Art ? (
-                            <span className="mh-card-art" aria-hidden="true"><Art /></span>
-                          ) : (
-                            <span className="mh-card-emoji" aria-hidden="true">{v.emoji}</span>
-                          )}
-                          <span className="mh-card-word">{v.word}</span>
-                          <span className="mh-card-en">{v.en}</span>
-                          <span className="mh-card-jawi" lang="ms">{v.jawi}</span>
-                        </span>
+                        {useFeatureCard ? (
+                          <>
+                            <span className="mh-kv-top">
+                              <button
+                                type="button"
+                                className={`mh-kv-check${heardLetters.has(cardKey(v)) ? ' is-heard' : ''}`}
+                                onClick={(e) => { e.stopPropagation(); handleCardClick(v, index); }}
+                                aria-label={language === 'bm' ? 'Tandakan didengar' : 'Mark as heard'}
+                              >✓</button>
+                              <button
+                                type="button"
+                                className={`mh-kv-speaker${playing === cardKey(v) ? ' is-speaking' : ''}`}
+                                onClick={(e) => { e.stopPropagation(); handleListen(v); }}
+                                aria-label={language === 'bm' ? 'Dengar perkataan' : 'Hear the word'}
+                              >
+                                <SpeakerIcon />
+                              </button>
+                            </span>
+                            <span className="mh-kv-body">
+                              {showKvFormula && (
+                                <span className="mh-kv-formula">
+                                  {useLetterPair ? (
+                                    <>
+                                      <span className="is-consonant">{v.letter}</span>
+                                      <span className="is-op">=</span>
+                                      <span className="is-vowel">{kvVowel}</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <span className="is-consonant">{v.letter}</span>
+                                      <span className="is-op">+</span>
+                                      <span className="is-vowel">{kvVowel}</span>
+                                      <span className="is-op">=</span>
+                                      <span className="is-result">{kvSyllable}</span>
+                                    </>
+                                  )}
+                                </span>
+                              )}
+                              <span
+                                className="mh-kv-hero"
+                                role="button"
+                                tabIndex={index === activeIndex ? 0 : -1}
+                                onClick={(e) => { e.stopPropagation(); handleBlendListen(v); }}
+                                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); handleBlendListen(v); } }}
+                                aria-label={`${language === 'bm' ? 'Dengar bunyi' : 'Hear the sound'} ${kvSyllable.toUpperCase()}`}
+                              >
+                                {useLetterPair ? (
+                                  <>
+                                    <span className="is-consonant" style={{ color: v.ink }}>{v.letter}</span>
+                                    <span className="is-vowel" style={{ color: '#F59E0B' }}>{kvVowel}</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <span className="is-consonant" style={{ color: v.ink }}>{kvSyllable.charAt(0)}</span>
+                                    <span className="is-vowel" style={{ color: '#F59E0B' }}>{kvSyllable.slice(1)}</span>
+                                  </>
+                                )}
+                              </span>
+                              <span className="mh-kv-illustration">
+                                {Art ? (
+                                  <span className="mh-card-art" aria-hidden="true"><Art /></span>
+                                ) : (
+                                  <span className="mh-card-emoji" aria-hidden="true">{v.emoji}</span>
+                                )}
+                              </span>
+                              <span className="mh-kv-word-stack">
+                                <span className="mh-kv-word">
+                                   <span className="is-prefix">{useLetterPair ? kvWord.charAt(0) : kvSyllable}</span>{kvSuffix}
+                                </span>
+                                <span className="mh-kv-en">{v.en}</span>
+                                <span className="mh-kv-jawi" lang="ms">{v.jawi}</span>
+                              </span>
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <span
+                              className={`mh-card-check${heardLetters.has(cardKey(v)) ? ' is-heard' : ''}`}
+                              aria-hidden="true"
+                            >✓</span>
+                            <span className="mh-audio-badge" aria-hidden="true">
+                              <SpeakerIcon />
+                              <span className="mh-audio-bars"><i /><i /><i /></span>
+                            </span>
+                            <span className="mh-card-hero">
+                              {v.letter}{v.lower && <small>{v.lower}</small>}
+                            </span>
+                            <span className="mh-card-detail">
+                              {Art ? (
+                                <span className="mh-card-art" aria-hidden="true"><Art /></span>
+                              ) : (
+                                <span className="mh-card-emoji" aria-hidden="true">{v.emoji}</span>
+                              )}
+                              <span className="mh-card-word">{v.word}</span>
+                              <span className="mh-card-en">{v.en}</span>
+                              <span className="mh-card-jawi" lang="ms">{v.jawi}</span>
+                            </span>
+                          </>
+                        )}
                       </div>
                     </div>
                     );
@@ -978,44 +1288,72 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
                 </div>
                 </div>
                 <div className="mh-arrow-rail">
-                  <button
-                    type="button"
-                    className="mh-slide-arrow is-prev"
-                    onClick={() => goTo(activeIndex - 1, true)}
-                    disabled={activeIndex === 0}
-                    aria-label={language === 'bm' ? 'Huruf sebelum' : 'Previous letter'}
-                  >‹</button>
-                  <button
-                    type="button"
-                    className="mh-slide-arrow is-next"
-                    onClick={() => goTo(activeIndex + 1, true)}
-                    disabled={activeIndex === n - 1}
-                    aria-label={language === 'bm' ? 'Huruf seterusnya' : 'Next letter'}
-                  >›</button>
+                  {useFeatureCard ? (
+                    <>
+                      {activeIndex > 0 && (
+                        <button
+                          type="button"
+                          className="mh-kv-edge is-prev"
+                          onClick={() => goTo(activeIndex - 1, true)}
+                          aria-label={language === 'bm' ? 'Huruf sebelum' : 'Previous letter'}
+                        >
+                          <ChevronLeftIcon />
+                        </button>
+                      )}
+                      {activeIndex < n - 1 && (
+                        <button
+                          type="button"
+                          className="mh-kv-edge is-next"
+                          onClick={() => goTo(activeIndex + 1, true)}
+                          aria-label={language === 'bm' ? 'Huruf seterusnya' : 'Next letter'}
+                        >
+                          <ChevronRightIcon />
+                        </button>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        className="mh-slide-arrow is-prev"
+                        onClick={() => goTo(activeIndex - 1, true)}
+                        disabled={activeIndex === 0}
+                        aria-label={language === 'bm' ? 'Huruf sebelum' : 'Previous letter'}
+                      >‹</button>
+                      <button
+                        type="button"
+                        className="mh-slide-arrow is-next"
+                        onClick={() => goTo(activeIndex + 1, true)}
+                        disabled={activeIndex === n - 1}
+                        aria-label={language === 'bm' ? 'Huruf seterusnya' : 'Next letter'}
+                      >›</button>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="mh-slide-controls">
                 <div className="mh-slide-pills">
-                  {cfg.letters.map((v, index) => {
-                    const isHeard = heardLetters.has(v.letter);
-                    const isActive = index === activeIndex;
+                  {pills.map((pill) => {
+                    const card = cfg.letters[pill.index];
+                    const isHeard = pill.ids.every((id) => heardLetters.has(id));
+                    const isActive = pill.id === activePillId;
                     return (
                       <button
-                        key={v.letter}
+                        key={pill.id}
                         type="button"
                         className={`mh-slide-pill${isActive ? ' is-active' : ''}${isHeard ? ' is-heard' : ''}`}
                         style={{
-                          '--pill-color': v.color,
-                          '--pill-tint': v.tint,
-                          '--pill-ink': v.ink,
+                          '--pill-color': card.color,
+                          '--pill-tint': card.tint,
+                          '--pill-ink': card.ink,
                         }}
-                        onClick={() => goTo(index, true)}
-                        aria-label={`${language === 'bm' ? 'Pilih huruf' : 'Select letter'} ${v.letter}${isHeard ? `, ${language === 'bm' ? 'telah didengar' : 'heard'}` : ''}`}
+                        onClick={() => goTo(pill.index, true)}
+                        aria-label={`${language === 'bm' ? 'Pilih huruf' : 'Select letter'} ${pill.label}${isHeard ? `, ${language === 'bm' ? 'telah didengar' : 'heard'}` : ''}`}
                         aria-current={isActive ? 'true' : undefined}
                       >
                         {isHeard
                           ? <span className="mh-pill-icon" aria-hidden="true">✓</span>
-                          : <span>{v.letter}</span>}
+                          : <span>{pill.label}</span>}
                       </button>
                     );
                   })}
@@ -1058,11 +1396,11 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
                   </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <div className="mh-learn-footer">
-          Bahasa Melayu KSSR · {topicTitle}
+            <footer className="mh-learn-footer">
+              Bahasa Melayu KSSR · {topicTitle}
+            </footer>
+          </div>
         </div>
       </main>
     </>
@@ -1076,6 +1414,7 @@ const REVIEW_SOURCES = {
   'konsonan-bj': ['1-1-1-mendengar-menyebut'],
   'konsonan-kr': ['1-1-1-mendengar-menyebut', '1-1-3-konsonan-bj'],
   'konsonan-sz': ['1-1-1-mendengar-menyebut', '1-1-3-konsonan-bj', '1-1-4-konsonan-kr'],
+  'kv-bg': ['1-1-1-mendengar-menyebut', '1-1-3-konsonan-bj', '1-1-4-konsonan-kr', '1-1-5-konsonan-sz'],
 };
 
 export default function MengenalHuruf({ group = 'vokal', onBack, language = 'bm', topicComplete, onNextTopic, ...accountProps }) {
@@ -1083,11 +1422,16 @@ export default function MengenalHuruf({ group = 'vokal', onBack, language = 'bm'
   const [page, setPage] = useState('learn');
 
   const currentQs = useMemo(
-    () => withQuizAudio(BM_QUESTIONS[cfg.topicId] || [], language),
-    [cfg.topicId, language],
+    () => withQuizAudio(
+      group === 'kv-bg' ? KV_BG_QUIZ_QUESTIONS : (BM_QUESTIONS[cfg.topicId] || []),
+      language,
+    ),
+    [cfg.topicId, group, language],
   );
   const reviewQs = useMemo(
-    () => (REVIEW_SOURCES[group] || []).flatMap(id => withQuizAudio(BM_QUESTIONS[id] || [], language)),
+    () => group === 'kv-bg'
+      ? []
+      : (REVIEW_SOURCES[group] || []).flatMap(id => withQuizAudio(BM_QUESTIONS[id] || [], language)),
     [group, language],
   );
 
@@ -1128,6 +1472,10 @@ export default function MengenalHuruf({ group = 'vokal', onBack, language = 'bm'
         quiz={quiz}
         language={language}
         accentColor={ACCENT}
+        kvQuiz={group === 'kv-bg'}
+        subtitle={group === 'kv-bg'
+          ? (language === 'bm' ? '⭐ KUIZ KILAT · MODUL 2 (KV)' : '⭐ QUICK QUIZ · MODULE 2 (KV)')
+          : undefined}
         onShowLearn={() => setPage('learn')}
         footerText={`Bahasa Melayu KSSR · ${quizFooter}`}
         matchLearn

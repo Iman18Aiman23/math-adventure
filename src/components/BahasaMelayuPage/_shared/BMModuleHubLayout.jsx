@@ -37,7 +37,14 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, o
     return modules.findIndex(m => m.id === stripped);
   }, [modules, activeModule]);
 
-  const displayTopics = topics?.length ? topics : (modules[activeIdx]?.topics || []);
+  const { displayTopics, postGoalTopics } = useMemo(() => {
+    const all = topics?.length ? topics : (modules[activeIdx]?.topics || []);
+    return {
+      displayTopics: all.filter(t => !t.afterGoal),
+      postGoalTopics: all.filter(t => t.afterGoal),
+    };
+  }, [topics, modules, activeIdx]);
+  const trailNodeCount = displayTopics.length + 1 + postGoalTopics.length;
 
   const trailRef = useRef(null);
   const nodeRefs = useRef([]);
@@ -49,8 +56,7 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, o
       const trail = trailRef.current;
       if (!trail) return;
       const trailRect = trail.getBoundingClientRect();
-      const count = displayTopics.length + 1;
-      const points = nodeRefs.current.slice(0, count).filter(Boolean).map((node) => {
+      const points = nodeRefs.current.slice(0, trailNodeCount).filter(Boolean).map((node) => {
         const rect = node.getBoundingClientRect();
         return {
           x: rect.left - trailRect.left + rect.width / 2,
@@ -63,16 +69,17 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, o
     measure();
     window.addEventListener('resize', measure);
     return () => window.removeEventListener('resize', measure);
-  }, [displayTopics, loading]);
+  }, [displayTopics, trailNodeCount, loading]);
 
-  const firstIncomplete = loading ? -1 : displayTopics.findIndex((topic) => (getTopicLevel(topic.id) || 0) < 1);
+  const trailTopics = useMemo(() => [...displayTopics, ...postGoalTopics], [displayTopics, postGoalTopics]);
+  const firstIncomplete = loading ? -1 : trailTopics.findIndex((topic) => (getTopicLevel(topic.id) || 0) < 1);
   const currentIndex = firstIncomplete;
 
   const handleTopicClick = useCallback((topicId) => {
     if (onSelectTopic) onSelectTopic(topicId);
   }, [onSelectTopic]);
 
-  const renderTopic = (topic, index, prevDone) => {
+  const renderTopic = (topic, index, prevDone, trailIndex = index) => {
     const isFirst = index === 0;
     const IconComp = topic.icon;
     const useStandaloneRobot = year === 1 || year === 2 || year === 3;
@@ -85,10 +92,10 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, o
     const showCheck = hasCrown && !blocked && !isCurrent;
 
     return (
-      <div key={topic.id} className="step" style={{ '--dir': SERPENTINE[index % 4] }}>
+      <div key={topic.id} className="step" style={{ '--dir': SERPENTINE[trailIndex % 4] }}>
         <button
           type="button"
-          ref={(el) => { nodeRefs.current[index] = el; }}
+          ref={(el) => { nodeRefs.current[trailIndex] = el; }}
           className={[
             'step-button',
             useStandaloneRobot ? 'node-unified-wrap' : '',
@@ -131,6 +138,14 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, o
     const BadgeComp = mod.badge;
     const totalTopics = displayTopics.length;
     const doneCount = displayTopics.filter(t => isTopicCompleted(t.id)).length;
+    const trailNodes = [
+      ...displayTopics,
+      { id: '__goal__', goal: true },
+      ...postGoalTopics,
+    ];
+    const isTrailNodeDone = (node, index) => node.goal
+      ? doneCount === totalTopics && totalTopics > 0
+      : !loading && index !== currentIndex && (getTopicLevel(node.id) || 0) >= 1;
 
     return (
       <section
@@ -158,7 +173,7 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, o
           </div>
 
           <div className="trail" ref={trailRef}>
-            {pathPoints.length === displayTopics.length + 1 && trailSize.width > 0 && (
+            {pathPoints.length === trailNodeCount && trailSize.width > 0 && (
               <svg
                 className="trail-path"
                 width={trailSize.width}
@@ -168,12 +183,9 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, o
               >
                 {pathPoints.slice(0, -1).map((point, i) => {
                   const next = pathPoints[i + 1];
-                  const srcTopic = displayTopics[i];
-                  const srcDone = !loading && i !== currentIndex && (getTopicLevel(srcTopic.id) || 0) >= 1;
-                  const nextTopic = displayTopics[i + 1];
-                  const nextDone = nextTopic
-                    ? !loading && i + 1 !== currentIndex && (getTopicLevel(nextTopic.id) || 0) >= 1
-                    : doneCount === totalTopics && currentIndex === -1;
+                  const src = trailNodes[i];
+                  const srcDone = isTrailNodeDone(src, i);
+                  const nextDone = isTrailNodeDone(trailNodes[i + 1], i + 1);
                   const segmentClass = srcDone && nextDone
                     ? ' done-path'
                     : srcDone
@@ -181,7 +193,7 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, o
                       : '';
                   const d = `M ${point.x} ${point.y} C ${point.x} ${(point.y + next.y) / 2}, ${next.x} ${(point.y + next.y) / 2}, ${next.x} ${next.y}`;
                   return (
-                    <g key={displayTopics[i].id}>
+                    <g key={src.goal ? 'goal' : src.id}>
                       <path className="trail-path-under" d={d} />
                       <path className={`trail-path-seg${segmentClass}`} d={d} />
                     </g>
@@ -199,7 +211,7 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, o
                   type="button"
                   ref={(el) => { nodeRefs.current[displayTopics.length] = el; }}
                   className="node-btn node-goal"
-                  aria-label={language === 'bm' ? 'Tamat Modul' : 'End Module'}
+                  aria-label={language === 'bm' ? 'Tamat Modul' : 'Finish'}
                 >
                   <span className="node-ico"><TrophyIcon /></span>
                 </button>
@@ -209,10 +221,19 @@ export default function BMModuleHubLayout({ year, activeModule, onSelectTopic, o
                 <div className="node-label node-label-goal">
                   {doneCount === totalTopics && totalTopics > 0
                     ? (language === 'bm' ? 'Semua Lengkap! 🎉' : 'All Complete! 🎉')
-                    : (language === 'bm' ? 'Tamat Modul' : 'End Module')}
+                    : (language === 'bm' ? 'Tamat Modul' : 'Finish')}
                 </div>
               </div>
             </div>
+
+            {postGoalTopics.map((topic, i) =>
+              renderTopic(
+                topic,
+                displayTopics.length + i,
+                true,
+                displayTopics.length + 1 + i
+              )
+            )}
           </div>
         </div>
       </section>

@@ -389,6 +389,21 @@ export const BM_QUESTIONS = {
     { question: 'Apakah suku kata PERTAMA perkataan ini?', audioText: 'rumah', answer: 'ru', options: ['ru', 'ra', 'ma', 'mu'] },
     { question: 'Apakah suku kata PERTAMA perkataan ini?', audioText: 'cawan', answer: 'ca', options: ['ca', 'cu', 'wa', 'ci'] },
   ],
+  // ── T1 M1: Huruf KV B-G (emoji-driven, same format as Konsonan B–J) ─
+  '1-1-10-kv-b-g': [
+    { question: 'Apakah ini?', emoji: '👕', answer: 'Baju', options: ['Baju', 'Bola', 'Cawan', 'Dadu'] },
+    { question: 'Apakah ini?', emoji: '⚽', answer: 'Bola', options: ['Bola', 'Baju', 'Foto', 'Gajah'] },
+    { question: 'Apakah ini?', emoji: '📖', answer: 'Buku', options: ['Buku', 'Baju', 'Dadu', 'Cili'] },
+    { question: 'Apakah ini?', emoji: '🍵', answer: 'Cawan', options: ['Cawan', 'Cili', 'Gigi', 'Bola'] },
+    { question: 'Apakah ini?', emoji: '🌶️', answer: 'Cili', options: ['Cili', 'Cawan', 'Buku', 'Foto'] },
+    { question: 'Apakah ini?', emoji: '🎲', answer: 'Dadu', options: ['Dadu', 'Dua', 'Baju', 'Gajah'] },
+    { question: 'Apakah ini?', emoji: '2️⃣', answer: 'Dua', options: ['Dua', 'Dadu', 'Foto', 'Cawan'] },
+    { question: 'Apakah ini?', emoji: '🧠', answer: 'Faham', options: ['Faham', 'Foto', 'Buku', 'Cili'] },
+    { question: 'Apakah ini?', emoji: '📷', answer: 'Foto', options: ['Foto', 'Faham', 'Gigi', 'Baju'] },
+    { question: 'Apakah ini?', emoji: '🐘', answer: 'Gajah', options: ['Gajah', 'Gigi', 'Bola', 'Dadu'] },
+    { question: 'Apakah ini?', emoji: '🦷', answer: 'Gigi', options: ['Gigi', 'Gajah', 'Cawan', 'Dua'] },
+    { question: 'Apakah ini?', emoji: '👨‍🏫', answer: 'Guru', options: ['Guru', 'Gigi', 'Gajah', 'Foto'] },
+  ],
   // ── T1 M3 T3.3: Mencatat Maklumat ────────────────────────────
   // Comprehension: read a short passage and identify key details.
   '1-3-6-mencatat-maklumat': [

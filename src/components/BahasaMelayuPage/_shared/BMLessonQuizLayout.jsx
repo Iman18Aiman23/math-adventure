@@ -57,6 +57,8 @@ export default function BMLessonQuizLayout({
   // answer (correct or wrong) so the child reads why the action matters.
   showFeedback = false,
   matchLearn = false,
+  // Compact completion quiz variant used by the Huruf KV B-G lesson.
+  kvQuiz = false,
   ...accountProps
 }) {
   const quizRef = useRef(null);
@@ -287,6 +289,64 @@ export default function BMLessonQuizLayout({
           font-size: clamp(26px, 5vh, 38px);
           line-height: 1;
           animation: bm-speaker-pulse 2s ease-in-out infinite;
+        }
+        .bm-lesson-root--kv .bm-quiz-card {
+          border-color: #BFDBFE;
+          box-shadow: 0 5px 0 #93C5FD, 0 18px 34px -18px rgba(37, 99, 235, .28);
+        }
+        .bm-quiz-kv-prompt {
+          display: flex; flex-direction: column; align-items: center;
+          justify-content: center; gap: 3px;
+          padding: clamp(12px, 2vh, 18px) 12px;
+          margin-bottom: var(--sp-1);
+          border: 2px solid #E2E8F0; border-radius: 18px;
+          background: #F8FAFC;
+        }
+        .bm-quiz-kv-illustration {
+          display: grid; place-items: center;
+          width: clamp(64px, 10vh, 84px); height: clamp(64px, 10vh, 84px);
+          margin-bottom: 2px;
+          font-size: clamp(42px, 7vh, 58px); line-height: 1;
+          filter: drop-shadow(0 3px 2px rgba(15, 23, 42, .1));
+        }
+        .bm-quiz-kv-word-hint {
+          font-family: 'Baloo 2', sans-serif; font-weight: 800;
+          font-size: clamp(25px, 4.2vh, 34px); line-height: 1.05;
+          letter-spacing: .02em; color: #1E293B;
+        }
+        .bm-quiz-kv-word-hint .is-blank {
+          color: #2563EB; text-decoration: underline dashed;
+          text-underline-offset: 5px;
+        }
+        .bm-quiz-kv-jawi {
+          min-height: 1.2em;
+          font-family: 'Amiri', 'Noto Naskh Arabic', serif;
+          font-size: clamp(21px, 3.8vh, 29px); font-weight: 700;
+          line-height: 1; color: #64748B; direction: rtl;
+        }
+        .bm-quiz-kv-prompt .bm-quiz-replay-btn {
+          margin-top: 8px;
+          color: #2563EB; background: #EFF6FF; border: 1px solid #BFDBFE;
+          box-shadow: none;
+        }
+        .bm-quiz-kv-prompt .bm-quiz-replay-btn:active {
+          box-shadow: none; transform: scale(.97);
+        }
+        .bm-lesson-root--kv .bm-quiz-grid:not(.long) {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .bm-lesson-root--kv .bm-quiz-opt {
+          min-height: clamp(50px, 8vh, 66px);
+          border-radius: 18px;
+          border-color: #CBD5E1;
+          box-shadow: 0 4px 0 #E2E8F0;
+        }
+        .bm-quiz-feedback.correct {
+          font-family: 'Baloo 2', sans-serif; font-weight: 700;
+          font-size: clamp(11px, 2.2vh, 13px); text-align: center;
+          padding: clamp(4px, 0.9vh, 6px) 10px;
+          border-radius: 10px;
+          color: #047857; background: #ECFDF5; border: 1.5px solid #A7F3D0;
         }
         @keyframes bm-speaker-pulse {
           0%, 100% { transform: scale(1); }
@@ -998,7 +1058,7 @@ export default function BMLessonQuizLayout({
         }
       `}</style>
 
-      <div className={`bm-lesson-root${matchLearn ? ' bm-lesson-root--match mh-screen page-layout-root iman-layout' : ''}`}>
+      <div className={`bm-lesson-root${matchLearn ? ' bm-lesson-root--match mh-screen page-layout-root iman-layout' : ''}${kvQuiz ? ' bm-lesson-root--kv' : ''}`}>
         <LessonShell>
         {matchLearn ? (
           <PageHeader {...accountProps} onBack={headerBack} language={language} backOnly />
@@ -1109,7 +1169,27 @@ export default function BMLessonQuizLayout({
               </div>
 
               <div className="bm-quiz-card">
-                {instructionMode ? (
+                {kvQuiz && subtitle && <div className="bm-quiz-subtitle">{subtitle}</div>}
+                {kvQuiz ? (
+                  <div className="bm-quiz-kv-prompt">
+                    <div className="bm-quiz-kv-illustration" aria-hidden="true">
+                      {currentQ.emoji || '🔊'}
+                    </div>
+                    <div className="bm-quiz-kv-word-hint">
+                      {answered ? (
+                        <span className={selected === correctIdx ? 'is-correct' : ''}>{currentQ.word}</span>
+                      ) : (
+                        <>
+                          <span className="is-blank">__</span>{currentQ.rest}
+                        </>
+                      )}
+                    </div>
+                    <div className="bm-quiz-kv-jawi" lang="ms">{currentQ.jawi}</div>
+                    <button className="bm-quiz-replay-btn" onClick={handleReplay}>
+                      🔊 {language === 'bm' ? 'Dengar Semula' : 'Replay'}
+                    </button>
+                  </div>
+                ) : instructionMode ? (
                   currentQ.audioText && (
                     <div className="bm-quiz-instruction">{currentQ.audioText}</div>
                   )
@@ -1137,7 +1217,7 @@ export default function BMLessonQuizLayout({
                     )}
                   </div>
                 )}
-                {subtitle && <div className="bm-quiz-subtitle">{subtitle}</div>}
+                {!kvQuiz && subtitle && <div className="bm-quiz-subtitle">{subtitle}</div>}
                 {hideEmoji && currentQ.question ? (
                   (() => {
                     const parts = currentQ.question.split('\n');
@@ -1156,7 +1236,7 @@ export default function BMLessonQuizLayout({
                     </p>
                   </div>
                 )}
-                {!instructionMode && currentQ.audioText && !matchLearn && (
+                {!kvQuiz && !instructionMode && currentQ.audioText && !matchLearn && (
                   <button className="bm-quiz-replay-btn" onClick={handleReplay}>
                     🔊 {language === 'bm' ? 'Dengar Semula' : 'Replay'}
                   </button>
@@ -1169,7 +1249,7 @@ export default function BMLessonQuizLayout({
                     const isWrongChoice = answered && isSelected && i !== correctIdx;
                     // Letters/syllables (≤3 chars) display uppercase at large size;
                     // words/sentences keep natural casing at the smaller word-opt size.
-                    const isWordOpt = !!currentQ.emoji || opt.length > 2;
+                    const isWordOpt = !kvQuiz && (!!currentQ.emoji || opt.length > 2);
                     let cls = 'bm-quiz-opt';
                     if (isSelected && !answered) cls += ' selected';
                     if (isCorrectChoice) cls += ' correct';
@@ -1185,9 +1265,14 @@ export default function BMLessonQuizLayout({
                 </div>
 
                 <div className="bm-quiz-feedback-zone">
+                  {kvQuiz && answered && selected === correctIdx && (
+                    <div className="bm-quiz-feedback correct">
+                      🎉 {language === 'bm' ? `Hebat! Jawapan betul: “${currentQ.word}”` : `Great! Correct answer: “${currentQ.word}”`}
+                    </div>
+                  )}
                   {answered && selected !== correctIdx && (
                     <div className="bm-quiz-feedback wrong">
-                      {matchLearn ? '💡' : '❌'} {language === 'bm' ? 'Jawapan' : 'Answer'}: {(currentQ.emoji || correctAnswer.length > 3) ? correctAnswer : correctAnswer.toUpperCase()}
+                      {matchLearn ? '💡' : '❌'} {language === 'bm' ? 'Jawapan' : 'Answer'}: {kvQuiz ? correctAnswer : ((currentQ.emoji || correctAnswer.length > 3) ? correctAnswer : correctAnswer.toUpperCase())}
                     </div>
                   )}
                 </div>

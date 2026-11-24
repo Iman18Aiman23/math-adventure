@@ -1099,6 +1099,12 @@ export default function App() {
                 topicComplete={(id) => markTopicCompleted(id)}
                 onNextTopic={bmNextTopic} key={bmTopic} />
             </Suspense>;
+          if (bmTopic === '1-1-10-kv-b-g')
+            return <Suspense fallback={<LoadingSpinner />}>
+              <MengenalHuruf group="kv-bg" onBack={topicOnBack} language={language}
+                topicComplete={(id) => markTopicCompleted(id)}
+                onNextTopic={bmNextTopic} key={bmTopic} />
+            </Suspense>;
           if (bmTopic === '1-1-6-dengar-teka')
             return <Suspense fallback={<LoadingSpinner />}>
               <DengarTeka onBack={topicOnBack} language={language}
