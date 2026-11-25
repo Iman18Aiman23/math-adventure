@@ -20,6 +20,7 @@ function preparePool(allQuestions, totalRounds) {
       word: q.word || '',
       rest: q.rest || '',
       jawi: q.jawi || '',
+      quizIllustration: q.quizIllustration || null,
     };
   });
   return { pool, answers };
@@ -50,29 +51,34 @@ export default function useBMQuiz(currentQuestions, reviewQuestions, totalRounds
   const [score, setScore] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [selected, setSelected] = useState(null);
+  const [correctIdx, setCorrectIdx] = useState(-1);
+  const [correctAnswer, setCorrectAnswer] = useState('');
   const [finished, setFinished] = useState(false);
 
   const currentQ = pool?.[idx];
-  const correctIdx = currentQ ? ansRef.current[currentQ._uid].correctIndex : -1;
-  const correctAnswer = currentQ ? ansRef.current[currentQ._uid].answer : '';
 
   const handleChoose = useCallback((i) => {
     if (answered) return;
+    const answer = ansRef.current[currentQ._uid];
     setAnswered(true);
     setSelected(i);
-    if (i === correctIdx) {
+    setCorrectIdx(answer.correctIndex);
+    setCorrectAnswer(answer.answer);
+    if (i === answer.correctIndex) {
       setScore(s => s + 1);
       playSound('correct');
     } else {
       playSound('wrong');
     }
-  }, [answered, correctIdx]);
+  }, [answered, currentQ]);
 
   const handleNext = useCallback(() => {
     if (idx + 1 < pool.length) {
       setIdx(i => i + 1);
       setAnswered(false);
       setSelected(null);
+      setCorrectIdx(-1);
+      setCorrectAnswer('');
     } else {
       setFinished(true);
     }
@@ -86,6 +92,8 @@ export default function useBMQuiz(currentQuestions, reviewQuestions, totalRounds
     setScore(0);
     setAnswered(false);
     setSelected(null);
+    setCorrectIdx(-1);
+    setCorrectAnswer('');
     setFinished(false);
   }, [allQuestions, totalRounds]);
 
@@ -94,6 +102,8 @@ export default function useBMQuiz(currentQuestions, reviewQuestions, totalRounds
     setScore(0);
     setAnswered(false);
     setSelected(null);
+    setCorrectIdx(-1);
+    setCorrectAnswer('');
     setFinished(false);
   }, []);
 

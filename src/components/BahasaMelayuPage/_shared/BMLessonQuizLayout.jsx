@@ -157,6 +157,13 @@ export default function BMLessonQuizLayout({
   }, [answered, selected, correctIdx, idx, awardXP, topicId, loseHeart]);
 
   const replayLabel = language === 'bm' ? 'Dengar semula' : 'Replay audio';
+  const kvInstruction = language === 'bm'
+    ? 'Pilih gabungan KV di awal perkataan'
+    : 'Choose the KV pair at the start';
+  const questionText = kvQuiz && currentQ?.question === 'kvStart'
+    ? kvInstruction
+    : (currentQ?.question || (language === 'bm' ? 'Apakah bunyi ini?' : 'What sound is this?'));
+  const progressPercent = totalRounds > 0 ? Math.round(((idx + 1) / totalRounds) * 100) : 0;
   const LessonShell = matchLearn ? MatchLearnShell : React.Fragment;
 
   const handleReplay = () => {
@@ -317,6 +324,12 @@ export default function BMLessonQuizLayout({
         .bm-quiz-kv-word-hint .is-blank {
           color: #2563EB; text-decoration: underline dashed;
           text-underline-offset: 5px;
+        }
+        .bm-quiz-kv-word-hint .is-correct {
+          color: #16A34A;
+        }
+        .bm-quiz-kv-word-hint .is-wrong {
+          color: #DC2626;
         }
         .bm-quiz-kv-jawi {
           min-height: 1.2em;
@@ -1056,6 +1069,103 @@ export default function BMLessonQuizLayout({
             padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
           }
         }
+
+        .bm-lesson-root--kv .bm-pill.prog {
+          color: #1D4ED8; background: #EFF6FF; border-color: #93C5FD;
+        }
+        .bm-lesson-root--kv .bm-quiz-progress-pct {
+          margin-left: 4px; font-variant-numeric: tabular-nums;
+        }
+        .bm-lesson-root--kv .bm-quiz-bar-wrap {
+          height: clamp(10px, 1.5vh, 13px); background: #DBEAFE;
+          box-shadow: inset 0 1px 2px rgba(30, 64, 175, .12);
+        }
+        .bm-lesson-root--kv .bm-quiz-bar-fill {
+          background: linear-gradient(90deg, #2563EB, #60A5FA);
+        }
+        .bm-lesson-root--kv .bm-pill.star .bm-pill-emoji {
+          animation: bm-kv-star-pop .6s cubic-bezier(.34,1.56,.64,1);
+        }
+        @keyframes bm-kv-star-pop {
+          0% { transform: scale(1) rotate(0); filter: drop-shadow(0 1px 1px rgba(0,0,0,.28)); }
+          35% { transform: scale(1.42) rotate(-8deg); filter: drop-shadow(0 0 7px #FDE047); }
+          70% { transform: scale(.94) rotate(4deg); }
+          100% { transform: scale(1) rotate(0); }
+        }
+        .bm-lesson-root--kv .bm-quiz-kv-illustration svg {
+          width: 100%; height: 100%;
+        }
+        .bm-lesson-root--kv .bm-quiz-kv-word-row {
+          display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .bm-lesson-root--kv .bm-quiz-kv-speak {
+          width: 34px; height: 34px; flex: 0 0 34px;
+          display: grid; place-items: center; cursor: pointer;
+          border-radius: 50%; border: 1.5px solid #BFDBFE;
+          background: #EFF6FF; color: #1D4ED8;
+          box-shadow: 0 2px 0 #BFDBFE;
+          transition: transform .12s ease, background .12s ease;
+        }
+        .bm-lesson-root--kv .bm-quiz-kv-speak svg { width: 19px; height: 19px; }
+        @media (hover: hover) {
+          .bm-lesson-root--kv .bm-quiz-kv-speak:hover {
+            background: #DBEAFE; transform: translateY(-1px);
+          }
+        }
+        .bm-lesson-root--kv .bm-quiz-kv-speak:active {
+          transform: translateY(2px); box-shadow: none;
+        }
+        .bm-lesson-root--kv .bm-quiz-kv-speak:focus-visible {
+          outline: 3px solid #2563EB; outline-offset: 3px;
+        }
+        .bm-lesson-root--kv .bm-quiz-kv-jawi {
+          font-size: clamp(16px, 2.7vh, 22px); color: #64748B;
+        }
+        .bm-lesson-root--kv .bm-quiz-opt:disabled:not(.correct):not(.wrong) {
+          opacity: .42; filter: saturate(.55);
+        }
+        .bm-lesson-root--kv .bm-quiz-opt.correct,
+        .bm-lesson-root--kv .bm-quiz-opt.wrong { opacity: 1; filter: none; }
+        .bm-lesson-root--kv .bm-quiz-feedback-zone {
+          min-height: clamp(46px, 6vh, 58px); margin-top: 8px;
+        }
+        .bm-lesson-root--kv .bm-quiz-feedback {
+          width: 100%; max-width: 420px; min-height: 42px;
+          display: flex; align-items: center; justify-content: center;
+          font-size: clamp(15px, 2.6vh, 18px); font-weight: 800;
+          border-radius: 14px; line-height: 1.3;
+          animation: bm-kv-feedback-pop .3s cubic-bezier(.34,1.56,.64,1);
+        }
+        .bm-lesson-root--kv .bm-quiz-feedback.correct {
+          color: #14532D; background: #DCFCE7; border-color: #86EFAC;
+          box-shadow: 0 3px 0 #BBF7D0;
+          font-size: clamp(15px, 2.6vh, 18px);
+        }
+        .bm-lesson-root--kv .bm-quiz-feedback.wrong {
+          color: #7F1D1D; background: #FFE4E6; border-color: #FDA4AF;
+          box-shadow: 0 3px 0 #FECDD3;
+          font-size: clamp(15px, 2.6vh, 18px);
+        }
+        @keyframes bm-kv-feedback-pop {
+          from { opacity: .55; transform: scale(.94); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        .bm-lesson-root--kv .bm-lesson-footer {
+          color: #475569; font-weight: 600;
+        }
+        .bm-lesson-root--kv .bm-quiz-next-btn.hidden-state { display: none; }
+        .bm-lesson-root--kv.bm-lesson-root--match .bm-quiz-card {
+          padding-bottom: clamp(30px, 4.4vh, 44px);
+        }
+        @media (max-width: 560px) {
+          .bm-lesson-root--kv.bm-lesson-root--match .bm-quiz-card {
+            padding-bottom: 24px;
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .bm-lesson-root--kv .bm-pill.star .bm-pill-emoji,
+          .bm-lesson-root--kv .bm-quiz-feedback { animation: none; }
+        }
       `}</style>
 
       <div className={`bm-lesson-root${matchLearn ? ' bm-lesson-root--match mh-screen page-layout-root iman-layout' : ''}${kvQuiz ? ' bm-lesson-root--kv' : ''}`}>
@@ -1157,6 +1267,7 @@ export default function BMLessonQuizLayout({
               <div className="bm-quiz-stats">
                 <span className="bm-pill prog">
                   {language === 'bm' ? 'Soalan' : 'Question'} {idx + 1} / {totalRounds}
+                  {kvQuiz && <span className="bm-quiz-progress-pct"> · {progressPercent}%</span>}
                 </span>
                 <span className="bm-pill-group">
                   <span className="bm-pill life"><span className="bm-pill-emoji" key={hearts}>❤️</span> {hearts}</span>
@@ -1173,21 +1284,33 @@ export default function BMLessonQuizLayout({
                 {kvQuiz ? (
                   <div className="bm-quiz-kv-prompt">
                     <div className="bm-quiz-kv-illustration" aria-hidden="true">
-                      {currentQ.emoji || '🔊'}
+                      {currentQ.quizIllustration
+                        ? React.createElement(currentQ.quizIllustration)
+                        : (currentQ.emoji || <QuizSpeakerIcon />)}
                     </div>
-                    <div className="bm-quiz-kv-word-hint">
-                      {answered ? (
-                        <span className={selected === correctIdx ? 'is-correct' : ''}>{currentQ.word}</span>
-                      ) : (
-                        <>
-                          <span className="is-blank">__</span>{currentQ.rest}
-                        </>
-                      )}
+                    <div className="bm-quiz-kv-word-row">
+                      <div className="bm-quiz-kv-word-hint">
+                        {answered ? (
+                          <span className={selected === correctIdx ? 'is-correct' : 'is-wrong'}>{currentQ.word}</span>
+                        ) : (
+                          <>
+                            <span className="is-blank">__</span>{currentQ.rest}
+                          </>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        className="bm-quiz-kv-speak"
+                        onClick={handleReplay}
+                        aria-label={replayLabel}
+                        title={replayLabel}
+                      >
+                        <QuizSpeakerIcon />
+                      </button>
                     </div>
-                    <div className="bm-quiz-kv-jawi" lang="ms">{currentQ.jawi}</div>
-                    <button className="bm-quiz-replay-btn" onClick={handleReplay}>
-                      🔊 {language === 'bm' ? 'Dengar Semula' : 'Replay'}
-                    </button>
+                    <div className="bm-quiz-kv-jawi" lang="ms" aria-label={language === 'bm' ? 'Tulisan Jawi' : 'Jawi script'}>
+                      {currentQ.jawi}
+                    </div>
                   </div>
                 ) : instructionMode ? (
                   currentQ.audioText && (
@@ -1232,7 +1355,7 @@ export default function BMLessonQuizLayout({
                 ) : (
                   <div className="bm-quiz-question-row">
                     <p className="bm-quiz-question">
-                      {currentQ.question || (language === 'bm' ? 'Apakah bunyi ini?' : 'What sound is this?')}
+                      {questionText}
                     </p>
                   </div>
                 )}
@@ -1264,7 +1387,7 @@ export default function BMLessonQuizLayout({
                   })}
                 </div>
 
-                <div className="bm-quiz-feedback-zone">
+                <div className="bm-quiz-feedback-zone" aria-live="polite" role="status">
                   {kvQuiz && answered && selected === correctIdx && (
                     <div className="bm-quiz-feedback correct">
                       🎉 {language === 'bm' ? `Hebat! Jawapan betul: “${currentQ.word}”` : `Great! Correct answer: “${currentQ.word}”`}

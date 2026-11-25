@@ -166,7 +166,63 @@ function SnakeArt() {
   );
 }
 
+function BooksArt() {
+  return (
+    <svg viewBox="0 0 160 140" aria-hidden="true" focusable="false">
+      <ellipse cx="80" cy="128" rx="46" ry="6" fill="#DDD6FE" opacity="0.72" />
+      <g transform="rotate(-4 80 110)">
+        <rect x="30" y="98" width="100" height="26" rx="6" fill="#7C3AED" />
+        <rect x="36" y="103" width="88" height="6" rx="3" fill="#C4B5FD" opacity="0.9" />
+        <rect x="36" y="115" width="70" height="3" rx="1.5" fill="#FFFFFF" opacity="0.72" />
+      </g>
+      <g transform="rotate(3 80 84)">
+        <rect x="38" y="72" width="88" height="24" rx="6" fill="#FBBF24" />
+        <rect x="44" y="77" width="76" height="5" rx="2.5" fill="#FDE68A" />
+        <rect x="44" y="89" width="60" height="3" rx="1.5" fill="#FFFFFF" opacity="0.75" />
+      </g>
+      <g transform="rotate(-2 80 58)">
+        <rect x="48" y="46" width="76" height="24" rx="6" fill="#A78BFA" />
+        <rect x="54" y="51" width="64" height="5" rx="2.5" fill="#DDD6FE" />
+        <rect x="54" y="63" width="48" height="3" rx="1.5" fill="#FFFFFF" opacity="0.78" />
+      </g>
+      <path d="M126 104h7M126 78h7M126 52h7" stroke="#F8FAFC" strokeWidth="3" strokeLinecap="round" opacity="0.9" />
+    </svg>
+  );
+}
+
+function BallArt() {
+  return (
+    <svg viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+      <defs>
+        <radialGradient id="mh-kv-ball-face" cx="38%" cy="28%" r="72%">
+          <stop offset="0" stopColor="#FFFFFF" />
+          <stop offset="0.7" stopColor="#F8FAFC" />
+          <stop offset="1" stopColor="#CBD5E1" />
+        </radialGradient>
+        <linearGradient id="mh-kv-ball-patch" x1="0" y1="0" x2="1" y2="1">
+          <stop stopColor="#1E3A8A" />
+          <stop offset="1" stopColor="#2563EB" />
+        </linearGradient>
+      </defs>
+      <ellipse cx="60" cy="108" rx="33" ry="6" fill="#DBEAFE" opacity="0.78" />
+      <circle cx="60" cy="58" r="43" fill="url(#mh-kv-ball-face)" stroke="#94A3B8" strokeWidth="2" />
+      <path d="M60 28L84 45L75 73H45L36 45L60 28Z" fill="url(#mh-kv-ball-patch)" />
+      <path d="M60 28L71 13M84 45L103 41M75 73L88 95M45 73L32 95M36 45L17 41" stroke="#64748B" strokeWidth="3" strokeLinecap="round" />
+      <path d="M17 41C27 21 45 12 60 15C75 12 93 21 103 41L84 45L60 28L36 45L17 41Z" fill="#FFFFFF" opacity="0.95" />
+      <path d="M32 95C42 106 78 106 88 95L75 73H45L32 95Z" fill="#F1F5F9" />
+      <circle cx="60" cy="28" r="7" fill="#FBBF24" />
+      <circle cx="84" cy="45" r="6" fill="#FBBF24" />
+      <circle cx="36" cy="45" r="6" fill="#FBBF24" />
+      <circle cx="75" cy="73" r="6" fill="#FBBF24" />
+      <circle cx="45" cy="73" r="6" fill="#FBBF24" />
+      <path d="M42 36C48 29 56 25 63 25" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" opacity="0.7" />
+    </svg>
+  );
+}
+
 const VOWEL_ART = { A: ChickenArt, E: AppleArt, I: FishArt, O: OrangeArt, U: SnakeArt };
+const KV_BG_ART = { bu: BooksArt };
+const KV_QUIZ_ART = { buku: BooksArt, bola: BallArt, futsal: BallArt };
 
 // A–Z journey: vokal + 3 consonant groups. Example words follow the
 // Tahun 1 KV/KVK rule wherever possible (Q/X use the standard
@@ -248,11 +304,12 @@ const KV_BG_CARDS = withColors(
   }),
 );
 
-const KV_BG_PILLS = KV_BG_CONSONANTS.map((letter) => ({
+const KV_BG_PILLS = KV_BG_CONSONANTS.map((letter, i) => ({
   id: letter,
   label: letter,
   index: KV_BG_CARDS.findIndex((v) => v.letter === letter),
   ids: KV_BG_CARDS.filter((v) => v.letter === letter).map(cardKey),
+  ...PREMIUM_HUES[i % PREMIUM_HUES.length],
 }));
 
 GROUPS['kv-bg'] = {
@@ -265,14 +322,15 @@ GROUPS['kv-bg'] = {
 
 const KV_SYLLABLES = [...new Set(KV_BG_CARDS.map((v) => v.kv))];
 const KV_BG_QUIZ_QUESTIONS = KV_BG_CARDS.map((v) => ({
-  question: 'Lengkapkan suku kata KV!',
+  question: 'kvStart',
   audioText: v.word,
   answer: v.kv,
-  options: shuffle([v.kv, ...shuffle(KV_SYLLABLES.filter((kv) => kv !== v.kv)).slice(0, 3)]),
+  options: shuffle([v.kv, ...shuffle(KV_SYLLABLES.filter((kv) => kv !== v.kv)).slice(0, 2)]),
   emoji: v.emoji,
   word: v.word,
   rest: v.word.slice(v.kv.length),
   jawi: v.jawi,
+  quizIllustration: KV_QUIZ_ART[v.word] || null,
 }));
 
 const QUIZ_FOOTER = {
@@ -499,9 +557,22 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
   const showKvFormula = cfg.topicId === '1-1-10-kv-b-g';
   const pills = cfg.pills
     || cfg.letters.map((v, index) => ({ id: cardKey(v), label: v.letter, index, ids: [cardKey(v)] }));
+  const activeCard = cfg.letters[activeIndex];
   const activePillId = cfg.pills
-    ? cfg.letters[activeIndex]?.letter
-    : cardKey(cfg.letters[activeIndex]);
+    ? activeCard?.letter
+    : cardKey(activeCard);
+  const kvProgressDots = useMemo(() => {
+    if (!showKvFormula || !activeCard) return [];
+    return cfg.letters
+      .filter((v) => v.letter === activeCard.letter)
+      .map((card) => ({
+        id: cardKey(card),
+        label: card.kv,
+        index: cfg.letters.indexOf(card),
+        card,
+        isActive: cardKey(card) === cardKey(activeCard),
+      }));
+  }, [activeCard, cfg.letters, showKvFormula]);
 
   return (
     <>
@@ -1098,6 +1169,116 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
           .mh-carousel-hint, .mh-learn-cta-hint, .mh-learn-footer { display: none; }
           .mh-step-chip { margin-bottom: 4px; }
         }
+        .mh-card.mh-card--kv-bg {
+          aspect-ratio: auto;
+          min-height: clamp(400px, 50vh, 460px);
+          justify-content: flex-start;
+          gap: 0;
+          padding: clamp(18px, 2.6vh, 28px) clamp(14px, 2.2vw, 22px) clamp(20px, 2.8vh, 30px);
+          color: var(--tile-ink);
+        }
+        .mh-card--kv-bg .mh-kv-top { align-items: center; }
+        .mh-card--kv-bg .mh-kv-check.is-heard {
+          background: var(--tile-ink);
+          border-color: var(--tile-ink);
+          color: #fff;
+          opacity: 1;
+          transform: none;
+          font-size: 15px;
+          box-shadow: 0 0 0 2px var(--tile-surface), 0 2px 6px rgba(30, 41, 59, .16);
+        }
+        .mh-card--kv-bg .mh-kv-speaker { color: var(--tile-ink); }
+        .mh-card--kv-bg .mh-kv-body {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-rows: auto auto minmax(clamp(56px, 9vh, 92px), 1fr) auto;
+          align-items: center;
+          justify-content: stretch;
+          justify-items: center;
+          gap: clamp(5px, 1vh, 9px);
+          margin-top: clamp(6px, 1.2vh, 12px);
+        }
+        .mh-card--kv-bg .mh-kv-formula {
+          gap: 7px;
+          padding: 5px 16px;
+          font-size: clamp(14px, 2.1vh, 18px);
+          font-weight: 800;
+          line-height: 1.2;
+          box-shadow: 0 2px 0 rgba(30, 41, 59, .05), 0 8px 16px -10px rgba(30, 41, 59, .22);
+        }
+        .mh-card--kv-bg .mh-kv-formula .is-consonant,
+        .mh-card--kv-bg .mh-kv-formula .is-vowel,
+        .mh-card--kv-bg .mh-kv-formula .is-result,
+        .mh-card--kv-bg .mh-kv-hero .is-consonant,
+        .mh-card--kv-bg .mh-kv-hero .is-vowel { color: var(--tile-ink); }
+        .mh-card--kv-bg .mh-kv-hero {
+          justify-content: center;
+          padding: 0 10px;
+          line-height: 1;
+        }
+        .mh-card--kv-bg .mh-kv-illustration {
+          position: relative;
+          align-self: stretch;
+          min-height: 0;
+          margin: clamp(-5px, -0.8vh, -2px) 0 0;
+        }
+        .mh-card--kv-bg .mh-kv-illustration .mh-card-emoji {
+          font-size: clamp(60px, 11vh, 102px);
+          transform: scale(1.06);
+        }
+        .mh-card--kv-bg .mh-kv-illustration .mh-card-art { width: clamp(108px, 17vh, 156px); }
+        .mh-card--kv-bg .mh-kv-word-stack {
+          width: 100%;
+          margin-top: 0;
+          gap: 4px;
+          padding-top: clamp(7px, 1.2vh, 12px);
+        }
+        .mh-card--kv-bg .mh-kv-word,
+        .mh-card--kv-bg .mh-kv-word .is-prefix { color: var(--tile-ink); }
+        .mh-card--kv-bg .mh-kv-word,
+        .mh-card--kv-bg .mh-kv-en,
+        .mh-card--kv-bg .mh-kv-jawi { align-self: center; margin-inline: auto; }
+        .mh-card--kv-bg .mh-kv-word { line-height: 1.05; }
+        .mh-card--kv-bg .mh-kv-en {
+          width: auto;
+          max-width: 100%;
+          padding-top: 0;
+          border-top: 0;
+          font-size: clamp(14px, 2.4vh, 17px);
+          font-weight: 700;
+          color: var(--az-text-secondary);
+        }
+        .mh-card--kv-bg .mh-kv-jawi {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 1.2em;
+          font-size: clamp(25px, 3.9vh, 36px);
+          line-height: 1;
+        }
+        @media (max-width: 480px) {
+          .mh-card.mh-card--kv-bg {
+            aspect-ratio: auto;
+            min-height: clamp(330px, 47vh, 380px);
+            padding: 16px 14px 20px;
+          }
+          .mh-card--kv-bg .mh-kv-body { gap: 5px; margin-top: 8px; }
+          .mh-card--kv-bg .mh-kv-formula { gap: 6px; padding: 4px 14px; font-size: 14px; }
+          .mh-card--kv-bg .mh-kv-illustration .mh-card-emoji {
+            font-size: clamp(56px, 14.2vw, 78px);
+            transform: scale(1.05);
+          }
+          .mh-card--kv-bg .mh-kv-illustration .mh-card-art { width: clamp(100px, 26vw, 134px); }
+          .mh-card--kv-bg .mh-kv-en { font-size: clamp(14px, 3.8vw, 17px); }
+          .mh-card--kv-bg .mh-kv-jawi { font-size: clamp(24px, 6.8vw, 32px); }
+          .mh-card--kv-bg .mh-kv-word-stack { padding-top: 9px; }
+        }
+        @media (max-width: 480px) and (max-height: 700px) {
+          .mh-card.mh-card--kv-bg { padding: 14px 14px 16px; }
+          .mh-card--kv-bg .mh-kv-illustration .mh-card-emoji { font-size: clamp(50px, 12.5vw, 64px); }
+          .mh-card--kv-bg .mh-kv-illustration .mh-card-art { width: clamp(92px, 23vw, 116px); }
+          .mh-card--kv-bg .mh-kv-word-stack { padding-top: 8px; }
+        }
         @media (prefers-reduced-motion: reduce) {
           .mh-card, .mh-audio-badge, .mh-slide, .mh-slide-track, .mh-slide-arrow, .mh-slide-pill, .mh-toast, .mh-learn-cta-btn, .mh-cta-arrow, .mh-learn-progress-fill, .mh-kv-edge, .mh-kv-check, .mh-kv-speaker { transition: none; }
           .mh-slide.is-center .mh-card.playing, .mh-audio-bars i, .mh-card.playing .mh-audio-badge, .mh-card.playing .mh-audio-badge::after, .mh-card-check, .mh-pill-icon, .mh-toast, .mh-kv-body, .mh-kv-speaker.is-speaking { animation: none; }
@@ -1150,7 +1331,7 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
                   {cfg.letters.map((v, index) => {
                     const distance = Math.abs(index - activeIndex);
                     const slideClass = distance === 0 ? ' is-center' : distance === 1 ? ' is-side' : ' is-far';
-                      const Art = VOWEL_ART[v.letter];
+                      const Art = isVowelLesson ? VOWEL_ART[v.letter] : KV_BG_ART[v.kv];
                       const kvWord = (v.word || '').toLowerCase();
                       const kvLetter = (v.letter || '').toLowerCase();
                       const kvVowelCandidate = kvWord.charAt(1);
@@ -1159,6 +1340,9 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
                       const kvVowel = v.kv ? v.kv.slice(1) : (useLetterPair ? (v.lower || kvLetter) : kvVowelCandidate);
                       const kvSyllable = v.kv || (hasKvBlend ? `${kvLetter}${kvVowel}` : kvLetter);
                       const kvSuffix = kvWord.slice(kvSyllable.length);
+                      const cardInk = showKvFormula && v.color === '#EF4444' ? '#B91C1C' : v.ink;
+                      const heroInk = cardInk;
+                      const heroVowel = showKvFormula ? cardInk : '#F59E0B';
                       return (
                     <div
                       className={`mh-slide${slideClass}`}
@@ -1167,12 +1351,12 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
                       aria-hidden={index !== activeIndex}
                     >
                       <div
-                        className={`mh-card${useFeatureCard ? ' mh-card--kv' : ''}${playing === cardKey(v) ? ' playing' : ''}${heardLetters.has(cardKey(v)) ? ' heard' : ''}`}
+                        className={`mh-card${useFeatureCard ? ' mh-card--kv' : ''}${showKvFormula ? ' mh-card--kv-bg' : ''}${playing === cardKey(v) ? ' playing' : ''}${heardLetters.has(cardKey(v)) ? ' heard' : ''}`}
                         style={{
                           '--tile-surface': v.tint,
                           '--tile-border': v.color,
                           '--tile-border-hover': v.color,
-                          '--tile-ink': v.ink,
+                          '--tile-ink': cardInk,
                           '--tile-glow': `${v.color}3d`,
                           '--tile-ring': `${v.color}66`,
                         }}
@@ -1211,7 +1395,7 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
                                     </>
                                   ) : (
                                     <>
-                                      <span className="is-consonant">{v.letter}</span>
+                                      <span className="is-consonant">{kvLetter}</span>
                                       <span className="is-op">+</span>
                                       <span className="is-vowel">{kvVowel}</span>
                                       <span className="is-op">=</span>
@@ -1230,13 +1414,13 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
                               >
                                 {useLetterPair ? (
                                   <>
-                                    <span className="is-consonant" style={{ color: v.ink }}>{v.letter}</span>
-                                    <span className="is-vowel" style={{ color: '#F59E0B' }}>{kvVowel}</span>
+                                    <span className="is-consonant" style={{ color: heroInk }}>{v.letter}</span>
+                                    <span className="is-vowel" style={{ color: heroVowel }}>{kvVowel}</span>
                                   </>
                                 ) : (
                                   <>
-                                    <span className="is-consonant" style={{ color: v.ink }}>{kvSyllable.charAt(0)}</span>
-                                    <span className="is-vowel" style={{ color: '#F59E0B' }}>{kvSyllable.slice(1)}</span>
+                                    <span className="is-consonant" style={{ color: heroInk }}>{kvSyllable.charAt(0)}</span>
+                                    <span className="is-vowel" style={{ color: heroVowel }}>{kvSyllable.slice(1)}</span>
                                   </>
                                 )}
                               </span>
@@ -1333,30 +1517,53 @@ function LetterLearnPage({ cfg, onBack, onStartQuiz, topicTitle, language, ...ac
               </div>
               <div className="mh-slide-controls">
                 <div className="mh-slide-pills">
-                  {pills.map((pill) => {
-                    const card = cfg.letters[pill.index];
-                    const isHeard = pill.ids.every((id) => heardLetters.has(id));
-                    const isActive = pill.id === activePillId;
-                    return (
-                      <button
-                        key={pill.id}
-                        type="button"
-                        className={`mh-slide-pill${isActive ? ' is-active' : ''}${isHeard ? ' is-heard' : ''}`}
-                        style={{
-                          '--pill-color': card.color,
-                          '--pill-tint': card.tint,
-                          '--pill-ink': card.ink,
-                        }}
-                        onClick={() => goTo(pill.index, true)}
-                        aria-label={`${language === 'bm' ? 'Pilih huruf' : 'Select letter'} ${pill.label}${isHeard ? `, ${language === 'bm' ? 'telah didengar' : 'heard'}` : ''}`}
-                        aria-current={isActive ? 'true' : undefined}
-                      >
-                        {isHeard
-                          ? <span className="mh-pill-icon" aria-hidden="true">✓</span>
-                          : <span>{pill.label}</span>}
-                      </button>
-                    );
-                  })}
+                  {showKvFormula
+                    ? kvProgressDots.map((dot) => {
+                      const isHeard = heardLetters.has(cardKey(dot.card));
+                      return (
+                        <button
+                          key={dot.id}
+                          type="button"
+                          className={`mh-slide-pill${dot.isActive ? ' is-active' : ''}${isHeard ? ' is-heard' : ''}`}
+                          style={{
+                            '--pill-color': dot.card.color,
+                            '--pill-tint': dot.card.tint,
+                            '--pill-ink': dot.card.ink,
+                          }}
+                          onClick={() => goTo(dot.index, true)}
+                          aria-label={`${language === 'bm' ? 'Pergi ke suku kata' : 'Go to syllable'} ${dot.label}${isHeard ? `, ${language === 'bm' ? 'telah didengar' : 'heard'}` : ''}`}
+                          aria-current={dot.isActive ? 'true' : undefined}
+                        >
+                          {isHeard
+                            ? <span className="mh-pill-icon" aria-hidden="true">✓</span>
+                            : <span>{dot.label}</span>}
+                        </button>
+                      );
+                    })
+                    : pills.map((pill) => {
+                      const card = cfg.letters[pill.index];
+                      const isHeard = pill.ids.every((id) => heardLetters.has(id));
+                      const isActive = pill.id === activePillId;
+                      return (
+                        <button
+                          key={pill.id}
+                          type="button"
+                          className={`mh-slide-pill${isActive ? ' is-active' : ''}${isHeard ? ' is-heard' : ''}`}
+                          style={{
+                            '--pill-color': card.color,
+                            '--pill-tint': card.tint,
+                            '--pill-ink': card.ink,
+                          }}
+                          onClick={() => goTo(pill.index, true)}
+                          aria-label={`${language === 'bm' ? 'Pilih huruf' : 'Select letter'} ${pill.label}${isHeard ? `, ${language === 'bm' ? 'telah didengar' : 'heard'}` : ''}`}
+                          aria-current={isActive ? 'true' : undefined}
+                        >
+                          {isHeard
+                            ? <span className="mh-pill-icon" aria-hidden="true">✓</span>
+                            : <span>{pill.label}</span>}
+                        </button>
+                      );
+                    })}
                 </div>
               </div>
             </div>
